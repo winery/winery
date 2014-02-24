@@ -26,7 +26,7 @@
   "dependencies": {
     "blueimp-file-upload": "9.5.3",
     "blueimp-tmpl": "2.5.3",
-    "bootstrap": "3.1.1",
+    "bootstrap": "http://git.eclipse.org/gitroot/winery/3rdparty-bootstrap.git#3.1.1",
     "bootstrap-spinedit": "https://github.com/scyv/bootstrap-spinedit.git#1.0.0",
     "jquery": "2.0.3",
     "jquery-typing": "https://github.com/tnajdek/jquery-typing.git#0.3.2-2",

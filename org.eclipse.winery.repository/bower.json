@@ -32,7 +32,7 @@
   "dependencies": {
     "blueimp-file-upload": "9.5.3",
     "blueimp-tmpl": "2.5.3",
-    "bootstrap": "3.1.1",
+    "bootstrap": "http://git.eclipse.org/gitroot/winery/3rdparty-bootstrap.git#3.1.1",
     "bootstrap-spinedit": "https://github.com/scyv/bootstrap-spinedit.git#1.0.0",
     "bootstrap-switch": "v1.9.0",
     "colorPicker": "https://github.com/Belelros/jQuery-ColorPicker.git#1.0.2",
