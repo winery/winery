@@ -320,10 +320,11 @@ function createReqOrCapDef() {
 			// Data has been validated at the server
 			// We can just add the local data
 			var name = $('#reqorcapname').val();
+			var type = $('#type').select2("data").text; // TODO: make href to be consistent with other lines
 			var lbound = $('#lowerbound').val();
 			var ubound = $('#upperbound').val();
 			var constraints = "<button class=\"btn btn-xs\" onclick=\"editConstraints('" + name + "');\">Constraints...</button>";
-			var dataToAdd = [name, lbound, ubound, constraints];
+			var dataToAdd = [name, type, lbound, ubound, constraints];
 			reqCapTableInfo.table.fnAddData(dataToAdd);
 			$('#addReqOrCapDefDiag').modal('hide');
 		}
