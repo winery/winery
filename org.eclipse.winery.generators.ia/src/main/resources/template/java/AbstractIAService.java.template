@@ -77,6 +77,10 @@ public abstract class AbstractIAService {
 		builder.append("</soapenv:Envelope>");
 		
 		// Send SOAP Response Message back to requester
-		HighLevelRestApi.Post(replyTo, builder.toString(), "");
+		if(replyTo == null) {
+			System.err.println("No 'ReplyTo' header found!\nTherefore, reply message is printed here:\n" + builder.toString());
+		} else {
+			HighLevelRestApi.Post(replyTo, builder.toString(), "");
+		}
 	}
 }
