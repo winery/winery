@@ -54,7 +54,7 @@ $(function() {
  * @param artifactInfo = {name, interfaceName (may be undefined), operationName  (may be undefined), artifactTemplate (QName, may be undefined), artifactTemplateName (may be undefined), artifactType}
  */
 function artifactAddedSuccessfully(artifactInfo) {
-	require(["winery-support-common", function(wsc) {
+	require(["winery-support-common"], function(wsc) {
 		var data = [artifactInfo.name<c:if test="${not it.isDeploymentArtifacts}">, artifactInfo.interfaceName, artifactInfo.operationName</c:if>];
 
 		// artifactTemplate
