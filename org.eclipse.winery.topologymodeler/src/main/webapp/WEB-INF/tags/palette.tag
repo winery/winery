@@ -92,14 +92,14 @@ Palette
 
 	function showPalette() {
 		// reset width to original CSS width
-		$("#palette").css("width","");
+		$("#palette").removeClass("shrunk");
 		// show all palette entries
 		$("div.paletteEntry").show();
 		$("#paletteLabel").hide();
 	}
 
 	function hidePalette() {
-		$("#palette").css("width","20px");
+		$("#palette").addClass("shrunk");
 		// hide all palette entries
 		$("div.paletteEntry").hide();
 		$("#paletteLabel").show();

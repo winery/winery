@@ -40,6 +40,12 @@
 	-webkit-box-sizing: content-box;
 }
 
+#palette.shrunk {
+	width: 35px;
+	padding: 0px;
+	padding-left: 9px;
+}
+
 #paletteLabel {
 	width: 0px;
 	background-color: blue;
