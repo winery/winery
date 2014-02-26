@@ -643,8 +643,11 @@ require(["winery-topologymodeler-AMD"], function(wt) {
 		if (target.is("a") && !target.hasClass("editable")) {
 			// Link clicked
 			// Open in new tab
-			var href = target.attr("href");
-			window.open(href);
+			// Delay opening for 300ms to disalbe a dragstart
+			window.setTimeout(function() {
+				var href = target.attr("href");
+				window.open(href);
+			}, 300);
 			return false;
 		}
 
