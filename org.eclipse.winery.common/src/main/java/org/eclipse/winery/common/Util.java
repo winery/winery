@@ -186,9 +186,11 @@ public class Util {
 	 * @param element the element directly nested below a definitions element in
 	 *            XML
 	 * @param qname the QName of the element
+	 * @param name (optional) if not null, the name to display as text in the
+	 *            reference. Default: localName of the QName
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
-	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname) {
+	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
 		if (StringUtils.isEmpty(repositoryUrl)) {
 			throw new IllegalArgumentException("Repository URL must not be empty.");
 		}
@@ -198,9 +200,30 @@ public class Util {
 		if (qname == null) {
 			return "(none)";
 		}
+		
 		String absoluteURL = repositoryUrl + "/" + Util.getURLpathFragmentForCollection(element) + "/" + Util.DoubleURLencode(qname.getNamespaceURI()) + "/" + Util.DoubleURLencode(qname.getLocalPart());
-		String res = "<a target=\"_blank\" data-qname=\"" + qname + "\" href=\"" + absoluteURL + "\">" + Functions.escapeXml(qname.getLocalPart()) + "</a>";
+		
+		if (name == null) {
+			// fallback if no name is given
+			name = qname.getLocalPart();
+		}
+		// sanitize name
+		name = Functions.escapeXml(name);
+		
+		String res = "<a target=\"_blank\" data-qname=\"" + qname + "\" href=\"" + absoluteURL + "\">" + name + "</a>";
 		return res;
+	}
+	
+	/**
+	 * 
+	 * @param repositoryUrl the URL to the repository
+	 * @param element the element directly nested below a definitions element in
+	 *            XML
+	 * @param qname the QName of the element
+	 * @return an <code>a</code> HTML element pointing to the given id
+	 */
+	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname) {
+		return Util.qname2href(repositoryUrl, element, qname, null);
 	}
 	
 	/**
