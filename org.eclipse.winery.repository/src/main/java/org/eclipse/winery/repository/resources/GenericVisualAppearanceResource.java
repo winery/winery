@@ -25,13 +25,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.configuration.Configuration;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
@@ -52,7 +50,6 @@ public abstract class GenericVisualAppearanceResource {
 	protected final Map<QName, String> otherAttributes;
 	protected final TopologyGraphElementEntityTypeResource res;
 	protected final TOSCAElementId id;
-	protected Configuration configuration;
 	
 	
 	@DELETE
@@ -83,7 +80,6 @@ public abstract class GenericVisualAppearanceResource {
 	 */
 	public GenericVisualAppearanceResource(TopologyGraphElementEntityTypeResource res, Map<QName, String> otherAttributes, VisualAppearanceId id) {
 		this.id = id;
-		this.configuration = Repository.INSTANCE.getConfiguration(id);
 		this.res = res;
 		this.otherAttributes = otherAttributes;
 	}
