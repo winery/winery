@@ -189,13 +189,13 @@ public class Generator {
 				javaFolderString += File.separator + splitPkg[i];
 			}
 			
-			// Copy AbstractIAService.java
+			// Copy TEMPLATE_JAVA_ABSTRACT_IA_SERVICE
 			Path templateAbstractIAService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_ABSTRACT_IA_SERVICE);
 			File javaAbstractIAService = new File(javaFolderString + File.separator + "AbstractIAService.java");
 			Files.createDirectories(javaAbstractIAService.toPath().getParent());
 			Files.copy(templateAbstractIAService, javaAbstractIAService.toPath(), StandardCopyOption.REPLACE_EXISTING);
 			
-			// Copy and rename IA_TestInterface.java
+			// Copy and rename TEMPLATE_JAVA_TEMPLATE_SERVICE
 			Path templateJavaService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_TEMPLATE_SERVICE);
 			File javaService = new File(javaFolderString + File.separator + this.name + ".java");
 			Files.createDirectories(javaService.toPath().getParent());
