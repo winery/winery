@@ -13,7 +13,6 @@ package org.eclipse.winery.repository.resources;
 
 import java.lang.reflect.Method;
 
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -21,10 +20,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.TBoolean;
-import org.eclipse.winery.model.tosca.TEntityType.DerivedFrom;
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.TBoolean;
+import org.eclipse.winery.model.tosca.TEntityType.DerivedFrom;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -191,7 +190,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 	}
 	
 	/**
-	 * @return resource managaing abstract, final, derivedFrom
+	 * @return resource managing abstract, final, derivedFrom
 	 */
 	@Path("inheritance/")
 	public InheritanceResource getInheritanceManagement() {
