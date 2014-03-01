@@ -204,7 +204,7 @@ function updateValue(thing, value) {
  */
 function putColor(id, hex) {
 	var dataToSend = {
-		"color" : "#" + hex
+		"color" : hex
 	};
 	$.ajax({
 		type : "PUT",

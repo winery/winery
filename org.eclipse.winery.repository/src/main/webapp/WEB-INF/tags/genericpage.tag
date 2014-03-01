@@ -43,7 +43,6 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/blueimp-file-upload/css/jquery.fileupload-ui.css" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/datatables/media/css/jquery.dataTables.css" rel="stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/css/winery-repository.css" rel="Stylesheet" />
-	<link type="text/css" href="${pageContext.request.contextPath}/components/colorPicker/css/colorpicker.css" rel="Stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/pnotify/jquery.pnotify.default.css" media="all" rel="stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/pnotify/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/select2/select2.css" media="all" rel="stylesheet" />
@@ -113,7 +112,6 @@
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap-spinedit/js/bootstrap-spinedit.js'></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/winery-support-non-AMD.js"></script>
 	<script type="text/javascript" src="${w:topologyModelerURI()}/js/winery-common.js"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/components/colorPicker/colorpicker.min.js"></script>
 
 	<script>
 	// all x-editable popups should be placed in a way to fit "perfectly" on the screen

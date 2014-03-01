@@ -15,11 +15,8 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:colorpickerloading color="${it.color}" elementId="color" url="color">
-</t:colorpickerloading>
-
-<t:colorpickerloading color="${it.hoverColor}" elementId="hovercolor" url="hovercolor">
-</t:colorpickerloading>
+<script type='text/javascript' src='${pageContext.request.contextPath}/components/raphael/raphael.js'></script>
+<script type='text/javascript' src='${pageContext.request.contextPath}/components/colorwheel/javascripts/colorwheel.js'></script>
 
 <ul class="nav nav-tabs" id="myTab">
 	<li class="active"><a href="#icon">Icon</a></li>
@@ -43,19 +40,8 @@
 		<br />
 		<form>
 			<fieldset>
-				<div class="form-group">
-					<label for="colorDiv">Color</label>
-					<div style="width:100%;" id="colorDiv">
-						<div id="color" class="colorpickerdiv" style="background-color: ${it.color}"></div>
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label for="hovercolorDiv">Hover Color</label>
-					<div style="width:100%;" id="hovercolorDiv">
-						<div id="hovercolor" class="colorpickerdiv" style="background-color: ${it.hoverColor}"></div>
-					</div>
-				</div>
+				<t:colorwheel label="Line Color" color="${it.color}" id="color" url="color" />
+				<t:colorwheel label="Hover Color" color="${it.hoverColor}" id="hovercolor" url="hovercolor" />
 			</fieldset>
 		</form>
 	</div>

@@ -15,23 +15,14 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<t:colorpickerloading color="${it.borderColor}" elementId="bordercolor" url="bordercolor">
-</t:colorpickerloading>
+<script type='text/javascript' src='${pageContext.request.contextPath}/components/raphael/raphael.js'></script>
+<script type='text/javascript' src='${pageContext.request.contextPath}/components/colorwheel/javascripts/colorwheel.js'></script>
 
 <script>
 <%-- Required for multiple upload dialogs
 	see https://github.com/blueimp/jQuery-File-Upload/wiki/Options --%>
 $(document).bind('drop dragover', function (e) {
 	e.preventDefault();
-});
-
-<%-- colorPicker --%>
-jQuery(document).ready(function($) {
-	$('#bordercolor').ColorPicker({
-		onChange : function() {
-			putColor('bordercolor');
-		}
-	});
 });
 </script>
 
@@ -41,7 +32,6 @@ jQuery(document).ready(function($) {
 </ul>
 
 <div class="tab-content">
-
 	<div class="tab-pane active" id="icons">
 		<br />
 		<t:imageUpload
@@ -60,21 +50,14 @@ jQuery(document).ready(function($) {
 			resize="50"
 			accept="image/*"/>
 	</div>
-
 	<div class="tab-pane" id="color">
 		<br />
 		<form>
 			<fieldset>
-				<div class="form-group">
-					<label for="bordercolorDiv">Border Color</label>
-					<div id="bordercolorDiv" style="width:100%">
-						<div id="bordercolor" class="colorpickerdiv" style="background-color: ${it.borderColor}"></div>
-					</div>
-				</div>
+				<t:colorwheel label="Border Color" color="${it.borderColor}" id="bordercolor" url="bordercolor" />
 			</fieldset>
 		</form>
 	</div>
-
 </div>
 
 <script>
