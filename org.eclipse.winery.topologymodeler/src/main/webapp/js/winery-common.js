@@ -39,33 +39,35 @@ function highlightRequiredFields() {
 }
 
 function vPnotify(text, title, type) {
-	var notice = $.pnotify({
-		title: title,
-		text: text,
-		type: type
-	});
-	notice.on("click", function(e) {
-		var target = $(e.target);
-		if (target.is(".ui-pnotify-closer *, .ui-pnotify-sticker *, a")) {
-			// buttons clicked - call their functionality
-			return true;
-		} else {
-			// click on text leads to display of a dialog showing the complete content
-
-			var textDiv;
-			if (target.is("div.ui-pnotify-text")) {
-				textDiv = target;
+	require(["pnotify"], function() {
+		var notice = $.pnotify({
+			title: title,
+			text: text,
+			type: type
+		});
+		notice.on("click", function(e) {
+			var target = $(e.target);
+			if (target.is(".ui-pnotify-closer *, .ui-pnotify-sticker *, a")) {
+				// buttons clicked - call their functionality
+				return true;
 			} else {
-				textDiv = target.closest("div.ui-pnotify-container").find("div.ui-pnotify-text");
+				// click on text leads to display of a dialog showing the complete content
+
+				var textDiv;
+				if (target.is("div.ui-pnotify-text")) {
+					textDiv = target;
+				} else {
+					textDiv = target.closest("div.ui-pnotify-container").find("div.ui-pnotify-text");
+				}
+
+				// put text into dialog and show it
+				$("#diagmessagetitle").text("Full notification");
+				$("#diagmessagemsg").html(textDiv.html());
+				$("#diagmessage").modal("show");
+
+				return false;
 			}
-
-			// put text into dialog and show it
-			$("#diagmessagetitle").text("Full notification");
-			$("#diagmessagemsg").html(textDiv.html());
-			$("#diagmessage").modal("show");
-
-			return false;
-		}
+		});
 	});
 }
 

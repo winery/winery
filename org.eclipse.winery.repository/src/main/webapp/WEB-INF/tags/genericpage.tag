@@ -83,6 +83,8 @@
 
 				"orioneditor": "http://eclipse.org/orion/editor/releases/4.0/built-editor-amd.min",
 
+				"pnotify": "../components/pnotify/jquery.pnotify",
+
 				"select2": "../components/select2/select2",
 
 				"tmpl": "../components/blueimp-tmpl/js/tmpl",
@@ -99,7 +101,6 @@
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery/jquery.js'></script>
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap/dist/js/bootstrap.js'></script>
 
-	<script type="text/javascript" src="${pageContext.request.contextPath}/components/pnotify/jquery.pnotify.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery-typing/plugin/jquery.typing-0.3.2.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/select2/select2.js"></script>
 
@@ -116,6 +117,11 @@
 	<script>
 	// all x-editable popups should be placed in a way to fit "perfectly" on the screen
 	$.fn.editable.defaults.placement = "auto";
+
+	//configuration for pnotify
+	require(["pnotify"], function() {
+		$.pnotify.defaults.styling = "bootstrap3";
+	});
 	</script>
 </head>
 
