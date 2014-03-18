@@ -186,6 +186,7 @@
 			"jsplumb": "../components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4",
 
 			"keyboardjs": "../components/KeyboardJS/keyboard",
+			"pnotify": "../components/pnotify/jquery.pnotify",
 			"select2": "../components/select2/select2",
 			"orioneditor": "http://eclipse.org/orion/editor/releases/5.0/built-editor-amd.min",
 			"tmpl": "../components/blueimp-tmpl/js/tmpl",
@@ -208,8 +209,6 @@
 <script type='text/javascript' src='components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4.js'></script>
 
 <script type="text/javascript" src="components/jquery-typing/plugin/jquery.typing-0.3.2.js"></script>
-
-<script type="text/javascript" src="components/pnotify/jquery.pnotify.js"></script>
 
 <script type="text/javascript" src="components/select2/select2.js"></script>
 
@@ -242,6 +241,11 @@ winery.connections = {};
 
 // all x-editable popups should be placed in a way to fit "perfectly" on the screen
 $.fn.editable.defaults.placement = "auto";
+
+//configuration for pnotify
+require(["jquery", "pnotify"], function() {
+	$.pnotify.defaults.styling = "bootstrap3";
+});
 </script>
 
 <%-- Begin: Add&Edit Req/Cap --%>

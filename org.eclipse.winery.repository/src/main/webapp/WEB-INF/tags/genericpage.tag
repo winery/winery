@@ -119,7 +119,7 @@
 	$.fn.editable.defaults.placement = "auto";
 
 	//configuration for pnotify
-	require(["pnotify"], function() {
+	require(["jquery", "pnotify"], function() {
 		$.pnotify.defaults.styling = "bootstrap3";
 	});
 	</script>

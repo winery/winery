@@ -78,7 +78,9 @@ if (typeof winery.connections === "undefined") winery.connections = {}
 jQuery.ajaxSetup({cache:true});
 
 //configuration for pnotify
-$.pnotify.defaults.styling = "bootstrap3";
+require(["jquery", "pnotify"], function() {
+	$.pnotify.defaults.styling = "bootstrap3";
+});
 </script>
 
 <%
