@@ -81,7 +81,7 @@
 
 				"keyboardjs": "../components/KeyboardJS/keyboard",
 
-				"orioneditor": "http://eclipse.org/orion/editor/releases/5.0/built-editor-amd.min",
+				"orioneditor": "http://eclipse.org/orion/editor/releases/latest/built-editor-amd",
 
 				"pnotify": "../components/pnotify/jquery.pnotify",
 

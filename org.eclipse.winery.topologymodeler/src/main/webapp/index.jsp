@@ -186,9 +186,9 @@
 			"jsplumb": "../components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4",
 
 			"keyboardjs": "../components/KeyboardJS/keyboard",
+			"orioneditor": "http://eclipse.org/orion/editor/releases/latest/built-editor-amd",
 			"pnotify": "../components/pnotify/jquery.pnotify",
 			"select2": "../components/select2/select2",
-			"orioneditor": "http://eclipse.org/orion/editor/releases/5.0/built-editor-amd.min",
 			"tmpl": "../components/blueimp-tmpl/js/tmpl",
 			"XMLWriter": "../components/XMLWriter/XMLWriter"
 		}
