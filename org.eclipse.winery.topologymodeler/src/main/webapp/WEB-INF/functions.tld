@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/*******************************************************************************
+ * Copyright (c) 2012-2013 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *******************************************************************************/
+-->
+<taglib
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+	version="2.1">
+
+	<tlib-version>1.0</tlib-version>
+	<short-name>Winery_TopologyModeler_Functions</short-name>
+	<uri>http://www.eclipse.org/winery/topologymodeler/functions</uri>
+
+	<function>
+		<name>convertQNameWithNameListToNamespaceToLocalNameNamePairList</name>
+		<function-class>org.eclipse.winery.topologymodeler.WineryUtil</function-class>
+		<function-signature>java.util.SortedMap convertQNameWithNameListToNamespaceToLocalNameNamePairList(java.util.List)</function-signature>
+	</function>
+
+	<function>
+		<name>escapeHtml4</name>
+		<function-class>org.apache.commons.lang3.StringEscapeUtils</function-class>
+		<function-signature>java.lang.String escapeHtml4(java.lang.String)</function-signature>
+	</function>
+</taglib>

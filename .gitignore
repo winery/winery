@@ -1,0 +1,12 @@
+.gradle/
+.idea/
+.project
+.settings/org.eclipse.m2e.core.prefs
+bin/
+build/
+release.properties
+**/*.iml
+**/hs_err_pid*.log
+**/pom.xml.*
+**/rebel.xml
+target/

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>IA_PACKAGE</groupId>
+	<artifactId>IA_CLASS_NAME</artifactId>
+	<packaging>war</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>Implementation Artifact IA_CLASS_NAME</name>
+
+	<repositories>
+		<repository>
+			<id>2471.de</id>
+			<url>http://2471.de/maven2</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<run.HttpPort>9090</run.HttpPort>
+		<winery.upload.url>IA_ARTIFACT_TEMPLATE_UPLOAD_URL</winery.upload.url>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<cxf.version>2.7.6</cxf.version>
+		<highlevelrestapi.version>0.1.6</highlevelrestapi.version>
+	</properties>
+
+	<dependencies>
+		<!-- LIBRARIES ADDED FOR IMPLEMENTATION ARTIFACT IMPLEMENTATION -->
+
+
+		<!-- END - LIBRARIES ADDED FOR IMPLEMENTATION ARTIFACT IMPLEMENTATION -->
+
+		<dependency>
+			<groupId>org.eclipse.winery</groupId>
+			<artifactId>org.eclipse.winery.highlevelrestapi</artifactId>
+			<version>${highlevelrestapi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>3.0.7.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>3.0.7.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-simple</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>IA_CLASS_NAME</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>false</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-java2ws-plugin</artifactId>
+				<version>${cxf.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.cxf</groupId>
+						<artifactId>cxf-rt-frontend-jaxws</artifactId>
+						<version>${cxf.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.cxf</groupId>
+						<artifactId>cxf-rt-frontend-simple</artifactId>
+						<version>${cxf.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>process-classes</id>
+						<phase>process-classes</phase>
+						<configuration>
+							<className>IA_PACKAGE.IA_CLASS_NAME</className>
+							<outputFile>${basedir}/src/main/webapp/wsdl/IA_CLASS_NAME.wsdl</outputFile>
+							<genWsdl>true</genWsdl>
+							<verbose>true</verbose>
+						</configuration>
+						<goals>
+							<goal>java2ws</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+				</configuration>
+			</plugin>
+
+			<!-- Inspired by: http://giallone.blogspot.de/2013/02/post-file-to-web-page-as-part-of-maven.html -->
+			<plugin>
+				<groupId>org.codehaus.gmaven</groupId>
+				<artifactId>gmaven-plugin</artifactId>
+				<version>1.4</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.gmaven.runtime</groupId>
+						<artifactId>gmaven-runtime-1.7</artifactId>
+						<version>1.2</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>httpmime</artifactId>
+						<version>4.2.1</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>httpcore</artifactId>
+						<version>4.2.1</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.httpcomponents</groupId>
+						<artifactId>httpclient</artifactId>
+						<version>4.2.1</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>upload2winery</id>
+						<!-- In this mvn phase... -->
+						<phase>deploy</phase>
+						<!-- ...run the execute goal of this plugin -->
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<providerSelection>1.7</providerSelection>
+							<source>
+								import org.apache.http.impl.client.DefaultHttpClient
+								import org.apache.http.client.methods.HttpPost
+								import org.apache.http.entity.mime.MultipartEntity
+								import org.apache.http.entity.mime.content.FileBody
+
+								// Get WAR file
+								def name = "target/${project.build.finalName}.war"
+								println "Archive file: $name"
+								def f = new File(name)
+
+								// POST file
+								DefaultHttpClient httpclient = new DefaultHttpClient()
+								println "Upload URL: ${winery.upload.url}"
+								def post = new HttpPost("${winery.upload.url}")
+								def entity = new MultipartEntity()
+								def fileBody = new FileBody(f)
+								entity.addPart("files[]", fileBody)
+								post.setEntity(entity)
+
+								// Process response
+								def response = httpclient.execute(post)
+								def status = response.getStatusLine()
+								if( !(status ==~ /.*Created.*/) )
+									 fail("IA upload to Winery FAILED, please upload manually. (HTTP status code: $status)" )
+								else
+									 println "IA upload finished sucessfully (HTTP status code $status)"
+							</source>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<version>2.1</version>
+					<configuration>
+						<!-- http port -->
+						<port>${run.HttpPort}</port>
+						<!-- application path always starts with / -->
+						<path>/</path>
+						<!-- if you want to use test dependencies rather than only runtime -->
+						<useTestClasspath>false</useTestClasspath>
+					</configuration>
+				</plugin>
+
+				<!-- Disable default install phase, because we don't install into maven
+					repo but into Winery (during deploy phase). -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>default-install</id>
+							<phase>none</phase>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- Disable default deploy phase, because we don't deploy into remote
+					maven repo but into remote Winery. -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>default-deploy</id>
+							<phase>none</phase>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+</project>

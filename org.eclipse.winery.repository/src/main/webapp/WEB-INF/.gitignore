@@ -1,0 +1,3 @@
+#common-functions.tld is generated via mvn generate-sources
+#Its content is copied from org.eclipse.winery.topologymodeler
+common-functions.tld

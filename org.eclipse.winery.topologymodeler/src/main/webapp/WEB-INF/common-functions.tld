@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/*******************************************************************************
+ * Copyright (c) 2012-2015 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *******************************************************************************/
+-->
+<taglib
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+	version="2.1">
+
+	<tlib-version>1.0</tlib-version>
+	<short-name>Winery_Common_Functions</short-name>
+	<uri>http://www.eclipse.org/winery/functions</uri>
+
+	<!-- from org.eclipse.winery.common.ModelUtilities -->
+	<function>
+		<name>winerysPropertiesDefinition</name>
+		<function-class>org.eclipse.winery.common.ModelUtilities</function-class>
+		<function-signature>org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition getWinerysPropertiesDefinition(org.eclipse.winery.model.tosca.TEntityType)</function-signature>
+	</function>
+
+	<!-- from org.eclipse.winery.common.Util -->
+	<function>
+		<name>convertQNameListToNamespaceToLocalNameList</name>
+		<function-class>org.eclipse.winery.common.Util</function-class>
+		<function-signature>java.util.SortedMap convertQNameListToNamespaceToLocalNameList(java.util.List)</function-signature>
+	</function>
+	<function>
+		<name>getType</name>
+		<function-class>org.eclipse.winery.common.Util</function-class>
+		<function-signature>org.eclipse.winery.model.tosca.TEntityType getType(org.eclipse.winery.common.interfaces.IWineryRepository, javax.xml.namespace.QName, java.lang.Class)</function-signature>
+	</function>
+	<function>
+		<name>makeCSSName</name>
+		<function-class>org.eclipse.winery.common.Util</function-class>
+		<function-signature>java.lang.String makeCSSName(java.lang.String, java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>XMLAsString</name>
+		<function-class>org.eclipse.winery.common.Util</function-class>
+		<function-signature>java.lang.String getXMLAsString(java.lang.Class, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<name>DOMElementAsString</name>
+		<function-class>org.eclipse.winery.common.Util</function-class>
+		<function-signature>java.lang.String getXMLAsString(org.w3c.dom.Element)</function-signature>
+	</function>
+	<function>
+		<name>qname2href</name>
+		<function-class>org.eclipse.winery.common.Util</function-class>
+		<function-signature>java.lang.String qname2href(java.lang.String, java.lang.Class, javax.xml.namespace.QName)</function-signature>
+	</function>
+
+	<!-- from Apache Commons Lang3 -->
+	<function>
+		<name>escapeHtml4</name>
+		<function-class>org.apache.commons.lang3.StringEscapeUtils</function-class>
+		<function-signature>java.lang.String escapeHtml4(java.lang.String)</function-signature>
+	</function>
+</taglib>
