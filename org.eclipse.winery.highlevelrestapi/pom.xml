@@ -109,14 +109,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<extensions>
-			<!-- Enabling the use of SFTP -->
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				 <artifactId>wagon-ssh-external</artifactId>
-				 <version>2.5</version>
-			</extension>
-		</extensions>
 		<plugins>
 			<!-- Generates an additional *-jar-with-dependencies.jar -->
  			<plugin>
