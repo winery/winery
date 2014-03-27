@@ -13,7 +13,7 @@
 --%>
 <%@tag description="HTML + JavaScript enabling the full jQuery file upload as shown at http://blueimp.github.com/jQuery-File-Upload/" pageEncoding="UTF-8"%>
 
-<%-- Original Source https://raw.github.com/blueimp/jQuery-File-Upload/9.5.4/jquery-ui.html, License: MIT --%>
+<%-- Original Source https://raw.github.com/blueimp/jQuery-File-Upload/9.5.4/jquery-ui.html, License: MIT; See also CQ 8006 --%>
 
 <%@attribute name="action" required="false" description="custom action for the upload"%>
 <%@attribute name="loadexistingfiles" type="java.lang.Boolean" required="true" description="load existing files from files/ url. false if that should not happen"%>
