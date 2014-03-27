@@ -53,14 +53,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
-		<extensions>
-			<!-- Enabling the use of SFTP -->
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				 <artifactId>wagon-ssh-external</artifactId>
-				 <version>2.5</version>
-			</extension>
-		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
