@@ -222,19 +222,19 @@
 		<dependency>
 			<groupId>org.eclipse.winery</groupId>
 			<artifactId>org.eclipse.winery.common</artifactId>
-			<version>0.1.31</version>
+			<version>0.1.37-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.winery</groupId>
 			<artifactId>org.eclipse.winery.generators.ia</artifactId>
-			<version>0.1.31</version>
+			<version>0.1.37-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.winery</groupId>
 			<artifactId>org.eclipse.winery.repository.client</artifactId>
-			<version>0.1.31</version>
+			<version>0.1.37-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
