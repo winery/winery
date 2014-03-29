@@ -75,7 +75,7 @@
 				"jquery.ui.widget": "../components/blueimp-file-upload/js/vendor/jquery.ui.widget",
 
 				// required for jsplumb
-				"jquery.ui": "../components/jquery-ui/ui/jquery-ui",
+				"jquery.ui": "../3rdparty/jquery-ui/js/jquery-ui",
 
 				"jsplumb": "../components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4",
 

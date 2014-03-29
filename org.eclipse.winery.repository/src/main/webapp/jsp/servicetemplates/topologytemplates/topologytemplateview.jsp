@@ -37,7 +37,7 @@
 
 	<!-- jquery and jquery UI have to be loaded using the old fashioned way to avoid incompatibilities with bootstrap v3 -->
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery/jquery.js'></script>
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery-ui/ui/js/jquery-ui.js'></script>
+	<script type='text/javascript' src='${pageContext.request.contextPath}/3rdparty/jquery-ui/js/jquery-ui.js'></script>
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap/dist/js/bootstrap.js'></script>
 	<script>
 		require.config({
@@ -47,7 +47,7 @@
 				"jquery": "../components/jquery/jquery",
 
 				// required for jsplumb
-				"jquery.ui": "../components/jquery-ui/js/jquery-ui",
+				"jquery.ui": "../3rdparty/jquery-ui/js/jquery-ui",
 
 				"jsplumb": "../components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4",
 

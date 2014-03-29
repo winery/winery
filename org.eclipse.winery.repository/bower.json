@@ -39,7 +39,6 @@
     "datatables": "1.9.4",
     "jquery": "2.0.3",
     "jquery-typing": "https://github.com/tnajdek/jquery-typing.git#0.3.2-2",
-    "jquery-ui": "1.10.2",
     "jsPlumb": "1.5.4",
     "KeyboardJS": "git://github.com/RobertWHurst/KeyboardJS.git#v0.4.2",
     "pnotify": "1.3.1",
