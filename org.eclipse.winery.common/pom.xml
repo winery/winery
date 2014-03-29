@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>org.eclipse.winery</groupId>
 			<artifactId>org.eclipse.winery.model.tosca</artifactId>
-			<version>0.1.20</version>
+			<version>0.1.21-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
