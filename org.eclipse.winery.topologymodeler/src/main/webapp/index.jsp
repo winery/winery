@@ -71,6 +71,7 @@
 <%@taglib prefix="c"     uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="wc"    uri="http://www.eclipse.org/winery/functions" %>
 
+<%@taglib prefix="tc"   tagdir="/WEB-INF/tags/common/topologycompletion"%>
 
 <%
 	String repositoryURL = request.getParameter("repositoryURL");
@@ -389,6 +390,10 @@ function updateDeploymentArtifact() {
 	</div>
 </div>
 
+<!-- BEGIN TOPOLOGY COMPLETION -->
+<tc:selectionDialogs repositoryURL='<%=repositoryURL%>' serviceTemplateName='<%=serviceTemplateName%>' topologyTemplateURL='<%=topologyTemplateURL%>'/>
+<!-- END TOPOLOGY COMPLETION -->
+
 <ct:artifactcreationdialog
 	URL="getURLForDeploymanetArtifactGeneration()"
 	repositoryURL="<%=repositoryURL%>"
@@ -435,6 +440,8 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 
 		<a id="exportCSARbtn" href="<%=topologyTemplateURL%>../?csar" target="_blank" class="btn btn-primary">CSAR</a>
 		<button type="button" class="btn btn-default" onClick="showAbout();">about</button>
+
+		<button class="btn" id="completeTopology" onclick="completeTopology();">Complete Topology</button>
 
 		<script>
 		$("#exportCSARbtn").tooltip({

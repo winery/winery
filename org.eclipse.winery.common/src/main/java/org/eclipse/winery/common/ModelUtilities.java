@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -30,6 +31,7 @@ import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -40,8 +42,11 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceElement;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate.TargetElement;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.slf4j.LoggerFactory;
@@ -550,5 +555,116 @@ public class ModelUtilities {
 			}
 		}
 		return resolved;
+	}
+
+	/**
+	 * Sets the x coordinate of a {@link TNodeTemplate}.
+	 *
+	 * @param nodeTemplate
+	 * 			 the nodeTemplate to be altered
+	 * @param coordinate
+	 * 			 the value of the coordinate to be set
+	 * @return
+	 * 			 the altered {@link TNodeTemplate}
+	 */
+	public static TNodeTemplate setLeft(TNodeTemplate nodeTemplate, String coordinate) {
+
+		Map<QName, String> otherNodeTemplateAttributes = nodeTemplate.getOtherAttributes();
+		otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"), coordinate);
+
+		return nodeTemplate;
+	}
+
+	/**
+	 * Sets the y coordinate of a {@link TNodeTemplate}.
+	 *
+	 * @param nodeTemplate
+	 * 			 the nodeTemplate to be altered
+	 * @param coordinate
+	 * 			 the value of the coordinate to be set
+	 * @return
+	 * 			 the altered {@link TNodeTemplate}
+	 */
+	public static TNodeTemplate setTop(TNodeTemplate nodeTemplate, String coordinate) {
+
+		Map<QName, String> otherNodeTemplateAttributes = nodeTemplate.getOtherAttributes();
+		otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"), coordinate);
+
+		return nodeTemplate;
+
+	}
+
+	/**
+	 * This method instantiates a {@link TNodeTemplate} for a given {@link TNodeType}.
+	 *
+	 * @param nodeType
+	 *            the {@link TNodeType} used for the {@link TNodeTemplate} instantiation.
+	 *
+	 * @return the instantiated {@link TNodeTemplate}
+	 */
+	public static TNodeTemplate instantiateNodeTemplate(TNodeType nodeType) {
+
+		TNodeTemplate nodeTemplate = new TNodeTemplate();
+
+		nodeTemplate.setId(UUID.randomUUID().toString());
+		nodeTemplate.setName(nodeType.getName());
+		nodeTemplate.setType(new QName(nodeType.getTargetNamespace(), nodeType.getName()));
+
+		// add capabilities to the NodeTemplate
+		if (nodeType.getCapabilityDefinitions() != null) {
+			for (TCapabilityDefinition cd : nodeType.getCapabilityDefinitions().getCapabilityDefinition()) {
+				TCapability capa = new TCapability();
+				capa.setId(UUID.randomUUID().toString());
+				capa.setName(cd.getCapabilityType().getLocalPart());
+				capa.setType(new QName(cd.getCapabilityType().getNamespaceURI(), cd.getCapabilityType().getLocalPart()));
+				nodeTemplate.setCapabilities(new Capabilities());
+				nodeTemplate.getCapabilities().getCapability().add(capa);
+			}
+		}
+
+		// add requirements
+		if (nodeType.getRequirementDefinitions() != null && nodeType.getRequirementDefinitions().getRequirementDefinition() != null) {
+			Requirements requirementsNode = new Requirements();
+			nodeTemplate.setRequirements(requirementsNode);
+			for (TRequirementDefinition definition : nodeType.getRequirementDefinitions().getRequirementDefinition()) {
+				TRequirement newRequirement = new TRequirement();
+				newRequirement.setName(definition.getName());
+				newRequirement.setId(definition.getName());
+				newRequirement.setType(definition.getRequirementType());
+				nodeTemplate.getRequirements().getRequirement().add(newRequirement);
+			}
+		}
+
+		return nodeTemplate;
+	}
+
+	/**
+	 * This method instantiates a {@link TRelationshipTemplate} for a given {@link TRelationshipType}.
+	 *
+	 * @param nodeType
+	 *            the {@link TRelationshipType} used for the {@link TRelationshipTemplate} instantiation.
+	 * @param sourceNodeTemplate
+	 *            the source {@link TNodeTemplate} of the connection
+	 * @param targetNodeTemplate
+	 *            the target {@link TNodeTemplate} of the connection
+	 *
+	 * @return the instantiated {@link TRelationshipTemplate}
+	 */
+	public static TRelationshipTemplate instantiateRelationshipTemplate(TRelationshipType relationshipType, TNodeTemplate sourceNodeTemplate, TNodeTemplate targetNodeTemplate) {
+
+		TRelationshipTemplate relationshipTemplate = new TRelationshipTemplate();
+		relationshipTemplate.setId(UUID.randomUUID().toString());
+		relationshipTemplate.setName(relationshipType.getName());
+		relationshipTemplate.setType(new QName(relationshipType.getTargetNamespace(), relationshipType.getName()));
+
+		// connect the NodeTemplates
+		SourceElement source = new SourceElement();
+		source.setRef(sourceNodeTemplate);
+		relationshipTemplate.setSourceElement(source);
+		TargetElement target = new TargetElement();
+		target.setRef(targetNodeTemplate);
+		relationshipTemplate.setTargetElement(target);
+
+		return relationshipTemplate;
 	}
 }

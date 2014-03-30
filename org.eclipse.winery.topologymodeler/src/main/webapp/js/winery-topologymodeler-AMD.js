@@ -28,6 +28,7 @@ define(
 			setTopologyTemplateURL: function(url) {
 				topologyTemplateURL = url;
 			},
+			getTopologyTemplateAsXML: getTopologyTemplateAsXML,
 
 			TOSCA_NAMESPACE: TOSCA_NAMESPACE,
 			TOSCA_WINERY_EXTENSIONS_NAMESPACE: TOSCA_WINERY_EXTENSIONS_NAMESPACE
@@ -58,9 +59,41 @@ define(
 		 */
 		function save() {
 			$("#saveBtn").button('loading');
+
+			$.ajax({
+				url: topologyTemplateURL,
+				type: "PUT",
+				contentType: 'text/xml',
+				data: getTopologyTemplateAsXML(false),
+				success: function(data, textStatus, jqXHR) {
+					$("#saveBtn").button('reset');
+					vShowSuccess("successfully saved.");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#saveBtn").button('reset');
+					vShowAJAXError("Could not save", jqXHR, errorThrown);
+				}
+			});
+		}
+		
+		/**
+		 * Creates an XML String of the modelled topology template.
+		 */
+		function getTopologyTemplateAsXML(needsDefinitionsTag) {
+
 			var xmlw = new XMLWriter("utf-8");
 			xmlw.writeStartDocument();
-			xmlw.writeStartElement("TopologyTemplate");
+
+			if (needsDefinitionsTag) {
+				xmlw.writeStartElement("Definitions");
+				xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
+				xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
+                
+				xmlw.writeStartElement("ServiceTemplate");
+				xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
+				xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
+			}
+						xmlw.writeStartElement("TopologyTemplate");
 			xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
 			xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
 			$("div.NodeTemplateShape").not(".hidden").each (function() {
@@ -176,21 +209,15 @@ define(
 
 				xmlw.writeEndElement();
 			});
+			
+			if (needsDefinitionsTag) {
+				xmlw.writeEndElement();
+				xmlw.writeEndElement();
+			}
+			
 			xmlw.writeEndDocument();
-			$.ajax({
-				url: topologyTemplateURL,
-				type: "PUT",
-				contentType: 'text/xml',
-				data: xmlw.flush(),
-				success: function(data, textStatus, jqXHR) {
-					$("#saveBtn").button('reset');
-					vShowSuccess("successfully saved.");
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					$("#saveBtn").button('reset');
-					vShowAJAXError("Could not save", jqXHR, errorThrown);
-				}
-			});
+
+			return xmlw.flush();
 		}
 
 		function writeQNameAttribute(w, nsPrefix, qnameStr) {
