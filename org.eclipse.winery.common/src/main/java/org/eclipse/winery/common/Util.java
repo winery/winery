@@ -181,6 +181,16 @@ public class Util {
 	}
 	
 	/**
+	 * Just calls @link{qname2href}
+	 * 
+	 * Introduced because of JSP error
+	 * "The method qname2href(String, Class<? extends TExtensibleElements>, QName) in the type Util is not applicable for the arguments (String, Class<TNodeType>, QName, String)"
+	 */
+	public static String qname2hrefWithName(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
+		return Util.qname2href(repositoryUrl, element, qname, name);
+	}
+	
+	/**
 	 * 
 	 * @param repositoryUrl the URL to the repository
 	 * @param element the element directly nested below a definitions element in

@@ -133,7 +133,7 @@
 			</div>
 			<div class="id nodetemplate"><%=visualElementId%></div>
 			<div class="name nodetemplate"><%=name%></div>
-			<div class="type nodetemplate"><%=Util.qname2href(repositoryURL, TNodeType.class, nodeTypeQName, nodeType.getName())%></div>
+			<div class="type nodetemplate"><%=Util.qname2hrefWithName(repositoryURL, TNodeType.class, nodeTypeQName, nodeType.getName())%></div>
 			<span class="typeQName hidden"><%=nodeTypeQName%></span>
 			<span class="typeNamespace hidden"><%=nodeTypeQName.getNamespaceURI()%></span>
 		</div>
