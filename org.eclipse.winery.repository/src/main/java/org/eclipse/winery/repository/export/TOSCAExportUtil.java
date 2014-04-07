@@ -286,6 +286,7 @@ public class TOSCAExportUtil {
 					// Determine location
 					String loc = BackendUtils.getImportLocationForWinerysPropertiesDefinitionXSD((EntityTypeId) tcId, uri, wrapperElementLocalName);
 					if (uri == null) {
+						TOSCAExportUtil.logger.trace("CSAR Export mode. Putting XSD into CSAR");
 						// CSAR Export mode
 						// XSD has to be put into the CSAR
 						Document document = ModelUtilities.getWinerysPropertiesDefinitionXSDAsDocument(wpd);
@@ -294,6 +295,7 @@ public class TOSCAExportUtil {
 						String locInCSAR = Util.URLdecode(loc);
 						// furthermore, the path has to start from the root of the CSAR; currently, it starts from Definitions/
 						locInCSAR = locInCSAR.substring(3);
+						TOSCAExportUtil.logger.trace("Location in CSAR: {}", locInCSAR);
 						this.referencesToPathInCSARMap.put(new DummyRepositoryFileReferenceForGeneratedXSD(document), locInCSAR);
 					}
 					imp.setLocation(loc);

@@ -26,7 +26,9 @@ public class DummyRepositoryFileReferenceForGeneratedXSD extends RepositoryFileR
 	 * @param document the W3C DOM Document holding the generated XSD
 	 */
 	public DummyRepositoryFileReferenceForGeneratedXSD(Document document) {
-		super(new DummyParentForGeneratedXSDRef(), "xsd");
+		// we have to create a unique filename in the case two different XSDs are exported
+		// document.hashCode should be unique enough for us
+		super(new DummyParentForGeneratedXSDRef(), Integer.toString(document.hashCode()));
 		this.document = document;
 	}
 	

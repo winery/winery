@@ -100,6 +100,8 @@ public class CSARExporter {
 	 * @throws JAXBException
 	 */
 	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, XMLStreamException, JAXBException {
+		CSARExporter.logger.trace("Starting CSAR export with {}", entryId.toString());
+		
 		Map<RepositoryFileReference, String> refMap = new HashMap<RepositoryFileReference, String>();
 		Collection<String> definitionNames = new ArrayList<>();
 		
@@ -156,10 +158,11 @@ public class CSARExporter {
 		// write all referenced files
 		for (RepositoryFileReference ref : refMap.keySet()) {
 			String archivePath = refMap.get(ref);
+			CSARExporter.logger.trace("Creating {}", archivePath);
 			ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
 			zos.putArchiveEntry(archiveEntry);
 			if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
-				// special treatment for generated XSDs
+				CSARExporter.logger.trace("Special treatment for generated XSDs");
 				Document document = ((DummyRepositoryFileReferenceForGeneratedXSD) ref).getDocument();
 				DOMSource source = new DOMSource(document);
 				StreamResult result = new StreamResult(zos);
