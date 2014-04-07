@@ -262,7 +262,7 @@
   			<artifactId>halbuilder-standard</artifactId>
   			<version>3.0.1</version>
 		</dependency>
-		<dependency>		
+		<dependency>
 			<!-- Required for com.sun.xml.bind.namespacePrefixMapper -->
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
@@ -297,6 +297,8 @@
 				<filtering>true</filtering>
 				<includes>
 					<include>winery.properties</include>
+					<include>logback.xml</include>
+					<include>logback-test.xml</include>
 				</includes>
 			</resource>
 			<resource>
