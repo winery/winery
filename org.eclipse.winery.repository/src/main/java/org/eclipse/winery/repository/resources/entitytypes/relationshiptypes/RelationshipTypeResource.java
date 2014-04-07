@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.relationshiptypes;
 
@@ -23,6 +24,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipType.SourceInterfaces;
@@ -30,8 +33,6 @@ import org.eclipse.winery.model.tosca.TRelationshipType.TargetInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.entitytypes.InstanceStatesResource;
@@ -41,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
+import com.theoryinpractise.halbuilder.api.Representation;
 
 public class RelationshipTypeResource extends TopologyGraphElementEntityTypeResource {
 	
@@ -162,4 +164,21 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		return new TRelationshipType();
 	}
 	
+	@Override
+	protected Representation fillHALRepresentation(Representation res) {
+		res = super.fillHALRepresentation(res);
+		//@formatter:off
+
+		res = res.withLink("implementations/", "implementations/")
+				.withLink("visualappearance/", "visualappearance/")
+				.withLink("instancestates/", "instancestates/")
+				.withLink("sourceinterfaces/", "sourceinterfaces/")
+				.withLink("targetinterfaces/", "targetinterfaces/")
+				.withLink("validendings/", "validendings/")
+				.withLink("validsource", "validsource")
+				.withLink("validtarget", "validtarget");
+
+		//@formatter:on
+		return res;
+	}
 }

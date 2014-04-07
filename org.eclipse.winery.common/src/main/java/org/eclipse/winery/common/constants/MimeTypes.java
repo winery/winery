@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.common.constants;
 
@@ -22,5 +23,7 @@ public class MimeTypes {
 	public static final String MIMETYPE_XSD = "text/xml";
 	
 	public static final String MIMETYPE_ZIP = "application/zip";
+	
+	public static final String MIMETYPE_HAL = "application/hal+json";
 	
 }

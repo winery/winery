@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates;
 
@@ -56,6 +57,8 @@ import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetyp
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypes.artifacttypes.ArtifactTypeResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
+import com.theoryinpractise.halbuilder.api.Representation;
 
 /**
  * Models an Artifact Template with its artifact references
@@ -303,5 +306,14 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		return Response.ok().entity(res).build();
 	}
 	*/
-	
+	@Override
+	protected Representation fillHALRepresentation(Representation res) {
+		res = super.fillHALRepresentation(res);
+		//@formatter:off
+
+		res = res.withLink("files/", "files/");
+
+		//@formatter:on
+		return res;
+	}
 }

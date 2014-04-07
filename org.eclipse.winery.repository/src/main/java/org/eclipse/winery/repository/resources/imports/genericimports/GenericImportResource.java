@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.imports.genericimports;
 
@@ -27,6 +28,8 @@ import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
+
+import com.theoryinpractise.halbuilder.api.Representation;
 
 public class GenericImportResource extends AbstractComponentInstanceResource {
 	
@@ -130,4 +133,14 @@ public class GenericImportResource extends AbstractComponentInstanceResource {
 		}
 	}
 	
+	@Override
+	protected Representation fillHALRepresentation(Representation res) {
+		//@formatter:off
+
+		res = res.withLink("{filename}", "{filename}");
+
+		//@formatter:on
+		
+		return res;
+	}
 }

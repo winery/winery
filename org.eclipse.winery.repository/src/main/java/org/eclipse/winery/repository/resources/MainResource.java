@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
@@ -20,10 +21,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
+import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.importing.CSARImporter;
 import org.eclipse.winery.repository.resources.admin.AdminTopResource;
@@ -45,6 +50,9 @@ import org.restdoc.annotations.RestDocReturnCode;
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+import com.theoryinpractise.halbuilder.api.Representation;
+import com.theoryinpractise.halbuilder.api.RepresentationFactory;
+import com.theoryinpractise.halbuilder.json.JsonRepresentationFactory;
 
 /**
  * All paths listed here have to be listed in Jersey's filter configuration
@@ -121,6 +129,7 @@ public class MainResource {
 	
 	@Path("servicetemplates/")
 	public ServiceTemplatesResource servicetemplates() {
+		
 		return new ServiceTemplatesResource();
 	}
 	
@@ -153,4 +162,30 @@ public class MainResource {
 		}
 	}
 	
+	@Produces(MimeTypes.MIMETYPE_HAL)
+	@GET
+	public Response getHalRepresentation(@Context UriInfo uriInfo) {
+		RepresentationFactory representationFactory = new JsonRepresentationFactory();
+		// @formatter:off
+		Representation halResource = representationFactory.newRepresentation(uriInfo.getAbsolutePath())
+				.withLink("artifacttemplates", "artifacttemplates/")
+				.withLink("artifacttypes", "artifacttypes/")
+				.withLink("admin", "admin/")
+				.withLink("capabilitytypes", "capabilitytypes/")
+				.withLink("imports", "imports/")
+				.withLink("nodetypes", "nodetypes/")
+				.withLink("nodetypeimplementations", "nodetypeimplementations/")
+				.withLink("other", "other/")
+				.withLink("policytemplates", "policytemplates/")
+				.withLink("policytypes", "policytypes/")
+				.withLink("relationshiptypes", "relationshiptypes/")
+				.withLink("requirementtypes", "requirementtypes/")
+				.withLink("relationshiptypeimplementations", "relationshiptypeimplementations/")
+				.withLink("servicetemplates", "servicetemplates/");
+		// @formatter:on
+		String json = halResource.toString(RepresentationFactory.HAL_JSON);
+		
+		Response res = Response.ok(json).header("Access-Control-Allow-Origin", Prefs.INSTANCE.getURLForHALAccessControlAllowOrigin()).build();
+		return res;
+	}
 }
