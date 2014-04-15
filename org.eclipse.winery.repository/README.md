@@ -1,6 +1,6 @@
 # Winery Repository
 
-Setup, usage, and implementation hints are given in the [global README.md](../README.md)
+Setup, usage, and implementation hints are given in the [Eclipse Wiki]
 
 ## REST API
 Winery offers a REST API to communicate with the backend.
@@ -56,6 +56,7 @@ Contributors:
 
 
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
+ [Eclipse Wiki]: http://wiki.eclipse.org/winery
  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
  [RequireJS]: http://requirejs.org/
  [RestDoc]: http://www.restdoc.org
