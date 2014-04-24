@@ -25,6 +25,13 @@ Run `mvn clean package`.
 In case [bower] fails, try to investigate using `mvn package -X`.
 You can start bower manually in `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler` by issuing `bower install`.
 
+There are two WARs generated:
+
+* `org.eclipse.winery.repository/target/winery.war` and
+* `org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war`
+
+They can be deployed on a Tomcat runtime environment.
+
 ## Branches
 The `master` branch is always compiling and all tests should go through.
 It contains the most recent improvements.
@@ -35,14 +42,14 @@ There are no explicit branches for stable versions as winery is currently in dev
 ## Projects
 
 ### Model projects
-Each of these projects are versioned separatedly.
+Each of these projects are versioned separately.
 
 * org.eclipse.winery.model.csar.toscametafile: model for TOSCA meta files contained in a CSAR
 * org.eclipse.winery.model.selfservice: model for the self service portal
 * org.eclipse.winery.model.tosca: model for TOCSA
 
 ### Support projects
-* org.eclipse.winery.highlevelrestapi: support library to REST calls
+* org.eclipse.winery.highlevelrestapi: support library to REST calls.
 
 ### Winery itself
 Versioned together to ease development.
