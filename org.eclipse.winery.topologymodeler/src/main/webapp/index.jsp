@@ -152,6 +152,7 @@
 
 	<!-- select2 -->
 	<link type="text/css" href="components/select2/select2.css" media="all" rel="stylesheet" />
+	<link type="text/css" href="components/select2/select2-bootstrap.css" media="all" rel="stylesheet" />
 
 	<!-- x-editable -->
 	<link type="text/css" href="components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" media="all" rel="stylesheet" />

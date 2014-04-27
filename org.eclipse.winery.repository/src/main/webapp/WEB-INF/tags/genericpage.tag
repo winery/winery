@@ -46,6 +46,7 @@
 	<link type="text/css" href="${pageContext.request.contextPath}/components/pnotify/jquery.pnotify.default.css" media="all" rel="stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/pnotify/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/select2/select2.css" media="all" rel="stylesheet" />
+	<link type="text/css" href="${pageContext.request.contextPath}/components/select2/select2-bootstrap.css" media="all" rel="stylesheet" />
 
 	<link type="text/css" href="${pageContext.request.contextPath}/components/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.css" media="all" rel="stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" media="all" rel="stylesheet" />
