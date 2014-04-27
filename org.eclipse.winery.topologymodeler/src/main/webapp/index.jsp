@@ -183,7 +183,7 @@
 			"jquery.ui.widget": "../components/blueimp-file-upload/js/vendor/jquery.ui.widget",
 
 			// required for jsplumb
-			"jquery.ui": "../3rdparty/jquery-ui/js/jquery-ui",
+			"jquery.ui": "../components/jquery-ui/js/jquery-ui",
 
 			"jsplumb": "../components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4",
 
@@ -199,7 +199,7 @@
 
 <script type='text/javascript' src='components/jquery/jquery.js'></script>
 
-<script type='text/javascript' src='3rdparty/jquery-ui/js/jquery-ui.js'></script>
+<script type='text/javascript' src='components/jquery-ui/js/jquery-ui.js'></script>
 
 <script type='text/javascript' src='components/bootstrap/dist/js/bootstrap.js'></script>
 
