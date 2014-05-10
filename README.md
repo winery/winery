@@ -20,6 +20,13 @@ Bower has to be installed manually as described in the next section.
 1. Run `npm install -g bower`
 1. Ensure that `git` is in your path: Some javascript libraries are fetched via git.
 
+
+## Make models available
+
+The models are versioned aside from the main project.
+Go into each model directory (`org.eclipse.winery.model.csar.toscametafile`, `org.eclipse.winery.model.selfservice`, `org.eclipse.winery.model.tosca`) and do a `mvn install`.
+
+
 ## Making the wars
 Run `mvn clean package`.
 In case [bower] fails, try to investigate using `mvn package -X`.

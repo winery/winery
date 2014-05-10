@@ -368,7 +368,7 @@
 										bowerArguments = '/c bower'
 									} else {
 										bowerCommand = 'bower'
-										bowerArguments = 'prune'
+										bowerArguments = '--allow-root'
 									}
 									project.setProperty('bowerCommand', bowerCommand)
 									project.setProperty('bowerArguments', bowerArguments)
