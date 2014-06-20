@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,14 +8,12 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.SortedSet;
@@ -27,21 +25,17 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
@@ -54,9 +48,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
-import com.theoryinpractise.halbuilder.api.Representation;
-import com.theoryinpractise.halbuilder.api.RepresentationFactory;
-import com.theoryinpractise.halbuilder.json.JsonRepresentationFactory;
 
 /**
  * Resource handling of a set of components. Each component has to provide a
@@ -284,31 +275,4 @@ public abstract class AbstractComponentsResource {
 		return sw.toString();
 	}
 	
-	@Produces(MimeTypes.MIMETYPE_HAL)
-	@GET
-	public Response getHalRepresentation(@Context UriInfo uriInfo) {
-		RepresentationFactory representationFactory = new JsonRepresentationFactory();
-		Representation halResource = this.fillHALRepresentation(representationFactory.newRepresentation(uriInfo.getAbsolutePath()));
-		String json = halResource.toString(RepresentationFactory.HAL_JSON);
-		
-		Response res = Response.ok(json).header("Access-Control-Allow-Origin", Prefs.INSTANCE.getURLForHALAccessControlAllowOrigin()).build();
-		return res;
-	}
-	
-	protected Representation fillHALRepresentation(Representation res) {
-		res = res.withLink("main", "../");
-		
-		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
-		SortedSet<? extends TOSCAComponentId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
-		
-		for (TOSCAComponentId instanceId : allTOSCAComponentIds) {
-			String type = Utils.getTypeForComponentContainer(this.getClass()).toLowerCase();
-			URI baseURI = URI.create(Prefs.INSTANCE.getResourcePath() + "/" + type + "s/");
-			String href = Utils.getRelativeURL(baseURI, instanceId);
-			String title = BackendUtils.getName(instanceId);
-			res = res.withLink("instance", href, null, title, null, null);
-		}
-		
-		return res;
-	}
 }

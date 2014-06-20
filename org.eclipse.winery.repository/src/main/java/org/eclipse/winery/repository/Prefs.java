@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,7 +9,6 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     C. Timurhan Sungur - jClouds preferences
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
@@ -252,10 +251,6 @@ public class Prefs implements ServletContextListener {
 	 */
 	public Properties getProperties() {
 		return this.properties;
-	}
-	
-	public String getURLForHALAccessControlAllowOrigin() {
-		return "http://2471.de";
 	}
 	
 	/**

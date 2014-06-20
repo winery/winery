@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,19 +8,18 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.nodetypes;
 
 import javax.ws.rs.Path;
 
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeType.CapabilityDefinitions;
 import org.eclipse.winery.model.tosca.TNodeType.Interfaces;
 import org.eclipse.winery.model.tosca.TNodeType.RequirementDefinitions;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.repository.resources.entitytypes.InstanceStatesResource;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.reqandcapdefs.CapabilityDefinitionsResource;
@@ -28,8 +27,6 @@ import org.eclipse.winery.repository.resources.entitytypes.nodetypes.reqandcapde
 import org.eclipse.winery.repository.resources.interfaces.InterfacesResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.theoryinpractise.halbuilder.api.Representation;
 
 public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 	
@@ -105,18 +102,4 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 		return new TNodeType();
 	}
 	
-	@Override
-	protected Representation fillHALRepresentation(Representation res) {
-		res = super.fillHALRepresentation(res);
-		//@formatter:off
-
-		res = res.withLink("implementations/", "implementations/")
-				.withLink("instancestates/", "instancestates/")
-				.withLink("interfaces/", "interfaces/")
-				.withLink("requirementdefinitions/", "requirementdefinitions/")
-				.withLink("capabilitydefinitions/", "capabilitydefinitions/")
-				.withLink("visualappearance/", "visualappearance/");
-		//@formatter:on
-		return res;
-	}
 }

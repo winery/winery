@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
- * Copyright (c) 2013-2014 University of Stuttgart.
+ * Copyright (c) 2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -11,7 +11,6 @@
  * Contributors:
  *    Tobias Unger - initial API and implementation and/or initial documentation
  *    Oliver Kopp - improvements
- *    Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -258,11 +257,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-  			<groupId>com.theoryinpractise</groupId>
-  			<artifactId>halbuilder-standard</artifactId>
-  			<version>3.0.1</version>
-		</dependency>
-		<dependency>
 			<!-- Required for com.sun.xml.bind.namespacePrefixMapper -->
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
@@ -280,7 +274,6 @@
 			<artifactId>rest-assured</artifactId>
 			<version>1.9.0</version>
 			<scope>test</scope>
-
 		</dependency>
 	</dependencies>
 	<build>

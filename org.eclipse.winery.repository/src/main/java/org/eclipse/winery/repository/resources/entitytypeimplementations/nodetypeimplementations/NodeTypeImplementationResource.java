@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations;
 
@@ -27,8 +26,6 @@ import org.eclipse.winery.repository.resources.INodeTypeImplementationResourceOr
 import org.eclipse.winery.repository.resources.artifacts.DeploymentArtifactsResource;
 import org.eclipse.winery.repository.resources.artifacts.ImplementationArtifactsResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.EntityTypeImplementationResource;
-
-import com.theoryinpractise.halbuilder.api.Representation;
 
 public class NodeTypeImplementationResource extends EntityTypeImplementationResource implements INodeTemplateResourceOrNodeTypeImplementationResource, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 	
@@ -104,17 +101,5 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 	public Response setType(String typeStr) {
 		QName type = QName.valueOf(typeStr);
 		return this.setType(type);
-	}
-	
-	@Override
-	protected Representation fillHALRepresentation(Representation res) {
-		//@formatter:off
-
-		res = res.withLink("implementationartifacts", "implementationartifacts")
-				.withLink("deploymentartifacts", "deploymentartifacts");
-
-		//@formatter:on
-		
-		return res;
 	}
 }

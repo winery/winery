@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
@@ -41,17 +40,16 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
@@ -69,9 +67,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import com.sun.jersey.api.view.Viewable;
-import com.theoryinpractise.halbuilder.api.Representation;
-import com.theoryinpractise.halbuilder.api.RepresentationFactory;
-import com.theoryinpractise.halbuilder.json.JsonRepresentationFactory;
 
 /**
  * Resource for a component (
@@ -509,31 +504,6 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@Path("tags/")
 	public final TagsResource getTags() {
 		return new TagsResource(this.id);
-	}
-	
-	@Produces(MimeTypes.MIMETYPE_HAL)
-	@GET
-	public Response getHalRepresentation(@Context UriInfo uriInfo) {
-		RepresentationFactory representationFactory = new JsonRepresentationFactory();
-		Representation halResource = this.fillHALRepresentation(representationFactory.newRepresentation(uriInfo.getAbsolutePath()));
-		String json = halResource.toString(RepresentationFactory.HAL_JSON);
-		
-		Response res = Response.ok(json).header("Access-Control-Allow-Origin", Prefs.INSTANCE.getURLForHALAccessControlAllowOrigin()).build();
-		return res;
-	}
-	
-	protected Representation fillHALRepresentation(Representation res) {
-		//@formatter:off
-
-		res = res.withLink("id", "id")
-				.withLink("tags", "tags")
-				.withLink("documentation", "documentation")
-				.withLink("xml", "xml")
-				.withLink("main", "../../../");
-
-		//@formatter:on
-		
-		return res;
 	}
 	
 }

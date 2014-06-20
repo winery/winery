@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.admin;
 
@@ -25,17 +24,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
@@ -44,9 +39,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.jersey.api.view.Viewable;
-import com.theoryinpractise.halbuilder.api.Representation;
-import com.theoryinpractise.halbuilder.api.RepresentationFactory;
-import com.theoryinpractise.halbuilder.json.JsonRepresentationFactory;
 
 /**
  * Manages prefixes for the namespaces
@@ -79,26 +71,6 @@ public class NamespacesResource extends AbstractAdminResource {
 			String prefix = this.configuration.getString(key);
 			res.add(prefix);
 		}
-		return res;
-	}
-	
-	/**
-	 * Returns HAL Representation.
-	 */
-	
-	@GET
-	@Produces(MimeTypes.MIMETYPE_HAL)
-	public Response getHalRepresentation(@Context UriInfo uriInfo) {
-		
-		RepresentationFactory representationFactory = new JsonRepresentationFactory();
-		Representation halResource = representationFactory.newRepresentation(uriInfo.getAbsolutePath()).withLink("main", "../../");
-		
-		for (Namespace s : NamespacesResource.getNamespaces()) {
-			halResource.withProperty(s.getDecoded(), NamespacesResource.getPrefix(s));
-		}
-		String json = halResource.toString(RepresentationFactory.HAL_JSON);
-		Response res = Response.ok(json).header("Access-Control-Allow-Origin", Prefs.INSTANCE.getURLForHALAccessControlAllowOrigin()).build();
-		
 		return res;
 	}
 	
@@ -278,5 +250,4 @@ public class NamespacesResource extends AbstractAdminResource {
 	public boolean getIsPrefixKnownForNamespace(String namespace) {
 		return this.configuration.containsKey(namespace);
 	}
-	
 }

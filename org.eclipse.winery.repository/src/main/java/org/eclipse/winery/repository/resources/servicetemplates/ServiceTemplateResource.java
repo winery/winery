@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates;
 
@@ -52,8 +51,6 @@ import org.eclipse.winery.repository.resources.servicetemplates.topologytemplate
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.theoryinpractise.halbuilder.api.Representation;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
 	
@@ -263,18 +260,4 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		}
 		return;
 	}
-	
-	@Override
-	protected Representation fillHALRepresentation(Representation res) {
-		res = super.fillHALRepresentation(res);
-		//@formatter:off
-		res = res.withLink("plans", "plans")
-				.withLink("selfserviceportal", "selfserviceportal")
-				.withLink("boundarydefinitions", "boundarydefinitions")
-				.withLink("topologytemplate", "topologytemplate")
-				.withLink("substitutableNodeType", "substitutableNodeType");
-		//@formatter:on
-		return res;
-	}
-	
 }

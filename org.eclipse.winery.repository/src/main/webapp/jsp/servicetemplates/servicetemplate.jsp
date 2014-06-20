@@ -41,4 +41,3 @@ subMenus.add(data);
 
 <t:componentinstance cssClass="serviceTemplate" selected="ServiceTemplate" subMenus="<%=subMenus%>">
 </t:componentinstance>
-
