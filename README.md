@@ -94,7 +94,7 @@ This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 
 ## Eclipse setup
 This howto is based on [Eclipse Standard 4.3].
-First of all, genreate a war to have all dependencies fetched by maven.
+First of all, generate a war to have all dependencies fetched by maven.
 
 ### Required plugins
 ** JST Server Adapters Extensions
