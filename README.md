@@ -112,6 +112,11 @@ First of all, generate a war to have all dependencies fetched by maven.
 1. Import all projects
 ** Use "Existing Maven Projects". `mvn eclips:m2eclipse` currently does not enable "maven" in eclipse.
 2. For each project: right click, –> Team –> Share Project –> Git –> Next –> check "Use or create repository in parent folder of project" –> Finish
+3. At `org.eclipse.winery.repository` and ` org.eclipse.winery.topologymodeler`:
+** Right click -> Properties -> JavaScript -> Include Path -> Source -> Expand folder -> Select "Excluded" -> "Edit..."
+** Exclusion Patterns: Add multiple -> Select "3rd party" -> "OK"
+** Exclusion Patterns: Add multiple -> Select "components" -> "OK"
+** "Finish" -> "OK"
 
 ### Setup Tomcat
 1. Open servers window: Window -> Show View -> Other -> Server -> Servers
