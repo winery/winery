@@ -140,15 +140,28 @@ function updateParameters(url, tableInfo, inOrOut) {
 	$.ajax({
 		"url": url,
 		dataType: "JSON",
-		success: function(data, textStatus, jqXHR) {
+		success: function(data) {
 			tableInfo.table.fnClearTable();
 			$.each(data, function(number, item) {
-				addRowToParameterstable(tableInfo, item.name, item.type, item.required);
+				var paramURL = url + item + "/";
+				$.ajax({
+					async: false,
+					url: paramURL,
+					error: function(jqXHR, textStatus, errorThrown) {
+						vShowAJAXError("Could not fetch operation information", jqXHR, errorThrown);
+					},
+					success: function(data) {
+						addRowToParameterstable(tableInfo, data.name, data.type, data.required);
+					}
+				});
 			});
 			$("#add" + inOrOut + "ParBtn").removeAttr("disabled");
 
 			// remove button should always be disalbed as it gets enabled only after clicking a row in the table
 			$("#remove" + inOrOut + "ParBtn").attr("disabled", "disabled");
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			vShowAJAXError("Could not fetch interface", jqXHR, errorThrown);
 		}
 	});
 }
