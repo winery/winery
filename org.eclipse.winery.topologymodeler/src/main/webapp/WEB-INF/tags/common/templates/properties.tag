@@ -14,8 +14,8 @@
 <%@tag description="Rendering for properties. A separate CSS has to be provided to style the content. Thus, this tag is reusable both in the topology modeler and in the management UI. Requires global javaScript function editPropertiesXML(visualElementId)" pageEncoding="UTF-8"%>
 <%@taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core"%>
 
-<%@attribute name="propertiesDefinition" required="true" type="org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition" description="The TOSCA-conforming properties definition"%>
-<%@attribute name="wpd" required="true" type="org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition" description="Winery's K/V properties definition"%>
+<%@attribute name="propertiesDefinition" required="true" type="org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition" description="The TOSCA-conforming properties definition. May be null."%>
+<%@attribute name="wpd" required="true" type="org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition" description="Winery's K/V properties definition. May be null"%>
 <%@attribute name="template" required="true" type="org.eclipse.winery.model.tosca.TEntityTemplate" description="The template to display properties. Has to be null in case of the palette mode of the topology modeler"%>
 <%@attribute name="pathToImages" required="true" description="The path (URI path) to the image/ url, where xml.png is available. Has to end with '/'"%>
 
