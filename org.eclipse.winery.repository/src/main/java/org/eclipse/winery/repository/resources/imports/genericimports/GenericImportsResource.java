@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.imports.genericimports;
 
+import javax.ws.rs.PathParam;
+
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
@@ -28,6 +30,11 @@ public class GenericImportsResource extends AbstractComponentsResource {
 	 */
 	public GenericImportsResource(String id) {
 		this.type = id;
+	}
+	
+	@Override
+	public GenericImportResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (GenericImportResource) this.getComponentInstaceResource(namespace, id, true);
 	}
 	
 	@Override

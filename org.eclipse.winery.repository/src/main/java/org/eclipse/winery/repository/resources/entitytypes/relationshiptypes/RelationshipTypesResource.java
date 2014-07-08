@@ -11,7 +11,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.relationshiptypes;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 public class RelationshipTypesResource extends AbstractComponentsResource {
+	
+	@Override
+	@Path("{namespace}/{id}/")
+	public RelationshipTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (RelationshipTypeResource) this.getComponentInstaceResource(namespace, id, true);
+	}
 }

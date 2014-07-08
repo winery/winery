@@ -11,8 +11,17 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 public class ServiceTemplatesResource extends AbstractComponentsResource {
+	
+	@Override
+	@Path("{namespace}/{id}/")
+	public ServiceTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (ServiceTemplateResource) this.getComponentInstaceResource(namespace, id, true);
+	}
 	
 }

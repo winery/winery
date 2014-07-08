@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferenceResource;
 
 /**
@@ -18,5 +21,11 @@ import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferen
  * as these templates are directly nested in a TDefinitionsElement
  */
 public class ArtifactTemplatesResource extends AbstractComponentsWithTypeReferenceResource {
+	
+	@Override
+	@Path("{namespace}/{id}/")
+	public ArtifactTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (ArtifactTemplateResource) this.getComponentInstaceResource(namespace, id, true);
+	}
 	
 }

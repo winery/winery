@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.requirementtypes;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 /**
@@ -18,5 +21,11 @@ import org.eclipse.winery.repository.resources.AbstractComponentsResource;
  * The actual implementation is done in the AbstractComponentsResource
  */
 public class RequirementTypesResource extends AbstractComponentsResource {
+	
+	@Override
+	@Path("{namespace}/{id}/")
+	public RequirementTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (RequirementTypeResource) this.getComponentInstaceResource(namespace, id, true);
+	}
 	
 }

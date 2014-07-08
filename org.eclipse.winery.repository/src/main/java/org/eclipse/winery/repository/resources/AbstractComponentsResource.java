@@ -22,8 +22,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -164,10 +162,7 @@ public abstract class AbstractComponentsResource {
 	 * @param id encoded id
 	 * @return an instance of the requested resource
 	 */
-	@Path("{namespace}/{id}/")
-	public AbstractComponentInstanceResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return this.getComponentInstaceResource(namespace, id, true);
-	}
+	public abstract AbstractComponentInstanceResource getComponentInstaceResource(String namespace, String id);
 	
 	/**
 	 * @param encoded specifies whether namespace and id are encoded

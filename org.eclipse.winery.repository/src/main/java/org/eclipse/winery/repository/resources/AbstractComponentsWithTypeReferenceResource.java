@@ -28,7 +28,7 @@ import org.restdoc.annotations.RestDocParam;
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate>
  * as these templates are directly nested in a TDefinitionsElement
  */
-public class AbstractComponentsWithTypeReferenceResource extends AbstractComponentsResource {
+public abstract class AbstractComponentsWithTypeReferenceResource extends AbstractComponentsResource {
 	
 	/**
 	 * Creates the resource and sets the specified type

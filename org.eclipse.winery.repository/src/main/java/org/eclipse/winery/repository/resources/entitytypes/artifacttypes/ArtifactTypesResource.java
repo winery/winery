@@ -14,6 +14,8 @@ package org.eclipse.winery.repository.resources.entitytypes.artifacttypes;
 import java.util.SortedSet;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -25,6 +27,12 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 public class ArtifactTypesResource extends AbstractComponentsResource {
+	
+	@Override
+	@Path("{namespace}/{id}/")
+	public ArtifactTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (ArtifactTypeResource) this.getComponentInstaceResource(namespace, id, true);
+	}
 	
 	// This cannot be used as the INSTANCE is per startup of the whole
 	// application

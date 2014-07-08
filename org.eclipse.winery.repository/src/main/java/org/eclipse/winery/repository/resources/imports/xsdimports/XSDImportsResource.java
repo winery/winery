@@ -43,6 +43,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  */
 public class XSDImportsResource extends AbstractComponentsResource {
 	
+	@Override
+	@Path("{namespace}/{id}/")
+	public XSDImportResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (XSDImportResource) this.getComponentInstaceResource(namespace, id, true);
+	}
+	
 	@Path("{namespace}/")
 	@GET
 	@RestDoc(methodDescription = "Returns all available local names of defined elements in this namespace")

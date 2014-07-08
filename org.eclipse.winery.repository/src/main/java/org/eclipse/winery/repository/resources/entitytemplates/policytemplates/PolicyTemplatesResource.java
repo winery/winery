@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.policytemplates;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferenceResource;
 
 /**
@@ -19,5 +22,11 @@ import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferen
  * AbstractComponentsWithTypeReferenceResource
  */
 public class PolicyTemplatesResource extends AbstractComponentsWithTypeReferenceResource {
+	
+	@Override
+	@Path("{namespace}/{id}/")
+	public PolicyTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (PolicyTemplateResource) this.getComponentInstaceResource(namespace, id, true);
+	}
 	
 }

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.policytypes;
 
+import javax.ws.rs.PathParam;
+
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 /**
@@ -18,5 +20,10 @@ import org.eclipse.winery.repository.resources.AbstractComponentsResource;
  * The actual implementation is done in the AbstractComponentsResource
  */
 public class PolicyTypesResource extends AbstractComponentsResource {
+	
+	@Override
+	public PolicyTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (PolicyTypeResource) this.getComponentInstaceResource(namespace, id, true);
+	}
 	
 }

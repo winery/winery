@@ -11,7 +11,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+
 import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferenceResource;
 
 public class NodeTypeImplementationsResource extends AbstractComponentsWithTypeReferenceResource {
+	
+	@Override
+	@Path("{namespace}/{id}/")
+	public NodeTypeImplementationResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return (NodeTypeImplementationResource) this.getComponentInstaceResource(namespace, id, true);
+	}
 }
