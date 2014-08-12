@@ -11,11 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.client;
 
-import javax.xml.namespace.QName;
-
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.interfaces.IWineryRepository;
-import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
 
 public interface IWineryRepositoryClient extends IWineryRepository {
 	
@@ -57,13 +53,4 @@ public interface IWineryRepositoryClient extends IWineryRepository {
 	 * @return true if the repository is reachable over network, false otherwise
 	 */
 	boolean primaryRepositoryAvailable();
-
-	/**
-	 * Creates a component of the type idClass.
-	 * 
-	 * @param qname
-	 * @param type
-	 * @throws QNameAlreadyExistsException
-	 */
-	void createComponent(QName qname, Class<? extends TOSCAComponentId> idClass) throws QNameAlreadyExistsException;
 }

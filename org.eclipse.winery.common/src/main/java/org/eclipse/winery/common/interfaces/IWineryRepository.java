@@ -17,11 +17,11 @@ import java.util.SortedSet;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 
 /**
  * This interface is used by the repository client to get access to the
@@ -128,6 +128,15 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
 	 *         the given file extension.
 	 */
 	QName getArtifactTypeQNameForExtension(String extension);
+	
+	/**
+	 * Creates a component of the type idClass.
+	 * 
+	 * @param qname
+	 * @param type
+	 * @throws QNameAlreadyExistsException
+	 */
+	void createComponent(QName qname, Class<? extends TOSCAComponentId> idClass) throws QNameAlreadyExistsException;
 	
 	/**
 	 * Creates the specified artifact template
