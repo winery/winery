@@ -56,7 +56,7 @@ public class NamespacesResource extends AbstractAdminResource {
 		super(new NamespacesId());
 		
 		// globally set prefixes
-		// if that behavior is not desired, the code has to be moved to "generatePrefix" which checks for existance, ...
+		// if that behavior is not desired, the code has to be moved to "generatePrefix" which checks for existence, ...
 		this.configuration.setProperty("http://www.w3.org/2001/XMLSchema", "xsd");
 		this.configuration.setProperty("http://www.w3.org/XML/1998/namespace", "xmlns");
 		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE, "tosca");
