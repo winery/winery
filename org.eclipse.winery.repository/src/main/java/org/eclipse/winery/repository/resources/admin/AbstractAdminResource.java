@@ -21,6 +21,8 @@ import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
 
 /**
  * Instance of one admin resource
+ * 
+ * Offers a configuration object to store data
  */
 public abstract class AbstractAdminResource {
 	
