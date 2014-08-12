@@ -16,7 +16,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 
-public final class ServiceTemplateId extends TOSCAComponentId {
+public final class ServiceTemplateId extends EntityTemplateId {
 	
 	public ServiceTemplateId(Namespace namespace, XMLId xmlId) {
 		super(namespace, xmlId);

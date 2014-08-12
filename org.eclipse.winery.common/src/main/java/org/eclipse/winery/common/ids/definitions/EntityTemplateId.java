@@ -18,10 +18,10 @@ import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 
 /**
- * ArtifactTemplates and PolicyTemplates are <em>directly nested</em> in a
- * Definitions element. RelationshipTemplates and NodeTemplates are not. When
- * approaching an EntityTemplateId, it is a thing directly nested in a
- * Definitions element.
+ * ArtifactTemplates, PolicyTemplates, and ServiceTemplates are
+ * <em>directly nested</em> in a Definitions element. RelationshipTemplates and
+ * NodeTemplates are not. When approaching an EntityTemplateId, it is a thing
+ * directly nested in a Definitions element.
  * 
  * The others have {@link TOSCAElementId} as parent
  */
