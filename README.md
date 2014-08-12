@@ -178,6 +178,6 @@ See http://www.opentosca.org/#publications for a list of publications in the Ope
  [Federal Ministry of Economics and Technology]: http://www.bmwi.de/EN/root.html
  [CloudCycle project]: http://www.cloudcycle.org/en/
  [m2eclipse]: http://eclipse.org/m2e/
- {m2e-wtp]: http://eclipse.org/m2e-wtp/
+ [m2e-wtp]: http://eclipse.org/m2e-wtp/
  [TerrificJS]: http://terrifically.org/
  [Scalable JavaScript Application Architecture]: http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012
