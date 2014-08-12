@@ -41,13 +41,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  * 
  * FIXME: This class should be generalized to handle ImportId
  */
-public class XSDImportsResource extends AbstractComponentsResource {
-	
-	@Override
-	@Path("{namespace}/{id}/")
-	public XSDImportResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return (XSDImportResource) this.getComponentInstaceResource(namespace, id, true);
-	}
+public class XSDImportsResource extends AbstractComponentsResource<XSDImportResource> {
 	
 	@Path("{namespace}/")
 	@GET

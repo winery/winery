@@ -11,17 +11,13 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.imports.genericimports;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 /**
  * Manages a certain kind of imports without special treatments
  */
-public class GenericImportsResource extends AbstractComponentsResource {
+public class GenericImportsResource extends AbstractComponentsResource<GenericImportResource> {
 	
 	private String type;
 	
@@ -34,13 +30,7 @@ public class GenericImportsResource extends AbstractComponentsResource {
 	}
 	
 	@Override
-	@Path("{namespace}/{id}/")
-	public GenericImportResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return (GenericImportResource) this.getComponentInstaceResource(namespace, id, true);
-	}
-	
-	@Override
-	public AbstractComponentInstanceResource getComponentInstaceResource(String namespace, String id, boolean encoded) {
+	public GenericImportResource getComponentInstaceResource(String namespace, String id, boolean encoded) {
 		GenericImportId iId = new GenericImportId(namespace, id, encoded, this.type);
 		return new GenericImportResource(iId);
 	}

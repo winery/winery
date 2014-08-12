@@ -22,6 +22,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -55,7 +57,7 @@ import com.sun.jersey.api.view.Viewable;
  * TODO: Add generics here!
  * {@link Utils.getComponentIdClassForComponentContainer} is then obsolete
  */
-public abstract class AbstractComponentsResource {
+public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
 	
 	protected static final Logger logger = LoggerFactory.getLogger(AbstractComponentsResource.class);
 	
@@ -162,20 +164,24 @@ public abstract class AbstractComponentsResource {
 	 * @param id encoded id
 	 * @return an instance of the requested resource
 	 */
-	public abstract AbstractComponentInstanceResource getComponentInstaceResource(String namespace, String id);
+	@Path("{namespace}/{id}/")
+	public R getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return this.getComponentInstaceResource(namespace, id, true);
+	}
 	
 	/**
 	 * @param encoded specifies whether namespace and id are encoded
 	 * @return an instance of the requested resource
 	 */
-	public AbstractComponentInstanceResource getComponentInstaceResource(String namespace, String id, boolean encoded) {
+	@SuppressWarnings("unchecked")
+	public R getComponentInstaceResource(String namespace, String id, boolean encoded) {
 		TOSCAComponentId tcId;
 		try {
 			tcId = this.getTOSCAcomponentId(namespace, id, encoded);
 		} catch (Exception e) {
 			throw new IllegalStateException("Could not create id instance", e);
 		}
-		return AbstractComponentsResource.getComponentInstaceResource(tcId);
+		return (R) AbstractComponentsResource.getComponentInstaceResource(tcId);
 	}
 	
 	/**

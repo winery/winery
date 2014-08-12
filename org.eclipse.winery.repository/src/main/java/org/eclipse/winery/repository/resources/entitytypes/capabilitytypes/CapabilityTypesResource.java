@@ -11,21 +11,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.capabilitytypes;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 /**
  * Manages all capability types in all available namespaces <br />
  * The actual implementation is done in the AbstractComponentsResource
  */
-public class CapabilityTypesResource extends AbstractComponentsResource {
-	
-	@Override
-	@Path("{namespace}/{id}/")
-	public CapabilityTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return (CapabilityTypeResource) this.getComponentInstaceResource(namespace, id, true);
-	}
+public class CapabilityTypesResource extends AbstractComponentsResource<CapabilityTypeResource> {
 	
 }

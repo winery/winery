@@ -11,21 +11,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.nodetypes;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 /**
  * Manages all nodetypes in all available namespaces <br />
  * The actual implementation is done in the AbstractComponentsResource
  */
-public class NodeTypesResource extends AbstractComponentsResource {
-	
-	@Override
-	@Path("{namespace}/{id}/")
-	public NodeTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return (NodeTypeResource) this.getComponentInstaceResource(namespace, id, true);
-	}
+public class NodeTypesResource extends AbstractComponentsResource<NodeTypeResource> {
 	
 }
