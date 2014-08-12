@@ -15,6 +15,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 
 /**
  * ArtifactTemplates and PolicyTemplates are <em>directly nested</em> in a
@@ -22,7 +23,7 @@ import org.eclipse.winery.common.ids.XMLId;
  * approaching an EntityTemplateId, it is a thing directly nested in a
  * Definitions element.
  * 
- * The others have TOSCAelementID as parent
+ * The others have {@link TOSCAElementId} as parent
  */
 public abstract class EntityTemplateId extends TOSCAComponentId {
 	
