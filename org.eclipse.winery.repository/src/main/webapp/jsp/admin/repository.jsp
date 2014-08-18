@@ -34,7 +34,7 @@ if (isGitBasedRepo) {
 }
 
 // We only support the commit and reset buttons if we can authenticate at the repository
-// This is a hack to offer different versionf of winery at dev.winery.opentosca.org and winery.opentosca.org
+// This is a hack to offer different versions of winery at dev.winery.opentosca.org and winery.opentosca.org
 isGitBasedRepo = isGitBasedRepo && (repo.authenticationInfoAvailable());
 
 if (isGitBasedRepo) {
