@@ -64,6 +64,8 @@ public class Prefs implements ServletContextListener {
 	
 	static final String PROP_INITIALIZE_XML_VALIDATION_DURING_STARTUP = "initializeXMLValidationDuringStartup";
 	
+	static final String PROP_BPMN4TOSCA_MODELER_URI = "bpmn4toscamodelerBaseURI";
+	
 	
 	/**
 	 * This constructor is called at handling at servlets, too. Therefore, we
@@ -288,6 +290,14 @@ public class Prefs implements ServletContextListener {
 			this.isRestDocDocumentationAvailable = Utils.isResourceAvailable(path);
 		}
 		return this.isRestDocDocumentationAvailable;
+	}
+	
+	/**
+	 * @return the base URL of the BPMN4TOSCA plan modeler. NULL if not
+	 *         configured. May also be empty.
+	 */
+	public String getBPMN4TOSCABaseURL() {
+		return this.properties.getProperty(Prefs.PROP_BPMN4TOSCA_MODELER_URI);
 	}
 	
 }

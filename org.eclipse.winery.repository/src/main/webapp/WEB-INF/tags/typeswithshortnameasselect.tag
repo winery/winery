@@ -16,7 +16,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%@attribute name="label" required="true"%>
-<%@attribute name="selectname" required="true"%>
+<%@attribute name="selectname" required="true" description="Used as Name and as Id"%>
 <%@attribute name="typesWithShortNames" required="true" type="java.util.Collection"%>
 <%@attribute name="type" required="true" description="The type of all types. E.g., planlanguage"%>
 

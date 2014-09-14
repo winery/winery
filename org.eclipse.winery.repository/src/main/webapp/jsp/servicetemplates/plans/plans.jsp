@@ -103,22 +103,22 @@ function editIOParameters() {
 			$.each(data.files, function (index, file) {
 				$("#planFileText").val(file.name);
 			});
-			$("#addPlanBtn").off("click");
-			$("#addPlanBtn").on("click", function() {
+			$("#addPlanBtnFUP").off("click");
+			$("#addPlanBtnFUP").on("click", function() {
 				createPlan(data);
 			});
 		}).bind("fileuploadstart", function(e) {
-			$("#addPlanBtn").button("loading");
+			$("#addPlanBtnFUP").button("loading");
 		}).bind('fileuploadfail', function(e, data) {
 			vShowAJAXError("Could not add plan", data.jqXHR, data.errorThrown);
-			$("#addPlanBtn").button("reset");
+			$("#addPlanBtnFUP").button("reset");
 		}).bind('fileuploaddone', function(e, data) {
 			vShowSuccess("Plan created successfully");
 
 			// reset the add button
-			$("#addPlanBtn").button("reset");
+			$("#addPlanBtnFUP").button("reset");
 			// do not allow submission of the old files on a click if the dialog is opened another time
-			$("#addPlanBtn").off("click");
+			$("#addPlanBtnFUP").off("click");
 
 			embeddedPlansTableInfo.table.fnAddData(data.result.tableData);
 
@@ -138,7 +138,7 @@ function editIOParameters() {
 			<form id="addPlanForm" enctype="multipart/form-data" action="plans/" method="post">
 				<div class="form-group">
 					<label class="control-label">Name</label>
-					<input name="planName" type="text" class="form-control" required="required">
+					<input name="planName" id="planName" type="text" class="form-control" required="required">
 				</div>
 
 				<t:typeswithshortnameasselect label="Type" type="plantype" selectname="planType" typesWithShortNames="${it.planTypes}">
@@ -147,7 +147,7 @@ function editIOParameters() {
 				<t:typeswithshortnameasselect label="Language" type="planlanguage" selectname="planLanguage" typesWithShortNames="${it.planLanguages}">
 				</t:typeswithshortnameasselect>
 
-				<div class="form-group">
+				<div class="form-group" id="fileDiv">
 					<label class="control-label" for="planFileDiv">Archive</label>
 					<div style="display: block; width: 100%" id="planFileDiv">
 						<input id="planFileInput" name="file" type="file" style="display:none">
@@ -159,11 +159,52 @@ function editIOParameters() {
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			<button type="button" class="btn btn-primary" data-loading-text="Uploading..." id="addPlanBtn">Add</button>
+			<button type="button" class="btn btn-primary" data-loading-text="Uploading..." id="addPlanBtnFUP">Add</button>
+			<button type="button" class="btn btn-primary" style="display:none;" id="addPlanBtnBPMN4TOSCA">Add</button>
 		</div>
 	</div>
 	</div>
 </div>
+
+<script>
+$("#planLanguage").on("change", function(e) {
+	var lang = $("#planLanguage").val();
+	if (lang == "http://www.opentosca.org/bpmn4tosca") {
+		$("#fileDiv").hide();
+		$("#addPlanBtnFUP").hide();
+		$("#addPlanBtnBPMN4TOSCA").show();
+	} else {
+		$("#fileDiv").show();
+		$("#addPlanBtnFUP").show();
+		$("#addPlanBtnBPMN4TOSCA").hide();
+	}
+});
+
+$("#addPlanBtnBPMN4TOSCA").on("click", function() {
+	var data = new FormData();
+	data.append("planName", $("#planName").val());
+	data.append("planType", $("#planType").val());
+	data.append("planLanguage", $("#planLanguage").val());
+
+	$.ajax({
+		url: "plans/",
+		type: "POST",
+		async: false,
+		contentType: false, // jQuery automatically sets multipart/form-data; boundary=...
+		data: data,
+		processData: false,
+		error: function(jqXHR, textStatus, errorThrown) {
+			vShowAJAXError("Could not add BPMN4TOSCSA plan", jqXHR, errorThrown);
+		},
+		success: function(data, textStatus, jqXHR) {
+			//typesTableInfo.table.fnAddData([$('#shortname').val(), $('#type').val()]);
+			$('#addPlanDiag').modal('hide');
+			vShowSuccess("Successfully added plan. Please refresh the page.");
+		}
+	});
+
+});
+</script>
 
 <p:parametersJS></p:parametersJS>
 

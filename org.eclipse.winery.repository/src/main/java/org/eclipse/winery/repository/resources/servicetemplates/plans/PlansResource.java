@@ -32,6 +32,7 @@ import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
+import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
@@ -71,7 +72,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 	
 	@POST
 	@RestDoc(methodDescription = "<p>Linked plans are currently not supported. Existing plans with the same id are overwritten</p> <p>@return JSON with .tableData: Array with row data for dataTable</p>")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	@Produces(MediaType.APPLICATION_JSON)
 	// the supertype consumes JSON and XML at org.eclipse.winery.repository.resources._support.collections.EntityCollectionResource.addNewElement(EntityT)
 	// @formatter:off
@@ -79,7 +80,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		@FormDataParam("planName") String name,
 		@FormDataParam("planType") String type,
 		@FormDataParam("planLanguage") @RestDocParam(description = "the plan language (e..g, BPMN or BPEL). Full URL.") String language,
-		@FormDataParam("file") InputStream uploadedInputStream,
+		@FormDataParam("file") @RestDocParam(description="(optional in the case of BPMN4TOSCA) file containing the plan.") InputStream uploadedInputStream,
 		@FormDataParam("file") FormDataContentDisposition fileDetail,
 		@FormDataParam("file") FormDataBodyPart body
 	) {
@@ -93,9 +94,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		if (StringUtils.isEmpty(language)) {
 			return Response.status(Status.BAD_REQUEST).entity("planLanguage must be given").build();
 		}
-		if (uploadedInputStream == null) {
-			return Response.status(Status.BAD_REQUEST).entity("file has to be provided").build();
-		}
+		boolean bpmn4toscaMode = (uploadedInputStream == null);
 		
 		// A plan carries both a name and an ID
 		// To be user-friendly, we create the ID based on the name
@@ -118,16 +117,21 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			}
 		}
 		
-		// We use the filename also as local file name. Alternatively, we could use the xml id
-		// With URL encoding, this should not be an issue
-		final String fileName = Util.URLencode(fileDetail.getFileName());
-		
-		// Really store it
-		RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
-		try {
-			Repository.INSTANCE.putContentToFile(ref, uploadedInputStream, body.getMediaType());
-		} catch (IOException e1) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
+		String fileName;
+		if (bpmn4toscaMode) {
+			fileName = xmlId + Constants.SUFFIX_BPMN4TOSCA;
+		} else {
+			// We use the filename also as local file name. Alternatively, we could use the xml id
+			// With URL encoding, this should not be an issue
+			fileName = Util.URLencode(fileDetail.getFileName());
+			
+			// Really store it
+			RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
+			try {
+				Repository.INSTANCE.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+			} catch (IOException e1) {
+				return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
+			}
 		}
 		// END: Store plan file
 		

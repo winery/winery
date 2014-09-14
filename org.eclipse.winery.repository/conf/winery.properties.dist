@@ -8,6 +8,10 @@ warning = Development version ${project.version}
 #default: false
 initializeXMLValidationDuringStartup = true
 
+#BPMN4TOSCA Modeler URI
+#default: nothing
+#bpmn4toscamodelerBaseURI=
+
 #############################################################################
 # Repository Storage Configuration
 #############################################################################

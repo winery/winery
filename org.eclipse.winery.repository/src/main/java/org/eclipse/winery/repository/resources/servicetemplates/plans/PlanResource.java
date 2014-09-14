@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -24,13 +24,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.InputParameters;
 import org.eclipse.winery.model.tosca.TPlan.OutputParameters;
+import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
@@ -81,16 +84,23 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 		return (ServiceTemplateResource) this.res;
 	}
 	
+	/**
+	 * Determines the id of the current resource
+	 */
+	private PlanId getId() {
+		ServiceTemplateId sId = (ServiceTemplateId) this.getServiceTemplateResource().getId();
+		PlansId psId = new PlansId(sId);
+		PlanId pId = new PlanId(psId, new XMLId(this.o.getId(), false));
+		return pId;
+	}
+	
 	@Override
 	@DELETE
 	public Response onDelete() {
 		Response res = super.onDelete();
 		if (Utils.isSuccessFulResponse(res)) {
-			ServiceTemplateId sId = (ServiceTemplateId) this.getServiceTemplateResource().getId();
-			PlansId psId = new PlansId(sId);
-			PlanId pId = new PlanId(psId, new XMLId(this.o.getId(), false));
 			try {
-				Repository.INSTANCE.forceDelete(pId);
+				Repository.INSTANCE.forceDelete(this.getId());
 			} catch (IOException e) {
 				return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not remove plan file").build();
 			}
@@ -103,7 +113,18 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response getHTML() {
-		return Response.ok().entity("No editor plugin found for plan language " + this.o.getPlanLanguage()).build();
+		boolean isBPMN4TOSCA = this.o.getPlanLanguage().equals(org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20);
+		String bpmn4toscaBaseURL = Prefs.INSTANCE.getBPMN4TOSCABaseURL();
+		if (isBPMN4TOSCA && (!StringUtils.isEmpty(bpmn4toscaBaseURL))) {
+			String uri = bpmn4toscaBaseURL;
+			TOSCAComponentId serviceTemplateId = this.getServiceTemplateResource().getId();
+			uri += "?namespace=" + serviceTemplateId.getNamespace().getDecoded();
+			uri += "&id=" + serviceTemplateId.getXmlId().getDecoded();
+			uri += "&plan=" + this.getName();
+			return Response.temporaryRedirect(Utils.createURI(uri)).build();
+		} else {
+			return Response.ok().entity("No editor plugin found for plan language " + this.o.getPlanLanguage()).build();
+		}
 	}
 	
 	@Override
@@ -119,6 +140,11 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	public Response setName(@FormParam("value") String name) {
 		this.o.setName(name);
 		return BackendUtils.persist(this.res);
+	}
+	
+	@Path("file")
+	public PlanFileResource getPlanFileResource() {
+		return new PlanFileResource(this.getId());
 	}
 	
 	@GET

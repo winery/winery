@@ -29,6 +29,9 @@ public class Constants {
 	// Currently, we require the format <filenamextension>.png
 	public static final String PATH_MIMETYPEIMAGES = "/images/mime-types/";
 	
+	// suffix for BPMN4TOSCA
+	public static final String SUFFIX_BPMN4TOSCA = ".bpmn4tosca";
+	
 	// suffix for CSAR files
 	public static final String SUFFIX_CSAR = ".csar";
 	

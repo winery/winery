@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -22,6 +22,7 @@ public class Namespaces {
 	// XML Schema namespace is defined at Java7's XMLConstants.W3C_XML_SCHEMA_NS_URI
 	
 	public static final String URI_BPMN20_MODEL = "http://www.omg.org/spec/BPMN/20100524/MODEL";
+	public static final String URI_BPMN4TOSCA_20 = "http://www.opentosca.org/bpmn4tosca";
 	public static final String URI_BPEL20_ABSTRACT = "http://docs.oasis-open.org/wsbpel/2.0/process/abstract";
 	public static final String URI_BPEL20_EXECUTABLE = "http://docs.oasis-open.org/wsbpel/2.0/process/executable";
 }
