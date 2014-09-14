@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -22,14 +22,11 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.IHasTypeReference;
+import org.eclipse.winery.repository.resources._support.IPersistable;
+import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
+import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
 
-public class TEntityTemplateResource<E extends TEntityTemplate> implements IEntityTemplateResource<E>, IHasTypeReference {
-	
-	protected final E template;
-	protected final AbstractComponentInstanceResource res;
-	private final List<E> list;
-	private final int idx;
-	
+public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWithIdResource<E> implements IEntityTemplateResource<E>, IHasTypeReference {
 	
 	/**
 	 * This constructor is used for both entity templates nested in an component
@@ -39,41 +36,26 @@ public class TEntityTemplateResource<E extends TEntityTemplate> implements IEnti
 	 * As Java does not support multi-inheritance, we implemented a quick hack
 	 * to re-use this class as inner implementation at templates extending
 	 * AbstractComponentInstanceResourceDefinitionsBacked
-	 * 
-	 * @param template the template this resource is modeling
-	 * @param list (optional in the case of component instances) the list the
-	 *            template is contained in
-	 * @param idx (optional in the case of component instances) the index in the
-	 *            list of the template. Required for fast deletion
-	 * @param res the resource the template (indirectly) belongs to
 	 */
-	public TEntityTemplateResource(E template, List<E> list, int idx, AbstractComponentInstanceResource res) {
-		assert (template != null);
-		this.template = template;
-		
-		// list and idx may
-		this.list = list;
-		this.idx = idx;
-		
-		assert (res != null);
-		this.res = res;
+	public TEntityTemplateResource(IIdDetermination<E> idDetermination, E o, int idx, List<E> list, IPersistable res) {
+		super(idDetermination, o, idx, list, res);
 	}
 	
-	public String getId() {
-		return this.template.getId();
-	}
-	
-	public void setId(String id) {
-		// TODO: There is no check for uniqueness of the given id
-		this.template.setId(id);
-	}
+	//	public String getId() {
+	//		return this.template.getId();
+	//	}
+	//
+	//	public void setId(String id) {
+	//		// TODO: There is no check for uniqueness of the given id
+	//		this.template.setId(id);
+	//	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public QName getType() {
-		return this.template.getType();
+		return this.o.getType();
 	}
 	
 	@Path("type")
@@ -87,7 +69,7 @@ public class TEntityTemplateResource<E extends TEntityTemplate> implements IEnti
 	 */
 	@Override
 	public Response setType(QName type) {
-		this.template.setType(type);
+		this.o.setType(type);
 		return BackendUtils.persist(this.res);
 	}
 	
@@ -104,16 +86,7 @@ public class TEntityTemplateResource<E extends TEntityTemplate> implements IEnti
 	 */
 	@Override
 	public PropertiesResource getPropertiesResource() {
-		return new PropertiesResource(this.template, this.res);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Response onDelete() {
-		this.list.remove(this.idx);
-		return BackendUtils.persist(this.res);
+		return new PropertiesResource(this.o, (AbstractComponentInstanceResource) this.res);
 	}
 	
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -12,6 +12,7 @@
 package org.eclipse.winery.repository.resources.servicetemplates.topologytemplates;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -28,6 +29,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -204,22 +206,26 @@ public class TopologyTemplateResource {
 	
 	@Path("nodetemplates/")
 	public NodeTemplatesResource getNodeTemplatesResource() {
-		// we illegally convert the List<TEntityTemplate> to List<TNodeTemplate>, because we know
-		// that the implementation works nevertheless
-		// The alternative is to remove type safety at the resource, which brings more disadvantages
-		@SuppressWarnings("unchecked")
-		List<TNodeTemplate> l = (List<TNodeTemplate>) (List<?>) this.topologyTemplate.getNodeTemplateOrRelationshipTemplate();
-		return new NodeTemplatesResource(l, this.topologyTemplate, this.serviceTemplateRes);
+		// FIXME: onDelete will not work as we have a copy of the original list. We have to add a "listener" to remove at the list and route that remove to the original list
+		List<TNodeTemplate> l = new ArrayList<TNodeTemplate>();
+		for (TEntityTemplate t : this.topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+			if (t instanceof TNodeTemplate) {
+				l.add((TNodeTemplate) t);
+			}
+		}
+		return new NodeTemplatesResource(l, this.serviceTemplateRes);
 	}
 	
 	@Path("relationshiptemplates/")
 	public RelationshipTemplatesResource getRelationshipTemplatesResource() {
-		// we illegally convert the List<TEntityTemplate> to List<TRelationshipTemplate>, because we know
-		// that the implementation works nevertheless
-		// The alternative is to remove type safety at the resource, which brings more disadvantages
-		@SuppressWarnings("unchecked")
-		List<TRelationshipTemplate> l = (List<TRelationshipTemplate>) (List<?>) this.topologyTemplate.getNodeTemplateOrRelationshipTemplate();
-		return new RelationshipTemplatesResource(l, this.topologyTemplate, this.serviceTemplateRes);
+		// FIXME: onDelete will not work. See getNodeTemplatesResource
+		List<TRelationshipTemplate> l = new ArrayList<TRelationshipTemplate>();
+		for (TEntityTemplate t : this.topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+			if (t instanceof TRelationshipTemplate) {
+				l.add((TRelationshipTemplate) t);
+			}
+		}
+		return new RelationshipTemplatesResource(l, this.serviceTemplateRes);
 	}
 	
 	@PUT
