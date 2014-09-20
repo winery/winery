@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -158,11 +158,15 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		return repositoryPath;
 	}
 	
+	public static File getDefaultRepositoryFilePath() {
+		return new File(org.apache.commons.io.FileUtils.getUserDirectory(), Constants.DEFAULT_REPO_NAME);
+	}
+	
 	private Path createDefaultRepositoryPath() {
 		File repo = null;
 		boolean operationalFileSystemAccess;
 		try {
-			repo = new File(org.apache.commons.io.FileUtils.getUserDirectory(), Constants.DEFAULT_REPO_NAME);
+			repo = FilebasedRepository.getDefaultRepositoryFilePath();
 			operationalFileSystemAccess = true;
 		} catch (NullPointerException e) {
 			// it seems, we run at a system, where we do not have any filesystem

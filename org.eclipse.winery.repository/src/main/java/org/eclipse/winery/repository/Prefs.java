@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -163,6 +165,22 @@ public class Prefs implements ServletContextListener {
 		Properties p = new Properties();
 		if (inStream == null) {
 			Prefs.logger.info(fn + " does not exist.");
+			
+			// We search for winery.properties on the filesystem in the repository
+			
+			File propFile = new File(FilebasedRepository.getDefaultRepositoryFilePath(), "winery.properties");
+			Prefs.logger.info("Trying " + propFile.getAbsolutePath());
+			if (propFile.exists()) {
+				Prefs.logger.info("Found");
+				// if winery.property exists in the root of the default repository path (~/winery-repository), load it
+				try (InputStream is2 = new FileInputStream(propFile)) {
+					p.load(is2);
+				} catch (IOException e) {
+					Prefs.logger.error("Could not load winery.properties", e);
+				}
+			} else {
+				Prefs.logger.info("Not found");
+			}
 		} else {
 			try {
 				p.load(inStream);
