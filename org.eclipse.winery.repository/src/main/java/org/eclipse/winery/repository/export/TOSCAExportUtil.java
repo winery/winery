@@ -97,6 +97,7 @@ import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetyp
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
+import org.eclipse.winery.repository.resources.entitytypes.requirementtypes.RequirementTypeResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
@@ -515,7 +516,15 @@ public class TOSCAExportUtil {
 	}
 	
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(RequirementTypeId id) {
-		return Collections.emptyList();
+		Collection<TOSCAComponentId> ids = new ArrayList<>(1);
+		
+		RequirementTypeResource res = new RequirementTypeResource(id);
+		QName requiredCapabilityType = res.getRequirementType().getRequiredCapabilityType();
+		if (requiredCapabilityType != null) {
+			CapabilityTypeId capId = new CapabilityTypeId(requiredCapabilityType);
+			ids.add(capId);
+		}
+		return ids;
 	}
 	
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(CapabilityTypeId id) {
