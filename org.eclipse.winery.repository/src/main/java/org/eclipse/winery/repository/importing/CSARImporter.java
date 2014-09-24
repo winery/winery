@@ -327,6 +327,25 @@ public class CSARImporter {
 						String name = file.toString().substring(cutLength);
 						// check: if name contains "/", this could lead to exceptions
 						RepositoryFileReference ref = new RepositoryFileReference(id, name);
+						
+						if (name.equals("data.xml")) {
+							// we have to check whether the data.xml contains
+							// (uri:"http://opentosca.org/self-service", local:"application")
+							// instead of
+							// (uri:"http://www.eclipse.org/winery/model/selfservice", local:"Application"
+							// We quickly replace it via String replacement instead of XSLT
+							try {
+								String oldContent = org.apache.commons.io.FileUtils.readFileToString(file.toFile(), "UTF-8");
+								String newContent = oldContent.replace("http://opentosca.org/self-service", "http://www.eclipse.org/winery/model/selfservice");
+								newContent = newContent.replace(":application", ":Application");
+								if (!oldContent.equals(newContent)) {
+									// we replaced something -> write new content to old file
+									org.apache.commons.io.FileUtils.writeStringToFile(file.toFile(), newContent, "UTF-8");
+								}
+							} catch (IOException e) {
+								CSARImporter.logger.debug("Could not replace content in data.xml", e);
+							}
+						}
 						CSARImporter.this.importFile(file, ref, tmf, rootPath, errors);
 						return FileVisitResult.CONTINUE;
 					}
