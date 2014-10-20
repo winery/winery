@@ -124,8 +124,8 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 			URI repositoryURI = uriInfo.getBaseUri();
 			uri += "?repositoryURL=" + Util.URLencode(repositoryURI.toString());
 			TOSCAComponentId serviceTemplateId = this.getServiceTemplateResource().getId();
-			uri += "&namespace=" + serviceTemplateId.getNamespace().getDecoded();
-			uri += "&id=" + serviceTemplateId.getXmlId().getDecoded();
+			uri += "&namespace=" + serviceTemplateId.getNamespace().getEncoded();
+			uri += "&id=" + serviceTemplateId.getXmlId().getEncoded();
 			uri += "&plan=" + this.getName();
 			return Response.temporaryRedirect(Utils.createURI(uri)).build();
 		} else {
