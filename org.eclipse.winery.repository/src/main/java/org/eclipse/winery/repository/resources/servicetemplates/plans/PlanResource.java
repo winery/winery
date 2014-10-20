@@ -12,6 +12,7 @@
 package org.eclipse.winery.repository.resources.servicetemplates.plans;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
@@ -20,11 +21,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
@@ -112,13 +116,15 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
+	public Response getHTML(@Context UriInfo uriInfo) {
 		boolean isBPMN4TOSCA = this.o.getPlanLanguage().equals(org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20);
 		String bpmn4toscaBaseURL = Prefs.INSTANCE.getBPMN4TOSCABaseURL();
 		if (isBPMN4TOSCA && (!StringUtils.isEmpty(bpmn4toscaBaseURL))) {
 			String uri = bpmn4toscaBaseURL;
+			URI repositoryURI = uriInfo.getBaseUri();
+			uri += "?repositoryURL=" + Util.URLencode(repositoryURI.toString());
 			TOSCAComponentId serviceTemplateId = this.getServiceTemplateResource().getId();
-			uri += "?namespace=" + serviceTemplateId.getNamespace().getDecoded();
+			uri += "&namespace=" + serviceTemplateId.getNamespace().getDecoded();
 			uri += "&id=" + serviceTemplateId.getXmlId().getDecoded();
 			uri += "&plan=" + this.getName();
 			return Response.temporaryRedirect(Utils.createURI(uri)).build();
