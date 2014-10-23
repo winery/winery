@@ -215,7 +215,9 @@ public class TOSCAExportUtil {
 	 */
 	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws IOException, JAXBException {
 		if (!Repository.INSTANCE.exists(tcId)) {
-			throw new IllegalStateException("Component instance " + tcId.toString() + " does not exist.");
+			String error = "Component instance " + tcId.toString() + " does not exist.";
+			TOSCAExportUtil.logger.error(error);
+			throw new IllegalStateException(error);
 		}
 		
 		AbstractComponentInstanceResource res = AbstractComponentsResource.getComponentInstaceResource(tcId);

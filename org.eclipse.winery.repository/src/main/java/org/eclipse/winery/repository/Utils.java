@@ -36,9 +36,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.taglibs.standard.functions.Functions;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
@@ -199,7 +197,7 @@ public class Utils {
 			public void write(OutputStream output) throws IOException, WebApplicationException {
 				try {
 					exporter.writeCSAR(resource.getId(), output);
-				} catch (XMLStreamException | JAXBException | ArchiveException e) {
+				} catch (Exception e) {
 					throw new WebApplicationException(e);
 				}
 			}
