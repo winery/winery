@@ -90,6 +90,8 @@ function savePropertiesFromDivToXMLWriter(properties, w, writeNamespaceDeclarati
 					value = "";
 				} else {
 					value = valueEl.text();
+					value = value.replace(/\]\]>/g, "]]]]><![CDATA[>");
+					value = "<![CDATA[" + value + "]]>";
 				}
 				w.writeStartElement(key);
 				w.writeString(value);
