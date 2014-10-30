@@ -203,7 +203,6 @@ function onDoneRendering() {
 	}
 }
 </script>
-<!-- readOnly should be true. The layouter, however, doesn't work well for ETGs, therefore, we allow editing which makes the shapes draggable  -->
-<tmpl:registerConnectionTypesAndConnectNodeTemplates repositoryURL="${repositoryURL}" relationshipTypes="<%=relationshipTypes%>" relationshipTemplates="<%=relationshipTemplates%>" ondone="onDoneRendering();" readOnly="false"/>
+<tmpl:registerConnectionTypesAndConnectNodeTemplates repositoryURL="${repositoryURL}" relationshipTypes="<%=relationshipTypes%>" relationshipTemplates="<%=relationshipTemplates%>" ondone="onDoneRendering();" readOnly="true"/>
 </div>
 </div>

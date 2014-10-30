@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -103,10 +103,11 @@ require(["jquery", "jsplumb", "winery-common-topologyrendering"], function(globa
 			require(["winery-common-topologyrendering"], function(wct) {
 				// A NodeTemplateShape also appears in the palette. There, it is hidden.
 				// These should not be initialized as the template will be initialized later on
-				var makeDraggable;
-				<c:if test="${readOnly}">makeDraggable = false; wct.setReadOnly();</c:if>
-				<c:if test="${not readOnly}">makeDraggable = true;</c:if>
-				wct.initNodeTemplate(jsPlumb.getSelector(".NodeTemplateShape:not('.hidden')"), makeDraggable);
+
+				<c:if test="${readOnly}">wct.setReadOnly();</c:if>
+
+				// Quick hack: All node templates are draggable, even in the readonly view
+				wct.initNodeTemplate(jsPlumb.getSelector(".NodeTemplateShape:not('.hidden')"), true);
 
 				var sourceId;
 				var targetId;
