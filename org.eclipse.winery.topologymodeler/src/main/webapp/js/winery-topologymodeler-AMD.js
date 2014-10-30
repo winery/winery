@@ -75,7 +75,7 @@ define(
 				}
 			});
 		}
-		
+
 		/**
 		 * Creates an XML String of the modelled topology template.
 		 */
@@ -88,12 +88,12 @@ define(
 				xmlw.writeStartElement("Definitions");
 				xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
 				xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
-                
+
 				xmlw.writeStartElement("ServiceTemplate");
 				xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
 				xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
 			}
-						xmlw.writeStartElement("TopologyTemplate");
+			xmlw.writeStartElement("TopologyTemplate");
 			xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
 			xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
 			$("div.NodeTemplateShape").not(".hidden").each (function() {
@@ -209,12 +209,12 @@ define(
 
 				xmlw.writeEndElement();
 			});
-			
+
 			if (needsDefinitionsTag) {
 				xmlw.writeEndElement();
 				xmlw.writeEndElement();
 			}
-			
+
 			xmlw.writeEndDocument();
 
 			return xmlw.flush();
