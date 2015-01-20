@@ -38,13 +38,9 @@
 
 <script>
 $(function(){
-	<c:choose>
-		<c:when test="${empty selected}">
-			$("#${idOfSelectField}").select2();
-		</c:when>
-		<c:otherwise>
-			$("#${idOfSelectField}").select2("val", "${selected}");
-		</c:otherwise>
-	</c:choose>
+	$("#${idOfSelectField}").select2();
+	<c:if test="${not empty selected}">
+		$("#${idOfSelectField}").select2("val", "${selected}");
+	</c:if>
 });
 </script>
