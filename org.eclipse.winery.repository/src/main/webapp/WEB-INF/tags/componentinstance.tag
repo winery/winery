@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013, 2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -42,44 +42,6 @@
 <c:if test="${empty windowtitle}">
   <c:set var="windowtitle" value="${it.name}" />
 </c:if>
-
-<script>
-function openOverviewPage() {
-	window.location="../../";
-}
-
-function deployOnOpenTOSCAContainer() {
-	$("#deployBtn").button('loading');
-
-	urlToUpload = window.location.href;
-	var hash = window.location.hash;
-	if (hash != "") {
-		urlToUpload = urlToUpload.substr(0, urlToUpload.length - hash.length)
-	}
-	var search = window.location.search;
-	if (search != "") {
-		urlToUpload = urlToUpload.substr(0, urlToUpload.length - search.length)
-	}
-
-	urlToUpload = urlToUpload + "?csar";
-
-	var data = {
-		urlToUpload: urlToUpload
-	}
-
-	// we asusme the container runs at the same host and port
-	$.ajax({
-		url: "/admin/uploadCSARFromURL.action",
-		data: data
-	}).always(function () {
-		$("#deployBtn").button('reset');
-	}).fail(function (jqXHR, textStatus, errorThrown) {
-		vShowAJAXError("Could not trigger CSAR deployment at OpenTOSCA container", jqXHR, errorThrown);
-	}).done(function (result) {
-		vShowSuccess("Successfully triggered CSAR deployment at OpenTOSCA container");
-	});
-}
-</script>
 
 <t:genericpage windowtitle="${windowtitle}" selected="${selected}" cssClass="mainContentContainer ${cssClass}" libs="${libs}">
 
@@ -159,4 +121,43 @@ function deployOnOpenTOSCAContainer() {
 
 	<div class="bottom">
 	</div>
+
+<script>
+function openOverviewPage() {
+	window.location="../../";
+}
+
+function deployOnOpenTOSCAContainer() {
+	$("#deployBtn").button('loading');
+
+	urlToUpload = window.location.href;
+	var hash = window.location.hash;
+	if (hash != "") {
+		urlToUpload = urlToUpload.substr(0, urlToUpload.length - hash.length)
+	}
+	var search = window.location.search;
+	if (search != "") {
+		urlToUpload = urlToUpload.substr(0, urlToUpload.length - search.length)
+	}
+
+	urlToUpload = urlToUpload + "?csar";
+
+	var data = {
+		urlToUpload: urlToUpload
+	}
+
+	// we assume the container runs at the same host and port
+	$.ajax({
+		url: "/admin/uploadCSARFromURL.action",
+		data: data
+	}).always(function () {
+		$("#deployBtn").button('reset');
+	}).fail(function (jqXHR, textStatus, errorThrown) {
+		vShowAJAXError("Could not trigger CSAR deployment at OpenTOSCA container", jqXHR, errorThrown);
+	}).done(function (result) {
+		vShowSuccess("Successfully triggered CSAR deployment at OpenTOSCA container");
+	});
+}
+</script>
+
 </t:genericpage>

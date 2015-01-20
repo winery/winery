@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013, 2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -15,7 +15,7 @@
 
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-<!-- add submenus after the submenus defined for the type -->
+<%-- add submenus after the submenus defined for the type --%>
 <%
 java.util.List<SubMenuData> subMenus = new java.util.ArrayList<SubMenuData>(5);
 
