@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013, 2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -44,14 +44,6 @@
 <%@taglib prefix="nt"   tagdir="/WEB-INF/tags/common/templates/nodetemplates" %>
 <%@taglib prefix="w" uri="http://www.eclipse.org/winery/repository/functions"%>
 
-<%-- required for vShowError --%>
-<script type="text/javascript" src="${w:topologyModelerURI()}/components/pnotify/jquery.pnotify.js"></script>
-<script type="text/javascript" src="${w:topologyModelerURI()}/js/winery-common.js"></script>
-
-<%-- required for vShowError --%>
-<link type="text/css" href="${w:topologyModelerURI()}/components/pnotify/jquery.pnotify.default.css" media="all" rel="stylesheet" />
-<link type="text/css" href="${w:topologyModelerURI()}/components/pnotify/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" />
-
 <%-- winery-common.css also contains definitions for properties --%>
 <link type="text/css" href="${w:topologyModelerURI()}/css/winery-common.css" rel="stylesheet" />
 <link type="text/css" href="${w:topologyModelerURI()}/css/topologytemplatecontent.css" rel="stylesheet" />
@@ -78,9 +70,7 @@ if (typeof winery.connections === "undefined") winery.connections = {}
 jQuery.ajaxSetup({cache:true});
 
 //configuration for pnotify
-require(["jquery", "pnotify"], function() {
-	$.pnotify.defaults.styling = "bootstrap3";
-});
+$.pnotify.defaults.styling = "bootstrap3";
 </script>
 
 <%
