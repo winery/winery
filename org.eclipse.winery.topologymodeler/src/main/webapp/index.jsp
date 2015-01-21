@@ -439,10 +439,16 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 
 		<button data-toggle="button" class="btn btn-default" onclick="togglePrintView(!$(this).hasClass('active'));">Print View</button>
 
-		<button class="btn btn-default" id="completeTopology" onclick="completeTopology();">Complete Topology</button>
+		<div class="btn-group">
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Other <span class="caret"></span></button>
 
-		<a id="exportCSARbtn" href="<%=topologyTemplateURL%>../?csar" target="_blank" class="btn btn-primary">CSAR</a>
-		<button type="button" class="btn btn-default" onClick="showAbout();">about</button>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="#" onclick="completeTopology();">Complete Topology</a></li>
+				<li><a id="exportCSARbtn" href="<%=topologyTemplateURL%>../?csar" target="_blank">Export CSAR</a></li>
+				<li><a href="#" onclick="showAbout();">about</a></li>
+			</ul>
+		</div>
+
 
 		<script>
 		$("#exportCSARbtn").tooltip({
