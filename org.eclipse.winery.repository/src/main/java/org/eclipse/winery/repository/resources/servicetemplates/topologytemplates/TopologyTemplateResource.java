@@ -152,7 +152,7 @@ public class TopologyTemplateResource {
 			} else {
 				// view only mode
 				// fullscreen: additionalCSS and script possible
-				if (view != "") {
+				if (!"".equals(view)) {
 					// view with additional CSS
 					URI cssURI = URI.create(view);
 					if (cssURI.isAbsolute()) {
