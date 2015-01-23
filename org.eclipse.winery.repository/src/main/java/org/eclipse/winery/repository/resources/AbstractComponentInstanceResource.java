@@ -40,15 +40,15 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -252,13 +252,20 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	/**
 	 * Returns the definitions of this resource. Includes required imports of
 	 * other definitions
+	 * 
+	 * @param csar used because plan generator's GET request lands here
 	 */
 	@GET
 	@Produces({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
-	public Response getDefinitionsAsResponse() {
+	public Response getDefinitionsAsResponse(@QueryParam(value = "csar") String csar) {
 		if (!Repository.INSTANCE.exists(this.id)) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
+		
+		if (csar != null) {
+			return Utils.getCSARofSelectedResource(this);
+		}
+		
 		StreamingOutput so = new StreamingOutput() {
 			
 			@Override

@@ -50,6 +50,8 @@ public class Prefs implements ServletContextListener {
 	
 	private Boolean isRestDocDocumentationAvailable = null;
 	
+	private Boolean isPlanBuilderAvailable = null;
+	
 	// location of the winery topology modeler
 	private String wineryTopologyModelerPath = null;
 	
@@ -292,6 +294,18 @@ public class Prefs implements ServletContextListener {
 			this.isContainerLocallyAvailable = OpenTOSCAContainerConnection.isContainerLocallyAvailable();
 		}
 		return this.isContainerLocallyAvailable;
+	}
+	
+	/**
+	 * @return true if the plan generator is available
+	 */
+	public boolean isPlanBuilderAvailable() {
+		// similar implementation as isContainerLocallyAvailable()
+		if (this.isPlanBuilderAvailable == null) {
+			String planBuilderURI = "http://localhost:1339/planbuilder";
+			this.isPlanBuilderAvailable = Utils.isResourceAvailable(planBuilderURI);
+		}
+		return this.isPlanBuilderAvailable;
 	}
 	
 	/**

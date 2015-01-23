@@ -47,6 +47,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.view.Viewable;
 
 public class TopologyTemplateResource {
@@ -178,6 +180,35 @@ public class TopologyTemplateResource {
 			res = Response.seeOther(uri).build();
 		}
 		return res;
+	}
+	
+	/**
+	 * 
+	 * @param uriInfo the URI ending with "topologytemplate/" of a service
+	 *            template
+	 */
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response triggerGenerateBuildPlan(@Context UriInfo uriInfo) {
+		String plansURI = uriInfo.getAbsolutePath().resolve("../plans/").toString();
+		String csarURI = uriInfo.getAbsolutePath().resolve("../?csar").toString();
+		
+		String request = "<generatePlanForTopology><CSARURL>";
+		request += csarURI;
+		request += "</CSARURL><PLANPOSTURL>";
+		request += plansURI;
+		request += "</PLANPOSTURL></generatePlanForTopology>";
+		
+		Client client = Client.create();
+		Builder wr = client.resource("http://localhost:1339/planbuilder/sync").type(MediaType.APPLICATION_XML);
+		
+		try {
+			wr.post(String.class, request);
+		} catch (com.sun.jersey.api.client.UniformInterfaceException e) {
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		
+		return Response.ok().build();
 	}
 	
 	// @formatter:off
