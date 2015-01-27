@@ -28,7 +28,10 @@ if (org.eclipse.winery.repository.Prefs.INSTANCE.isPlanBuilderAvailable()) {
 		}).fail(function(jqXHR, textStatus, errorThrown) {
 			vShowAJAXError("Could not trigger plan generation.", jqXHR, errorThrown);
 		}).done(function(data, textStatus, jqXHR) {
-			var resultText = "Successfully generated build plan.";
+			// data contains the URL of the current converter status
+			// the URL of the generated plan is NOT sent
+			var resultText = "Successfully triggered plan generation.<br />";
+			resultText += 'Current status of the conversion may be found at <a href="' + data + '">' + data + '</a>.';
 			vShowSuccess(resultText);
 		});
 	}
