@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013, 2015 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -59,9 +59,6 @@
 
 	<link type="text/css" href="${w:topologyModelerURI()}/css/winery-common.css" rel="stylesheet" />
 
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery/jquery.js'></script>
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/pnotify/jquery.pnotify.js'></script>
-
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/requirejs/require.js'></script>
 	<script>
 		require.config({
@@ -87,6 +84,8 @@
 
 				"orioneditor": "http://eclipse.org/orion/editor/releases/latest/built-editor-amd",
 
+				"pnotify": "../components/pnotify/jquery.pnotify",
+
 				"select2": "../components/select2/select2",
 
 				"tmpl": "../components/blueimp-tmpl/js/tmpl",
@@ -100,6 +99,7 @@
 		});
 	</script>
 
+	<script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery/jquery.js'></script>
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap/dist/js/bootstrap.js'></script>
 
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery-typing/plugin/jquery.typing-0.3.2.js"></script>
@@ -120,7 +120,9 @@
 	$.fn.editable.defaults.placement = "auto";
 
 	//configuration for pnotify
-	$.pnotify.defaults.styling = "bootstrap3";
+	require(["jquery", "pnotify"], function() {
+		$.pnotify.defaults.styling = "bootstrap3";
+	});
 	</script>
 </head>
 

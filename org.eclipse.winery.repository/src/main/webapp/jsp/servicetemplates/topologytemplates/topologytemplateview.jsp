@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2013, 2015 University of Stuttgart.
+ * Copyright (c) 2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -33,19 +33,12 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap.css" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap-theme.css" />
 
+	<script type='text/javascript' src='${pageContext.request.contextPath}/components/requirejs/require.js'></script>
+
 	<!-- jquery and jquery UI have to be loaded using the old fashioned way to avoid incompatibilities with bootstrap v3 -->
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery/jquery.js'></script>
 	<script type='text/javascript' src='${pageContext.request.contextPath}/3rdparty/jquery-ui/js/jquery-ui.js'></script>
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap/dist/js/bootstrap.js'></script>
-
-	<%-- required for vShowError; pnotify has to be loaded before require.js --%>
-	<script type="text/javascript" src="${w:topologyModelerURI()}/components/pnotify/jquery.pnotify.js"></script>
-	<script type="text/javascript" src="${w:topologyModelerURI()}/js/winery-common.js"></script>
-	<link type="text/css" href="${w:topologyModelerURI()}/components/pnotify/jquery.pnotify.default.css" media="all" rel="stylesheet" />
-	<link type="text/css" href="${w:topologyModelerURI()}/components/pnotify/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" />
-
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/requirejs/require.js'></script>
-
 	<script>
 		require.config({
 			baseUrl: "${pageContext.request.contextPath}/js",
