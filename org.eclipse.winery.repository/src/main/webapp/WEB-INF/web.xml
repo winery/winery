@@ -18,8 +18,9 @@
 		<filter-name>WineryResources</filter-name>
 		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
 		<init-param>
-		    <param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
-		    <param-value>org.eclipse.winery.repository.RestDocFilter</param-value>
+			<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
+			<!-- RestDocFilter is required for RESTDoc. CORSFilter is required for the BPMN4TOSCA Plan Modeler -->
+			<param-value>org.eclipse.winery.repository.RestDocFilter;org.eclipse.winery.repository.CORSFilter</param-value>
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
