@@ -120,6 +120,8 @@ function editIOParameters() {
 			// do not allow submission of the old files on a click if the dialog is opened another time
 			$("#addPlanBtnFUP").off("click");
 
+			// TODO: if id is already present in table, delete row in table
+
 			embeddedPlansTableInfo.table.fnAddData(data.result.tableData);
 
 			$('#addPlanDiag').modal('hide');
