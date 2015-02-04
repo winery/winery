@@ -13,11 +13,12 @@ package org.eclipse.winery.repository.resources.artifacts;
 
 import java.util.List;
 
-import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.resources.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.resources._support.IPersistable;
+import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 
 public class ImplementationArtifactResource extends GenericArtifactResource<ImplementationArtifact> {
 	
@@ -51,17 +52,23 @@ public class ImplementationArtifactResource extends GenericArtifactResource<Impl
 		return ia;
 	}
 	
-	public ImplementationArtifactResource(String artifactId, List<ImplementationArtifact> implementationArtifacts, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
+	public ImplementationArtifactResource(String artifactId, List<ImplementationArtifact> implementationArtifacts, IPersistable res) {
 		this(ImplementationArtifactResource.getImplementationArtifact(artifactId, implementationArtifacts), implementationArtifacts, res);
 	}
 	
-	public ImplementationArtifactResource(ImplementationArtifact a, int idx, List<ImplementationArtifact> implementationArtifacts, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
-		super(a, idx, implementationArtifacts, res);
-		this.a = a;
+	public ImplementationArtifactResource(IIdDetermination<ImplementationArtifact> idDetermination, ImplementationArtifact o, int idx, List<ImplementationArtifact> list, IPersistable res) {
+		super(idDetermination, o, idx, list, res);
+		this.a = o;
 	}
 	
-	public ImplementationArtifactResource(ImplementationArtifact a, List<ImplementationArtifact> implementationArtifacts, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
-		this(a, implementationArtifacts.indexOf(a), implementationArtifacts, res);
+	public ImplementationArtifactResource(ImplementationArtifact a, List<ImplementationArtifact> implementationArtifacts, IPersistable res) {
+		this(new IIdDetermination<ImplementationArtifact>() {
+			
+			@Override
+			public String getId(ImplementationArtifact e) {
+				return e.getName();
+			}
+		}, a, implementationArtifacts.indexOf(a), implementationArtifacts, res);
 	}
 	
 	public ImplementationArtifact getImplementationArtifact() {

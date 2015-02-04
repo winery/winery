@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -13,11 +13,12 @@ package org.eclipse.winery.repository.resources.artifacts;
 
 import java.util.List;
 
-import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.resources.INodeTemplateResourceOrNodeTypeImplementationResource;
+import org.eclipse.winery.repository.resources._support.IPersistable;
+import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 
 public class DeploymentArtifactResource extends GenericArtifactResource<TDeploymentArtifact> {
 	
@@ -43,17 +44,23 @@ public class DeploymentArtifactResource extends GenericArtifactResource<TDeploym
 		return ia;
 	}
 	
-	public DeploymentArtifactResource(String artifactId, List<TDeploymentArtifact> deploymentArtifacts, INodeTemplateResourceOrNodeTypeImplementationResource res) {
+	public DeploymentArtifactResource(String artifactId, List<TDeploymentArtifact> deploymentArtifacts, IPersistable res) {
 		this(DeploymentArtifactResource.getDeploymentArtifact(artifactId, deploymentArtifacts), deploymentArtifacts, res);
 	}
 	
-	public DeploymentArtifactResource(TDeploymentArtifact a, int idx, List<TDeploymentArtifact> deploymentArtifacts, INodeTemplateResourceOrNodeTypeImplementationResource res) {
-		super(a, idx, deploymentArtifacts, res);
-		this.a = a;
+	public DeploymentArtifactResource(IIdDetermination<TDeploymentArtifact> idDetermination, TDeploymentArtifact o, int idx, List<TDeploymentArtifact> list, IPersistable res) {
+		super(idDetermination, o, idx, list, res);
+		this.a = o;
 	}
 	
-	public DeploymentArtifactResource(TDeploymentArtifact deploymentArtifact, List<TDeploymentArtifact> deploymentArtifacts, INodeTemplateResourceOrNodeTypeImplementationResource res) {
-		this(deploymentArtifact, deploymentArtifacts.indexOf(deploymentArtifact), deploymentArtifacts, res);
+	public DeploymentArtifactResource(TDeploymentArtifact deploymentArtifact, List<TDeploymentArtifact> deploymentArtifacts, IPersistable res) {
+		this(new IIdDetermination<TDeploymentArtifact>() {
+			
+			@Override
+			public String getId(TDeploymentArtifact e) {
+				return e.getName();
+			}
+		}, deploymentArtifact, deploymentArtifacts.indexOf(deploymentArtifact), deploymentArtifacts, res);
 	}
 	
 	public TDeploymentArtifact getDeploymentArtifact() {
@@ -63,16 +70,12 @@ public class DeploymentArtifactResource extends GenericArtifactResource<TDeploym
 	@Override
 	public void setArtifactType(ArtifactTypeId artifactTypeId) {
 		this.getDeploymentArtifact().setArtifactType(artifactTypeId.getQName());
-		this.persist();
+		BackendUtils.persist(this.res);
 	}
 	
 	@Override
 	public void setArtifactTemplate(ArtifactTemplateId artifactTemplateId) {
 		this.getDeploymentArtifact().setArtifactRef(artifactTemplateId.getQName());
-		this.persist();
-	}
-	
-	private void persist() {
 		BackendUtils.persist(this.res);
 	}
 	

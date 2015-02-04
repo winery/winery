@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -15,13 +15,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.resources.INodeTemplateResourceOrNodeTypeImplementationResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,29 +55,19 @@ public class DeploymentArtifactsResource extends GenericArtifactsResource<Deploy
 		this(DeploymentArtifactsResource.getDeploymentArtifacts(nodeTemplate), res);
 	}
 	
-	/**
-	 * @param artifactId - <b>encoded</b> deployment artifact Id
-	 */
-	@Override
-	@Path("{artifactId}/")
-	public DeploymentArtifactResource getEntityResource(@PathParam("artifactId") String artifactId) {
-		artifactId = Util.URLdecode(artifactId);
-		return this.getArtifactResourceWithDecodedId(artifactId);
-	}
-	
-	@Override
-	protected DeploymentArtifactResource getArtifactResourceWithDecodedId(String artifactId) {
-		return new DeploymentArtifactResource(artifactId, this.deploymentArtifacts, (INodeTemplateResourceOrNodeTypeImplementationResource) this.res);
-	}
-	
 	@Override
 	public Collection<DeploymentArtifactResource> getAllArtifactResources() {
 		Collection<DeploymentArtifactResource> res = new ArrayList<DeploymentArtifactResource>(this.deploymentArtifacts.size());
 		for (TDeploymentArtifact da : this.deploymentArtifacts) {
-			DeploymentArtifactResource r = new DeploymentArtifactResource(da, this.deploymentArtifacts, (INodeTemplateResourceOrNodeTypeImplementationResource) this.res);
+			DeploymentArtifactResource r = new DeploymentArtifactResource(da, this.deploymentArtifacts, this.res);
 			res.add(r);
 		}
 		return res;
+	}
+	
+	@Override
+	public String getId(TDeploymentArtifact entity) {
+		return entity.getName();
 	}
 	
 }

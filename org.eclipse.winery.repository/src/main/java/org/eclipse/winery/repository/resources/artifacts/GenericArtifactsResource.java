@@ -66,7 +66,7 @@ import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.IHasTypeReference;
 import org.eclipse.winery.repository.resources.INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
-import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
+import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.resources.entitytemplates.PropertiesResource;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.EntityTypeImplementationResource;
@@ -89,19 +89,17 @@ import com.sun.jersey.api.view.Viewable;
  * Resource handling both deployment and implementation artifacts
  * 
  */
-public abstract class GenericArtifactsResource<ArtifactResource extends GenericArtifactResource<ArtifactT>, ArtifactT> extends EntityWithoutIdCollectionResource<ArtifactResource, ArtifactT> {
+public abstract class GenericArtifactsResource<ArtifactResource extends GenericArtifactResource<ArtifactT>, ArtifactT> extends EntityWithIdCollectionResource<ArtifactResource, ArtifactT> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GenericArtifactsResource.class);
 	
-	protected final INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource res;
+	protected final INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource resWithNamespace;
 	
 	
 	public GenericArtifactsResource(Class<ArtifactResource> entityResourceTClazz, Class<ArtifactT> entityTClazz, List<ArtifactT> list, INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
 		super(entityResourceTClazz, entityTClazz, list, GenericArtifactsResource.getAbstractComponentInstanceResource(res));
-		this.res = res;
+		this.resWithNamespace = res;
 	}
-	
-	protected abstract ArtifactResource getArtifactResourceWithDecodedId(String artifactId);
 	
 	// @formatter:off
 
@@ -258,7 +256,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				
 				// we create a new artifact template in the namespace of the parent
 				// element
-				Namespace namespace = this.res.getNamespace();
+				Namespace namespace = this.resWithNamespace.getNamespace();
 				
 				artifactTemplateId = new ArtifactTemplateId(namespace, new XMLId(artifactNameStr + "artifactTemplate", false));
 			} else {
@@ -547,7 +545,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 * required by artifacts.jsp
 	 */
 	public String getNamespace() {
-		return this.res.getNamespace().getDecoded();
+		return this.resWithNamespace.getNamespace().getDecoded();
 	}
 	
 	/**
