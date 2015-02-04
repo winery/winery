@@ -234,6 +234,30 @@ $("#addPlanBtnBPMN4TOSCA").on("click", function() {
 		<button class="rightbutton btn btn-xs btn-info" onclick="$('#addPlanDiag').modal('show');">Add</button>
 		<button class="rightbutton btn btn-xs btn-default" onclick="editIOParameters();">I/O Parameters</button>
 		<button class="rightbutton btn btn-xs btn-primary" onclick="openPlanEditor();">Edit</button>
+<%
+if (org.eclipse.winery.repository.Prefs.INSTANCE.isPlanBuilderAvailable()) {
+%>
+	<script>
+	function generateBuildPlan() {
+		$("#btnGenerateBuildPlan").button('loading');
+		$.ajax({
+			url: 'topologytemplate/',
+			// targeting method triggerGenerateBuildPlan in TopologyTemplateResource.java
+			dataType: "text"
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			$("#btnGenerateBuildPlan").button('reset');
+			vShowAJAXError("Could not trigger plan generation.", jqXHR, errorThrown);
+		}).done(function(data, textStatus, jqXHR) {
+			$("#btnGenerateBuildPlan").button('reset');
+			var resultText = "Successfully generated build plan. Please refresh the page.";
+			vShowSuccess(resultText);
+		});
+	}
+	</script>
+	<button id="btnGenerateBuildPlan" class="btn btn-xs btn-default" data-loading-text="Generating..." onclick="generateBuildPlan();">Generate Build Plan</button>
+<%
+}
+%>
 		<table cellpadding="0" cellspacing="0" border="0" class="display" id="embeddedPlansTable"></table>
 
 		<br /><br />

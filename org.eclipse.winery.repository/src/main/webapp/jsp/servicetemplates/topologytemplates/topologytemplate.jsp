@@ -16,27 +16,6 @@
 <div>
 	<a class="btn btn-primary" id="newtab" style="cursor:pointer;" href="${it.location}" target="_blank" >Open Editor</a>
 	<a class="btn btn-info" href="topologytemplate/?view" target="_blank" >Open View</a>
-<%
-if (org.eclipse.winery.repository.Prefs.INSTANCE.isPlanBuilderAvailable()) {
-%>
-	<script>
-	function generateBuildPlan() {
-		$.ajax({
-			url: 'topologytemplate/',
-			// targeting method triggerGenerateBuildPlan in TopologyTemplateResource.java
-			dataType: "text"
-		}).fail(function(jqXHR, textStatus, errorThrown) {
-			vShowAJAXError("Could not trigger plan generation.", jqXHR, errorThrown);
-		}).done(function(data, textStatus, jqXHR) {
-			var resultText = "Successfully generated build plan.";
-			vShowSuccess(resultText);
-		});
-	}
-	</script>
-	<button class="btn btn-default" onclick="generateBuildPlan();">Generate Build Plan</button>
-<%
-}
-%>
 	<br>
 	<br>
 	<div id="loading" class="topologyTemplatePreviewSizing" style="position:absolute; background-color: white; z-index:5;">Loading preview...</div>
