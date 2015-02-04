@@ -55,7 +55,7 @@
 
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/xmltree/xmltree.css" />
 
-	<link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/5.0/built-editor.css"/>
+	<link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/6.0/built-editor.css"/>
 
 	<link type="text/css" href="${w:topologyModelerURI()}/css/winery-common.css" rel="stylesheet" />
 
@@ -82,7 +82,7 @@
 
 				"keyboardjs": "../components/KeyboardJS/keyboard",
 
-				"orioneditor": "http://eclipse.org/orion/editor/releases/latest/built-editor-amd",
+				"orioneditor": "http://eclipse.org/orion/editor/releases/6.0/built-editor-amd",
 
 				"pnotify": "../components/pnotify/jquery.pnotify",
 

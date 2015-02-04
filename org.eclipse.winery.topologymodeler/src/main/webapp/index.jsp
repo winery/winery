@@ -157,7 +157,7 @@
 	<!-- x-editable -->
 	<link type="text/css" href="components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" media="all" rel="stylesheet" />
 
-	<link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/5.0/built-editor.css"/>
+	<link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/6.0/built-editor.css"/>
 
 	<!--  Winery as last: Winrey also overwrites some definitions from above -->
 	<link rel="stylesheet" href="css/winery-common.css" />
@@ -188,7 +188,7 @@
 			"jsplumb": "../components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4",
 
 			"keyboardjs": "../components/KeyboardJS/keyboard",
-			"orioneditor": "http://eclipse.org/orion/editor/releases/latest/built-editor-amd",
+			"orioneditor": "http://eclipse.org/orion/editor/releases/6.0/built-editor-amd",
 			"pnotify": "../components/pnotify/jquery.pnotify",
 			"select2": "../components/select2/select2",
 			"tmpl": "../components/blueimp-tmpl/js/tmpl",
