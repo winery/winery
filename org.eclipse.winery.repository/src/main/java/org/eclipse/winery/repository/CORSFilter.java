@@ -26,7 +26,7 @@ public class CORSFilter implements ContainerResponseFilter {
 	@Override
 	public ContainerResponse filter(ContainerRequest containerRequest, ContainerResponse containerResponse) {
 		ResponseBuilder response = Response.fromResponse(containerResponse.getResponse());
-		response.header("Access-Control-Allow-Origin", "*");
+		response.header("Access-Control-Allow-Origin", "*").header("Access-Control-Allow-Methods", "GET, PUT, OPTIONS");
 		containerResponse.setResponse(response.build());
 		return containerResponse;
 	}
