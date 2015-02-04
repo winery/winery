@@ -370,11 +370,11 @@ function updateDeploymentArtifact() {
 
 					<div class="form-group">
 						<label for="DAArtifactType" class="control-label">Artifact Type</label>
-						<a id="DAArtifactType" class="form-control"></a>
+						<a id="DAArtifactType" class="form-control" target="_blank"></a>
 					</div>
 					<div class="form-group">
 						<label for="DAArtifactTemplate" class="control-label">Artifact Template</label>
-						<a id="DAArtifactTemplate" class="form-control"></a>
+						<a id="DAArtifactTemplate" class="form-control" target="_blank"></a>
 					</div>
 					<div class="form-group">
 						<label for=DAXML" class="control-label">XML</label>
