@@ -1475,7 +1475,7 @@ function onDoneRegisterConnectionTypesAndConnectNodeTemplates() {
 		xmlns:ns1="{%=o.artifactTypeNSAndId.namespace%}"
 		artifactType="ns1:{%=o.artifactTypeNSAndId.localname%}"
 		{% if (o.artifactTemplateNSAndId) { %}
-		xmlns:ns2="{%=o.artifactTemplateNSAndId.namespace%}"/>
+		xmlns:ns2="{%=o.artifactTemplateNSAndId.namespace%}"
 		artifactRef="ns2:{%=o.artifactTemplateNSAndId.localname%}"
 		{% } %}
 		xmlns:tosca="<%=org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE%>" />
