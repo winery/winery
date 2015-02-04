@@ -227,9 +227,9 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	
 	@Override
 	public boolean exists(GenericId id) {
-		// We do not check for a property file, just for the existence of the
-		// directory in case of TOSCA components
-		return Files.exists(this.id2AbsolutePath(id));
+		Path absolutePath = this.id2AbsolutePath(id);
+		boolean result = Files.exists(absolutePath);
+		return result;
 	}
 	
 	/**
