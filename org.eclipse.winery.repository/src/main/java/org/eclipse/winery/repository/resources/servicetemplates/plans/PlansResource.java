@@ -118,6 +118,8 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		if (Repository.INSTANCE.exists(planId)) {
 			try {
 				Repository.INSTANCE.forceDelete(planId);
+				// Quick hack to remove the deleted plan from the plans element
+				((ServiceTemplateResource) this.res).synchronizeReferences();
 			} catch (IOException e) {
 				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			}
