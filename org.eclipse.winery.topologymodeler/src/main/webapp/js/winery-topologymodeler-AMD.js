@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -152,7 +152,6 @@ define(
 						"Policies");
 
 				/** Deployment Artifacts **/
-				// DAs do not store all data in the HTML, a global JavaScript variable is also used
 				var das = $(this).children("div.deploymentArtifactsContainer").children("div.content").children("div.deploymentArtifact");
 				if (das.length != 0) {
 					xmlw.writeStartElement("DeploymentArtifacts");
