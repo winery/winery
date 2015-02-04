@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -94,7 +94,13 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		if (StringUtils.isEmpty(language)) {
 			return Response.status(Status.BAD_REQUEST).entity("planLanguage must be given").build();
 		}
-		boolean bpmn4toscaMode = (uploadedInputStream == null);
+		
+		boolean bpmn4toscaMode = org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20.equals(language);
+		if (!bpmn4toscaMode) {
+			if (uploadedInputStream == null) {
+				return Response.status(Status.BAD_REQUEST).entity("file must be given").build();
+			}
+		}
 		
 		// A plan carries both a name and an ID
 		// To be user-friendly, we create the ID based on the name
