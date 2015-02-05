@@ -148,10 +148,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		plan.setName(name);
 		plan.setPlanType(type);
 		plan.setPlanLanguage(language);
-		PlanModelReference pref = new PlanModelReference();
-		// Set path relative to Definitions/ path inside CSAR.
-		pref.setReference("../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(planId)) + fileName);
-		plan.setPlanModelReference(pref);
+		PlansResource.setPlanModelReference(plan, planId, fileName);
 		this.list.add(plan);
 		
 		// prepare result
@@ -186,6 +183,13 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		} else {
 			return res;
 		}
+	}
+	
+	static void setPlanModelReference(TPlan plan, PlanId planId, String fileName) {
+		PlanModelReference pref = new PlanModelReference();
+		// Set path relative to Definitions/ path inside CSAR.
+		pref.setReference("../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(planId)) + fileName);
+		plan.setPlanModelReference(pref);
 	}
 	
 	@Override

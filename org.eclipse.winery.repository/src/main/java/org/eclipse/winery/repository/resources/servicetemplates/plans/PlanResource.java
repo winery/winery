@@ -152,7 +152,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	
 	@Path("file")
 	public PlanFileResource getPlanFileResource() {
-		return new PlanFileResource(this.getId());
+		return new PlanFileResource((ServiceTemplateResource) this.res, this.getId(), this.o);
 	}
 	
 	@GET

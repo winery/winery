@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 University of Stuttgart.
+ * Copyright (c) 2014-2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates.plans;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,9 +25,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.elements.PlanId;
-import org.eclipse.winery.repository.Constants;
+import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.restdoc.annotations.RestDoc;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -36,15 +38,23 @@ import com.sun.jersey.multipart.FormDataParam;
 public class PlanFileResource {
 	
 	private final PlanId planId;
+	private TPlan plan;
+	private ServiceTemplateResource res;
 	
 	
-	public PlanFileResource(PlanId planId) {
+	public PlanFileResource(ServiceTemplateResource res, PlanId planId, TPlan plan) {
+		this.res = res;
 		this.planId = planId;
+		this.plan = plan;
 	}
 	
+	/**
+	 * Extracts the file reference from plan's planModelReference
+	 */
 	private RepositoryFileReference getFileRef() {
-		String fileName = this.planId.getXmlId().getEncoded() + Constants.SUFFIX_BPMN4TOSCA;
-		return new RepositoryFileReference(this.planId, fileName);
+		String reference = this.plan.getPlanModelReference().getReference();
+		File f = new File(reference);
+		return new RepositoryFileReference(this.planId, f.getName());
 	}
 	
 	@PUT
@@ -58,21 +68,38 @@ public class PlanFileResource {
 	) {
 	// @formatter:on
 		
+		String fileName = fileDetail.getFileName();
+		RepositoryFileReference ref = new RepositoryFileReference(this.planId, fileName);
+		RepositoryFileReference oldRef = this.getFileRef();
+		boolean persistanceNecessary;
+		if (ref.equals(oldRef)) {
+			// nothing todo, file will be replaced
+			persistanceNecessary = false;
+		} else {
+			// new filename sent
+			BackendUtils.delete(oldRef);
+			PlansResource.setPlanModelReference(this.plan, this.planId, fileName);
+			persistanceNecessary = true;
+		}
+		
 		// Really store it
 		try {
-			Repository.INSTANCE.putContentToFile(this.getFileRef(), uploadedInputStream, body.getMediaType());
+			Repository.INSTANCE.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 		} catch (IOException e1) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
 		}
 		
-		return Response.noContent().build();
+		if (persistanceNecessary) {
+			return BackendUtils.persist(this.res);
+		} else {
+			return Response.noContent().build();
+		}
 	}
 	
 	@PUT
 	@Consumes({MediaType.APPLICATION_JSON})
-	@RestDoc(methodDescription = "Resource currently works for BPMN4TOSCA plans only")
 	// @formatter:off
-	public Response onPutJson(InputStream is) {
+	public Response onPutJSON(InputStream is) {
 		RepositoryFileReference ref = this.getFileRef();
 		return BackendUtils.putContentToFile(ref, is, MediaType.APPLICATION_JSON_TYPE);
 	}
