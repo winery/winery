@@ -7,9 +7,9 @@
 		</encoder>
 	</appender>
 
-	<logger name="org.opentosca" level="TRACE"/>
+	<logger name="org.eclipse.winery" level="TRACE"/>
 
-	<root level="info">
+	<root level="DEBUG">
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>
