@@ -774,8 +774,14 @@ public class Utils {
 	public static boolean isResourceAvailable(String path) {
 		Client client = Client.create();
 		WebResource wr = client.resource(path);
-		ClientResponse response = wr.head();
-		boolean res = (response.getClientResponseStatus().getFamily().equals(Family.SUCCESSFUL));
+		boolean res;
+		try {
+			ClientResponse response = wr.head();
+			res = (response.getClientResponseStatus().getFamily().equals(Family.SUCCESSFUL));
+		} catch (com.sun.jersey.api.client.ClientHandlerException ex) {
+			// In the case of a java.net.ConnectException, return false
+			res = false;
+		}
 		return res;
 	}
 }
