@@ -119,7 +119,7 @@ public class XSDImportResource extends GenericImportResource {
 			result = new ArrayList<String>(len);
 			for (int i = 0; i < len; i++) {
 				XSObject item = components.item(i);
-				// if queried for TYPE_DEFINITON, then XSD base types (such as IDREF) are also returned
+				// if queried for TYPE_DEFINITION, then XSD base types (such as IDREF) are also returned
 				// We want to return only types defined in the namespace of this resource
 				if (item.getNamespace().equals(this.id.getNamespace().getDecoded())) {
 					result.add(item.getName());

@@ -969,7 +969,7 @@ public class CSARImporter {
 					// fallback for older CSARs, where the location is given from the root
 					if (!Files.exists(defsPath)) {
 						defsPath = basePath.getParent().resolve(loc);
-						// the real existance check is done in importDefinitions
+						// the real existence check is done in importDefinitions
 					}
 					this.importDefinitions(tmf, defsPath, errors, overwrite);
 					// imports of definitions don't have to be kept as these are managed by Winery

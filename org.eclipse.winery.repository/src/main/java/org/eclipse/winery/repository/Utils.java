@@ -647,7 +647,7 @@ public class Utils {
 	 * 
 	 * @param template the template to determine the type for
 	 */
-	// we supress "unchecked" as we use Class.forName
+	// we suppress "unchecked" as we use Class.forName
 	@SuppressWarnings("unchecked")
 	public static TEntityType getTypeForTemplate(TEntityTemplate template) {
 		QName type = template.getType();
