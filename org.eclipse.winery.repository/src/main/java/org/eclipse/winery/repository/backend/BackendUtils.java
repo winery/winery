@@ -92,6 +92,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.ls.LSInput;
 
+import com.sun.jersey.core.header.ContentDisposition;
+
 /**
  * Contains generic utility functions for the Backend
  * 
@@ -289,6 +291,9 @@ public class BackendUtils {
 			BackendUtils.logger.debug("Could not determine mime type", e);
 			return Response.serverError();
 		}
+		// set filename
+		ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(ref.getFileName()).modificationDate(new Date(lastModified.toMillis())).build();
+		res.header("Content-Disposition", contentDisposition);
 		return res;
 	}
 	
