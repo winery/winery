@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -114,6 +116,10 @@ import org.w3c.dom.Element;
 public class CSARImporter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CSARImporter.class);
+	
+	// ExecutorService for XSD schema initialization
+	// Threads set to 1 to avoid testing for parallel processing of the same XSD file
+	private static final ExecutorService service = Executors.newFixedThreadPool(1);
 	
 	
 	/**
@@ -1076,12 +1082,22 @@ public class CSARImporter {
 			
 			// we have to update the cache in case of a new XSD to speedup usage of winery
 			if (rid instanceof XSDImportId) {
-				CSARImporter.logger.debug("Updating XSD import cache data");
-				// We call the queries without storing the result:
-				// We use the SIDEEFFECT that a cache is created
-				Utils.getAllXSDElementDefinitionsForTypeAheadSelection();
-				Utils.getAllXSDTypeDefinitionsForTypeAheadSelection();
-				CSARImporter.logger.debug("Updated XSD import cache data");
+				// We do the initialization asynchronously
+				// We do not check whether the XSD has already been checked
+				// We cannot just checck whether an XSD already has been handled since the XSD could change over time
+				// Synchronization at org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportResource.getAllDefinedLocalNames(short) also isn't feasible as the backend doesn't support locks
+				CSARImporter.service.submit(new Runnable() {
+					
+					@Override
+					public void run() {
+						CSARImporter.logger.debug("Updating XSD import cache data");
+						// We call the queries without storing the result:
+						// We use the SIDEEFFECT that a cache is created
+						Utils.getAllXSDElementDefinitionsForTypeAheadSelection();
+						Utils.getAllXSDTypeDefinitionsForTypeAheadSelection();
+						CSARImporter.logger.debug("Updated XSD import cache data");
+					}
+				});
 			}
 		}
 	}
