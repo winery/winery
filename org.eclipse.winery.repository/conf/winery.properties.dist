@@ -4,10 +4,6 @@
 #Warning to be displayed
 warning = Development version ${project.version}
 
-#speedup at first XML save
-#default: false
-initializeXMLValidationDuringStartup = true
-
 #BPMN4TOSCA Modeler URI
 #default: nothing
 #bpmn4toscamodelerBaseURI=

@@ -66,8 +66,6 @@ public class Prefs implements ServletContextListener {
 	static final String PROP_JCLOUDS_CONTAINERNAME = "jclouds.blobstore.container";
 	static final String PROP_JCLOUDS_END_POINT = "jclouds.blobstore.endpoint";
 	
-	static final String PROP_INITIALIZE_XML_VALIDATION_DURING_STARTUP = "initializeXMLValidationDuringStartup";
-	
 	static final String PROP_BPMN4TOSCA_MODELER_URI = "bpmn4toscamodelerBaseURI";
 	
 	
@@ -205,19 +203,18 @@ public class Prefs implements ServletContextListener {
 		
 		this.doRepositoryInitialization();
 		
-		String init = p.getProperty(Prefs.PROP_INITIALIZE_XML_VALIDATION_DURING_STARTUP);
-		boolean doXMLInitialization = false;
-		if (p != null) {
-			doXMLInitialization = Boolean.parseBoolean(init);
-		}
-		if (doXMLInitialization) {
-			// initialize XSD validation. Takes up a few seconds
-			// if we do not do it here, the first save by a user takes a few seconds, which is inconvenient
-			Prefs.logger.debug("Initializing XML validation");
-			@SuppressWarnings("unused")
-			TOSCADocumentBuilderFactory tdbf = TOSCADocumentBuilderFactory.INSTANCE;
-			Prefs.logger.debug("Initialized XML validation");
-		}
+		// Initialize XSD validation in the background. Takes up a few seconds.
+		// If we do not do it here, the first save by a user takes a few seconds, which is inconvenient
+		new Thread() {
+			
+			@Override
+			public void run() {
+				Prefs.logger.debug("Initializing XML validation");
+				@SuppressWarnings("unused")
+				TOSCADocumentBuilderFactory tdbf = TOSCADocumentBuilderFactory.INSTANCE;
+				Prefs.logger.debug("Initialized XML validation");
+			}
+		}.start();
 	}
 	
 	public IRepository getRepository() {
