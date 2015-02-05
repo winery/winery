@@ -128,6 +128,12 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		String fileName;
 		if (bpmn4toscaMode) {
 			fileName = xmlId + Constants.SUFFIX_BPMN4TOSCA;
+			RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
+			try {
+				Repository.INSTANCE.putContentToFile(ref, "{}", MediaType.APPLICATION_JSON_TYPE);
+			} catch (IOException e1) {
+				return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create empty plan. " + e1.getMessage()).build();
+			}
 		} else {
 			// We use the filename also as local file name. Alternatively, we could use the xml id
 			// With URL encoding, this should not be an issue

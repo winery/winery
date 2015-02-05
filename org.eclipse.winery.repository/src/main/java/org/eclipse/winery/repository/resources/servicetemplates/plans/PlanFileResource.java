@@ -105,16 +105,11 @@ public class PlanFileResource {
 	}
 
 	/**
-	 * Returns the stored JSON. If file does not exist, "{}" is returned.
-	 * If the whole plan does not exist, the parent resource returns 404.
+	 * Returns the stored file.
 	 */
 	@GET
 	public Response getFile(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = this.getFileRef();
-		if (Repository.INSTANCE.exists(ref)) {
-			return BackendUtils.returnRepoPath(ref, modified);
-		} else {
-			return Response.ok("{}").build();
-		}
+		return BackendUtils.returnRepoPath(ref, modified);
 	}
 }
