@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -121,10 +121,11 @@ public class CSARImporter {
 	 * 
 	 * @param in the inputstream to read from
 	 * @param errorList the list of errors during the import. Has to be non-null
+	 * @param overwrite if true: contents of the repo are overwritten
 	 * 
 	 * @throws InvalidCSARException if the CSAR is invalid
 	 */
-	public void readCSAR(InputStream in, List<String> errors) throws IOException {
+	public void readCSAR(InputStream in, List<String> errors, boolean overwrite) throws IOException {
 		// we have to extract the file to a temporary directory as
 		// the .definitions file does not necessarily have to be the first entry in the archive
 		Path csarDir = Files.createTempDirectory("winery");
@@ -138,7 +139,7 @@ public class CSARImporter {
 					Files.copy(zis, targetPath);
 				}
 			}
-			this.importFromDir(csarDir, errors);
+			this.importFromDir(csarDir, errors, overwrite);
 		} catch (Exception e) {
 			CSARImporter.logger.debug("Could not import CSAR", e);
 			throw e;
@@ -151,11 +152,12 @@ public class CSARImporter {
 	/**
 	 * Import an extracted CSAR from a directory
 	 * 
-	 * @param path the root path of an extraced CSAR file
+	 * @param path the root path of an extracted CSAR file
+	 * @param overwrite if true: contents of the repo are overwritten
 	 * @throws InvalidCSARException
 	 * @throws IOException
 	 */
-	void importFromDir(final Path path, final List<String> errors) throws IOException {
+	void importFromDir(final Path path, final List<String> errors, final boolean overwrite) throws IOException {
 		Path toscaMetaPath = path.resolve("TOSCA-Metadata/TOSCA.meta");
 		if (!Files.exists(toscaMetaPath)) {
 			errors.add("TOSCA.meta does not exist");
@@ -171,7 +173,7 @@ public class CSARImporter {
 			// we obey the entry definitions and "just" import that
 			// imported definitions are added recursively
 			Path defsPath = path.resolve(tmf.getEntryDefinitions());
-			this.importDefinitions(tmf, defsPath, errors);
+			this.importDefinitions(tmf, defsPath, errors, overwrite);
 			
 			this.importSelfServiceMetaData(tmf, path, defsPath, errors);
 		} else {
@@ -199,7 +201,7 @@ public class CSARImporter {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 					try {
-						CSARImporter.this.importDefinitions(tmf, file, errors);
+						CSARImporter.this.importDefinitions(tmf, file, errors, overwrite);
 					} catch (IOException e) {
 						exceptions.add(e);
 						return FileVisitResult.TERMINATE;
@@ -363,11 +365,12 @@ public class CSARImporter {
 	 * 
 	 * @param tmf the TOSCAMetaFile object holding the parsed content of a TOSCA
 	 *            meta file
-	 * @param definitions the path to the defintions to imprt
+	 * @param overwrite true: existing contents are overwritten
+	 * @param definitions the path to the definitions to import
 	 * 
 	 * @throws IOException
 	 */
-	private void importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors) throws IOException {
+	private void importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors, boolean overwrite) throws IOException {
 		if (tmf == null) {
 			throw new IllegalStateException("tmf must not be null");
 		}
@@ -402,7 +405,7 @@ public class CSARImporter {
 		}
 		
 		List<TImport> imports = defs.getImport();
-		this.importImports(defsPath.getParent(), tmf, imports, errors);
+		this.importImports(defsPath.getParent(), tmf, imports, errors, overwrite);
 		// imports has been modified to contain necessary imports only
 		
 		// this method adds new imports to defs which may not be imported using "importImports".
@@ -425,10 +428,16 @@ public class CSARImporter {
 			TOSCAComponentId wid = BackendUtils.getTOSCAcomponentId(widClass, namespace, id, false);
 			
 			if (Repository.INSTANCE.exists(wid)) {
-				String msg = String.format("Skipped %1$s %2$s, because it already exists", ci.getClass().getName(), wid.getQName().toString());
-				CSARImporter.logger.debug(msg);
-				// this is not displayed in the UI as we currently do not distinguish between pre-existing types and types created during the import.
-				continue;
+				if (overwrite) {
+					Repository.INSTANCE.forceDelete(wid);
+					String msg = String.format("Deleted %1$s %2$s to enable replacement", ci.getClass().getName(), wid.getQName().toString());
+					CSARImporter.logger.debug(msg);
+				} else {
+					String msg = String.format("Skipped %1$s %2$s, because it already exists", ci.getClass().getName(), wid.getQName().toString());
+					CSARImporter.logger.debug(msg);
+					// this is not displayed in the UI as we currently do not distinguish between pre-existing types and types created during the import.
+					continue;
+				}
 			}
 			
 			// Create a fresh definitions object without the other data.
@@ -932,7 +941,7 @@ public class CSARImporter {
 	 *            modified. After this method has run, the list contains the
 	 *            imports to be put into the wrapper element
 	 */
-	private void importImports(Path basePath, TOSCAMetaFile tmf, List<TImport> imports, final List<String> errors) throws IOException {
+	private void importImports(Path basePath, TOSCAMetaFile tmf, List<TImport> imports, final List<String> errors, boolean overwrite) throws IOException {
 		for (Iterator<TImport> iterator = imports.iterator(); iterator.hasNext();) {
 			TImport imp = iterator.next();
 			String importType = imp.getImportType();
@@ -962,11 +971,11 @@ public class CSARImporter {
 						defsPath = basePath.getParent().resolve(loc);
 						// the real existance check is done in importDefinitions
 					}
-					this.importDefinitions(tmf, defsPath, errors);
+					this.importDefinitions(tmf, defsPath, errors, overwrite);
 					// imports of definitions don't have to be kept as these are managed by Winery
 					iterator.remove();
 				} else {
-					this.importOtherImport(basePath, imp, errors, importType);
+					this.importOtherImport(basePath, imp, errors, importType, overwrite);
 				}
 			}
 		}
@@ -978,7 +987,7 @@ public class CSARImporter {
 	 * 
 	 * @param rootPath the absolute path where to resolve files from
 	 */
-	private void importOtherImport(Path rootPath, TImport imp, final List<String> errors, String type) {
+	private void importOtherImport(Path rootPath, TImport imp, final List<String> errors, String type, boolean overwrite) {
 		assert (!type.equals(Namespaces.TOSCA_NAMESPACE));
 		String loc = imp.getLocation();
 		
@@ -1049,7 +1058,7 @@ public class CSARImporter {
 		String newLoc = "../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(fileRef));
 		imp.setLocation(newLoc);
 		
-		if (!importDataExistsInRepo) {
+		if (!importDataExistsInRepo || overwrite) {
 			// finally write the file to the storage
 			try (InputStream is = Files.newInputStream(path);
 					BufferedInputStream bis = new BufferedInputStream(is)) {

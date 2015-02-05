@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -40,6 +40,7 @@ import org.eclipse.winery.repository.resources.entitytypes.requirementtypes.Requ
 import org.eclipse.winery.repository.resources.imports.ImportsResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplatesResource;
 import org.restdoc.annotations.RestDoc;
+import org.restdoc.annotations.RestDocParam;
 import org.restdoc.annotations.RestDocReturnCode;
 
 import com.sun.jersey.api.view.Viewable;
@@ -137,11 +138,17 @@ public class MainResource {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@RestDoc(methodDescription = "Imports the given CSAR (sent by simplesinglefileupload.jsp)")
 	@RestDocReturnCode(code = "200", description = "If the CSAR could be partially imported, the points where it failed are returned in the body")
-	public Response importCSAR(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+	// @formatter:off
+	public Response importCSAR(
+		@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
+		@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite) {
+		// @formatter:on
 		CSARImporter importer = new CSARImporter();
 		List<String> errors = new ArrayList<String>();
+		boolean ow;
+		ow = (overwrite != null) && overwrite;
 		try {
-			importer.readCSAR(uploadedInputStream, errors);
+			importer.readCSAR(uploadedInputStream, errors, ow);
 		} catch (Exception e) {
 			return Response.serverError().entity("Could not import CSAR").entity(e.getMessage()).build();
 		}
