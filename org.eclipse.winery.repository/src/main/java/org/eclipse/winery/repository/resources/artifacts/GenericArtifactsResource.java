@@ -51,7 +51,9 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.generators.ia.Generator;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.repository.Utils;
@@ -111,6 +113,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	@Produces(MediaType.TEXT_XML)
 	@RestDoc(methodDescription = "Creates a new implementation/deployment artifact. " +
 			"If an implementation artifact with the same name already exists, it is <em>overridden</em>.")
+	@SuppressWarnings("unchecked")
 	public Response onPost(
 			@FormParam("artifactName")
 			@RestDocParam(description = "This is the name of the implementation/deployment artifact. " +
@@ -283,63 +286,55 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		
 		// Create the artifact itself
 		
-		ArtifactResource artifactResource = this.getArtifactResourceWithDecodedId(artifactNameStr);
-		
-		// Winery internal id is the name of the artifact:
-		// store the name
-		if (this instanceof ImplementationArtifactsResource) {
-			((ImplementationArtifactResource) artifactResource).getImplementationArtifact().setName(artifactNameStr);
-		} else {
-			((DeploymentArtifactResource) artifactResource).getDeploymentArtifact().setName(artifactNameStr);
-		}
+		ArtifactT resultingArtifact;
 		
 		if (this instanceof ImplementationArtifactsResource) {
-			// store interface name
-			if (!StringUtils.isEmpty(interfaceNameStr)) {
-				((ImplementationArtifactResource) artifactResource).getImplementationArtifact().setInterfaceName(interfaceNameStr);
+			ImplementationArtifact a = new ImplementationArtifact();
+			// Winery internal id is the name of the artifact:
+			// store the name
+			a.setName(artifactNameStr);
+			a.setInterfaceName(interfaceNameStr);
+			a.setOperationName(operationNameStr);
+			assert (artifactTypeId != null);
+			a.setArtifactType(artifactTypeId.getQName());
+			if (artifactTemplateId != null) {
+				a.setArtifactRef(artifactTemplateId.getQName());
 			}
-			// store operation name
-			if (!StringUtils.isEmpty(operationNameStr)) {
-				((ImplementationArtifactResource) artifactResource).getImplementationArtifact().setOperationName(operationNameStr);
+			if (doc != null) {
+				// the content has been checked for validity at the beginning of the method.
+				// If this point in the code is reached, the XML has been parsed into doc
+				// just copy over the dom node. Hopefully, that works...
+				a.getAny().add(doc.getDocumentElement());
 			}
-		}
-		
-		// store artifact type, artifact template, and artifact specific content information
-		
-		// store artifact type
-		assert (artifactTypeId != null);
-		artifactResource.setArtifactType(artifactTypeId);
-		
-		// store artifact template
-		if (artifactTemplateId != null) {
-			artifactResource.setArtifactTemplate(artifactTemplateId);
-		}
-		
-		if (doc != null) {
-			// the content has been checked for validity at the beginning of the method.
-			// If this point in the code is reached, the XML has been parsed into doc
 			
-			List<Object> any;
-			if (this instanceof ImplementationArtifactsResource) {
-				any = ((ImplementationArtifactResource) artifactResource).getImplementationArtifact().getAny();
-			} else {
-				any = ((DeploymentArtifactResource) artifactResource).getDeploymentArtifact().getAny();
+			this.list.add((ArtifactT) a);
+			resultingArtifact = (ArtifactT) a;
+		} else {
+			// for comments see other branch
+			
+			TDeploymentArtifact a = new TDeploymentArtifact();
+			a.setName(artifactNameStr);
+			assert (artifactTypeId != null);
+			a.setArtifactType(artifactTypeId.getQName());
+			if (artifactTemplateId != null) {
+				a.setArtifactRef(artifactTemplateId.getQName());
 			}
-			// just copy over the dom node. Hopefully, that works...
-			any.add(doc.getDocumentElement());
+			if (doc != null) {
+				a.getAny().add(doc.getDocumentElement());
+			}
+			
+			this.list.add((ArtifactT) a);
+			resultingArtifact = (ArtifactT) a;
 		}
+		
+		Response persistResponse = BackendUtils.persist(super.res);
+		// TODO: check for error and in case one found return that
 		
 		if (StringUtils.isEmpty(autoGenerateIA)) {
 			// no IA generation
-			// we include a JSON array for the data table
+			// we include an XML for the data table
 			
-			Object implOrDeplArtifact;
-			if (this instanceof ImplementationArtifactsResource) {
-				implOrDeplArtifact = ((ImplementationArtifactResource) artifactResource).getImplementationArtifact();
-			} else {
-				implOrDeplArtifact = ((DeploymentArtifactResource) artifactResource).getDeploymentArtifact();
-			}
-			String implOrDeplArtifactXML = Utils.getXMLAsString(implOrDeplArtifact);
+			String implOrDeplArtifactXML = Utils.getXMLAsString(resultingArtifact);
 			
 			return Response.created(Utils.createURI(Util.URLencode(artifactNameStr))).entity(implOrDeplArtifactXML).build();
 		} else {
