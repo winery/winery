@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -46,6 +46,10 @@ public abstract class ImplementationsOfOneType {
 		Viewable viewable = new Viewable("/jsp/entitytypes/implementations.jsp", this);
 		return Response.ok().entity(viewable).build();
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public abstract Response getJSON();
 	
 	public Collection<Namespace> getNamespaceAutocompletionList() {
 		return NamespacesResource.getNamespaces();
