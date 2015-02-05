@@ -43,6 +43,6 @@ public class TestCSARImporter {
 		CSARImporter i = new CSARImporter();
 		Path p = FileSystems.getDefault().getPath("C:\\Users\\Oliver\\BTSync\\Projects\\OpenTOSCA\\MoodleInteropCSAR\\trunk");
 		List<String> errors = new ArrayList<String>();
-		i.importFromDir(p, errors, true);
+		i.importFromDir(p, errors, true, false);
 	}
 }

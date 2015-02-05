@@ -148,7 +148,7 @@ public class MainResource {
 		boolean ow;
 		ow = (overwrite != null) && overwrite;
 		try {
-			importer.readCSAR(uploadedInputStream, errors, ow);
+			importer.readCSAR(uploadedInputStream, errors, ow, true);
 		} catch (Exception e) {
 			return Response.serverError().entity("Could not import CSAR").entity(e.getMessage()).build();
 		}

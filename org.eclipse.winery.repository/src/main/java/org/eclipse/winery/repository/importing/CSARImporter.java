@@ -119,7 +119,9 @@ public class CSARImporter {
 	
 	// ExecutorService for XSD schema initialization
 	// Threads set to 1 to avoid testing for parallel processing of the same XSD file
-	private static final ExecutorService service = Executors.newFixedThreadPool(1);
+	private static final ExecutorService xsdParsingService = Executors.newFixedThreadPool(1);
+	
+	private static final ExecutorService entityTypeAdjestmentService = Executors.newFixedThreadPool(10);
 	
 	
 	/**
@@ -131,7 +133,7 @@ public class CSARImporter {
 	 * 
 	 * @throws InvalidCSARException if the CSAR is invalid
 	 */
-	public void readCSAR(InputStream in, List<String> errors, boolean overwrite) throws IOException {
+	public void readCSAR(InputStream in, List<String> errors, boolean overwrite, final boolean asyncWPDParsing) throws IOException {
 		// we have to extract the file to a temporary directory as
 		// the .definitions file does not necessarily have to be the first entry in the archive
 		Path csarDir = Files.createTempDirectory("winery");
@@ -145,7 +147,7 @@ public class CSARImporter {
 					Files.copy(zis, targetPath);
 				}
 			}
-			this.importFromDir(csarDir, errors, overwrite);
+			this.importFromDir(csarDir, errors, overwrite, asyncWPDParsing);
 		} catch (Exception e) {
 			CSARImporter.logger.debug("Could not import CSAR", e);
 			throw e;
@@ -160,10 +162,13 @@ public class CSARImporter {
 	 * 
 	 * @param path the root path of an extracted CSAR file
 	 * @param overwrite if true: contents of the repo are overwritten
+	 * @param asyncWPDParsing true if WPD should be parsed asynchronously to
+	 *            speed up the import. Required, because JUnit terminates the
+	 *            used ExecutorService
 	 * @throws InvalidCSARException
 	 * @throws IOException
 	 */
-	void importFromDir(final Path path, final List<String> errors, final boolean overwrite) throws IOException {
+	void importFromDir(final Path path, final List<String> errors, final boolean overwrite, final boolean asyncWPDParsing) throws IOException {
 		Path toscaMetaPath = path.resolve("TOSCA-Metadata/TOSCA.meta");
 		if (!Files.exists(toscaMetaPath)) {
 			errors.add("TOSCA.meta does not exist");
@@ -179,7 +184,7 @@ public class CSARImporter {
 			// we obey the entry definitions and "just" import that
 			// imported definitions are added recursively
 			Path defsPath = path.resolve(tmf.getEntryDefinitions());
-			this.importDefinitions(tmf, defsPath, errors, overwrite);
+			this.importDefinitions(tmf, defsPath, errors, overwrite, asyncWPDParsing);
 			
 			this.importSelfServiceMetaData(tmf, path, defsPath, errors);
 		} else {
@@ -207,7 +212,7 @@ public class CSARImporter {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 					try {
-						CSARImporter.this.importDefinitions(tmf, file, errors, overwrite);
+						CSARImporter.this.importDefinitions(tmf, file, errors, overwrite, asyncWPDParsing);
 					} catch (IOException e) {
 						exceptions.add(e);
 						return FileVisitResult.TERMINATE;
@@ -372,11 +377,12 @@ public class CSARImporter {
 	 * @param tmf the TOSCAMetaFile object holding the parsed content of a TOSCA
 	 *            meta file
 	 * @param overwrite true: existing contents are overwritten
+	 * @param asyncWPDParsing
 	 * @param definitions the path to the definitions to import
 	 * 
 	 * @throws IOException
 	 */
-	private void importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors, boolean overwrite) throws IOException {
+	private void importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors, boolean overwrite, boolean asyncWPDParsing) throws IOException {
 		if (tmf == null) {
 			throw new IllegalStateException("tmf must not be null");
 		}
@@ -411,7 +417,7 @@ public class CSARImporter {
 		}
 		
 		List<TImport> imports = defs.getImport();
-		this.importImports(defsPath.getParent(), tmf, imports, errors, overwrite);
+		this.importImports(defsPath.getParent(), tmf, imports, errors, overwrite, asyncWPDParsing);
 		// imports has been modified to contain necessary imports only
 		
 		// this method adds new imports to defs which may not be imported using "importImports".
@@ -420,7 +426,7 @@ public class CSARImporter {
 		
 		String defaultNamespace = defs.getTargetNamespace();
 		List<TExtensibleElements> componentInstanceList = defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation();
-		for (TExtensibleElements ci : componentInstanceList) {
+		for (final TExtensibleElements ci : componentInstanceList) {
 			// Determine namespace
 			String namespace = this.getNamespace(ci, defaultNamespace);
 			// Ensure that element has the namespace
@@ -431,7 +437,7 @@ public class CSARImporter {
 			
 			// Determine WineryId
 			Class<? extends TOSCAComponentId> widClass = org.eclipse.winery.repository.Utils.getComponentIdClassForTExtensibleElements(ci.getClass());
-			TOSCAComponentId wid = BackendUtils.getTOSCAcomponentId(widClass, namespace, id, false);
+			final TOSCAComponentId wid = BackendUtils.getTOSCAcomponentId(widClass, namespace, id, false);
 			
 			if (Repository.INSTANCE.exists(wid)) {
 				if (overwrite) {
@@ -447,7 +453,7 @@ public class CSARImporter {
 			}
 			
 			// Create a fresh definitions object without the other data.
-			Definitions newDefs = BackendUtils.createWrapperDefinitions(wid);
+			final Definitions newDefs = BackendUtils.createWrapperDefinitions(wid);
 			
 			// copy over the inputs determined by this.importImports
 			newDefs.getImport().addAll(imports);
@@ -470,10 +476,25 @@ public class CSARImporter {
 			// node types and relationship types are subclasses of TEntityType
 			// Therefore, we check the entity type separately here
 			if (ci instanceof TEntityType) {
-				this.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
+				if (asyncWPDParsing) {
+					// Adjusting takes a long time
+					// Therefore, we first save the type as is and convert to Winery-Property-Definitions in the background
+					CSARImporter.storeDefinitions(wid, newDefs);
+					CSARImporter.entityTypeAdjestmentService.submit(new Runnable() {
+						
+						@Override
+						public void run() {
+							CSARImporter.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
+							CSARImporter.storeDefinitions(wid, newDefs);
+						}
+					});
+				} else {
+					CSARImporter.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
+					CSARImporter.storeDefinitions(wid, newDefs);
+				}
+			} else {
+				CSARImporter.storeDefinitions(wid, newDefs);
 			}
-			
-			this.storeDefinitions(wid, newDefs);
 		}
 	}
 	
@@ -518,7 +539,7 @@ public class CSARImporter {
 					imp.setImportType(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 					imp.setNamespace(ns);
 					wrapperDefs.getImport().add(imp);
-					this.storeDefinitions(importId, wrapperDefs);
+					CSARImporter.storeDefinitions(importId, wrapperDefs);
 					
 					// put the file itself to the repo
 					// ref is required to generate fileRef
@@ -559,7 +580,7 @@ public class CSARImporter {
 	 *            imports might be adjusted here
 	 * @param errors
 	 */
-	private void adjustEntityType(TEntityType ci, EntityTypeId wid, Definitions newDefs, final List<String> errors) {
+	private static void adjustEntityType(TEntityType ci, EntityTypeId wid, Definitions newDefs, final List<String> errors) {
 		PropertiesDefinition propertiesDefinition = ci.getPropertiesDefinition();
 		if (propertiesDefinition != null) {
 			WinerysPropertiesDefinition winerysPropertiesDefinition = ModelUtilities.getWinerysPropertiesDefinition(ci);
@@ -947,7 +968,7 @@ public class CSARImporter {
 	 *            modified. After this method has run, the list contains the
 	 *            imports to be put into the wrapper element
 	 */
-	private void importImports(Path basePath, TOSCAMetaFile tmf, List<TImport> imports, final List<String> errors, boolean overwrite) throws IOException {
+	private void importImports(Path basePath, TOSCAMetaFile tmf, List<TImport> imports, final List<String> errors, boolean overwrite, final boolean asyncWPDParsing) throws IOException {
 		for (Iterator<TImport> iterator = imports.iterator(); iterator.hasNext();) {
 			TImport imp = iterator.next();
 			String importType = imp.getImportType();
@@ -977,7 +998,7 @@ public class CSARImporter {
 						defsPath = basePath.getParent().resolve(loc);
 						// the real existence check is done in importDefinitions
 					}
-					this.importDefinitions(tmf, defsPath, errors, overwrite);
+					this.importDefinitions(tmf, defsPath, errors, overwrite, asyncWPDParsing);
 					// imports of definitions don't have to be kept as these are managed by Winery
 					iterator.remove();
 				} else {
@@ -1050,7 +1071,7 @@ public class CSARImporter {
 			imp.setLocation(fileName);
 			
 			// put the definitions file to the repository
-			this.storeDefinitions(rid, defs);
+			CSARImporter.storeDefinitions(rid, defs);
 		}
 		
 		// put the file itself to the repo
@@ -1086,7 +1107,7 @@ public class CSARImporter {
 				// We do not check whether the XSD has already been checked
 				// We cannot just checck whether an XSD already has been handled since the XSD could change over time
 				// Synchronization at org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportResource.getAllDefinedLocalNames(short) also isn't feasible as the backend doesn't support locks
-				CSARImporter.service.submit(new Runnable() {
+				CSARImporter.xsdParsingService.submit(new Runnable() {
 					
 					@Override
 					public void run() {
@@ -1102,7 +1123,7 @@ public class CSARImporter {
 		}
 	}
 	
-	private void storeDefinitions(TOSCAComponentId id, TDefinitions defs) {
+	private static void storeDefinitions(TOSCAComponentId id, TDefinitions defs) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		String s = Utils.getXMLAsString(defs, true);
 		try {
