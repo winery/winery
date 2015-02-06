@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -232,18 +232,24 @@ public class Generator {
 				for (TParameter parameter : op.getInputParameters().getInputParameter()) {
 					String parameterName = parameter.getName();
 					
-					// All parameters are handled as required parameters!
-					if (parameter.getRequired().equals(TBoolean.NO)) {
-						Generator.logger.debug("Optional parameters are not supported. Therefore, the optional parameter " + parameterName + " is handled as required parameter.");
-					}
-					
 					if (first) {
 						first = false;
 						sb.append("\t\t");
 					} else {
 						sb.append(",\n\t\t");
 					}
-					sb.append("@WebParam(name=\"" + parameterName + "\", targetNamespace=\"" + this.namespace + "\") String " + parameterName);
+					
+					// Generate @WebParam
+					sb.append("@WebParam(name=\"" + parameterName + "\", targetNamespace=\"" + this.namespace + "\") ");
+					
+					// Handle required and optional parameters using @XmlElement
+					if (parameter.getRequired().equals(TBoolean.YES)) {
+						sb.append("@XmlElement(required=true)");
+					} else {
+						sb.append("@XmlElement(required=false)");
+					}
+					
+					sb.append(" String " + parameterName);
 				}
 			}
 			sb.append("\n\t) {\n");
