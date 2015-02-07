@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.importing.CSARImporter;
+import org.eclipse.winery.repository.resources.API.APIResource;
 import org.eclipse.winery.repository.resources.admin.AdminTopResource;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.resources.entitytemplates.policytemplates.PolicyTemplatesResource;
@@ -52,6 +53,11 @@ import com.sun.jersey.multipart.FormDataParam;
  */
 @Path("/")
 public class MainResource {
+	
+	@Path("API/")
+	public APIResource api() {
+		return new APIResource();
+	}
 	
 	@Path("artifacttemplates/")
 	public ArtifactTemplatesResource artifacttemplates() {
