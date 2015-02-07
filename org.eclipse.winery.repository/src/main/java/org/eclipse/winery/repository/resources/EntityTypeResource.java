@@ -12,10 +12,7 @@
 package org.eclipse.winery.repository.resources;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,7 +25,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
+import org.eclipse.winery.repository.datatypes.select2.Select2DataWithOptGroups;
 import org.eclipse.winery.repository.datatypes.select2.Select2OptGroup;
 import org.eclipse.winery.repository.resources.entitytypes.properties.PropertiesDefinitionResource;
 
@@ -65,30 +62,17 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 	 * Used by children to implement getListOfAllInstances()
 	 */
 	protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends TOSCAComponentId> clazz) {
-		Map<String, Select2OptGroup> idx = new HashMap<>();
+		Select2DataWithOptGroups data = new Select2DataWithOptGroups();
 		
 		Collection<? extends TOSCAComponentId> instanceIds = BackendUtils.getAllElementsRelatedWithATypeAttribute(clazz, this.id.getQName());
 		
 		for (TOSCAComponentId instanceId : instanceIds) {
 			String groupText = instanceId.getNamespace().getDecoded();
-			Select2OptGroup optGroup = idx.get(groupText);
-			if (optGroup == null) {
-				optGroup = new Select2OptGroup(groupText);
-				idx.put(groupText, optGroup);
-			}
-			
 			String text = BackendUtils.getName(instanceId);
-			Select2DataItem item = new Select2DataItem(instanceId.getQName().toString(), text);
-			optGroup.addItem(item);
+			data.add(groupText, instanceId.getQName().toString(), text);
 		}
 		
-		// convert the index to the real result
-		SortedSet<Select2OptGroup> res = new TreeSet<>();
-		for (Select2OptGroup optGroup : idx.values()) {
-			res.add(optGroup);
-		}
-		
-		return res;
+		return data.asSortedSet();
 	}
 	
 	/**
