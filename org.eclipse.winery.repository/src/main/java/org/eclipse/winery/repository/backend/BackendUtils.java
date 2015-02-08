@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -25,6 +25,7 @@ import java.nio.file.attribute.FileTime;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -64,6 +65,7 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdUtil;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.elements.PlansId;
@@ -73,9 +75,17 @@ import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.ObjectFactory;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.Utils;
@@ -86,6 +96,7 @@ import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.IHasTypeReference;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
+import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportsResource;
 import org.slf4j.Logger;
@@ -547,6 +558,91 @@ public class BackendUtils {
 			}
 		}
 		return res;
+	}
+	
+	/**
+	 * Returns a list of the topology template nested in the given service
+	 * template
+	 */
+	public static List<TNodeTemplate> getAllNestedNodeTemplates(TServiceTemplate serviceTemplate) {
+		List<TNodeTemplate> l = new ArrayList<TNodeTemplate>();
+		TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
+		for (TEntityTemplate t : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+			if (t instanceof TNodeTemplate) {
+				l.add((TNodeTemplate) t);
+			}
+		}
+		return l;
+	}
+	
+	private static Collection<QName> getAllReferencedArtifactTemplates(TDeploymentArtifacts tDeploymentArtifacts) {
+		if (tDeploymentArtifacts == null) {
+			return Collections.emptyList();
+		}
+		List<TDeploymentArtifact> deploymentArtifacts = tDeploymentArtifacts.getDeploymentArtifact();
+		if (deploymentArtifacts == null) {
+			return Collections.emptyList();
+		}
+		Collection<QName> res = new ArrayList<>();
+		for (TDeploymentArtifact da : deploymentArtifacts) {
+			QName artifactRef = da.getArtifactRef();
+			if (artifactRef != null) {
+				res.add(artifactRef);
+			}
+		}
+		return res;
+	}
+	
+	private static Collection<QName> getAllReferencedArtifactTemplates(TImplementationArtifacts tImplementationArtifacts) {
+		if (tImplementationArtifacts == null) {
+			return Collections.emptyList();
+		}
+		List<ImplementationArtifact> implementationArtifacts = tImplementationArtifacts.getImplementationArtifact();
+		if (implementationArtifacts == null) {
+			return Collections.emptyList();
+		}
+		Collection<QName> res = new ArrayList<>();
+		for (ImplementationArtifact ia : implementationArtifacts) {
+			QName artifactRef = ia.getArtifactRef();
+			if (artifactRef != null) {
+				res.add(artifactRef);
+			}
+		}
+		return res;
+	}
+	
+	public static Collection<QName> getArtifactTemplatesOfReferencedDeploymentArtifacts(TNodeTemplate nodeTemplate) {
+		List<QName> l = new ArrayList<QName>();
+		
+		// DAs may be assigned directly to a node template
+		Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(nodeTemplate.getDeploymentArtifacts());
+		l.addAll(allReferencedArtifactTemplates);
+		
+		// DAs may be assigned via node type implementations
+		QName nodeTypeQName = nodeTemplate.getType();
+		Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, nodeTypeQName);
+		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
+			NodeTypeImplementationResource ntiRes = new NodeTypeImplementationResource(nodeTypeImplementationId);
+			allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getDeploymentArtifacts());
+			l.addAll(allReferencedArtifactTemplates);
+		}
+		
+		return l;
+	}
+	
+	public static Collection<QName> getArtifactTemplatesOfReferencedImplementationArtifacts(TNodeTemplate nodeTemplate) {
+		List<QName> l = new ArrayList<QName>();
+		
+		// IAs may be assigned via node type implementations
+		QName nodeTypeQName = nodeTemplate.getType();
+		Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, nodeTypeQName);
+		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
+			NodeTypeImplementationResource ntiRes = new NodeTypeImplementationResource(nodeTypeImplementationId);
+			Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getImplementationArtifacts());
+			l.addAll(allReferencedArtifactTemplates);
+		}
+		
+		return l;
 	}
 	
 	/**
