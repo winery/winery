@@ -238,12 +238,7 @@ public class TopologyTemplateResource {
 	@Path("nodetemplates/")
 	public NodeTemplatesResource getNodeTemplatesResource() {
 		// FIXME: onDelete will not work as we have a copy of the original list. We have to add a "listener" to remove at the list and route that remove to the original list
-		List<TNodeTemplate> l = new ArrayList<TNodeTemplate>();
-		for (TEntityTemplate t : this.topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
-			if (t instanceof TNodeTemplate) {
-				l.add((TNodeTemplate) t);
-			}
-		}
+		List<TNodeTemplate> l = BackendUtils.getAllNestedNodeTemplates(this.serviceTemplateRes.getServiceTemplate());
 		return new NodeTemplatesResource(l, this.serviceTemplateRes);
 	}
 	
