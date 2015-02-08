@@ -567,6 +567,9 @@ public class BackendUtils {
 	public static List<TNodeTemplate> getAllNestedNodeTemplates(TServiceTemplate serviceTemplate) {
 		List<TNodeTemplate> l = new ArrayList<TNodeTemplate>();
 		TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
+		if (topologyTemplate == null) {
+			return Collections.emptyList();
+		}
 		for (TEntityTemplate t : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
 			if (t instanceof TNodeTemplate) {
 				l.add((TNodeTemplate) t);
