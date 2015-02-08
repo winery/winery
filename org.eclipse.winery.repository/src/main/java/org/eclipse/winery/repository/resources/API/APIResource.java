@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataWithOptGroups;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
@@ -43,10 +44,13 @@ public class APIResource {
 		
 		QName serviceTemplateQName = QName.valueOf(serviceTemplateQNameString);
 		
-		Collection<QName> artifactTemplates = new ArrayList<>();
 		ServiceTemplateId serviceTemplateId = new ServiceTemplateId(serviceTemplateQName);
+		if (!Repository.INSTANCE.exists(serviceTemplateId)) {
+			return Response.status(Status.BAD_REQUEST).entity("service template does not exist").build();
+		}
 		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
 		
+		Collection<QName> artifactTemplates = new ArrayList<>();
 		List<TNodeTemplate> allNestedNodeTemplates = BackendUtils.getAllNestedNodeTemplates(serviceTemplateResource.getServiceTemplate());
 		for (TNodeTemplate nodeTemplate : allNestedNodeTemplates) {
 			if (StringUtils.isEmpty(nodeTemplateId) || nodeTemplate.getId().equals(nodeTemplateId)) {
@@ -78,10 +82,13 @@ public class APIResource {
 		}
 		QName serviceTemplateQName = QName.valueOf(serviceTemplateQNameString);
 		
-		Collection<QName> artifactTemplates = new ArrayList<>();
 		ServiceTemplateId serviceTemplateId = new ServiceTemplateId(serviceTemplateQName);
+		if (!Repository.INSTANCE.exists(serviceTemplateId)) {
+			return Response.status(Status.BAD_REQUEST).entity("service template does not exist").build();
+		}
 		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
 		
+		Collection<QName> artifactTemplates = new ArrayList<>();
 		List<TNodeTemplate> allNestedNodeTemplates = BackendUtils.getAllNestedNodeTemplates(serviceTemplateResource.getServiceTemplate());
 		for (TNodeTemplate nodeTemplate : allNestedNodeTemplates) {
 			if (StringUtils.isEmpty(nodeTemplateId) || nodeTemplate.getId().equals(nodeTemplateId)) {
