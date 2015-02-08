@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -11,12 +11,16 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.StringEncodedAndDecoded;
 
 public class Namespace extends StringEncodedAndDecoded {
 	
 	public Namespace(String uri, boolean URLencoded) {
 		super(uri, URLencoded);
+		if (StringUtils.isEmpty(uri)) {
+			throw new IllegalArgumentException("uri must not be empty or null.");
+		}
 	}
 	
 }
