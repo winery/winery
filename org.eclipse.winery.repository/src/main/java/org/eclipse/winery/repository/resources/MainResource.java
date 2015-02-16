@@ -171,6 +171,7 @@ public class MainResource {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response importDefinitions(InputStream is) throws IOException {
 		File toscaFile;
 		toscaFile = File.createTempFile("TOSCA", ".tosca");
