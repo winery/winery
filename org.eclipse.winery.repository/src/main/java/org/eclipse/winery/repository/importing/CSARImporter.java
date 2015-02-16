@@ -751,10 +751,29 @@ public class CSARImporter {
 			return;
 		}
 		List<TArtifactReference> refList = refs.getArtifactReference();
-		for (TArtifactReference ref : refList) {
+		Iterator<TArtifactReference> iterator = refList.iterator();
+		while (iterator.hasNext()) {
+			TArtifactReference ref = iterator.next();
 			String reference = ref.getReference();
 			// URLs are stored encoded -> undo the encoding
 			reference = Util.URLdecode(reference);
+			
+			URI refURI;
+			try {
+				refURI = new URI(reference);
+			} catch (URISyntaxException e) {
+				errors.add(String.format("Invalid URI %1$s", ref));
+				continue;
+			}
+			if (refURI.isAbsolute()) {
+				// Points to somewhere external
+				// We have to do nothing
+				continue;
+			}
+			
+			// we remove the current element as it will be handled during the export
+			iterator.remove();
+			
 			Path path = rootPath.resolve(reference);
 			if (!Files.exists(path)) {
 				errors.add(String.format("Reference %1$s not found", reference));
@@ -791,9 +810,11 @@ public class CSARImporter {
 			this.importAllFiles(allFiles, atid, tmf, rootPath, errors);
 		}
 		
-		// everything is imported, we don't need the references stored locally
-		// they are generated on the fly when exporting
-		ci.setArtifactReferences(null);
+		if (refList.isEmpty()) {
+			// everything is imported and is a file stored locally
+			// we don't need the references stored locally: they are generated on the fly when exporting
+			ci.setArtifactReferences(null);
+		}
 	}
 	
 	/**
