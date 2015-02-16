@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.importing.CSARImporter;
 import org.eclipse.winery.repository.resources.API.APIResource;
@@ -162,6 +165,22 @@ public class MainResource {
 			return Response.noContent().build();
 		} else {
 			// In case there are errors, we send them as "bad request"
+			return Response.status(Status.BAD_REQUEST).entity(errors).build();
+		}
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response importDefinitions(InputStream is) throws IOException {
+		File toscaFile;
+		toscaFile = File.createTempFile("TOSCA", ".tosca");
+		FileUtils.copyInputStreamToFile(is, toscaFile);
+		CSARImporter importer = new CSARImporter();
+		List<String> errors = new ArrayList<>();
+		importer.importDefinitions(null, toscaFile.toPath(), errors, false, true);
+		if (errors.isEmpty()) {
+			return Response.noContent().build();
+		} else {
 			return Response.status(Status.BAD_REQUEST).entity(errors).build();
 		}
 	}

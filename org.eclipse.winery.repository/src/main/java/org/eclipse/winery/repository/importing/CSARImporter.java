@@ -375,17 +375,15 @@ public class CSARImporter {
 	 * Recursively imports the given definitions
 	 * 
 	 * @param tmf the TOSCAMetaFile object holding the parsed content of a TOSCA
-	 *            meta file
+	 *            meta file. If null, no files must be referenced from the given
+	 *            definitions
 	 * @param overwrite true: existing contents are overwritten
 	 * @param asyncWPDParsing
 	 * @param definitions the path to the definitions to import
 	 * 
 	 * @throws IOException
 	 */
-	private void importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors, boolean overwrite, boolean asyncWPDParsing) throws IOException {
-		if (tmf == null) {
-			throw new IllegalStateException("tmf must not be null");
-		}
+	public void importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors, boolean overwrite, boolean asyncWPDParsing) throws IOException {
 		if (defsPath == null) {
 			throw new IllegalStateException("path to definitions must not be null");
 		}
@@ -822,11 +820,15 @@ public class CSARImporter {
 	 * 
 	 * @param p the file to read from
 	 * @param fref the "file" to put the content to
-	 * @param tmf the TOSCAMetaFile object used to determine the mimetype
+	 * @param tmf the TOSCAMetaFile object used to determine the mimetype. Must
+	 *            not be null.
 	 * @param rootPath used to relativize p to determine the mime type
 	 * @throws InvalidCSARException
 	 */
 	private void importFile(Path p, RepositoryFileReference fref, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
+		if (tmf == null) {
+			throw new IllegalStateException("tmf must not be null");
+		}
 		try (InputStream is = Files.newInputStream(p);
 				BufferedInputStream bis = new BufferedInputStream(is)) {
 			String mediaType = tmf.getMimeType(p.relativize(rootPath).toString());
