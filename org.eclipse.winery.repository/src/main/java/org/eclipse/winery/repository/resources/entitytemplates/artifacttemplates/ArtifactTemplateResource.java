@@ -78,26 +78,26 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	public ArtifactTemplateResource(ArtifactTemplateId id) {
 		super(id);
 		// we provide the minimum requirements for the resource
-		this.entityTemplateResource = new TEntityTemplateResource<TArtifactTemplate>(null, this.getTArctifactTemplate(), 0, null, this);
+		this.entityTemplateResource = new TEntityTemplateResource<TArtifactTemplate>(null, this.getTArtifactTemplate(), 0, null, this);
 	}
 	
 	/**
 	 * @return null if no artifact type resource is defined
 	 */
 	public ArtifactTypeResource getAritfactTypeResource() {
-		ArtifactTypeId atId = new ArtifactTypeId(this.getTArctifactTemplate().getType());
+		ArtifactTypeId atId = new ArtifactTypeId(this.getTArtifactTemplate().getType());
 		return new ArtifactTypeResource(atId);
 	}
 	
-	private TArtifactTemplate getTArctifactTemplate() {
+	private TArtifactTemplate getTArtifactTemplate() {
 		return (TArtifactTemplate) this.element;
 	}
 	
 	@Override
 	public String getName() {
-		String name = this.getTArctifactTemplate().getName();
+		String name = this.getTArtifactTemplate().getName();
 		if (name == null) {
-			return this.getTArctifactTemplate().getId();
+			return this.getTArtifactTemplate().getId();
 		} else {
 			return name;
 		}
@@ -105,7 +105,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	
 	@Override
 	public Response setName(String name) {
-		this.getTArctifactTemplate().setName(name);
+		this.getTArtifactTemplate().setName(name);
 		return BackendUtils.persist(this);
 	}
 	
@@ -116,7 +116,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	
 	@Override
 	protected void copyIdToFields() {
-		this.getTArctifactTemplate().setId(this.getId().getXmlId().getDecoded());
+		this.getTArtifactTemplate().setId(this.getId().getXmlId().getDecoded());
 		// Namespace cannot be set as the namespace is contained in TDefinitions only
 	}
 	
@@ -182,7 +182,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	
 	@Override
 	public PropertiesResource getPropertiesResource() {
-		return new PropertiesResource(this.getTArctifactTemplate(), this);
+		return new PropertiesResource(this.getTArtifactTemplate(), this);
 	}
 	
 	int getReferenceCount() {
