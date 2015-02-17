@@ -125,7 +125,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	 */
 	@Override
 	public void synchronizeReferences() {
-		TArtifactTemplate template = this.getTArctifactTemplate();
+		TArtifactTemplate template = this.getTArtifactTemplate();
 		
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId((ArtifactTemplateId) this.id);
 		SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(fileDir);
