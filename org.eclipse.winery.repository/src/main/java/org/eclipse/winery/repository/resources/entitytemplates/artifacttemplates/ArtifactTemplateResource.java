@@ -264,7 +264,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	
 	/**
 	 * Query parameter {@code type}:<br />
-	 * Retunrs the type of the artifact template
+	 * Returns the type of the artifact template
 	 * 
 	 * Query parameter {@code referenceCount}:<br />
 	 * Determines the number of elements known by the repository which point to
