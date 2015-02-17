@@ -13,13 +13,19 @@ package org.eclipse.winery.common.ids;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.StringEncodedAndDecoded;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Namespace extends StringEncodedAndDecoded {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Namespace.class);
+	
 	
 	public Namespace(String uri, boolean URLencoded) {
 		super(uri, URLencoded);
 		if (StringUtils.isEmpty(uri)) {
-			throw new IllegalArgumentException("uri must not be empty or null.");
+			Namespace.logger.error("Empty URI has been passed to Namespace constructor.");
+			// throw new IllegalArgumentException("uri must not be empty or null.");
 		}
 	}
 	
