@@ -210,7 +210,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 			}
 		}
 		
-		// check all Relationshiptype Impelentations for IAs
+		// check all Relationshiptype Implementations for IAs
 		SortedSet<RelationshipTypeImplementationId> relationshipTypeImplementations = Repository.INSTANCE.getAllTOSCAComponentIds(RelationshipTypeImplementationId.class);
 		for (RelationshipTypeImplementationId rtiId : relationshipTypeImplementations) {
 			RelationshipTypeImplementationResource rtiRes = (RelationshipTypeImplementationResource) AbstractComponentsResource.getComponentInstaceResource(rtiId);

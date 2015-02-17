@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -206,8 +206,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	/**
 	 * Main page
 	 */
-	// @Produces(MediaType.TEXT_HTML) // not true because of ?thor leads to send
-	// a thor. We nevertheless have to annotate that to be able to get a JSON
+	// @Produces(MediaType.TEXT_HTML) // not true because of ?csar leads to send
+	// a csar. We nevertheless have to annotate that to be able to get a JSON
 	// representation required for the file upload (in {@link
 	// ArtifactTemplateResource})
 	//
