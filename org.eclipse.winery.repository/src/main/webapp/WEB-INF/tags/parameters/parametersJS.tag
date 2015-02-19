@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -139,13 +139,14 @@ function deleteOutputParameter() {
 function updateParameters(url, tableInfo, inOrOut) {
 	$.ajax({
 		"url": url,
-		dataType: "JSON",
+		dataType: "json",
 		success: function(data) {
 			tableInfo.table.fnClearTable();
 			$.each(data, function(number, item) {
 				var paramURL = url + item + "/";
 				$.ajax({
 					async: false,
+					dataType: "json",
 					url: paramURL,
 					error: function(jqXHR, textStatus, errorThrown) {
 						vShowAJAXError("Could not fetch operation information", jqXHR, errorThrown);
