@@ -64,7 +64,7 @@
 	<repositories>
 		<repository>
 			<id>springsource</id>
-			<url>https://oss.sonatype.org/content/repositories/springsource-releases</url>
+			<url>http://repository.springsource.com/maven/bundles/release/</url>
 		</repository>
 	 </repositories>
 	 <dependencies>
