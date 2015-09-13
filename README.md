@@ -171,7 +171,7 @@ See http://www.opentosca.org/#publications for a list of publications in the Ope
 
  [bug421284]: https://bugs.eclipse.org/bugs/show_bug.cgi?id=421284
  [bower]: https://github.com/bower/bower
- [DOI:10.1109/MIC.2012.43](http://dx.doi.org/10.1109/MIC.2012.43)
+ [DOI:10.1109/MIC.2012.43]: http://dx.doi.org/10.1109/MIC.2012.43
  [nodejs]: http://nodejs.org/download/
  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
  [Eclipse Standard 4.3]: http://www.eclipse.org/downloads/
