@@ -72,10 +72,10 @@ Winery currently is far from being a production ready modeling tool.
 The next steps are:
 
 * UI design improvements
-** Have Orion support `XML` as language. See also [Bug 421284][bug421284]
+  * Have Orion support `XML` as language. See also [Bug 421284][bug421284]
 * Add more usability features to the topology modeler
 * Remove non-required files from components/ directory to reduce the file size of the WAR file
-** This has to be done by submitting patches to `bower.json` of the upstream libraries
+  * This has to be done by submitting patches to `bower.json` of the upstream libraries
 * Develop a plugin-system for user-defined editors. For instance, a constraint has a type. If a type is known to Winery, it can present a specific plugin to edit the type content instead of a generic XML editor.
 * Rework file storage. Currently, files are stored along with their definitions. A new storage should store all files in one place and use an SHA1 id to uniquely identify the file. Then, it does not make any difference if storing a WAR, an XSD, or an WSDL.
 * Add a real DAO layer to enable querying the available TOSCA contents using SQL or similar query language
@@ -101,12 +101,12 @@ First of all, generate a war to have all dependencies fetched by maven.
 * Eclipse Java EE Developer Tools
 * Eclipse Java Web Developer Tools
 * [m2e-wtp]: Maven Integration for WTP
-* [AnyEdit][http://andrei.gmxhome.de/anyedit/] for ensuring that tabs are always used
+* [AnyEdit](http://andrei.gmxhome.de/anyedit/) for ensuring that tabs are always used
 ** Configure: Window -> Preferences -> General / Editors / AnyEdit Tools -> "Auto - Convert EXCLUSION file list" -> "Add filter" -> "*.java", "Convert...": 4 spaces for a tab
 
 ### Optional plugins
-* [Eclipse Code Recommenders][http://www.eclipse.org/recommenders/]
-* [VJET JavaScript IDE][http://www.eclipse.org/proposals/webtools.vjet/]
+* [Eclipse Code Recommenders](http://www.eclipse.org/recommenders/)
+* [VJET JavaScript IDE](http://www.eclipse.org/proposals/webtools.vjet/)
 
 ### Make Winery projects known to Eclipse
 1. Import all projects
