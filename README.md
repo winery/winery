@@ -97,26 +97,26 @@ This howto is based on [Eclipse Standard 4.3].
 First of all, generate a war to have all dependencies fetched by maven.
 
 ### Required plugins
-** JST Server Adapters Extensions
-** Eclipse Java EE Developer Tools
-** Eclipse Java Web Developer Tools
-** [m2e-wtp]: Maven Integration for WTP
-** [AnyEdit][http://andrei.gmxhome.de/anyedit/] for ensuring that tabs are always used
-*** Configure: Window -> Preferences -> General / Editors / AnyEdit Tools -> "Auto - Convert EXCLUSION file list" -> "Add filter" -> "*.java", "Convert...": 4 spaces for a tab
+* JST Server Adapters Extensions
+* Eclipse Java EE Developer Tools
+* Eclipse Java Web Developer Tools
+* [m2e-wtp]: Maven Integration for WTP
+* [AnyEdit][http://andrei.gmxhome.de/anyedit/] for ensuring that tabs are always used
+** Configure: Window -> Preferences -> General / Editors / AnyEdit Tools -> "Auto - Convert EXCLUSION file list" -> "Add filter" -> "*.java", "Convert...": 4 spaces for a tab
 
 ### Optional plugins
-** [Eclipse Code Recommenders][http://www.eclipse.org/recommenders/]
-** [VJET JavaScript IDE][http://www.eclipse.org/proposals/webtools.vjet/]
+* [Eclipse Code Recommenders][http://www.eclipse.org/recommenders/]
+* [VJET JavaScript IDE][http://www.eclipse.org/proposals/webtools.vjet/]
 
 ### Make Winery projects known to Eclipse
 1. Import all projects
-** Use "Existing Maven Projects". `mvn eclips:m2eclipse` currently does not enable "maven" in eclipse.
+  * Use "Existing Maven Projects". `mvn eclips:m2eclipse` currently does not enable "maven" in eclipse.
 2. For each project: right click, –> Team –> Share Project –> Git –> Next –> check "Use or create repository in parent folder of project" –> Finish
 3. At `org.eclipse.winery.repository` and ` org.eclipse.winery.topologymodeler`:
-** Right click -> Properties -> JavaScript -> Include Path -> Source -> Expand folder -> Select "Excluded" -> "Edit..."
-** Exclusion Patterns: Add multiple -> Select "3rd party" -> "OK"
-** Exclusion Patterns: Add multiple -> Select "components" -> "OK"
-** "Finish" -> "OK"
+  * Right click -> Properties -> JavaScript -> Include Path -> Source -> Expand folder -> Select "Excluded" -> "Edit..."
+  * Exclusion Patterns: Add multiple -> Select "3rd party" -> "OK"
+  * Exclusion Patterns: Add multiple -> Select "components" -> "OK"
+  * "Finish" -> "OK"
 
 ### Setup Tomcat
 1. Open servers window: Window -> Show View -> Other -> Server -> Servers
