@@ -75,7 +75,7 @@ public class NodeTemplateConnector {
 		// in case no suitable relationship type could be found, search for generic types without the optional ValidSource / ValidTarget elements.
 		if (suitableRelationshipTypes.isEmpty()) {
 			for (TRelationshipType rt : allRelationshipTypes) {
-				if (rt.getValidSource() == null && rt.getValidTarget() != null) {
+				if (rt.getValidSource() == null && rt.getValidTarget() == null) {
 					suitableRelationshipTypes.add(rt);
 				}
 			}
