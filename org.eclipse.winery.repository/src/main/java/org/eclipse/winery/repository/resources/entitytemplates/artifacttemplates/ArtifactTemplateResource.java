@@ -11,8 +11,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -121,6 +124,30 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	}
 	
 	/**
+	 * Removes only the relative URIs and URIs that are throwing exceptions
+	 * @param template
+	 */
+	private void removeFileBasedReferences(TArtifactTemplate template){
+		Iterator<TArtifactReference> fileReferenceIterator = template.getArtifactReferences().getArtifactReference().iterator();
+		
+		while(fileReferenceIterator.hasNext())  {
+			TArtifactReference artifactRef = fileReferenceIterator.next();
+			
+			try {
+				
+				//remove if it's not absolute
+				if (! (new URI(artifactRef.getReference())).isAbsolute()){
+					fileReferenceIterator.remove();
+				}
+				
+			} catch (URISyntaxException e) {
+				// we remove these too as they are throwing exceptions
+				fileReferenceIterator.remove();
+			}
+		}
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -131,7 +158,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(fileDir);
 		if (files.isEmpty()) {
 			// clear artifact references
-			template.setArtifactReferences(null);
+			this.removeFileBasedReferences(template);
 		} else {
 			ArtifactReferences artifactReferences = new ArtifactReferences();
 			template.setArtifactReferences(artifactReferences);
