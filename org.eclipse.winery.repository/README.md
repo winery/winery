@@ -12,7 +12,7 @@ If you install restdoc-renderer as `restdoc.html` in the `ROOT` of the tomcat, W
 The code tries to make use of EL and JSP tags wherever possible. All data is accessible via a REST API.
 The REST API does **not** follow the HATEOAS approach.
 The URLs follow the pattern `/<type>/<encoded namespace>/<encoded id>`, where `type` is `servicetemplate`, `nodetype`, ...
-Below a concrete instanance, subresources such as `name` exist.
+Below a concrete instance, subresources such as `name` exist.
 
 Definitions are not modeled as explicit element. Only the nested elements are handled by Winery.
 That means, it is not possible to specify custom definitions bundling a customized subset of available elements.
