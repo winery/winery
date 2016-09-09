@@ -128,68 +128,33 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<dependencies>
-					<!--dependency>
-						<groupId>org.apache.ant</groupId>
-						<artifactId>ant-apache-bsf</artifactId>
-						<version>1.9.2</version>
-					</dependency-->
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-all</artifactId>
-						<version>2.1.7</version>
-					</dependency>
-
-				</dependencies>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>1.0</version>
 				<executions>
 					<execution>
-						<phase>generate-sources</phase>
-						<configuration>
-							<target>
-								<script language="groovy" manager="javax"> <![CDATA[
-									def isWindows = (System.getProperty('os.name').toLowerCase().indexOf("win") >= 0)
-									String bowerCommand
-									String bowerArguments
-									if (isWindows) {
-										bowerCommand = 'cmd.exe'
-										bowerArguments = '/c bower'
-									} else {
-										bowerCommand = 'bower'
-										bowerArguments = '--allow-root'
-									}
-									project.setProperty('bowerCommand', bowerCommand)
-									project.setProperty('bowerArguments', bowerArguments)
-								]]></script>
-
-								<echo message="Bower command: ${bowerCommand} ${bowerArguments} prune" />
-								<exec executable="${bowerCommand}" outputproperty="bower.cmdOut" errorproperty="bower.cmdErr" resultproperty="bower.cmdExit" failonerror="true" dir="${basedir}" searchpath="true">
-									<arg line="${bowerArguments} prune" />
-								</exec>
-								<echo message="bower.cmdOut: ${bower.cmdOut}" />
-								<echo message="bower.cmdErr: ${bower.cmdErr}" level="error" />
-								<echo message="bower.cmdExit: ${bower.cmdExit}" />
-
-								<echo message="Bower command: ${bowerCommand} ${bowerArguments} update" />
-								<exec executable="${bowerCommand}" outputproperty="bower.cmdOut" errorproperty="bower.cmdErr" resultproperty="bower.cmdExit" failonerror="true" dir="${basedir}" searchpath="true">
-									<arg line="${bowerArguments} update" />
-								</exec>
-								<echo message="bower.cmdOut: ${bower.cmdOut}" />
-								<echo message="bower.cmdErr: ${bower.cmdErr}" level="error" />
-								<echo message="bower.cmdExit: ${bower.cmdExit}" />
-
-								<echo message="Bower command: ${bowerCommand} ${bowerArguments} install" />
-								<exec executable="${bowerCommand}" outputproperty="bower.cmdOut" errorproperty="bower.cmdErr" resultproperty="bower.cmdExit" failonerror="true" dir="${basedir}" searchpath="true">
-									<arg line="${bowerArguments} install" />
-								</exec>
-								<echo message="bower.cmdOut: ${bower.cmdOut}" />
-								<echo message="bower.cmdErr: ${bower.cmdErr}" level="error" />
-								<echo message="bower.cmdExit: ${bower.cmdExit}" />
-							</target>
-						</configuration>
+						<id>install node and npm</id>
 						<goals>
-							<goal>run</goal>
+							<goal>install-node-and-npm</goal>
+						</goals>
+						<configuration>
+							<nodeVersion>v4.5.0</nodeVersion>
+							<npmVersion>3.10.6</npmVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm install bower</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install bower</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>run bower</id>
+						<goals>
+							<goal>bower</goal>
 						</goals>
 					</execution>
 				</executions>
