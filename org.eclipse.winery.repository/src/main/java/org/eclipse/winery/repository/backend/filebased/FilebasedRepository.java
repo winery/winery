@@ -127,7 +127,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		this.provider = this.fileSystem.provider();
 	}
 	
-	private Path determineRepositoryPath(String repositoryLocation) {
+	protected Path determineRepositoryPath(String repositoryLocation) {
 		Path repositoryPath;
 		if (repositoryLocation == null) {
 			if (SystemUtils.IS_OS_WINDOWS) {

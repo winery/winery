@@ -13,11 +13,13 @@ package org.eclipse.winery.repository;
 
 import java.io.IOException;
 
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 
 public class PrefsTestEnabledGitBackedRepository extends PrefsTestEnabled {
 	
-	public PrefsTestEnabledGitBackedRepository() throws IOException {
+	public PrefsTestEnabledGitBackedRepository() throws IOException, NoWorkTreeException, GitAPIException {
 		super(false);
 		// TODO: we should to a new clone of the repository
 		// currently, we rely on the right configuration of the preferences to use a file-based repository
