@@ -67,7 +67,7 @@ public class RepositoryAdminResource {
 			return Response.noContent().build();
 		} else if (commit != null) {
 			try {
-				((GitBasedRepository) Prefs.INSTANCE.getRepository()).addCommitPush();
+				((GitBasedRepository) Prefs.INSTANCE.getRepository()).addCommit();
 			} catch (Exception e) {
 				Response res;
 				res = Response.serverError().entity(e.getMessage()).build();

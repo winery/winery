@@ -28,16 +28,10 @@ org.eclipse.winery.repository.backend.IRepository rep;
 rep = org.eclipse.winery.repository.Prefs.INSTANCE.getRepository();
 boolean isGitBasedRepo = (rep instanceof org.eclipse.winery.repository.backend.filebased.GitBasedRepository);
 
-org.eclipse.winery.repository.backend.filebased.GitBasedRepository repo = null;
-if (isGitBasedRepo) {
-	repo = (org.eclipse.winery.repository.backend.filebased.GitBasedRepository) rep;
-}
-
 // We only support the commit and reset buttons if we can authenticate at the repository
 // This is a hack to offer different versions of winery at dev.winery.opentosca.org and winery.opentosca.org
-isGitBasedRepo = isGitBasedRepo && (repo.authenticationInfoAvailable());
 
-if (isGitBasedRepo) {
+	if (isGitBasedRepo) {
 %>
 <h4>Versioning</h4>
 <div>
