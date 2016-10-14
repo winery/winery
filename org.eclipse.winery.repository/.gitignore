@@ -21,3 +21,5 @@ sonar-project.properties
 /src/main/webapp/valesca.properties
 /src/main/webapp/META-INF/MANIFEST.MF
 /target
+/node
+/node_modules
