@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013, 2015 University of Stuttgart.
+ * Copyright (c) 2012-2013, 2015, 2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Kálmán Képes
  *******************************************************************************/
 --%>
 <%@page import="org.eclipse.winery.repository.resources.SubMenuData"%>
@@ -33,10 +34,8 @@ subMenus.add(data);
 data = new SubMenuData("#boundarydefinitions", "Boundary Definitions");
 subMenus.add(data);
 
-//Tags are currently not implemented -> Don't confuse users by showing the tab
-//has to be enabled again, when tags are implemented
-//data = new SubMenuData("#tags", "Tags");
-//subMenus.add(data);
+data = new SubMenuData("#tags", "Tags");
+subMenus.add(data);
 %>
 
 <t:componentinstance cssClass="serviceTemplate" selected="ServiceTemplate" subMenus="<%=subMenus%>">
