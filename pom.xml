@@ -53,7 +53,7 @@
 		</license>
 	</licenses>
 	<scm>
-		<developerConnection>scm:git:http://git.eclipse.org/gitroot/winery/org.eclipse.winery.winery.git/</developerConnection>
+		<developerConnection>scm:git:https://github.com/eclipse/winery.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
     <prerequisites>
