@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +49,16 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -62,11 +72,15 @@ import org.eclipse.winery.repository.resources.tags.TagsResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import com.sun.jersey.api.view.Viewable;
+
+import ch.qos.logback.classic.pattern.Util;
 
 /**
  * Resource for a component (
@@ -510,7 +524,27 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	
 	@Path("tags/")
 	public final TagsResource getTags() {
-		return new TagsResource(this.id);
+		
+		List<TTag> tagList = new ArrayList<TTag>();
+		
+		TTags tags = null;
+		
+		if (this.element instanceof TServiceTemplate){
+			tags = ((TServiceTemplate) this.element).getTags();
+		} else if(this.element instanceof TEntityType){
+			tags = ((TEntityType)this.element).getTags();
+		} else if(this.element instanceof TNodeTypeImplementation){
+			tags = ((TNodeTypeImplementation) this.element).getTags(); 
+		} else if(this.element instanceof TRelationshipTypeImplementation){
+			tags = ((TRelationshipTypeImplementation)this.element).getTags();
+		}
+		
+		if (tags != null && tags.getTag() != null){
+			tagList = tags.getTag();
+		}
+		
+		
+		return new TagsResource(this, tagList);
 	}
 	
 }
