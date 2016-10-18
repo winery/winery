@@ -49,6 +49,7 @@ import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.Prefs;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
@@ -217,17 +218,19 @@ public class CSARExporter {
 		SelfServiceMetaDataId id = new SelfServiceMetaDataId(entryId);
 		if (Repository.INSTANCE.exists(id)) {
 			SelfServicePortalResource res = new SelfServicePortalResource(entryId);
-			
-			refMap.put(res.data_xml_ref, Constants.DIRNAME_SELF_SERVICE_METADATA + "/" + "data.xml");
+
+			String targetDir = BackendUtils.getPathInsideRepo(entryId) + Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
+
+			refMap.put(res.data_xml_ref, targetDir + "data.xml");
 			
 			// The schema says that the images have to exist
 			// However, at a quick modeling, there might be no images
 			// Therefore, we check for existence
 			if (Repository.INSTANCE.exists(res.icon_jpg_ref)) {
-				refMap.put(res.icon_jpg_ref, Constants.DIRNAME_SELF_SERVICE_METADATA + "/" + "icon.jpg");
+				refMap.put(res.icon_jpg_ref, targetDir + "icon.jpg");
 			}
 			if (Repository.INSTANCE.exists(res.image_jpg_ref)) {
-				refMap.put(res.image_jpg_ref, Constants.DIRNAME_SELF_SERVICE_METADATA + "/" + "image.jpg");
+				refMap.put(res.image_jpg_ref, targetDir + "image.jpg");
 			}
 			
 			Application application = res.getApplication();
@@ -238,7 +241,7 @@ public class CSARExporter {
 					if (Util.isRelativeURI(url)) {
 						RepositoryFileReference ref = new RepositoryFileReference(id, url);
 						if (Repository.INSTANCE.exists(ref)) {
-							refMap.put(ref, Constants.DIRNAME_SELF_SERVICE_METADATA + "/" + url);
+							refMap.put(ref, targetDir + url);
 						} else {
 							CSARExporter.logger.error("Data corrupt: pointing to non-existent file " + ref);
 						}
@@ -248,7 +251,7 @@ public class CSARExporter {
 					if (Util.isRelativeURI(url)) {
 						RepositoryFileReference ref = new RepositoryFileReference(id, url);
 						if (Repository.INSTANCE.exists(ref)) {
-							refMap.put(ref, Constants.DIRNAME_SELF_SERVICE_METADATA + "/" + url);
+							refMap.put(ref, targetDir + url);
 						} else {
 							CSARExporter.logger.error("Data corrupt: pointing to non-existent file " + ref);
 						}
