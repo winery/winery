@@ -95,7 +95,7 @@ public class CSARExporter {
 	 * Writes a complete CSAR containing all necessary things reachable from the
 	 * given service template
 	 * 
-	 * @param id the id of the service template to export
+	 * @param entryId the id of the service template to export
 	 * @param out the outputstream to write to
 	 * @throws JAXBException
 	 */
