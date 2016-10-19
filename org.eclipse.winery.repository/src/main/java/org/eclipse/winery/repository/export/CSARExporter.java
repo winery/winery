@@ -213,51 +213,62 @@ public class CSARExporter {
 			zos.closeArchiveEntry();
 		}
 	}
-	
-	private void addSelfServiceMetaData(ServiceTemplateId entryId, Map<RepositoryFileReference, String> refMap) {
-		SelfServiceMetaDataId id = new SelfServiceMetaDataId(entryId);
-		if (Repository.INSTANCE.exists(id)) {
-			SelfServicePortalResource res = new SelfServicePortalResource(entryId);
 
-			String targetDir = BackendUtils.getPathInsideRepo(entryId) + Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
+	/**
+	 * Adds all self service meta data to the targetDir
+	 */
+	private void addSelfServiceMetaData(ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) {
+		SelfServicePortalResource res = new SelfServicePortalResource(entryId);
 
-			refMap.put(res.data_xml_ref, targetDir + "data.xml");
-			
-			// The schema says that the images have to exist
-			// However, at a quick modeling, there might be no images
-			// Therefore, we check for existence
-			if (Repository.INSTANCE.exists(res.icon_jpg_ref)) {
-				refMap.put(res.icon_jpg_ref, targetDir + "icon.jpg");
-			}
-			if (Repository.INSTANCE.exists(res.image_jpg_ref)) {
-				refMap.put(res.image_jpg_ref, targetDir + "image.jpg");
-			}
-			
-			Application application = res.getApplication();
-			Options options = application.getOptions();
-			if (options != null) {
-				for (ApplicationOption option : options.getOption()) {
-					String url = option.getIconUrl();
-					if (Util.isRelativeURI(url)) {
-						RepositoryFileReference ref = new RepositoryFileReference(id, url);
-						if (Repository.INSTANCE.exists(ref)) {
-							refMap.put(ref, targetDir + url);
-						} else {
-							CSARExporter.logger.error("Data corrupt: pointing to non-existent file " + ref);
-						}
+		refMap.put(res.data_xml_ref, targetDir + "data.xml");
+
+		// The schema says that the images have to exist
+		// However, at a quick modeling, there might be no images
+		// Therefore, we check for existence
+		if (Repository.INSTANCE.exists(res.icon_jpg_ref)) {
+			refMap.put(res.icon_jpg_ref, targetDir + "icon.jpg");
+		}
+		if (Repository.INSTANCE.exists(res.image_jpg_ref)) {
+			refMap.put(res.image_jpg_ref, targetDir + "image.jpg");
+		}
+
+		Application application = res.getApplication();
+		Options options = application.getOptions();
+		if (options != null) {
+			for (ApplicationOption option : options.getOption()) {
+				String url = option.getIconUrl();
+				if (Util.isRelativeURI(url)) {
+					RepositoryFileReference ref = new RepositoryFileReference(id, url);
+					if (Repository.INSTANCE.exists(ref)) {
+						refMap.put(ref, targetDir + url);
+					} else {
+						CSARExporter.logger.error("Data corrupt: pointing to non-existent file " + ref);
 					}
-					
-					url = option.getPlanInputMessageUrl();
-					if (Util.isRelativeURI(url)) {
-						RepositoryFileReference ref = new RepositoryFileReference(id, url);
-						if (Repository.INSTANCE.exists(ref)) {
-							refMap.put(ref, targetDir + url);
-						} else {
-							CSARExporter.logger.error("Data corrupt: pointing to non-existent file " + ref);
-						}
+				}
+
+				url = option.getPlanInputMessageUrl();
+				if (Util.isRelativeURI(url)) {
+					RepositoryFileReference ref = new RepositoryFileReference(id, url);
+					if (Repository.INSTANCE.exists(ref)) {
+						refMap.put(ref, targetDir + url);
+					} else {
+						CSARExporter.logger.error("Data corrupt: pointing to non-existent file " + ref);
 					}
 				}
 			}
+		}
+	}
+
+	private void addSelfServiceMetaData(ServiceTemplateId entryId, Map<RepositoryFileReference, String> refMap) {
+		SelfServiceMetaDataId id = new SelfServiceMetaDataId(entryId);
+		if (Repository.INSTANCE.exists(id)) {
+			// add everything in the root of the CSAR
+			String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
+			addSelfServiceMetaData(entryId, targetDir, refMap);
+
+			// add everything into a subfolder of the service template
+			targetDir = BackendUtils.getPathInsideRepo(entryId) + Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
+			addSelfServiceMetaData(entryId, targetDir, refMap);
 		}
 	}
 	

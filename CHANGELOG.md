@@ -12,4 +12,4 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ### Changed
 
-* SELFSERVICE-Metadata is now contained under the servicetemplates path in the CSAR
+* SELFSERVICE-Metadata is now additionally contained under the servicetemplates path in the CSAR
