@@ -235,6 +235,7 @@ public class CSARExporter {
 		Application application = res.getApplication();
 		Options options = application.getOptions();
 		if (options != null) {
+			SelfServiceMetaDataId id = new SelfServiceMetaDataId(entryId);
 			for (ApplicationOption option : options.getOption()) {
 				String url = option.getIconUrl();
 				if (Util.isRelativeURI(url)) {
