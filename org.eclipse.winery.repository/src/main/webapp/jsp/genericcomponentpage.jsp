@@ -11,6 +11,8 @@
  *    Oliver Kopp - initial API and implementation and/or initial documentation
  *******************************************************************************/
 --%>
+<%@page import="org.eclipse.winery.repository.Utils"%>
+<%@page import="org.eclipse.winery.repository.backend.BackendUtils"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
@@ -118,11 +120,18 @@
 				<div class="btn-group-vertical" id="buttonList">
 					<button type="button" class="btn btn-default" onclick="openNewCIdiag();">Add new</button>
 					<button type="button" class="btn btn-default" onclick="importCSAR();">Import CSAR</button>
+					<c:if test="${it.type eq 'ServiceTemplate'}">
+						<button type="button" class="btn btn-default" onclick="$('#createFromArtefactDiag').modal('show');">Create from Artefact</button>
+					</c:if>
 				</div>
 			</td>
 		</tr>
 	</table>
 </div>
+
+<c:if test="${it.type eq 'ServiceTemplate'}">
+	<t:createFromArtefactDialog allSubResources="${it.componentInstanceIds}" allNodeTypes="<%=Utils.getAllNodeTypeResources()%>"/>
+</c:if>
 
 <script>
 
