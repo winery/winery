@@ -15,17 +15,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import java.util.HashSet;
+
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
+
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -48,13 +49,12 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
-import org.eclipse.winery.repository.importing.CSARImporter;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
-import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.FilesResource;
+
+
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
@@ -62,12 +62,16 @@ import com.sun.jersey.multipart.FormDataParam;
 
 public class ServiceTemplatesResource extends AbstractComponentsResource<ServiceTemplateResource> {
 
+
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response createFromArtefact(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body,
 			@FormDataParam("artefactType") QName artifactType, @FormDataParam("nodeTypes") Set<QName> nodeTypes,
 			@FormDataParam("tags") Set<String> tags, @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
+
+		tags = this.clean(tags);
+		nodeTypes = this.cleanQNameSet(nodeTypes);
 
 		Collection<ServiceTemplateId> xaasPackages = this.getXaaSPackageTemplates(artifactType);
 		Collection<ServiceTemplateId> toRemove = new ArrayList<ServiceTemplateId>();
@@ -94,43 +98,91 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 		String newTemplateName = fileDetail.getFileName() + "ServiceTemplate";
 
 		// create artefactTemplate for the uploaded artefact
-		ArtifactTemplateId artefactTemplateId = this.createArtefactTemplate(uploadedInputStream, fileDetail,body,
+		ArtifactTemplateId artefactTemplateId = this.createArtefactTemplate(uploadedInputStream, fileDetail, body,
 				artifactType, uriInfo);
 
 		// clone serviceTemplate
-		ServiceTemplateId serviceTemplateId = this.cloneServiceTemplate(serviceTemplate, newTemplateName, fileDetail.getFileName());
+		ServiceTemplateId serviceTemplateId = this.cloneServiceTemplate(serviceTemplate, newTemplateName,
+				fileDetail.getFileName());
 
-		// inject artefact as DA into cloned ServiceTemplate
-		this.injectArtefactTemplateIntoDeploymentArtefact(serviceTemplateId,
+		if (this.hasDA(serviceTemplateId,
 				this.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"),
 				this.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(),
-						"xaasPackageDeploymentArtefact"),
-				artefactTemplateId);
-		
+						"xaasPackageDeploymentArtefact"))) {
+
+			// inject artefact as DA into cloned ServiceTemplate
+			this.injectArtefactTemplateIntoDeploymentArtefact(serviceTemplateId,
+					this.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(),
+							"xaasPackageNode"),
+					this.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(),
+							"xaasPackageDeploymentArtefact"),
+					artefactTemplateId);
+		} else {
+			return Response.serverError()
+					.entity("Tagged DeploymentArtefact couldn't be found on given specified NodeTemplate").build();
+		}
+
+
 		URI absUri = Utils.getAbsoluteURI(serviceTemplateId);
 		// http://localhost:8080/winery/servicetemplates/winery/servicetemplates/http%253A%252F%252Fopentosca.org%252Fservicetemplates/hs_err_pid13228.logServiceTemplate/
 		// http://localhost:8080/winery/servicetemplates/winery/servicetemplates/http%253A%252F%252Fopentosca.org%252Fservicetemplates/java0.logServiceTemplate/
 		String absUriString = absUri.toString().replace("/winery/servicetemplates", "");
-		
+
 		absUri = URI.create(absUriString);
 		return Response.created(absUri).build();
 	}
 
+	private Set<QName> cleanQNameSet(Set<QName> set){
+		Set<QName> newSet = new HashSet<QName>();
+		
+		for(QName setItem : set){
+			if(setItem != null && !setItem.getLocalPart().equals("null")){
+				newSet.add(setItem);
+			}
+		}
+		return newSet;
+	}
+
+	private Set<String> clean(Set<String> set) {
+		Set<String> newSet = new HashSet<String>();
+
+		for (String setItem : set) {
+			if (setItem != null && !setItem.trim().isEmpty() && !setItem.equals("null")) {
+				newSet.add(setItem);
+			}
+		}
+
+		return newSet;
+	}
+
 	private ArtifactTemplateId createArtefactTemplate(InputStream uploadedInputStream,
-			FormDataContentDisposition fileDetail,FormDataBodyPart body, QName artifactType, UriInfo uriInfo) {
+			FormDataContentDisposition fileDetail, FormDataBodyPart body, QName artifactType, UriInfo uriInfo) {
+
 
 		ArtifactTemplatesResource templateResource = new ArtifactTemplatesResource();
 		templateResource.onPost("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(),
 				artifactType.toString());
 
-		ArtifactTemplateId artefactTemplateId = new ArtifactTemplateId("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(),
-				false);
-		
+		ArtifactTemplateId artefactTemplateId = new ArtifactTemplateId("http://opentosca.org/xaaspackager",
+				"xaasPackager_" + fileDetail.getFileName(), false);
+
 		ArtifactTemplateResource atRes = new ArtifactTemplateResource(artefactTemplateId);
 		atRes.getFilesResource().onPost(uploadedInputStream, fileDetail, body, uriInfo);
-		
+
 		return artefactTemplateId;
 	}
+
+	private boolean hasDA(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtefactId) {
+		ServiceTemplateResource stRes = new ServiceTemplateResource(serviceTemplate);
+		try {
+			stRes.getTopologyTemplateResource().getNodeTemplatesResource().getEntityResource(nodeTemplateId)
+					.getDeploymentArtifacts().getEntityResource(deploymentArtefactId);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 
 	private boolean injectArtefactTemplateIntoDeploymentArtefact(ServiceTemplateId serviceTemplate,
 			String nodeTemplateId, String deploymentArtefactId, ArtifactTemplateId artefactTemplate) {
@@ -142,34 +194,34 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 		return true;
 	}
 
-	private ServiceTemplateId cloneServiceTemplate(ServiceTemplateId serviceTemplate, String newName, String artefactName)
-			throws JAXBException, IllegalArgumentException, IOException {
+	private ServiceTemplateId cloneServiceTemplate(ServiceTemplateId serviceTemplate, String newName,
+			String artefactName) throws JAXBException, IllegalArgumentException, IOException {
+
 		ServiceTemplateId newServiceTemplateId = new ServiceTemplateId(serviceTemplate.getNamespace().getDecoded(),
 				newName, false);
 
 		RepositoryFileReference fileRef = new RepositoryFileReference(newServiceTemplateId, "ServiceTemplate.tosca");
 
-		
 		Definitions defs = new ServiceTemplateResource(serviceTemplate).getDefinitions();
-		
+
 		defs.setId(newName + "Definitions");
 		defs.setName(newName + "Definitions generated from Artefact " + artefactName);
-		
+
 		TServiceTemplate oldSTModel = null;
-		
-		for(TExtensibleElements el:  defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()){
-			if(el instanceof TServiceTemplate){
+
+		for (TExtensibleElements el : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
+			if (el instanceof TServiceTemplate) {
 				oldSTModel = (TServiceTemplate) el;
 			}
 		}
-		
+
 		oldSTModel.setId(newName);
 		oldSTModel.setName(newName + " generated from Artefact " + artefactName);
-		
+
 		// remove xaaspackager tags
 		Collection<TTag> toRemove = new ArrayList<TTag>();
-		
-		for(TTag tag : oldSTModel.getTags().getTag()){
+
+		for (TTag tag : oldSTModel.getTags().getTag()) {
 			switch (tag.getName()) {
 			case "xaasPackageNode":
 			case "xaasPackageArtefactType":
@@ -180,7 +232,7 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 				break;
 			}
 		}
-		
+
 		oldSTModel.getTags().getTag().removeAll(toRemove);
 		
 
@@ -293,6 +345,12 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 				ServiceTemplateResource stRes = (ServiceTemplateResource) resource;
 
 				TTags tags = stRes.getServiceTemplate().getTags();
+
+				if (tags == null) {
+					continue;
+				}
+
+
 				int check = 0;
 				for (TTag tag : tags.getTag()) {
 					switch (tag.getName()) {

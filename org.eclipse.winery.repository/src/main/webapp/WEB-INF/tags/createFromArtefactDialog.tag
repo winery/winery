@@ -26,19 +26,26 @@
 <%@tag import="java.util.Set"%>
 <%@tag import="java.util.HashSet"%>
 <%@tag import="javax.xml.namespace.QName"%>
-<%@tag description="Dialog to create ServiceTemplates from a given artefact" pageEncoding="UTF-8"%>
-	
+<%@tag
+	description="Dialog to create ServiceTemplates from a given artefact"
+	pageEncoding="UTF-8"%>
+
 
 <%@attribute name="allSubResources" required="true"
 	type="java.util.TreeSet" description="All available ServiceTemplates"%>
-<%@attribute name="allNodeTypes" required="true" type="java.util.Collection" description="All available Node Types"%>
+<%@attribute name="allNodeTypes" required="true"
+	type="java.util.Collection" description="All available Node Types"%>
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<link href="${pageContext.request.contextPath}/css/tag-basic-style.css" rel="stylesheet"></link>
-<script type="text/javascript" src="${pageContext.request.contextPath}/components/taggingJS/tagging.min.js"></script>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<link href="${pageContext.request.contextPath}/css/tag-basic-style.css"
+	rel="stylesheet"></link>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/components/taggingJS/tagging.min.js"></script>
 
-<% Set<QName> artefactTypes = new HashSet<QName>(); %>
+<%
+	Set<QName> artefactTypes = new HashSet<QName>();
+%>
 
 <%
 	for (Object obj : allSubResources) {
@@ -50,14 +57,18 @@
 			QName artefactType = null;
 			for (TTag tag : serviceTemplate.getTags().getTag()) {
 				switch (tag.getName()) {
-				case "xaasPackageNode":
-				case "xaasPackageArtefactType":
-					artefactType = QName.valueOf(tag.getValue());
-				case "xaasPackageDeploymentArtefact":
-					check++;
-					break;
-				default:
-					break;
+					case "xaasPackageNode" :
+						check++;
+						break;
+					case "xaasPackageArtefactType" :
+						check++;
+						artefactType = QName.valueOf(tag.getValue());
+						break;
+					case "xaasPackageDeploymentArtefact" :
+						check++;
+						break;
+					default :
+						break;
 				}
 			}
 			if (check == 3) {
@@ -87,14 +98,17 @@
 							</select>
 						</div>
 						<div class="form-group">
-							<label for="createFromArtefactForm">Select Artefact:</label> <input id="createFromArtefactFormUpload" class="form-control" type="file" name="createFromArtefactForm" />
+							<label for="createFromArtefactForm">Select Artefact:</label> <input
+								id="createFromArtefactFormUpload" class="form-control"
+								type="file" name="createFromArtefactForm" />
 						</div>
 						<div class="form-group">
-							<label for="createFromArtefactForm">Tags:</label> <div id="createArtefactFormTags"></div>
+							<label for="createFromArtefactForm">Tags:</label>
+							<div id="createArtefactFormTags"></div>
 						</div>
 						<div class="form-group" id="nodeTypesDiv">
-							<label for="artifactType">Node Types:</label>
-							<select name="artifactType" class="form-control" id="nodeTypes" multiple>
+							<label for="artifactType">Node Types:</label> <select
+								name="artifactType" class="form-control" id="nodeTypes" multiple>
 								<c:forEach var="t" items="${allNodeTypes}">
 									<option value="${t.getQName()}">${t.getQName()}</option>
 								</c:forEach>
@@ -104,7 +118,8 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="$('#createFromArtefactDiag').modal('hide');">Cancel</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal"
+					onclick="$('#createFromArtefactDiag').modal('hide');">Cancel</button>
 				<button type="button" class="btn btn-primary" data-dismiss="modal"
 					onclick="createTemplateFromArtefact();">Add</button>
 			</div>
@@ -113,65 +128,72 @@
 </div>
 
 <script>
- 	
- 	var files;
- 	
- 	$('#createFromArtefactFormUpload').on('change', prepareUpload);
+	var files;
 
- 	// Grab the files and set them to our variable
- 	function prepareUpload(event)
- 	{
-   		files = event.target.files;
- 	}
- 	
-	var options = {
-			"no-duplicate" : true,
-			"tag-box-class": "tagging",
-			"case-sensitive": true
+	$('#createFromArtefactFormUpload').on('change', prepareUpload);
+
+	// Grab the files and set them to our variable
+	function prepareUpload(event) {
+		files = event.target.files;
 	}
-	
+
+	var options = {
+		"no-duplicate" : true,
+		"tag-box-class" : "tagging",
+		"case-sensitive" : true
+	}
+
 	var taggin = $('#createArtefactFormTags').tagging(options);
-	
-	function createTemplateFromArtefact(){
+
+	function createTemplateFromArtefact() {
 		var artefactType = $('#artefactType').val();
 		var tags = taggin[0].tagging("getTags");
 		var nodeTypes = $('#nodeTypes').val();
-		
+		var filesForUpload = $('#createFromArtefactFormUpload')[0].files;
+
 		// upload data
 		var formData = new FormData();
-		
+
 		// the file
-		for(var i = 0; i < files.length; i++){
-			var file = files[i];			
+		for (var i = 0; i < filesForUpload.length; i++) {
+			var file = filesForUpload[i];
 			formData.append("file", file, file.name);
 		}
-		
+
 		formData.append("artefactType", artefactType);
-		
-		formData.append("nodeTypes", nodeTypes);
-		
-		formData.append("tags", tags);
-		
+
+		if (nodeTypes == null) {
+			formData.append("nodeTypes", null);
+		} else {
+			formData.append("nodeTypes", nodeTypes);
+		}
+
+		if (tags.length == 0) {
+			formData.append("tags", null);
+		} else {
+			formData.append("tags", tags);
+		}
 
 		$.ajax({
-			url: "${url}",
-			type: "POST",
-			async: false,
-			data: formData,
-			processData: false,
-	        contentType: false, 
-			error: function(jqXHR, textStatus, errorThrown) {
-				vShowError("Could not create ServiceTemplate from artefact: " + errorThrown + "<br/>" + jqXHR.responseText);
+			url : "${url}",
+			type : "POST",
+			async : false,
+			data : formData,
+			processData : false,
+			contentType : false,
+			error : function(jqXHR, textStatus, errorThrown) {
+				vShowError("Could not create ServiceTemplate from artefact: "
+						+ errorThrown + "<br/>" + jqXHR.responseText);
 			},
-			success: function(id, textStatus, jqXHR) {
+			success : function(id, textStatus, jqXHR) {
 				// Data has been validated at the server
 				// We can just add the local data
-				
-				var loc = jqXHR.getResponseHeader('Location');				
+
+				var loc = jqXHR.getResponseHeader('Location');
 				$('#createFromArtefactDiag').modal('hide');
 				window.location = loc;
 			}
 		});
-		
+
 	}
 </script>
