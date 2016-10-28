@@ -88,8 +88,10 @@ public class SelfServicePortalResource implements IPersistable {
 		this.image_jpg_ref = new RepositoryFileReference(this.id, "image.jpg");
 		this.application = this.getData();
 	}
-	
-	private Application getData() {
+
+	@GET
+	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
+	public Application getData() {
 		if (Repository.INSTANCE.exists(this.data_xml_ref)) {
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
 			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref);) {
