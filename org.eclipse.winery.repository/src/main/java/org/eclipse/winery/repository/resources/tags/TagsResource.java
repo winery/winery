@@ -35,64 +35,67 @@ import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
 
-public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag>  {
-	
+public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag> {
+
 	private static final Logger logger = LoggerFactory.getLogger(TagsResource.class);
-	
+
 	public TagsResource(IPersistable res, List<TTag> list) {
-		super(TagResource.class,TTag.class,list, res);
+		super(TagResource.class, TTag.class, list, res);
 	}
-	
-	
+
 	public Viewable getHTML() {
 		return new Viewable("/jsp/tags/tags.jsp", this);
 	}
-	
+
 	/**
 	 * Adds an element using form-encoding
 	 * 
 	 * This is necessary as TRequirementRef contains an IDREF and the XML
 	 * snippet itself does not contain the target id
 	 * 
-	 * @param name the optional name of the requirement
-	 * @param value the reference to a requirement in the topology
+	 * 
+	 * @param name
+	 *            the optional name of the requirement
+	 * @param value
+	 *            the reference to a requirement in the topology
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addNewElement(@FormParam("id") String id, @FormParam("name") String name, @FormParam("value") String value) {
+	public Response addNewElement(@FormParam("id") String id, @FormParam("name") String name,
+			@FormParam("value") String value) {
 		// Implementation adapted from super addNewElement
 		TTag tag = new TTag();
-		
+
 		tag.setName(name);
 		tag.setValue(value);
-		
+
 		this.addTagToResource(tag);
-		
+
 		this.list.add(tag);
 		return CollectionsHelper.persist(this.res, this, tag);
 	}
-	
-	private void setTagsIfNull(){
+
+	private void setTagsIfNull() {
 		TTags tags = null;
-		if(this.res instanceof ServiceTemplateResource){
-			tags = 	((ServiceTemplateResource)this.res).getServiceTemplate().getTags();
-			if(tags == null){
-				((ServiceTemplateResource)this.res).getServiceTemplate().setTags(new TTags());
+		if (this.res instanceof ServiceTemplateResource) {
+			tags = ((ServiceTemplateResource) this.res).getServiceTemplate().getTags();
+			if (tags == null) {
+				((ServiceTemplateResource) this.res).getServiceTemplate().setTags(new TTags());
 			}
-		} else if(this.res instanceof EntityTypeResource){
-			tags = ((EntityTypeResource)this.res).getEntityType().getTags();
-			if(tags == null){
-				((EntityTypeResource)this.res).getEntityType().setTags(new TTags());
+		} else if (this.res instanceof EntityTypeResource) {
+			tags = ((EntityTypeResource) this.res).getEntityType().getTags();
+			if (tags == null) {
+				((EntityTypeResource) this.res).getEntityType().setTags(new TTags());
 			}
-		} else if(this.res instanceof NodeTypeImplementationResource){
-			tags = ((NodeTypeImplementationResource)this.res).getNTI().getTags();
-			if(tags == null){
-				((NodeTypeImplementationResource)this.res).getNTI().setTags(new TTags());
+		} else if (this.res instanceof NodeTypeImplementationResource) {
+			tags = ((NodeTypeImplementationResource) this.res).getNTI().getTags();
+			if (tags == null) {
+				((NodeTypeImplementationResource) this.res).getNTI().setTags(new TTags());
 			}
-		} else if(this.res instanceof RelationshipTypeImplementationResource){
-			tags = ((RelationshipTypeImplementationResource)this.res).getRTI().getTags();
-			if(tags == null){
-				((RelationshipTypeImplementationResource)this.res).getRTI().setTags(new TTags());
+		} else if (this.res instanceof RelationshipTypeImplementationResource) {
+			tags = ((RelationshipTypeImplementationResource) this.res).getRTI().getTags();
+			if (tags == null) {
+				((RelationshipTypeImplementationResource) this.res).getRTI().setTags(new TTags());
 			}
 		}
 		try {
@@ -102,23 +105,23 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 			e.printStackTrace();
 		}
 	}
-	
-	private void addTagToResource(TTag tag){
-		
+
+	private void addTagToResource(TTag tag) {
+
 		this.setTagsIfNull();
-		
+
 		TTags tags = null;
-		if(this.res instanceof ServiceTemplateResource){
-			tags = 	((ServiceTemplateResource)this.res).getServiceTemplate().getTags();
-		} else if(this.res instanceof EntityTypeResource){
-			tags = ((EntityTypeResource)this.res).getEntityType().getTags();
-		} else if(this.res instanceof NodeTypeImplementationResource){
-			tags = ((NodeTypeImplementationResource)this.res).getNTI().getTags();
-		} else if(this.res instanceof RelationshipTypeImplementationResource){
-			tags = ((RelationshipTypeImplementationResource)this.res).getRTI().getTags();
+		if (this.res instanceof ServiceTemplateResource) {
+			tags = ((ServiceTemplateResource) this.res).getServiceTemplate().getTags();
+		} else if (this.res instanceof EntityTypeResource) {
+			tags = ((EntityTypeResource) this.res).getEntityType().getTags();
+		} else if (this.res instanceof NodeTypeImplementationResource) {
+			tags = ((NodeTypeImplementationResource) this.res).getNTI().getTags();
+		} else if (this.res instanceof RelationshipTypeImplementationResource) {
+			tags = ((RelationshipTypeImplementationResource) this.res).getRTI().getTags();
 		}
-		
+
 		tags.getTag().add(tag);
 	}
-	
+
 }
