@@ -15,42 +15,6 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="winery" version="3.0">
 	<display-name>Winery Repository</display-name>
 	<filter>
-		<filter-name>WineryResources</filter-name>
-		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
-		<init-param>
-			<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
-			<!-- RestDocFilter is required for RESTDoc. -->
-			<param-value>org.eclipse.winery.repository.RestDocFilter</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>org.eclipse.winery.repository.resources</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.feature.FilterForwardOn404</param-name>
-			<param-value>false</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.feature.CanonicalizeURIPath</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.feature.NormalizeURI</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.feature.Redirect</param-name>
-			<param-value>true</param-value>
-		</init-param>
-
-		<!-- enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html -->
-		<init-param>
-			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
-			<param-value>true</param-value>
-		</init-param>
-
-	</filter>
-	<filter>
 		<filter-name>GlobalCORS</filter-name>
 		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
 		<init-param>
@@ -88,6 +52,46 @@
 		</init-param>
 
 	</filter>
+	<filter>
+		<filter-name>WineryResources</filter-name>
+		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
+		<init-param>
+			<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
+			<!-- RestDocFilter is required for RESTDoc. -->
+			<param-value>org.eclipse.winery.repository.RestDocFilter</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.config.property.packages</param-name>
+			<param-value>org.eclipse.winery.repository.resources</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.config.feature.FilterForwardOn404</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.config.feature.CanonicalizeURIPath</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.config.feature.NormalizeURI</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.config.feature.Redirect</param-name>
+			<param-value>true</param-value>
+		</init-param>
+
+		<!-- enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html -->
+		<init-param>
+			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+			<param-value>true</param-value>
+		</init-param>
+
+	</filter>
+	<filter-mapping>
+		<filter-name>GlobalCORS</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 	<filter-mapping>
 		<filter-name>WineryResources</filter-name>
 
@@ -122,10 +126,6 @@
 		<url-pattern>/other/*</url-pattern>
 		<url-pattern>/test/*</url-pattern>
 
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>GlobalCORS</filter-name>
-		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<listener>
 		<listener-class>org.eclipse.winery.repository.Prefs</listener-class>
