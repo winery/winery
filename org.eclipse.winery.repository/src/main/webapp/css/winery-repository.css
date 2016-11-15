@@ -128,10 +128,8 @@ body.modal-open > #mainContainer.overflown {
 	width: 140px;
 }
 
-#buttonList > a {
-	width: 85px;
-	float: left;
-	margin-top: 10px;
+#buttonList > a, #buttonList > button {
+	margin-top: 5px;
 }
 
 .rightbutton {
