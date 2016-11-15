@@ -109,6 +109,7 @@ public class PropertyMappingsResource {
 		// we create a new one
 		TPropertyMapping newPropertyMapping = new TPropertyMapping();
 		this.updatePropertyMapping(newPropertyMapping, serviceTemplatePropertyRef, template, targetPropertyRef);
+		this.propertyMappings.getPropertyMapping().add(newPropertyMapping);
 		return BackendUtils.persist(this.res);
 	}
 	
