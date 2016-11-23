@@ -15,6 +15,10 @@ before_script:
   - mvn install
   - cd ../org.eclipse.winery.model.tosca
   - mvn install
+  - cd ..
+
+script:
+  - mvn test
 
 #We do not need special build commands, as we use the default maven configuration
 #For more information see https://docs.travis-ci.com/user/languages/java
