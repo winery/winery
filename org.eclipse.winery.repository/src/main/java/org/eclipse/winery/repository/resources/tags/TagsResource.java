@@ -25,6 +25,7 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 import org.eclipse.winery.repository.resources._support.IPersistable;
+import org.eclipse.winery.repository.resources._support.collections.CollectionsHelper;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
@@ -56,68 +57,63 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 	 * 
 	 * @param name the optional name of the requirement
 	 * @param value the reference to a requirement in the topology
+
+	 * 
+	 * @param name
+	 *            the optional name of the requirement
+	 * @param value
+	 *            the reference to a requirement in the topology
+
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addNewElement(@FormParam("id") String id, @FormParam("name") String name,
 			@FormParam("value") String value) {
 
-		if (!this.setTagsIfNull(name, value)) {
-			TTag tag = new TTag();
-			
-			tag.setName(name);
-			tag.setValue(value);
-			
-			return this.addNewElement(tag);
-		} else {
-			return Response.ok().build();
-		}
-
-	}
-
-	private boolean setTagsIfNull(String name, String value) {
-		TTags tags = new TTags();
-
 		TTag tag = new TTag();
-		
+
 		tag.setName(name);
 		tag.setValue(value);
+
+
+		//this.addTagToResource(tag);
 		
-		tags.getTag().add(tag);
-		
-		boolean createdTags = false;
-		
+		this.setTagsIfNull();
+
+		this.list.add(tag);
+		return CollectionsHelper.persist(this.res, this, tag);
+	}
+
+	private void setTagsIfNull() {
+		TTags tags = null;
 		if (this.res instanceof ServiceTemplateResource) {
-			if (((ServiceTemplateResource) this.res).getServiceTemplate().getTags() == null) {
-				((ServiceTemplateResource) this.res).getServiceTemplate().setTags(tags);
-				createdTags = true;
+			tags = ((ServiceTemplateResource) this.res).getServiceTemplate().getTags();
+			if (tags == null) {
+				((ServiceTemplateResource) this.res).getServiceTemplate().setTags(new TTags());
 			}
-		} else if (this.res instanceof EntityTypeResource) {			
-			if (((EntityTypeResource) this.res).getEntityType().getTags() == null) {
-				((EntityTypeResource) this.res).getEntityType().setTags(tags);
-				createdTags = true;
+		} else if (this.res instanceof EntityTypeResource) {
+			tags = ((EntityTypeResource) this.res).getEntityType().getTags();
+			if (tags == null) {
+				((EntityTypeResource) this.res).getEntityType().setTags(new TTags());
 			}
 		} else if (this.res instanceof NodeTypeImplementationResource) {
-			if (((NodeTypeImplementationResource) this.res).getNTI().getTags() == null) {
-				((NodeTypeImplementationResource) this.res).getNTI().setTags(tags);
-				createdTags = true;
+			tags = ((NodeTypeImplementationResource) this.res).getNTI().getTags();
+			if (tags == null) {
+				((NodeTypeImplementationResource) this.res).getNTI().setTags(new TTags());
 			}
 		} else if (this.res instanceof RelationshipTypeImplementationResource) {
-			if (((RelationshipTypeImplementationResource) this.res).getRTI().getTags() == null) {
-				((RelationshipTypeImplementationResource) this.res).getRTI().setTags(tags);
-				createdTags = true;
+			tags = ((RelationshipTypeImplementationResource) this.res).getRTI().getTags();
+			if (tags == null) {
+				((RelationshipTypeImplementationResource) this.res).getRTI().setTags(new TTags());
 			}
 		}
-		if (createdTags) {
-			try {
-				this.res.persist();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+			this.res.persist();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		return createdTags;
 	}
+
 
 }

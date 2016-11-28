@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
- * Copyright (c) 2012-2013,2015 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,18 +9,36 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Oliver Kopp - initial API and implementation and bug fixes
  *******************************************************************************/
 -->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="winery" version="3.0">
 	<display-name>Winery Repository</display-name>
+
+	<filter>
+		<filter-name>CorsFilter</filter-name>
+		<filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+		<init-param>
+			<param-name>cors.allowed.origins</param-name>
+			<param-value>*</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.allowed.methods</param-name>
+			<param-value>GET,PUT,POST,DELETE,HEAD,OPTIONS</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cors.preflight.maxage</param-name>
+			<param-value>10</param-value>
+		</init-param>
+	</filter>
+
 	<filter>
 		<filter-name>WineryResources</filter-name>
 		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
 		<init-param>
 			<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
-			<!-- RestDocFilter is required for RESTDoc. CORSFilter is required for the BPMN4TOSCA Plan Modeler -->
-			<param-value>org.eclipse.winery.repository.RestDocFilter;org.eclipse.winery.repository.CORSFilter</param-value>
+			<!-- RestDocFilter is required for RESTDoc. -->
+			<param-value>org.eclipse.winery.repository.RestDocFilter</param-value>
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
@@ -48,8 +66,13 @@
 			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
 			<param-value>true</param-value>
 		</init-param>
-
 	</filter>
+
+	<filter-mapping>
+		<filter-name>CorsFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<filter-mapping>
 		<filter-name>WineryResources</filter-name>
 
@@ -85,6 +108,7 @@
 		<url-pattern>/test/*</url-pattern>
 
 	</filter-mapping>
+
 	<listener>
 		<listener-class>org.eclipse.winery.repository.Prefs</listener-class>
 	</listener>
