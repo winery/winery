@@ -200,8 +200,14 @@ public class TopologyTemplateResource {
 		request += "</PLANPOSTURL></generatePlanForTopology>";
 		
 		Client client = Client.create();
-		Builder wr = client.resource("http://localhost:1339/planbuilder/sync").type(MediaType.APPLICATION_XML);
-		
+
+		Builder wr = null;
+		if (Utils.isResourceAvailable("http://localhost:1339/planbuilder")) {
+			wr = client.resource("http://localhost:1339/planbuilder/sync").type(MediaType.APPLICATION_XML);
+		} else if(Utils.isResourceAvailable("http://localhost:1337/containerapi/planbuilder")){
+			wr = client.resource("http://localhost:1337/containerapi/planbuilder/sync").type(MediaType.APPLICATION_XML);
+		}
+
 		try {
 			wr.post(String.class, request);
 		} catch (com.sun.jersey.api.client.UniformInterfaceException e) {
