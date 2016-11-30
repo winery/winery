@@ -302,8 +302,7 @@ public class Prefs implements ServletContextListener {
 			String planBuilderURI = "http://localhost:1339/planbuilder";
 			this.isPlanBuilderAvailable = Utils.isResourceAvailable(planBuilderURI);
 		}
-		
-		if(!this.isPlanBuilderAvailable){
+		if (!this.isPlanBuilderAvailable) {
 			String containerPlanBuilderURI = "http://localhost:1337/containerapi/planbuilder";
 			this.isPlanBuilderAvailable = Utils.isResourceAvailable(containerPlanBuilderURI);
 		}
