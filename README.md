@@ -14,13 +14,6 @@ Winery is also part of the OpenTOSCA ecosystem where more information is availab
 Winery uses maven and [bower] for fetching dependencies and building.
 Bower has to be installed manually as described in the next section.
 
-## Install bower
-
-1. Install [nodejs]. Just use the latest version to get the latest node package manager (npm).
-1. Run `npm install -g bower`
-1. Ensure that `git` is in your path: Some javascript libraries are fetched via git.
-
-
 ## Make models available
 
 The models are versioned aside from the main project.
