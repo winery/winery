@@ -6,7 +6,7 @@ Winery is also part of the OpenTOSCA ecosystem where more information is availab
 **The code and the linked libraries are NOT approved by Eclipse Legal.**
 
 ## Runtime Requirements
-* Java 7
+* Java 8
 * Servlet 3.0 capable container (e.g., Tomcat 7)
 
 ## Development Information
