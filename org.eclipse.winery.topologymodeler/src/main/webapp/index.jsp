@@ -364,7 +364,7 @@ function updateDeploymentArtifact() {
 			<div class="modal-body">
 				<form><fieldset>
 					<div class="form-group">
-						<label for="DADname" class="control-label">Name</label>
+						<label for="DAname" class="control-label">Name</label>
 						<div id="DAname" class="form-control"></div>
 					</div>
 
@@ -377,7 +377,7 @@ function updateDeploymentArtifact() {
 						<a id="DAArtifactTemplate" class="form-control" target="_blank"></a>
 					</div>
 					<div class="form-group">
-						<label for=DAXML" class="control-label">XML</label>
+						<label for="DAXML" class="control-label">XML</label>
 						<textarea id="DAXML" cols=50 rows=7 class="form-control"></textarea>
 					</div>
 				</fieldset></form>
