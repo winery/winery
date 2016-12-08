@@ -12,24 +12,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
@@ -49,15 +32,32 @@ import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.Prefs;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
+import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class exports a CSAR crawling from the the given GenericId<br/>
@@ -66,14 +66,14 @@ import org.w3c.dom.Document;
  * alternative implementation is to use Java7's Zip File System Provider
  */
 public class CSARExporter {
-	
+
 	public static final String PATH_TO_NAMESPACES_PROPERTIES = "winery/Namespaces.properties";
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(CSARExporter.class);
-	
+
 	private static final String DEFINITONS_PATH_PREFIX = "Definitions/";
-	
-	
+
+
 	/**
 	 * Returns a unique name for the given definitions to be used as filename
 	 */
@@ -83,41 +83,41 @@ public class CSARExporter {
 		String res = NamespacesResource.getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
 		return res;
 	}
-	
+
 	public static String getDefinitionsFileName(TOSCAComponentId id) {
 		return CSARExporter.getDefinitionsName(id) + Constants.SUFFIX_TOSCA_DEFINITIONS;
 	}
-	
+
 	public static String getDefinitionsPathInsideCSAR(TOSCAComponentId id) {
 		return CSARExporter.DEFINITONS_PATH_PREFIX + CSARExporter.getDefinitionsFileName(id);
 	}
-	
+
 	/**
 	 * Writes a complete CSAR containing all necessary things reachable from the
 	 * given service template
-	 * 
+	 *
 	 * @param entryId the id of the service template to export
 	 * @param out the outputstream to write to
 	 * @throws JAXBException
 	 */
 	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, XMLStreamException, JAXBException {
 		CSARExporter.logger.trace("Starting CSAR export with {}", entryId.toString());
-		
+
 		Map<RepositoryFileReference, String> refMap = new HashMap<RepositoryFileReference, String>();
 		Collection<String> definitionNames = new ArrayList<>();
-		
+
 		final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out);
-		
+
 		TOSCAExportUtil exporter = new TOSCAExportUtil();
 		Map<String, Object> conf = new HashMap<>();
-		
+
 		ExportedState exportedState = new ExportedState();
-		
+
 		TOSCAComponentId currentId = entryId;
 		do {
 			String defName = CSARExporter.getDefinitionsPathInsideCSAR(currentId);
 			definitionNames.add(defName);
-			
+
 			zos.putArchiveEntry(new ZipArchiveEntry(defName));
 			Collection<TOSCAComponentId> referencedIds;
 			try {
@@ -129,23 +129,25 @@ public class CSARExporter {
 				throw e;
 			}
 			zos.closeArchiveEntry();
-			
+
 			exportedState.flagAsExported(currentId);
 			exportedState.flagAsExportRequired(referencedIds);
-			
+
 			currentId = exportedState.pop();
 		} while (currentId != null);
-		
+
 		// if we export a ServiceTemplate, data for the self-service portal might exist
 		if (entryId instanceof ServiceTemplateId) {
-			this.addSelfServiceMetaData((ServiceTemplateId) entryId, refMap);
+			ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
+			this.addSelfServiceMetaData(serviceTemplateId, refMap);
+			this.addSelfServiceMetaDataAsJSON(serviceTemplateId, zos);
 		}
-		
+
 		// now, refMap contains all files to be added to the CSAR
-		
+
 		// write manifest directly after the definitions to have it more at the beginning of the ZIP rather than having it at the very end
 		this.addManifest(entryId, definitionNames, refMap, zos);
-		
+
 		// used for generated XSD schemas
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 		Transformer transformer;
@@ -155,7 +157,7 @@ public class CSARExporter {
 			CSARExporter.logger.debug(e1.getMessage(), e1);
 			throw new IllegalStateException("Could not instantiate transformer", e1);
 		}
-		
+
 		// write all referenced files
 		for (RepositoryFileReference ref : refMap.keySet()) {
 			String archivePath = refMap.get(ref);
@@ -181,19 +183,19 @@ public class CSARExporter {
 			}
 			zos.closeArchiveEntry();
 		}
-		
+
 		this.addNamespacePrefixes(zos);
-		
+
 		zos.finish();
 		zos.close();
 	}
-	
+
 	/**
 	 * Writes the configured mapping namespaceprefix -> namespace to the archive
-	 * 
+	 *
 	 * This is kind of a quick hack. TODO: during the import, the prefixes
 	 * should be extracted using JAXB and stored in the NamespacesResource
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private void addNamespacePrefixes(ArchiveOutputStream zos) throws IOException {
@@ -216,6 +218,9 @@ public class CSARExporter {
 
 	/**
 	 * Adds all self service meta data to the targetDir
+	 *
+	 * @param targetDir the directory in the CSAR where to put the content to
+	 * @param refMap is used later to create the CSAR
 	 */
 	private void addSelfServiceMetaData(ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) {
 		SelfServicePortalResource res = new SelfServicePortalResource(entryId);
@@ -266,16 +271,24 @@ public class CSARExporter {
 			// add everything in the root of the CSAR
 			String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
 			addSelfServiceMetaData(entryId, targetDir, refMap);
-
-			// add everything into a subfolder of the service template
-			targetDir = BackendUtils.getPathInsideRepo(entryId) + Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
-			addSelfServiceMetaData(entryId, targetDir, refMap);
 		}
 	}
-	
+
+	private void addSelfServiceMetaDataAsJSON(ServiceTemplateId serviceTemplateId, ArchiveOutputStream zos) throws IOException {
+		ArchiveEntry archiveEntry = new ZipArchiveEntry(Constants.DIRNAME_SELF_SERVICE_METADATA + "/data.json");
+		zos.putArchiveEntry(archiveEntry);
+		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
+		Application application = serviceTemplateResource.getSelfServicePortalResource().getApplication();
+		ObjectMapper om = new ObjectMapper();
+		// using om.writeValue(zos, application) causes trouble with the zos, so we write it into a byte array first
+		byte[] bytes = om.writeValueAsBytes(application);
+		zos.write(bytes);
+		zos.closeArchiveEntry();
+	}
+
 	private void addManifest(TOSCAComponentId id, Collection<String> definitionNames, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream out) throws IOException {
 		String entryDefinitionsReference = CSARExporter.getDefinitionsPathInsideCSAR(id);
-		
+
 		out.putArchiveEntry(new ZipArchiveEntry("TOSCA-Metadata/TOSCA.meta"));
 		PrintWriter pw = new PrintWriter(out);
 		// Setting Versions
@@ -287,14 +300,14 @@ public class CSARExporter {
 		// name of the service template
 		pw.println("Entry-Definitions: " + entryDefinitionsReference);
 		pw.println();
-		
+
 		assert (definitionNames.contains(entryDefinitionsReference));
 		for (String name : definitionNames) {
 			pw.println("Name: " + name);
 			pw.println("Content-Type: " + org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_TOSCA_DEFINITIONS);
 			pw.println();
 		}
-		
+
 		// Setting other files, mainly files belonging to artifacts
 		for (RepositoryFileReference ref : refMap.keySet()) {
 			String archivePath = refMap.get(ref);
