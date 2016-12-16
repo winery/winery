@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzentter - get namespaces for specific component
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
@@ -185,5 +186,11 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * Returns all namespaces used by all known TOSCA components
 	 */
 	public Collection<Namespace> getUsedNamespaces();
-	
+
+	/**
+	 * Returns all namespaces specific for a given TOSCA component
+	 *
+	 * @param clazz the TOSCA component class which namespaces' should be returned.
+	 */
+	public Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz);
 }
