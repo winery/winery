@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,12 +8,15 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter, Nicole Keppler - forceDelete for Namespaces
  *******************************************************************************/
 package org.eclipse.winery.common.interfaces;
 
 import java.io.IOException;
 
 import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 
 /**
  * Enables access to the winery repository via Ids defined in package
@@ -38,5 +41,13 @@ public interface IWineryRepositoryCommon {
 	 * @param id
 	 */
 	public void forceDelete(GenericId id) throws IOException;
-	
+
+	/**
+	 * Deletes all TOSCA components nested in the given namespace
+	 *
+	 * @param toscaComponentIdClazz the type of TOSCA components to delete
+	 * @param namespace the namespace to delete
+	 */
+	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException;
+
 }

@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,8 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Lukas Harzenetter, Philipp Meyer - show only a limited number of items & pagination
+ *    Lukas Harzenetter, Nicole Keppler - functionality of "add new"-button for namespaceonly and showAllItems
  *******************************************************************************/
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -17,6 +19,7 @@
 <%@taglib prefix="v"  uri="http://www.eclipse.org/winery/repository/functions" %>
 <%@taglib prefix="t"  tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="wc" uri="http://www.eclipse.org/winery/functions" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%-- In English, one can usually form a plural by adding an "s". Therefore, we resue the label to form the window title --%>
 <t:genericpage windowtitle="${it.label}s" selected="${it.type}" cssClass="${it.CSSclass}">
@@ -37,10 +40,23 @@
 	id="upCSAR"
 	accept="application/zip,.csar"/>
 
-<t:addComponentInstance
-	label="${it.label}"
-	typeSelectorData="${it.typeSelectorData}"
-	/>
+	<c:choose>
+		<c:when test="${it.showAllItems}">
+			<t:addComponentInstance
+					label="${it.label}"
+					typeSelectorData="${it.typeSelectorData}"
+					URL='..'
+			/>
+		</c:when>
+		<c:otherwise>
+			<t:addComponentInstance
+					label="${it.label}"
+					typeSelectorData="${it.typeSelectorData}"
+			/>
+		</c:otherwise>
+	</c:choose>
+
+
 
 <div class="middle" id="ccontainer">
 	<br />
@@ -48,67 +64,19 @@
 	<table cellpadding=0 cellspacing=0 style="margin-top: 0px; margin-left: 30px;">
 		<tr>
 			<td valign="top" style="padding-top: 25px; width: 680px;">
-
 				<div id="searchBoxContainer">
-
-					<input id="searchBox" />
-
-					<script>
-
-						$('#searchBox').keyup(function() {
-							var searchString = $(this).val();
-							searchString = searchString.toLowerCase();
-
-							$(".entityContainer").each (function() {
-								var name = $(this).find(".informationContainer > .name").text();
-								var namespace = $(this).find(".informationContainer > .namespace").text();
-
-								var t = name + namespace;
-								t = t.toLowerCase();
-
-								if (t.indexOf(searchString) == -1) {
-									$(this).hide();
-								} else {
-									$(this).show();
-								}
-
-							});
-
-						});
-
-					</script>
-
+					<input id="searchBox" onkeyup="search(true)"/>
 				</div>
 
-			<c:forEach var="t" items="${it.componentInstanceIds}">
-				<%-- even though the id is an invalid XML, it is used for a simple implementation on a click on the graphical rendering to trigger opening the editor --%>
-				<div class="entityContainer ${it.CSSclass}" id="${v:URLencode(t.namespace.encoded)}/${v:URLencode(t.xmlId.encoded)}/">
-					<div class="left">
-						<c:if test="${it.type eq 'NodeType'}">
-							<a href="./${v:URLencode(t.namespace.encoded)}/${v:URLencode(t.xmlId.encoded)}/?edit">
-								<img src='./${v:URLencode(t.namespace.encoded)}/${v:URLencode(t.xmlId.encoded)}/visualappearance/50x50' style='margin-top: 21px; margin-left: 30px; height: 40px; width: 40px;' />
-							</a>
-						</c:if>
-					</div>
-					<div class="center">
-						<div class="informationContainer">
-							<div class="name">
-								${wc:escapeHtml4(t.xmlId.decoded)}
-							</div>
-							<div class="namespace" alt="${wc:escapeHtml4(t.namespace.decoded)}">
-								${wc:escapeHtml4(t.namespace.decoded)}
-							</div>
-						</div>
-						<div class="buttonContainer">
-							<a href="${v:URLencode(t.namespace.encoded)}/${v:URLencode(t.xmlId.encoded)}/?csar" class="exportButton"></a>
-							<a href="${v:URLencode(t.namespace.encoded)}/${v:URLencode(t.xmlId.encoded)}/?edit" class="editButton"></a>
-							<%-- we need double encoding of the URL as the passing to javascript: decodes the given string once --%>
-							<a href="javascript:deleteCI('${wc:escapeHtml4(t.xmlId.decoded)}', '${v:URLencode(v:URLencode(t.namespace.encoded))}/${v:URLencode(v:URLencode(t.xmlId.encoded))}/');" class="deleteButton" onclick="element = $(this).parent().parent().parent();"></a>
-						</div>
-					</div>
-					<div class="right"></div>
-				</div>
-			</c:forEach>
+				<c:choose>
+					<c:when test="${it.showAllItems or fn:length(it.componentInstanceIds) < 50}">
+						<t:namespaceandname></t:namespaceandname>
+					</c:when>
+					<c:otherwise>
+						<t:namespaceonly></t:namespaceonly>
+					</c:otherwise>
+				</c:choose>
+
 			</td>
 			<td id="gcprightcolumn" valign="top">
 				<div id="overviewtopshadow"></div>
@@ -118,6 +86,30 @@
 				<div class="btn-group-vertical" id="buttonList">
 					<button type="button" class="btn btn-default" onclick="openNewCIdiag();">Add new</button>
 					<button type="button" class="btn btn-default" onclick="importCSAR();">Import CSAR</button>
+                    <c:choose>
+                        <c:when test="${it.showAllItems}">
+                            <a href="${fn:replace(pageContext.request.requestURL, pageContext.request.requestURI, '')}/${fn:toLowerCase(it.type)}s/" type="button" class="btn btn-default" value="">Show namespaces</a>
+                        </c:when>
+                        <c:when test="${fn:length(it.componentInstanceIds) < 50}"></c:when>
+                        <c:otherwise>
+                            <a href="./?full=true" type="button" class="btn btn-default" value="">Show all items</a>
+                        </c:otherwise>
+                    </c:choose>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="paginator">
+					<select id="pageSize" onchange="paginateContainer(1)">
+						<option selected value="10">10</option>
+						<option value="25">25</option>
+						<option value="50">50</option>
+					</select>
+					<input type="button" class="btn bnt-default" id="previousPage" disabled="disabled" onclick="nextPage(false)" value="<"/>
+					<div id="pages">
+					</div>
+					<input type="button" class="btn bnt-default" id="nextPage" onclick="nextPage(true)" value=">"/>
 				</div>
 			</td>
 		</tr>
@@ -125,6 +117,155 @@
 </div>
 
 <script>
+	$(function () {
+		paginateContainer(1);
+	});
+
+	/**
+	 * enables searching for name and namespace
+	 *
+	 * @param startPagination boolean which specifies if the first page should be shown or not
+	 */
+	function search(startPagination) {
+		var searchString = $("#searchBox").val();
+		searchString = searchString.toLowerCase();
+
+		$(".entityContainer").each (function() {
+			var name = $(this).find(".informationContainer > .name").text();
+			var namespace = $(this).find(".informationContainer > .namespace").text();
+
+			var t = name + namespace;
+			t = t.toLowerCase();
+
+			if (t.indexOf(searchString) == -1) {
+				$(this).hide();
+			} else {
+				$(this).show();
+			}
+
+		});
+
+		if (startPagination){
+			paginateContainer(1);
+		}
+	}
+
+	/**
+	 * paginates all container
+	 *
+	 * @param pageSelected integer containing the page to be shown
+	 */
+	function paginateContainer(pageSelected) {
+		var container = $(".entityContainer");
+		var pageSize = $("#pageSize option:selected").val();
+		var index = 0;
+
+		if(container.length <= 10){
+			$("#paginator").hide();
+		}
+
+		if ($('#searchBox').val() == "") {
+			// standard procedure
+			container.each(function () {
+				if ((Math.floor(index++ / pageSize) + 1) === pageSelected) {
+					$(this).show();
+				} else {
+					$(this).hide();
+				}
+			});
+		} else {
+			// This is needed for the pagination to work correctly when using the search. The reason is, that all
+			// container matching the search, need to be visible in order to paginate them correctly.
+			search(false);
+
+			container = container.filter(":visible");
+
+			container.each(function () {
+				if ((Math.floor(index++ / pageSize) + 1) != pageSelected) {
+					$(this).hide();
+				}
+			});
+		}
+
+		// set up page navigation buttons
+		var pages = $("#pages");
+		var pageCount = Math.ceil(container.length / pageSize);
+
+		pages.empty();
+
+		var pagesToShow = [];
+
+		if (pageCount > 4) {
+			switch (pageSelected){
+				case 1:
+				case 2:
+					pagesToShow = [1, 2, 3, "...", pageCount];
+					break;
+				case 3:
+					pagesToShow = [1, 2, 3, 4, "...", pageCount];
+					break;
+				case pageCount -2:
+					pagesToShow = [1, "...", pageCount -3, pageCount-2, pageCount -1, pageCount];
+					break;
+				case pageCount-1:
+				case pageCount:
+					pagesToShow = [1, "...", pageCount-2, pageCount -1, pageCount];
+					break;
+				default:
+					pagesToShow = [1, "...", pageSelected -1, pageSelected, pageSelected + 1, "...", pageCount];
+					break;
+			}
+		} else {
+			for (var j = 0; j < pageCount; j++) {
+				pagesToShow[j] = j + 1;
+			}
+		}
+
+		for (var i = 0; i < pagesToShow.length; i++) {
+			var selected = "";
+			if (pagesToShow[i] === pageSelected) {
+				selected = 'disabled="disabled"';
+			}
+
+			if (typeof pagesToShow[i] === "string") {
+				pages.append($('<em class="pageRepresentative">' +  pagesToShow[i] + '</em>'))
+			} else {
+				pages.append(
+						$('<input type="button"' + selected + ' class="btn btn-default pageSelector" value="' +
+								pagesToShow[i] + '" onclick="paginateContainer(' + pagesToShow[i] + ')"/>')
+				);
+			}
+
+		}
+
+		// disable previous/next buttons accordingly
+		if (pageSelected >= pageCount) {
+			$("#nextPage").prop("disabled", true);
+		} else {
+			$("#nextPage").prop("disabled", false);
+		}
+
+		if (pageSelected <= 1) {
+			$("#previousPage").prop("disabled", true);
+		} else {
+			$("#previousPage").prop("disabled", false);
+		}
+	}
+
+	/**
+	 * manages navigation through pages for previous/next arrow
+	 *
+	 * @param next boolean which specifies whether the next or previous page is requested. TRUE if next, FALSE if previous
+	 */
+	function nextPage(next) {
+		var page = parseInt($(".pageSelector").filter(":disabled").val());
+
+		if (next) {
+			paginateContainer(page +1, true);
+		} else {
+			paginateContainer(page -1, true);
+		}
+	}
 
 function entityContainerClicked(e) {
 	var target = $(e.target);
