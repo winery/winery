@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -10,6 +10,7 @@
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
  *    Yves Schubert - switch to bootstrap 3
+ *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -272,7 +273,7 @@ $(function() {
 			async: true,
 			contentType: "text/plain",
 			processData: false,
-			data: e.val,
+			data: $(this).val(),
 			error: function(jqXHR, textStatus, errorThrown) {
 				vShowAJAXError("Could not update namespace", jqXHR, errorThrown);
 			},
