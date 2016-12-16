@@ -12,6 +12,7 @@
 package org.eclipse.winery.repository.resources.artifacts;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
@@ -32,12 +33,8 @@ public class ImplementationArtifactResource extends GenericArtifactResource<Impl
 	 * does not yet exist.
 	 */
 	private static ImplementationArtifact getImplementationArtifact(String artifactId, List<ImplementationArtifact> implementationArtifacts) {
-		if (artifactId == null) {
-			throw new IllegalArgumentException("artifactId must not be null");
-		}
-		if (implementationArtifacts == null) {
-			throw new IllegalArgumentException("implementationArtifacts must not be null");
-		}
+		Objects.requireNonNull(artifactId);
+		Objects.requireNonNull(implementationArtifacts);
 		for (ImplementationArtifact ia : implementationArtifacts) {
 			// ia.getName() might be null as TOSCA COS01 does not forsee a name on the implementation artifact
 			// Therefore, we begin the test with "artifactId"
