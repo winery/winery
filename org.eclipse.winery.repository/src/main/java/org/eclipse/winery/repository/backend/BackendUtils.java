@@ -958,9 +958,8 @@ public class BackendUtils {
 	 * Returns all components available of the given id type
 	 * 
 	 * Similar functionality as {@link
-	 * org.eclipse.winery.repository.backend.IGenericRepository.
-	 * getAllTOSCAComponentIds(Class<T>)}, but it crawls through the repository
-	 * 
+	 * IGenericRepository#getAllTOSCAComponentIds(java.lang.Class)}, but it crawls through the repository
+	 *
 	 * This method is required as we do not use a database.
 	 * 
 	 * @param idClass class of the Ids to search for
