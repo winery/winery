@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,8 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzentter - get namespaces for specific component
+ *     Nicole Keppler - forceDelete for Namespaces
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
@@ -30,6 +32,8 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.spi.FileSystemProvider;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -41,10 +45,6 @@ import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
@@ -66,8 +66,12 @@ import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.AbstractRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +80,7 @@ import org.slf4j.LoggerFactory;
  * Therefore, we intend to expose the stream types offered by java.nio.Files:
  * BufferedReader/BufferedWriter
  */
-public class FilebasedRepository extends AbstractRepository implements IRepository, IRepositoryAdministration {
+public class FilebasedRepository extends AbstractRepository implements IRepositoryAdministration {
 	
 	private static final Logger logger = LoggerFactory.getLogger(FilebasedRepository.class);
 	
@@ -224,7 +228,26 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			throw e;
 		}
 	}
-	
+
+	@Override
+	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException {
+		// instantiate new tosca component id with "ID" as id
+		// this is used to get the absolute path
+		TOSCAComponentId id = BackendUtils.getTOSCAcomponentId(toscaComponentIdClazz, namespace.getEncoded(), "ID", true);
+
+		Path path = this.id2AbsolutePath(id);
+
+		// do not delete the id, delete the complete namespace
+		// patrent folder is the namespace folder
+		path = path.getParent();
+		try {
+			FileUtils.forceDelete(path);
+		} catch (IOException e) {
+			FilebasedRepository.logger.debug("Could not delete tosca components of namepsace", e);
+			throw e;
+		}
+	}
+
 	@Override
 	public boolean exists(GenericId id) {
 		Path absolutePath = this.id2AbsolutePath(id);
@@ -447,7 +470,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	public Collection<Namespace> getUsedNamespaces() {
 		// @formatter:off
 		@SuppressWarnings("rawtypes")
-		Class[] toscaComponentIds = {
+		Collection<Class<? extends TOSCAComponentId>> toscaComponentIds = Arrays.asList(
 			ArtifactTemplateId.class,
 			ArtifactTypeId.class,
 			CapabilityTypeId.class,
@@ -459,12 +482,23 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			RelationshipTypeImplementationId.class,
 			RequirementTypeId.class,
 			ServiceTemplateId.class
-		};
+		);
 		// @formatter:on
-		
+
+		return getNamespaces(toscaComponentIds);
+	}
+
+	@Override
+	public Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz) {
+		Collection<Class<? extends TOSCAComponentId>> list = new ArrayList<>();
+		list.add(clazz);
+		return getNamespaces(list);
+	}
+
+	private Collection<Namespace> getNamespaces(Collection<Class<? extends TOSCAComponentId>> toscaComponentIds) {
 		// we use a HashSet to avoid reporting duplicate namespaces
 		Collection<Namespace> res = new HashSet<Namespace>();
-		
+
 		for (Class<? extends TOSCAComponentId> id : toscaComponentIds) {
 			String rootPathFragment = Util.getRootPathFragment(id);
 			Path dir = this.repositoryRoot.resolve(rootPathFragment);
@@ -472,9 +506,9 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				continue;
 			}
 			assert (Files.isDirectory(dir));
-			
+
 			final OnlyNonHiddenDirectories onhdf = new OnlyNonHiddenDirectories();
-			
+
 			// list all directories contained in this directory
 			try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir, onhdf)) {
 				for (Path nsP : ds) {

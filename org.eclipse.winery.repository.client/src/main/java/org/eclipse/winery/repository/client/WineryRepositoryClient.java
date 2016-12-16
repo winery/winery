@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter, Nicole Keppler - forceDelete for Namespaces
  *******************************************************************************/
 package org.eclipse.winery.repository.client;
 
@@ -46,6 +47,7 @@ import org.eclipse.winery.common.beans.NamespaceIdOptionalName;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdUtil;
+import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
 import org.eclipse.winery.common.interfaces.QNameWithName;
@@ -731,7 +733,12 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			}
 		}
 	}
-	
+
+	@Override
+	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException {
+		throw new IllegalStateException("not yet implemented");
+	}
+
 	@Override
 	public boolean primaryRepositoryAvailable() {
 		if (this.primaryWebResource == null) {
