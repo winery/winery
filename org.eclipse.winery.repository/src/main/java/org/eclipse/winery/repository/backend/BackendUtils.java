@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013,2015 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter, Nicole Keppler - forceDelete for Namespaces
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
@@ -33,6 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.SortedSet;
 
+import javax.naming.NameParser;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -114,7 +116,24 @@ import com.sun.jersey.core.header.ContentDisposition;
 public class BackendUtils {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BackendUtils.class);
-	
+
+	/**
+	 * Deletes the whole namespace in the component
+	 *
+	 * @param toscaComponentIdClazz
+	 * @param namespaceStr
+	 * @return
+	 */
+	public static Response delete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, String namespaceStr) {
+		Namespace namespace = new Namespace(namespaceStr, true);
+		try {
+			Repository.INSTANCE.forceDelete(toscaComponentIdClazz, namespace);
+		} catch (IOException e) {
+			BackendUtils.logger.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		return Response.noContent().build();
+	}
 	
 	/**
 	 * Deletes given file/dir and returns appropriate response code
@@ -958,9 +977,8 @@ public class BackendUtils {
 	 * Returns all components available of the given id type
 	 * 
 	 * Similar functionality as {@link
-	 * org.eclipse.winery.repository.backend.IGenericRepository.
-	 * getAllTOSCAComponentIds(Class<T>)}, but it crawls through the repository
-	 * 
+	 * IGenericRepository#getAllTOSCAComponentIds(java.lang.Class)}, but it crawls through the repository
+	 *
 	 * This method is required as we do not use a database.
 	 * 
 	 * @param idClass class of the Ids to search for

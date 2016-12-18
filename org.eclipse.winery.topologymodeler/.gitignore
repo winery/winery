@@ -16,7 +16,7 @@
 /build
 sonar-project.properties
 /src/main/java/rebel.xml
-/src/main/resources/rebel.xml
+/src/main/resources/rebel*.xml
 /target
 /node
 /node_modules

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.AccessControlException;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -112,8 +113,8 @@ public class Prefs implements ServletContextListener {
 	 * Pre-Condition: this.properties is set.
 	 */
 	private void doRepositoryInitialization() {
-		assert (this.properties != null);
-		
+		Objects.requireNonNull(this.properties);
+
 		String provider = this.properties.getProperty(Prefs.PROP_JCLOUDS_CONTEXT_PROVIDER);
 		if (provider != null) {
 			// repository runs via jclouds
@@ -302,6 +303,11 @@ public class Prefs implements ServletContextListener {
 			String planBuilderURI = "http://localhost:1339/planbuilder";
 			this.isPlanBuilderAvailable = Utils.isResourceAvailable(planBuilderURI);
 		}
+		if (!this.isPlanBuilderAvailable) {
+			String containerPlanBuilderURI = "http://localhost:1337/containerapi/planbuilder";
+			this.isPlanBuilderAvailable = Utils.isResourceAvailable(containerPlanBuilderURI);
+		}
+		
 		return this.isPlanBuilderAvailable;
 	}
 	

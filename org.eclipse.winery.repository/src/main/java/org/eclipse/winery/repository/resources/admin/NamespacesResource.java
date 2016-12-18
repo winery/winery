@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,13 +8,23 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - return namespaces sorted
+ *     Nicole Keppler - return filtered namespace with number of containing components
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.admin;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -28,17 +38,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.datatypes.NamespaceAndCountOfComponentInstances;
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manages prefixes for the namespaces
@@ -200,7 +212,56 @@ public class NamespacesResource extends AbstractAdminResource {
 	public static Collection<Namespace> getNamespaces() {
 		HashSet<Namespace> res = NamespacesResource.INSTANCE.getRegisteredNamespaces();
 		res.addAll(Repository.INSTANCE.getUsedNamespaces());
-		return res;
+		ArrayList<Namespace> list = new ArrayList<>(res);
+		Collections.sort(list);
+		return list;
+	}
+
+	/**
+	 * Returns the list of all namespaces registered with his manager and their number
+	 * of containing components of requested type
+	 */
+	public static <I extends TOSCAComponentId> Collection<NamespaceAndCountOfComponentInstances> getCountOfInstancesInEachNamespace(Class<I> id) {
+		Objects.requireNonNull(id);
+
+		// set with all components of requested Type (e.g. NodeType)
+		// to only show components for the requested type of namespace
+		SortedSet<I> setOfAllTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(id);
+
+		// convert sortedset to arraylist
+		// and group list by namespace string and count components
+		List<String> listOfAllTOSCAComponentIds = new ArrayList<String>();
+		for (TOSCAComponentId toscaComponentId : setOfAllTOSCAComponentIds) {
+			listOfAllTOSCAComponentIds.add(toscaComponentId.getNamespace().toString());
+		}
+		Map<String, Long> mapOfGroupedComponents =
+				listOfAllTOSCAComponentIds.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+		// create collection to return and fill with grouped components by namespace and number of containing components
+		Collection<NamespaceAndCountOfComponentInstances> namespacesAndCount = new ArrayList<>();
+		for (Map.Entry<String, Long> groupOfComponents : mapOfGroupedComponents.entrySet()) {
+			for (TOSCAComponentId toscaComponentId : setOfAllTOSCAComponentIds) {
+				if (toscaComponentId.getNamespace().toString().equals(groupOfComponents.getKey())) {
+					namespacesAndCount.add(
+						new NamespaceAndCountOfComponentInstances(
+								toscaComponentId.getNamespace(), Objects.requireNonNull(groupOfComponents.getValue()).intValue()));
+					break;
+				}
+			}
+		}
+		return namespacesAndCount;
+	}
+
+	/**
+	 * Returns the list of all namespaces in the given TOSCA component.
+	 * @param clazz the TOSCA component class which namespaces' should be returned.
+	 */
+	public static Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz) {
+		HashSet<Namespace> res = NamespacesResource.INSTANCE.getRegisteredNamespaces();
+		res.addAll(Repository.INSTANCE.getComponentsNamespaces(clazz));
+		ArrayList<Namespace> list = new ArrayList<Namespace>(res);
+		Collections.sort(list);
+		return list;
 	}
 	
 	/**

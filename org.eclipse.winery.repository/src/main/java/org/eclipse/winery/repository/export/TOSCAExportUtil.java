@@ -579,6 +579,8 @@ public class TOSCAExportUtil {
 				for (TPolicy policy : policies.getPolicy()) {
 					PolicyTypeId policyTypeId = new PolicyTypeId(policy.getPolicyType());
 					ids.add(policyTypeId);
+					PolicyTemplateId policyTemplateId = new PolicyTemplateId(policy.getPolicyRef());
+					ids.add(policyTemplateId);
 				}
 			}
 			
