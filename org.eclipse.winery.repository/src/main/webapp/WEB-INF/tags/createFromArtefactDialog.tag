@@ -38,13 +38,12 @@
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<link href="${pageContext.request.contextPath}/css/tag-basic-style.css"
-	rel="stylesheet"></link>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/components/taggingJS/tagging.min.js"></script>
+<link href="${pageContext.request.contextPath}/css/tag-basic-style.css" rel="stylesheet"></link>
+<script type="text/javascript" src="${pageContext.request.contextPath}/components/taggingJS/tagging.min.js"></script>
 
 <%
 	Set<QName> artefactTypes = new HashSet<QName>();
+	Set<QName> infrastructureNodeTypes = new HashSet<QName>();
 %>
 
 <%
@@ -67,6 +66,9 @@
 					case "xaasPackageDeploymentArtefact" :
 						check++;
 						break;
+					case "xaasPackageInfrastructure" :
+						// optional tag, hence no check++
+						infrastructureNodeTypes.add(QName.valueOf(tag.getValue()));
 					default :
 						break;
 				}
@@ -114,6 +116,17 @@
 								</c:forEach>
 							</select>
 						</div>
+						<c:if test="<%=!infrastructureNodeTypes.isEmpty()%>">
+							<div class="form-group" id="infrastructureDiv">
+							<label for="infrastructure">Infrastructure:</label> <select
+								name="infrastructure" class="form-control" id="infrastructureNodeTypes">
+								<option value="" selected>None</option>
+								<c:forEach var="t" items="<%=infrastructureNodeTypes%>">
+									<option value="${t.toString()}">${t.toString()}</option>
+								</c:forEach>
+							</select>
+						</div>
+						</c:if>
 					</fieldset>
 				</form>
 			</div>
@@ -149,6 +162,7 @@
 		var artefactType = $('#artefactType').val();
 		var tags = taggin[0].tagging("getTags");
 		var nodeTypes = $('#nodeTypes').val();
+		var infrastructureNodeType = $('#infrastructureNodeTypes').val();
 		var filesForUpload = $('#createFromArtefactFormUpload')[0].files;
 
 		// upload data
@@ -161,6 +175,11 @@
 		}
 
 		formData.append("artefactType", artefactType);
+		
+		if(infrastructureNodeType != "") {
+			formData.append("infrastructureNodeType", infrastructureNodeType);
+		}
+		
 
 		if (nodeTypes == null) {
 			formData.append("nodeTypes", null);
