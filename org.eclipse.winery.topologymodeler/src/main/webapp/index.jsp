@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -13,6 +13,7 @@
  *    Yves Schubert - switch to bootstrap 3
  *    Niko Stadelmaier - removal of select2 library
  *    Philipp Meyer - removal of select2 library
+ *    Lukas Balzer, Nicole Keppler - switch to bootstrap-touchspin
  *******************************************************************************/
 --%>
 
@@ -144,7 +145,7 @@
 
 	<link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.css" />
 	<link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.css" />
-	<link rel="stylesheet" href="components/bootstrap-spinedit/css/bootstrap-spinedit.css" />
+	<link rel="stylesheet" href="components/bootstrap-touchspin/src/jquery.bootstrap-touchspin.css" media="all"/>
 
 	<link rel="stylesheet" href="components/blueimp-file-upload/css/jquery.fileupload.css" />
 	<link rel="stylesheet" href="components/blueimp-file-upload/css/jquery.fileupload-ui.css" />
@@ -156,7 +157,6 @@
 	<link type="text/css" href="components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" media="all" rel="stylesheet" />
 
 	<link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/6.0/built-editor.css"/>
-
 	<!--  Winery as last: Winrey also overwrites some definitions from above -->
 	<link rel="stylesheet" href="css/winery-common.css" />
 	<link rel="stylesheet" href="css/topologytemplatecontent.css" />
@@ -201,7 +201,7 @@
 
 <script type='text/javascript' src='components/bootstrap/dist/js/bootstrap.js'></script>
 
-<script type='text/javascript' src='components/bootstrap-spinedit/js/bootstrap-spinedit.js'></script>
+<script type='text/javascript' src='components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js'></script>
 
 <!--  udpate of jquery widget by jQuery-File-Upload, which requires jQuery UI 1.9 at least -->
 <!-- <script type="text/javascript" src="components/jQuery-File-Upload/js/vendor/jquery.ui.widget.js"></script> -->

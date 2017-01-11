@@ -8,6 +8,8 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - added show all items query argument
+ *     Nicole Keppler - Bugfixes
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
@@ -19,18 +21,19 @@ import java.util.Collection;
 import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
@@ -41,36 +44,41 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Resource handling of a set of components. Each component has to provide a
  * class to handle the set. This is required to provide the correct instances of
  * TOSCAcomponentIds.
- * 
+ *
  * TODO: Add generics here!
  * {@link Utils.getComponentIdClassForComponentContainer} is then obsolete
  */
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
-	
+
 	protected static final Logger logger = LoggerFactory.getLogger(AbstractComponentsResource.class);
-	
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		return Response.ok().entity(new Viewable("/jsp/genericcomponentpage.jsp", new GenericComponentPageData(this.getClass()))).build();
+	public Response getHTML(@DefaultValue("false") @QueryParam("full") boolean full) {
+		return Response.ok().entity(new Viewable("/jsp/genericcomponentpage.jsp", new GenericComponentPageData(this.getClass(), full))).build();
 	}
-	
+
+	@Path("{namespace}/")
+	public ComponentsOfOneNamespaceResource getAllResourcesInNamespaceResource(@PathParam("namespace") String namespace) {
+		return new ComponentsOfOneNamespaceResource(this.getClass(), namespace);
+	}
+
 	/**
 	 * Creates a new component instance in the given namespace
-	 * 
+	 *
 	 * @param namespace plain namespace
 	 * @param id plain id
 	 */
@@ -100,10 +108,10 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Creates a new component instance in the given namespace
-	 * 
+	 *
 	 * @param namespace plain namespace
 	 * @param id plain id
 	 * @param ignored this parameter is ignored, but necessary for
@@ -117,20 +125,20 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		ResourceCreationResult res = this.onPost(namespace, name);
 		return res.getResponse();
 	}
-	
+
 	/**
 	 * Creates a TOSCAcomponentId for the given namespace / id combination
-	 * 
+	 *
 	 * Uses reflection to create a new instance
 	 */
 	protected TOSCAComponentId getTOSCAcomponentId(String namespace, String id, boolean URLencoded) throws Exception {
 		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
 		return BackendUtils.getTOSCAcomponentId(idClass, namespace, id, URLencoded);
 	}
-	
+
 	/**
 	 * Creates a new instance of the current component
-	 * 
+	 *
 	 * @return <ul>
 	 *         <li>Status.CREATED (201) if the resource has been created,</li>
 	 *         <li>Status.CONFLICT if the resource already exists,</li>
@@ -140,14 +148,14 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	protected ResourceCreationResult createComponentInstance(TOSCAComponentId tcId) {
 		return BackendUtils.create(tcId);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private static Class<? extends AbstractComponentInstanceResource> getComponentInstanceResourceClassForType(String type) {
 		// Guess the package
 		String pkg = "org.eclipse.winery.repository.resources.";
-		
+
 		pkg += Utils.getIntermediateLocationStringForType(type, ".");
-		
+
 		// naming convention: Instance is named after container, but without the
 		// plural s
 		String className = pkg + "." + type + "Resource";
@@ -157,9 +165,9 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 			throw new IllegalStateException("Could not find id class for component instance", e);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param namespace encoded namespace
 	 * @param id encoded id
 	 * @return an instance of the requested resource
@@ -168,7 +176,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	public R getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
 		return this.getComponentInstaceResource(namespace, id, true);
 	}
-	
+
 	/**
 	 * @param encoded specifies whether namespace and id are encoded
 	 * @return an instance of the requested resource
@@ -183,14 +191,14 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		}
 		return (R) AbstractComponentsResource.getComponentInstaceResource(tcId);
 	}
-	
+
 	/**
 	 * @return an instance of the requested resource
 	 */
 	public AbstractComponentInstanceResource getComponentInstaceResource(QName qname) {
 		return this.getComponentInstaceResource(qname.getNamespaceURI(), qname.getLocalPart(), false);
 	}
-	
+
 	/**
 	 * @return an instance of the requested resource
 	 * @throws NotFoundException if resource doesn't exist.
@@ -214,10 +222,10 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		}
 		return newInstance;
 	}
-	
+
 	/**
 	 * Returns resources for all known component instances
-	 * 
+	 *
 	 * Required by topologytemplateedit.jsp
 	 */
 	public Collection<AbstractComponentInstanceResource> getAll() {
@@ -230,12 +238,12 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Used by org.eclipse.winery.repository.repository.client and by the
 	 * artifactcreationdialog.tag. Especially the "name" field is used there at
 	 * the UI
-	 * 
+	 *
 	 * @return A list of all ids of all instances of this component type. If the
 	 *         "name" attribute is required, that name is used as id <br />
 	 *         Format:
@@ -250,7 +258,6 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
 		JsonFactory jsonFactory = new JsonFactory();
 		StringWriter sw = new StringWriter();
-		
 		try {
 			JsonGenerator jg = jsonFactory.createGenerator(sw);
 			// We produce org.eclipse.winery.repository.client.WineryRepositoryClient.NamespaceAndId by hand here
@@ -275,5 +282,4 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		}
 		return sw.toString();
 	}
-	
 }

@@ -11,6 +11,7 @@
  *    Oliver Kopp - initial API and implementation and/or initial documentation
  *    Yves Schubert - switch to bootstrap 3
  *    Niko Stadelmaier - removal of select2 library
+ *    Lukas Balzer, Nicole Keppler - switch to bootstrap-touchspin
  *******************************************************************************/
 --%>
 <%@tag description="Global Wrapper" pageEncoding="UTF-8"%><!DOCTYPE html>
@@ -50,7 +51,7 @@
 	<link type="text/css" href="${pageContext.request.contextPath}/components/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.css" media="all" rel="stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" media="all" rel="stylesheet" />
 
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap-spinedit/css/bootstrap-spinedit.css" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap-touchspin/src/jquery.bootstrap-touchspin.css" media="all"/>
 
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/xmltree/xmltree.css" />
 
@@ -108,7 +109,7 @@
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.min.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/x-editable/dist/inputs-ext/wysihtml5/wysihtml5.js"></script>
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap-spinedit/js/bootstrap-spinedit.js'></script>
+	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js'></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/winery-support-non-AMD.js"></script>
 	<script type="text/javascript" src="${w:topologyModelerURI()}/js/winery-common.js"></script>
 
