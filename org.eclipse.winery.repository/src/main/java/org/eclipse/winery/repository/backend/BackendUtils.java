@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *     Lukas Harzenetter, Nicole Keppler - forceDelete for Namespaces
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
@@ -360,7 +361,19 @@ public class BackendUtils {
 		r = Response.noContent().build();
 		return r;
 	}
-	
+
+	public static Response rename(TOSCAComponentId oldId, TOSCAComponentId newId) {
+		try {
+			Repository.INSTANCE.rename(oldId, newId);
+		} catch (IOException e) {
+			BackendUtils.logger.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		URI uri = Utils.getAbsoluteURI(newId);
+
+		return Response.created(uri).entity(uri.toString()).build();
+	}
+
 	/**
 	 * Writes data to file. Replaces the file's content with the given content.
 	 * The file does not need to exist
@@ -379,7 +392,8 @@ public class BackendUtils {
 		}
 		return Response.noContent().build();
 	}
-	
+
+
 	public static Response putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) {
 		try {
 			Repository.INSTANCE.putContentToFile(ref, inputStream, mediaType);
@@ -389,7 +403,7 @@ public class BackendUtils {
 		}
 		return Response.noContent().build();
 	}
-	
+
 	public static <T extends TOSCAComponentId> T getTOSCAcomponentId(Class<T> idClass, String qnameStr) {
 		QName qname = QName.valueOf(qnameStr);
 		return BackendUtils.getTOSCAcomponentId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
@@ -666,36 +680,48 @@ public class BackendUtils {
 		
 		return l;
 	}
-	
+
 	/**
 	 * Creates a new TDefintions element wrapping a TOSCA Component instance.
 	 * The namespace of the tosca component is used as namespace and
 	 * {@code winery-defs-for-} concatenated with the (unique) ns prefix and
 	 * idOfContainedElement is used as id
-	 * 
-	 * @param toscAcomponentId the id of the element the wrapper is used for
-	 * 
+     *
+	 * @param tcId the id of the element the wrapper is used for
+	 * @param defs the definitions to update
 	 * @return a definitions element prepared for wrapping a TOSCA component
 	 *         instance
 	 */
-	public static Definitions createWrapperDefinitions(TOSCAComponentId tcId) {
-		ObjectFactory of = new ObjectFactory();
-		Definitions defs = of.createDefinitions();
-		
+	public static Definitions updateWrapperDefinitions(TOSCAComponentId tcId, Definitions defs) {
 		// set target namespace
 		// an internal namespace is not possible
 		//   a) tPolicyTemplate and tArtfactTemplate do NOT support the "targetNamespace" attribute
 		//   b) the imports statement would look bad as it always imported the artificial namespace
 		defs.setTargetNamespace(tcId.getNamespace().getDecoded());
-		
+
 		// set a unique id to create a valid definitions element
 		// we do not use UUID to be more human readable and deterministic (for debugging)
 		String prefix = NamespacesResource.getPrefix(tcId.getNamespace());
 		String elId = tcId.getXmlId().getDecoded();
 		String id = "winery-defs-for_" + prefix + "-" + elId;
 		defs.setId(id);
-		
 		return defs;
+	}
+	
+	/**
+	 * Creates a new TDefintions element wrapping a TOSCA Component instance.
+	 * The namespace of the tosca component is used as namespace and
+	 * {@code winery-defs-for-} concatenated with the (unique) ns prefix and
+	 * idOfContainedElement is used as id
+	 *
+	 * @param tcId the id of the element the wrapper is used for
+	 * @return a definitions element prepared for wrapping a TOSCA component
+	 *         instance
+	 */
+	public static Definitions createWrapperDefinitions(TOSCAComponentId tcId) {
+		ObjectFactory of = new ObjectFactory();
+		Definitions defs = of.createDefinitions();
+		return updateWrapperDefinitions(tcId, defs);
 	}
 	
 	/**
@@ -720,7 +746,9 @@ public class BackendUtils {
 		// this may throw an IOExcpetion. We propagate this exception.
 		Repository.INSTANCE.putContentToFile(ref, in, mediaType);
 	}
-	
+
+
+
 	/**
 	 * Updates the color if the color is not yet existent
 	 * 

@@ -9,6 +9,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Tino Stadelmaier, Philipp - rename id and/or namspace
  *******************************************************************************/
 --%>
 <%--
@@ -19,10 +20,10 @@ Displays name + namespace
 
 --%>
 <div class="informationContainer">
-	<div class="name">
-		${it.name}
+	<div class="name" href="#" id="component_name" data-url="id" data-send="always" style="border: none" data-value="${it.name}">
+		
 	</div>
-	<div class="namespace">
-		${it.namespace}
+	<div href="#" class="namespace" id="component_namespace" data-url="namespace" data-send="always" style="border: none" data-value="${it.namespace}">
+		
 	</div>
 </div>
