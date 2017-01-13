@@ -16,6 +16,21 @@ before_install:
   - cd ../org.eclipse.winery.model.tosca
   - mvn install
   - cd ..
+  #- mvn install
+  
+  - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
+  - java -jar jpm4j.jar -u init
+  - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
+  
+#run the build with maven and cobertura for codecoverage
+script:
+  #- mvn install
+  - mvn cobertura:cobertura
+
+#upload codecov report
+after_script:
+  - bash <(curl -s https://codecov.io/bash)
+  - ~/jpm/bin/codacy-coverage-reporter -l Java -r target/site/cobertura/coverage.xml
 
 #We do not need special build commands, as we use the default maven configuration
 #For more information see https://docs.travis-ci.com/user/languages/java
