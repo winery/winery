@@ -8,14 +8,12 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
@@ -26,6 +24,10 @@ import org.eclipse.winery.repository.resources.INodeTypeImplementationResourceOr
 import org.eclipse.winery.repository.resources.artifacts.DeploymentArtifactsResource;
 import org.eclipse.winery.repository.resources.artifacts.ImplementationArtifactsResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.EntityTypeImplementationResource;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
 
 public class NodeTypeImplementationResource extends EntityTypeImplementationResource implements INodeTemplateResourceOrNodeTypeImplementationResource, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 	
@@ -81,9 +83,9 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 	}
 	
 	@Override
-	protected void copyIdToFields() {
-		this.getNTI().setTargetNamespace(this.getId().getNamespace().getDecoded());
-		this.getNTI().setName(this.getId().getXmlId().getDecoded());
+	public void copyIdToFields(TOSCAComponentId id) {
+		this.getNTI().setTargetNamespace(id.getNamespace().getDecoded());
+		this.getNTI().setName(id.getXmlId().getDecoded());
 	}
 	
 	@Override

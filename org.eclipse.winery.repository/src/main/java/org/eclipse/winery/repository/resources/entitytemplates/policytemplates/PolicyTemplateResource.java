@@ -8,13 +8,12 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.policytemplates;
 
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -24,6 +23,9 @@ import org.eclipse.winery.repository.resources.entitytemplates.IEntityTemplateRe
 import org.eclipse.winery.repository.resources.entitytemplates.PropertiesResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
 
 public final class PolicyTemplateResource extends AbstractComponentInstanceResource implements IEntityTemplateResource<TPolicyTemplate>, IHasName {
 	
@@ -72,8 +74,8 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
 	}
 	
 	@Override
-	protected void copyIdToFields() {
-		this.getPolicyTemplate().setId(this.getId().getXmlId().getDecoded());
+	public void copyIdToFields(TOSCAComponentId id) {
+		this.getPolicyTemplate().setId(id.getXmlId().getDecoded());
 	}
 	
 	@Override

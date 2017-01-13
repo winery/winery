@@ -9,39 +9,21 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Lukas Harzenetter, Nicole Keppler - forceDelete for Namespaces
+ *     Tino Stadelmaier, Philipp Meyer - rename id and/or Namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
+import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.beans.NamespaceIdOptionalName;
 import org.eclipse.winery.common.constants.MimeTypes;
@@ -61,17 +43,34 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
-import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	
@@ -734,10 +733,35 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 	}
 
+	private class NamespaceAndIdAsString {
+		String namespace;
+		String id;
+	}
+
+    /**
+     * @param oldId the old id
+     * @param newId the new id
+     */
+	@Override
+	public void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException {
+		String pathFragment = IdUtil.getURLPathFragment(oldId);
+		NamespaceAndIdAsString namespaceAndIdAsString = new NamespaceAndIdAsString();
+		namespaceAndIdAsString.namespace = newId.getNamespace().getDecoded();
+		namespaceAndIdAsString.id = newId.getXmlId().getDecoded();
+		for (WebResource wr : this.repositoryResources) {
+			// TODO: Check whether namespaceAndIdAsString is the correct data type expected at the resource
+			ClientResponse response = wr.path(pathFragment).path("id").post(ClientResponse.class, namespaceAndIdAsString);
+			if ((response.getClientResponseStatus() != ClientResponse.Status.NO_CONTENT) || (response.getClientResponseStatus() != ClientResponse.Status.NOT_FOUND)) {
+				WineryRepositoryClient.logger.debug(String.format("Error %d when renaming TOSCAComponentId %s to %s at %s", response.getStatus(), oldId.toString(), newId.toString(), wr.getURI().toString()));
+			}
+		}
+	}
+	
 	@Override
 	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException {
 		throw new IllegalStateException("not yet implemented");
 	}
+
 
 	@Override
 	public boolean primaryRepositoryAvailable() {
