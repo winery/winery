@@ -53,7 +53,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class TopologyTemplateResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TopologyTemplateResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TopologyTemplateResource.class);
 	
 	private final TTopologyTemplate topologyTemplate;
 	
@@ -235,7 +235,7 @@ public class TopologyTemplateResource {
 			String json = mapper.writeValueAsString(this.topologyTemplate);
 			res = Response.ok(json).build();
 		} catch (Exception e) {
-			TopologyTemplateResource.logger.error(e.getMessage(), e);
+			TopologyTemplateResource.LOGGER.error(e.getMessage(), e);
 			res = Response.serverError().entity(e.getMessage()).build();
 		}
 		return res;
