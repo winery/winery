@@ -31,7 +31,7 @@ import org.xml.sax.SAXException;
  */
 public class TOSCADocumentBuilderFactory {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
 	
 	public static final TOSCADocumentBuilderFactory INSTANCE = new TOSCADocumentBuilderFactory();
 	private final DocumentBuilderFactory factory;
@@ -55,8 +55,8 @@ public class TOSCADocumentBuilderFactory {
 			this.factory.setSchema(schema);
 		} catch (SAXException e) {
 			// TODO: load xml.xsd in offline mode
-			TOSCADocumentBuilderFactory.logger.error("Schema could not be initalized", e);
-			TOSCADocumentBuilderFactory.logger.debug("We continue nevertheless to enable offline usage");
+			TOSCADocumentBuilderFactory.LOGGER.error("Schema could not be initalized", e);
+			TOSCADocumentBuilderFactory.LOGGER.debug("We continue nevertheless to enable offline usage");
 		}
 	}
 	

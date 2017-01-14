@@ -35,7 +35,7 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 	}
 	
 	
-	private static final Logger logger = LoggerFactory.getLogger(ImplementationsOfOneRelationshipTypeResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationsOfOneRelationshipTypeResource.class);
 	
 	
 	/**
@@ -67,7 +67,7 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 			tableDataSW.close();
 			res = tableDataSW.toString();
 		} catch (Exception e) {
-			ImplementationsOfOneRelationshipTypeResource.logger.error(e.getMessage(), e);
+			ImplementationsOfOneRelationshipTypeResource.LOGGER.error(e.getMessage(), e);
 			res = "[]";
 		}
 		return res;

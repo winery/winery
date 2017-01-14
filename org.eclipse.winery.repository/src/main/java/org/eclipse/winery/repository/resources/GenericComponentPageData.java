@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public final class GenericComponentPageData {
 
-	private static final Logger logger = LoggerFactory.getLogger(GenericComponentPageData.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GenericComponentPageData.class);
 
 	private final SortedSet<? extends TOSCAComponentId> componentInstanceIds;
 
@@ -69,8 +69,7 @@ public final class GenericComponentPageData {
 	}
 
 	public Class<? extends TOSCAComponentId> getTOSCAComponentId(){
-		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.resourceClass);
-		return idClass;
+		return Utils.getComponentIdClassForComponentContainer(this.resourceClass);
 	}
 
 	public String getCSSclass() {
@@ -88,8 +87,7 @@ public final class GenericComponentPageData {
 	public String getLabel() {
 		String type = this.getType();
 		// E.g., convert ArtifactTemplate to Artifact Template
-		String res = type.replaceAll("(\\p{Lower})(\\p{Upper})", "$1 $2");
-		return res;
+		return type.replaceAll("(\\p{Lower})(\\p{Upper})", "$1 $2");
 	}
 
 	/**
@@ -114,8 +112,7 @@ public final class GenericComponentPageData {
 		} else {
 			return Collections.emptyList();
 		}
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(typeIdClass);
-		return allTOSCAcomponentIds;
+		return Repository.INSTANCE.getAllTOSCAComponentIds(typeIdClass);
 	}
 
 	public boolean isShowAllItems() {

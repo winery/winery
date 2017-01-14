@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
 
 public class Util {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Util.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
 	
 	public static final String FORBIDDEN_CHARACTER_REPLACEMENT = "_";
 	
@@ -106,7 +106,7 @@ public class Util {
 		try {
 			u = new URI(uri);
 		} catch (URISyntaxException e) {
-			Util.logger.debug(e.getMessage(), e);
+			Util.LOGGER.debug(e.getMessage(), e);
 			// fallback
 			return false;
 		}
@@ -372,7 +372,7 @@ public class Util {
 		try {
 			t.transform(source, target);
 		} catch (TransformerException e) {
-			Util.logger.debug(e.getMessage(), e);
+			Util.LOGGER.debug(e.getMessage(), e);
 			throw new IllegalStateException("Could not transform dom node to string", e);
 		}
 		return os.toString();
@@ -469,7 +469,7 @@ public class Util {
 		try {
 			uri = new URI(namespace);
 		} catch (URISyntaxException e) {
-			Util.logger.debug(e.getMessage(), e);
+			Util.LOGGER.debug(e.getMessage(), e);
 			return "uri.invalid";
 		}
 		StringBuilder sb = new StringBuilder();

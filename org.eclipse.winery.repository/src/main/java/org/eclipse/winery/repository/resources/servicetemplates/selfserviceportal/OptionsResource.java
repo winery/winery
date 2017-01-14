@@ -21,26 +21,26 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
-import org.restdoc.annotations.RestDoc;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import org.apache.commons.lang3.StringUtils;
+import org.restdoc.annotations.RestDoc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OptionsResource extends EntityWithIdCollectionResource<OptionResource, ApplicationOption> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(OptionsResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsResource.class);
 	
 	
 	public OptionsResource(List<ApplicationOption> list, SelfServicePortalResource res) {
@@ -110,7 +110,7 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 		try {
 			Repository.INSTANCE.putContentToFile(iconRef, uploadedInputStream, body.getMediaType());
 		} catch (IOException e) {
-			OptionsResource.logger.error(e.getMessage(), e);
+			OptionsResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		
@@ -118,14 +118,13 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 		try {
 			Repository.INSTANCE.putContentToFile(planInputMessageRef, planInputMessage, MediaType.TEXT_XML_TYPE);
 		} catch (IOException e) {
-			OptionsResource.logger.error(e.getMessage(), e);
+			OptionsResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		
 		// END: store icon and planInputMessage
 		
 		this.list.add(option);
-		Response response = BackendUtils.persist(this.res);
-		return response;
+		return BackendUtils.persist(this.res);
 	}
 }

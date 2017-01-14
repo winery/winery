@@ -47,7 +47,7 @@ import com.sun.jersey.api.view.Viewable;
  */
 public abstract class EntityCollectionResource<EntityResourceT extends EntityResource<EntityT>, EntityT> implements IIdDetermination<EntityT> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(EntityCollectionResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityCollectionResource.class);
 	
 	protected final List<EntityT> list;
 	

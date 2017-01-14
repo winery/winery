@@ -33,9 +33,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedSet;
 
-import javax.naming.NameParser;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -116,21 +116,17 @@ import com.sun.jersey.core.header.ContentDisposition;
  */
 public class BackendUtils {
 	
-	private static final Logger logger = LoggerFactory.getLogger(BackendUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
 
 	/**
 	 * Deletes the whole namespace in the component
-	 *
-	 * @param toscaComponentIdClazz
-	 * @param namespaceStr
-	 * @return
 	 */
 	public static Response delete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, String namespaceStr) {
 		Namespace namespace = new Namespace(namespaceStr, true);
 		try {
 			Repository.INSTANCE.forceDelete(toscaComponentIdClazz, namespace);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
@@ -146,7 +142,7 @@ public class BackendUtils {
 		try {
 			Repository.INSTANCE.forceDelete(id);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
@@ -162,7 +158,7 @@ public class BackendUtils {
 		try {
 			Repository.INSTANCE.forceDelete(ref);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.ok().build();
@@ -255,7 +251,7 @@ public class BackendUtils {
 	 * @return true if given fileDate is newer then the modified date (or
 	 *         modified is null)
 	 */
-	public static boolean isFileNewerThanModifiedDate(long millis, String modified) {
+	private static boolean isFileNewerThanModifiedDate(long millis, String modified) {
 		if (modified == null) {
 			return true;
 		}
@@ -266,7 +262,7 @@ public class BackendUtils {
 		try {
 			modifiedDate = DateUtils.parseDate(modified, org.apache.http.impl.cookie.DateUtils.DEFAULT_PATTERNS);
 		} catch (ParseException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 		}
 		
 		if (modifiedDate != null) {
@@ -296,7 +292,7 @@ public class BackendUtils {
 		try {
 			lastModified = Repository.INSTANCE.getLastModifiedTime(ref);
 		} catch (IOException e1) {
-			BackendUtils.logger.debug("Could not get lastModifiedTime", e1);
+			BackendUtils.LOGGER.debug("Could not get lastModifiedTime", e1);
 			return Response.serverError();
 		}
 		
@@ -309,7 +305,7 @@ public class BackendUtils {
 		try {
 			res = Response.ok(Repository.INSTANCE.newInputStream(ref));
 		} catch (IOException e) {
-			BackendUtils.logger.debug("Could not open input stream", e);
+			BackendUtils.LOGGER.debug("Could not open input stream", e);
 			return Response.serverError();
 		}
 		res = res.lastModified(new Date(lastModified.toMillis()));
@@ -319,7 +315,7 @@ public class BackendUtils {
 		try {
 			res = res.header(HttpHeaders.CONTENT_TYPE, Repository.INSTANCE.getMimeType(ref));
 		} catch (IOException e) {
-			BackendUtils.logger.debug("Could not determine mime type", e);
+			BackendUtils.LOGGER.debug("Could not determine mime type", e);
 			return Response.serverError();
 		}
 		// set filename
@@ -354,7 +350,7 @@ public class BackendUtils {
 		try {
 			res.persist();
 		} catch (IOException e) {
-			BackendUtils.logger.debug("Could not persist resource", e);
+			BackendUtils.LOGGER.debug("Could not persist resource", e);
 			r = Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
 			return r;
 		}
@@ -387,7 +383,7 @@ public class BackendUtils {
 		try {
 			Repository.INSTANCE.putContentToFile(ref, content, mediaType);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
@@ -398,7 +394,7 @@ public class BackendUtils {
 		try {
 			Repository.INSTANCE.putContentToFile(ref, inputStream, mediaType);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
@@ -423,7 +419,7 @@ public class BackendUtils {
 		try {
 			constructor = idClass.getConstructor(String.class, String.class, boolean.class);
 		} catch (NoSuchMethodException | SecurityException e) {
-			BackendUtils.logger.error("Could not get constructor for id " + idClass.getName(), e);
+			BackendUtils.LOGGER.error("Could not get constructor for id " + idClass.getName(), e);
 			throw new IllegalStateException(e);
 		}
 		T tcId;
@@ -431,7 +427,7 @@ public class BackendUtils {
 			tcId = constructor.newInstance(namespace, id, URLencoded);
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException e) {
-			BackendUtils.logger.error("Could not create id instance", e);
+			BackendUtils.LOGGER.error("Could not create id instance", e);
 			throw new IllegalStateException(e);
 		}
 		return tcId;
@@ -457,15 +453,9 @@ public class BackendUtils {
 		return ModelUtilities.getNameWithIdFallBack(instanceElement);
 	}
 	
-/**
-	 * Do <em>not</em> use this for creating URLs. Use
-	 *
-	 * {@link org.eclipse.winery.repository.Utils.getURLforPathInsideRepo(String)}
-	 *
-	 * or
-	 *
-	 * {@link org.eclipse.winery.repository.Utils.getAbsoluteURL(GenericId)
-	 * instead.
+    /**
+	 * Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
+	 * or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
 	 * @return the path starting from the root element to the current element.
 	 *         Separated by "/", URLencoded, but <b>not</b> double encoded. With
@@ -473,10 +463,8 @@ public class BackendUtils {
 	 * @throws IllegalStateException if id is of an unknown subclass of id
 	 */
 	public static String getPathInsideRepo(GenericId id) {
-		if (id == null) {
-			throw new NullPointerException("id is null");
-		}
-		
+		Objects.requireNonNull(id);
+
 		// for creating paths see also org.eclipse.winery.repository.Utils.getIntermediateLocationStringForType(String, String)
 		// and org.eclipse.winery.common.Util.getRootPathFragment(Class<? extends TOSCAcomponentId>)
 		if (id instanceof AdminId) {
@@ -499,15 +487,9 @@ public class BackendUtils {
 		}
 	}
 	
-/**
-	 * Do <em>not</em> use this for creating URLs. Use
-	 *
-	 * {@link org.eclipse.winery.repository.Utils.getURLforPathInsideRepo(String)}
-	 *
-	 * or
-	 *
-	 * {@link org.eclipse.winery.repository.Utils.getAbsoluteURL(GenericId)
-	 * instead.
+	/**
+ 	* Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
+ 	* or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
 	 * @return the path starting from the root element to the current element.
 	 *         Separated by "/", parent URLencoded. Without trailing slash.
@@ -579,7 +561,7 @@ public class BackendUtils {
 				resource = (IHasTypeReference) AbstractComponentsResource.getComponentInstaceResource(id);
 			} catch (ClassCastException e) {
 				String error = "Requested following the type, but the component instance does not implmenet IHasTypeReference";
-				BackendUtils.logger.error(error);
+				BackendUtils.LOGGER.error(error);
 				throw new IllegalStateException(error);
 			}
 			// The resource may have been freshly initialized due to existence of a directory
@@ -738,7 +720,7 @@ public class BackendUtils {
 			m = JAXBSupport.createMarshaller(true);
 			m.marshal(o, out);
 		} catch (JAXBException e) {
-			BackendUtils.logger.error("Could not put content to file", e);
+			BackendUtils.LOGGER.error("Could not put content to file", e);
 			throw new IllegalStateException(e);
 		}
 		byte[] data = out.toByteArray();
@@ -800,7 +782,7 @@ public class BackendUtils {
 		try {
 			is = Repository.INSTANCE.newInputStream(ref);
 		} catch (IOException e) {
-			BackendUtils.logger.debug("Could not create input stream", e);
+			BackendUtils.LOGGER.debug("Could not create input stream", e);
 			return null;
 		}
 		
@@ -901,20 +883,20 @@ public class BackendUtils {
 	 * @param errors the list to add errors to
 	 */
 	public static void deriveWPD(TEntityType ci, List<String> errors) {
-		BackendUtils.logger.trace("deriveWPD");
+		BackendUtils.LOGGER.trace("deriveWPD");
 		PropertiesDefinition propertiesDefinition = ci.getPropertiesDefinition();
 		QName element = propertiesDefinition.getElement();
 		if (element == null) {
-			BackendUtils.logger.debug("only works for an element definition, not for types");
+			BackendUtils.LOGGER.debug("only works for an element definition, not for types");
 		} else {
-			BackendUtils.logger.debug("Looking for the definition of {" + element.getNamespaceURI() + "}" + element.getLocalPart());
+			BackendUtils.LOGGER.debug("Looking for the definition of {" + element.getNamespaceURI() + "}" + element.getLocalPart());
 			// fetch the XSD defining the element
 			XSDImportsResource importsRes = new XSDImportsResource();
 			Map<String, RepositoryFileReference> mapFromLocalNameToXSD = importsRes.getMapFromLocalNameToXSD(element.getNamespaceURI(), false);
 			RepositoryFileReference ref = mapFromLocalNameToXSD.get(element.getLocalPart());
 			if (ref == null) {
 				String msg = "XSD not found for " + element.getNamespaceURI() + " / " + element.getLocalPart();
-				BackendUtils.logger.debug(msg);
+				BackendUtils.LOGGER.debug(msg);
 				errors.add(msg);
 				return;
 			}
@@ -923,7 +905,7 @@ public class BackendUtils {
 			XSElementDeclaration elementDeclaration = xsModel.getElementDeclaration(element.getLocalPart(), element.getNamespaceURI());
 			if (elementDeclaration == null) {
 				String msg = "XSD model claimed to contain declaration for {" + element.getNamespaceURI() + "}" + element.getLocalPart() + ", but it did not.";
-				BackendUtils.logger.debug(msg);
+				BackendUtils.LOGGER.debug(msg);
 				errors.add(msg);
 				return;
 			}
@@ -934,7 +916,7 @@ public class BackendUtils {
 				XSComplexTypeDefinition cTypeDefinition = (XSComplexTypeDefinition) typeDefinition;
 				XSParticle particle = cTypeDefinition.getParticle();
 				if (particle == null) {
-					BackendUtils.logger.debug("XSD does not follow the requirements put by winery: Complex type does not contain particles");
+					BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Complex type does not contain particles");
 				} else {
 					XSTerm term = particle.getTerm();
 					if (term instanceof XSModelGroup) {
@@ -984,19 +966,19 @@ public class BackendUtils {
 								wpd.setNamespace(element.getNamespaceURI());
 								wpd.setPropertyDefinitionKVList(list);
 								ModelUtilities.replaceWinerysPropertiesDefinition(ci, wpd);
-								BackendUtils.logger.debug("Successfully generated WPD");
+								BackendUtils.LOGGER.debug("Successfully generated WPD");
 							} else {
-								BackendUtils.logger.debug("XSD does not follow the requirements put by winery: Not all types in the sequence are simple types");
+								BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Not all types in the sequence are simple types");
 							}
 						} else {
-							BackendUtils.logger.debug("XSD does not follow the requirements put by winery: Model group is not a sequence");
+							BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Model group is not a sequence");
 						}
 					} else {
-						BackendUtils.logger.debug("XSD does not follow the requirements put by winery: Not a model group");
+						BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Not a model group");
 					}
 				}
 			} else {
-				BackendUtils.logger.debug("XSD does not follow the requirements put by winery: No Complex Type Definition");
+				BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: No Complex Type Definition");
 			}
 		}
 	}

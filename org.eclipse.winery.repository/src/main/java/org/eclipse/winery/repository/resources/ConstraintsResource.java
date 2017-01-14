@@ -23,7 +23,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class ConstraintsResource extends EntityWithoutIdCollectionResource<ConstraintResource, TConstraint> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ConstraintsResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConstraintsResource.class);
 	
 	
 	public ConstraintsResource(List<TConstraint> constraints, NodeTypeResource res) {

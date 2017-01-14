@@ -51,7 +51,7 @@ import com.sun.jersey.multipart.FormDataParam;
 
 public class SelfServicePortalResource implements IPersistable {
 	
-	private static final Logger logger = LoggerFactory.getLogger(SelfServicePortalResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SelfServicePortalResource.class);
 	
 	private final ServiceTemplateResource serviceTemplateResource;
 	
@@ -97,7 +97,7 @@ public class SelfServicePortalResource implements IPersistable {
 			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref);) {
 				return (Application) u.unmarshal(is);
 			} catch (IOException | JAXBException e) {
-				SelfServicePortalResource.logger.error("Could not read from " + this.data_xml_ref, e);
+				SelfServicePortalResource.LOGGER.error("Could not read from " + this.data_xml_ref, e);
 				return new Application();
 			}
 		} else {
@@ -212,7 +212,7 @@ public class SelfServicePortalResource implements IPersistable {
 			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref);) {
 				IOUtils.copy(is, sw);
 			} catch (IOException e) {
-				SelfServicePortalResource.logger.error("Could not read from file", e);
+				SelfServicePortalResource.LOGGER.error("Could not read from file", e);
 			}
 			res = sw.toString();
 		} else {

@@ -115,7 +115,7 @@ import org.w3c.dom.Element;
  */
 public class CSARImporter {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CSARImporter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CSARImporter.class);
 	
 	// ExecutorService for XSD schema initialization
 	// Threads set to 1 to avoid testing for parallel processing of the same XSD file
@@ -149,7 +149,7 @@ public class CSARImporter {
 			}
 			this.importFromDir(csarDir, errors, overwrite, asyncWPDParsing);
 		} catch (Exception e) {
-			CSARImporter.logger.debug("Could not import CSAR", e);
+			CSARImporter.LOGGER.debug("Could not import CSAR", e);
 			throw e;
 		} finally {
 			// cleanup: delete all contents of the temporary directory
@@ -249,7 +249,7 @@ public class CSARImporter {
 			try {
 				pconf = new PropertiesConfiguration(properties.toFile());
 			} catch (ConfigurationException e) {
-				CSARImporter.logger.debug(e.getMessage(), e);
+				CSARImporter.LOGGER.debug(e.getMessage(), e);
 				return;
 			}
 			Iterator<String> namespaces = pconf.getKeys();
@@ -289,11 +289,11 @@ public class CSARImporter {
 	private void importSelfServiceMetaData(final TOSCAMetaFile tmf, final Path rootPath, Path entryDefinitions, final List<String> errors) {
 		final Path selfServiceDir = rootPath.resolve(Constants.DIRNAME_SELF_SERVICE_METADATA);
 		if (!Files.exists(selfServiceDir)) {
-			CSARImporter.logger.debug("Self-service Portal directory does not exist in CSAR");
+			CSARImporter.LOGGER.debug("Self-service Portal directory does not exist in CSAR");
 			return;
 		}
 		if (!Files.exists(entryDefinitions)) {
-			CSARImporter.logger.debug("Entry definitions does not exist.");
+			CSARImporter.LOGGER.debug("Entry definitions does not exist.");
 			return;
 		}
 		
@@ -356,7 +356,7 @@ public class CSARImporter {
 									org.apache.commons.io.FileUtils.writeStringToFile(file.toFile(), newContent, "UTF-8");
 								}
 							} catch (IOException e) {
-								CSARImporter.logger.debug("Could not replace content in data.xml", e);
+								CSARImporter.LOGGER.debug("Could not replace content in data.xml", e);
 							}
 						}
 						CSARImporter.this.importFile(file, ref, tmf, rootPath, errors);
@@ -364,7 +364,7 @@ public class CSARImporter {
 					}
 				});
 			} catch (IOException e) {
-				CSARImporter.logger.debug(e.getMessage(), e);
+				CSARImporter.LOGGER.debug(e.getMessage(), e);
 				errors.add("Self-service Meta Data: " + e.getMessage());
 			}
 		}
@@ -407,7 +407,7 @@ public class CSARImporter {
 				cause = cause.getCause();
 			} while (cause != null);
 			errors.add("Could not unmarshal definitions " + defsPath.getFileName() + " " + eMsg);
-			CSARImporter.logger.debug("Unmarshalling error", e);
+			CSARImporter.LOGGER.debug("Unmarshalling error", e);
 			return;
 		} catch (ClassCastException e) {
 			errors.add("Definitions " + defsPath.getFileName() + " is not a TDefinitions " + e.getMessage());
@@ -441,10 +441,10 @@ public class CSARImporter {
 				if (overwrite) {
 					Repository.INSTANCE.forceDelete(wid);
 					String msg = String.format("Deleted %1$s %2$s to enable replacement", ci.getClass().getName(), wid.getQName().toString());
-					CSARImporter.logger.debug(msg);
+					CSARImporter.LOGGER.debug(msg);
 				} else {
 					String msg = String.format("Skipped %1$s %2$s, because it already exists", ci.getClass().getName(), wid.getQName().toString());
-					CSARImporter.logger.debug(msg);
+					CSARImporter.LOGGER.debug(msg);
 					// this is not displayed in the UI as we currently do not distinguish between pre-existing types and types created during the import.
 					continue;
 				}
@@ -549,7 +549,7 @@ public class CSARImporter {
 					try {
 						Repository.INSTANCE.putContentToFile(fileRef, content, MediaType.APPLICATION_XML_TYPE);
 					} catch (IOException e) {
-						CSARImporter.logger.debug("Could not put XML Schema definition to file " + fileRef.toString(), e);
+						CSARImporter.LOGGER.debug("Could not put XML Schema definition to file " + fileRef.toString(), e);
 						errors.add("Could not put XML Schema definition to file " + fileRef.toString());
 					}
 					
@@ -621,7 +621,7 @@ public class CSARImporter {
 							try {
 								Repository.INSTANCE.forceDelete(importId);
 							} catch (IOException e) {
-								CSARImporter.logger.debug("Could not delete Winery's generated XSD definition", e);
+								CSARImporter.LOGGER.debug("Could not delete Winery's generated XSD definition", e);
 								errors.add("Could not delete Winery's generated XSD definition");
 							}
 						} else {
@@ -1134,12 +1134,12 @@ public class CSARImporter {
 					
 					@Override
 					public void run() {
-						CSARImporter.logger.debug("Updating XSD import cache data");
+						CSARImporter.LOGGER.debug("Updating XSD import cache data");
 						// We call the queries without storing the result:
 						// We use the SIDEEFFECT that a cache is created
 						Utils.getAllXSDElementDefinitionsForTypeAheadSelection();
 						Utils.getAllXSDTypeDefinitionsForTypeAheadSelection();
-						CSARImporter.logger.debug("Updated XSD import cache data");
+						CSARImporter.LOGGER.debug("Updated XSD import cache data");
 					}
 				});
 			}

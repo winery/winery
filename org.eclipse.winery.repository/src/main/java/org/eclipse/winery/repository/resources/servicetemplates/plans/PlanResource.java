@@ -27,7 +27,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
@@ -46,6 +45,8 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
 import org.eclipse.winery.repository.resources.interfaces.ParametersResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PlanResource extends EntityWithIdResource<TPlan> implements IHasName {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PlanResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PlanResource.class);
 	
 	
 	public PlanResource(IIdDetermination<TPlan> idDetermination, TPlan o, int idx, List<TPlan> list, ServiceTemplateResource res) {

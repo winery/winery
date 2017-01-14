@@ -32,8 +32,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.Constants;
@@ -42,17 +40,19 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.FileMeta;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FilesResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(FilesResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FilesResource.class);
 	private final ArtifactTemplateDirectoryId fileDir;
 	
 	
@@ -80,7 +80,7 @@ public class FilesResource {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response onPost(@FormDataParam("files[]") InputStream uploadedInputStream, @FormDataParam("files[]") FormDataContentDisposition fileDetail, @FormDataParam("files[]") FormDataBodyPart body, @Context UriInfo uriInfo) {
 		// existence check not required as instantiation of the resource ensures that the object only exists if the resource exists
-		FilesResource.logger.debug("Beginning with file upload");
+		FilesResource.LOGGER.debug("Beginning with file upload");
 		
 		String fileName = fileDetail.getFileName();
 		if (StringUtils.isEmpty(fileName)) {
@@ -104,7 +104,7 @@ public class FilesResource {
 		try {
 			size = Repository.INSTANCE.getSize(ref);
 		} catch (IOException e) {
-			FilesResource.logger.error(e.getMessage(), e);
+			FilesResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		FileMeta fileMeta = new FileMeta(fileName, size, URL, thumbnailURL);

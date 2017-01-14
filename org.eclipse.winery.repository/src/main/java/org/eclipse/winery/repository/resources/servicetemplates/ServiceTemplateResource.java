@@ -55,7 +55,7 @@ import java.util.SortedSet;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ServiceTemplateResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplateResource.class);
 	
 	
 	public ServiceTemplateResource(ServiceTemplateId id) {

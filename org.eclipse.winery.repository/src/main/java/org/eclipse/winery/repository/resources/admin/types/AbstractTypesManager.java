@@ -31,16 +31,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.datatypes.ids.admin.TypesId;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.resources.admin.AbstractAdminResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles longname/shortname by using properties
@@ -54,7 +54,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 	@Context
 	private UriInfo uriInfo;
 	
-	protected static final Logger logger = LoggerFactory.getLogger(AbstractTypesManager.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractTypesManager.class);
 	
 	// hashes from a long type string to the type object holding complete type data
 	private final HashMap<String, TypeWithShortName> hashTypeStringToType;

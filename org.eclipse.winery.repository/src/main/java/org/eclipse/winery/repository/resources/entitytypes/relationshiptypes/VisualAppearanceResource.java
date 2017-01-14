@@ -44,7 +44,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(VisualAppearanceResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(VisualAppearanceResource.class);
 	
 	private static final QName QNAME_ARROWHEAD_SOURCE = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "sourceArrowHead");
 	private static final QName QNAME_ARROWHEAD_TARGET = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "targetArrowHead");
@@ -176,7 +176,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			
 			jg.close();
 		} catch (Exception e) {
-			VisualAppearanceResource.logger.error(e.getMessage(), e);
+			VisualAppearanceResource.LOGGER.error(e.getMessage(), e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
 		}
 		String res = sw.toString();

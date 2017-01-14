@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 class AutoSaveListener implements ConfigurationListener {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AutoSaveListener.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AutoSaveListener.class);
 	
 	private final Path path;
 	private final PropertiesConfiguration configuration;
@@ -58,14 +58,14 @@ class AutoSaveListener implements ConfigurationListener {
 					Files.createDirectories(this.path.getParent());
 				}
 			} catch (IOException ce) {
-				AutoSaveListener.logger.error("Could not update properties file", ce);
+				AutoSaveListener.LOGGER.error("Could not update properties file", ce);
 				return;
 			}
 			try (OutputStream out = Files.newOutputStream(this.path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 				OutputStreamWriter writer = new OutputStreamWriter(out);
 				this.configuration.save(writer);
 			} catch (ConfigurationException | IOException ce) {
-				AutoSaveListener.logger.error("Could not update properties file", ce);
+				AutoSaveListener.LOGGER.error("Could not update properties file", ce);
 			}
 		}
 	}

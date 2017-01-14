@@ -40,7 +40,7 @@ import com.sun.jersey.multipart.FormDataParam;
 
 public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(VisualAppearanceResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(VisualAppearanceResource.class);
 	
 	
 	public VisualAppearanceResource(NodeTypeResource res, Map<QName, String> map, NodeTypeId parentId) {

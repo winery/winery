@@ -38,7 +38,7 @@ import com.sun.jersey.api.NotFoundException;
  */
 public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends EntityWithoutIdResource<EntityT>, EntityT> extends EntityCollectionResource<EntityResourceT, EntityT> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(EntityWithoutIdCollectionResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityWithoutIdCollectionResource.class);
 	
 	
 	/**
@@ -97,7 +97,7 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 			try {
 				constructor = this.entityResourceTClazz.getConstructor(this.entityTClazz, int.class, List.class, IPersistable.class);
 			} catch (NoSuchMethodException | SecurityException e1) {
-				EntityWithoutIdCollectionResource.logger.debug("Could not get constructor", e);
+				EntityWithoutIdCollectionResource.LOGGER.debug("Could not get constructor", e);
 				throw new IllegalStateException(e);
 			}
 		}
@@ -105,7 +105,7 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 		try {
 			newInstance = constructor.newInstance(entity, idx, this.list, this.res);
 		} catch (Exception e) {
-			EntityWithoutIdCollectionResource.logger.debug("Could not instantiate class", e);
+			EntityWithoutIdCollectionResource.LOGGER.debug("Could not instantiate class", e);
 			throw new IllegalStateException(e);
 		}
 		return newInstance;

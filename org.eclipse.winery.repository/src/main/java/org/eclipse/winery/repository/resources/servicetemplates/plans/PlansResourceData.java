@@ -30,7 +30,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 
 public class PlansResourceData {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PlansResourceData.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PlansResourceData.class);
 	
 	// data: [ [id, pre, name, type, lang]* ]
 	private String embeddedPlansTableData;
@@ -42,7 +42,7 @@ public class PlansResourceData {
 	/**
 	 * Data object for the JSP
 	 * 
-	 * @param serviceTemplateResource the service template the plans belong to
+	 * @param plans the plans this resource manages
 	 */
 	public PlansResourceData(List<TPlan> plans) {
 		if (plans.isEmpty()) {
@@ -103,12 +103,12 @@ public class PlansResourceData {
 			jGeneratorLinked.close();
 			linkedPlansTableDataSW.close();
 		} catch (JsonGenerationException e) {
-			PlansResourceData.logger.error(e.getMessage(), e);
+			PlansResourceData.LOGGER.error(e.getMessage(), e);
 			this.embeddedPlansTableData = "[]";
 			this.linkedPlansTableData = "[]";
 			return;
 		} catch (IOException e) {
-			PlansResourceData.logger.error("", e);
+			PlansResourceData.LOGGER.error("", e);
 			this.embeddedPlansTableData = "[]";
 			this.linkedPlansTableData = "[]";
 			return;

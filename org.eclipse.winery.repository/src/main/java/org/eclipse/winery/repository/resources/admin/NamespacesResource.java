@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  */
 public class NamespacesResource extends AbstractAdminResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(NamespacesResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(NamespacesResource.class);
 	
 	public final static NamespacesResource INSTANCE = new NamespacesResource();
 	
@@ -297,7 +297,7 @@ public class NamespacesResource extends AbstractAdminResource {
 		try {
 			res = Utils.mapper.writeValueAsString(stringNamespaces);
 		} catch (JsonProcessingException e) {
-			NamespacesResource.logger.error(e.getMessage(), e);
+			NamespacesResource.LOGGER.error(e.getMessage(), e);
 			res = "[]";
 		}
 		return res;

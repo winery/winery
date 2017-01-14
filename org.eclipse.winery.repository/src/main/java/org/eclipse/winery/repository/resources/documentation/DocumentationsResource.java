@@ -30,7 +30,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class DocumentationsResource extends EntityWithoutIdCollectionResource<DocumentationResource, TDocumentation> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(DocumentationResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentationResource.class);
 	
 	
 	public DocumentationsResource(IPersistable res, List<TDocumentation> documentations) {

@@ -37,7 +37,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag> {
 
-	private static final Logger logger = LoggerFactory.getLogger(TagsResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TagsResource.class);
 
 	public TagsResource(IPersistable res, List<TTag> list) {
 		super(TagResource.class, TTag.class, list, res);

@@ -41,7 +41,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
@@ -74,6 +73,9 @@ import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetyp
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.resources.servicetemplates.topologytemplates.NodeTemplateResource;
+
+import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDoc;
 import org.restdoc.annotations.RestDocParam;
 import org.slf4j.Logger;
@@ -83,15 +85,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 
-import com.sun.jersey.api.view.Viewable;
-
 /**
  * Resource handling both deployment and implementation artifacts
  * 
  */
 public abstract class GenericArtifactsResource<ArtifactResource extends GenericArtifactResource<ArtifactT>, ArtifactT> extends EntityWithIdCollectionResource<ArtifactResource, ArtifactT> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(GenericArtifactsResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GenericArtifactsResource.class);
 	
 	protected final INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource resWithNamespace;
 	
@@ -210,7 +210,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				doc = db.parse(is);
 			} catch (Exception e) {
 				// FIXME: currently we allow a single element only. However, the content should be internally wrapped by an (arbitrary) XML element as the content will be nested in the artifact element, too
-				GenericArtifactsResource.logger.debug("Invalid content", e);
+				GenericArtifactsResource.LOGGER.debug("Invalid content", e);
 				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 			}
 		}
@@ -413,7 +413,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		try {
 			workingDir = Files.createTempDirectory("winery");
 		} catch (IOException e2) {
-			GenericArtifactsResource.logger.debug("Could not create temporary directory", e2);
+			GenericArtifactsResource.LOGGER.debug("Could not create temporary directory", e2);
 			return Response.serverError().entity("Could not create temporary directory").build();
 		}
 		
@@ -422,7 +422,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		try {
 			artifactTemplateFilesUrl = artifactTemplateFilesUri.toURL();
 		} catch (MalformedURLException e2) {
-			GenericArtifactsResource.logger.debug("Could not convert URI to URL", e2);
+			GenericArtifactsResource.LOGGER.debug("Could not convert URI to URL", e2);
 			return Response.serverError().entity("Could not convert URI to URL").build();
 		}
 		
@@ -452,7 +452,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		try {
 			FileUtils.forceDelete(workingDir);
 		} catch (IOException e) {
-			GenericArtifactsResource.logger.debug("Could not delete working directory", e);
+			GenericArtifactsResource.LOGGER.debug("Could not delete working directory", e);
 		}
 		
 		// store the properties in the artifact template
@@ -478,7 +478,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		try {
 			builder = dbf.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			GenericArtifactsResource.logger.error(e.getMessage(), e);
+			GenericArtifactsResource.LOGGER.error(e.getMessage(), e);
 			return;
 		}
 		Document doc = builder.newDocument();

@@ -18,12 +18,13 @@ import java.util.Date;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.Utils;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractRepository implements IRepository {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractRepository.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRepository.class);
 	
 	
 	/**
@@ -74,7 +75,7 @@ public abstract class AbstractRepository implements IRepository {
 				// successful execution
 				this.setMimeType(ref, MediaType.valueOf(mimeType));
 			} else {
-				AbstractRepository.logger.debug("Could not determine mimetype");
+				AbstractRepository.LOGGER.debug("Could not determine mimetype");
 			}
 		}
 		return mimeType;

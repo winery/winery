@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public final class PolicyTypeResource extends EntityTypeResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PolicyTypeResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PolicyTypeResource.class);
 	
 	
 	/**

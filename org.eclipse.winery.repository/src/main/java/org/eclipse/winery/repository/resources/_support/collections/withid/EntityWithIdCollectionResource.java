@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class EntityWithIdCollectionResource<EntityResourceT extends EntityWithIdResource<EntityT>, EntityT> extends EntityCollectionResource<EntityResourceT, EntityT> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(EntityWithIdCollectionResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EntityWithIdCollectionResource.class);
 	
 	
 	/**
@@ -48,8 +48,8 @@ public abstract class EntityWithIdCollectionResource<EntityResourceT extends Ent
 			try {
 				constructor = this.entityResourceTClazz.getConstructor(IIdDetermination.class, this.entityTClazz, int.class, List.class, IPersistable.class);
 			} catch (Exception e2) {
-				EntityWithIdCollectionResource.logger.debug("Could not get constructor", e);
-				EntityWithIdCollectionResource.logger.debug("res.getClass() was {}", this.res.getClass());
+				EntityWithIdCollectionResource.LOGGER.debug("Could not get constructor", e);
+				EntityWithIdCollectionResource.LOGGER.debug("res.getClass() was {}", this.res.getClass());
 				throw new IllegalStateException(e2);
 			}
 		}
@@ -57,7 +57,7 @@ public abstract class EntityWithIdCollectionResource<EntityResourceT extends Ent
 		try {
 			newInstance = constructor.newInstance(this, entity, idx, this.list, this.res);
 		} catch (Exception e) {
-			EntityWithIdCollectionResource.logger.debug("Could not instantiate class", e);
+			EntityWithIdCollectionResource.LOGGER.debug("Could not instantiate class", e);
 			throw new IllegalStateException(e);
 		}
 		return newInstance;

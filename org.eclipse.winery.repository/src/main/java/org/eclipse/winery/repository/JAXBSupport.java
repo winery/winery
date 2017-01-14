@@ -38,7 +38,7 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
  */
 public class JAXBSupport {
 	
-	private static final Logger logger = LoggerFactory.getLogger(JAXBSupport.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JAXBSupport.class);
 	
 	// thread-safe JAXB as inspired by https://jaxb.java.net/guide/Performance_and_thread_safety.html
 	// The other possibility: Each subclass sets JAXBContext.newInstance(theSubClass.class); in its static {} part.
@@ -91,7 +91,7 @@ public class JAXBSupport {
 					MockXMLElement.class);
 			// @formatter:on
 		} catch (JAXBException e) {
-			JAXBSupport.logger.error("Could not initialize JAXBContext", e);
+			JAXBSupport.LOGGER.error("Could not initialize JAXBContext", e);
 			throw new IllegalStateException(e);
 		}
 		return context;
@@ -114,7 +114,7 @@ public class JAXBSupport {
 				m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			}
 		} catch (JAXBException e) {
-			JAXBSupport.logger.error("Could not instantiate marshaller", e);
+			JAXBSupport.LOGGER.error("Could not instantiate marshaller", e);
 			throw new IllegalStateException(e);
 		}
 		
@@ -130,7 +130,7 @@ public class JAXBSupport {
 		try {
 			return JAXBSupport.context.createUnmarshaller();
 		} catch (JAXBException e) {
-			JAXBSupport.logger.error("Could not instantiate unmarshaller", e);
+			JAXBSupport.LOGGER.error("Could not instantiate unmarshaller", e);
 			throw new IllegalStateException(e);
 		}
 	}

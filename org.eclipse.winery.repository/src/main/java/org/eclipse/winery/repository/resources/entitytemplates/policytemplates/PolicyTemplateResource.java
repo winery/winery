@@ -29,7 +29,7 @@ import javax.xml.namespace.QName;
 
 public final class PolicyTemplateResource extends AbstractComponentInstanceResource implements IEntityTemplateResource<TPolicyTemplate>, IHasName {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PolicyTemplateResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PolicyTemplateResource.class);
 	
 	
 	/**

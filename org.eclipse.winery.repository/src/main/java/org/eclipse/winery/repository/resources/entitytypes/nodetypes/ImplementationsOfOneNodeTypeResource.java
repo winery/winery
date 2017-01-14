@@ -30,7 +30,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 
 public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneType {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ImplementationsOfOneNodeTypeResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationsOfOneNodeTypeResource.class);
 	
 	
 	/**
@@ -72,7 +72,7 @@ public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneTy
 			tableDataSW.close();
 			res = tableDataSW.toString();
 		} catch (Exception e) {
-			ImplementationsOfOneNodeTypeResource.logger.error(e.getMessage(), e);
+			ImplementationsOfOneNodeTypeResource.LOGGER.error(e.getMessage(), e);
 			res = "[]";
 		}
 		return res;

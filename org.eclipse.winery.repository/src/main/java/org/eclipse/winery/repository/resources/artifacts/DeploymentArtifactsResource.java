@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 public class DeploymentArtifactsResource extends GenericArtifactsResource<DeploymentArtifactResource, TDeploymentArtifact> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(DeploymentArtifactsResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentArtifactsResource.class);
 	
 	private List<TDeploymentArtifact> deploymentArtifacts;
 	

@@ -29,7 +29,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class CapabilityDefinitionsResource extends RequirementOrCapabilityDefinitionsResource<CapabilityDefinitionResource, TCapabilityDefinition> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CapabilityDefinitionsResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CapabilityDefinitionsResource.class);
 	
 	
 	public CapabilityDefinitionsResource(NodeTypeResource res, List<TCapabilityDefinition> defs) {

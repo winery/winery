@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class OptionResource extends EntityWithIdResource<ApplicationOption> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(OptionResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OptionResource.class);
 	
 	static final String ICON_JPG = "icon.jpg";
 	static final String PLAN_INPUT_XML = "plan.input.xml";
@@ -76,7 +76,7 @@ public class OptionResource extends EntityWithIdResource<ApplicationOption> {
 		try {
 			Repository.INSTANCE.forceDelete(ref);
 		} catch (IOException e) {
-			OptionResource.logger.error("Could not remove file", e);
+			OptionResource.LOGGER.error("Could not remove file", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 		
@@ -86,7 +86,7 @@ public class OptionResource extends EntityWithIdResource<ApplicationOption> {
 		try {
 			Repository.INSTANCE.forceDelete(ref);
 		} catch (IOException e) {
-			OptionResource.logger.error("Could not remove file", e);
+			OptionResource.LOGGER.error("Could not remove file", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 		}
 		

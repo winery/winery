@@ -361,7 +361,7 @@ public class Utils {
 	public static URI getAbsoluteURI(GenericId id) {
 		return Utils.createURI(Utils.getAbsoluteURL(id));
 	}
-	
+
 	public static String doubleEscapeHTMLAndThenConvertNL2BR(String txt) {
 		String res = Functions.escapeXml(txt);
 		res = Functions.escapeXml(res);

@@ -44,7 +44,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class RelationshipTypeResource extends TopologyGraphElementEntityTypeResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(RelationshipTypeResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipTypeResource.class);
 	
 	
 	public RelationshipTypeResource(RelationshipTypeId id) {

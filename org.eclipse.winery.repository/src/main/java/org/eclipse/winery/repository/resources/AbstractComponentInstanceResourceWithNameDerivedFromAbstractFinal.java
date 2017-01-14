@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal extends AbstractComponentInstanceResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.class);
 	
 	
 	protected AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal(TOSCAComponentId id) {
@@ -79,10 +79,10 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 			method = this.getElement().getClass().getMethod("getDerivedFrom");
 			derivedFrom = (DerivedFrom) method.invoke(this.getElement());
 		} catch (ClassCastException e) {
-			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.logger.error("Seems that *Implementation is now Definitions backed, but not yet fully implented", e);
+			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Seems that *Implementation is now Definitions backed, but not yet fully implented", e);
 			throw new IllegalStateException(e);
 		} catch (Exception e) {
-			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.logger.error("Could not get derivedFrom", e);
+			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not get derivedFrom", e);
 			throw new IllegalStateException(e);
 		}
 		if (derivedFrom == null) {
@@ -109,10 +109,10 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 			method = this.getElement().getClass().getMethod("setDerivedFrom", DerivedFrom.class);
 			method.invoke(this.getElement(), derivedFrom);
 		} catch (ClassCastException e) {
-			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.logger.error("Seems that *Implementation is now Definitions backed, but not yet fully implemented", e);
+			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Seems that *Implementation is now Definitions backed, but not yet fully implemented", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
 		} catch (Exception e) {
-			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.logger.error("Could not set derivedFrom", e);
+			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not set derivedFrom", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
 		}
 		
@@ -131,7 +131,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 			method = this.getElement().getClass().getMethod(methodName);
 			tBoolean = (TBoolean) method.invoke(this.getElement());
 		} catch (Exception e) {
-			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.logger.error("Could not get boolean " + methodName, e);
+			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not get boolean " + methodName, e);
 			throw new IllegalStateException(e);
 		}
 		if (tBoolean == null) {
@@ -154,7 +154,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 			method = this.getElement().getClass().getMethod(methodName, TBoolean.class);
 			method.invoke(this.getElement(), tBoolean);
 		} catch (Exception e) {
-			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.logger.error("Could not set tBoolean " + methodName, e);
+			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not set tBoolean " + methodName, e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
 		}
 		

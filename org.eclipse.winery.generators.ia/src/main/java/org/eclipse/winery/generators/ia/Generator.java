@@ -29,22 +29,23 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.eclipse.winery.model.tosca.TBoolean;
+import org.eclipse.winery.model.tosca.TInterface;
+import org.eclipse.winery.model.tosca.TOperation;
+import org.eclipse.winery.model.tosca.TParameter;
+
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
-import org.eclipse.winery.model.tosca.TBoolean;
-import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.model.tosca.TOperation;
-import org.eclipse.winery.model.tosca.TParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Generator {
 	
-	private static final Logger logger = LoggerFactory.getLogger(Generator.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Generator.class);
 	
 	// Placeholder applicable for all files
 	public static final String PLACEHOLDER_JAVA_PACKAGE = "IA_PACKAGE";
@@ -98,7 +99,7 @@ public class Generator {
 		this.outDir = new File(workingDir.getAbsolutePath());
 		
 		if (this.workingDir.exists()) {
-			Generator.logger.error("Workdir " + this.workingDir + " already exits. This might lead to corrupted results if it is not empty!");
+			Generator.LOGGER.error("Workdir " + this.workingDir + " already exits. This might lead to corrupted results if it is not empty!");
 		}
 		
 		// Generate Namespace
@@ -133,8 +134,8 @@ public class Generator {
 			// Copy template project and template java files
 			String s = this.getClass().getResource("").getPath();
 			if (s.contains("jar!")) {
-				Generator.logger.trace("we work on a jar file");
-				Generator.logger.trace("Location of the current class: {}", s);
+				Generator.LOGGER.trace("we work on a jar file");
+				Generator.LOGGER.trace("Location of the current class: {}", s);
 				
 				// we have a jar file
 				// format: file:/location...jar!...path-in-the-jar
@@ -309,7 +310,7 @@ public class Generator {
 				return;
 			}
 			
-			Generator.logger.trace("Updating file " + folderOrFile);
+			Generator.LOGGER.trace("Updating file " + folderOrFile);
 			
 			try {
 				// Read file and replace placeholders
@@ -332,7 +333,7 @@ public class Generator {
 			}
 			
 		} else {
-			Generator.logger.trace("Updating folder " + folderOrFile);
+			Generator.LOGGER.trace("Updating folder " + folderOrFile);
 			for (File childFile : folderOrFile.listFiles()) {
 				this.updateFilesRecursively(childFile);
 			}
@@ -374,7 +375,7 @@ public class Generator {
 	private void addFilesRecursively(File folderOrFile, String baseDir, ArchiveOutputStream zos) {
 		if (folderOrFile.isFile()) {
 			String nameOfFileInZip = folderOrFile.getAbsolutePath().replace(baseDir, "");
-			Generator.logger.trace("Adding " + folderOrFile + " as " + nameOfFileInZip);
+			Generator.LOGGER.trace("Adding " + folderOrFile + " as " + nameOfFileInZip);
 			ArchiveEntry archiveEntry = new ZipArchiveEntry(nameOfFileInZip);
 			try (InputStream is = new FileInputStream(folderOrFile)) {
 				zos.putArchiveEntry(archiveEntry);
@@ -384,7 +385,7 @@ public class Generator {
 				e.printStackTrace();
 			}
 		} else {
-			Generator.logger.trace("Adding folder " + folderOrFile);
+			Generator.LOGGER.trace("Adding folder " + folderOrFile);
 			for (File childFile : folderOrFile.listFiles()) {
 				this.addFilesRecursively(childFile, baseDir, zos);
 			}

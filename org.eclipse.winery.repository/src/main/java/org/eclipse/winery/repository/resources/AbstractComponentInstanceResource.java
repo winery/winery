@@ -12,7 +12,37 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
-import com.sun.jersey.api.view.Viewable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
 import org.eclipse.winery.common.constants.MimeTypes;
@@ -39,42 +69,14 @@ import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources.documentation.DocumentationsResource;
 import org.eclipse.winery.repository.resources.imports.genericimports.GenericImportResource;
 import org.eclipse.winery.repository.resources.tags.TagsResource;
+
+import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Resource for a component (
@@ -97,7 +99,7 @@ import java.util.Map;
  */
 public abstract class AbstractComponentInstanceResource implements Comparable<AbstractComponentInstanceResource>, IPersistable {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractComponentInstanceResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentInstanceResource.class);
 	
 	protected final TOSCAComponentId id;
 	
@@ -316,7 +318,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
 			this.definitions = (Definitions) u.unmarshal(is);
 		} catch (Exception e) {
-			AbstractComponentInstanceResource.logger.error("Could not read content from file " + this.ref, e);
+			AbstractComponentInstanceResource.LOGGER.error("Could not read content from file " + this.ref, e);
 			throw new IllegalStateException(e);
 		}
 		try {
@@ -436,7 +438,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		try {
 			m.marshal(this.definitions, w);
 		} catch (JAXBException e) {
-			AbstractComponentInstanceResource.logger.error("Could not marshal definitions", e);
+			AbstractComponentInstanceResource.LOGGER.error("Could not marshal definitions", e);
 			throw new IllegalStateException(e);
 		}
 		String res = w.toString();
@@ -487,14 +489,14 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 				return Response.status(Status.BAD_REQUEST).entity(sb.toString()).build();
 			}
 		} catch (SAXException | IOException e) {
-			AbstractComponentInstanceResource.logger.debug("Could not parse XML", e);
+			AbstractComponentInstanceResource.LOGGER.debug("Could not parse XML", e);
 			return Utils.getResponseForException(e);
 		}
 		try {
 			u = JAXBSupport.createUnmarshaller();
 			defs = (Definitions) u.unmarshal(doc);
 		} catch (JAXBException e) {
-			AbstractComponentInstanceResource.logger.debug("Could not unmarshal from request body stream", e);
+			AbstractComponentInstanceResource.LOGGER.debug("Could not unmarshal from request body stream", e);
 			return Utils.getResponseForException(e);
 		}
 		

@@ -36,7 +36,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class InterfacesResource extends EntityWithIdCollectionResource<InterfaceResource, TInterface> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(InterfacesResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(InterfacesResource.class);
 	
 	private TopologyGraphElementEntityTypeResource typeResource;
 	

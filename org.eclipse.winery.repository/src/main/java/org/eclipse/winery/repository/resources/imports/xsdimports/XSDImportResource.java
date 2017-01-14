@@ -26,10 +26,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.XMLConstants;
 
-import org.apache.xerces.xs.XSConstants;
-import org.apache.xerces.xs.XSModel;
-import org.apache.xerces.xs.XSNamedMap;
-import org.apache.xerces.xs.XSObject;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -38,11 +34,15 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.imports.genericimports.GenericImportResource;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.xerces.xs.XSConstants;
+import org.apache.xerces.xs.XSModel;
+import org.apache.xerces.xs.XSNamedMap;
+import org.apache.xerces.xs.XSObject;
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * Even if we are not a component instance, we use that infrastructure to manage
@@ -51,7 +51,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  */
 public class XSDImportResource extends GenericImportResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(XSDImportResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(XSDImportResource.class);
 	
 	
 	public XSDImportResource(XSDImportId id) {
@@ -130,12 +130,12 @@ public class XSDImportResource extends GenericImportResource {
 			try {
 				cacheContent = Utils.mapper.writeValueAsString(result);
 			} catch (JsonProcessingException e) {
-				XSDImportResource.logger.error("Could not generate cache content", e);
+				XSDImportResource.LOGGER.error("Could not generate cache content", e);
 			}
 			try {
 				Repository.INSTANCE.putContentToFile(cacheRef, cacheContent, MediaType.APPLICATION_JSON_TYPE);
 			} catch (IOException e) {
-				XSDImportResource.logger.error("Could not update cache", e);
+				XSDImportResource.LOGGER.error("Could not update cache", e);
 			}
 		} else {
 			// read content from cache
@@ -143,7 +143,7 @@ public class XSDImportResource extends GenericImportResource {
 			try (InputStream is = Repository.INSTANCE.newInputStream(cacheRef)) {
 				result = Utils.mapper.readValue(is, java.util.List.class);
 			} catch (IOException e) {
-				XSDImportResource.logger.error("Could not read from cache", e);
+				XSDImportResource.LOGGER.error("Could not read from cache", e);
 				result = Collections.emptyList();
 			}
 		}

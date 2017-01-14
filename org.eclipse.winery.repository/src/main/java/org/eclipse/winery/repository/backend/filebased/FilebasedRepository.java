@@ -87,7 +87,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class FilebasedRepository extends AbstractRepository implements IRepositoryAdministration {
 	
-	private static final Logger logger = LoggerFactory.getLogger(FilebasedRepository.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FilebasedRepository.class);
 	
 	protected final Path repositoryRoot;
 	
@@ -106,7 +106,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		try {
 			FileUtils.createDirectory(path);
 		} catch (IOException e) {
-			FilebasedRepository.logger.debug(e.toString());
+			FilebasedRepository.LOGGER.debug(e.toString());
 			return false;
 		}
 		return true;
@@ -146,7 +146,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 					try {
 						org.apache.commons.io.FileUtils.forceMkdir(repo);
 					} catch (IOException e) {
-						FilebasedRepository.logger.error("Could not create repository directory", e);
+						FilebasedRepository.LOGGER.error("Could not create repository directory", e);
 					}
 					repositoryPath = repo.toPath();
 				} else {
@@ -160,7 +160,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			try {
 				org.apache.commons.io.FileUtils.forceMkdir(repo);
 			} catch (IOException e) {
-				FilebasedRepository.logger.error("Could not create repository directory", e);
+				FilebasedRepository.LOGGER.error("Could not create repository directory", e);
 			}
 			repositoryPath = repo.toPath();
 		}
@@ -190,7 +190,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			try {
 				org.apache.commons.io.FileUtils.forceMkdir(repo);
 			} catch (IOException e) {
-				FilebasedRepository.logger.error("Could not create directory", e);
+				FilebasedRepository.LOGGER.error("Could not create directory", e);
 			}
 			repositoryPath = repo.toPath();
 		} else {
@@ -218,7 +218,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			if (!(e instanceof NoSuchFileException)) {
 				// only if file did exist and something else went wrong: complain :)
 				// (otherwise, silently ignore the error)
-				FilebasedRepository.logger.debug("Could not delete file", e);
+				FilebasedRepository.LOGGER.debug("Could not delete file", e);
 				throw e;
 			}
 		}
@@ -229,7 +229,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		try {
 			FileUtils.forceDelete(this.id2AbsolutePath(id));
 		} catch (IOException e) {
-			FilebasedRepository.logger.debug("Could not delete id", id);
+			FilebasedRepository.LOGGER.debug("Could not delete id", id);
 			throw e;
 		}
 	}
@@ -291,7 +291,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		try {
 			FileUtils.forceDelete(path);
 		} catch (IOException e) {
-			FilebasedRepository.logger.debug("Could not delete tosca components of namepsace", e);
+			FilebasedRepository.LOGGER.debug("Could not delete tosca components of namepsace", e);
 			throw e;
 		}
 	}
@@ -339,7 +339,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		try {
 			Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IllegalStateException e) {
-			FilebasedRepository.logger.debug("Guessing that stream with length 0 is to be written to a file", e);
+			FilebasedRepository.LOGGER.debug("Guessing that stream with length 0 is to be written to a file", e);
 			// copy throws an "java.lang.IllegalStateException: Stream already closed" if the InputStream contains 0 bytes
 			// For instance, this case happens if SugarCE-6.4.2.zip.removed is tried to be uploaded
 			// We work around the Java7 issue and create an empty file
@@ -381,7 +381,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 						try {
 							constructor = idClass.getConstructor(Namespace.class, XMLId.class);
 						} catch (Exception e) {
-							FilebasedRepository.logger.debug("Internal error at determining id constructor", e);
+							FilebasedRepository.LOGGER.debug("Internal error at determining id constructor", e);
 							// abort everything, return invalid result
 							return res;
 						}
@@ -392,7 +392,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 								| IllegalAccessException
 								| IllegalArgumentException
 								| InvocationTargetException e) {
-							FilebasedRepository.logger.debug("Internal error at invocation of id constructor", e);
+							FilebasedRepository.LOGGER.debug("Internal error at invocation of id constructor", e);
 							// abort everything, return invalid result
 							return res;
 						}
@@ -401,7 +401,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				}
 			}
 		} catch (IOException e) {
-			FilebasedRepository.logger.debug("Cannot close ds", e);
+			FilebasedRepository.LOGGER.debug("Cannot close ds", e);
 		}
 		
 		return res;
@@ -422,7 +422,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				res.add(ref);
 			}
 		} catch (IOException e) {
-			FilebasedRepository.logger.debug("Cannot close ds", e);
+			FilebasedRepository.LOGGER.debug("Cannot close ds", e);
 		}
 		return res;
 	}
@@ -436,7 +436,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			try (Reader r = Files.newBufferedReader(path, Charset.defaultCharset())) {
 				configuration.load(r);
 			} catch (ConfigurationException | IOException e) {
-				FilebasedRepository.logger.error("Could not read config file", e);
+				FilebasedRepository.LOGGER.error("Could not read config file", e);
 				throw new IllegalStateException("Could not read config file", e);
 			}
 		}
@@ -462,7 +462,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				lastModifiedTime = Files.getLastModifiedTime(path);
 				res = new Date(lastModifiedTime.toMillis());
 			} catch (IOException e) {
-				FilebasedRepository.logger.debug(e.getMessage(), e);
+				FilebasedRepository.LOGGER.debug(e.getMessage(), e);
 				res = null;
 			}
 		} else {
@@ -499,14 +499,14 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 					id = constructor.newInstance(ref, xmlId);
 				} catch (InstantiationException | IllegalAccessException
 						| IllegalArgumentException | InvocationTargetException e) {
-					FilebasedRepository.logger.debug("Internal error at invocation of id constructor", e);
+					FilebasedRepository.LOGGER.debug("Internal error at invocation of id constructor", e);
 					// abort everything, return invalid result
 					return res;
 				}
 				res.add(id);
 			}
 		} catch (IOException e) {
-			FilebasedRepository.logger.debug("Cannot close ds", e);
+			FilebasedRepository.LOGGER.debug("Cannot close ds", e);
 		}
 		return res;
 	}
@@ -565,7 +565,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 					res.add(ns);
 				}
 			} catch (IOException e) {
-				FilebasedRepository.logger.debug("Cannot close ds", e);
+				FilebasedRepository.LOGGER.debug("Cannot close ds", e);
 			}
 		}
 		return res;
@@ -598,7 +598,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 					Files.copy(file, zout);
 					zout.closeEntry();
 				} catch (IOException e) {
-					FilebasedRepository.logger.debug(e.getMessage());
+					FilebasedRepository.LOGGER.debug(e.getMessage());
 				}
 				return FileVisitResult.CONTINUE;
 			}
@@ -625,7 +625,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				FileUtils.forceDelete(p);
 			}
 		} catch (IOException e) {
-			FilebasedRepository.logger.error(e.getMessage());
+			FilebasedRepository.LOGGER.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -643,7 +643,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				}
 			}
 		} catch (IOException e) {
-			FilebasedRepository.logger.error(e.getMessage());
+			FilebasedRepository.LOGGER.error(e.getMessage());
 		}
 	}
 	

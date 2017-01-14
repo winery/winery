@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
 
-	protected static final Logger logger = LoggerFactory.getLogger(AbstractComponentsResource.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentsResource.class);
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
@@ -80,7 +80,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * Creates a new component instance in the given namespace
 	 *
 	 * @param namespace plain namespace
-	 * @param id plain id
+	 * @param name the name; used as id
 	 */
 	protected ResourceCreationResult onPost(String namespace, String name) {
 		ResourceCreationResult res;
@@ -102,7 +102,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 					}
 				}
 			} catch (Exception e) {
-				AbstractComponentsResource.logger.debug("Could not create id instance", e);
+				AbstractComponentsResource.LOGGER.debug("Could not create id instance", e);
 				res = new ResourceCreationResult(Status.INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -206,7 +206,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	public static AbstractComponentInstanceResource getComponentInstaceResource(TOSCAComponentId tcId) {
 		String type = Util.getTypeForComponentId(tcId.getClass());
 		if (!Repository.INSTANCE.exists(tcId)) {
-			AbstractComponentsResource.logger.debug("TOSCA component id " + tcId.toString() + " not found");
+			AbstractComponentsResource.LOGGER.debug("TOSCA component id " + tcId.toString() + " not found");
 			throw new NotFoundException("TOSCA component id " + tcId.toString() + " not found");
 		}
 		Class<? extends AbstractComponentInstanceResource> newResource = AbstractComponentsResource.getComponentInstanceResourceClassForType(type);
@@ -217,7 +217,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 			newInstance = (AbstractComponentInstanceResource) constructors[0].newInstance(tcId);
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException e) {
-			AbstractComponentsResource.logger.error("Could not instantiate sub resource " + tcId);
+			AbstractComponentsResource.LOGGER.error("Could not instantiate sub resource " + tcId);
 			throw new IllegalStateException("Could not instantiate sub resource", e);
 		}
 		return newInstance;
@@ -277,7 +277,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 			jg.writeEndArray();
 			jg.close();
 		} catch (Exception e) {
-			AbstractComponentsResource.logger.error(e.getMessage(), e);
+			AbstractComponentsResource.LOGGER.error(e.getMessage(), e);
 			return "[]";
 		}
 		return sw.toString();

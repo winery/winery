@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWithIdResource<ReqOrCapDef> implements IIdDetermination<ReqOrCapDef> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractReqOrCapDefResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReqOrCapDefResource.class);
 	
 	protected NodeTypeResource parent;
 	
@@ -124,7 +124,7 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 			method = reqOrCapDef.getClass().getMethod(getterName);
 			res = method.invoke(reqOrCapDef);
 		} catch (Exception e) {
-			AbstractReqOrCapDefResource.logger.error("Could not invoke getter {}", getterName, e);
+			AbstractReqOrCapDefResource.LOGGER.error("Could not invoke getter {}", getterName, e);
 			throw new IllegalStateException(e);
 		}
 		return res;
@@ -143,7 +143,7 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 			method = reqOrCapDef.getClass().getMethod(setterName, value.getClass());
 			method.invoke(reqOrCapDef, value);
 		} catch (Exception e) {
-			AbstractReqOrCapDefResource.logger.error("Could not invoke setter {}", setterName, e);
+			AbstractReqOrCapDefResource.LOGGER.error("Could not invoke setter {}", setterName, e);
 			throw new IllegalStateException(e);
 		}
 	}

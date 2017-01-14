@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class OperationResource extends EntityWithIdResource<TOperation> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(OperationResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OperationResource.class);
 	
 	
 	public OperationResource(IIdDetermination<TOperation> idDetermination, TOperation o, int idx, List<TOperation> list, IPersistable res) {

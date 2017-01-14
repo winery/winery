@@ -41,7 +41,7 @@ import com.sun.jersey.multipart.FormDataParam;
 
 public class RepositoryAdminResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(RepositoryAdminResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryAdminResource.class);
 	
 	
 	// @formatter:off

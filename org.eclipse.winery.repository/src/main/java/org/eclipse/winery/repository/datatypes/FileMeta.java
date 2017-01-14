@@ -15,12 +15,13 @@ import java.io.IOException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.apache.commons.io.FilenameUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.Repository;
+
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,14 +35,14 @@ import org.slf4j.LoggerFactory;
 @XmlRootElement
 public class FileMeta {
 	
-	private static final Logger logger = LoggerFactory.getLogger(FileMeta.class);
-	
-	String name;
-	long size;
-	String url;
-	String deleteUrl;
-	String deleteType = "DELETE";
-	String thumbnailUrl;
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileMeta.class);
+
+	private String name;
+	private long size;
+	private String url;
+	private String deleteUrl;
+	private String deleteType = "DELETE";
+	private String thumbnailUrl;
 	
 	
 	public String getName() {
@@ -81,7 +82,7 @@ public class FileMeta {
 		try {
 			this.size = Repository.INSTANCE.getSize(ref);
 		} catch (IOException e) {
-			FileMeta.logger.error(e.getMessage(), e);
+			FileMeta.LOGGER.error(e.getMessage(), e);
 			this.size = 0;
 		}
 		this.url = Utils.getAbsoluteURL(ref);

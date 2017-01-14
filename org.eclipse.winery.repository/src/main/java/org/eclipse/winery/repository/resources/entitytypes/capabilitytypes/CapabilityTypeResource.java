@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 public final class CapabilityTypeResource extends EntityTypeResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CapabilityTypeResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CapabilityTypeResource.class);
 	
 	
 	/**

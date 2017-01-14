@@ -23,7 +23,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.XMLId;
@@ -40,10 +39,6 @@ import org.eclipse.winery.repository.resources._support.collections.withid.Entit
 import org.eclipse.winery.repository.resources.admin.types.PlanLanguagesManager;
 import org.eclipse.winery.repository.resources.admin.types.PlanTypesManager;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-import org.restdoc.annotations.RestDoc;
-import org.restdoc.annotations.RestDocParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -52,13 +47,18 @@ import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import org.apache.commons.lang3.StringUtils;
+import org.restdoc.annotations.RestDoc;
+import org.restdoc.annotations.RestDocParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Presents the plans nested in one Service Template
  */
 public class PlansResource extends EntityWithIdCollectionResource<PlanResource, TPlan> {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PlansResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PlansResource.class);
 	
 	
 	public PlansResource(List<TPlan> plans, ServiceTemplateResource res) {
@@ -175,10 +175,10 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			jGenerator.close();
 			sw.close();
 		} catch (JsonGenerationException e) {
-			PlansResource.logger.error(e.getMessage(), e);
+			PlansResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().build();
 		} catch (IOException e) {
-			PlansResource.logger.error(e.getMessage(), e);
+			PlansResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().build();
 		}
 		

@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import static java.nio.file.FileVisitResult.CONTINUE;
-
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -23,9 +21,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.nio.file.FileVisitResult.CONTINUE;
+
 public class FileUtils {
 	
-	private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 	
 	
 	/**
@@ -49,7 +49,7 @@ public class FileUtils {
 						try {
 							Files.delete(file);
 						} catch (IOException e) {
-							FileUtils.logger.debug("Could not delete file", e.getMessage());
+							FileUtils.LOGGER.debug("Could not delete file", e.getMessage());
 						}
 						return CONTINUE;
 					}
@@ -60,23 +60,23 @@ public class FileUtils {
 							try {
 								Files.delete(dir);
 							} catch (IOException e) {
-								FileUtils.logger.debug("Could not delete dir", e);
+								FileUtils.LOGGER.debug("Could not delete dir", e);
 							}
 							return CONTINUE;
 						} else {
-							FileUtils.logger.debug("Could not delete file", exc);
+							FileUtils.LOGGER.debug("Could not delete file", exc);
 							return CONTINUE;
 						}
 					}
 				});
 			} catch (IOException e) {
-				FileUtils.logger.debug("Could not delete dir", e);
+				FileUtils.LOGGER.debug("Could not delete dir", e);
 			}
 		} else {
 			try {
 				Files.delete(path);
 			} catch (IOException e) {
-				FileUtils.logger.debug("Could not delete file", e.getMessage());
+				FileUtils.LOGGER.debug("Could not delete file", e.getMessage());
 			}
 		}
 	}

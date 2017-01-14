@@ -74,7 +74,7 @@ import java.util.TreeSet;
 
 public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	
-	private static final Logger logger = LoggerFactory.getLogger(WineryRepositoryClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WineryRepositoryClient.class);
 	
 	// switch off validation, currently causes more trouble than it brings
 	private static final boolean VALIDATING = false;
@@ -199,7 +199,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 					WinerysPropertiesDefinition.class);
 			// @formatter:on
 		} catch (JAXBException e) {
-			WineryRepositoryClient.logger.error("Could not initialize JAXBContext", e);
+			WineryRepositoryClient.LOGGER.error("Could not initialize JAXBContext", e);
 			throw new IllegalStateException(e);
 		}
 		return context;
@@ -219,7 +219,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			// not possible here: m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
 		} catch (JAXBException e) {
-			WineryRepositoryClient.logger.error("Could not instantiate marshaller", e);
+			WineryRepositoryClient.LOGGER.error("Could not instantiate marshaller", e);
 			throw new IllegalStateException(e);
 		}
 		return m;
@@ -235,7 +235,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		try {
 			um = WineryRepositoryClient.context.createUnmarshaller();
 		} catch (JAXBException e) {
-			WineryRepositoryClient.logger.error("Could not instantiate unmarshaller", e);
+			WineryRepositoryClient.LOGGER.error("Could not instantiate unmarshaller", e);
 			throw new IllegalStateException(e);
 		}
 		return um;
@@ -302,13 +302,13 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			// (http://jersey.java.net/nonav/documentation/latest/json.html),
 			// but we are short in time, so we do a quick hack
 			String nsList = namespacesResource.accept(MediaType.APPLICATION_JSON).get(String.class);
-			WineryRepositoryClient.logger.trace(nsList);
+			WineryRepositoryClient.LOGGER.trace(nsList);
 			List<String> nsListList;
 			try {
 				nsListList = this.mapper.readValue(nsList, new TypeReference<List<String>>() {
 				});
 			} catch (Exception e) {
-				WineryRepositoryClient.logger.error(e.getMessage(), e);
+				WineryRepositoryClient.LOGGER.error(e.getMessage(), e);
 				continue;
 			}
 			res.addAll(nsListList);
@@ -329,13 +329,13 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			// but we are short in time, so we do a quick hack
 			// The result also contains the optional name
 			String idList = componentListResource.accept(MediaType.APPLICATION_JSON).get(String.class);
-			WineryRepositoryClient.logger.trace(idList);
+			WineryRepositoryClient.LOGGER.trace(idList);
 			List<NamespaceIdOptionalName> nsAndIdList;
 			try {
 				nsAndIdList = this.mapper.readValue(idList, new TypeReference<List<NamespaceIdOptionalName>>() {
 				});
 			} catch (Exception e) {
-				WineryRepositoryClient.logger.error(e.getMessage(), e);
+				WineryRepositoryClient.LOGGER.error(e.getMessage(), e);
 				continue;
 			}
 			res.put(wr, nsAndIdList);
@@ -434,9 +434,9 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 					// convention: first element in list is the element we look for
 					if (definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().isEmpty()) {
 						result = null;
-						WineryRepositoryClient.logger.error("Type {}/{} was found, but did not return any data", nsAndId.getNamespace(), nsAndId.getId());
+						WineryRepositoryClient.LOGGER.error("Type {}/{} was found, but did not return any data", nsAndId.getNamespace(), nsAndId.getId());
 					} else {
-						WineryRepositoryClient.logger.trace("Probably found valid data for {}/{}", nsAndId.getNamespace(), nsAndId.getId());
+						WineryRepositoryClient.LOGGER.trace("Probably found valid data for {}/{}", nsAndId.getNamespace(), nsAndId.getId());
 						result = (T) definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
 						
 						this.cache((TEntityType) result, new QName(nsAndId.getNamespace(), nsAndId.getId()));
@@ -584,7 +584,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			Unmarshaller um = WineryRepositoryClient.createUnmarshaller();
 			definitions = (TDefinitions) um.unmarshal(response.getEntityInputStream());
 		} catch (JAXBException e) {
-			WineryRepositoryClient.logger.error("Could not umarshal TDefinitions", e);
+			WineryRepositoryClient.LOGGER.error("Could not umarshal TDefinitions", e);
 			// try next service
 			return null;
 		}
@@ -611,7 +611,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		try {
 			document = this.toscaDocumentBuilder.parse(stream);
 		} catch (SAXException | IOException e) {
-			WineryRepositoryClient.logger.debug("Could not parse TOSCA file", e);
+			WineryRepositoryClient.LOGGER.debug("Could not parse TOSCA file", e);
 			return null;
 		}
 		return document;
@@ -636,7 +636,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 				try {
 					topologyTemplate = WineryRepositoryClient.createUnmarshaller().unmarshal(doc.getDocumentElement(), TTopologyTemplate.class).getValue();
 				} catch (JAXBException e) {
-					WineryRepositoryClient.logger.debug("Could not parse topology, returning null", e);
+					WineryRepositoryClient.LOGGER.debug("Could not parse topology, returning null", e);
 					return null;
 				}
 				// first hit: immediately stop and return result
@@ -655,7 +655,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		WebResource r = WineryRepositoryClient.getTopologyTemplateWebResource(this.primaryWebResource, serviceTemplate);
 		String xmlAsString = Util.getXMLAsString(TTopologyTemplate.class, topologyTemplate);
 		ClientResponse response = r.type(MediaType.TEXT_XML).put(ClientResponse.class, xmlAsString);
-		WineryRepositoryClient.logger.debug(response.toString());
+		WineryRepositoryClient.LOGGER.debug(response.toString());
 		int status = response.getStatus();
 		if ((status < 200) || (status >= 300)) {
 			throw new Exception(response.toString());
@@ -697,7 +697,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			// TODO: pass ClientResponse.Status somehow
 			// TODO: more fine grained checking for error message. Not all
 			// failures are that the QName already exists
-			WineryRepositoryClient.logger.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
+			WineryRepositoryClient.LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
 			throw new QNameAlreadyExistsException();
 		}
 		// no further return is made
@@ -716,7 +716,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		if (response.getClientResponseStatus() != ClientResponse.Status.CREATED) {
 			// TODO: pass ClientResponse.Status somehow
 			// TODO: more fine grained checking for error message. Not all failures are that the QName already exists
-			WineryRepositoryClient.logger.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
+			WineryRepositoryClient.LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
 			throw new QNameAlreadyExistsException();
 		}
 		// no further return is made
@@ -728,7 +728,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		for (WebResource wr : this.repositoryResources) {
 			ClientResponse response = wr.path(pathFragment).delete(ClientResponse.class);
 			if ((response.getClientResponseStatus() != ClientResponse.Status.NO_CONTENT) || (response.getClientResponseStatus() != ClientResponse.Status.NOT_FOUND)) {
-				WineryRepositoryClient.logger.debug(String.format("Error %d when deleting id %s from URI %s", response.getStatus(), id.toString(), wr.getURI().toString()));
+				WineryRepositoryClient.LOGGER.debug(String.format("Error %d when deleting id %s from URI %s", response.getStatus(), id.toString(), wr.getURI().toString()));
 			}
 		}
 	}

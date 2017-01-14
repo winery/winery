@@ -54,7 +54,7 @@ import com.sun.jersey.api.view.Viewable;
  */
 public class PropertiesDefinitionResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(PropertiesDefinitionResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesDefinitionResource.class);
 	
 	// We hold a copy of super.res as we work on the type EntityTypeResource instead of AbstractComponentInstanceResource
 	private final EntityTypeResource parentRes;
@@ -152,7 +152,7 @@ public class PropertiesDefinitionResource {
 		BackendUtils.deriveWPD(this.getEntityType(), errors);
 		// currently the errors are just logged
 		for (String error : errors) {
-			PropertiesDefinitionResource.logger.debug(error);
+			PropertiesDefinitionResource.LOGGER.debug(error);
 		}
 		return BackendUtils.persist(this.parentRes);
 		
