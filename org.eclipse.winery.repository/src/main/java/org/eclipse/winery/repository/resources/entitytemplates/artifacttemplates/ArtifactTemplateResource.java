@@ -8,22 +8,9 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.SortedSet;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
@@ -31,6 +18,7 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactTemplate.ArtifactReferences;
@@ -56,6 +44,19 @@ import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetyp
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypes.artifacttypes.ArtifactTypeResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.SortedSet;
 
 /**
  * Models an Artifact Template with its artifact references
@@ -115,8 +116,8 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	}
 	
 	@Override
-	protected void copyIdToFields() {
-		this.getTArtifactTemplate().setId(this.getId().getXmlId().getDecoded());
+	public void copyIdToFields(TOSCAComponentId id) {
+		this.getTArtifactTemplate().setId(id.getXmlId().getDecoded());
 		// Namespace cannot be set as the namespace is contained in TDefinitions only
 	}
 	

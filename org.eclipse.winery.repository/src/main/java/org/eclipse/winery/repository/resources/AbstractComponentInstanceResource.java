@@ -8,23 +8,49 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id and namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.sun.jersey.api.view.Viewable;
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
+import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TImport;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.TTags;
+import org.eclipse.winery.repository.JAXBSupport;
+import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+import org.eclipse.winery.repository.export.TOSCAExportUtil;
+import org.eclipse.winery.repository.resources._support.IPersistable;
+import org.eclipse.winery.repository.resources.documentation.DocumentationsResource;
+import org.eclipse.winery.repository.resources.imports.genericimports.GenericImportResource;
+import org.eclipse.winery.repository.resources.tags.TagsResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -41,46 +67,14 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
-
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
-import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TImport;
-import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
-import org.eclipse.winery.model.tosca.TRelationshipType;
-import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
-import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.TTags;
-import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.Utils;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.export.TOSCAExportUtil;
-import org.eclipse.winery.repository.resources._support.IPersistable;
-import org.eclipse.winery.repository.resources.documentation.DocumentationsResource;
-import org.eclipse.winery.repository.resources.imports.genericimports.GenericImportResource;
-import org.eclipse.winery.repository.resources.tags.TagsResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
-import com.sun.jersey.api.view.Viewable;
-
-import ch.qos.logback.classic.pattern.Util;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Resource for a component (
@@ -209,15 +203,28 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		return this.id.getXmlId().getDecoded();
 	}
 	
-	@PUT
+	@POST
 	@Path("id")
-	public Response putId(@FormParam("id") String id) {
-		// this renames the entity type resource
-		// TODO: implement rename functionality
-		return Response.serverError().entity("not yet implemented").build();
-	}
-	
-	/**
+	public Response putId(@FormParam("id") String id, @FormParam("namespace") String namespace) {
+		TOSCAComponentId newId;
+		if (namespace == null) {
+			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), this.getId().getNamespace().getDecoded(), id, false);
+		} else {
+			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().toString(), false);
+		}
+        return BackendUtils.rename(this.getId(), newId);
+    }
+
+    @POST
+    @Path("namespace")
+    public Response putNamespace(@FormParam("ns") String namespace) {
+        TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().getDecoded(), false);
+        return BackendUtils.rename(this.getId(), newId);
+    }
+
+
+
+    /**
 	 * Main page
 	 */
 	// @Produces(MediaType.TEXT_HTML) // not true because of ?csar leads to send
@@ -376,8 +383,18 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 * 
 	 * We opted for a separate method from createNewElement to enable renaming
 	 * of the object
+     *
+     * Should be protected, but {@link FilebasedRepository#rename(org.eclipse.winery.common.ids.definitions.TOSCAComponentId, org.eclipse.winery.common.ids.definitions.TOSCAComponentId)} requires it.
+     * TODO: move this method to BackendUtils or some other utility classes
+	 *       Reason: This method is used by BackendUtils.rename
+	 *       Not yet done, because the logic is sophisticated and much intelligence is currently in the child classes.
+	 *       The logic is also bundled together with the resources. For instance, the logic for ServiceTemplate is at ServiceTemplateResource.
 	 */
-	protected abstract void copyIdToFields();
+	public abstract void copyIdToFields(TOSCAComponentId id);
+
+	public final void copyIdToFields() {
+		this.copyIdToFields(this.getId());
+	}
 	
 	/**
 	 * Returns the Element belonging to this resource. As Java does not allow
@@ -425,7 +442,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		String res = w.toString();
 		return res;
 	}
-	
+
 	/**
 	 * @return the reference to the internal Definitions object
 	 */

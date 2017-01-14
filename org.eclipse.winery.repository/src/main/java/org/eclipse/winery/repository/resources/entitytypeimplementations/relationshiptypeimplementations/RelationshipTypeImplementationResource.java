@@ -8,14 +8,12 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
@@ -23,6 +21,10 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.artifacts.ImplementationArtifactsResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.EntityTypeImplementationResource;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
 
 public class RelationshipTypeImplementationResource extends EntityTypeImplementationResource implements INodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 	
@@ -56,9 +58,9 @@ public class RelationshipTypeImplementationResource extends EntityTypeImplementa
 	}
 	
 	@Override
-	protected void copyIdToFields() {
-		this.getRTI().setTargetNamespace(this.getId().getNamespace().getDecoded());
-		this.getRTI().setName(this.getId().getXmlId().getDecoded());
+	public void copyIdToFields(TOSCAComponentId id) {
+		this.getRTI().setTargetNamespace(id.getNamespace().getDecoded());
+		this.getRTI().setName(id.getXmlId().getDecoded());
 	}
 	
 	@Override

@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
@@ -36,10 +37,10 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 	}
 	
 	@Override
-	protected void copyIdToFields() {
+	public void copyIdToFields(TOSCAComponentId id) {
 		TEntityType entityType = this.getEntityType();
-		entityType.setTargetNamespace(this.getId().getNamespace().getDecoded());
-		entityType.setName(this.getId().getXmlId().getDecoded());
+		entityType.setTargetNamespace(id.getNamespace().getDecoded());
+		entityType.setName(id.getXmlId().getDecoded());
 	}
 	
 	/**

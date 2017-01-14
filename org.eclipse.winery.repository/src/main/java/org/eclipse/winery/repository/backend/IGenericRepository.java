@@ -9,6 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Lukas Harzentter - get namespaces for specific component
+ *     Tino Stadelmaier, Philipp Meyer - code cleaning
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
@@ -98,15 +99,15 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	
 	/**
 	 * Puts the given content to the given file. Replaces existing content.
-	 * 
+	 *
 	 * If the parent of the reference does not exist, it is created.
-	 * 
+	 *
 	 * @param ref the reference to the file
 	 * @param content the content to put into the file
 	 * @throws IOException if something goes wrong
 	 */
 	public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
-	
+
 	/**
 	 * Creates an opened inputStream of the contents referenced by ref. The
 	 * stream has to be closed by the caller.

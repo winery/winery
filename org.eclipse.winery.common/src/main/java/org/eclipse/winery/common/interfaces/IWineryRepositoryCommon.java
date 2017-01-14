@@ -9,13 +9,16 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Lukas Harzenetter, Nicole Keppler - forceDelete for Namespaces
+ *     Tino Stadlmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.common.interfaces;
 
 import java.io.IOException;
 
 import org.eclipse.winery.common.ids.GenericId;
+
 import org.eclipse.winery.common.ids.Namespace;
+
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 
 /**
@@ -43,11 +46,20 @@ public interface IWineryRepositoryCommon {
 	public void forceDelete(GenericId id) throws IOException;
 
 	/**
-	 * Deletes all TOSCA components nested in the given namespace
+	 * Renames a TOSCA component id
 	 *
-	 * @param toscaComponentIdClazz the type of TOSCA components to delete
-	 * @param namespace the namespace to delete
+	 * @param oldId the old id
+	 * @param newId the new id
 	 */
+	public void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException;
+
+	 /**
+	  * Deletes all TOSCA components nested in the given namespace
+	  *
+	  * @param toscaComponentIdClazz the type of TOSCA components to delete
+	  * @param namespace the namespace to delete
+	  */
 	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException;
+
 
 }

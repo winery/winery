@@ -8,28 +8,14 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates;
-
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
@@ -51,6 +37,21 @@ import org.eclipse.winery.repository.resources.servicetemplates.topologytemplate
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
 	
@@ -158,9 +159,10 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	}
 	
 	@Override
-	protected void copyIdToFields() {
-		this.getServiceTemplate().setId(this.getId().getXmlId().getDecoded());
-		this.getServiceTemplate().setTargetNamespace(this.getId().getNamespace().getDecoded());
+	public void copyIdToFields(TOSCAComponentId id) {
+		this.getServiceTemplate().setId(id.getXmlId().getDecoded());
+		this.getServiceTemplate().setName(id.getXmlId().getDecoded());
+		this.getServiceTemplate().setTargetNamespace(id.getNamespace().getDecoded());
 	}
 	
 	/**
