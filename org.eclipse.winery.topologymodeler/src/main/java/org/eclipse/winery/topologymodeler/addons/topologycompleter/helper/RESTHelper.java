@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RESTHelper {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(RESTHelper.class.getName());
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(RESTHelper.class.getName());
 
 	/**
 	 * This method uses a REST call to save the completed {@link TTopologyTemplate} to the repository.
@@ -58,7 +58,7 @@ public class RESTHelper {
 				// build the URL with the repositoryURL, the topology namespace and the topology name
 				url = new URL(repositoryURL + "/servicetemplates/" + topologyNamespace + "/" + topologyName + "/topologytemplate/");
 
-				logger.info("The URL the topology is saved to: " + url);
+				LOGGER.info("The URL the topology is saved to: " + url);
 			}
 
 			// using SSL
@@ -68,7 +68,7 @@ public class RESTHelper {
 			HttpURLConnection urlConn;
 			urlConn = (HttpURLConnection) url.openConnection();
 
-			logger.info("Sending HTTP request...");
+			LOGGER.info("Sending HTTP request...");
 
 			urlConn.setDoOutput(true);
 			urlConn.setRequestMethod("PUT");
@@ -79,19 +79,19 @@ public class RESTHelper {
 			TTopologyTemplate outputTopology = JAXBHelper.buildXML(topology);
 			String outputString = JAXBHelper.getXMLAsString(outputTopology.getClass(), outputTopology);
 
-			logger.info(outputString);
-			logger.info("Sending output to Winery.");
+			LOGGER.info(outputString);
+			LOGGER.info("Sending output to Winery.");
 
 			out.write(outputString);
 			out.close();
 			urlConn.getOutputStream().close();
-			logger.info("Output sent, waiting for response...");
+			LOGGER.info("Output sent, waiting for response...");
 			urlConn.getInputStream();
 
-			logger.info("HTTP Response Code is: " + urlConn.getResponseCode());
+			LOGGER.info("HTTP Response Code is: " + urlConn.getResponseCode());
 
 		} catch (IOException e) {
-			logger.error(e.getLocalizedMessage());
+			LOGGER.error(e.getLocalizedMessage());
 		}
 	}
 }
