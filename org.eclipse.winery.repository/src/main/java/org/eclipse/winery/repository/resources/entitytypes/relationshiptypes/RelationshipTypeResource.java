@@ -43,24 +43,24 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.view.Viewable;
 
 public class RelationshipTypeResource extends TopologyGraphElementEntityTypeResource {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipTypeResource.class);
-	
-	
+
+
 	public RelationshipTypeResource(RelationshipTypeId id) {
 		super(id);
 	}
-	
+
 	@Path("implementations/")
 	public ImplementationsOfOneRelationshipTypeResource getImplementations() {
 		return new ImplementationsOfOneRelationshipTypeResource((RelationshipTypeId) this.id);
 	}
-	
+
 	@Path("visualappearance/")
 	public VisualAppearanceResource getVisualAppearanceResource() {
 		return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), (RelationshipTypeId) this.id);
 	}
-	
+
 	@Path("instancestates/")
 	public InstanceStatesResource getInstanceStatesResource() {
 		TTopologyElementInstanceStates instanceStates = this.getRelationshipType().getInstanceStates();
@@ -71,7 +71,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		}
 		return new InstanceStatesResource(this.getRelationshipType().getInstanceStates(), this);
 	}
-	
+
 	@Path("sourceinterfaces/")
 	public InterfacesResource getSourceInterfaces() {
 		SourceInterfaces interfaces = this.getRelationshipType().getSourceInterfaces();
@@ -81,7 +81,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		}
 		return new InterfacesResource("source", interfaces.getInterface(), this);
 	}
-	
+
 	@Path("targetinterfaces/")
 	public InterfacesResource getTargetInterfaces() {
 		TargetInterfaces interfaces = this.getRelationshipType().getTargetInterfaces();
@@ -91,7 +91,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		}
 		return new InterfacesResource("target", interfaces.getInterface(), this);
 	}
-	
+
 	@Path("validendings/")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
@@ -99,7 +99,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		Viewable viewable = new Viewable("/jsp/entitytypes/relationshiptypes/validendings.jsp", this);
 		return Response.ok().entity(viewable).build();
 	}
-	
+
 	@Path("validsource")
 	@GET
 	public String getValidSource() {
@@ -109,7 +109,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		}
 		return this.getRelationshipType().getValidSource().getTypeRef().toString();
 	}
-	
+
 	@Path("validsource")
 	@PUT
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -120,7 +120,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		this.getRelationshipType().setValidSource(vs);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Path("validtarget")
 	@GET
 	public String getValidTarget() {
@@ -130,7 +130,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		}
 		return this.getRelationshipType().getValidTarget().getTypeRef().toString();
 	}
-	
+
 	@Path("validtarget")
 	@PUT
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -141,7 +141,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		this.getRelationshipType().setValidTarget(vt);
 		return BackendUtils.persist(this);
 	}
-	
+
 	/**
 	 * Required for validendings.jsp
 	 */
@@ -149,17 +149,17 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		SortedSet<NodeTypeId> allNodeTypeIds = Repository.INSTANCE.getAllTOSCAComponentIds(NodeTypeId.class);
 		return allNodeTypeIds;
 	}
-	
+
 	/**
 	 * Convenience method to avoid casting at the caller's side.
 	 */
 	public TRelationshipType getRelationshipType() {
 		return (TRelationshipType) this.getElement();
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TRelationshipType();
 	}
-	
+
 }

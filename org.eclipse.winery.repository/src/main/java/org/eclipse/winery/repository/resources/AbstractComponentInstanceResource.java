@@ -88,43 +88,43 @@ import org.xml.sax.SAXParseException;
  * </ul>
  * ). A component is directly nested in a TDefinitions element. See also
  * {@link org.eclipse.winery.common.ids.definitions.TOSCAComponentId}
- * 
+ *
  * Bundles all operations required for all components. e.g., namespace+XMLid,
  * object comparison, import, export, tags
- * 
+ *
  * Uses a TDefinitions document as storage.
- * 
+ *
  * Additional setters and getters are added if it comes to Winery's extensions
  * such as the color of a relationship type
  */
 public abstract class AbstractComponentInstanceResource implements Comparable<AbstractComponentInstanceResource>, IPersistable {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentInstanceResource.class);
-	
+
 	protected final TOSCAComponentId id;
-	
+
 	private final RepositoryFileReference ref;
-	
+
 	// the object representing the data of this resource
 	private Definitions definitions = null;
-	
+
 	// shortcut for this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
 	protected TExtensibleElements element = null;
-	
-	
+
+
 	/**
 	 * Instantiates the resource. Assumes that the resource should exist
 	 * (assured by the caller)
-	 * 
+	 *
 	 * The caller should <em>not</em> create the resource by other ways. E.g.,
 	 * by instantiating this resource and then adding data.
 	 */
 	public AbstractComponentInstanceResource(TOSCAComponentId id) {
 		this.id = id;
-		
+
 		// the resource itself exists
 		assert (Repository.INSTANCE.exists(id));
-		
+
 		// the data file might not exist
 		this.ref = BackendUtils.getRefOfDefinitions(id);
 		if (Repository.INSTANCE.exists(this.ref)) {
@@ -133,37 +133,37 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			this.createNew();
 		}
 	}
-	
+
 	/**
 	 * Convenience method for getId().getNamespace()
 	 */
 	public final Namespace getNamespace() {
 		return this.id.getNamespace();
 	}
-	
+
 	/**
 	 * Convenience method for getId().getXmlId()
 	 */
 	public final XMLId getXmlId() {
 		return this.id.getXmlId();
 	}
-	
+
 	/**
 	 * Convenience method for getId().getQName();
-	 * 
+	 *
 	 * @return the QName associated with this resource
 	 */
 	public final QName getQName() {
 		return this.getId().getQName();
 	}
-	
+
 	/**
 	 * Returns the id associated with this resource
 	 */
 	public final TOSCAComponentId getId() {
 		return this.id;
 	}
-	
+
 	/**
 	 * called from AbstractComponentResource
 	 */
@@ -172,12 +172,12 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		Response res = BackendUtils.delete(this.id);
 		return res;
 	}
-	
+
 	@Override
 	public final int compareTo(AbstractComponentInstanceResource o) {
 		return this.id.compareTo(o.id);
 	}
-	
+
 	@Override
 	public final boolean equals(Object o) {
 		if (o instanceof String) {
@@ -193,18 +193,18 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	@Override
 	public final int hashCode() {
 		return this.getId().hashCode();
 	}
-	
+
 	@GET
 	@Path("id")
 	public String getTOSCAId() {
 		return this.id.getXmlId().getDecoded();
 	}
-	
+
 	@POST
 	@Path("id")
 	public Response putId(@FormParam("id") String id, @FormParam("namespace") String namespace) {
@@ -223,8 +223,6 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().getDecoded(), false);
         return BackendUtils.rename(this.getId(), newId);
     }
-
-
 
     /**
 	 * Main page
@@ -251,9 +249,9 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			String type = Utils.getTypeForInstance(this.getClass());
 			String viewableName = "/jsp/" + Utils.getIntermediateLocationStringForType(type, "/") + "/" + type.toLowerCase() + ".jsp";
 			Viewable viewable = new Viewable(viewableName, this);
-			
+
 			return Response.ok().entity(viewable).build();
-			
+
 			// we can't do the following as the GET request from the browser
 			// cannot set the accept header properly
 			// "vary: accept" header has to be set as we may also return a THOR
@@ -262,7 +260,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			// HttpHeaders.ACCEPT).entity(viewable).build();
 		}
 	}
-	
+
 	@GET
 	@Produces(MimeTypes.MIMETYPE_ZIP)
 	public final Response getCSAR() {
@@ -271,11 +269,11 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		}
 		return Utils.getCSARofSelectedResource(this);
 	}
-	
+
 	/**
 	 * Returns the definitions of this resource. Includes required imports of
 	 * other definitions
-	 * 
+	 *
 	 * @param csar used because plan generator's GET request lands here
 	 */
 	@GET
@@ -284,13 +282,13 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		if (!Repository.INSTANCE.exists(this.id)) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
-		
+
 		if (csar != null) {
 			return Utils.getCSARofSelectedResource(this);
 		}
-		
+
 		StreamingOutput so = new StreamingOutput() {
-			
+
 			@Override
 			public void write(OutputStream output) throws IOException, WebApplicationException {
 				TOSCAExportUtil exporter = new TOSCAExportUtil();
@@ -305,7 +303,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		};
 		return Response.ok().type(MediaType.TEXT_XML).entity(so).build();
 	}
-	
+
 	/**
 	 * @throws IllegalStateException if an IOException occurred. We opted not to
 	 *             propagate the IOException directly as this exception occurs
@@ -335,37 +333,37 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			}
 		}
 	}
-	
+
 	@Override
 	public void persist() throws IOException {
 		BackendUtils.persist(this.definitions, this.ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
 	}
-	
+
 	/**
 	 * Creates a new instance of the object represented by this resource
 	 */
 	private void createNew() {
 		this.definitions = BackendUtils.createWrapperDefinitions(this.getId());
-		
+
 		// create empty element
 		this.element = this.createNewElement();
-		
+
 		// add the element to the definitions
 		this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(this.element);
-		
+
 		// copy ns + id
 		this.copyIdToFields();
-		
+
 		// ensure that the definitions is persisted. Ensures that export works.
 		BackendUtils.persist(this);
 	}
-	
+
 	/**
 	 * Creates an empty instance of an Element.
-	 * 
+	 *
 	 * The implementors do <em>not</em>have to copy the ns and the id to the
 	 * appropriate fields.
-	 * 
+	 *
 	 * we have two implementation possibilities:
 	 * <ul>
 	 * <li>a) each subclass implements this method and returns the appropriate
@@ -376,13 +374,13 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 * We opted for a) to increase readability of the code
 	 */
 	protected abstract TExtensibleElements createNewElement();
-	
+
 	/**
 	 * Copies the current id of the resource to the appropriate fields in the
 	 * element.
-	 * 
+	 *
 	 * For instance, the id is put in the "name" field for EntityTypes
-	 * 
+	 *
 	 * We opted for a separate method from createNewElement to enable renaming
 	 * of the object
      *
@@ -397,22 +395,22 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	public final void copyIdToFields() {
 		this.copyIdToFields(this.getId());
 	}
-	
+
 	/**
 	 * Returns the Element belonging to this resource. As Java does not allow
 	 * overriding returned classes, we expect the caller to either cast right or
 	 * to use "getXY" defined by each subclass, where XY is the concrete type
-	 * 
+	 *
 	 * Shortcut for
 	 * getDefinitions().getServiceTemplateOrNodeTypeOrNodeTypeImplementation
 	 * ().get(0);
-	 * 
+	 *
 	 * @return TCapabilityType|...
 	 */
 	public TExtensibleElements getElement() {
 		return this.element;
 	}
-	
+
 	/**
 	 * @return the reference to the internal list of imports. Can be changed if
 	 *         some imports are required or should be removed
@@ -425,10 +423,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		}
 		return this.definitions.getImport();
 	}
-	
+
 	/**
 	 * Returns an XML representation of the definitions
-	 * 
+	 *
 	 * We return the complete definitions to allow the user changes to it, such
 	 * as adding imports, etc.
 	 */
@@ -451,7 +449,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	public Definitions getDefinitions() {
 		return this.definitions;
 	}
-	
+
 	@PUT
 	@Consumes({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
 	public Response updateDefinitions(InputStream requestBodyStream) {
@@ -462,19 +460,19 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		try {
 			DocumentBuilder db = TOSCADocumentBuilderFactory.INSTANCE.getTOSCADocumentBuilder();
 			db.setErrorHandler(new ErrorHandler() {
-				
+
 				@Override
 				public void warning(SAXParseException exception) throws SAXException {
 					// we don't care
 				}
-				
+
 				@Override
 				public void fatalError(SAXParseException exception) throws SAXException {
 					sb.append("Fatal Error: ");
 					sb.append(exception.getMessage());
 					sb.append("\n");
 				}
-				
+
 				@Override
 				public void error(SAXParseException exception) throws SAXException {
 					sb.append("Fatal Error: ");
@@ -499,35 +497,35 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			AbstractComponentInstanceResource.LOGGER.debug("Could not unmarshal from request body stream", e);
 			return Utils.getResponseForException(e);
 		}
-		
+
 		// initial validity check
-		
+
 		// we allow changing the target namespace and the id
 		// This allows for inserting arbitrary definitions XML
 		//		if (!this.definitions.getTargetNamespace().equals(this.id.getNamespace().getDecoded())) {
 		//			return Response.status(Status.BAD_REQUEST).entity("Changing of the namespace is not supported").build();
 		//		}
 		//		this.definitions.setTargetNamespace(this.id.getNamespace().getDecoded());
-		
+
 		// TODO: check the provided definitions for validity
-		
+
 		TExtensibleElements tExtensibleElements = defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
 		if (!tExtensibleElements.getClass().equals(this.createNewElement().getClass())) {
 			return Response.status(Status.BAD_REQUEST).entity("First type in Definitions is not matching the type modeled by this resource").build();
 		}
-		
+
 		this.definitions = defs;
-		
+
 		// replace existing element by retrieved data
 		this.element = this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
-		
+
 		// ensure that ids did not change
 		// TODO: future work: raise error if user changed id or namespace
 		this.copyIdToFields();
-		
+
 		return BackendUtils.persist(this);
 	}
-	
+
 	@GET
 	@Path("xml/")
 	@Produces(MediaType.TEXT_HTML)
@@ -535,35 +533,35 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		Viewable viewable = new Viewable("/jsp/xmlSource.jsp", this);
 		return Response.ok().entity(viewable).build();
 	}
-	
+
 	@Path("documentation/")
 	public DocumentationsResource getDocumentationsResource() {
 		return new DocumentationsResource(this, this.getElement().getDocumentation());
 	}
-	
+
 	@Path("tags/")
 	public final TagsResource getTags() {
-		
+
 		List<TTag> tagList = new ArrayList<TTag>();
-		
+
 		TTags tags = null;
-		
+
 		if (this.element instanceof TServiceTemplate){
 			tags = ((TServiceTemplate) this.element).getTags();
 		} else if(this.element instanceof TEntityType){
 			tags = ((TEntityType)this.element).getTags();
 		} else if(this.element instanceof TNodeTypeImplementation){
-			tags = ((TNodeTypeImplementation) this.element).getTags(); 
+			tags = ((TNodeTypeImplementation) this.element).getTags();
 		} else if(this.element instanceof TRelationshipTypeImplementation){
 			tags = ((TRelationshipTypeImplementation)this.element).getTags();
 		}
-		
+
 		if (tags != null && tags.getTag() != null){
 			tagList = tags.getTag();
 		}
-		
-		
+
+
 		return new TagsResource(this, tagList);
 	}
-	
+
 }

@@ -110,12 +110,12 @@ import com.sun.jersey.core.header.ContentDisposition;
 
 /**
  * Contains generic utility functions for the Backend
- * 
+ *
  * Contains everything that is useful for our ids etc. Does <em>not</em> contain
  * anything that has to do with resources
  */
 public class BackendUtils {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
 
 	/**
@@ -131,7 +131,7 @@ public class BackendUtils {
 		}
 		return Response.noContent().build();
 	}
-	
+
 	/**
 	 * Deletes given file/dir and returns appropriate response code
 	 */
@@ -147,7 +147,7 @@ public class BackendUtils {
 		}
 		return Response.noContent().build();
 	}
-	
+
 	/**
 	 * Deletes given file and returns appropriate response code
 	 */
@@ -163,14 +163,14 @@ public class BackendUtils {
 		}
 		return Response.ok().build();
 	}
-	
+
 	/**
 	 * Generates given TOSCA element and returns appropriate response code <br  />
-	 * 
+	 *
 	 * In the case of an existing resource, the other possible return code is
 	 * 302. This code has no Status constant, therefore we use Status.CONFLICT,
 	 * which is also possible.
-	 * 
+	 *
 	 * @return <ul>
 	 *         <li>
 	 *         <ul>
@@ -224,21 +224,21 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Sends the file if modified and "not modified" if not modified future work
 	 * may put each file with a unique id in a separate folder in tomcat * use
 	 * that static URL for each file * if file is modified, URL of file changes
 	 * * -> client always fetches correct file
-	 * 
+	 *
 	 * additionally "Vary: Accept" header is added (enables caching of the
 	 * response)
-	 * 
+	 *
 	 * method header for calling method public <br />
 	 * <code>Response getXY(@HeaderParam("If-Modified-Since") String modified) {...}</code>
-	 * 
-	 * 
+	 *
+	 *
 	 * @param ref references the file to be send
 	 * @param modified - HeaderField "If-Modified-Since" - may be "null"
 	 * @return Response to be sent to the client
@@ -246,7 +246,7 @@ public class BackendUtils {
 	public static Response returnRepoPath(RepositoryFileReference ref, String modified) {
 		return BackendUtils.returnRefAsResponseBuilder(ref, modified).build();
 	}
-	
+
 	/**
 	 * @return true if given fileDate is newer then the modified date (or
 	 *         modified is null)
@@ -255,16 +255,16 @@ public class BackendUtils {
 		if (modified == null) {
 			return true;
 		}
-		
+
 		Date modifiedDate = null;
-		
+
 		assert (Locale.getDefault() == Locale.ENGLISH);
 		try {
 			modifiedDate = DateUtils.parseDate(modified, org.apache.http.impl.cookie.DateUtils.DEFAULT_PATTERNS);
 		} catch (ParseException e) {
 			BackendUtils.LOGGER.error(e.getMessage(), e);
 		}
-		
+
 		if (modifiedDate != null) {
 			// modifiedDate does not carry milliseconds, but fileDate does
 			// therefore we have to do a range-based comparison
@@ -272,13 +272,13 @@ public class BackendUtils {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * This is not repository specific, but we leave it close to the only caller
-	 * 
+	 *
 	 * If the passed ref is newer than the modified date (or the modified date
 	 * is null), an OK response with an inputstream pointing to the path is
 	 * returned
@@ -287,7 +287,7 @@ public class BackendUtils {
 		if (!Repository.INSTANCE.exists(ref)) {
 			return Response.status(Status.NOT_FOUND);
 		}
-		
+
 		FileTime lastModified;
 		try {
 			lastModified = Repository.INSTANCE.getLastModifiedTime(ref);
@@ -295,12 +295,12 @@ public class BackendUtils {
 			BackendUtils.LOGGER.debug("Could not get lastModifiedTime", e1);
 			return Response.serverError();
 		}
-		
+
 		// do we really need to send the file or can send "not modified"?
 		if (!BackendUtils.isFileNewerThanModifiedDate(lastModified.toMillis(), modified)) {
 			return Response.status(Status.NOT_MODIFIED);
 		}
-		
+
 		ResponseBuilder res;
 		try {
 			res = Response.ok(Repository.INSTANCE.newInputStream(ref));
@@ -323,14 +323,14 @@ public class BackendUtils {
 		res.header("Content-Disposition", contentDisposition);
 		return res;
 	}
-	
+
 	/**
 	 * Updates the given property in the given configuration. Currently always
 	 * returns "no content", because the underlying class does not report any
 	 * errors during updating. <br />
-	 * 
+	 *
 	 * If null or "" is passed as value, the property is cleared
-	 * 
+	 *
 	 * @return Status.NO_CONTENT
 	 */
 	public static Response updateProperty(Configuration configuration, String property, String val) {
@@ -341,7 +341,7 @@ public class BackendUtils {
 		}
 		return Response.noContent().build();
 	}
-	
+
 	/**
 	 * Persists the resource and returns appropriate response
 	 */
@@ -362,7 +362,7 @@ public class BackendUtils {
 		try {
 			Repository.INSTANCE.rename(oldId, newId);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		URI uri = Utils.getAbsoluteURI(newId);
@@ -373,7 +373,7 @@ public class BackendUtils {
 	/**
 	 * Writes data to file. Replaces the file's content with the given content.
 	 * The file does not need to exist
-	 * 
+	 *
 	 * @param ref Reference to the File to write to (overwrite)
 	 * @param content the data to write
 	 * @return a JAX-RS Response containing the result. NOCONTENT if successful,
@@ -389,7 +389,6 @@ public class BackendUtils {
 		return Response.noContent().build();
 	}
 
-
 	public static Response putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) {
 		try {
 			Repository.INSTANCE.putContentToFile(ref, inputStream, mediaType);
@@ -404,7 +403,7 @@ public class BackendUtils {
 		QName qname = QName.valueOf(qnameStr);
 		return BackendUtils.getTOSCAcomponentId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
 	}
-	
+
 	public static <T extends TOSCAComponentId> T getTOSCAcomponentId(Class<T> idClass, QName qname) {
 		// we got two implementation possibilities: one is to directly use the
 		// QName constructor,
@@ -413,7 +412,7 @@ public class BackendUtils {
 		// exist at all ids
 		return BackendUtils.getTOSCAcomponentId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
 	}
-	
+
 	public static <T extends TOSCAComponentId> T getTOSCAcomponentId(Class<T> idClass, String namespace, String id, boolean URLencoded) {
 		Constructor<T> constructor;
 		try {
@@ -432,7 +431,7 @@ public class BackendUtils {
 		}
 		return tcId;
 	}
-	
+
 	/**
 	 * @param id the id to determine the namespace of the parent for
 	 * @return the namespace of the first TOSCAcomponentId found in the ID
@@ -445,14 +444,14 @@ public class BackendUtils {
 		}
 		return ((TOSCAComponentId) parent).getNamespace();
 	}
-	
+
 	public static String getName(TOSCAComponentId instanceId) {
 		// TODO: Here is a performance issue as we don't use caching or a database
 		// Bad, but without performance loss: Use "text = instanceId.getXmlId().getDecoded();"
 		TExtensibleElements instanceElement = AbstractComponentsResource.getComponentInstaceResource(instanceId).getElement();
 		return ModelUtilities.getNameWithIdFallBack(instanceElement);
 	}
-	
+
     /**
 	 * Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
 	 * or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
@@ -486,7 +485,7 @@ public class BackendUtils {
 			throw new IllegalStateException("Unknown subclass of GenericId " + id.getClass());
 		}
 	}
-	
+
 	/**
  	* Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
  	* or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
@@ -497,11 +496,11 @@ public class BackendUtils {
 	public static String getPathInsideRepo(RepositoryFileReference ref) {
 		return BackendUtils.getPathInsideRepo(ref.getParent()) + ref.getFileName();
 	}
-	
+
 	/**
 	 * Returns the reference to the definitions XML storing the TOSCA for the
 	 * given id
-	 * 
+	 *
 	 * @param id the id to lookup
 	 * @return the reference
 	 */
@@ -511,11 +510,11 @@ public class BackendUtils {
 		RepositoryFileReference ref = new RepositoryFileReference(id, name);
 		return ref;
 	}
-	
+
 	/**
 	 * Returns the reference to the properties file storing the TOSCA
 	 * information for the given id
-	 * 
+	 *
 	 * @param id the id to lookup
 	 * @return the reference
 	 */
@@ -540,11 +539,11 @@ public class BackendUtils {
 				name = Util.getTypeForElementId(tId.getClass()) + Constants.SUFFIX_PROPERTIES;
 			}
 		}
-		
+
 		RepositoryFileReference ref = new RepositoryFileReference(id, name);
 		return ref;
 	}
-	
+
 	/**
 	 * @param qNameOfTheType the QName of the type, where all TOSCAComponentIds,
 	 *            where the associated element points to the type
@@ -574,7 +573,7 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Returns a list of the topology template nested in the given service
 	 * template
@@ -592,7 +591,7 @@ public class BackendUtils {
 		}
 		return l;
 	}
-	
+
 	private static Collection<QName> getAllReferencedArtifactTemplates(TDeploymentArtifacts tDeploymentArtifacts) {
 		if (tDeploymentArtifacts == null) {
 			return Collections.emptyList();
@@ -610,7 +609,7 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 	private static Collection<QName> getAllReferencedArtifactTemplates(TImplementationArtifacts tImplementationArtifacts) {
 		if (tImplementationArtifacts == null) {
 			return Collections.emptyList();
@@ -628,14 +627,14 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 	public static Collection<QName> getArtifactTemplatesOfReferencedDeploymentArtifacts(TNodeTemplate nodeTemplate) {
 		List<QName> l = new ArrayList<QName>();
-		
+
 		// DAs may be assigned directly to a node template
 		Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(nodeTemplate.getDeploymentArtifacts());
 		l.addAll(allReferencedArtifactTemplates);
-		
+
 		// DAs may be assigned via node type implementations
 		QName nodeTypeQName = nodeTemplate.getType();
 		Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, nodeTypeQName);
@@ -644,13 +643,13 @@ public class BackendUtils {
 			allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getDeploymentArtifacts());
 			l.addAll(allReferencedArtifactTemplates);
 		}
-		
+
 		return l;
 	}
-	
+
 	public static Collection<QName> getArtifactTemplatesOfReferencedImplementationArtifacts(TNodeTemplate nodeTemplate) {
 		List<QName> l = new ArrayList<QName>();
-		
+
 		// IAs may be assigned via node type implementations
 		QName nodeTypeQName = nodeTemplate.getType();
 		Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, nodeTypeQName);
@@ -659,7 +658,7 @@ public class BackendUtils {
 			Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getImplementationArtifacts());
 			l.addAll(allReferencedArtifactTemplates);
 		}
-		
+
 		return l;
 	}
 
@@ -689,7 +688,7 @@ public class BackendUtils {
 		defs.setId(id);
 		return defs;
 	}
-	
+
 	/**
 	 * Creates a new TDefintions element wrapping a TOSCA Component instance.
 	 * The namespace of the tosca component is used as namespace and
@@ -705,7 +704,7 @@ public class BackendUtils {
 		Definitions defs = of.createDefinitions();
 		return updateWrapperDefinitions(tcId, defs);
 	}
-	
+
 	/**
 	 * @throws IOException if content could not be updated in the repository
 	 * @throws IllegalStateException if an JAXBException occurred. This should
@@ -729,11 +728,9 @@ public class BackendUtils {
 		Repository.INSTANCE.putContentToFile(ref, in, mediaType);
 	}
 
-
-
 	/**
 	 * Updates the color if the color is not yet existent
-	 * 
+	 *
 	 * @param name the name of the component. Used as basis for a generated
 	 *            color
 	 * @param qname the QName of the color attribute
@@ -749,9 +746,9 @@ public class BackendUtils {
 		}
 		return colorStr;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param tcId The element type id to get the location for
 	 * @param uri uri to use if in XML export mode, null if in CSAR export mode
 	 * @param wrapperElementLocalName the local name of the wrapper element
@@ -770,7 +767,7 @@ public class BackendUtils {
 		}
 		return loc;
 	}
-	
+
 	/**
 	 * @param ref the file to read from
 	 */
@@ -785,67 +782,67 @@ public class BackendUtils {
 			BackendUtils.LOGGER.debug("Could not create input stream", e);
 			return null;
 		}
-		
+
 		// we rely on xerces to parse the XSD
 		// idea based on http://stackoverflow.com/a/5165177/873282
 		XSImplementation impl = new XSImplementationImpl();
 		XSLoader schemaLoader = impl.createXSLoader(null);
-		
+
 		// minimal LSInput implementation sufficient for XSLoader in Oracle's JRE7
 		LSInput input = new LSInput() {
-			
+
 			@Override
 			public void setSystemId(String systemId) {
 			}
-			
+
 			@Override
 			public void setStringData(String stringData) {
 			}
-			
+
 			@Override
 			public void setPublicId(String publicId) {
 			}
-			
+
 			@Override
 			public void setEncoding(String encoding) {
 			}
-			
+
 			@Override
 			public void setCharacterStream(Reader characterStream) {
 			}
-			
+
 			@Override
 			public void setCertifiedText(boolean certifiedText) {
 			}
-			
+
 			@Override
 			public void setByteStream(InputStream byteStream) {
 			}
-			
+
 			@Override
 			public void setBaseURI(String baseURI) {
 			}
-			
+
 			@Override
 			public String getSystemId() {
 				return null;
 			}
-			
+
 			@Override
 			public String getStringData() {
 				return null;
 			}
-			
+
 			@Override
 			public String getPublicId() {
 				return BackendUtils.getPathInsideRepo(ref);
 			}
-			
+
 			@Override
 			public String getEncoding() {
 				return "UTF-8";
 			}
-			
+
 			@Override
 			public Reader getCharacterStream() {
 				try {
@@ -855,17 +852,17 @@ public class BackendUtils {
 					throw new IllegalStateException("UTF-8 is unkown", e);
 				}
 			}
-			
+
 			@Override
 			public boolean getCertifiedText() {
 				return false;
 			}
-			
+
 			@Override
 			public InputStream getByteStream() {
 				return null;
 			}
-			
+
 			@Override
 			public String getBaseURI() {
 				return null;
@@ -874,11 +871,11 @@ public class BackendUtils {
 		XSModel model = schemaLoader.load(input);
 		return model;
 	}
-	
+
 	/**
 	 * Derives Winery's Properties Definition from an existing properties
 	 * definition
-	 * 
+	 *
 	 * @param ci the entity type to try to modify the WPDs
 	 * @param errors the list to add errors to
 	 */
@@ -900,7 +897,7 @@ public class BackendUtils {
 				errors.add(msg);
 				return;
 			}
-			
+
 			XSModel xsModel = BackendUtils.getXSModel(ref);
 			XSElementDeclaration elementDeclaration = xsModel.getElementDeclaration(element.getLocalPart(), element.getNamespaceURI());
 			if (elementDeclaration == null) {
@@ -909,7 +906,7 @@ public class BackendUtils {
 				errors.add(msg);
 				return;
 			}
-			
+
 			// go through the XSD definition and
 			XSTypeDefinition typeDefinition = elementDeclaration.getTypeDefinition();
 			if (typeDefinition instanceof XSComplexTypeDefinition) {
@@ -982,21 +979,21 @@ public class BackendUtils {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns all components available of the given id type
-	 * 
+	 *
 	 * Similar functionality as {@link
 	 * IGenericRepository#getAllTOSCAComponentIds(java.lang.Class)}, but it crawls through the repository
 	 *
 	 * This method is required as we do not use a database.
-	 * 
+	 *
 	 * @param idClass class of the Ids to search for
 	 * @return empty set if no ids are available
 	 */
 	public <T extends TOSCAElementId> SortedSet<T> getAllTOSCAElementIds(Class<T> idClass) {
 		throw new IllegalStateException("Not yet implemented");
-		
+
 		/*
 		 Implementation idea:
 		   * switch of instance of idClass
@@ -1005,11 +1002,11 @@ public class BackendUtils {
 		   * (other special handlings; check spec where each type can be linked from)
 		 */
 	}
-	
+
 	/**
 	 * Converts the given collection of TOSCA Component Ids to a collection of
 	 * QNames by using the getQName() method.
-	 * 
+	 *
 	 * This is required for QNameChooser.tag
 	 */
 	public static Collection<QName> convertTOSCAComponentIdCollectionToQNameCollection(Collection<? extends TOSCAComponentId> col) {
@@ -1019,5 +1016,5 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 }

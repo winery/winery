@@ -21,7 +21,7 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
  * {@inheritDoc}
  */
 public abstract class EntityWithoutIdResource<EntityT> extends EntityResource<EntityT> {
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -29,5 +29,5 @@ public abstract class EntityWithoutIdResource<EntityT> extends EntityResource<En
 	public EntityWithoutIdResource(EntityT o, int idx, List<EntityT> list, IPersistable res) {
 		super((IIdDetermination<EntityT>) IdDeterminationWithHashCode.INSTANCE, o, idx, list, res);
 	}
-	
+
 }

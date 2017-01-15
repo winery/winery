@@ -21,7 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestCSARImporter {
-	
+
 	/**
 	 * Ensure that Repository.INSTANCE exists
 	 */
@@ -31,10 +31,10 @@ public class TestCSARImporter {
 		// We do not need them directly, but constructing them has the side effect that Repository.INSTANCE is != null
 		new PrefsTestEnabledUsingConfiguredRepository();
 	}
-	
+
 	/**
 	 * Quick hack to test Moodle Import
-	 * 
+	 *
 	 * Currently, no CSARs are put into the test resources, we rely on local
 	 * CSARs
 	 */

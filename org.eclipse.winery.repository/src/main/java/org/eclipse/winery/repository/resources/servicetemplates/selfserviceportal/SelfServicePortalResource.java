@@ -50,32 +50,32 @@ import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 
 public class SelfServicePortalResource implements IPersistable {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(SelfServicePortalResource.class);
-	
+
 	private final ServiceTemplateResource serviceTemplateResource;
-	
+
 	public final RepositoryFileReference data_xml_ref;
 	public final RepositoryFileReference icon_jpg_ref;
 	public final RepositoryFileReference image_jpg_ref;
-	
+
 	private final Application application;
-	
+
 	private final SelfServiceMetaDataId id;
-	
-	
+
+
 	public SelfServicePortalResource(ServiceTemplateId serviceTemplateId) {
 		this(null, serviceTemplateId);
 	}
-	
+
 	public SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource) {
 		this(serviceTemplateResource, (ServiceTemplateId) serviceTemplateResource.getId());
 	}
-	
+
 	SelfServiceMetaDataId getId() {
 		return this.id;
 	}
-	
+
 	/**
 	 * @param serviceTemplateResource may be null
 	 * @param serviceTemplateId the id, must not be null
@@ -104,7 +104,7 @@ public class SelfServicePortalResource implements IPersistable {
 			return this.getDefaultApplicationData();
 		}
 	}
-	
+
 	private Application getDefaultApplicationData() {
 		Application app = new Application();
 		app.setIconUrl("icon.jpg");
@@ -122,32 +122,32 @@ public class SelfServicePortalResource implements IPersistable {
 		}
 		return app;
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getHTML() {
 		return new Viewable("/jsp/servicetemplates/selfservicemetadata/selfservicemetadata.jsp", this);
 	}
-	
+
 	@Override
 	public void persist() throws IOException {
 		BackendUtils.persist(this.application, this.data_xml_ref, MediaType.TEXT_XML_TYPE);
 	}
-	
+
 	@PUT
 	@Consumes(MediaType.TEXT_XML)
 	public Response onPutXML(Application data) {
 		String content = Utils.getXMLAsString(data);
 		return BackendUtils.putContentToFile(this.data_xml_ref, content, MediaType.TEXT_XML_TYPE);
 	}
-	
+
 	@Path("icon.jpg")
 	@GET
 	public Response getIcon(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
 		return BackendUtils.returnRepoPath(ref, modified);
 	}
-	
+
 	@Path("icon.jpg")
 	@PUT
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -155,14 +155,14 @@ public class SelfServicePortalResource implements IPersistable {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
 		return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
-	
+
 	@Path("image.jpg")
 	@GET
 	public Response getImage(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
 		return BackendUtils.returnRepoPath(ref, modified);
 	}
-	
+
 	@Path("image.jpg")
 	@PUT
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -170,21 +170,21 @@ public class SelfServicePortalResource implements IPersistable {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
 		return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
-	
+
 	@Path("displayname")
 	@PUT
 	public Response onPutOnDisplayName(@FormParam("value") String value) {
 		this.application.setDisplayName(value);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Path("description")
 	@PUT
 	public Response onPutOnDescription(@FormParam("value") String value) {
 		this.application.setDescription(value);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Path("options/")
 	public OptionsResource getOptionsResource() {
 		Options options = this.application.getOptions();
@@ -194,14 +194,14 @@ public class SelfServicePortalResource implements IPersistable {
 		}
 		return new OptionsResource(options.getOption(), this);
 	}
-	
+
 	/**
 	 * @return the internal application object. Used for the export.
 	 */
 	public Application getApplication() {
 		return this.application;
 	}
-	
+
 	/**
 	 * Used in JSP only
 	 */

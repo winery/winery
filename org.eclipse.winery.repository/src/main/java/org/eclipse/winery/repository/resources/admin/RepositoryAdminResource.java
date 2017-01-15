@@ -40,10 +40,10 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
 public class RepositoryAdminResource {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryAdminResource.class);
-	
-	
+
+
 	// @formatter:off
 	@GET
 	@Produces(MediaType.TEXT_HTML) // we cannot add MimeTypes.MIMETYPE_ZIP as dumpRepository also produces that mimetype
@@ -79,7 +79,7 @@ public class RepositoryAdminResource {
 			return Response.ok().entity(viewable).build();
 		}
 	}
-	
+
 	/**
 	 * Imports the given ZIP
 	 */
@@ -89,17 +89,17 @@ public class RepositoryAdminResource {
 		((IRepositoryAdministration) Repository.INSTANCE).doImport(uploadedInputStream);
 		return Response.noContent().build();
 	}
-	
+
 	@DELETE
 	public void deleteRepositoryData() {
 		((IRepositoryAdministration) Repository.INSTANCE).doClear();
 	}
-	
+
 	@GET
 	@Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
 	public Response dumpRepository() {
 		StreamingOutput so = new StreamingOutput() {
-			
+
 			@Override
 			public void write(OutputStream output) throws IOException, WebApplicationException {
 				((IRepositoryAdministration) Repository.INSTANCE).doDump(output);

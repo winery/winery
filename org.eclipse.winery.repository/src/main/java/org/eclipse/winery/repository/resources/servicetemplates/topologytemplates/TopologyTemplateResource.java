@@ -52,14 +52,14 @@ import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.view.Viewable;
 
 public class TopologyTemplateResource {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(TopologyTemplateResource.class);
-	
+
 	private final TTopologyTemplate topologyTemplate;
-	
+
 	private final ServiceTemplateResource serviceTemplateRes;
-	
-	
+
+
 	/**
 	 * A topology template is always nested in a service template
 	 */
@@ -67,18 +67,18 @@ public class TopologyTemplateResource {
 		this.topologyTemplate = parent.getServiceTemplate().getTopologyTemplate();
 		this.serviceTemplateRes = parent;
 	}
-	
-	
+
+
 	public static class DataForJSP {
-		
+
 		private String location;
 		private TTopologyTemplate topologyTemplate;
 		private URI repositoryURI;
 		private String additonalCSS;
 		private Boolean autoLayoutOnLoad;
 		private String additionalScript;
-		
-		
+
+
 		public DataForJSP(String location, URI repositoryURI, TTopologyTemplate topologyTemplate, String additonalCSS, String additionalScript, Boolean autoLayoutOnLoad) {
 			this.location = location;
 			this.repositoryURI = repositoryURI;
@@ -87,27 +87,27 @@ public class TopologyTemplateResource {
 			this.additionalScript = additionalScript;
 			this.autoLayoutOnLoad = autoLayoutOnLoad;
 		}
-		
+
 		public String getLocation() {
 			return this.location;
 		}
-		
+
 		public TTopologyTemplate getTopologyTemplate() {
 			return this.topologyTemplate;
 		}
-		
+
 		public String getAdditonalCSS() {
 			return this.additonalCSS;
 		}
-		
+
 		public String getAdditionalScript() {
 			return this.additionalScript;
 		}
-		
+
 		public Boolean getAutoLayoutOnLoad() {
 			return this.autoLayoutOnLoad;
 		}
-		
+
 		public IWineryRepositoryClient getClient() {
 			// Quick hack
 			// IWineryRepository is not implemented by Prefs.INSTANCE.getRepository()
@@ -116,10 +116,10 @@ public class TopologyTemplateResource {
 			client.addRepository(this.repositoryURI.toString());
 			return client;
 		}
-		
+
 	}
-	
-	
+
+
 	@GET
 	@RestDoc(methodDescription = "?edit is used in the URL to get the jsPlumb-based editor")
 	@Produces(MediaType.TEXT_HTML)
@@ -181,9 +181,9 @@ public class TopologyTemplateResource {
 		}
 		return res;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param uriInfo the URI ending with "topologytemplate/" of a service
 	 *            template
 	 */
@@ -192,31 +192,31 @@ public class TopologyTemplateResource {
 	public Response triggerGenerateBuildPlan(@Context UriInfo uriInfo) {
 		String plansURI = uriInfo.getAbsolutePath().resolve("../plans/").toString();
 		String csarURI = uriInfo.getAbsolutePath().resolve("../?csar").toString();
-		
+
 		String request = "<generatePlanForTopology><CSARURL>";
 		request += csarURI;
 		request += "</CSARURL><PLANPOSTURL>";
 		request += plansURI;
 		request += "</PLANPOSTURL></generatePlanForTopology>";
-		
+
 		Client client = Client.create();
-		
+
 		Builder wr = null;
 		if (Utils.isResourceAvailable("http://localhost:1339/planbuilder")) {
 			wr = client.resource("http://localhost:1339/planbuilder/sync").type(MediaType.APPLICATION_XML);
 		} else if (Utils.isResourceAvailable("http://localhost:1337/containerapi/planbuilder")) {
 			wr = client.resource("http://localhost:1337/containerapi/planbuilder/sync").type(MediaType.APPLICATION_XML);
 		}
-		
+
 		try {
 			wr.post(String.class, request);
 		} catch (com.sun.jersey.api.client.UniformInterfaceException e) {
 			return Response.serverError().entity(e.getMessage()).build();
 		}
-		
+
 		return Response.ok().build();
 	}
-	
+
 	// @formatter:off
 	@GET
 	@RestDoc(methodDescription="Returns a JSON representation of the topology template. <br />" +
@@ -240,14 +240,14 @@ public class TopologyTemplateResource {
 		}
 		return res;
 	}
-	
+
 	@Path("nodetemplates/")
 	public NodeTemplatesResource getNodeTemplatesResource() {
 		// FIXME: onDelete will not work as we have a copy of the original list. We have to add a "listener" to remove at the list and route that remove to the original list
 		List<TNodeTemplate> l = BackendUtils.getAllNestedNodeTemplates(this.serviceTemplateRes.getServiceTemplate());
 		return new NodeTemplatesResource(l, this.serviceTemplateRes);
 	}
-	
+
 	@Path("relationshiptemplates/")
 	public RelationshipTemplatesResource getRelationshipTemplatesResource() {
 		// FIXME: onDelete will not work. See getNodeTemplatesResource
@@ -259,7 +259,7 @@ public class TopologyTemplateResource {
 		}
 		return new RelationshipTemplatesResource(l, this.serviceTemplateRes);
 	}
-	
+
 	@PUT
 	@RestDoc(methodDescription = "Replaces the topology by the information given in the XML")
 	@Consumes(MediaType.TEXT_XML)
@@ -267,7 +267,7 @@ public class TopologyTemplateResource {
 		this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
 		return BackendUtils.persist(this.serviceTemplateRes);
 	}
-	
+
 	// @formatter:off
 	@GET
 	@RestDoc(methodDescription="<p>Returns an XML representation of the topology template." +
@@ -282,5 +282,5 @@ public class TopologyTemplateResource {
 	public Response getComponentInstanceXML() {
 		return Utils.getXML(TTopologyTemplate.class, this.topologyTemplate);
 	}
-	
+
 }

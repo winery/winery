@@ -32,22 +32,22 @@ import com.sun.jersey.api.NotFoundException;
  * where the TOSCA specification did not specify a unique key. Currently, the
  * hashCode of the XML String representation is used. If other representation
  * should be used, the method {@code getEntityResource} has to be overriden.
- * 
+ *
  * @param <EntityResourceT> the resource modeling the entity
  * @param <EntityT> the entity type of single items in the list
  */
 public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends EntityWithoutIdResource<EntityT>, EntityT> extends EntityCollectionResource<EntityResourceT, EntityT> {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityWithoutIdCollectionResource.class);
-	
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public EntityWithoutIdCollectionResource(Class<EntityResourceT> entityResourceTClazz, Class<EntityT> entityTClazz, List<EntityT> list, IPersistable res) {
 		super(entityResourceTClazz, entityTClazz, list, res);
 	}
-	
+
 	/**
 	 * Method searching the list for an id with the hashcode instead of
 	 * getId(EntityT)
@@ -79,12 +79,12 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 			return this.getEntityResourceInstance(entity, idx);
 		}
 	}
-	
+
 	@Override
 	public String getId(EntityT entity) {
 		return IdDeterminationWithHashCode.INSTANCE.getId(entity);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -110,5 +110,5 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 		}
 		return newInstance;
 	}
-	
+
 }

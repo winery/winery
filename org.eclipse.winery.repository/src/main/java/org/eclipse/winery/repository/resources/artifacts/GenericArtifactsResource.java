@@ -87,20 +87,20 @@ import org.xml.sax.InputSource;
 
 /**
  * Resource handling both deployment and implementation artifacts
- * 
+ *
  */
 public abstract class GenericArtifactsResource<ArtifactResource extends GenericArtifactResource<ArtifactT>, ArtifactT> extends EntityWithIdCollectionResource<ArtifactResource, ArtifactT> {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(GenericArtifactsResource.class);
-	
+
 	protected final INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource resWithNamespace;
-	
-	
+
+
 	public GenericArtifactsResource(Class<ArtifactResource> entityResourceTClazz, Class<ArtifactT> entityTClazz, List<ArtifactT> list, INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
 		super(entityResourceTClazz, entityTClazz, list, GenericArtifactsResource.getAbstractComponentInstanceResource(res));
 		this.resWithNamespace = res;
 	}
-	
+
 	// @formatter:off
 
 	/**
@@ -169,7 +169,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		// we assume that the parent ComponentInstance container exists
 
 		// @formatter:on
-		
+
 		if (StringUtils.isEmpty(artifactNameStr)) {
 			return Response.status(Status.BAD_REQUEST).entity("Empty artifactName").build();
 		}
@@ -180,7 +180,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				}
 			}
 		}
-		
+
 		if (!StringUtils.isEmpty(autoGenerateIA)) {
 			if (StringUtils.isEmpty(javapackage)) {
 				return Response.status(Status.BAD_REQUEST).entity("no java package name supplied for IA auto generation.").build();
@@ -189,16 +189,16 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				return Response.status(Status.BAD_REQUEST).entity("no interface name supplied for IA auto generation.").build();
 			}
 		}
-		
+
 		// convert second calling form to first calling form
 		if (!StringUtils.isEmpty(artifactTemplate)) {
 			QName qname = QName.valueOf(artifactTemplate);
 			artifactTemplateName = qname.getLocalPart();
 			artifactTemplateNS = qname.getNamespaceURI();
 		}
-		
+
 		Document doc = null;
-		
+
 		// check artifact specific content for validity
 		// if invalid, abort and do not create anything
 		if (!StringUtils.isEmpty(artifactSpecificContent)) {
@@ -214,13 +214,13 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 			}
 		}
-		
+
 		// determine artifactTemplate and artifactType
-		
+
 		ArtifactTypeId artifactTypeId;
 		ArtifactTemplateId artifactTemplateId = null;
 		ArtifactTemplateResource artifactTemplateResource = null;
-		
+
 		boolean doAutoCreateArtifactTemplate = !(StringUtils.isEmpty(autoCreateArtifactTemplate) || autoCreateArtifactTemplate.equalsIgnoreCase("no") || autoCreateArtifactTemplate.equalsIgnoreCase("false"));
 		if (!doAutoCreateArtifactTemplate) {
 			// no auto creation
@@ -241,23 +241,23 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			}
 		} else {
 			// do the artifact template auto creation magic
-			
+
 			if (StringUtils.isEmpty(artifactTypeStr)) {
 				return Response.status(Status.BAD_REQUEST).entity("Artifact template auto creation requested, but no artifact type supplied.").build();
 			}
-			
+
 			// we assume that the type points to a valid artifact type
 			artifactTypeId = BackendUtils.getTOSCAcomponentId(ArtifactTypeId.class, artifactTypeStr);
-			
+
 			if (StringUtils.isEmpty(artifactTemplateName) || StringUtils.isEmpty(artifactTemplateNS)) {
 				// no explicit name provided
 				// we use the artifactNameStr as prefix for the
 				// artifact template name
-				
+
 				// we create a new artifact template in the namespace of the parent
 				// element
 				Namespace namespace = this.resWithNamespace.getNamespace();
-				
+
 				artifactTemplateId = new ArtifactTemplateId(namespace, new XMLId(artifactNameStr + "artifactTemplate", false));
 			} else {
 				QName artifactTemplateQName = new QName(artifactTemplateNS, artifactTemplateName);
@@ -268,24 +268,24 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				// something went wrong. skip
 				return creationResult.getResponse();
 			}
-			
+
 			// associate the type to the created artifact template
 			artifactTemplateResource = new ArtifactTemplateResource(artifactTemplateId);
 			// set the type. The resource is automatically persisted inside
 			artifactTemplateResource.setType(artifactTypeStr);
 		}
-		
+
 		// variable artifactTypeId is set
 		// variable artifactTemplateId is not null if artifactTemplate has been generated
-		
+
 		// we have to generate the DA/IA resource now
 		// Doing it here instead of doing it at the subclasses is dirty on the
 		// one hand, but quicker to implement on the other hand
-		
+
 		// Create the artifact itself
-		
+
 		ArtifactT resultingArtifact;
-		
+
 		if (this instanceof ImplementationArtifactsResource) {
 			ImplementationArtifact a = new ImplementationArtifact();
 			// Winery internal id is the name of the artifact:
@@ -304,12 +304,12 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				// just copy over the dom node. Hopefully, that works...
 				a.getAny().add(doc.getDocumentElement());
 			}
-			
+
 			this.list.add((ArtifactT) a);
 			resultingArtifact = (ArtifactT) a;
 		} else {
 			// for comments see other branch
-			
+
 			TDeploymentArtifact a = new TDeploymentArtifact();
 			a.setName(artifactNameStr);
 			assert (artifactTypeId != null);
@@ -320,27 +320,27 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			if (doc != null) {
 				a.getAny().add(doc.getDocumentElement());
 			}
-			
+
 			this.list.add((ArtifactT) a);
 			resultingArtifact = (ArtifactT) a;
 		}
-		
+
 		Response persistResponse = BackendUtils.persist(super.res);
 		// TODO: check for error and in case one found return that
-		
+
 		if (StringUtils.isEmpty(autoGenerateIA)) {
 			// no IA generation
 			// we include an XML for the data table
-			
+
 			String implOrDeplArtifactXML = Utils.getXMLAsString(resultingArtifact);
-			
+
 			return Response.created(Utils.createURI(Util.URLencode(artifactNameStr))).entity(implOrDeplArtifactXML).build();
 		} else {
 			// after everything was created, we fire up the artifact generation
 			return this.generateImplementationArtifact(interfaceNameStr, javapackage, uriInfo, artifactTemplateId, artifactTemplateResource);
 		}
 	}
-	
+
 	/**
 	 * Generates a unique and valid name to be used for the generated maven
 	 * project name, java project name, class name, port type name.
@@ -348,26 +348,26 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	private String generateName(NodeTypeId nodeTypeId, String interfaceName) {
 		String name = Util.namespaceToJavaPackage(nodeTypeId.getNamespace().getDecoded());
 		name += Util.FORBIDDEN_CHARACTER_REPLACEMENT;
-		
+
 		// Winery already ensures that this is a valid NCName
 		// getName() returns the id of the nodeType: A nodeType carries the "id" attribute only (and no name attribute)
 		name += nodeTypeId.getXmlId().getDecoded();
-		
+
 		// Two separators to distinguish node type and interface part
 		name += Util.FORBIDDEN_CHARACTER_REPLACEMENT;
 		name += Util.FORBIDDEN_CHARACTER_REPLACEMENT;
 		name += Util.namespaceToJavaPackage(interfaceName);
-		
+
 		// In addition we must replace '.', because Java class names must not
 		// contain dots, but for Winery they are fine.
 		return name.replace(".", Util.FORBIDDEN_CHARACTER_REPLACEMENT);
 	}
-	
+
 	/**
 	 * Generates the implementation artifact using the implementation artifact
 	 * generator. Also sets the proeprties according to the requirements of
 	 * OpenTOSCA.
-	 * 
+	 *
 	 * @param interfaceNameStr
 	 * @param javapackage
 	 * @param uriInfo
@@ -375,12 +375,12 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 * @param artifactTemplateResource the resource associated with the
 	 *            artifactTempalteId. If null, the object is created in this
 	 *            method
-	 * 
+	 *
 	 * @return {@inheritDoc}
 	 */
 	private Response generateImplementationArtifact(String interfaceNameStr, String javapackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId, ArtifactTemplateResource artifactTemplateResource) {
 		TInterface iface;
-		
+
 		assert (this instanceof ImplementationArtifactsResource);
 		IHasTypeReference typeRes = (EntityTypeImplementationResource) this.res;
 		QName type = typeRes.getType();
@@ -388,13 +388,13 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		TNodeType nodeType = null;
 		if (typeRes instanceof NodeTypeImplementationResource) {
 			// TODO: refactor: This is more a model/repo utilities thing than something which should happen here...
-			
+
 			typeId = new NodeTypeId(type);
 			NodeTypeResource ntRes = (NodeTypeResource) AbstractComponentsResource.getComponentInstaceResource(typeId);
-			
+
 			// required for IA Generation
 			nodeType = ntRes.getNodeType();
-			
+
 			List<TInterface> interfaces = nodeType.getInterfaces().getInterface();
 			Iterator<TInterface> it = interfaces.iterator();
 			do {
@@ -408,7 +408,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			assert (typeRes instanceof RelationshipTypeImplementationResource);
 			return Response.serverError().entity("IA creation for relation ship type implementations not yet possible").build();
 		}
-		
+
 		Path workingDir;
 		try {
 			workingDir = Files.createTempDirectory("winery");
@@ -416,7 +416,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			GenericArtifactsResource.LOGGER.debug("Could not create temporary directory", e2);
 			return Response.serverError().entity("Could not create temporary directory").build();
 		}
-		
+
 		URI artifactTemplateFilesUri = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(artifactTemplateId)).resolve("files/");
 		URL artifactTemplateFilesUrl;
 		try {
@@ -425,54 +425,54 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			GenericArtifactsResource.LOGGER.debug("Could not convert URI to URL", e2);
 			return Response.serverError().entity("Could not convert URI to URL").build();
 		}
-		
+
 		String name = this.generateName((NodeTypeId) typeId, interfaceNameStr);
 		Generator gen = new Generator(iface, javapackage, artifactTemplateFilesUrl, name, workingDir.toFile());
 		File zipFile = gen.generateProject();
 		if (zipFile == null) {
 			return Response.serverError().entity("IA generator failed").build();
 		}
-		
+
 		// store it
 		// TODO: refactor: this is more a RepositoryUtils thing than a special thing here; see also importFile at CSARImporter
-		
+
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(artifactTemplateId);
 		RepositoryFileReference fref = new RepositoryFileReference(fileDir, zipFile.getName().toString());
 		try (InputStream is = Files.newInputStream(zipFile.toPath());
 				BufferedInputStream bis = new BufferedInputStream(is)) {
 			String mediaType = Utils.getMimeType(bis, zipFile.getName());
 			// TODO: do the catch thing as in CSARImporter
-			
+
 			Repository.INSTANCE.putContentToFile(fref, bis, MediaType.valueOf(mediaType));
 		} catch (IOException e1) {
 			throw new IllegalStateException("Could not import generated files", e1);
 		}
-		
+
 		// cleanup dir
 		try {
 			FileUtils.forceDelete(workingDir);
 		} catch (IOException e) {
 			GenericArtifactsResource.LOGGER.debug("Could not delete working directory", e);
 		}
-		
+
 		// store the properties in the artifact template
 		if (artifactTemplateResource == null) {
 			artifactTemplateResource = (ArtifactTemplateResource) AbstractComponentsResource.getComponentInstaceResource(artifactTemplateId);
 		}
 		this.storeProperties(artifactTemplateResource, typeId, name);
-		
+
 		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(fref));
 		return Response.created(url).build();
 	}
-	
-	
+
+
 	private final String NS_OPENTOSCA_WAR_TYPE = "http://www.uni-stuttgart.de/opentosca";
-	
-	
+
+
 	private void storeProperties(ArtifactTemplateResource artifactTemplateResource, TOSCAComponentId typeId, String name) {
 		// We generate the properties by hand instead of using JAX-B as using JAX-B causes issues at org.eclipse.winery.common.ModelUtilities.getPropertiesKV(TEntityTemplate):
 		// getAny() does not always return "w3c.dom.element" anymore
-		
+
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
 		try {
@@ -484,36 +484,36 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		Document doc = builder.newDocument();
 		Element root = doc.createElementNS(this.NS_OPENTOSCA_WAR_TYPE, "WSProperties");
 		doc.appendChild(root);
-		
+
 		Element element = doc.createElementNS(this.NS_OPENTOSCA_WAR_TYPE, "ServiceEndpoint");
 		Text text = doc.createTextNode("/services/" + name + "Port");
 		element.appendChild(text);
 		root.appendChild(element);
-		
+
 		element = doc.createElementNS(this.NS_OPENTOSCA_WAR_TYPE, "PortType");
 		text = doc.createTextNode("{" + typeId.getNamespace().getDecoded() + "}" + name);
 		element.appendChild(text);
 		root.appendChild(element);
-		
+
 		element = doc.createElementNS(this.NS_OPENTOSCA_WAR_TYPE, "InvocationType");
 		text = doc.createTextNode("SOAP/HTTP");
 		element.appendChild(text);
 		root.appendChild(element);
-		
+
 		Properties properties = new Properties();
 		properties.setAny(root);
 		PropertiesResource propertiesResource = artifactTemplateResource.getPropertiesResource();
 		propertiesResource.setProperties(properties);
 	}
-	
+
 	@Override
 	public Viewable getHTML() {
 		return new Viewable("/jsp/artifacts/artifacts.jsp", this);
 	}
-	
+
 	/**
 	 * Required for artifacts.jsp
-	 * 
+	 *
 	 * @return list of known artifact types.
 	 */
 	public List<QName> getAllArtifactTypes() {
@@ -524,14 +524,14 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Required for artifacts.jsp
-	 * 
+	 *
 	 * @return list of all contained artifacts.
 	 */
 	public abstract Collection<ArtifactResource> getAllArtifactResources();
-	
+
 	/**
 	 * Required by artifact.jsp to decide whether to display
 	 * "Deployment Artifact" or "Implementation Artifact"
@@ -540,20 +540,20 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		boolean res = (this instanceof DeploymentArtifactsResource);
 		return res;
 	}
-	
+
 	/**
 	 * required by artifacts.jsp
 	 */
 	public String getNamespace() {
 		return this.resWithNamespace.getNamespace().getDecoded();
 	}
-	
+
 	/**
 	 * For saving resources, an AbstractComponentInstanceResource is required.
 	 * DAs may be attached to a node template, which is not an
 	 * AbstractComponentInstanceResource, but its grandparent resource
 	 * ServiceTemplate is
-	 * 
+	 *
 	 * @param res the resource to determine the the
 	 *            AbstractComponentInstanceResource for
 	 * @return the AbstractComponentInstanceResource where the given res is

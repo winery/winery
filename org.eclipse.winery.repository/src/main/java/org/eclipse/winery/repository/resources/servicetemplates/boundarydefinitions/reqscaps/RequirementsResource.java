@@ -35,22 +35,22 @@ import com.sun.jersey.api.view.Viewable;
  * {@link org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps.CapabilitiesResource}
  */
 public class RequirementsResource extends EntityWithoutIdCollectionResource<RequirementResource, TRequirementRef> {
-	
+
 	public RequirementsResource(IPersistable res, List<TRequirementRef> refs) {
 		super(RequirementResource.class, TRequirementRef.class, refs, res);
 	}
-	
+
 	@Override
 	public Viewable getHTML() {
 		throw new IllegalStateException("Not yet required: boundarydefinitions.jsp renders all tab content.");
 	}
-	
+
 	/**
 	 * Adds an element using form-encoding
-	 * 
+	 *
 	 * This is necessary as TRequirementRef contains an IDREF and the XML
 	 * snippet itself does not contain the target id
-	 * 
+	 *
 	 * @param name the optional name of the requirement
 	 * @param reference the reference to a requirement in the topology
 	 */
@@ -58,14 +58,14 @@ public class RequirementsResource extends EntityWithoutIdCollectionResource<Requ
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addNewElement(@FormParam("name") String name, @FormParam("ref") String reference) {
 		// Implementation adapted from super addNewElement
-		
+
 		if (reference == null) {
 			return Response.status(Status.BAD_REQUEST).entity("A reference has to be provided").build();
 		}
-		
+
 		TRequirementRef ref = new TRequirementRef();
 		ref.setName(name); // may also be null
-		
+
 		// The XML model forces us to put a reference to the object and not just the string
 		ServiceTemplateResource rs = (ServiceTemplateResource) this.res;
 		TRequirement resolved = ModelUtilities.resolveRequirement(rs.getServiceTemplate(), reference);
@@ -73,13 +73,13 @@ public class RequirementsResource extends EntityWithoutIdCollectionResource<Requ
 		if (resolved == null) {
 			return Response.status(Status.BAD_REQUEST).entity("Reference could not be resolved").build();
 		}
-		
+
 		ref.setRef(resolved);
-		
+
 		// "this.alreadyContains(ref)" cannot be called as this leads to a mappable exception: The data does not contain an id where the given ref attribute may point to
-		
+
 		this.list.add(ref);
 		return CollectionsHelper.persist(this.res, this, ref);
 	}
-	
+
 }

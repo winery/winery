@@ -20,11 +20,11 @@ import org.eclipse.winery.common.ids.XMLId;
 /**
  * Identifies a TOSCA component. Each component is required to be identified
  * subclasses this class
- * 
+ *
  * A TOSCAcomponentId has a namespace and an id within that namespace. In XML,
  * the ID might be serialized as NCName (in the case of EntityTypes and
  * EntityTemplates) and as xs:id (in the case of EntityTypeImplementations)
- * 
+ *
  * Components are elements, which may appear directly nested in TDefinitions:
  * <ul>
  * <li>ServiceTemplates,</li>
@@ -34,19 +34,19 @@ import org.eclipse.winery.common.ids.XMLId;
  * </ul>
  */
 public abstract class TOSCAComponentId extends GenericId {
-	
+
 	private final Namespace namespace;
-	
-	
+
+
 	public TOSCAComponentId(Namespace namespace, XMLId xmlId) {
 		super(xmlId);
 		this.namespace = namespace;
 	}
-	
+
 	/**
 	 * Creates a new id based on strings. This constructor is required for
 	 * {@link AbstractComponentsResource}
-	 * 
+	 *
 	 * @param ns the namespace to be used
 	 * @param id the id to be used
 	 * @param URLencoded true: both Strings are URLencoded, false: both Strings
@@ -55,25 +55,25 @@ public abstract class TOSCAComponentId extends GenericId {
 	public TOSCAComponentId(String ns, String id, boolean URLencoded) {
 		this(new Namespace(ns, URLencoded), new XMLId(id, URLencoded));
 	}
-	
+
 	public TOSCAComponentId(QName qname) {
 		this(qname.getNamespaceURI(), qname.getLocalPart(), false);
 	}
-	
+
 	public QName getQName() {
 		QName qname = new QName(this.getNamespace().getDecoded(), this.getXmlId().getDecoded());
 		return qname;
 	}
-	
+
 	public Namespace getNamespace() {
 		return this.namespace;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.namespace.hashCode() ^ this.getXmlId().hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -86,18 +86,18 @@ public abstract class TOSCAComponentId extends GenericId {
 			return this.getXmlId().equals(other.getXmlId()) && this.namespace.equals(other.namespace);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		QName qn = this.getQName();
 		return this.getClass().toString() + " / " + qn.toString();
 	}
-	
+
 	@Override
 	public GenericId getParent() {
 		return null;
 	}
-	
+
 	@Override
 	public int compareTo(GenericId o1) {
 		if (o1 instanceof TOSCAComponentId) {

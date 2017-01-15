@@ -73,62 +73,62 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 public final class WineryRepositoryClient implements IWineryRepositoryClient {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(WineryRepositoryClient.class);
-	
+
 	// switch off validation, currently causes more trouble than it brings
 	private static final boolean VALIDATING = false;
-	
+
 	private final Collection<String> knownURIs = new HashSet<String>();
 	private final Collection<WebResource> repositoryResources = new HashSet<WebResource>();
 	private final Client client;
 	private final ObjectMapper mapper = new ObjectMapper();
-	
+
 	private final Map<Class<? extends TEntityType>, Map<QName, TEntityType>> entityTypeDataCache;
-	
+
 	private final Map<GenericId, String> nameCache;
 	private static final int MAX_NAME_CACHE_SIZE = 1000;
-	
+
 	private String primaryRepository = null;
 	private WebResource primaryWebResource = null;
-	
+
 	// thread-safe JAXB as inspired by https://jaxb.java.net/guide/Performance_and_thread_safety.html
 	// The other possibility: Each subclass sets JAXBContext.newInstance(theSubClass.class); in its static {} part.
 	// This seems to be more complicated than listing all subclasses in initContext
 	public final static JAXBContext context = WineryRepositoryClient.initContext();
-	
+
 	// schema aware document builder
 	private final DocumentBuilder toscaDocumentBuilder;
-	
-	
+
+
 	// taken from http://stackoverflow.com/a/15253142/873282
 	private static class ConnectionFactory implements HttpURLConnectionFactory {
-		
+
 		Proxy proxy;
-		
-		
+
+
 		private void initializeProxy() {
 			this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888));
 		}
-		
+
 		@Override
 		public HttpURLConnection getHttpURLConnection(URL url) throws IOException {
 			this.initializeProxy();
 			return (HttpURLConnection) url.openConnection(this.proxy);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Creates the client without the use of any proxy
 	 */
 	public WineryRepositoryClient() {
 		this(false);
 	}
-	
+
 	/**
 	 * @param useProxy if a debugging proxy should be used
-	 * 
+	 *
 	 * @throws IllegalStateException if DOM parser could not be created
 	 */
 	public WineryRepositoryClient(boolean useProxy) {
@@ -140,10 +140,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		} else {
 			this.client = Client.create(clientConfig);
 		}
-		
+
 		this.entityTypeDataCache = new HashMap<>();
 		this.nameCache = new HashMap<>();
-		
+
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(true);
 		if (WineryRepositoryClient.VALIDATING) {
@@ -186,10 +186,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		});
 		*/
 	}
-	
+
 	private static JAXBContext initContext() {
 		// code copied+adapted from JAXBSupport
-		
+
 		JAXBContext context;
 		try {
 			// For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
@@ -204,10 +204,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return context;
 	}
-	
+
 	/**
 	 * Creates a marshaller
-	 * 
+	 *
 	 * @throws IllegalStateException if marshaller could not be instantiated
 	 */
 	private static Marshaller createMarshaller() {
@@ -224,10 +224,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return m;
 	}
-	
+
 	/**
 	 * Creates a unmarshaller
-	 * 
+	 *
 	 * @throws IllegalStateException if unmarshaller could not be instantiated
 	 */
 	private static Unmarshaller createUnmarshaller() {
@@ -240,9 +240,9 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return um;
 	}
-	
+
 	/*** methods directly from IWineryRepositoryClient ***/
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -258,7 +258,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			}
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -266,7 +266,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	public String getPrimaryRepository() {
 		return this.primaryRepository;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -286,9 +286,9 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		assert (this.primaryWebResource != null);
 	}
-	
+
 	/*** methods directly from IWineryRepository ***/
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -297,7 +297,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		SortedSet<String> res = new TreeSet<String>();
 		for (WebResource wr : this.repositoryResources) {
 			WebResource namespacesResource = wr.path("admin").path("namespaces");
-			
+
 			// this could be parsed using JAXB
 			// (http://jersey.java.net/nonav/documentation/latest/json.html),
 			// but we are short in time, so we do a quick hack
@@ -315,7 +315,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Base method for getQNameListOfAllTypes and getAllTypes.
 	 */
@@ -323,7 +323,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		Map<WebResource, List<NamespaceIdOptionalName>> res = new HashMap<WebResource, List<NamespaceIdOptionalName>>();
 		for (WebResource wr : this.repositoryResources) {
 			WebResource componentListResource = wr.path(path);
-			
+
 			// this could be parsed using JAXB
 			// (http://jersey.java.net/nonav/documentation/latest/json.html),
 			// but we are short in time, so we do a quick hack
@@ -342,7 +342,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -351,7 +351,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		if (this.nameCache.containsKey(id)) {
 			return this.nameCache.get(id);
 		}
-		
+
 		String name = null;
 		for (WebResource wr : this.repositoryResources) {
 			String pathFragment = IdUtil.getURLPathFragment(id);
@@ -364,7 +364,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			}
 		}
 		// if all resources did not return "OK", "null" is returned
-		
+
 		if (name != null) {
 			if (this.nameCache.size() > WineryRepositoryClient.MAX_NAME_CACHE_SIZE) {
 				// if cache grew too large, clear it.
@@ -372,10 +372,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			}
 			this.nameCache.put(id, name);
 		}
-		
+
 		return name;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -393,10 +393,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Fetches java objects at a given URL
-	 * 
+	 *
 	 * @param path the path to use. E.g., "nodetypes" for node types, ...
 	 * @param className the class of the expected return type. May be
 	 *            TDefinitions or TEntityType. TDefinitions the mode is that the
@@ -409,23 +409,23 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	private <T extends TExtensibleElements> Collection<T> getAllTypes(String path, Class<T> className) {
 		Map<WebResource, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
 		// now we now all QNames. We have to fetch the full content now
-		
+
 		Collection<T> res = new LinkedList<T>();
 		for (WebResource wr : wRtoNamespaceAndIdListMapOfAllTypes.keySet()) {
 			WebResource componentListResource = wr.path(path);
-			
+
 			// go through all ids and fetch detailed information on each
 			// type
-			
+
 			for (NamespaceIdOptionalName nsAndId : wRtoNamespaceAndIdListMapOfAllTypes.get(wr)) {
 				TDefinitions definitions = WineryRepositoryClient.getDefinitions(componentListResource, nsAndId.getNamespace(), nsAndId.getId());
 				if (definitions == null) {
 					// try next one
 					continue;
 				}
-				
+
 				T result;
-				
+
 				if (TDefinitions.class.equals(className)) {
 					// mode: complete definitions
 					result = (T) definitions;
@@ -438,11 +438,11 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 					} else {
 						WineryRepositoryClient.LOGGER.trace("Probably found valid data for {}/{}", nsAndId.getNamespace(), nsAndId.getId());
 						result = (T) definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
-						
+
 						this.cache((TEntityType) result, new QName(nsAndId.getNamespace(), nsAndId.getId()));
 					}
 				}
-				
+
 				// TODO: if multiple repositories are used, the new element
 				// should be put "sorted" into the list. This could be done by
 				// add(parsedResult, index), where index is calculated by
@@ -455,10 +455,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Caches the TEntityType data of a QName to avoid multiple get requests
-	 * 
+	 *
 	 * NOT thread safe
 	 */
 	private void cache(TEntityType et, QName qName) {
@@ -474,14 +474,14 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		map.put(qName, et);
 	}
-	
+
 	private static WebResource getTopologyTemplateWebResource(WebResource base, QName serviceTemplate) {
 		String nsEncoded = Util.DoubleURLencode(serviceTemplate.getNamespaceURI());
 		String idEncoded = Util.DoubleURLencode(serviceTemplate.getLocalPart());
 		WebResource res = base.path("servicetemplates").path(nsEncoded).path(idEncoded).path("topologytemplate");
 		return res;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -492,7 +492,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		Map<WebResource, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
 		Collection<List<NamespaceIdOptionalName>> namespaceAndIdListCollection = wRtoNamespaceAndIdListMapOfAllTypes.values();
 		List<QNameWithName> res = new ArrayList<QNameWithName>(namespaceAndIdListCollection.size());
-		
+
 		for (List<NamespaceIdOptionalName> namespaceAndIdList : namespaceAndIdListCollection) {
 			for (NamespaceIdOptionalName namespaceAndId : namespaceAndIdList) {
 				QNameWithName qn = new QNameWithName();
@@ -503,7 +503,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -513,7 +513,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		Collection<T> allTypes = this.getAllTypes(urlPathFragment, c);
 		return allTypes;
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends TEntityType> T getType(QName qname, Class<T> type) {
@@ -524,61 +524,61 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 				res = (T) map.get(qname);
 			}
 		}
-		
+
 		if (res == null) {
 			// not yet seen, try to fetch resource
-			
+
 			for (WebResource wr : this.repositoryResources) {
 				String path = Util.getURLpathFragmentForCollection(type);
-				
+
 				TDefinitions definitions = WineryRepositoryClient.getDefinitions(wr, path, qname.getNamespaceURI(), qname.getLocalPart());
-				
+
 				if (definitions == null) {
 					// in case of an error, just try the next one
 					continue;
 				}
-				
+
 				res = (T) definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
 				this.cache(res, qname);
 				break;
 			}
 		}
-		
+
 		return res;
 	}
-	
+
 	/**
 	 * Tries to retrieve a TDefinitions from the given resource / encoded(ns) /
 	 * encoded(localPart)
-	 * 
+	 *
 	 * @return null if 404 or other error
 	 */
 	private static TDefinitions getDefinitions(WebResource wr, String path, String ns, String localPart) {
 		WebResource componentListResource = wr.path(path);
 		return WineryRepositoryClient.getDefinitions(componentListResource, ns, localPart);
 	}
-	
+
 	/**
 	 * Tries to retrieve a TDefinitions from the given resource / encoded(ns) /
 	 * encoded(localPart)
-	 * 
+	 *
 	 * @return null if 404 or other error
 	 */
 	private static TDefinitions getDefinitions(WebResource componentListResource, String ns, String localPart) {
 		// we need double encoding as the client decodes the URL once
 		String nsEncoded = Util.DoubleURLencode(ns);
 		String idEncoded = Util.DoubleURLencode(localPart);
-		
+
 		WebResource instanceResource = componentListResource.path(nsEncoded).path(idEncoded);
-		
+
 		// TODO: org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsWithAssociatedThings() could be used to do the resolving at the server
-		
+
 		ClientResponse response = instanceResource.accept(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS).get(ClientResponse.class);
 		if (response.getStatus() != 200) {
 			// also handles 404
 			return null;
 		}
-		
+
 		TDefinitions definitions;
 		try {
 			Unmarshaller um = WineryRepositoryClient.createUnmarshaller();
@@ -590,7 +590,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return definitions;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -600,9 +600,9 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		Collection<TDefinitions> allTypes = this.getAllTypes(urlPathFragment, TDefinitions.class);
 		return allTypes;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param stream the stream to parse
 	 * @return null if document is invalid
 	 */
@@ -616,7 +616,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return document;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -646,7 +646,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		// nothing found
 		return null;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -661,7 +661,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			throw new Exception(response.toString());
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -678,10 +678,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * Does NOT check for global QName uniqueness, only in the scope of all
 	 * artifact templates
 	 */
@@ -702,7 +702,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		// no further return is made
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -721,7 +721,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 		// no further return is made
 	}
-	
+
 	@Override
 	public void forceDelete(GenericId id) throws IOException {
 		String pathFragment = IdUtil.getURLPathFragment(id);
@@ -768,10 +768,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		if (this.primaryWebResource == null) {
 			return false;
 		}
-		
+
 		ClientResponse response = this.primaryWebResource.get(ClientResponse.class);
 		boolean res = (response.getClientResponseStatus() == ClientResponse.Status.OK);
 		return res;
 	}
-	
+
 }

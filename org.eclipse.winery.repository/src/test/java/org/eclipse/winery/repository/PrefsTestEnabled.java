@@ -14,7 +14,7 @@ package org.eclipse.winery.repository;
 import java.io.IOException;
 
 public abstract class PrefsTestEnabled extends Prefs {
-	
+
 	/**
 	 * @param initializeRepository true if the repository should be initialized
 	 *            as provided in winery.properties
@@ -23,10 +23,10 @@ public abstract class PrefsTestEnabled extends Prefs {
 	protected PrefsTestEnabled(boolean initializeRepository) throws IOException {
 		super(initializeRepository);
 	}
-	
+
 	@Override
 	public String getResourcePath() {
 		return "http://www.example.org/winery/test";
 	}
-	
+
 }

@@ -50,24 +50,24 @@ import org.slf4j.LoggerFactory;
  * doing a clean design
  */
 public class XSDImportResource extends GenericImportResource {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(XSDImportResource.class);
-	
-	
+
+
 	public XSDImportResource(XSDImportId id) {
 		super(id);
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		TImport imp = new TImport();
 		imp.setImportType(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		return imp;
 	}
-	
+
 	/**
 	 * public required by XSDImportsResource
-	 * 
+	 *
 	 * @return null if XSD file does not exist
 	 */
 	public RepositoryFileReference getXSDFileReference() {
@@ -78,7 +78,7 @@ public class XSDImportResource extends GenericImportResource {
 		final RepositoryFileReference ref = new RepositoryFileReference(this.id, loc);
 		return ref;
 	}
-	
+
 	/**
 	 * @return null if no file is associated
 	 */
@@ -86,7 +86,7 @@ public class XSDImportResource extends GenericImportResource {
 		final RepositoryFileReference ref = this.getXSDFileReference();
 		return BackendUtils.getXSModel(ref);
 	}
-	
+
 	// we need "unchecked", because of the parsing of the cache
 	@SuppressWarnings("unchecked")
 	public Collection<String> getAllDefinedLocalNames(short type) {
@@ -95,7 +95,7 @@ public class XSDImportResource extends GenericImportResource {
 			return Collections.emptySet();
 		}
 		Date lastUpdate = Repository.INSTANCE.getLastUpdate(ref);
-		
+
 		String cacheFileName = "definedLocalNames " + Integer.toString(type) + ".cache";
 		RepositoryFileReference cacheRef = new RepositoryFileReference(this.id, cacheFileName);
 		boolean cacheNeedsUpdate = true;
@@ -105,10 +105,10 @@ public class XSDImportResource extends GenericImportResource {
 				cacheNeedsUpdate = false;
 			}
 		}
-		
+
 		List<String> result;
 		if (cacheNeedsUpdate) {
-			
+
 			XSModel model = this.getXSModel();
 			if (model == null) {
 				return Collections.emptySet();
@@ -125,7 +125,7 @@ public class XSDImportResource extends GenericImportResource {
 					result.add(item.getName());
 				}
 			}
-			
+
 			String cacheContent = null;
 			try {
 				cacheContent = Utils.mapper.writeValueAsString(result);
@@ -149,15 +149,15 @@ public class XSDImportResource extends GenericImportResource {
 		}
 		return result;
 	}
-	
+
 	public Collection<String> getAllDefinedElementsLocalNames() {
 		return this.getAllDefinedLocalNames(XSConstants.ELEMENT_DECLARATION);
 	}
-	
+
 	public Collection<String> getAllDefinedTypesLocalNames() {
 		return this.getAllDefinedLocalNames(XSConstants.TYPE_DEFINITION);
 	}
-	
+
 	@GET
 	@RestDoc(methodDescription = "May be used by the modeler to generate an XML editor based on the XML schema")
 	// we cannot use "MimeTypes.MIMETYPE_XSD" here as the latter is "text/xml" and org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsAsResponse() also produces text/xml
@@ -170,5 +170,5 @@ public class XSDImportResource extends GenericImportResource {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, location);
 		return BackendUtils.returnRepoPath(ref, null);
 	}
-	
+
 }

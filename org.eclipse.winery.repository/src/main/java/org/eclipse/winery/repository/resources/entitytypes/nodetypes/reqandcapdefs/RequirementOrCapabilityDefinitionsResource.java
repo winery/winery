@@ -34,30 +34,30 @@ import com.sun.jersey.api.view.Viewable;
  * subclasses: We would need Java reflection to invoke "getName" (to get the
  * subresource). The hope is that this copy'n'paste programming will not
  * introduce bugs when changing childs
- * 
+ *
  * We try to abstract from the problems by using generics and reflections
- * 
+ *
  * @param <ReqDefOrCapDef> TRequirementDefinition or TCapabilityDefinition
  * @param <ReqDefOrCapDefResource> the resource managing ReqDefOrCapDef
  */
 public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefResource extends AbstractReqOrCapDefResource<ReqDefOrCapDef>, ReqDefOrCapDef> extends EntityWithIdCollectionResource<ReqDefOrCapDefResource, ReqDefOrCapDef> {
-	
+
 	protected final NodeTypeResource res;
-	
-	
+
+
 	public RequirementOrCapabilityDefinitionsResource(Class<ReqDefOrCapDefResource> entityResourceTClazz, Class<ReqDefOrCapDef> entityTClazz, List<ReqDefOrCapDef> list, NodeTypeResource res) {
 		super(entityResourceTClazz, entityTClazz, list, res);
 		this.res = res;
 	}
-	
+
 	@Override
 	public abstract Viewable getHTML();
-	
+
 	/**
 	 * @return collection of all available types
 	 */
 	public abstract Collection<QName> getAllTypes();
-	
+
 	@POST
 	// As there is no supertype of TCapabilityType and TRequirementType containing the common attributes, we have to rely on unchecked casts
 	@SuppressWarnings("unchecked")
@@ -68,7 +68,7 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 		if (StringUtils.isEmpty(type)) {
 			return Response.status(Status.BAD_REQUEST).entity("Type has to be provided").build();
 		}
-		
+
 		int lbound = 1;
 		if (!StringUtils.isEmpty(lowerBound)) {
 			try {
@@ -77,12 +77,12 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 				return Response.status(Status.BAD_REQUEST).entity("Bad format of lowerbound: " + e.getMessage()).build();
 			}
 		}
-		
+
 		String ubound = "1";
 		if (!StringUtils.isEmpty(upperbound)) {
 			ubound = upperbound;
 		}
-		
+
 		// we also support replacement of existing requirements
 		// therefore, we loop through the existing requirements
 		int idx = -1;
@@ -94,7 +94,7 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 				break;
 			}
 		}
-		
+
 		QName typeQName = QName.valueOf(type);
 		// Create object and put type in it
 		ReqDefOrCapDef def;
@@ -106,12 +106,12 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 			def = (ReqDefOrCapDef) new TRequirementDefinition();
 			((TRequirementDefinition) def).setRequirementType(typeQName);
 		}
-		
+
 		// copy all other data into object
 		AbstractReqOrCapDefResource.invokeSetter(def, "setName", name);
 		AbstractReqOrCapDefResource.invokeSetter(def, "setLowerBound", lbound);
 		AbstractReqOrCapDefResource.invokeSetter(def, "setUpperBound", ubound);
-		
+
 		if (found) {
 			// replace element
 			this.list.set(idx, def);
@@ -119,11 +119,11 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 			// add new element
 			this.list.add(def);
 		}
-		
+
 		Response r = BackendUtils.persist(this.res);
 		return r;
 	}
-	
+
 	@Override
 	public String getId(ReqDefOrCapDef reqDefOrCapDef) {
 		return AbstractReqOrCapDefResource.getName(reqDefOrCapDef);

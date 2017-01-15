@@ -36,23 +36,23 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Bundles common properties of TRequirementDefinition and TCapabilityDefinition
- * 
+ *
  * We agreed in the project not to modify org.eclipse.winery.model.tosca.
  * Therefore, this resource models the common properties of a
  * TRequirementDefinition and a TCapabilityDefinition
  */
 public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWithIdResource<ReqOrCapDef> implements IIdDetermination<ReqOrCapDef> {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReqOrCapDefResource.class);
-	
+
 	protected NodeTypeResource parent;
-	
+
 	// the capability or the requirement
 	private Object reqOrCapDef;
-	
+
 	private List<TConstraint> constraints;
-	
-	
+
+
 	/**
 	 * @param constraints additional parameter (in comparison to the constructor
 	 *            of EntityWithIdResource) as we require that sublist for the
@@ -65,29 +65,29 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 		this.reqOrCapDef = reqOrCapDef;
 		this.constraints = constraints;
 	}
-	
+
 	@GET
 	@Path("name")
 	public String getName() {
 		return (String) this.invokeGetter("getName");
 	}
-	
+
 	static String getName(Object reqOrCapDef) {
 		return (String) AbstractReqOrCapDefResource.invokeGetter(reqOrCapDef, "getName");
 	}
-	
+
 	@GET
 	@Path("lowerbound")
 	public int getLowerBound() {
 		return (int) this.invokeGetter("getLowerBound");
 	}
-	
+
 	@GET
 	@Path("upperbound")
 	public String getUpperBound() {
 		return (String) this.invokeGetter("getUpperBound");
 	}
-	
+
 	@PUT
 	@Path("name")
 	public Response setName(@FormParam(value = "name") String name) {
@@ -95,7 +95,7 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 		this.invokeSetter("setName", name);
 		return BackendUtils.persist(this.parent);
 	}
-	
+
 	@PUT
 	@Path("lowerbound")
 	public Response setLowerBound(@FormParam(value = "lowerbound") String value) {
@@ -103,7 +103,7 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 		this.invokeSetter("setLowerBound", value);
 		return BackendUtils.persist(this.parent);
 	}
-	
+
 	@PUT
 	@Path("upperbound")
 	public Response setUpperBound(@FormParam(value = "upperbound") String value) {
@@ -111,12 +111,12 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 		this.invokeSetter("setUpperBound", value);
 		return BackendUtils.persist(this.parent);
 	}
-	
+
 	@Path("constraints/")
 	public ConstraintsResource getConstraintsResource() {
 		return new ConstraintsResource(this.constraints, this.parent);
 	}
-	
+
 	private static Object invokeGetter(Object reqOrCapDef, String getterName) {
 		Method method;
 		Object res;
@@ -129,11 +129,11 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 		}
 		return res;
 	}
-	
+
 	private Object invokeGetter(String getterName) {
 		return AbstractReqOrCapDefResource.invokeGetter(this.reqOrCapDef, getterName);
 	}
-	
+
 	/**
 	 * Quick hack method for RequirementOrCapabilityDefinitionsResource
 	 */
@@ -147,31 +147,31 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 			throw new IllegalStateException(e);
 		}
 	}
-	
+
 	private void invokeSetter(String setterName, Object value) {
 		AbstractReqOrCapDefResource.invokeSetter(this.reqOrCapDef, setterName, value);
 	}
-	
+
 	@GET
 	@Path("type")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getTypeAsString() {
 		return this.getType().toString();
 	}
-	
+
 	/**
 	 * required by the JSP.
-	 * 
+	 *
 	 * Therefore, we have two getters for the type: QName for the JSP and String
 	 * for REST clients
 	 */
 	public abstract QName getType();
-	
+
 	/**
 	 * Required by reqandcapdefs.jsp
 	 */
 	public Object getDef() {
 		return this.reqOrCapDef;
 	}
-	
+
 }

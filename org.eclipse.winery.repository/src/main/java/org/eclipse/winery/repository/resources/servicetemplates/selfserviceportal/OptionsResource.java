@@ -39,24 +39,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OptionsResource extends EntityWithIdCollectionResource<OptionResource, ApplicationOption> {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsResource.class);
-	
-	
+
+
 	public OptionsResource(List<ApplicationOption> list, SelfServicePortalResource res) {
 		super(OptionResource.class, ApplicationOption.class, list, res);
 	}
-	
+
 	@Override
 	public String getId(ApplicationOption entity) {
 		return entity.getId();
 	}
-	
+
 	@Override
 	public Viewable getHTML() {
 		throw new IllegalStateException("Not yet implemented.");
 	}
-	
+
 	@POST
 	@RestDoc(methodDescription = "Adds a new option<p>TODO: @return JSON with .tableData: Array with row data for dataTable</p>")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -87,13 +87,13 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 			return Response.status(Status.BAD_REQUEST).entity("file has to be provided").build();
 		}
 		ApplicationOption option = new ApplicationOption();
-		
+
 		String id = Utils.createXMLidAsString(name);
-		
+
 		String fileNamePrefix = OptionResource.getFileNamePrefix(id);
 		String iconFileName = fileNamePrefix + OptionResource.ICON_JPG;
 		String planInputMessageFileName = fileNamePrefix + OptionResource.PLAN_INPUT_XML;
-		
+
 		// create option data
 		option.setId(id);
 		option.setName(name);
@@ -101,11 +101,11 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 		option.setIconUrl(iconFileName);
 		option.setPlanInputMessageUrl(planInputMessageFileName);
 		option.setPlanServiceName(planServiceName);
-		
+
 		// BEGIN: store icon and planInputMessage
-		
+
 		SelfServiceMetaDataId ssmdId = ((SelfServicePortalResource) this.res).getId();
-		
+
 		RepositoryFileReference iconRef = new RepositoryFileReference(ssmdId, iconFileName);
 		try {
 			Repository.INSTANCE.putContentToFile(iconRef, uploadedInputStream, body.getMediaType());
@@ -113,7 +113,7 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 			OptionsResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
-		
+
 		RepositoryFileReference planInputMessageRef = new RepositoryFileReference(ssmdId, planInputMessageFileName);
 		try {
 			Repository.INSTANCE.putContentToFile(planInputMessageRef, planInputMessage, MediaType.TEXT_XML_TYPE);
@@ -121,9 +121,9 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 			OptionsResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
-		
+
 		// END: store icon and planInputMessage
-		
+
 		this.list.add(option);
 		return BackendUtils.persist(this.res);
 	}

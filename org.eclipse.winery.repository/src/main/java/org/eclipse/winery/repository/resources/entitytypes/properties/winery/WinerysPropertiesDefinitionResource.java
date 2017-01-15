@@ -32,11 +32,11 @@ import org.restdoc.annotations.RestDoc;
 import com.sun.jersey.api.NotFoundException;
 
 public class WinerysPropertiesDefinitionResource {
-	
+
 	private final EntityTypeResource res;
 	private final WinerysPropertiesDefinition wpd;
-	
-	
+
+
 	/**
 	 * @param res the resource where winery's k/v properties are defined
 	 * @param wpd winery's properties definition object, MAY be null
@@ -45,21 +45,21 @@ public class WinerysPropertiesDefinitionResource {
 		this.res = res;
 		this.wpd = wpd;
 	}
-	
+
 	@POST
 	@RestDoc(methodDescription = "switches the mode to winery properties instead of element/type properties")
 	public Response onPost() {
 		TEntityType et = this.res.getEntityType();
-		
+
 		// clear current properties definition
 		et.setPropertiesDefinition(null);
-		
+
 		// create empty winery properties definition and persist it
 		WinerysPropertiesDefinition wpd = new WinerysPropertiesDefinition();
 		ModelUtilities.replaceWinerysPropertiesDefinition(et, wpd);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	@Path("namespace")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -69,7 +69,7 @@ public class WinerysPropertiesDefinitionResource {
 		}
 		return this.wpd.getNamespace();
 	}
-	
+
 	@Path("namespace")
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -80,7 +80,7 @@ public class WinerysPropertiesDefinitionResource {
 		this.wpd.setNamespace(namespace);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	@Path("elementname")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -90,7 +90,7 @@ public class WinerysPropertiesDefinitionResource {
 		}
 		return this.wpd.getElementName();
 	}
-	
+
 	@Path("elementname")
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -101,7 +101,7 @@ public class WinerysPropertiesDefinitionResource {
 		this.wpd.setElementName(elementName);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	@Path("elementname")
 	@PUT
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -112,7 +112,7 @@ public class WinerysPropertiesDefinitionResource {
 		this.wpd.setElementName(elementName);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	/**
 	 * Here, also the addition of k/v properties is handled.
 	 */
@@ -128,5 +128,5 @@ public class WinerysPropertiesDefinitionResource {
 		}
 		return new PropertyDefinitionKVListResource(this.res, list);
 	}
-	
+
 }

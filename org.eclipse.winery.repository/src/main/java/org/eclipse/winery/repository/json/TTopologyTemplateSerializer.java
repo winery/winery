@@ -26,16 +26,16 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 public class TTopologyTemplateSerializer extends JsonSerializer<TTopologyTemplate> {
-	
+
 	/**
 	 * Does NOT wrap the result into an object. Assumes that the current
 	 * position at jgen is in an object
-	 * 
+	 *
 	 * @param value the list of entity templates to serialize
 	 */
 	public void serialize(List<TEntityTemplate> value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
 		List<TRelationshipTemplate> relationshipTemplates = new ArrayList<TRelationshipTemplate>();
-		
+
 		jgen.writeFieldName("nodeTemplates");
 		jgen.writeStartObject();
 		for (TEntityTemplate template : value) {
@@ -43,14 +43,14 @@ public class TTopologyTemplateSerializer extends JsonSerializer<TTopologyTemplat
 				// write out as <id> : <default serialization>
 				jgen.writeFieldName(template.getId());
 				provider.defaultSerializeValue(template, jgen);
-				
+
 			} else {
 				assert (template instanceof TRelationshipTemplate);
 				relationshipTemplates.add((TRelationshipTemplate) template);
 			}
 		}
 		jgen.writeEndObject();
-		
+
 		jgen.writeFieldName("relationshipTemplates");
 		jgen.writeStartObject();
 		for (TRelationshipTemplate template : relationshipTemplates) {
@@ -60,11 +60,11 @@ public class TTopologyTemplateSerializer extends JsonSerializer<TTopologyTemplat
 		}
 		jgen.writeEndObject();
 	}
-	
+
 	@Override
 	public void serialize(TTopologyTemplate topologyTemplate, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
 		jgen.writeStartObject();
-		
+
 		// write out the other fields unmodified
 		jgen.writeFieldName("documentation");
 		provider.defaultSerializeValue(topologyTemplate.getDocumentation(), jgen);
@@ -72,10 +72,10 @@ public class TTopologyTemplateSerializer extends JsonSerializer<TTopologyTemplat
 		provider.defaultSerializeValue(topologyTemplate.getAny(), jgen);
 		jgen.writeFieldName("otherAttributes");
 		provider.defaultSerializeValue(topologyTemplate.getOtherAttributes(), jgen);
-		
+
 		// finally, write the topology template
 		this.serialize(topologyTemplate.getNodeTemplateOrRelationshipTemplate(), jgen, provider);
-		
+
 		jgen.writeEndObject();
 	}
 }

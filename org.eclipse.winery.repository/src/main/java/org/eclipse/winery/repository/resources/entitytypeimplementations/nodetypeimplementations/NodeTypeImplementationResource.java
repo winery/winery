@@ -30,23 +30,23 @@ import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
 public class NodeTypeImplementationResource extends EntityTypeImplementationResource implements INodeTemplateResourceOrNodeTypeImplementationResource, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
-	
+
 	public NodeTypeImplementationResource(NodeTypeImplementationId id) {
 		super(id);
 	}
-	
+
 	/**
 	 * public because of exporter
 	 */
 	public TNodeTypeImplementation getNTI() {
 		return (TNodeTypeImplementation) this.getElement();
 	}
-	
+
 	/**
 	 * Even if both node type implementations and relationship type
 	 * implementations have implementation artifacts, there is no common
 	 * supertype. To avoid endless casts, we just implement the method here
-	 * 
+	 *
 	 * @return
 	 */
 	@Path("implementationartifacts/")
@@ -59,7 +59,7 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 		}
 		return new ImplementationArtifactsResource(implementationArtifacts.getImplementationArtifact(), this);
 	}
-	
+
 	/**
 	 * Only NodeTypes have deployment artifacts, not RelationshipType.
 	 * Therefore, this method is declared in
@@ -76,29 +76,29 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 		}
 		return new DeploymentArtifactsResource(deploymentArtifacts.getDeploymentArtifact(), this);
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TNodeTypeImplementation();
 	}
-	
+
 	@Override
 	public void copyIdToFields(TOSCAComponentId id) {
 		this.getNTI().setTargetNamespace(id.getNamespace().getDecoded());
 		this.getNTI().setName(id.getXmlId().getDecoded());
 	}
-	
+
 	@Override
 	public QName getType() {
 		return this.getNTI().getNodeType();
 	}
-	
+
 	@Override
 	public Response setType(QName type) {
 		this.getNTI().setNodeType(type);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Override
 	public Response setType(String typeStr) {
 		QName type = QName.valueOf(typeStr);

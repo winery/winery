@@ -20,14 +20,14 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 
 /**
  * class for import ids (not used for definitions)
- * 
+ *
  * // Convention: id of import is filename without extension
  */
 public class GenericImportId extends TOSCAComponentId {
-	
+
 	private final String type;
-	
-	
+
+
 	/**
 	 * @param type the importType (e.g., MimeTypes.MIMETYPE_XSD)
 	 */
@@ -35,29 +35,29 @@ public class GenericImportId extends TOSCAComponentId {
 		super(namespace, xmlId);
 		this.type = type;
 	}
-	
+
 	public GenericImportId(String ns, String id, boolean encoded, String type) {
 		super(ns, id, encoded);
 		this.type = type;
 	}
-	
+
 	/**
 	 * Generates an ImportId based on an TImport object The import has to be an
 	 * import created by winery. This method uses the convention that the id is
 	 * derived from the location
-	 * 
+	 *
 	 * @param i the TImport element to derive an id from
 	 */
 	public GenericImportId(TImport i) {
 		this(i.getNamespace(), GenericImportId.getId(i), false, i.getImportType());
 	}
-	
+
 	private static String getId(TImport i) {
 		String fileName = Util.getLastURIPart(i.getLocation());
 		String id = FilenameUtils.removeExtension(fileName);
 		return id;
 	}
-	
+
 	public String getType() {
 		return this.type;
 	}

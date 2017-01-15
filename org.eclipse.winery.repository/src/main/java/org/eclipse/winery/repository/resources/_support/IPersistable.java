@@ -14,7 +14,7 @@ package org.eclipse.winery.repository.resources._support;
 import java.io.IOException;
 
 public interface IPersistable {
-	
+
 	/**
 	 * @throws IOException if content could not be updated in the repository
 	 * @throws IllegalStateException if an JAXBException occurred. This should

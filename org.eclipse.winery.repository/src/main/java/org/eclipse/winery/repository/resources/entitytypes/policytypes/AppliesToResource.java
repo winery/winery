@@ -20,22 +20,22 @@ import org.eclipse.winery.model.tosca.TPolicyType;
 import com.sun.jersey.api.view.Viewable;
 
 public class AppliesToResource {
-	
+
 	private PolicyTypeResource policyTypeResource;
-	
-	
+
+
 	public AppliesToResource(PolicyTypeResource policyTypeResource) {
 		this.policyTypeResource = policyTypeResource;
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getHTML() {
 		return new Viewable("/jsp/entitytypes/policytypes/appliesto.jsp", this);
 	}
-	
+
 	public TPolicyType getPolicyType() {
 		return this.policyTypeResource.getPolicyType();
 	}
-	
+
 }

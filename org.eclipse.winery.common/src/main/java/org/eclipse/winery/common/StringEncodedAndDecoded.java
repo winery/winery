@@ -18,11 +18,11 @@ package org.eclipse.winery.common;
  * URLencoded
  */
 public class StringEncodedAndDecoded implements Comparable<StringEncodedAndDecoded> {
-	
+
 	private String decoded = null;
 	private String encoded = null;
-	
-	
+
+
 	/**
 	 * @param uri the URI to store
 	 * @param URLencoded true iff the given URI is URLencoded
@@ -34,43 +34,43 @@ public class StringEncodedAndDecoded implements Comparable<StringEncodedAndDecod
 			this.decoded = uri;
 		}
 	}
-	
+
 	public String getDecoded() {
 		if (this.decoded == null) {
 			this.decoded = Util.URLdecode(this.encoded);
 		}
 		return this.decoded;
 	}
-	
+
 	public String getEncoded() {
 		if (this.encoded == null) {
 			this.encoded = Util.URLencode(this.decoded);
 		}
 		return this.encoded;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.getDecoded().hashCode();
 	}
-	
+
 	/**
 	 * @return the URL path fragment to be used in an URL
 	 */
 	public String getPathFragment() {
 		return this.getEncoded();
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.getDecoded();
 	}
-	
+
 	@Override
 	public int compareTo(StringEncodedAndDecoded o) {
 		return this.getDecoded().compareTo(o.getDecoded());
 	}
-	
+
 	/**
 	 * Compares with the given object <br />
 	 * Equality checking is made based on the decoded String

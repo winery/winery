@@ -38,11 +38,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 /**
  * Manages all imports of type XML Schema Definition <br />
  * The actual implementation is done in the AbstractComponentsResource
- * 
+ *
  * FIXME: This class should be generalized to handle ImportId
  */
 public class XSDImportsResource extends AbstractComponentsResource<XSDImportResource> {
-	
+
 	@Path("{namespace}/")
 	@GET
 	@RestDoc(methodDescription = "Returns all available local names of defined elements in this namespace")
@@ -56,17 +56,17 @@ public class XSDImportsResource extends AbstractComponentsResource<XSDImportReso
 			throw new IllegalStateException(e);
 		}
 	}
-	
+
 	/**
 	 * @param nsString the namesapce as String
 	 * @param returnTypes true: return ElementTypes, false: return Elements
 	 */
 	private Set<String> getAllElementLocalNamesAsSet(final String nsString, final boolean getTypes) {
 		Set<XSDImportId> importsOfNS = this.getImportsOfNS(nsString);
-		
+
 		// TreeSet enables ordering
 		Set<String> allNCNames = new TreeSet<String>();
-		
+
 		for (XSDImportId imp : importsOfNS) {
 			XSDImportResource res = new XSDImportResource(imp);
 			Collection<String> col;
@@ -79,10 +79,10 @@ public class XSDImportsResource extends AbstractComponentsResource<XSDImportReso
 		}
 		return allNCNames;
 	}
-	
+
 	/**
 	 * Finds out all imports belonging to the given namespace
-	 * 
+	 *
 	 * @param nsString the namespace to query
 	 */
 	private Set<XSDImportId> getImportsOfNS(final String nsString) {
@@ -97,7 +97,7 @@ public class XSDImportsResource extends AbstractComponentsResource<XSDImportReso
 		}
 		return importsOfNs;
 	}
-	
+
 	/**
 	 * Returns a mapping from localnames to XSD files, containing the defined
 	 * local names for the given namespace
@@ -120,5 +120,5 @@ public class XSDImportsResource extends AbstractComponentsResource<XSDImportReso
 		}
 		return result;
 	}
-	
+
 }

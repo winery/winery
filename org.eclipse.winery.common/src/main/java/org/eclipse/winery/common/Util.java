@@ -63,12 +63,12 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 public class Util {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
-	
+
 	public static final String FORBIDDEN_CHARACTER_REPLACEMENT = "_";
-	
-	
+
+
 	public static String URLdecode(String s) {
 		try {
 			return URLDecoder.decode(s, "UTF-8");
@@ -76,7 +76,7 @@ public class Util {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	public static String URLencode(String s) {
 		try {
 			return URLEncoder.encode(s, "UTF-8");
@@ -84,15 +84,15 @@ public class Util {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	public static String DoubleURLencode(String s) {
 		return Util.URLencode(Util.URLencode(s));
 	}
-	
+
 	/**
 	 * Encodes the namespace and the localname of the given qname, separated by
 	 * "/"
-	 * 
+	 *
 	 * @return <double encoded namespace>"/"<double encoded localname>
 	 */
 	public static String DoubleURLencode(QName qname) {
@@ -100,7 +100,7 @@ public class Util {
 		String localName = Util.DoubleURLencode(qname.getLocalPart());
 		return ns + "/" + localName;
 	}
-	
+
 	public static boolean isRelativeURI(String uri) {
 		URI u;
 		try {
@@ -112,7 +112,7 @@ public class Util {
 		}
 		return !u.isAbsolute();
 	}
-	
+
 	/**
 	 * @param c the element directly nested below a definitions element in XML
 	 */
@@ -125,7 +125,7 @@ public class Util {
 		res = res + "s";
 		return res;
 	}
-	
+
 	public static String getEverythingBetweenTheLastDotAndBeforeId(Class<? extends GenericId> cls) {
 		String res = cls.getName();
 		// Everything between the last "." and before "Id" is the Type
@@ -133,11 +133,11 @@ public class Util {
 		assert (dotIndex >= 0);
 		return res.substring(dotIndex + 1, res.length() - "Id".length());
 	}
-	
+
 	public static String getTypeForElementId(Class<? extends TOSCAElementId> idClass) {
 		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
-	
+
 	/**
 	 * @return Singular type name for the given id. E.g., "ServiceTemplateId"
 	 *         gets "ServiceTemplate"
@@ -145,13 +145,13 @@ public class Util {
 	public static String getTypeForComponentId(Class<? extends TOSCAComponentId> idClass) {
 		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
-	
+
 	/**
 	 * Returns the root path fragment for the given
 	 * AbstractComponentIntanceResource
-	 * 
+	 *
 	 * With trailing slash
-	 * 
+	 *
 	 * @return [ComponentName]s/
 	 */
 	public static String getRootPathFragment(Class<? extends TOSCAComponentId> idClass) {
@@ -179,19 +179,19 @@ public class Util {
 		res = res + "/";
 		return res;
 	}
-	
+
 	/**
 	 * Just calls @link{qname2href}
-	 * 
+	 *
 	 * Introduced because of JSP error
 	 * "The method qname2href(String, Class<? extends TExtensibleElements>, QName) in the type Util is not applicable for the arguments (String, Class<TNodeType>, QName, String)"
 	 */
 	public static String qname2hrefWithName(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
 		return Util.qname2href(repositoryUrl, element, qname, name);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param repositoryUrl the URL to the repository
 	 * @param element the element directly nested below a definitions element in
 	 *            XML
@@ -210,22 +210,22 @@ public class Util {
 		if (qname == null) {
 			return "(none)";
 		}
-		
+
 		String absoluteURL = repositoryUrl + "/" + Util.getURLpathFragmentForCollection(element) + "/" + Util.DoubleURLencode(qname.getNamespaceURI()) + "/" + Util.DoubleURLencode(qname.getLocalPart());
-		
+
 		if (name == null) {
 			// fallback if no name is given
 			name = qname.getLocalPart();
 		}
 		// sanitize name
 		name = Functions.escapeXml(name);
-		
+
 		String res = "<a target=\"_blank\" data-qname=\"" + qname + "\" href=\"" + absoluteURL + "\">" + name + "</a>";
 		return res;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param repositoryUrl the URL to the repository
 	 * @param element the element directly nested below a definitions element in
 	 *            XML
@@ -235,10 +235,10 @@ public class Util {
 	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname) {
 		return Util.qname2href(repositoryUrl, element, qname, null);
 	}
-	
+
 	/**
 	 * Returns a visual rendering of minInstances
-	 * 
+	 *
 	 * @param minInstances the value to render
 	 */
 	public static String renderMinInstances(Integer minInstances) {
@@ -250,10 +250,10 @@ public class Util {
 			return Integer.toString(minInstances);
 		}
 	}
-	
+
 	/**
 	 * Returns a visual rendering of maxInstances
-	 * 
+	 *
 	 * @param maxInstances the value to render
 	 */
 	public static String renderMaxInstances(String maxInstances) {
@@ -269,7 +269,7 @@ public class Util {
 			return maxInstances;
 		}
 	}
-	
+
 	/**
 	 * @return the local name of a Class representing a TOSCA element
 	 */
@@ -290,7 +290,7 @@ public class Util {
 		}
 		return localName;
 	}
-	
+
 	public static <T extends Object> JAXBElement<T> getJAXBElement(Class<T> clazz, T obj) {
 		String namespace = null;
 		XmlRootElement xmlRootElement = clazz.getAnnotation(XmlRootElement.class);
@@ -315,11 +315,11 @@ public class Util {
 		JAXBElement<T> rootElement = new JAXBElement<T>(qname, clazz, obj);
 		return rootElement;
 	}
-	
+
 	/**
 	 * Method similar to {@link
 	 * org.eclipse.winery.repository.Utils.getXMLAsString(Class, Object)}.
-	 * 
+	 *
 	 * Differences:
 	 * <ul>
 	 * <li>XML processing instruction is not included in the header</li>
@@ -329,7 +329,7 @@ public class Util {
 	public static <T extends Object> String getXMLAsString(Class<T> clazz, T obj) throws Exception {
 		// copied from Utils java, but we create an own JAXBcontext here
 		// JAXBSupport cannot be used as this relies on a MockElement, which we do not want to factor out to winery.common
-		
+
 		JAXBContext context;
 		try {
 			// For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
@@ -340,13 +340,13 @@ public class Util {
 		} catch (JAXBException e) {
 			throw new IllegalStateException(e);
 		}
-		
+
 		JAXBElement<T> rootElement = Util.getJAXBElement(clazz, obj);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		m.setProperty(Marshaller.JAXB_FRAGMENT, true);
 		// m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
-		
+
 		StringWriter w = new StringWriter();
 		try {
 			m.marshal(rootElement, w);
@@ -356,7 +356,7 @@ public class Util {
 		String res = w.toString();
 		return res;
 	}
-	
+
 	public static String getXMLAsString(Element el) {
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer t;
@@ -377,15 +377,15 @@ public class Util {
 		}
 		return os.toString();
 	}
-	
+
 	/**
 	 * Determines whether the instance belonging to the given id supports the
 	 * "name" attribute. This cannot be done using the super class as the TOSCA
 	 * specification treats that differently in the case of EntityTemplates
-	 * 
+	 *
 	 * NOTE: The respective subclasses of AbstractComponentInstanceResource have
 	 * to implement {@link org.eclipse.winery.repository.resources.IHasName}
-	 * 
+	 *
 	 * @param id the id to test
 	 * @return true if the TOSCA model class belonging to the given id supports
 	 *         the method "getName()" in addition to "getId()"
@@ -409,13 +409,13 @@ public class Util {
 			}
 		}
 	}
-	
+
 	public static String getLastURIPart(String loc) {
 		int posSlash = loc.lastIndexOf('/');
 		String fileName = loc.substring(posSlash + 1);
 		return fileName;
 	}
-	
+
 	/**
 	 * Determines a color belonging to the given name
 	 */
@@ -431,7 +431,7 @@ public class Util {
 		String colorStr = String.format("#%06x", hash);
 		return colorStr;
 	}
-	
+
 	/**
 	 * Determines the name of the CSS class used for relationshipTypes at
 	 * nodeTemplateRenderer.tag
@@ -443,14 +443,14 @@ public class Util {
 		res = res.replaceAll("[^\\w\\d_]", "_");
 		return res;
 	}
-	
+
 	/**
 	 * @see {@link org.eclipse.winery.common.Util.makeCSSName(String, String)}
 	 */
 	public static String makeCSSName(QName qname) {
 		return Util.makeCSSName(qname.getNamespaceURI(), qname.getLocalPart());
 	}
-	
+
 	public static SortedMap<String, SortedSet<String>> convertQNameListToNamespaceToLocalNameList(List<QName> list) {
 		SortedMap<String, SortedSet<String>> res = new TreeMap<>();
 		for (QName qname : list) {
@@ -463,7 +463,7 @@ public class Util {
 		}
 		return res;
 	}
-	
+
 	public static String namespaceToJavaPackage(String namespace) {
 		URI uri;
 		try {
@@ -473,29 +473,29 @@ public class Util {
 			return "uri.invalid";
 		}
 		StringBuilder sb = new StringBuilder();
-		
+
 		String host = uri.getHost();
 		if (host != null) {
 			Util.addReversed(sb, host, "\\.");
 		}
-		
+
 		String path = uri.getPath();
 		if (!path.equals("")) {
 			if (path.startsWith("/")) {
 				// remove first slash
 				path = path.substring(1);
 			}
-			
+
 			// and then handle the string
 			Util.addAsIs(sb, path, "/");
 		}
-		
+
 		// remove the final dot
 		sb.replace(sb.length() - 1, sb.length(), "");
-		
+
 		return Util.cleanName(sb.toString());
 	}
-	
+
 	private static String cleanName(String s) {
 		// TODO: Integrate with other name cleaning functions. "." should not be replaced as it is used as separator in the java package name
 		// @formatter:off
@@ -505,8 +505,8 @@ public class Util {
 				.replace("-", Util.FORBIDDEN_CHARACTER_REPLACEMENT);
 		// @formatter:on
 	}
-	
-	
+
+
 	/*
 	* Valid chars: See
 	* <ul>
@@ -519,27 +519,27 @@ public class Util {
 	private static final String NCNameChar_RegExp = Util.NCNameStartChar_RegExp + "|[-\\.0-9\u00B7\u0300-\u036F\u203F-\u2040]";
 	private static final Pattern NCNameStartChar_Pattern = Pattern.compile(Util.NCNameStartChar_RegExp);
 	private static final Pattern NCNameChar_RegExp_Pattern = Pattern.compile(Util.NCNameChar_RegExp);
-	
-	
+
+
 	/**
 	 * Removes all non-NCName characters from the given string and returns the
 	 * result
-	 * 
+	 *
 	 * This function should be consistent with
 	 * org.eclipse.winery.common.Util.cleanName(String)
-	 * 
+	 *
 	 * TODO: This method seems to be equal to {@link
 	 * org.eclipse.winery.repository.Utils.createXMLidAsString(String)}. These
 	 * methods should be merged.
-	 * 
+	 *
 	 */
 	public static String makeNCName(String text) {
 		if (StringUtils.isEmpty(text)) {
 			return text;
 		}
-		
+
 		StringBuffer res = new StringBuffer();
-		
+
 		// handle start
 		String start = text.substring(0, 1);
 		Matcher m = Util.NCNameStartChar_Pattern.matcher(start);
@@ -549,7 +549,7 @@ public class Util {
 			// not a valid character
 			res.append("_");
 		}
-		
+
 		// handle remaining characters;
 		for (int i = 1; i < text.length(); i++) {
 			String s = text.substring(i, i + 1);
@@ -561,10 +561,10 @@ public class Util {
 				res.append("_");
 			}
 		}
-		
+
 		return res.toString();
 	}
-	
+
 	private static void addAsIs(StringBuilder sb, String s, String separator) {
 		if (s.isEmpty()) {
 			return;
@@ -575,7 +575,7 @@ public class Util {
 			sb.append(".");
 		}
 	}
-	
+
 	private static void addReversed(StringBuilder sb, String s, String separator) {
 		String[] split = s.split(separator);
 		for (int i = split.length - 1; i >= 0; i--) {
@@ -583,14 +583,14 @@ public class Util {
 			sb.append(".");
 		}
 	}
-	
+
 	/**
 	 * Bridge to client.getType(). Just calls client getType(), used by
 	 * functions.tld.
-	 * 
+	 *
 	 * We suppress compiler warnings as JSP 2.0 do not offer support for
 	 * generics, but we're using JSP 2.0...
-	 * 
+	 *
 	 * @param client the repository client to use
 	 * @param qname the QName to resolve
 	 * @param clazz the class the QName is describing

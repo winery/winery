@@ -17,11 +17,11 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 
 public abstract class AbstractComponentInstanceWithReferencesResource extends AbstractComponentInstanceResource {
-	
+
 	public AbstractComponentInstanceWithReferencesResource(TOSCAComponentId id) {
 		super(id);
 	}
-	
+
 	/**
 	 * Ensures that the presented XML is in line with the stored files
 	 */
@@ -30,23 +30,23 @@ public abstract class AbstractComponentInstanceWithReferencesResource extends Ab
 		this.synchronizeReferences();
 		return super.getXML();
 	}
-	
+
 	@Override
 	public String getDefinitionsAsXMLString() {
 		this.synchronizeReferences();
 		return super.getDefinitionsAsXMLString();
 	}
-	
+
 	@Override
 	public Definitions getDefinitions() {
 		this.synchronizeReferences();
 		return super.getDefinitions();
 	}
-	
+
 	/**
 	 * Synchronizes the artifact references with the files stored in the
 	 * repository
 	 */
 	public abstract void synchronizeReferences();
-	
+
 }

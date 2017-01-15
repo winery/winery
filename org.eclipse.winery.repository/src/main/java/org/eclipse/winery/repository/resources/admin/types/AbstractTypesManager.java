@@ -44,26 +44,26 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Handles longname/shortname by using properties
- * 
+ *
  * FIXME: This class does NOT support dynamic reloading of the underlying
  * Configuration instance
- * 
+ *
  */
 public abstract class AbstractTypesManager extends AbstractAdminResource {
-	
+
 	@Context
 	private UriInfo uriInfo;
-	
+
 	protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractTypesManager.class);
-	
+
 	// hashes from a long type string to the type object holding complete type data
 	private final HashMap<String, TypeWithShortName> hashTypeStringToType;
-	
-	
+
+
 	public AbstractTypesManager(TypesId id) {
 		super(id);
 		// now, this.configuration is filled with stored data
-		
+
 		// copy over information from configuration to internal data structure
 		this.hashTypeStringToType = new HashMap<String, TypeWithShortName>();
 		Iterator<String> keys = this.configuration.getKeys();
@@ -74,29 +74,29 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 			this.hashTypeStringToType.put(key, typeInfo);
 		}
 	}
-	
+
 	protected void addData(String longName, String shortName) {
 		TypeWithShortName t = new TypeWithShortName(longName, shortName);
 		this.addData(t);
 	}
-	
+
 	/**
 	 * Adds data to the internal data structure WITHOUT persisting it
-	 * 
+	 *
 	 * More or less a quick hack to enable adding default types without
 	 * persisting them in the storage
-	 * 
+	 *
 	 * @param t the type to add
 	 */
 	private void addData(TypeWithShortName t) {
 		this.hashTypeStringToType.put(t.getType(), t);
 	}
-	
+
 	public synchronized void addTypeWithShortName(TypeWithShortName type) {
 		this.addData(type);
 		this.configuration.setProperty(type.getType(), type.getShortName());
 	}
-	
+
 	/**
 	 * Removes a type. Will not remove a type added by "addData"
 	 */
@@ -116,7 +116,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 	}
-	
+
 	/**
 	 * Returns a sorted list of all available types
 	 */
@@ -124,7 +124,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 		Collection<TypeWithShortName> res = new TreeSet<TypeWithShortName>(this.hashTypeStringToType.values());
 		return res;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getTypesAsJSONArrayList(@QueryParam("select2") String select2) {
@@ -140,7 +140,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 			return res;
 		}
 	}
-	
+
 	/**
 	 * <b>SIDEEFFECT:</b> If there currently isn't any short type name, it is
 	 * created
@@ -154,7 +154,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 		}
 		return t;
 	}
-	
+
 	/**
 	 * <b>SIDEEFFECT:</b> If there currently isn't any short type name, it is
 	 * created
@@ -171,14 +171,14 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 		}
 		return res;
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getHTML(@Context UriInfo uriInfo) {
 		this.uriInfo = uriInfo;
 		return new Viewable("/jsp/admin/types/types.jsp", this);
 	}
-	
+
 	@POST
 	public Response updateTypeMapping(@FormParam("shortname") String shortName, @FormParam("type") String type) {
 		if (StringUtils.isEmpty(shortName)) {
@@ -193,12 +193,12 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 		this.addTypeWithShortName(tws);
 		return Response.noContent().build();
 	}
-	
+
 	/**
 	 * Required by types.jsp
 	 */
 	public String getURL() {
 		return this.uriInfo.getAbsolutePath().toString();
 	}
-	
+
 }

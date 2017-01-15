@@ -24,18 +24,18 @@ import org.slf4j.LoggerFactory;
 import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class FileUtils {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
-	
-	
+
+
 	/**
 	 * Deletes given path. If path a file, it is directly deleted. If it is a
 	 * directory, the directory is recursively deleted.
-	 * 
+	 *
 	 * Does not try to change read-only files to read-write files
-	 * 
+	 *
 	 * Only uses Java7's nio, does not fall back to Java6.
-	 * 
+	 *
 	 * @param path the path to delete
 	 * @throws IOException
 	 */
@@ -43,7 +43,7 @@ public class FileUtils {
 		if (Files.isDirectory(path)) {
 			try {
 				Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-					
+
 					@Override
 					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 						try {
@@ -53,7 +53,7 @@ public class FileUtils {
 						}
 						return CONTINUE;
 					}
-					
+
 					@Override
 					public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
 						if (exc == null) {
@@ -80,11 +80,11 @@ public class FileUtils {
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates the given directory including its parent directories, if they do
 	 * not exist.
-	 * 
+	 *
 	 * @param path
 	 * @throws IOException
 	 */
@@ -100,11 +100,11 @@ public class FileUtils {
 			Files.createDirectory(path);
 		}
 	}
-	
+
 	// public static Response readContentFromFile(RepositoryFileReference ref) {
 	// try {
 	// Repository.INSTANCE.readContentFromFile(ref);
 	// }
 	// }
-	
+
 }

@@ -33,7 +33,7 @@ import org.eclipse.winery.repository.datatypes.select2.Select2DataWithOptGroups;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
 public class APIResource {
-	
+
 	@GET
 	@Path("getallartifacttemplatesofcontaineddeploymentartifacts")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -41,15 +41,15 @@ public class APIResource {
 		if (StringUtils.isEmpty(serviceTemplateQNameString)) {
 			return Response.status(Status.BAD_REQUEST).entity("servicetemplate has be given as query parameter").build();
 		}
-		
+
 		QName serviceTemplateQName = QName.valueOf(serviceTemplateQNameString);
-		
+
 		ServiceTemplateId serviceTemplateId = new ServiceTemplateId(serviceTemplateQName);
 		if (!Repository.INSTANCE.exists(serviceTemplateId)) {
 			return Response.status(Status.BAD_REQUEST).entity("service template does not exist").build();
 		}
 		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
-		
+
 		Collection<QName> artifactTemplates = new ArrayList<>();
 		List<TNodeTemplate> allNestedNodeTemplates = BackendUtils.getAllNestedNodeTemplates(serviceTemplateResource.getServiceTemplate());
 		for (TNodeTemplate nodeTemplate : allNestedNodeTemplates) {
@@ -58,7 +58,7 @@ public class APIResource {
 				artifactTemplates.addAll(ats);
 			}
 		}
-		
+
 		// convert QName list to select2 data
 		Select2DataWithOptGroups res = new Select2DataWithOptGroups();
 		for (QName qName : artifactTemplates) {
@@ -66,7 +66,7 @@ public class APIResource {
 		}
 		return Response.ok().entity(res.asSortedSet()).build();
 	}
-	
+
 	/**
 	 * Implementation similar to
 	 * getAllArtifactTemplatesOfContainedDeploymentArtifacts. Only difference is
@@ -81,13 +81,13 @@ public class APIResource {
 			return Response.status(Status.BAD_REQUEST).entity("servicetemplate has be given as query parameter").build();
 		}
 		QName serviceTemplateQName = QName.valueOf(serviceTemplateQNameString);
-		
+
 		ServiceTemplateId serviceTemplateId = new ServiceTemplateId(serviceTemplateQName);
 		if (!Repository.INSTANCE.exists(serviceTemplateId)) {
 			return Response.status(Status.BAD_REQUEST).entity("service template does not exist").build();
 		}
 		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
-		
+
 		Collection<QName> artifactTemplates = new ArrayList<>();
 		List<TNodeTemplate> allNestedNodeTemplates = BackendUtils.getAllNestedNodeTemplates(serviceTemplateResource.getServiceTemplate());
 		for (TNodeTemplate nodeTemplate : allNestedNodeTemplates) {
@@ -96,7 +96,7 @@ public class APIResource {
 				artifactTemplates.addAll(ats);
 			}
 		}
-		
+
 		// convert QName list to select2 data
 		Select2DataWithOptGroups res = new Select2DataWithOptGroups();
 		for (QName qName : artifactTemplates) {

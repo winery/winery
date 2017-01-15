@@ -33,14 +33,14 @@ import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeRes
  * TCapabilityDefinition instead of TRequirementDefinition
  */
 public final class CapabilityDefinitionResource extends AbstractReqOrCapDefResource<TCapabilityDefinition> {
-	
+
 	private TCapabilityDefinition capDef;
-	
-	
+
+
 	/**
 	 * Constructor has to follow the pattern of EnetityTResource as the
 	 * constructor is invoked by reflection in EntityWithIdcollectionResource
-	 * 
+	 *
 	 * @param res the resource this req def is nested in. Has to be of Type
 	 *            "NodeTypeResource". Due to the implementation of
 	 *            org.eclipse.winery .repository.resources._support.collections.
@@ -52,14 +52,14 @@ public final class CapabilityDefinitionResource extends AbstractReqOrCapDefResou
 		super(idDetermination, capDef, idx, list, (NodeTypeResource) res, CapabilityDefinitionResource.getConstraints(capDef));
 		this.capDef = capDef;
 	}
-	
+
 	/**
 	 * Quick hack to avoid internal server error
 	 */
 	public CapabilityDefinitionResource(IIdDetermination<TCapabilityDefinition> idDetermination, TCapabilityDefinition capDef, int idx, List<TCapabilityDefinition> list, IPersistable res) {
 		this(idDetermination, capDef, idx, list, (AbstractComponentInstanceResource) res);
 	}
-	
+
 	/**
 	 * Fetch the list of constraints from the given definition. If the list does
 	 * not exist, the list is created an stored in the given capDef
@@ -72,11 +72,11 @@ public final class CapabilityDefinitionResource extends AbstractReqOrCapDefResou
 		}
 		return constraints.getConstraint();
 	}
-	
+
 	public QName getType() {
 		return this.capDef.getCapabilityType();
 	}
-	
+
 	@PUT
 	@Path("type")
 	public Response setType(@FormParam(value = "type") String value) {
@@ -84,7 +84,7 @@ public final class CapabilityDefinitionResource extends AbstractReqOrCapDefResou
 		this.capDef.setCapabilityType(qname);
 		return BackendUtils.persist(this.parent);
 	}
-	
+
 	@Override
 	public String getId(TCapabilityDefinition e) {
 		return e.getName();

@@ -43,7 +43,7 @@ public class GitBasedRepository extends FilebasedRepository {
 	 */
 	private static final Object COMMIT_LOCK = new Object();
 	private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
-	
+
 	private final Repository gitRepo;
 	private final Git git;
 
@@ -70,7 +70,7 @@ public class GitBasedRepository extends FilebasedRepository {
 	/**
 	 * This method is is synchronized with an extra static object (meaning all instances are locked).
 	 * This is to ensure that every commit only has one change.
-	 * 
+	 *
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
 	 */
 	public void addCommit() throws GitAPIException {

@@ -15,5 +15,5 @@ package org.eclipse.winery.repository.resources;
  * Implementors can have DAs attached
  */
 public interface INodeTemplateResourceOrNodeTypeImplementationResource extends INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
-	
+
 }

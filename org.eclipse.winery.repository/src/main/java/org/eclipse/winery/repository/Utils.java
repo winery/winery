@@ -88,10 +88,10 @@ import com.sun.jersey.api.client.WebResource;
  * {@link BackendUtils}
  */
 public class Utils {
-	
+
 	private static final XLogger logger = XLoggerFactory.getXLogger(Utils.class);
-	
-	
+
+
 	public static URI createURI(String uri) {
 		try {
 			return new URI(uri);
@@ -99,39 +99,39 @@ public class Utils {
 			throw new IllegalStateException();
 		}
 	}
-	
-	
+
+
 	// RegExp inspired by http://stackoverflow.com/a/5396246/873282
 	// NameStartChar without ":"
 	// stackoverflow: -dfff, standard: d7fff
 	private static final String RANGE_NCNAMESTARTCHAR = "A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d" + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff" + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF";
 	private static final String REGEX_NCNAMESTARTCHAR = "[" + Utils.RANGE_NCNAMESTARTCHAR + "]";
-	
+
 	private static final String RANGE_NCNAMECHAR = Utils.RANGE_NCNAMESTARTCHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
 	private static final String REGEX_INVALIDNCNAMESCHAR = "[^" + Utils.RANGE_NCNAMECHAR + "]";
-	
-	
+
+
 	/**
 	 * Creates a (valid) XML ID (NCName) based on the passed name
-	 * 
+	 *
 	 * Valid NCNames: http://www.w3.org/TR/REC-xml-names/#NT-NCName /
 	 * http://www.w3.org/TR/xml/#NT-Name http://www.w3.org/TR/xml/#NT-Name
-	 * 
+	 *
 	 */
 	public static XMLId createXMLid(String name) {
 		return new XMLId(Utils.createXMLidAsString(name), false);
 	}
-	
+
 	/**
 	 * Creates a (valid) XML ID (NCName) based on the passed name
-	 * 
+	 *
 	 * Valid NCNames: http://www.w3.org/TR/REC-xml-names/#NT-NCName /
 	 * http://www.w3.org/TR/xml/#NT-Name http://www.w3.org/TR/xml/#NT-Name
-	 * 
+	 *
 	 * TODO: this method seems to be equal to {@link
 	 * org.eclipse.winery.common.Util.makeNCName(String)}. The methods should be
 	 * merged into one.
-	 * 
+	 *
 	 */
 	public static String createXMLidAsString(String name) {
 		String id = name;
@@ -139,29 +139,29 @@ public class Utils {
 			id = "_".concat(id);
 		}
 		// id starts with a valid character
-		
+
 		// before we wipe out all invalid characters, we do a readable
 		// replacement for appropriate characters
 		id = id.replace(' ', '_');
-		
+
 		// keep length of ID, only wipe out invalid characters
 		// alternative: replace invalid characters by URLencoded version. As the
 		// ID is visible only in the URL, this quick hack should be OK
 		// ID is visible only in the URL, this quick hack should be OK
 		id = id.replaceAll(Utils.REGEX_INVALIDNCNAMESCHAR, "_");
-		
+
 		return id;
 	}
-	
+
 	/**
 	 * Returns the plain XML for the selected resource
-	 * 
+	 *
 	 * @param uri
 	 */
 	public static Response getDefinitionsOfSelectedResource(final AbstractComponentInstanceResource resource, final URI uri) {
 		final TOSCAExportUtil exporter = new TOSCAExportUtil();
 		StreamingOutput so = new StreamingOutput() {
-			
+
 			@Override
 			public void write(OutputStream output) throws IOException, WebApplicationException {
 				Map<String, Object> conf = new HashMap<>();
@@ -188,11 +188,11 @@ public class Utils {
 		 */
 		return Response.ok().type(MediaType.APPLICATION_XML).entity(so).build();
 	}
-	
+
 	public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
 		final CSARExporter exporter = new CSARExporter();
 		StreamingOutput so = new StreamingOutput() {
-			
+
 			@Override
 			public void write(OutputStream output) throws IOException, WebApplicationException {
 				try {
@@ -209,7 +209,7 @@ public class Utils {
 		sb.append("\"");
 		return Response.ok().header("Content-Disposition", sb.toString()).type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
 	}
-	
+
 	/**
 	 * @return Singular type name for the given resource. E.g.,
 	 *         "ServiceTemplateResource" gets "ServiceTemplate"
@@ -221,7 +221,7 @@ public class Utils {
 		assert (dotIndex >= 0);
 		return res.substring(dotIndex + 1, res.length() - "Resource".length());
 	}
-	
+
 	/**
 	 * @return Singular type name for the given id. E.g., "ServiceTemplateId"
 	 *         gets "ServiceTemplate"
@@ -229,7 +229,7 @@ public class Utils {
 	public static String getTypeForAdminId(Class<? extends AdminId> idClass) {
 		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
-	
+
 	/**
 	 * @return Singular type name for given AbstractComponentsResource. E.g,
 	 *         "ServiceTemplatesResource" gets "ServiceTemplate"
@@ -241,7 +241,7 @@ public class Utils {
 		assert (dotIndex >= 0);
 		return res.substring(dotIndex + 1, res.length() - "sResource".length());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static Class<? extends TOSCAComponentId> getComponentIdClass(String idClassName) {
 		String pkg = "org.eclipse.winery.common.ids.definitions.";
@@ -264,7 +264,7 @@ public class Utils {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns a class object for ids of components nested in the given
 	 * AbstractComponentsResource
@@ -272,10 +272,10 @@ public class Utils {
 	public static Class<? extends TOSCAComponentId> getComponentIdClassForComponentContainer(Class<? extends AbstractComponentsResource> containerClass) {
 		// the name of the id class is the type + "Id"
 		String idClassName = Utils.getTypeForComponentContainer(containerClass) + "Id";
-		
+
 		return Utils.getComponentIdClass(idClassName);
 	}
-	
+
 	public static Class<? extends TOSCAComponentId> getComponentIdClassForTExtensibleElements(Class<? extends TExtensibleElements> clazz) {
 		// we assume that the clazzName always starts with a T.
 		// Therefore, we fetch everything after the last dot (plus offest 1)
@@ -283,14 +283,14 @@ public class Utils {
 		int dotIndex = idClassName.lastIndexOf('.');
 		assert (dotIndex >= 0);
 		idClassName = idClassName.substring(dotIndex + 2) + "Id";
-		
+
 		return Utils.getComponentIdClass(idClassName);
 	}
-	
-	
+
+
 	private static final String slashEncoded = Util.URLencode("/");
-	
-	
+
+
 	public static String getURLforPathInsideRepo(String pathInsideRepo) {
 		// first encode the whole string
 		String res = Util.URLencode(pathInsideRepo);
@@ -298,14 +298,14 @@ public class Utils {
 		res = res.replaceAll(Utils.slashEncoded, "/");
 		return res;
 	}
-	
-	
+
+
 	/**
 	 * Shared object to map JSONs
 	 */
 	public static final ObjectMapper mapper = new ObjectMapper();
-	
-	
+
+
 	public static String Object2JSON(Object o) {
 		String res;
 		try {
@@ -316,7 +316,7 @@ public class Utils {
 		}
 		return res;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static Class<? extends GenericId> getGenericIdClassForType(String typeIdType) {
 		Class<? extends GenericId> res;
@@ -332,32 +332,32 @@ public class Utils {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * @return the absolute path for the given id
 	 */
 	public static String getAbsoluteURL(GenericId id) {
 		return Prefs.INSTANCE.getResourcePath() + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(id));
 	}
-	
+
 	/**
 	 * @param baseURI the URI from which the path should start
 	 * @param id the generic id to resolve
-	 * 
+	 *
 	 * @return the relative path for the given id
 	 */
 	public static String getRelativeURL(URI baseURI, GenericId id) {
 		String absolutePath = Prefs.INSTANCE.getResourcePath() + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(id));
 		return baseURI.relativize(URI.create(absolutePath)).toString();
 	}
-	
+
 	/**
 	 * @return the absolute path for the given id
 	 */
 	public static String getAbsoluteURL(RepositoryFileReference ref) {
 		return Prefs.INSTANCE.getResourcePath() + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
 	}
-	
+
 	public static URI getAbsoluteURI(GenericId id) {
 		return Utils.createURI(Utils.getAbsoluteURL(id));
 	}
@@ -368,12 +368,12 @@ public class Utils {
 		res = res.replaceAll("\\n", "<br/>");
 		return res;
 	}
-	
+
 	/**
 	 * This method is similar to {@link
 	 * org.eclipse.winery.common.Util.qname2href()}, but treats winery's
 	 * internal ID model instead of the global TOSCA model
-	 * 
+	 *
 	 * @param id the id to create an <code>a href</code> element for
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
@@ -381,26 +381,26 @@ public class Utils {
 		String res = "<a href=\"" + Utils.getAbsoluteURL(id) + "\">" + Functions.escapeXml(id.getXmlId().getDecoded()) + "</a>";
 		return res;
 	}
-	
+
 	public static String artifactTypeQName2href(QName qname) {
 		return Util.qname2href(Prefs.INSTANCE.getResourcePath(), TArtifactType.class, qname);
 	}
-	
+
 	public static String nodeTypeQName2href(QName qname) {
 		return Util.qname2href(Prefs.INSTANCE.getResourcePath(), TNodeType.class, qname);
 	}
-	
+
 	public static String relationshipTypeQName2href(QName qname) {
 		return Util.qname2href(Prefs.INSTANCE.getResourcePath(), TRelationshipType.class, qname);
 	}
-	
+
 	public static String policyTypeQName2href(QName qname) {
 		return Util.qname2href(Prefs.INSTANCE.getResourcePath(), TPolicyType.class, qname);
 	}
-	
+
 	/**
 	 * Returns the middle part of the package name or the JSP location
-	 * 
+	 *
 	 * @param type the type
 	 * @param separator the separator to be used, "." or "/"
 	 * @return string which can be used "in the middle" of a package or of a
@@ -426,10 +426,10 @@ public class Utils {
 		}
 		return location;
 	}
-	
+
 	/**
 	 * Required by topologyedit.jsp
-	 * 
+	 *
 	 * @return all known nodetype resources
 	 */
 	public static Collection<NodeTypeResource> getAllNodeTypeResources() {
@@ -437,10 +437,10 @@ public class Utils {
 		Collection<NodeTypeResource> res = (Collection<NodeTypeResource>) (Collection<?>) new NodeTypesResource().getAll();
 		return res;
 	}
-	
+
 	/**
 	 * Required by topologyedit.jsp
-	 * 
+	 *
 	 * @return all known relation ship type resources
 	 */
 	public static Collection<RelationshipTypeResource> getAllRelationshipTypeResources() {
@@ -448,7 +448,7 @@ public class Utils {
 		Collection<RelationshipTypeResource> res = (Collection<RelationshipTypeResource>) (Collection<?>) new RelationshipTypesResource().getAll();
 		return res;
 	}
-	
+
 	/**
 	 * @return the path to the Winery topology modeler. Required by
 	 *         functions.tld
@@ -456,11 +456,11 @@ public class Utils {
 	public static String getWineryTopologyModelerPath() {
 		return Prefs.INSTANCE.getWineryTopologyModelerPath();
 	}
-	
+
 	/**
 	 * Detect the mime type of the stream. The stream is marked at the beginning
 	 * and reset at the end
-	 * 
+	 *
 	 * @param is the stream
 	 * @param fileName the fileName of the file belonging to the stream
 	 */
@@ -472,25 +472,25 @@ public class Utils {
 		org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md);
 		return mediaType.toString();
 	}
-	
-	
+
+
 	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.valueOf("application/octet-stream");
-	
-	
+
+
 	/**
 	 * Fixes the mediaType if it is too vague (such as application/octet-stream)
-	 * 
+	 *
 	 * @return a more fitting MediaType or the original one if it is appropriate
 	 *         enough
 	 */
 	public static MediaType getFixedMimeType(BufferedInputStream is, String fileName, MediaType mediaType) {
 		if (mediaType.equals(Utils.MEDIATYPE_APPLICATION_OCTET_STREAM)) {
 			// currently, we fix application/octet-stream only
-			
+
 			// TODO: instead of using apache tika, we could hve a user-configured map storing
 			//  * media type
 			//  * file extension
-			
+
 			try {
 				return MediaType.valueOf(Utils.getMimeType(is, fileName));
 			} catch (Exception e) {
@@ -502,16 +502,16 @@ public class Utils {
 			return mediaType;
 		}
 	}
-	
+
 	/**
 	 * Converts the given object to XML.
-	 * 
+	 *
 	 * Used in cases the given element is not annotated with @XmlRoot
-	 * 
+	 *
 	 * We cannot use {@literal Class<? extends TExtensibleElements>} as, for
 	 * instance, {@link TConstraint} does not inherit from
 	 * {@link TExtensibleElements}
-	 * 
+	 *
 	 * @param clazz the Class of the passed object, required if obj is null
 	 * @param obj the object to serialize
 	 */
@@ -521,10 +521,10 @@ public class Utils {
 		// the issue is that we want to have a *formatted* XML
 		// Therefore, we serialize "by hand".
 		String xml = Utils.getXMLAsString(clazz, obj, false);
-		
+
 		return Response.ok().type(MediaType.TEXT_XML).entity(xml).build();
 	}
-	
+
 	public static <T extends Object> String getXMLAsString(Class<T> clazz, T obj, boolean includeProcessingInstruction) {
 		JAXBElement<T> rootElement = Util.getJAXBElement(clazz, obj);
 		Marshaller m = JAXBSupport.createMarshaller(includeProcessingInstruction);
@@ -538,7 +538,7 @@ public class Utils {
 		String res = w.toString();
 		return res;
 	}
-	
+
 	public static String getXMLAsString(Object obj) {
 		if (obj instanceof Element) {
 			// in case the object is a DOM element, we use the DOM functionality
@@ -547,7 +547,7 @@ public class Utils {
 			return Utils.getXMLAsString(obj, false);
 		}
 	}
-	
+
 	public static <T extends Object> String getXMLAsString(T obj, boolean includeProcessingInstruction) {
 		if (obj == null) {
 			return "";
@@ -556,7 +556,7 @@ public class Utils {
 		Class<T> clazz = (Class<T>) obj.getClass();
 		return Utils.getXMLAsString(clazz, obj, includeProcessingInstruction);
 	}
-	
+
 	public static String getAllXSDElementDefinitionsForTypeAheadSelection() {
 		Utils.logger.entry();
 		try {
@@ -565,7 +565,7 @@ public class Utils {
 			Utils.logger.exit();
 		}
 	}
-	
+
 	public static String getAllXSDTypeDefinitionsForTypeAheadSelection() {
 		Utils.logger.entry();
 		try {
@@ -574,16 +574,16 @@ public class Utils {
 			Utils.logger.exit();
 		}
 	}
-	
+
 	public static String getAllXSDefinitionsForTypeAheadSelection(short type) {
 		SortedSet<XSDImportId> allImports = Repository.INSTANCE.getAllTOSCAComponentIds(XSDImportId.class);
-		
+
 		Map<Namespace, Collection<String>> data = new HashMap<Namespace, Collection<String>>();
-		
+
 		for (XSDImportId id : allImports) {
 			XSDImportResource resource = new XSDImportResource(id);
 			Collection<String> allLocalNames = resource.getAllDefinedLocalNames(type);
-			
+
 			Collection<String> list;
 			if ((list = data.get(id.getNamespace())) == null) {
 				// list does not yet exist
@@ -591,16 +591,16 @@ public class Utils {
 				data.put(id.getNamespace(), list);
 			}
 			assert (list != null);
-			
+
 			list.addAll(allLocalNames);
 		}
-		
+
 		ArrayNode rootNode = Utils.mapper.createArrayNode();
-		
+
 		// ensure ordering in JSON object
 		Collection<Namespace> allns = new TreeSet<Namespace>();
 		allns.addAll(data.keySet());
-		
+
 		for (Namespace ns : allns) {
 			Collection<String> localNames = data.get(ns);
 			if (!localNames.isEmpty()) {
@@ -621,14 +621,14 @@ public class Utils {
 				}
 			}
 		}
-		
+
 		try {
 			return Utils.mapper.writeValueAsString(rootNode);
 		} catch (JsonProcessingException e) {
 			throw new IllegalStateException("Could not create JSON", e);
 		}
 	}
-	
+
 	public static Response getResponseForException(Exception e) {
 		String msg;
 		if (e.getCause() != null) {
@@ -639,24 +639,24 @@ public class Utils {
 		Response res = Response.status(Status.INTERNAL_SERVER_ERROR).entity(msg).build();
 		return res;
 	}
-	
+
 	/**
 	 * Returns the stored type for the given template
-	 * 
+	 *
 	 * Goes to the repository to retrieve stored data
-	 * 
+	 *
 	 * @param template the template to determine the type for
 	 */
 	// we suppress "unchecked" as we use Class.forName
 	@SuppressWarnings("unchecked")
 	public static TEntityType getTypeForTemplate(TEntityTemplate template) {
 		QName type = template.getType();
-		
+
 		// Possibilities:
 		// a) try all possibly types whether an appropriate QName exists
 		// b) derive type class from template class. Determine appropriate resource afterwards.
 		// We go for b)
-		
+
 		String instanceResourceClassName = template.getClass().toString();
 		int idx = instanceResourceClassName.lastIndexOf('.');
 		// get everything from ".T", where "." is the last dot
@@ -665,18 +665,18 @@ public class Utils {
 		instanceResourceClassName = instanceResourceClassName.substring(0, instanceResourceClassName.length() - "Template".length());
 		// add "Type"
 		instanceResourceClassName += "Type";
-		
+
 		// an id is required to instantiate the resource
 		String idClassName = "org.eclipse.winery.common.ids.definitions." + instanceResourceClassName + "Id";
-		
+
 		String packageName = "org.eclipse.winery.repository.resources.entitytypes." + instanceResourceClassName.toLowerCase() + "s";
 		// convert from NodeType to NodeTypesResource
 		instanceResourceClassName += "Resource";
 		instanceResourceClassName = packageName + "." + instanceResourceClassName;
-		
+
 		Utils.logger.debug("idClassName: {}", idClassName);
 		Utils.logger.debug("className: {}", instanceResourceClassName);
-		
+
 		// Get instance of id class having "type" as id
 		Class<? extends TOSCAComponentId> idClass;
 		try {
@@ -697,7 +697,7 @@ public class Utils {
 				| IllegalArgumentException | InvocationTargetException e) {
 			throw new IllegalStateException("Could not instantiate type", e);
 		}
-		
+
 		// now instantiate the resource, where the type belongs to
 		Class<? extends AbstractComponentInstanceResource> instanceResourceClass;
 		try {
@@ -718,23 +718,23 @@ public class Utils {
 				| IllegalArgumentException | InvocationTargetException e) {
 			throw new IllegalStateException("Could not instantiate resoruce", e);
 		}
-		
+
 		// read the data from the resource and store it
 		TEntityType entityType = (TEntityType) typeResource.getElement();
-		
+
 		return entityType;
 	}
-	
+
 	/**
 	 * referenced by functions.tld
 	 */
 	public static Boolean isContainerLocallyAvailable() {
 		return Prefs.INSTANCE.isContainerLocallyAvailable();
 	}
-	
+
 	/**
 	 * referenced by functions.tld
-	 * 
+	 *
 	 * We need the bridge as functions (at tld) require a static method. We did
 	 * not want to put two methods in Prefs and therefore, we put the method
 	 * here.
@@ -742,11 +742,11 @@ public class Utils {
 	public static Boolean isRestDocDocumentationAvailable() {
 		return Prefs.INSTANCE.isRestDocDocumentationAvailable();
 	}
-	
+
 	public static boolean isSuccessFulResponse(Response res) {
 		return Status.fromStatusCode(res.getStatus()).getFamily().equals(Family.SUCCESSFUL);
 	}
-	
+
 	/**
 	 * Converts the given String to an integer. Fallback if String is a float.
 	 * If String is an invalid number, "0" is returned
@@ -763,10 +763,10 @@ public class Utils {
 				// do nothing
 			}
 		}
-		
+
 		return intTop;
 	}
-	
+
 	/**
 	 * Checks whether a given resource (with absolute URL!) is available with a
 	 * HEAD request on it.

@@ -44,25 +44,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Generator {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(Generator.class);
-	
+
 	// Placeholder applicable for all files
 	public static final String PLACEHOLDER_JAVA_PACKAGE = "IA_PACKAGE";
 	public static final String PLACEHOLDER_NAMESPACE = "IA_NAMESPACE";
 	public static final String PLACEHOLDER_CLASS_NAME = "IA_CLASS_NAME";
 	public static final String PLACEHOLDER_IA_ARTIFACT_TEMPLATE_UPLOAD_URL = "IA_ARTIFACT_TEMPLATE_UPLOAD_URL";
-	
+
 	// Placeholders in Java Service Files
 	public static final String PLACEHOLDER_GENERATED_WEBSERVICE_METHODS = "GENERATED_WEBSERVICE_METHODS";
-	
+
 	// Template folder relative to resources folder in this project
 	public static final String TEMPLATE_PROJECT_FOLDER = "template/project";
 	public static final String TEMPLATE_JAVA_FOLDER = "template/java";
-	
+
 	private static final String TEMPLATE_JAVA_ABSTRACT_IA_SERVICE = "AbstractIAService.java.template";
 	private static final String TEMPLATE_JAVA_TEMPLATE_SERVICE = "TemplateService.java.template";
-	
+
 	private final TInterface tinterface;
 	private final File workingDir;
 	private final File outDir;
@@ -70,11 +70,11 @@ public class Generator {
 	private final String javaPackage;
 	private final String namespace;
 	private final URL iaArtifactTemplateUploadUrl;
-	
-	
+
+
 	/**
 	 * Creates a new IA Generator instance for the given {@link TInterface}.
-	 * 
+	 *
 	 * @param tinterface TOSCA interface to generate the IA for
 	 * @param packageAndNamespace Package to be used for the generated Java
 	 *            code, e.g. 'org.opentosca.ia'. To generate the respective
@@ -97,11 +97,11 @@ public class Generator {
 		this.name = name;
 		this.workingDir = new File(workingDir.getAbsolutePath() + File.separator + this.name);
 		this.outDir = new File(workingDir.getAbsolutePath());
-		
+
 		if (this.workingDir.exists()) {
 			Generator.LOGGER.error("Workdir " + this.workingDir + " already exits. This might lead to corrupted results if it is not empty!");
 		}
-		
+
 		// Generate Namespace
 		String[] splitPkg = this.javaPackage.split("\\.");
 		String tmpNamespace = "http://";
@@ -114,36 +114,36 @@ public class Generator {
 		}
 		this.namespace = tmpNamespace += "/";
 	}
-	
+
 	/**
 	 * Generates the IA project.
-	 * 
+	 *
 	 * @return The ZIP file containing the maven/eclipse project to be
 	 *         downloaded by the user.
 	 */
 	public File generateProject() {
-		
+
 		try {
 			Path workingDirPath = this.workingDir.toPath();
 			Files.createDirectories(workingDirPath);
-			
+
 			// directory to store the template files to generate the java files from
 			Path javaTemplateDir = workingDirPath.resolve("../java");
 			Files.createDirectories(javaTemplateDir);
-			
+
 			// Copy template project and template java files
 			String s = this.getClass().getResource("").getPath();
 			if (s.contains("jar!")) {
 				Generator.LOGGER.trace("we work on a jar file");
 				Generator.LOGGER.trace("Location of the current class: {}", s);
-				
+
 				// we have a jar file
 				// format: file:/location...jar!...path-in-the-jar
 				// we only want to have location :)
 				int excl = s.lastIndexOf("!");
 				s = s.substring(0, excl);
 				s = s.substring("file:".length());
-				
+
 				try (JarFile jf = new JarFile(s);) {
 					Enumeration<JarEntry> entries = jf.entries();
 					while (entries.hasMoreElements()) {
@@ -178,92 +178,92 @@ public class Generator {
 				// we're running in debug mode, we can work on the plain file system
 				File templateProjectDir = new File(this.getClass().getResource("/" + Generator.TEMPLATE_PROJECT_FOLDER).getFile());
 				FileUtils.copyDirectory(templateProjectDir, this.workingDir);
-				
+
 				File javaTemplatesDir = new File(this.getClass().getResource("/" + Generator.TEMPLATE_JAVA_FOLDER).getFile());
 				FileUtils.copyDirectory(javaTemplatesDir, javaTemplateDir.toFile());
 			}
-			
+
 			// Create Java Code Folder
 			String[] splitPkg = this.javaPackage.split("\\.");
 			String javaFolderString = this.workingDir.getAbsolutePath() + File.separator + "src" + File.separator + "main" + File.separator + "java";
 			for (int i = 0; i < splitPkg.length; i++) {
 				javaFolderString += File.separator + splitPkg[i];
 			}
-			
+
 			// Copy TEMPLATE_JAVA_ABSTRACT_IA_SERVICE
 			Path templateAbstractIAService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_ABSTRACT_IA_SERVICE);
 			File javaAbstractIAService = new File(javaFolderString + File.separator + "AbstractIAService.java");
 			Files.createDirectories(javaAbstractIAService.toPath().getParent());
 			Files.copy(templateAbstractIAService, javaAbstractIAService.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			
+
 			// Copy and rename TEMPLATE_JAVA_TEMPLATE_SERVICE
 			Path templateJavaService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_TEMPLATE_SERVICE);
 			File javaService = new File(javaFolderString + File.separator + this.name + ".java");
 			Files.createDirectories(javaService.toPath().getParent());
 			Files.copy(templateJavaService, javaService.toPath(), StandardCopyOption.REPLACE_EXISTING);
-			
+
 			this.generateJavaFile(javaService);
 			this.updateFilesRecursively(this.workingDir);
 			return this.packageProject();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	private void generateJavaFile(File javaService) throws IOException {
-		
+
 		// Generate methods
 		StringBuilder sb = new StringBuilder();
-		
+
 		for (TOperation op : this.tinterface.getOperation()) {
 			// Annotations
 			sb.append("\t@WebMethod\n");
 			sb.append("\t@SOAPBinding\n");
 			sb.append("\t@Oneway\n");
-			
+
 			// Signatur
 			String operationReturn = "void";
 			sb.append("\tpublic " + operationReturn + " " + op.getName() + "(\n");
-			
+
 			// Parameter
 			boolean first = true;
 			if (op.getInputParameters() != null) {
 				for (TParameter parameter : op.getInputParameters().getInputParameter()) {
 					String parameterName = parameter.getName();
-					
+
 					if (first) {
 						first = false;
 						sb.append("\t\t");
 					} else {
 						sb.append(",\n\t\t");
 					}
-					
+
 					// Generate @WebParam
 					sb.append("@WebParam(name=\"" + parameterName + "\", targetNamespace=\"" + this.namespace + "\") ");
-					
+
 					// Handle required and optional parameters using @XmlElement
 					if (parameter.getRequired().equals(TBoolean.YES)) {
 						sb.append("@XmlElement(required=true)");
 					} else {
 						sb.append("@XmlElement(required=false)");
 					}
-					
+
 					sb.append(" String " + parameterName);
 				}
 			}
 			sb.append("\n\t) {\n");
-			
+
 			// If there are output parameters we generate the respective HashMap
 			boolean outputParamsExist = (op.getOutputParameters() != null) && (!op.getOutputParameters().getOutputParameter().isEmpty());
 			if (outputParamsExist) {
 				sb.append("\t\t// This HashMap holds the return parameters of this operation.\n");
 				sb.append("\t\tfinal HashMap<String,String> returnParameters = new HashMap<String, String>();\n\n");
 			}
-			
+
 			sb.append("\t\t// TODO: Implement your operation here.\n");
-			
+
 			// Generate code to set output parameters
 			if (outputParamsExist) {
 				for (TParameter outputParam : op.getOutputParameters().getOutputParameter()) {
@@ -279,10 +279,10 @@ public class Generator {
 				}
 				sb.append("\n\n\t\tsendResponse(returnParameters);\n");
 			}
-			
+
 			sb.append("\t}\n\n");
 		}
-		
+
 		// Read file and replace placeholders
 		Charset cs = Charset.defaultCharset();
 		List<String> lines = new ArrayList<>();
@@ -291,27 +291,27 @@ public class Generator {
 			line = line.replaceAll(Generator.PLACEHOLDER_GENERATED_WEBSERVICE_METHODS, sb.toString());
 			lines.add(line);
 		}
-		
+
 		// Write file
 		OpenOption[] options = new OpenOption[] {StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING};
 		Files.write(javaService.toPath(), lines, cs, options);
 	}
-	
+
 	/**
 	 * Iterates recursively through all the files in the project working
 	 * directory and tries to replace the global placeholders.
-	 * 
+	 *
 	 * @param folderOrFile to start with
 	 */
 	private void updateFilesRecursively(File folderOrFile) {
 		if (folderOrFile.isFile()) {
-			
+
 			if (folderOrFile.getAbsolutePath().endsWith(".jar")) {
 				return;
 			}
-			
+
 			Generator.LOGGER.trace("Updating file " + folderOrFile);
-			
+
 			try {
 				// Read file and replace placeholders
 				Charset cs = Charset.defaultCharset();
@@ -323,15 +323,15 @@ public class Generator {
 					line = line.replaceAll(Generator.PLACEHOLDER_IA_ARTIFACT_TEMPLATE_UPLOAD_URL, this.iaArtifactTemplateUploadUrl.toString());
 					lines.add(line);
 				}
-				
+
 				// Write file
 				OpenOption[] options = new OpenOption[] {StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING};
 				Files.write(folderOrFile.toPath(), lines, cs, options);
-				
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		} else {
 			Generator.LOGGER.trace("Updating folder " + folderOrFile);
 			for (File childFile : folderOrFile.listFiles()) {
@@ -339,11 +339,11 @@ public class Generator {
 			}
 		}
 	}
-	
+
 	/**
 	 * Packages the generated project into a ZIP file which is stored in outDir
 	 * and has the name of the Project.
-	 * 
+	 *
 	 * @return ZIP file
 	 */
 	private File packageProject() {
@@ -351,23 +351,23 @@ public class Generator {
 			File packagedProject = new File(this.outDir.getAbsoluteFile() + File.separator + this.name + ".zip");
 			FileOutputStream fileOutputStream = new FileOutputStream(packagedProject);
 			final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", fileOutputStream);
-			
+
 			this.addFilesRecursively(this.workingDir.getAbsoluteFile(), this.workingDir.getAbsoluteFile().getAbsolutePath() + File.separator, zos);
-			
+
 			zos.finish();
 			zos.close();
-			
+
 			return packagedProject;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Recursive Helper function for packageProject()
-	 * 
+	 *
 	 * @param folderOrFile to add into the archive
 	 * @param baseDir
 	 * @param zos ArchiveOutputStream to add the files to

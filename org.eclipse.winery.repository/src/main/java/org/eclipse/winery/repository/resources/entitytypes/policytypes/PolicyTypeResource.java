@@ -25,42 +25,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class PolicyTypeResource extends EntityTypeResource {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PolicyTypeResource.class);
-	
-	
+
+
 	/**
 	 * Constructor has to be public because of test cases
 	 */
 	public PolicyTypeResource(PolicyTypeId id) {
 		super(id);
 	}
-	
+
 	/**
 	 * Convenience method to avoid casting at the caller's side.
 	 */
 	public TPolicyType getPolicyType() {
 		return (TPolicyType) this.getElement();
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TPolicyType();
 	}
-	
+
 	@Path("appliesto/")
 	public AppliesToResource getAppliesTo() {
 		return new AppliesToResource(this);
 	}
-	
+
 	@Path("language/")
 	public LanguageResource getLanguage() {
 		return new LanguageResource(this);
 	}
-	
+
 	@Override
 	public SortedSet<Select2OptGroup> getListOfAllInstances() {
 		return this.getListOfAllInstances(PolicyTemplateId.class);
 	}
-	
+
 }

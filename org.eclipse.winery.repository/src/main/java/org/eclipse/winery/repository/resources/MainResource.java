@@ -56,84 +56,84 @@ import com.sun.jersey.multipart.FormDataParam;
  */
 @Path("/")
 public class MainResource {
-	
+
 	@Path("API/")
 	public APIResource api() {
 		return new APIResource();
 	}
-	
+
 	@Path("artifacttemplates/")
 	public ArtifactTemplatesResource artifacttemplates() {
 		return new ArtifactTemplatesResource();
 	}
-	
+
 	@Path("artifacttypes/")
 	public ArtifactTypesResource artifactypes() {
 		return new ArtifactTypesResource();
 	}
-	
+
 	@Path("admin/")
 	public AdminTopResource admin() {
 		return new AdminTopResource();
 	}
-	
+
 	@Path("capabilitytypes/")
 	public CapabilityTypesResource capabilitytypes() {
 		return new CapabilityTypesResource();
 	}
-	
+
 	@Path("imports/")
 	public ImportsResource imports() {
 		return new ImportsResource();
 	}
-	
+
 	@Path("nodetypes/")
 	public NodeTypesResource nodetypes() {
 		return new NodeTypesResource();
 	}
-	
+
 	@Path("nodetypeimplementations/")
 	public NodeTypeImplementationsResource nodetypeimplementations() {
 		return new NodeTypeImplementationsResource();
 	}
-	
+
 	@Path("other/")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getOtherElements() {
 		return new Viewable("/jsp/otherElements.jsp");
 	}
-	
+
 	@Path("policytemplates/")
 	public PolicyTemplatesResource policytemplates() {
 		return new PolicyTemplatesResource();
 	}
-	
+
 	@Path("policytypes/")
 	public PolicyTypesResource policytypes() {
 		return new PolicyTypesResource();
 	}
-	
+
 	@Path("relationshiptypes/")
 	public RelationshipTypesResource relationshiptypes() {
 		return new RelationshipTypesResource();
 	}
-	
+
 	@Path("requirementtypes/")
 	public RequirementTypesResource requirementtypes() {
 		return new RequirementTypesResource();
 	}
-	
+
 	@Path("relationshiptypeimplementations/")
 	public RelationshipTypeImplementationsResource relationshiptypeimplementations() {
 		return new RelationshipTypeImplementationsResource();
 	}
-	
+
 	@Path("servicetemplates/")
 	public ServiceTemplatesResource servicetemplates() {
 		return new ServiceTemplatesResource();
 	}
-	
+
 	/**
 	 * Returns the main page of winery.
 	 */
@@ -142,7 +142,7 @@ public class MainResource {
 	public Response onGet() {
 		return Response.temporaryRedirect(Utils.createURI("servicetemplates/")).build();
 	}
-	
+
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@RestDoc(methodDescription = "Imports the given CSAR (sent by simplesinglefileupload.jsp)")
@@ -168,7 +168,7 @@ public class MainResource {
 			return Response.status(Status.BAD_REQUEST).entity(errors).build();
 		}
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -185,5 +185,5 @@ public class MainResource {
 			return Response.status(Status.BAD_REQUEST).entity(errors).build();
 		}
 	}
-	
+
 }

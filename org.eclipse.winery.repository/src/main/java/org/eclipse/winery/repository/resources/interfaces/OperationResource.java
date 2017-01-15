@@ -26,14 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperationResource extends EntityWithIdResource<TOperation> {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(OperationResource.class);
-	
-	
+
+
 	public OperationResource(IIdDetermination<TOperation> idDetermination, TOperation o, int idx, List<TOperation> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
 	}
-	
+
 	/**
 	 * @return TOperation object for the corresponding object of operationName
 	 *         in the operation list contained in the given interface. null if
@@ -48,7 +48,7 @@ public class OperationResource extends EntityWithIdResource<TOperation> {
 		}
 		return null;
 	}
-	
+
 	@Path("inputparameters/")
 	public ParametersResource getInputparameters() {
 		InputParameters inputParameters = this.o.getInputParameters();
@@ -58,7 +58,7 @@ public class OperationResource extends EntityWithIdResource<TOperation> {
 		}
 		return new ParametersResource(inputParameters.getInputParameter(), this.res);
 	}
-	
+
 	@Path("outputparameters/")
 	public ParametersResource getOutputparameters() {
 		OutputParameters outputParameters = this.o.getOutputParameters();

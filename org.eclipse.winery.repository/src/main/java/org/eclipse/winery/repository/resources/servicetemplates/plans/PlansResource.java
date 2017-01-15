@@ -57,19 +57,19 @@ import org.slf4j.LoggerFactory;
  * Presents the plans nested in one Service Template
  */
 public class PlansResource extends EntityWithIdCollectionResource<PlanResource, TPlan> {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlansResource.class);
-	
-	
+
+
 	public PlansResource(List<TPlan> plans, ServiceTemplateResource res) {
 		super(PlanResource.class, TPlan.class, plans, res);
 	}
-	
+
 	@Override
 	public Viewable getHTML() {
 		return new Viewable("/jsp/servicetemplates/plans/plans.jsp", new PlansResourceData(this.list));
 	}
-	
+
 	@POST
 	@RestDoc(methodDescription = "<p>Linked plans are currently not supported. Existing plans with the same id are overwritten</p> <p>@return JSON with .tableData: Array with row data for dataTable</p>")
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
@@ -94,23 +94,23 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		if (StringUtils.isEmpty(language)) {
 			return Response.status(Status.BAD_REQUEST).entity("planLanguage must be given").build();
 		}
-		
+
 		boolean bpmn4toscaMode = org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20.equals(language);
 		if (!bpmn4toscaMode) {
 			if (uploadedInputStream == null) {
 				return Response.status(Status.BAD_REQUEST).entity("file must be given").build();
 			}
 		}
-		
+
 		// A plan carries both a name and an ID
 		// To be user-friendly, we create the ID based on the name
 		// the drawback is, that we do not allow two plans with the same name
 		// during creation, but allow renaming plans to the same name (as we do
 		// not allow ID renaming)
 		String xmlId = Utils.createXMLidAsString(name);
-		
+
 		// BEGIN: Store plan file
-		
+
 		// Determine Id
 		PlansId plansId = new PlansId((ServiceTemplateId) ((ServiceTemplateResource) this.res).getId());
 		PlanId planId = new PlanId(plansId, new XMLId(xmlId, false));
@@ -124,7 +124,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			}
 		}
-		
+
 		String fileName;
 		if (bpmn4toscaMode) {
 			fileName = xmlId + Constants.SUFFIX_BPMN4TOSCA;
@@ -138,7 +138,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			// We use the filename also as local file name. Alternatively, we could use the xml id
 			// With URL encoding, this should not be an issue
 			fileName = Util.URLencode(fileDetail.getFileName());
-			
+
 			// Really store it
 			RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
 			try {
@@ -148,7 +148,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			}
 		}
 		// END: Store plan file
-		
+
 		TPlan plan = new TPlan();
 		plan.setId(xmlId);
 		plan.setName(name);
@@ -156,7 +156,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		plan.setPlanLanguage(language);
 		PlansResource.setPlanModelReference(plan, planId, fileName);
 		this.list.add(plan);
-		
+
 		// prepare result
 		JsonFactory jsonFactory = new JsonFactory();
 		StringWriter sw = new StringWriter();
@@ -181,7 +181,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			PlansResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().build();
 		}
-		
+
 		Response res = BackendUtils.persist(this.res);
 		if (res.getStatus() == 204) {
 			// everything OK, return created
@@ -190,14 +190,14 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			return res;
 		}
 	}
-	
+
 	static void setPlanModelReference(TPlan plan, PlanId planId, String fileName) {
 		PlanModelReference pref = new PlanModelReference();
 		// Set path relative to Definitions/ path inside CSAR.
 		pref.setReference("../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(planId)) + fileName);
 		plan.setPlanModelReference(pref);
 	}
-	
+
 	@Override
 	public String getId(TPlan plan) {
 		return plan.getId();

@@ -34,14 +34,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ParametersResource extends EntityWithIdCollectionResource<ParameterResource, TParameter> {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ParametersResource.class);
-	
-	
+
+
 	public ParametersResource(List<TParameter> parameters, IPersistable typeResource) {
 		super(ParameterResource.class, TParameter.class, parameters, typeResource);
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
@@ -57,7 +57,7 @@ public class ParametersResource extends EntityWithIdCollectionResource<Parameter
 		if (StringUtils.isEmpty(type)) {
 			return Response.status(Status.BAD_REQUEST).entity("type must not be null").build();
 		}
-		
+
 		TParameter param = new TParameter();
 		param.setName(name);
 		param.setType(type);
@@ -80,20 +80,20 @@ public class ParametersResource extends EntityWithIdCollectionResource<Parameter
 			}
 		}
 		param.setRequired(tb);
-		
+
 		this.list.add(param);
-		
+
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	@Override
 	public String getId(TParameter entity) {
 		return entity.getName();
 	}
-	
+
 	@Override
 	public Viewable getHTML() {
 		throw new IllegalStateException("Not yet implemented.");
 	}
-	
+
 }

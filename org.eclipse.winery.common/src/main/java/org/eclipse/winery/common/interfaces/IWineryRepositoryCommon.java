@@ -24,23 +24,23 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 /**
  * Enables access to the winery repository via Ids defined in package
  * {@link org.eclipse.winery.common.ids}
- * 
+ *
  * Methods are moved from
  * {@link org.eclipse.winery.repository.backend.IGenericRepository} to here as
  * soon there is an implementation for them. The ultimate goal is to eliminate
  * IGenericRepository
- * 
+ *
  * These methods are shared between {@link IWineryRepository} and
  * {@link org.eclipse.winery.repository.backend.IRepository}
  */
 public interface IWineryRepositoryCommon {
-	
+
 	/**
 	 * Deletes the TOSCA element <b>and all sub elements</b> referenced by the
 	 * given id from the repository
-	 * 
+	 *
 	 * We assume that each id is a directory
-	 * 
+	 *
 	 * @param id
 	 */
 	public void forceDelete(GenericId id) throws IOException;

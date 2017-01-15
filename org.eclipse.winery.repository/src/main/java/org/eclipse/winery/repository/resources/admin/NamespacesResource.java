@@ -56,17 +56,17 @@ import org.slf4j.LoggerFactory;
  * Manages prefixes for the namespaces
  */
 public class NamespacesResource extends AbstractAdminResource {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(NamespacesResource.class);
-	
+
 	public final static NamespacesResource INSTANCE = new NamespacesResource();
-	
+
 	private Integer nsCount = 0;
-	
-	
+
+
 	private NamespacesResource() {
 		super(new NamespacesId());
-		
+
 		// globally set prefixes
 		// if that behavior is not desired, the code has to be moved to "generatePrefix" which checks for existence, ...
 		this.configuration.setProperty("http://www.w3.org/2001/XMLSchema", "xsd");
@@ -74,7 +74,7 @@ public class NamespacesResource extends AbstractAdminResource {
 		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE, "tosca");
 		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery");
 	}
-	
+
 	private Collection<String> getAllPrefixes() {
 		Iterator<String> keys = this.configuration.getKeys();
 		HashSet<String> res = new HashSet<String>();
@@ -85,17 +85,17 @@ public class NamespacesResource extends AbstractAdminResource {
 		}
 		return res;
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response getHTML() {
 		Viewable viewable = new Viewable("/jsp/admin/namespaces.jsp", this);
 		return Response.ok().entity(viewable).build();
 	}
-	
+
 	/**
 	 * Sets / overwrites prefix/namespace mapping
-	 * 
+	 *
 	 * In case the prefix is already bound to another namespace, BAD_REQUEST is
 	 * returned.
 	 */
@@ -122,10 +122,10 @@ public class NamespacesResource extends AbstractAdminResource {
 		this.configuration.setProperty(namespace, prefix);
 		return Response.noContent().build();
 	}
-	
+
 	/**
 	 * Deletes given namespace from the repository
-	 * 
+	 *
 	 * @param URI to delete. The namespace is URLencoded.
 	 * @return
 	 */
@@ -142,7 +142,7 @@ public class NamespacesResource extends AbstractAdminResource {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * SIDEFFECT: URI is added to list of known namespaces if it did not exist
 	 * before
@@ -151,7 +151,7 @@ public class NamespacesResource extends AbstractAdminResource {
 		String ns = namespace.getDecoded();
 		return NamespacesResource.getPrefix(ns);
 	}
-	
+
 	@Path("{namespace}")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -159,7 +159,7 @@ public class NamespacesResource extends AbstractAdminResource {
 		URI = Util.URLdecode(URI);
 		return NamespacesResource.getPrefix(URI);
 	}
-	
+
 	/**
 	 * SIDEFFECT: URI is added to list of known namespaces if it did not exist
 	 * before
@@ -175,11 +175,11 @@ public class NamespacesResource extends AbstractAdminResource {
 		}
 		return prefix;
 	}
-	
+
 	private static String generatePrefix(String namespace) {
 		String prefix = null;
 		Collection<String> allPrefixes = NamespacesResource.INSTANCE.getAllPrefixes();
-		
+
 		// TODO: generate prefix using URI (and not "arbitrary" prefix)
 		do {
 			prefix = String.format("ns%d", NamespacesResource.INSTANCE.nsCount);
@@ -187,11 +187,11 @@ public class NamespacesResource extends AbstractAdminResource {
 		} while (allPrefixes.contains(prefix));
 		return prefix;
 	}
-	
+
 	/**
 	 * Returns the list of all namespaces registered with his manager. It could
 	 * be incomplete, if entries have been added manually to the repository
-	 * 
+	 *
 	 * @return all namespaces registered with this manager.
 	 */
 	private HashSet<Namespace> getRegisteredNamespaces() {
@@ -204,7 +204,7 @@ public class NamespacesResource extends AbstractAdminResource {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Returns the list of all namespaces registered with his manager and used
 	 * at component instances.
@@ -263,20 +263,20 @@ public class NamespacesResource extends AbstractAdminResource {
 		Collections.sort(list);
 		return list;
 	}
-	
+
 	/**
 	 * This method is required because static methods cannot be accessed by EL
-	 * 
+	 *
 	 * @return see getNamespaces()
 	 */
 	public Collection<Namespace> getNamespacesForJSP() {
 		return NamespacesResource.getNamespaces();
 	}
-	
+
 	/**
 	 * Returns the list of all namespaces registered with his manager and used
 	 * at component instances.
-	 * 
+	 *
 	 * @return a JSON list containing the non-encoded URIs of each known
 	 *         namespace
 	 */
@@ -284,15 +284,15 @@ public class NamespacesResource extends AbstractAdminResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getNamespacesAsJSONlist() {
 		Collection<Namespace> namespaces = NamespacesResource.getNamespaces();
-		
+
 		// We now have all namespaces
 		// We need to convert from Namespace to String
-		
+
 		TreeSet<String> stringNamespaces = new TreeSet<String>();
 		for (Namespace ns : namespaces) {
 			stringNamespaces.add(ns.getDecoded());
 		}
-		
+
 		String res;
 		try {
 			res = Utils.mapper.writeValueAsString(stringNamespaces);
@@ -302,10 +302,10 @@ public class NamespacesResource extends AbstractAdminResource {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Checks whether a prefix is registered for a namespace
-	 * 
+	 *
 	 * Used at CSARImporter
 	 */
 	public boolean getIsPrefixKnownForNamespace(String namespace) {

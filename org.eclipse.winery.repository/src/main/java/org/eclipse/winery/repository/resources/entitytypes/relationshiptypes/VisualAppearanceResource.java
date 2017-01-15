@@ -43,27 +43,27 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.sun.jersey.api.view.Viewable;
 
 public class VisualAppearanceResource extends GenericVisualAppearanceResource {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(VisualAppearanceResource.class);
-	
+
 	private static final QName QNAME_ARROWHEAD_SOURCE = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "sourceArrowHead");
 	private static final QName QNAME_ARROWHEAD_TARGET = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "targetArrowHead");
 	private static final QName QNAME_DASH = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "dash");
 	private static final QName QNAME_LINEWIDTH = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "linewidth");
 	private static final QName QNAME_HOVER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "hovercolor");
-	
-	
+
+
 	public VisualAppearanceResource(RelationshipTypeResource res, Map<QName, String> map, RelationshipTypeId parentId) {
 		super(res, map, new VisualAppearanceId(parentId));
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response getHTML() {
 		Viewable viewable = new Viewable("/jsp/entitytypes/relationshiptypes/visualappearance.jsp", this);
 		return Response.ok().entity(viewable).build();
 	}
-	
+
 	@GET
 	@RestDoc(methodDescription = "@return JSON object to be used at jsPlumb.registerConnectionType('NAME', <data>)")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -73,10 +73,10 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		try {
 			JsonGenerator jg = jsonFactory.createGenerator(sw);
 			jg.writeStartObject();
-			
+
 			jg.writeFieldName("connector");
 			jg.writeString("Flowchart");
-			
+
 			jg.writeFieldName("paintStyle");
 			jg.writeStartObject();
 			jg.writeFieldName("lineWidth");
@@ -103,43 +103,43 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 				}
 			}
 			jg.writeEndObject();
-			
+
 			jg.writeFieldName("hoverPaintStyle");
 			jg.writeStartObject();
 			jg.writeFieldName("strokeStyle");
 			jg.writeObject(this.getHoverColor());
 			jg.writeEndObject();
-			
+
 			// BEGIN: Overlays
-			
+
 			jg.writeFieldName("overlays");
 			jg.writeStartArray();
-			
+
 			// source arrow head
 			String head = this.getSourceArrowHead();
 			if (!head.equals("none")) {
 				jg.writeStartArray();
 				jg.writeString(head);
-				
+
 				jg.writeStartObject();
-				
+
 				jg.writeFieldName("location");
 				jg.writeNumber(0);
-				
+
 				// arrow should point towards the node and not away from it
 				jg.writeFieldName("direction");
 				jg.writeNumber(-1);
-				
+
 				jg.writeFieldName("width");
 				jg.writeNumber(20);
-				
+
 				jg.writeFieldName("length");
 				jg.writeNumber(12);
-				
+
 				jg.writeEndObject();
 				jg.writeEndArray();
 			}
-			
+
 			// target arrow head
 			head = this.getTargetArrowHead();
 			if (!head.equals("none")) {
@@ -155,7 +155,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 				jg.writeEndObject();
 				jg.writeEndArray();
 			}
-			
+
 			// Type in brackets on the arrow
 			jg.writeStartArray();
 			jg.writeString("Label");
@@ -167,13 +167,13 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			jg.writeNumber(0.5);
 			jg.writeEndObject();
 			jg.writeEndArray();
-			
+
 			jg.writeEndArray();
-			
+
 			// END: Overlays
-			
+
 			jg.writeEndObject();
-			
+
 			jg.close();
 		} catch (Exception e) {
 			VisualAppearanceResource.LOGGER.error(e.getMessage(), e);
@@ -182,7 +182,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		String res = sw.toString();
 		return Response.ok(res).build();
 	}
-	
+
 	private String getOtherAttributeWithDefault(QName qname, String def) {
 		String res = this.otherAttributes.get(qname);
 		if (StringUtils.isEmpty(res)) {
@@ -191,13 +191,13 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			return res;
 		}
 	}
-	
+
 	/* * * source arrow head * * */
-	
+
 	public String getSourceArrowHead() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, Defaults.DEFAULT_RT_ARROWHEAD_SOURCE);
 	}
-	
+
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Path("sourcearrowhead")
@@ -208,13 +208,13 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, config);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	/* * * target arrow head * * */
-	
+
 	public String getTargetArrowHead() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, Defaults.DEFAULT_RT_ARROWHEAD_TARGET);
 	}
-	
+
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Path("targetarrowhead")
@@ -225,7 +225,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, config);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	/* * *
 	 *
 	 * stroke dash array / represents the line
@@ -235,11 +235,11 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	 * "The dashstyle attribute is specified as an array of strokes and spaces, where each value is some multiple of the width of the Connector"
 	 *
 	 * * * */
-	
+
 	public String getDash() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_DASH, Defaults.DEFAULT_RT_DASH);
 	}
-	
+
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Path("dash")
@@ -250,22 +250,22 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		this.otherAttributes.put(VisualAppearanceResource.QNAME_DASH, config);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	/* * * stroke/line width * * */
-	
+
 	public String getLineWidth() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_LINEWIDTH, Defaults.DEFAULT_RT_LINEWIDTH);
 	}
-	
+
 	/* * * color * * */
-	
+
 	/**
 	 * read by topologytemplateeditor.jsp via ${it.color}
 	 */
 	public String getColor() {
 		return BackendUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_COLOR, this.otherAttributes, this.res);
 	}
-	
+
 	@PUT
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Path("color")
@@ -273,14 +273,14 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		this.otherAttributes.put(QNames.QNAME_COLOR, color);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	/**
 	 * read by topologytemplateeditor.jsp via ${it.hoverColor}
 	 */
 	public String getHoverColor() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_HOVER_COLOR, Defaults.DEFAULT_RT_HOVER_COLOR);
 	}
-	
+
 	@PUT
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Path("hovercolor")

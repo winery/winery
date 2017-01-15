@@ -29,19 +29,19 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 public class PlansResourceData {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlansResourceData.class);
-	
+
 	// data: [ [id, pre, name, type, lang]* ]
 	private String embeddedPlansTableData;
-	
+
 	// data: [ [id, pre, name, type, lang, reference]* ]
 	private String linkedPlansTableData;
-	
-	
+
+
 	/**
 	 * Data object for the JSP
-	 * 
+	 *
 	 * @param plans the plans this resource manages
 	 */
 	public PlansResourceData(List<TPlan> plans) {
@@ -56,10 +56,10 @@ public class PlansResourceData {
 		try {
 			JsonGenerator jGeneratorEmbedded = jsonFactory.createGenerator(embeddedPlansTableDataSW);
 			JsonGenerator jGeneratorLinked = jsonFactory.createGenerator(linkedPlansTableDataSW);
-			
+
 			jGeneratorEmbedded.writeStartArray();
 			jGeneratorLinked.writeStartArray();
-			
+
 			for (TPlan plan : plans) {
 				String name = plan.getName();
 				if (name == null) {
@@ -82,7 +82,7 @@ public class PlansResourceData {
 					gen = jGeneratorLinked;
 					writeReference = true;
 				}
-				
+
 				gen.writeStartArray();
 				gen.writeString(plan.getId());
 				gen.writeString(""); // precondition
@@ -94,10 +94,10 @@ public class PlansResourceData {
 				}
 				gen.writeEndArray();
 			}
-			
+
 			jGeneratorEmbedded.writeEndArray();
 			jGeneratorLinked.writeEndArray();
-			
+
 			jGeneratorEmbedded.close();
 			embeddedPlansTableDataSW.close();
 			jGeneratorLinked.close();
@@ -116,21 +116,21 @@ public class PlansResourceData {
 		this.embeddedPlansTableData = embeddedPlansTableDataSW.toString();
 		this.linkedPlansTableData = linkedPlansTableDataSW.toString();
 	}
-	
+
 	public String getEmbeddedPlansTableData() {
 		return this.embeddedPlansTableData;
 	}
-	
+
 	public String getLinkedPlansTableData() {
 		return this.linkedPlansTableData;
 	}
-	
+
 	public Collection<TypeWithShortName> getPlanTypes() {
 		return PlanTypesManager.INSTANCE.getTypes();
 	}
-	
+
 	public Collection<TypeWithShortName> getPlanLanguages() {
 		return PlanLanguagesManager.INSTANCE.getTypes();
 	}
-	
+
 }

@@ -86,20 +86,20 @@ import java.util.zip.ZipOutputStream;
  * BufferedReader/BufferedWriter
  */
 public class FilebasedRepository extends AbstractRepository implements IRepositoryAdministration {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(FilebasedRepository.class);
-	
+
 	protected final Path repositoryRoot;
-	
+
 	// convenience variables to have a clean code
 	private final FileSystem fileSystem;
 	private final FileSystemProvider provider;
-	
-	
+
+
 	private Path makeAbsolute(Path relativePath) {
 		return this.repositoryRoot.resolve(relativePath);
 	}
-	
+
 	@Override
 	public boolean flagAsExisting(GenericId id) {
 		Path path = this.id2AbsolutePath(id);
@@ -111,12 +111,12 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		}
 		return true;
 	}
-	
+
 	private Path id2AbsolutePath(GenericId id) {
 		Path relativePath = this.fileSystem.getPath(BackendUtils.getPathInsideRepo(id));
 		return this.makeAbsolute(relativePath);
 	}
-	
+
 	/**
 	 * Converts the given reference to an absolute path of the underlying
 	 * FileSystem
@@ -124,9 +124,9 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	public Path ref2AbsolutePath(RepositoryFileReference ref) {
 		return this.id2AbsolutePath(ref.getParent()).resolve(ref.getFileName());
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param repositoryLocation a string pointing to a location on the file
 	 *            system. May be null.
 	 */
@@ -135,7 +135,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		this.fileSystem = this.repositoryRoot.getFileSystem();
 		this.provider = this.fileSystem.provider();
 	}
-	
+
 	protected Path determineRepositoryPath(String repositoryLocation) {
 		Path repositoryPath;
 		if (repositoryLocation == null) {
@@ -166,11 +166,11 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		}
 		return repositoryPath;
 	}
-	
+
 	public static File getDefaultRepositoryFilePath() {
 		return new File(org.apache.commons.io.FileUtils.getUserDirectory(), Constants.DEFAULT_REPO_NAME);
 	}
-	
+
 	private Path createDefaultRepositoryPath() {
 		File repo = null;
 		boolean operationalFileSystemAccess;
@@ -182,9 +182,9 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			// access
 			operationalFileSystemAccess = false;
 		}
-		
+
 		// operationalFileSystemAccess = false;
-		
+
 		Path repositoryPath;
 		if (operationalFileSystemAccess) {
 			try {
@@ -198,10 +198,10 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			// we do not have access to the file system
 			throw new IllegalStateException("No write access to file system");
 		}
-		
+
 		return repositoryPath;
 	}
-	
+
 	@Override
 	public void forceDelete(RepositoryFileReference ref) throws IOException {
 		Path relativePath = this.fileSystem.getPath(BackendUtils.getPathInsideRepo(ref));
@@ -223,7 +223,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			}
 		}
 	}
-	
+
 	@Override
 	public void forceDelete(GenericId id) throws IOException {
 		try {
@@ -302,7 +302,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		boolean result = Files.exists(absolutePath);
 		return result;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -319,7 +319,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		FileUtils.createDirectory(path.getParent());
 		Files.write(path, content.getBytes());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -335,7 +335,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		Path targetPath = this.ref2AbsolutePath(ref);
 		// ensure that parent directory exists
 		FileUtils.createDirectory(targetPath.getParent());
-		
+
 		try {
 			Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IllegalStateException e) {
@@ -355,7 +355,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	public boolean exists(RepositoryFileReference ref) {
 		return Files.exists(this.ref2AbsolutePath(ref));
 	}
-	
+
 	@Override
 	public <T extends TOSCAComponentId> SortedSet<T> getAllTOSCAComponentIds(Class<T> idClass) {
 		SortedSet<T> res = new TreeSet<T>();
@@ -366,9 +366,9 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			return res;
 		}
 		assert (Files.isDirectory(dir));
-		
+
 		final OnlyNonHiddenDirectories onhdf = new OnlyNonHiddenDirectories();
-		
+
 		// list all directories contained in this directory
 		try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir, onhdf)) {
 			for (Path nsP : ds) {
@@ -403,10 +403,10 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		} catch (IOException e) {
 			FilebasedRepository.LOGGER.debug("Cannot close ds", e);
 		}
-		
+
 		return res;
 	}
-	
+
 	@Override
 	public SortedSet<RepositoryFileReference> getContainedFiles(GenericId id) {
 		Path dir = this.id2AbsolutePath(id);
@@ -426,11 +426,11 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		}
 		return res;
 	}
-	
+
 	@Override
 	public Configuration getConfiguration(RepositoryFileReference ref) {
 		Path path = this.ref2AbsolutePath(ref);
-		
+
 		PropertiesConfiguration configuration = new PropertiesConfiguration();
 		if (Files.exists(path)) {
 			try (Reader r = Files.newBufferedReader(path, Charset.defaultCharset())) {
@@ -440,15 +440,15 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				throw new IllegalStateException("Could not read config file", e);
 			}
 		}
-		
+
 		configuration.addConfigurationListener(new AutoSaveListener(path, configuration));
-		
+
 		// We do NOT implement reloading as the configuration is only accessed
 		// in JAX-RS resources, which are created on a per-request basis
-		
+
 		return configuration;
 	}
-	
+
 	/**
 	 * @return null if an error occurred
 	 */
@@ -474,7 +474,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		}
 		return res;
 	}
-	
+
 	@Override
 	public <T extends TOSCAElementId> SortedSet<T> getNestedIds(GenericId ref, Class<T> idClass) {
 		Path dir = this.id2AbsolutePath(ref);
@@ -510,7 +510,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		}
 		return res;
 	}
-	
+
 	@Override
 	// below, toscaComponents is an array, which is used in an iterator
 	// As Java does not allow generic arrays, we have to suppress the warning when fetching an element out of the list
@@ -570,14 +570,14 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		}
 		return res;
 	}
-	
+
 	@Override
 	public void doDump(OutputStream out) throws IOException {
 		final ZipOutputStream zout = new ZipOutputStream(out);
 		final int cutLength = this.repositoryRoot.toString().length() + 1;
-		
+
 		Files.walkFileTree(this.repositoryRoot, new SimpleFileVisitor<Path>() {
-			
+
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
 				if (dir.endsWith(".git")) {
@@ -586,7 +586,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 					return FileVisitResult.CONTINUE;
 				}
 			}
-			
+
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 				String name = file.toString().substring(cutLength);
@@ -605,7 +605,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		});
 		zout.close();
 	}
-	
+
 	/**
 	 * Removes all files and dirs except the .git directory
 	 */
@@ -613,13 +613,13 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	public void doClear() {
 		try {
 			DirectoryStream.Filter<Path> noGitDirFilter = new DirectoryStream.Filter<Path>() {
-				
+
 				@Override
 				public boolean accept(Path entry) throws IOException {
 					return !(entry.getFileName().toString().equals(".git"));
 				}
 			};
-			
+
 			DirectoryStream<Path> ds = Files.newDirectoryStream(this.repositoryRoot, noGitDirFilter);
 			for (Path p : ds) {
 				FileUtils.forceDelete(p);
@@ -629,7 +629,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void doImport(InputStream in) {
 		ZipInputStream zis = new ZipInputStream(in);
@@ -646,7 +646,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			FilebasedRepository.LOGGER.error(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -654,7 +654,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	public long getSize(RepositoryFileReference ref) throws IOException {
 		return Files.size(this.ref2AbsolutePath(ref));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -664,7 +664,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		FileTime res = Files.getLastModifiedTime(path);
 		return res;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -674,5 +674,5 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		InputStream res = Files.newInputStream(path);
 		return res;
 	}
-	
+
 }

@@ -40,13 +40,13 @@ import com.sun.jersey.api.view.Viewable;
  * Used by relationship types and node types
  */
 public class InstanceStatesResource {
-	
+
 	private TopologyGraphElementEntityTypeResource typeResource;
 	private TTopologyElementInstanceStates instanceStates;
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 * @param instanceStates the instanceStates to manage
 	 * @param typeResource the type resource, where the instance states are
 	 *            managed. This reference is required to fire "persist()" in
@@ -56,13 +56,13 @@ public class InstanceStatesResource {
 		this.instanceStates = instanceStates;
 		this.typeResource = typeResource;
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getHTML() {
 		return new Viewable("/jsp/entitytypes/instancestates.jsp", this);
 	}
-	
+
 	public List<String> getInstanceStates() {
 		List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
 		ArrayList<String> states = new ArrayList<String>(instanceStates.size());
@@ -71,7 +71,7 @@ public class InstanceStatesResource {
 		}
 		return states;
 	}
-	
+
 	@DELETE
 	@Path("{instanceState}")
 	public Response deleteInstanceState(@PathParam("instanceState") String instanceStateToRemove) {
@@ -79,9 +79,9 @@ public class InstanceStatesResource {
 			return Response.status(Status.BAD_REQUEST).entity("null instance to remove").build();
 		}
 		instanceStateToRemove = Util.URLdecode(instanceStateToRemove);
-		
+
 		// InstanceState does not override "equals()", therefore we have to manually remove it
-		
+
 		List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
 		Iterator<InstanceState> iterator = instanceStates.iterator();
 		boolean found = false;
@@ -90,25 +90,25 @@ public class InstanceStatesResource {
 				found = true;
 			}
 		}
-		
+
 		if (!found) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
-		
+
 		iterator.remove();
-		
+
 		return BackendUtils.persist(this.typeResource);
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addInstanceState(@FormParam("state") String state) {
 		if (StringUtils.isEmpty(state)) {
 			return Response.notAcceptable(null).build();
 		}
-		
+
 		// InstanceState does not override "equals()", therefore we have to manually check for existance
-		
+
 		List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
 		Iterator<InstanceState> iterator = instanceStates.iterator();
 		boolean found = false;
@@ -117,17 +117,17 @@ public class InstanceStatesResource {
 				found = true;
 			}
 		}
-		
+
 		if (found) {
 			// no error, just return
 			return Response.noContent().build();
 		}
-		
+
 		InstanceState instanceState = new InstanceState();
 		instanceState.setState(state);
 		instanceStates.add(instanceState);
-		
+
 		return BackendUtils.persist(this.typeResource);
 	}
-	
+
 }

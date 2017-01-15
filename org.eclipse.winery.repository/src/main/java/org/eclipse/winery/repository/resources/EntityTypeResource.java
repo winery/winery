@@ -31,18 +31,18 @@ import org.eclipse.winery.repository.datatypes.select2.Select2OptGroup;
 import org.eclipse.winery.repository.resources.entitytypes.properties.PropertiesDefinitionResource;
 
 public abstract class EntityTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
-	
+
 	protected EntityTypeResource(TOSCAComponentId id) {
 		super(id);
 	}
-	
+
 	@Override
 	public void copyIdToFields(TOSCAComponentId id) {
 		TEntityType entityType = this.getEntityType();
 		entityType.setTargetNamespace(id.getNamespace().getDecoded());
 		entityType.setName(id.getXmlId().getDecoded());
 	}
-	
+
 	/**
 	 * Convenience method to avoid casting. Required by
 	 * PropertiesDefinitionResource's jsp
@@ -50,7 +50,7 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 	public TEntityType getEntityType() {
 		return (TEntityType) this.element;
 	}
-	
+
 	/**
 	 * Models PropertiesDefinition
 	 */
@@ -58,28 +58,28 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 	public PropertiesDefinitionResource getPropertiesDefinitionResource() {
 		return new PropertiesDefinitionResource(this);
 	}
-	
+
 	/**
 	 * Used by children to implement getListOfAllInstances()
 	 */
 	protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends TOSCAComponentId> clazz) {
 		Select2DataWithOptGroups data = new Select2DataWithOptGroups();
-		
+
 		Collection<? extends TOSCAComponentId> instanceIds = BackendUtils.getAllElementsRelatedWithATypeAttribute(clazz, this.id.getQName());
-		
+
 		for (TOSCAComponentId instanceId : instanceIds) {
 			String groupText = instanceId.getNamespace().getDecoded();
 			String text = BackendUtils.getName(instanceId);
 			data.add(groupText, instanceId.getQName().toString(), text);
 		}
-		
+
 		return data.asSortedSet();
 	}
-	
+
 	/**
 	 * Returns an array suitable for processing in a {@code select2} field See
 	 * {@link http://ivaynberg.github.io/select2}
-	 * 
+	 *
 	 * Each element: {id: "{ns}localname", text: "name/id"}
 	 */
 	@Path("instances/")
@@ -89,5 +89,5 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 		Response res = Response.status(Status.INTERNAL_SERVER_ERROR).entity("not yet implemented").build();
 		throw new WebApplicationException(res);
 	}
-	
+
 }

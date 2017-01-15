@@ -15,12 +15,12 @@ package org.eclipse.winery.common.constants;
  * Defines namespace constants not available in Java7's XMLConstants
  */
 public class Namespaces {
-	
+
 	public static final String TOSCA_NAMESPACE = "http://docs.oasis-open.org/tosca/ns/2011/12";
 	public static final String TOSCA_WINERY_EXTENSIONS_NAMESPACE = "http://www.opentosca.org/winery/extensions/tosca/2013/02/12";
-	
+
 	// XML Schema namespace is defined at Java7's XMLConstants.W3C_XML_SCHEMA_NS_URI
-	
+
 	public static final String URI_BPMN20_MODEL = "http://www.omg.org/spec/BPMN/20100524/MODEL";
 	public static final String URI_BPMN4TOSCA_20 = "http://www.opentosca.org/bpmn4tosca";
 	public static final String URI_BPEL20_ABSTRACT = "http://docs.oasis-open.org/wsbpel/2.0/process/abstract";

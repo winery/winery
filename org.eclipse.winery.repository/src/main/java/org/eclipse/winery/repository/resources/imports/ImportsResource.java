@@ -25,7 +25,7 @@ import org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportsReso
  * resource naming
  */
 public class ImportsResource {
-	
+
 	@Path("{id}/")
 	public AbstractComponentsResource getXSDsResource(@PathParam("id") String id) {
 		// once: decoding for browser locations
@@ -40,5 +40,5 @@ public class ImportsResource {
 			return new GenericImportsResource(id);
 		}
 	}
-	
+
 }

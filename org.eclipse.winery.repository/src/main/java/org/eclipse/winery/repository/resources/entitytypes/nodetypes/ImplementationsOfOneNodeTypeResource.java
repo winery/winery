@@ -29,25 +29,25 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneType {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationsOfOneNodeTypeResource.class);
-	
-	
+
+
 	/**
 	 * The constructor is different from the usual constructors as this resource
 	 * does NOT store own data, but retrieves its data solely from the
 	 * associated node type
-	 * 
+	 *
 	 * @param nodeTypeId the node type id, where this list of implementations
 	 *            belongs to
 	 */
 	public ImplementationsOfOneNodeTypeResource(NodeTypeId nodeTypeId) {
 		super(nodeTypeId);
 	}
-	
+
 	/**
 	 * required by implementations.jsp
-	 * 
+	 *
 	 * @return for each node type implementation implementing the associated
 	 *         node type
 	 */
@@ -59,7 +59,7 @@ public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneTy
 		try {
 			JsonGenerator jGenerator = jsonFactory.createGenerator(tableDataSW);
 			jGenerator.writeStartArray();
-			
+
 			Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, this.getTypeId().getQName());
 			for (NodeTypeImplementationId ntiID : allNodeTypeImplementations) {
 				jGenerator.writeStartArray();
@@ -77,17 +77,17 @@ public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneTy
 		}
 		return res;
 	}
-	
+
 	@Override
 	public String getType() {
 		return "nodetype";
 	}
-	
+
 	@Override
 	public String getTypeStr() {
 		return "Node Type";
 	}
-	
+
 	@Override
 	public Response getJSON() {
 		Collection<NodeTypeImplementationId> allImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, this.getTypeId().getQName());
@@ -97,5 +97,5 @@ public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneTy
 		}
 		return Response.ok().entity(res).build();
 	}
-	
+
 }

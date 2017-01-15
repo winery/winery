@@ -25,7 +25,7 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 public class ArtifactTypesResource extends AbstractComponentsResource<ArtifactTypeResource> {
-	
+
 	// This cannot be used as the INSTANCE is per startup of the whole
 	// application
 	// We could do some checking for the number of ArtifactTypeResources or
@@ -33,7 +33,7 @@ public class ArtifactTypesResource extends AbstractComponentsResource<ArtifactTy
 	//
 	// private final HashMap<String, ArtifactTypeResource> fileExtensionMapping
 	// = new ArtifactTypesResource().getFileExtensionMapping();
-	
+
 	/**
 	 * @return a mapping from file extension to artifact type resources
 	 */
@@ -47,7 +47,7 @@ public class ArtifactTypesResource extends AbstractComponentsResource<ArtifactTy
 	// }
 	// return res;
 	// }
-	
+
 	@GET
 	// should be "QName", but that MIME type is not available. XLink is too
 	// complicated for our setup
@@ -65,13 +65,13 @@ public class ArtifactTypesResource extends AbstractComponentsResource<ArtifactTy
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Returns the first matching ArtifactTypeResource for the given file
 	 * extension. Returns null if no such ArtifactType can be found
-	 * 
+	 *
 	 * The case of the extension is ignored.
-	 * 
+	 *
 	 * This is more a DAO method
 	 */
 	public ArtifactTypeResource getArtifactTypeForExtension(String extension) {
@@ -86,5 +86,5 @@ public class ArtifactTypesResource extends AbstractComponentsResource<ArtifactTy
 		}
 		return res;
 	}
-	
+
 }

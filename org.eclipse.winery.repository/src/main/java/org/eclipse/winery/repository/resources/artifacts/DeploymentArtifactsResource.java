@@ -23,20 +23,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeploymentArtifactsResource extends GenericArtifactsResource<DeploymentArtifactResource, TDeploymentArtifact> {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentArtifactsResource.class);
-	
+
 	private List<TDeploymentArtifact> deploymentArtifacts;
-	
-	
+
+
 	public DeploymentArtifactsResource(List<TDeploymentArtifact> deploymentArtifact, INodeTemplateResourceOrNodeTypeImplementationResource res) {
 		super(DeploymentArtifactResource.class, TDeploymentArtifact.class, deploymentArtifact, res);
 		this.deploymentArtifacts = deploymentArtifact;
 	}
-	
+
 	/**
 	 * Determines the list of DAs belonging to the given node template.
-	 * 
+	 *
 	 * If no DAs are existing, an empty list is created in the model for the
 	 * node template
 	 */
@@ -50,11 +50,11 @@ public class DeploymentArtifactsResource extends GenericArtifactsResource<Deploy
 		res = deploymentArtifacts.getDeploymentArtifact();
 		return res;
 	}
-	
+
 	public DeploymentArtifactsResource(TNodeTemplate nodeTemplate, INodeTemplateResourceOrNodeTypeImplementationResource res) {
 		this(DeploymentArtifactsResource.getDeploymentArtifacts(nodeTemplate), res);
 	}
-	
+
 	@Override
 	public Collection<DeploymentArtifactResource> getAllArtifactResources() {
 		Collection<DeploymentArtifactResource> res = new ArrayList<DeploymentArtifactResource>(this.deploymentArtifacts.size());
@@ -64,10 +64,10 @@ public class DeploymentArtifactsResource extends GenericArtifactsResource<Deploy
 		}
 		return res;
 	}
-	
+
 	@Override
 	public String getId(TDeploymentArtifact entity) {
 		return entity.getName();
 	}
-	
+
 }

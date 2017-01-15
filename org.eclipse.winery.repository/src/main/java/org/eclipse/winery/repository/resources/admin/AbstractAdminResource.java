@@ -21,15 +21,15 @@ import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
 
 /**
  * Instance of one admin resource
- * 
+ *
  * Offers a configuration object to store data
  */
 public abstract class AbstractAdminResource {
-	
+
 	protected final AdminId id;
 	protected Configuration configuration;
-	
-	
+
+
 	/**
 	 * @param id the id of the element rendered by this resource
 	 */
@@ -37,7 +37,7 @@ public abstract class AbstractAdminResource {
 		this.id = id;
 		this.configuration = Repository.INSTANCE.getConfiguration(id);
 	}
-	
+
 	@DELETE
 	public Response onDelete() {
 		return BackendUtils.delete(this.id);
