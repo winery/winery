@@ -439,7 +439,7 @@ public class Util {
 	}
 
 	/**
-	 * @see {@link org.eclipse.winery.common.Util.makeCSSName(String, String)}
+	 * @see {@link Util#makeCSSName(java.lang.String, java.lang.String)}
 	 */
 	public static String makeCSSName(QName qname) {
 		return Util.makeCSSName(qname.getNamespaceURI(), qname.getLocalPart());

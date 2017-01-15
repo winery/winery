@@ -21,18 +21,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
+
+import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jersey.api.view.Viewable;
 
 public class InterfacesResource extends EntityWithIdCollectionResource<InterfaceResource, TInterface> {
 
@@ -64,8 +65,7 @@ public class InterfacesResource extends EntityWithIdCollectionResource<Interface
 
 	/**
 	 * Implementation base: <br />
-	 * {@link org.eclipse.winery.repository.resources.AbstractComponentResource.
-	 * onPost(String)}
+	 * {@link AbstractComponentsResource#onPost(java.lang.String, java.lang.String)}
 	 *
 	 * @return entity: id of the stored interface
 	 */

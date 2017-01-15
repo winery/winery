@@ -630,7 +630,7 @@ public class ModelUtilities {
 	/**
 	 * This method instantiates a {@link TRelationshipTemplate} for a given {@link TRelationshipType}.
 	 *
-	 * @param nodeType
+	 * @param relationshipType
 	 *            the {@link TRelationshipType} used for the {@link TRelationshipTemplate} instantiation.
 	 * @param sourceNodeTemplate
 	 *            the source {@link TNodeTemplate} of the connection

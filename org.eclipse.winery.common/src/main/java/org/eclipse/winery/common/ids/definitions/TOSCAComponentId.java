@@ -45,7 +45,7 @@ public abstract class TOSCAComponentId extends GenericId {
 
 	/**
 	 * Creates a new id based on strings. This constructor is required for
-	 * {@link AbstractComponentsResource}
+	 * {@link org.eclipse.winery.repository.resources.AbstractComponentsResource}
 	 *
 	 * @param ns the namespace to be used
 	 * @param id the id to be used

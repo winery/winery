@@ -98,7 +98,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * If the parent of the reference does not exist, it is created.
 	 *
 	 * @param ref the reference to the file
-	 * @param content the content to put into the file
+	 * @param inputStream the content to put into the file
 	 * @throws IOException if something goes wrong
 	 */
 	void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;

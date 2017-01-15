@@ -59,7 +59,7 @@ public class XSDImportsResource extends AbstractComponentsResource<XSDImportReso
 
 	/**
 	 * @param nsString the namesapce as String
-	 * @param returnTypes true: return ElementTypes, false: return Elements
+	 * @param getTypes true: return ElementTypes, false: return Elements
 	 */
 	private Set<String> getAllElementLocalNamesAsSet(final String nsString, final boolean getTypes) {
 		Set<XSDImportId> importsOfNS = this.getImportsOfNS(nsString);

@@ -31,7 +31,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
@@ -99,6 +98,8 @@ import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeRes
 import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.requirementtypes.RequirementTypeResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Document;
@@ -177,7 +178,6 @@ public class TOSCAExportUtil {
 	 *            updated during the export
 	 * @return a collection of TOSCAcomponentIds referenced by the given
 	 *         component
-	 * @throws JAXBException
 	 */
 	protected Collection<TOSCAComponentId> exportTOSCA(TOSCAComponentId id, OutputStream out, Map<RepositoryFileReference, String> referencesToPathInCSARMap, Map<String, Object> exportConfiguration) throws IOException, JAXBException {
 		this.referencesToPathInCSARMap = referencesToPathInCSARMap;
@@ -186,8 +186,6 @@ public class TOSCAExportUtil {
 
 	/**
 	 * Called when the entry resource is definitions backed
-	 *
-	 * @throws JAXBException
 	 */
 	private void writeDefinitionsElement(Definitions entryDefinitions, OutputStream out) throws JAXBException {
 		Marshaller m = JAXBSupport.createMarshaller(true);
@@ -364,7 +362,7 @@ public class TOSCAExportUtil {
 	 * We name this method differently to prevent wrong calling due to
 	 * inheritance
 	 *
-	 * @param definitionsElement the parent XML element
+	 * @param id the id to search its children for referenced elements
 	 */
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(TOSCAComponentId id) {
 		Collection<TOSCAComponentId> referencedTOSCAComponentIds;

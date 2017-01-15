@@ -59,7 +59,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 
 
 	/**
-	 * @param clazz the class of EntityT. Required as it is not possible to call
+	 * @param entityTClazz the class of EntityT. Required as it is not possible to call
 	 *            new EntityT (see http://stackoverflow.com/a/1090488/873282)
 	 * @param list the list of entities contained in this resource. Has to be
 	 *            typed <Object> as not all TOSCA elements in the specification

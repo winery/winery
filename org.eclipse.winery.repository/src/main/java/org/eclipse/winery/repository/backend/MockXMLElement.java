@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * It has to be in src/main as src/test is not compiled during production, but
  * the jaxbcontext is initialized in src/test and cannot be updated in src/main
  *
- * Included in {@link oorg.eclipse.winery.repository.JAXBSupport.initContext()}
+ * Included in {@link org.eclipse.winery.repository.JAXBSupport.initContext()}
  */
 @XmlRootElement
 public class MockXMLElement {

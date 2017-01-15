@@ -78,7 +78,7 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 
 	/**
 	 * Returns an array suitable for processing in a {@code select2} field See
-	 * {@link http://ivaynberg.github.io/select2}
+	 * <a href="http://ivaynberg.github.io/select2">http://ivaynberg.github.io/select2</a>
 	 *
 	 * Each element: {id: "{ns}localname", text: "name/id"}
 	 */

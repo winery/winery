@@ -129,7 +129,7 @@ public class Utils {
 	 * http://www.w3.org/TR/xml/#NT-Name http://www.w3.org/TR/xml/#NT-Name
 	 *
 	 * TODO: this method seems to be equal to {@link
-	 * org.eclipse.winery.common.Util.makeNCName(String)}. The methods should be
+	 * Util#makeNCName(java.lang.String)}. The methods should be
 	 * merged into one.
 	 *
 	 */
@@ -155,8 +155,6 @@ public class Utils {
 
 	/**
 	 * Returns the plain XML for the selected resource
-	 *
-	 * @param uri
 	 */
 	public static Response getDefinitionsOfSelectedResource(final AbstractComponentInstanceResource resource, final URI uri) {
 		final TOSCAExportUtil exporter = new TOSCAExportUtil();
@@ -452,8 +450,8 @@ public class Utils {
 	 * Detect the mime type of the stream. The stream is marked at the beginning
 	 * and reset at the end
 	 *
-	 * @param is the stream
-	 * @param fileName the fileName of the file belonging to the stream
+	 * @param bis the stream
+	 * @param fn the fileName of the file belonging to the stream
 	 */
 	public static String getMimeType(BufferedInputStream bis, String fn) throws IOException {
 		AutoDetectParser parser = new AutoDetectParser();

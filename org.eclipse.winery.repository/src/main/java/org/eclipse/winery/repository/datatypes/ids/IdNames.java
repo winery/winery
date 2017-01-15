@@ -12,7 +12,7 @@
 package org.eclipse.winery.repository.datatypes.ids;
 
 /**
- * This class is the brother of {@link org.eclipse.winery.common.id.IdNames}
+ * This class is the brother of {@link org.eclipse.winery.common.ids.IdNames}
  *
  * It includes all id names used additionally in the local ids
  */

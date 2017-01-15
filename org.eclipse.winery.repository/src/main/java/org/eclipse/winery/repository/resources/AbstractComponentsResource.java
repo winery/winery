@@ -113,7 +113,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * Creates a new component instance in the given namespace
 	 *
 	 * @param namespace plain namespace
-	 * @param id plain id
+	 * @param name plain id
 	 * @param ignored this parameter is ignored, but necessary for
 	 *            {@link ArtifactTemplatesResource} to be able to accept the
 	 *            artifact type at a post
