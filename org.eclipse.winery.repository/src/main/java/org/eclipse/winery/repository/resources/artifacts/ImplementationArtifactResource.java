@@ -59,7 +59,13 @@ public class ImplementationArtifactResource extends GenericArtifactResource<Impl
 	}
 
 	public ImplementationArtifactResource(ImplementationArtifact a, List<ImplementationArtifact> implementationArtifacts, IPersistable res) {
-		this(e -> e.getName(), a, implementationArtifacts.indexOf(a), implementationArtifacts, res);
+		this(new IIdDetermination<ImplementationArtifact>() {
+
+			@Override
+			public String getId(ImplementationArtifact e) {
+				return e.getName();
+			}
+		}, a, implementationArtifacts.indexOf(a), implementationArtifacts, res);
 	}
 
 	public ImplementationArtifact getImplementationArtifact() {

@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.admin;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -19,6 +21,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -95,7 +98,13 @@ public class RepositoryAdminResource {
 	@GET
 	@Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
 	public Response dumpRepository() {
-		StreamingOutput so = output -> ((IRepositoryAdministration) Repository.INSTANCE).doDump(output);
+		StreamingOutput so = new StreamingOutput() {
+
+			@Override
+			public void write(OutputStream output) throws IOException, WebApplicationException {
+				((IRepositoryAdministration) Repository.INSTANCE).doDump(output);
+			}
+		};
 		return Response.ok().header("Content-Disposition", "attachment;filename=\"repository.zip\"").type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
 	}
 }
