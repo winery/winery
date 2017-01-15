@@ -466,7 +466,7 @@ function generateLifeCycleInterface() {
 			<option value="${iface}"${selected}>${iface}</option>
 		</c:forEach>
 		</select>
-		<button id="generateiabtn" class="btn btn-default btn-xs" data-toggle="modal" data-target="#generateiamodal">Generate Implementation Artifact</button>
+		<button id="generateiabtnOpenModal" class="btn btn-default btn-xs" data-toggle="modal" data-target="#generateiamodal">Generate Implementation Artifact</button>
 		<button id="generatelifecycleifacetn" class="btn btn-default btn-xs" onclick="generateLifeCycleInterface();"${generatelifcecycleifactebtnDisabled}>Generate lifecycle interface</button>
 	</div>
 
