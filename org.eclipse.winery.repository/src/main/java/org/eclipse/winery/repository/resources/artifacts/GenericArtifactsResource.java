@@ -43,6 +43,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
@@ -466,9 +467,6 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	}
 
 
-	private final String NS_OPENTOSCA_WAR_TYPE = "http://www.uni-stuttgart.de/opentosca";
-
-
 	private void storeProperties(ArtifactTemplateResource artifactTemplateResource, TOSCAComponentId typeId, String name) {
 		// We generate the properties by hand instead of using JAX-B as using JAX-B causes issues at org.eclipse.winery.common.ModelUtilities.getPropertiesKV(TEntityTemplate):
 		// getAny() does not always return "w3c.dom.element" anymore
@@ -482,20 +480,20 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			return;
 		}
 		Document doc = builder.newDocument();
-		Element root = doc.createElementNS(this.NS_OPENTOSCA_WAR_TYPE, "WSProperties");
+		Element root = doc.createElementNS(Namespaces.OPENTOSCA_WAR_TYPE, "WSProperties");
 		doc.appendChild(root);
 
-		Element element = doc.createElementNS(this.NS_OPENTOSCA_WAR_TYPE, "ServiceEndpoint");
+		Element element = doc.createElementNS(Namespaces.OPENTOSCA_WAR_TYPE, "ServiceEndpoint");
 		Text text = doc.createTextNode("/services/" + name + "Port");
 		element.appendChild(text);
 		root.appendChild(element);
 
-		element = doc.createElementNS(this.NS_OPENTOSCA_WAR_TYPE, "PortType");
+		element = doc.createElementNS(Namespaces.OPENTOSCA_WAR_TYPE, "PortType");
 		text = doc.createTextNode("{" + typeId.getNamespace().getDecoded() + "}" + name);
 		element.appendChild(text);
 		root.appendChild(element);
 
-		element = doc.createElementNS(this.NS_OPENTOSCA_WAR_TYPE, "InvocationType");
+		element = doc.createElementNS(Namespaces.OPENTOSCA_WAR_TYPE, "InvocationType");
 		text = doc.createTextNode("SOAP/HTTP");
 		element.appendChild(text);
 		root.appendChild(element);

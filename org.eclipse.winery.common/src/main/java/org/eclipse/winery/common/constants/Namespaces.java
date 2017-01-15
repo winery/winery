@@ -18,6 +18,7 @@ public class Namespaces {
 
 	public static final String TOSCA_NAMESPACE = "http://docs.oasis-open.org/tosca/ns/2011/12";
 	public static final String TOSCA_WINERY_EXTENSIONS_NAMESPACE = "http://www.opentosca.org/winery/extensions/tosca/2013/02/12";
+	public static final String OPENTOSCA_WAR_TYPE = "http://www.uni-stuttgart.de/opentosca";
 
 	// XML Schema namespace is defined at Java7's XMLConstants.W3C_XML_SCHEMA_NS_URI
 
