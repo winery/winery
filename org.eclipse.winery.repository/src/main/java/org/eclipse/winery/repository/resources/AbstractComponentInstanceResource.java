@@ -14,7 +14,6 @@ package org.eclipse.winery.repository.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -287,20 +286,16 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			return Utils.getCSARofSelectedResource(this);
 		}
 
-		StreamingOutput so = new StreamingOutput() {
-
-			@Override
-			public void write(OutputStream output) throws IOException, WebApplicationException {
-				TOSCAExportUtil exporter = new TOSCAExportUtil();
-				// we include everything related
-				Map<String, Object> conf = new HashMap<>();
-				try {
-					exporter.exportTOSCA(AbstractComponentInstanceResource.this.id, output, conf);
-				} catch (JAXBException e) {
-					throw new WebApplicationException(e);
-				}
-			}
-		};
+		StreamingOutput so = output -> {
+            TOSCAExportUtil exporter = new TOSCAExportUtil();
+            // we include everything related
+            Map<String, Object> conf = new HashMap<>();
+            try {
+                exporter.exportTOSCA(AbstractComponentInstanceResource.this.id, output, conf);
+            } catch (JAXBException e) {
+                throw new WebApplicationException(e);
+            }
+        };
 		return Response.ok().type(MediaType.TEXT_XML).entity(so).build();
 	}
 

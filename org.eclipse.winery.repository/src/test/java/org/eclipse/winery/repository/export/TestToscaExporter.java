@@ -55,20 +55,16 @@ public class TestToscaExporter {
 	@Test
 	public void checkTOSCAExport() throws Exception {
 		@SuppressWarnings("unused")
-		StreamingOutput so = new StreamingOutput() {
-
-			@Override
-			public void write(OutputStream output) throws IOException, WebApplicationException {
-				TOSCAExportUtil exporter = new TOSCAExportUtil();
-				// we include everything related
-				Map<String, Object> conf = new HashMap<>();
-				try {
-					exporter.exportTOSCA(TestToscaExporter.serviceTemplateId, output, conf);
-				} catch (JAXBException e) {
-					throw new WebApplicationException(e);
-				}
-			}
-		};
+		StreamingOutput so = output -> {
+            TOSCAExportUtil exporter = new TOSCAExportUtil();
+            // we include everything related
+            Map<String, Object> conf = new HashMap<>();
+            try {
+                exporter.exportTOSCA(TestToscaExporter.serviceTemplateId, output, conf);
+            } catch (JAXBException e) {
+                throw new WebApplicationException(e);
+            }
+        };
 
 		// TODO: check output contained in SO
 	}

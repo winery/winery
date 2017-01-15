@@ -477,14 +477,10 @@ public class CSARImporter {
 					// Adjusting takes a long time
 					// Therefore, we first save the type as is and convert to Winery-Property-Definitions in the background
 					CSARImporter.storeDefinitions(wid, newDefs);
-					CSARImporter.entityTypeAdjestmentService.submit(new Runnable() {
-
-						@Override
-						public void run() {
-							CSARImporter.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
-							CSARImporter.storeDefinitions(wid, newDefs);
-						}
-					});
+					CSARImporter.entityTypeAdjestmentService.submit(() -> {
+                        CSARImporter.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
+                        CSARImporter.storeDefinitions(wid, newDefs);
+                    });
 				} else {
 					CSARImporter.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
 					CSARImporter.storeDefinitions(wid, newDefs);
@@ -1126,18 +1122,14 @@ public class CSARImporter {
 				// We do not check whether the XSD has already been checked
 				// We cannot just checck whether an XSD already has been handled since the XSD could change over time
 				// Synchronization at org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportResource.getAllDefinedLocalNames(short) also isn't feasible as the backend doesn't support locks
-				CSARImporter.xsdParsingService.submit(new Runnable() {
-
-					@Override
-					public void run() {
-						CSARImporter.LOGGER.debug("Updating XSD import cache data");
-						// We call the queries without storing the result:
-						// We use the SIDEEFFECT that a cache is created
-						Utils.getAllXSDElementDefinitionsForTypeAheadSelection();
-						Utils.getAllXSDTypeDefinitionsForTypeAheadSelection();
-						CSARImporter.LOGGER.debug("Updated XSD import cache data");
-					}
-				});
+				CSARImporter.xsdParsingService.submit(() -> {
+                    CSARImporter.LOGGER.debug("Updating XSD import cache data");
+                    // We call the queries without storing the result:
+                    // We use the SIDEEFFECT that a cache is created
+                    Utils.getAllXSDElementDefinitionsForTypeAheadSelection();
+                    Utils.getAllXSDTypeDefinitionsForTypeAheadSelection();
+                    CSARImporter.LOGGER.debug("Updated XSD import cache data");
+                });
 			}
 		}
 	}

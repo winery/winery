@@ -160,20 +160,16 @@ public class Utils {
 	 */
 	public static Response getDefinitionsOfSelectedResource(final AbstractComponentInstanceResource resource, final URI uri) {
 		final TOSCAExportUtil exporter = new TOSCAExportUtil();
-		StreamingOutput so = new StreamingOutput() {
-
-			@Override
-			public void write(OutputStream output) throws IOException, WebApplicationException {
-				Map<String, Object> conf = new HashMap<>();
-				conf.put(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
-				try {
-					exporter.exportTOSCA(resource.getId(), output, conf);
-				} catch (JAXBException e) {
-					throw new WebApplicationException(e);
-				}
-				output.close();
-			}
-		};
+		StreamingOutput so = output -> {
+            Map<String, Object> conf = new HashMap<>();
+            conf.put(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
+            try {
+                exporter.exportTOSCA(resource.getId(), output, conf);
+            } catch (JAXBException e) {
+                throw new WebApplicationException(e);
+            }
+            output.close();
+        };
 		/*
 		 * this code is for offering a download action // Browser offers save as
 		 * // .tosca is more or less needed for debugging, only a CSAR makes
@@ -191,17 +187,13 @@ public class Utils {
 
 	public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
 		final CSARExporter exporter = new CSARExporter();
-		StreamingOutput so = new StreamingOutput() {
-
-			@Override
-			public void write(OutputStream output) throws IOException, WebApplicationException {
-				try {
-					exporter.writeCSAR(resource.getId(), output);
-				} catch (Exception e) {
-					throw new WebApplicationException(e);
-				}
-			}
-		};
+		StreamingOutput so = output -> {
+            try {
+                exporter.writeCSAR(resource.getId(), output);
+            } catch (Exception e) {
+                throw new WebApplicationException(e);
+            }
+        };
 		StringBuilder sb = new StringBuilder();
 		sb.append("attachment;filename=\"");
 		sb.append(resource.getXmlId().getEncoded());

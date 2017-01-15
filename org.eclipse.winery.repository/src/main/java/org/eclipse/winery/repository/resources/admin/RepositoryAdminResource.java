@@ -98,13 +98,7 @@ public class RepositoryAdminResource {
 	@GET
 	@Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
 	public Response dumpRepository() {
-		StreamingOutput so = new StreamingOutput() {
-
-			@Override
-			public void write(OutputStream output) throws IOException, WebApplicationException {
-				((IRepositoryAdministration) Repository.INSTANCE).doDump(output);
-			}
-		};
+		StreamingOutput so = output -> ((IRepositoryAdministration) Repository.INSTANCE).doDump(output);
 		StringBuilder sb = new StringBuilder();
 		sb.append("attachment;filename=\"repository.zip\"");
 		return Response.ok().header("Content-Disposition", sb.toString()).type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();

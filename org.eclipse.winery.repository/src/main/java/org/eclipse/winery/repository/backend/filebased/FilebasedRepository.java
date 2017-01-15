@@ -611,13 +611,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	@Override
 	public void doClear() {
 		try {
-			DirectoryStream.Filter<Path> noGitDirFilter = new DirectoryStream.Filter<Path>() {
-
-				@Override
-				public boolean accept(Path entry) throws IOException {
-					return !(entry.getFileName().toString().equals(".git"));
-				}
-			};
+			DirectoryStream.Filter<Path> noGitDirFilter = entry -> !(entry.getFileName().toString().equals(".git"));
 
 			DirectoryStream<Path> ds = Files.newDirectoryStream(this.repositoryRoot, noGitDirFilter);
 			for (Path p : ds) {

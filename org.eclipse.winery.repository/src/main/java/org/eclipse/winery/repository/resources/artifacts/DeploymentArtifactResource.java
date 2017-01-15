@@ -54,13 +54,7 @@ public class DeploymentArtifactResource extends GenericArtifactResource<TDeploym
 	}
 
 	public DeploymentArtifactResource(TDeploymentArtifact deploymentArtifact, List<TDeploymentArtifact> deploymentArtifacts, IPersistable res) {
-		this(new IIdDetermination<TDeploymentArtifact>() {
-
-			@Override
-			public String getId(TDeploymentArtifact e) {
-				return e.getName();
-			}
-		}, deploymentArtifact, deploymentArtifacts.indexOf(deploymentArtifact), deploymentArtifacts, res);
+		this(e -> e.getName(), deploymentArtifact, deploymentArtifacts.indexOf(deploymentArtifact), deploymentArtifacts, res);
 	}
 
 	public TDeploymentArtifact getDeploymentArtifact() {
