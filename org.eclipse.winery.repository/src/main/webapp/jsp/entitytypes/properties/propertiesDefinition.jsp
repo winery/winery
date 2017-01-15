@@ -129,7 +129,7 @@ $(function(){
 <p>
 	<%-- TODO: if clicked on the "label" of the input field (i.e., the content of the input tag), the input should be selected. This is not the default at HTML5 - see http://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_input_type_radio --%>
 
-	<input id="nopropdef" type="radio" name="kind" value="none" <c:if test="${not it.isWineryKeyValueProperties and empty it.entityType.propertiesDefinition.element and empty t.entityType.propertiesDefinition.type}">checked="checked"</c:if>><span class="cursorpointer" id="textnone">(none)</span></input>
+	<input id="nopropdef" type="radio" name="kind" value="none" <c:if test="${not it.isWineryKeyValueProperties and empty it.entityType.propertiesDefinition.element and empty it.entityType.propertiesDefinition.type}">checked="checked"</c:if>><span class="cursorpointer" id="textnone">(none)</span></input>
 	<br/>
 
 	<input id="xsdelementradio" type="radio" name="kind" value="element" <c:if test="${not empty it.entityType.propertiesDefinition.element}">checked="checked"</c:if>><span class="cursorpointer" id="textxmlelement">XML element</span></input>
