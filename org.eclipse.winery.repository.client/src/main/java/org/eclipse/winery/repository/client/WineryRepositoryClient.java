@@ -13,49 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.client;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
-import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.beans.NamespaceIdOptionalName;
-import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.IdUtil;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
-import org.eclipse.winery.common.interfaces.QNameWithName;
-import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
-import org.eclipse.winery.model.tosca.TDefinitions;
-import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -71,6 +28,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.beans.NamespaceIdOptionalName;
+import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.IdUtil;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
+import org.eclipse.winery.common.interfaces.QNameWithName;
+import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
+import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
@@ -199,7 +201,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 					WinerysPropertiesDefinition.class);
 			// @formatter:on
 		} catch (JAXBException e) {
-			WineryRepositoryClient.LOGGER.error("Could not initialize JAXBContext", e);
+			LOGGER.error("Could not initialize JAXBContext", e);
 			throw new IllegalStateException(e);
 		}
 		return context;
@@ -219,7 +221,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			// not possible here: m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
 		} catch (JAXBException e) {
-			WineryRepositoryClient.LOGGER.error("Could not instantiate marshaller", e);
+			LOGGER.error("Could not instantiate marshaller", e);
 			throw new IllegalStateException(e);
 		}
 		return m;
@@ -235,7 +237,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		try {
 			um = WineryRepositoryClient.context.createUnmarshaller();
 		} catch (JAXBException e) {
-			WineryRepositoryClient.LOGGER.error("Could not instantiate unmarshaller", e);
+			LOGGER.error("Could not instantiate unmarshaller", e);
 			throw new IllegalStateException(e);
 		}
 		return um;
@@ -302,13 +304,13 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			// (http://jersey.java.net/nonav/documentation/latest/json.html),
 			// but we are short in time, so we do a quick hack
 			String nsList = namespacesResource.accept(MediaType.APPLICATION_JSON).get(String.class);
-			WineryRepositoryClient.LOGGER.trace(nsList);
+			LOGGER.trace(nsList);
 			List<String> nsListList;
 			try {
 				nsListList = this.mapper.readValue(nsList, new TypeReference<List<String>>() {
 				});
 			} catch (Exception e) {
-				WineryRepositoryClient.LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage(), e);
 				continue;
 			}
 			res.addAll(nsListList);
@@ -329,13 +331,13 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			// but we are short in time, so we do a quick hack
 			// The result also contains the optional name
 			String idList = componentListResource.accept(MediaType.APPLICATION_JSON).get(String.class);
-			WineryRepositoryClient.LOGGER.trace(idList);
+			LOGGER.trace(idList);
 			List<NamespaceIdOptionalName> nsAndIdList;
 			try {
 				nsAndIdList = this.mapper.readValue(idList, new TypeReference<List<NamespaceIdOptionalName>>() {
 				});
 			} catch (Exception e) {
-				WineryRepositoryClient.LOGGER.error(e.getMessage(), e);
+				LOGGER.error(e.getMessage(), e);
 				continue;
 			}
 			res.put(wr, nsAndIdList);
@@ -434,9 +436,9 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 					// convention: first element in list is the element we look for
 					if (definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().isEmpty()) {
 						result = null;
-						WineryRepositoryClient.LOGGER.error("Type {}/{} was found, but did not return any data", nsAndId.getNamespace(), nsAndId.getId());
+						LOGGER.error("Type {}/{} was found, but did not return any data", nsAndId.getNamespace(), nsAndId.getId());
 					} else {
-						WineryRepositoryClient.LOGGER.trace("Probably found valid data for {}/{}", nsAndId.getNamespace(), nsAndId.getId());
+						LOGGER.trace("Probably found valid data for {}/{}", nsAndId.getNamespace(), nsAndId.getId());
 						result = (T) definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
 
 						this.cache((TEntityType) result, new QName(nsAndId.getNamespace(), nsAndId.getId()));
@@ -584,7 +586,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			Unmarshaller um = WineryRepositoryClient.createUnmarshaller();
 			definitions = (TDefinitions) um.unmarshal(response.getEntityInputStream());
 		} catch (JAXBException e) {
-			WineryRepositoryClient.LOGGER.error("Could not umarshal TDefinitions", e);
+			LOGGER.error("Could not umarshal TDefinitions", e);
 			// try next service
 			return null;
 		}
@@ -611,7 +613,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		try {
 			document = this.toscaDocumentBuilder.parse(stream);
 		} catch (SAXException | IOException e) {
-			WineryRepositoryClient.LOGGER.debug("Could not parse TOSCA file", e);
+			LOGGER.debug("Could not parse TOSCA file", e);
 			return null;
 		}
 		return document;
@@ -636,7 +638,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 				try {
 					topologyTemplate = WineryRepositoryClient.createUnmarshaller().unmarshal(doc.getDocumentElement(), TTopologyTemplate.class).getValue();
 				} catch (JAXBException e) {
-					WineryRepositoryClient.LOGGER.debug("Could not parse topology, returning null", e);
+					LOGGER.debug("Could not parse topology, returning null", e);
 					return null;
 				}
 				// first hit: immediately stop and return result
@@ -655,7 +657,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		WebResource r = WineryRepositoryClient.getTopologyTemplateWebResource(this.primaryWebResource, serviceTemplate);
 		String xmlAsString = Util.getXMLAsString(TTopologyTemplate.class, topologyTemplate);
 		ClientResponse response = r.type(MediaType.TEXT_XML).put(ClientResponse.class, xmlAsString);
-		WineryRepositoryClient.LOGGER.debug(response.toString());
+		LOGGER.debug(response.toString());
 		int status = response.getStatus();
 		if ((status < 200) || (status >= 300)) {
 			throw new Exception(response.toString());
@@ -697,7 +699,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			// TODO: pass ClientResponse.Status somehow
 			// TODO: more fine grained checking for error message. Not all
 			// failures are that the QName already exists
-			WineryRepositoryClient.LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
+			LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
 			throw new QNameAlreadyExistsException();
 		}
 		// no further return is made
@@ -716,7 +718,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		if (response.getClientResponseStatus() != ClientResponse.Status.CREATED) {
 			// TODO: pass ClientResponse.Status somehow
 			// TODO: more fine grained checking for error message. Not all failures are that the QName already exists
-			WineryRepositoryClient.LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
+			LOGGER.debug(String.format("Error %d when creating id %s from URI %s", response.getStatus(), qname.toString(), this.primaryWebResource.getURI().toString()));
 			throw new QNameAlreadyExistsException();
 		}
 		// no further return is made
@@ -728,7 +730,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		for (WebResource wr : this.repositoryResources) {
 			ClientResponse response = wr.path(pathFragment).delete(ClientResponse.class);
 			if ((response.getClientResponseStatus() != ClientResponse.Status.NO_CONTENT) || (response.getClientResponseStatus() != ClientResponse.Status.NOT_FOUND)) {
-				WineryRepositoryClient.LOGGER.debug(String.format("Error %d when deleting id %s from URI %s", response.getStatus(), id.toString(), wr.getURI().toString()));
+				LOGGER.debug(String.format("Error %d when deleting id %s from URI %s", response.getStatus(), id.toString(), wr.getURI().toString()));
 			}
 		}
 	}
@@ -752,11 +754,11 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			// TODO: Check whether namespaceAndIdAsString is the correct data type expected at the resource
 			ClientResponse response = wr.path(pathFragment).path("id").post(ClientResponse.class, namespaceAndIdAsString);
 			if ((response.getClientResponseStatus() != ClientResponse.Status.NO_CONTENT) || (response.getClientResponseStatus() != ClientResponse.Status.NOT_FOUND)) {
-				WineryRepositoryClient.logger.debug(String.format("Error %d when renaming TOSCAComponentId %s to %s at %s", response.getStatus(), oldId.toString(), newId.toString(), wr.getURI().toString()));
+				LOGGER.debug(String.format("Error %d when renaming TOSCAComponentId %s to %s at %s", response.getStatus(), oldId.toString(), newId.toString(), wr.getURI().toString()));
 			}
 		}
 	}
-	
+
 	@Override
 	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException {
 		throw new IllegalStateException("not yet implemented");
