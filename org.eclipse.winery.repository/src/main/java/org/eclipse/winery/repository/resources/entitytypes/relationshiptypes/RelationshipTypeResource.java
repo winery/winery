@@ -146,8 +146,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 	 * Required for validendings.jsp
 	 */
 	public Collection<NodeTypeId> getPossibleValidEndings() {
-		SortedSet<NodeTypeId> allNodeTypeIds = Repository.INSTANCE.getAllTOSCAComponentIds(NodeTypeId.class);
-		return allNodeTypeIds;
+		return Repository.INSTANCE.getAllTOSCAComponentIds(NodeTypeId.class);
 	}
 
 	/**

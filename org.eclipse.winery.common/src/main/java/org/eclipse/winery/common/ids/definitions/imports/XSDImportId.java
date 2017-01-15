@@ -19,9 +19,7 @@ import org.eclipse.winery.common.ids.XMLId;
 /**
  * Models an import of type XML Schema Definition
  *
- * Required for a special treatment in {@link
- * org.eclipse.winery.repository.Utils.
- * getAllXSDefinitionsForTypeAheadSelection(short)}
+ * Required for a special treatment in {@link org.eclipse.winery.repository.Utils#getAllXSDefinitionsForTypeAheadSelection(short)}
  */
 public class XSDImportId extends GenericImportId {
 

@@ -37,9 +37,8 @@ public class FileUtils {
 	 * Only uses Java7's nio, does not fall back to Java6.
 	 *
 	 * @param path the path to delete
-	 * @throws IOException
 	 */
-	public static void forceDelete(Path path) throws IOException {
+	public static void forceDelete(Path path) {
 		if (Files.isDirectory(path)) {
 			try {
 				Files.walkFileTree(path, new SimpleFileVisitor<Path>() {

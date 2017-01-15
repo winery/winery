@@ -136,8 +136,7 @@ public class FilesResource {
 		if (encoded) {
 			fileName = Util.URLdecode(fileName);
 		}
-		RepositoryFileReference ref = new RepositoryFileReference(this.fileDir, fileName);
-		return ref;
+		return new RepositoryFileReference(this.fileDir, fileName);
 	}
 
 	@GET

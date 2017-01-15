@@ -131,10 +131,6 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
 
 	/**
 	 * Creates a component of the type idClass.
-	 *
-	 * @param qname
-	 * @param type
-	 * @throws QNameAlreadyExistsException
 	 */
 	void createComponent(QName qname, Class<? extends TOSCAComponentId> idClass) throws QNameAlreadyExistsException;
 

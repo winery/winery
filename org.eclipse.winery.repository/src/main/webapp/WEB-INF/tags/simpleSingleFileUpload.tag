@@ -94,11 +94,11 @@ function bindFileUploadForSingleFileUpload(selector) {
 			$('#${id}Diag').modal('hide');
 
 			// refresh the image
-			img = $('#${id}Img');
+			var img = $('#${id}Img');
 			if (img.length === 1) {
-				src = img.attr('src');
-				queryPos = src.indexOf('?');
-				if(queryPos != -1) {
+				var src = img.attr('src');
+				var queryPos = src.indexOf('?');
+				if (queryPos != -1) {
 					src = src.substring(0, queryPos);
 				}
 				img.attr('src', src + '?' + Math.random());

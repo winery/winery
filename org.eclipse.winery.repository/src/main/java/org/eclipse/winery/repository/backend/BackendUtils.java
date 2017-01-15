@@ -379,7 +379,7 @@ public class BackendUtils {
 	 * @return a JAX-RS Response containing the result. NOCONTENT if successful,
 	 *         InternalSeverError otherwise
 	 */
-	public static Response putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) {
+	public static Response putContentToFile(RepositoryFileReference ref, String content, @SuppressWarnings("SameParameterValue") MediaType mediaType) {
 		try {
 			Repository.INSTANCE.putContentToFile(ref, content, mediaType);
 		} catch (IOException e) {
@@ -507,8 +507,7 @@ public class BackendUtils {
 	public static RepositoryFileReference getRefOfDefinitions(TOSCAComponentId id) {
 		String name = Util.getTypeForComponentId(id.getClass());
 		name = name + Constants.SUFFIX_TOSCA_DEFINITIONS;
-		RepositoryFileReference ref = new RepositoryFileReference(id, name);
-		return ref;
+		return new RepositoryFileReference(id, name);
 	}
 
 	/**
@@ -540,8 +539,7 @@ public class BackendUtils {
 			}
 		}
 
-		RepositoryFileReference ref = new RepositoryFileReference(id, name);
-		return ref;
+		return new RepositoryFileReference(id, name);
 	}
 
 	/**
@@ -868,8 +866,7 @@ public class BackendUtils {
 				return null;
 			}
 		};
-		XSModel model = schemaLoader.load(input);
-		return model;
+		return schemaLoader.load(input);
 	}
 
 	/**

@@ -121,8 +121,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 	 * Returns a sorted list of all available types
 	 */
 	public Collection<TypeWithShortName> getTypes() {
-		Collection<TypeWithShortName> res = new TreeSet<TypeWithShortName>(this.hashTypeStringToType.values());
-		return res;
+		return new TreeSet<TypeWithShortName>(this.hashTypeStringToType.values());
 	}
 
 	@GET

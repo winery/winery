@@ -79,6 +79,7 @@ public final class GenericComponentPageData {
 		// class name
 		String type = this.getType();
 		// convention: first letter in small letters
+		//noinspection UnnecessaryLocalVariable
 		String res = type.substring(0, 1).toLowerCase() + type.substring(1);
 		// this generated "xSDImport" as CSS class for XSDImport
 		return res;

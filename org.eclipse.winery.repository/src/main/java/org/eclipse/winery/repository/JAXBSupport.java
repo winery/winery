@@ -71,8 +71,7 @@ public class JAXBSupport {
 			//		return "";
 			//	}
 
-			String prefix = NamespacesResource.getPrefix(namespaceUri);
-			return prefix;
+			return NamespacesResource.getPrefix(namespaceUri);
 		}
 	}
 

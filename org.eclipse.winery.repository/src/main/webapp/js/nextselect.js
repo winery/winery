@@ -134,7 +134,7 @@ function updateListContent(value, targetElement, dependendSelects, completeData)
 			var toAppend = '<option value="' + optionName + '"' + selected + '>' + label + '</option>';
 			jQuery(targetElement).append(toAppend);
 		}
-		nextSelect = dependendSelects[targetElement];
+		var nextSelect = dependendSelects[targetElement];
 		if (nextSelect !== undefined) {
 			// We assume listData is not empty
 			updateListContent(listData.options[0], nextSelect, dependendSelects, completeData);

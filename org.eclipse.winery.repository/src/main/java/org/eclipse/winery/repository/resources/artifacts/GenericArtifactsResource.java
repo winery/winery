@@ -535,8 +535,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 * "Deployment Artifact" or "Implementation Artifact"
 	 */
 	public boolean getIsDeploymentArtifacts() {
-		boolean res = (this instanceof DeploymentArtifactsResource);
-		return res;
+		return (this instanceof DeploymentArtifactsResource);
 	}
 
 	/**

@@ -19,10 +19,10 @@ package org.eclipse.winery.librarytests;
 public class InheritanceIllustration {
 
 	private static class A {
-	};
+	}
 
 	private static class B extends A {
-	};
+	}
 
 	private static class X {
 

@@ -59,11 +59,11 @@ import org.slf4j.LoggerFactory;
  * TOSCAcomponentIds.
  *
  * TODO: Add generics here!
- * {@link Utils.getComponentIdClassForComponentContainer} is then obsolete
+ * {@link Utils#getComponentIdClassForComponentContainer(java.lang.Class)} is then obsolete
  */
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
 
-	protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentsResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentsResource.class);
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
@@ -131,7 +131,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 *
 	 * Uses reflection to create a new instance
 	 */
-	protected TOSCAComponentId getTOSCAcomponentId(String namespace, String id, boolean URLencoded) throws Exception {
+	protected TOSCAComponentId getTOSCAcomponentId(String namespace, String id, boolean URLencoded) {
 		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
 		return BackendUtils.getTOSCAcomponentId(idClass, namespace, id, URLencoded);
 	}
@@ -182,7 +182,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * @return an instance of the requested resource
 	 */
 	@SuppressWarnings("unchecked")
-	public R getComponentInstaceResource(String namespace, String id, boolean encoded) {
+	protected R getComponentInstaceResource(String namespace, String id, boolean encoded) {
 		TOSCAComponentId tcId;
 		try {
 			tcId = this.getTOSCAcomponentId(namespace, id, encoded);

@@ -43,8 +43,7 @@ public abstract class AbstractRepository implements IRepository {
 	 */
 	private RepositoryFileReference getMimeFileRef(RepositoryFileReference ref) {
 		String fileName = ref.getFileName() + Constants.SUFFIX_MIMETYPE;
-		RepositoryFileReference mimeFileRef = new RepositoryFileReference(ref.getParent(), fileName);
-		return mimeFileRef;
+		return new RepositoryFileReference(ref.getParent(), fileName);
 	}
 
 	/**
@@ -68,7 +67,7 @@ public abstract class AbstractRepository implements IRepository {
 			// create mimetype information
 			mimeType = null;
 			try (InputStream is = this.newInputStream(ref);
-					BufferedInputStream bis = new BufferedInputStream(is);) {
+					BufferedInputStream bis = new BufferedInputStream(is)) {
 				mimeType = Utils.getMimeType(bis, ref.getFileName());
 			}
 			if (mimeType != null) {

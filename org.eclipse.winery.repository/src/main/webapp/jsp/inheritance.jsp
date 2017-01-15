@@ -48,8 +48,7 @@ function openSuperType() {
 	require(["winery-support-common"], function(w) {
 		var qname = $("#derivedFrom").val();
 		var fragment = w.getURLFragmentOutOfFullQName(qname);
-		var url = "../../" + fragment + "/";
-		window.location = url;
+		window.location = "../../" + fragment + "/";
 	});
 }
 </script>

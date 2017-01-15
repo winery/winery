@@ -371,15 +371,14 @@ public class Utils {
 
 	/**
 	 * This method is similar to {@link
-	 * org.eclipse.winery.common.Util.qname2href()}, but treats winery's
+	 * Util#qname2href(java.lang.String, java.lang.Class, javax.xml.namespace.QName, java.lang.String)}, but treats winery's
 	 * internal ID model instead of the global TOSCA model
 	 *
 	 * @param id the id to create an <code>a href</code> element for
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
 	public static String getHREF(TOSCAComponentId id) {
-		String res = "<a href=\"" + Utils.getAbsoluteURL(id) + "\">" + Functions.escapeXml(id.getXmlId().getDecoded()) + "</a>";
-		return res;
+		return "<a href=\"" + Utils.getAbsoluteURL(id) + "\">" + Functions.escapeXml(id.getXmlId().getDecoded()) + "</a>";
 	}
 
 	public static String artifactTypeQName2href(QName qname) {
@@ -535,8 +534,7 @@ public class Utils {
 			Utils.logger.error("Could not put content to string", e);
 			throw new IllegalStateException(e);
 		}
-		String res = w.toString();
-		return res;
+		return w.toString();
 	}
 
 	public static String getXMLAsString(Object obj) {
@@ -613,6 +611,7 @@ public class Utils {
 				sortedLocalNames.addAll(localNames);
 				for (String localName : sortedLocalNames) {
 					String value = "{" + ns.getDecoded() + "}" + localName;
+					//noinspection UnnecessaryLocalVariable
 					String text = localName;
 					ObjectNode o = Utils.mapper.createObjectNode();
 					o.put("text", text);
@@ -636,8 +635,7 @@ public class Utils {
 		} else {
 			msg = e.getMessage();
 		}
-		Response res = Response.status(Status.INTERNAL_SERVER_ERROR).entity(msg).build();
-		return res;
+		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msg).build();
 	}
 
 	/**
@@ -720,9 +718,7 @@ public class Utils {
 		}
 
 		// read the data from the resource and store it
-		TEntityType entityType = (TEntityType) typeResource.getElement();
-
-		return entityType;
+		return (TEntityType) typeResource.getElement();
 	}
 
 	/**

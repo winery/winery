@@ -94,7 +94,7 @@ public class SelfServicePortalResource implements IPersistable {
 	public Application getData() {
 		if (Repository.INSTANCE.exists(this.data_xml_ref)) {
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref);) {
+			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref)) {
 				return (Application) u.unmarshal(is);
 			} catch (IOException | JAXBException e) {
 				SelfServicePortalResource.LOGGER.error("Could not read from " + this.data_xml_ref, e);
@@ -209,7 +209,7 @@ public class SelfServicePortalResource implements IPersistable {
 		String res;
 		if (Repository.INSTANCE.exists(this.data_xml_ref)) {
 			StringWriter sw = new StringWriter();
-			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref);) {
+			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref)) {
 				IOUtils.copy(is, sw);
 			} catch (IOException e) {
 				SelfServicePortalResource.LOGGER.error("Could not read from file", e);

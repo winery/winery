@@ -120,8 +120,7 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 			this.list.add(def);
 		}
 
-		Response r = BackendUtils.persist(this.res);
-		return r;
+		return BackendUtils.persist(this.res);
 	}
 
 	@Override

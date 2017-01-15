@@ -34,7 +34,7 @@ import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeRes
  */
 public final class CapabilityDefinitionResource extends AbstractReqOrCapDefResource<TCapabilityDefinition> {
 
-	private TCapabilityDefinition capDef;
+	private final TCapabilityDefinition capDef;
 
 
 	/**

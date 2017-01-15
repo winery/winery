@@ -62,7 +62,7 @@ public class FileMeta {
 	}
 
 	public String getDeleteType() {
-		return this.deleteType;
+		return deleteType;
 	}
 
 	public String getThumbnailUrl() {

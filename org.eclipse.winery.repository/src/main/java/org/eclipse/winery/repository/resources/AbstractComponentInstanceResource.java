@@ -153,6 +153,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 *
 	 * @return the QName associated with this resource
 	 */
+	@SuppressWarnings("WeakerAccess")
 	public final QName getQName() {
 		return this.getId().getQName();
 	}
@@ -169,8 +170,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 */
 	@DELETE
 	public final Response onDelete() {
-		Response res = BackendUtils.delete(this.id);
-		return res;
+		return BackendUtils.delete(this.id);
 	}
 
 	@Override
@@ -439,8 +439,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			AbstractComponentInstanceResource.LOGGER.error("Could not marshal definitions", e);
 			throw new IllegalStateException(e);
 		}
-		String res = w.toString();
-		return res;
+		return w.toString();
 	}
 
 	/**

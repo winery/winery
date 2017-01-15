@@ -61,8 +61,7 @@ public abstract class TOSCAComponentId extends GenericId {
 	}
 
 	public QName getQName() {
-		QName qname = new QName(this.getNamespace().getDecoded(), this.getXmlId().getDecoded());
-		return qname;
+		return new QName(this.getNamespace().getDecoded(), this.getXmlId().getDecoded());
 	}
 
 	public Namespace getNamespace() {

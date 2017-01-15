@@ -21,7 +21,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class AppliesToResource {
 
-	private PolicyTypeResource policyTypeResource;
+	private final PolicyTypeResource policyTypeResource;
 
 
 	public AppliesToResource(PolicyTypeResource policyTypeResource) {

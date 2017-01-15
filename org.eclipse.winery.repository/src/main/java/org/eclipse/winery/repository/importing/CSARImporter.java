@@ -128,10 +128,9 @@ public class CSARImporter {
 	 * Reads the CSAR from the given inputstream
 	 *
 	 * @param in the inputstream to read from
-	 * @param errorList the list of errors during the import. Has to be non-null
+	 * @param errors the list of errors during the import. Has to be non-null
 	 * @param overwrite if true: contents of the repo are overwritten
 	 *
-	 * @throws InvalidCSARException if the CSAR is invalid
 	 */
 	public void readCSAR(InputStream in, List<String> errors, boolean overwrite, final boolean asyncWPDParsing) throws IOException {
 		// we have to extract the file to a temporary directory as
@@ -738,11 +737,8 @@ public class CSARImporter {
 	 * Adjusts the given artifact template to conform with the repository format
 	 *
 	 * We import the files given at the artifact references
-	 *
-	 * @throws InvalidCSARException
-	 * @throws IOException
 	 */
-	private void adjustArtifactTemplate(Path rootPath, TOSCAMetaFile tmf, ArtifactTemplateId atid, TArtifactTemplate ci, final List<String> errors) throws IOException {
+	private void adjustArtifactTemplate(Path rootPath, TOSCAMetaFile tmf, ArtifactTemplateId atid, TArtifactTemplate ci, final List<String> errors) {
 		ArtifactReferences refs = ci.getArtifactReferences();
 		if (refs == null) {
 			// no references stored - break

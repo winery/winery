@@ -18,8 +18,7 @@
 
 	function getIdOfNodeTemplateShape(element) {
 		var nodeTemplate = element.closest("div.NodeTemplateShape");
-		var id = nodeTemplate.children("div.headerContainer").children("div.id").text();
-		return id;
+		return nodeTemplate.children("div.headerContainer").children("div.id").text();
 	}
 
 	jsPlumb.bind("ready", function() {

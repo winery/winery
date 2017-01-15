@@ -75,8 +75,7 @@ public class XSDImportResource extends GenericImportResource {
 		if (loc == null) {
 			return null;
 		}
-		final RepositoryFileReference ref = new RepositoryFileReference(this.id, loc);
-		return ref;
+		return new RepositoryFileReference(this.id, loc);
 	}
 
 	/**

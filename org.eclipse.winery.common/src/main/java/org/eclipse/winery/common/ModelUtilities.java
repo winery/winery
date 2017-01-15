@@ -68,7 +68,7 @@ public class ModelUtilities {
 	 * extensible elements returned TDefinitions, this method is a convenience
 	 * method to access this information
 	 *
-	 * @param t the entitytype to read the properties definition from
+	 * @param et the entitytype to read the properties definition from
 	 * @return a WinerysPropertiesDefinition object, which includes a map of
 	 *         name/type-pairs denoting the associated property definitions. A
 	 *         default element name and namespace is added if it is not defined
@@ -298,9 +298,8 @@ public class ModelUtilities {
 	 * specification does not have a separate super type for elements with a
 	 * name
 	 *
-	 * {@link
-	 * org.eclipse.winery.common.Util.instanceSupportsNameAttribute(Class<?
-	 * extends TOSCAComponentId>)} is related
+	 * {@link Util#instanceSupportsNameAttribute(java.lang.Class)}
+	 * is related
 	 *
 	 * @param e the extensible element offering a name attribute (besides an id
 	 *            attribute)
@@ -331,6 +330,7 @@ public class ModelUtilities {
 	public static String getNameWithIdFallBack(TExtensibleElements ci) {
 		Method method;
 		String res = null;
+		//noinspection EmptyCatchBlock
 		try {
 			method = ci.getClass().getMethod("getName");
 			res = (String) method.invoke(ci);
@@ -388,8 +388,7 @@ public class ModelUtilities {
 	 */
 	public static String getLeft(TNodeTemplate nodeTemplate) {
 		Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
-		String left = otherAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"));
-		return left;
+		return otherAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"));
 	}
 
 	/**
@@ -397,8 +396,7 @@ public class ModelUtilities {
 	 */
 	public static String getTop(TNodeTemplate nodeTemplate) {
 		Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
-		String top = otherAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"));
-		return top;
+		return otherAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"));
 	}
 
 	/**
@@ -564,15 +562,10 @@ public class ModelUtilities {
 	 * 			 the nodeTemplate to be altered
 	 * @param coordinate
 	 * 			 the value of the coordinate to be set
-	 * @return
-	 * 			 the altered {@link TNodeTemplate}
 	 */
-	public static TNodeTemplate setLeft(TNodeTemplate nodeTemplate, String coordinate) {
-
+	public static void setLeft(TNodeTemplate nodeTemplate, String coordinate) {
 		Map<QName, String> otherNodeTemplateAttributes = nodeTemplate.getOtherAttributes();
 		otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"), coordinate);
-
-		return nodeTemplate;
 	}
 
 	/**
@@ -585,12 +578,9 @@ public class ModelUtilities {
 	 * @return
 	 * 			 the altered {@link TNodeTemplate}
 	 */
-	public static TNodeTemplate setTop(TNodeTemplate nodeTemplate, String coordinate) {
-
+	public static void setTop(TNodeTemplate nodeTemplate, String coordinate) {
 		Map<QName, String> otherNodeTemplateAttributes = nodeTemplate.getOtherAttributes();
 		otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"), coordinate);
-
-		return nodeTemplate;
 
 	}
 

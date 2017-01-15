@@ -48,17 +48,17 @@ public class Generator {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Generator.class);
 
 	// Placeholder applicable for all files
-	public static final String PLACEHOLDER_JAVA_PACKAGE = "IA_PACKAGE";
-	public static final String PLACEHOLDER_NAMESPACE = "IA_NAMESPACE";
-	public static final String PLACEHOLDER_CLASS_NAME = "IA_CLASS_NAME";
-	public static final String PLACEHOLDER_IA_ARTIFACT_TEMPLATE_UPLOAD_URL = "IA_ARTIFACT_TEMPLATE_UPLOAD_URL";
+	private static final String PLACEHOLDER_JAVA_PACKAGE = "IA_PACKAGE";
+	private static final String PLACEHOLDER_NAMESPACE = "IA_NAMESPACE";
+	private static final String PLACEHOLDER_CLASS_NAME = "IA_CLASS_NAME";
+	private static final String PLACEHOLDER_IA_ARTIFACT_TEMPLATE_UPLOAD_URL = "IA_ARTIFACT_TEMPLATE_UPLOAD_URL";
 
 	// Placeholders in Java Service Files
-	public static final String PLACEHOLDER_GENERATED_WEBSERVICE_METHODS = "GENERATED_WEBSERVICE_METHODS";
+	private static final String PLACEHOLDER_GENERATED_WEBSERVICE_METHODS = "GENERATED_WEBSERVICE_METHODS";
 
 	// Template folder relative to resources folder in this project
-	public static final String TEMPLATE_PROJECT_FOLDER = "template/project";
-	public static final String TEMPLATE_JAVA_FOLDER = "template/java";
+	private static final String TEMPLATE_PROJECT_FOLDER = "template/project";
+	private static final String TEMPLATE_JAVA_FOLDER = "template/java";
 
 	private static final String TEMPLATE_JAVA_ABSTRACT_IA_SERVICE = "AbstractIAService.java.template";
 	private static final String TEMPLATE_JAVA_TEMPLATE_SERVICE = "TemplateService.java.template";

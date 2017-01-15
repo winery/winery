@@ -260,6 +260,5 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		} catch (IOException e) {
 			throw new IllegalStateException("Could not persist resource", e);
 		}
-		return;
 	}
 }

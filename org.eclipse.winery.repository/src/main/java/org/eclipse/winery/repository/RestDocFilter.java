@@ -19,8 +19,7 @@ public class RestDocFilter extends RestDocFeature {
 
 	@Override
 	protected Class<?>[] getClasses() {
-		Class<?>[] res = {MainResource.class};
-		return res;
+		return new Class<?>[]{MainResource.class};
 	}
 
 }

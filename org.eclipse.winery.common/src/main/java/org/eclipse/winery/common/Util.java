@@ -220,8 +220,7 @@ public class Util {
 		// sanitize name
 		name = Functions.escapeXml(name);
 
-		String res = "<a target=\"_blank\" data-qname=\"" + qname + "\" href=\"" + absoluteURL + "\">" + name + "</a>";
-		return res;
+		return "<a target=\"_blank\" data-qname=\"" + qname + "\" href=\"" + absoluteURL + "\">" + name + "</a>";
 	}
 
 	/**
@@ -312,13 +311,11 @@ public class Util {
 		}
 		String localName = Util.getLocalName(clazz);
 		QName qname = new QName(namespace, localName);
-		JAXBElement<T> rootElement = new JAXBElement<T>(qname, clazz, obj);
-		return rootElement;
+		return new JAXBElement<T>(qname, clazz, obj);
 	}
 
 	/**
-	 * Method similar to {@link
-	 * org.eclipse.winery.repository.Utils.getXMLAsString(Class, Object)}.
+	 * Method similar to {@link org.eclipse.winery.repository.Utils#getXMLAsString(java.lang.Class, java.lang.Object, boolean)}.
 	 *
 	 * Differences:
 	 * <ul>
@@ -353,8 +350,7 @@ public class Util {
 		} catch (JAXBException e) {
 			throw new IllegalStateException(e);
 		}
-		String res = w.toString();
-		return res;
+		return w.toString();
 	}
 
 	public static String getXMLAsString(Element el) {
@@ -386,7 +382,7 @@ public class Util {
 	 * NOTE: The respective subclasses of AbstractComponentInstanceResource have
 	 * to implement {@link org.eclipse.winery.repository.resources.IHasName}
 	 *
-	 * @param id the id to test
+	 * @param idClass the class of the to test
 	 * @return true if the TOSCA model class belonging to the given id supports
 	 *         the method "getName()" in addition to "getId()"
 	 */
@@ -412,8 +408,7 @@ public class Util {
 
 	public static String getLastURIPart(String loc) {
 		int posSlash = loc.lastIndexOf('/');
-		String fileName = loc.substring(posSlash + 1);
-		return fileName;
+		return loc.substring(posSlash + 1);
 	}
 
 	/**
@@ -428,8 +423,7 @@ public class Util {
 			// set one high bit to zero for each channel. That makes the overall color darker
 			hash = hash & 0xEFEFEF;
 		}
-		String colorStr = String.format("#%06x", hash);
-		return colorStr;
+		return String.format("#%06x", hash);
 	}
 
 	/**

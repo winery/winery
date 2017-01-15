@@ -18,7 +18,7 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 
 public abstract class AbstractComponentInstanceWithReferencesResource extends AbstractComponentInstanceResource {
 
-	public AbstractComponentInstanceWithReferencesResource(TOSCAComponentId id) {
+	protected AbstractComponentInstanceWithReferencesResource(TOSCAComponentId id) {
 		super(id);
 	}
 
@@ -47,6 +47,6 @@ public abstract class AbstractComponentInstanceWithReferencesResource extends Ab
 	 * Synchronizes the artifact references with the files stored in the
 	 * repository
 	 */
-	public abstract void synchronizeReferences();
+	protected abstract void synchronizeReferences();
 
 }

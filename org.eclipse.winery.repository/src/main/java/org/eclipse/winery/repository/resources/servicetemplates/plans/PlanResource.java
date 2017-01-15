@@ -95,8 +95,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	private PlanId getId() {
 		ServiceTemplateId sId = (ServiceTemplateId) this.getServiceTemplateResource().getId();
 		PlansId psId = new PlansId(sId);
-		PlanId pId = new PlanId(psId, new XMLId(this.o.getId(), false));
-		return pId;
+		return new PlanId(psId, new XMLId(this.o.getId(), false));
 	}
 
 	@Override

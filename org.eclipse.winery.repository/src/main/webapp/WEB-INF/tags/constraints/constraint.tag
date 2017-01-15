@@ -75,7 +75,7 @@ function getXMLOfConstraint(onSuccess) {
 		var type = document.createAttribute('constraintType');
 		type.nodeValue = $("#typenameinput").val();
 		xmlDoc.documentElement.attributes.setNamedItem(type);
-		xmlString = (new XMLSerializer()).serializeToString(xmlDoc);
+		var xmlString = (new XMLSerializer()).serializeToString(xmlDoc);
 
 		onSuccess(xmlString);
 	});

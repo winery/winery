@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -82,15 +81,14 @@ public class CSARExporter {
 	private static String getDefinitionsName(TOSCAComponentId id) {
 		// the prefix is globally unique and the id locally in a namespace
 		// therefore a concatenation of both is also unique
-		String res = NamespacesResource.getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
-		return res;
+		return NamespacesResource.getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
 	}
 
 	public static String getDefinitionsFileName(TOSCAComponentId id) {
 		return CSARExporter.getDefinitionsName(id) + Constants.SUFFIX_TOSCA_DEFINITIONS;
 	}
 
-	public static String getDefinitionsPathInsideCSAR(TOSCAComponentId id) {
+	private static String getDefinitionsPathInsideCSAR(TOSCAComponentId id) {
 		return CSARExporter.DEFINITONS_PATH_PREFIX + CSARExporter.getDefinitionsFileName(id);
 	}
 
@@ -102,7 +100,7 @@ public class CSARExporter {
 	 * @param out the outputstream to write to
 	 * @throws JAXBException
 	 */
-	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, XMLStreamException, JAXBException {
+	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, JAXBException {
 		CSARExporter.LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
 		Map<RepositoryFileReference, String> refMap = new HashMap<RepositoryFileReference, String>();
@@ -246,25 +244,23 @@ public class CSARExporter {
 			for (ApplicationOption option : options.getOption()) {
 				String url = option.getIconUrl();
 				if (Util.isRelativeURI(url)) {
-					RepositoryFileReference ref = new RepositoryFileReference(id, url);
-					if (Repository.INSTANCE.exists(ref)) {
-						refMap.put(ref, targetDir + url);
-					} else {
-						CSARExporter.LOGGER.error("Data corrupt: pointing to non-existent file " + ref);
-					}
+					putRefIntoRefMap(targetDir, refMap, id, url);
 				}
-
 				url = option.getPlanInputMessageUrl();
 				if (Util.isRelativeURI(url)) {
-					RepositoryFileReference ref = new RepositoryFileReference(id, url);
-					if (Repository.INSTANCE.exists(ref)) {
-						refMap.put(ref, targetDir + url);
-					} else {
-						CSARExporter.LOGGER.error("Data corrupt: pointing to non-existent file " + ref);
-					}
+					putRefIntoRefMap(targetDir, refMap, id, url);
 				}
 			}
 		}
+	}
+
+	private void putRefIntoRefMap(String targetDir, Map<RepositoryFileReference, String> refMap, SelfServiceMetaDataId id, String url) {
+		RepositoryFileReference ref = new RepositoryFileReference(id, url);
+		if (Repository.INSTANCE.exists(ref)) {
+            refMap.put(ref, targetDir + url);
+        } else {
+            CSARExporter.LOGGER.error("Data corrupt: pointing to non-existent file " + ref);
+        }
 	}
 
 	private void addSelfServiceMetaData(ServiceTemplateId entryId, Map<RepositoryFileReference, String> refMap) {

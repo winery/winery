@@ -21,7 +21,6 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
@@ -33,7 +32,7 @@ public class TTopologyTemplateSerializer extends JsonSerializer<TTopologyTemplat
 	 *
 	 * @param value the list of entity templates to serialize
 	 */
-	public void serialize(List<TEntityTemplate> value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+	public void serialize(List<TEntityTemplate> value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
 		List<TRelationshipTemplate> relationshipTemplates = new ArrayList<TRelationshipTemplate>();
 
 		jgen.writeFieldName("nodeTemplates");
@@ -62,7 +61,7 @@ public class TTopologyTemplateSerializer extends JsonSerializer<TTopologyTemplat
 	}
 
 	@Override
-	public void serialize(TTopologyTemplate topologyTemplate, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+	public void serialize(TTopologyTemplate topologyTemplate, JsonGenerator jgen, SerializerProvider provider) throws IOException {
 		jgen.writeStartObject();
 
 		// write out the other fields unmodified

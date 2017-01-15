@@ -125,7 +125,7 @@ public class TOSCAExportUtil {
 
 	public enum ExportProperties {
 		INCLUDEXYCOORDINATES, REPOSITORY_URI
-	};
+	}
 
 
 	/**
@@ -209,11 +209,9 @@ public class TOSCAExportUtil {
 	 * @return a collection of TOSCAcomponentIds referenced by the given
 	 *         component
 	 *
-	 * @throws IOException
-	 * @throws JAXBException
 	 * @throws IllegalStateException if tcId does not exist
 	 */
-	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws IOException, JAXBException {
+	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws JAXBException {
 		if (!Repository.INSTANCE.exists(tcId)) {
 			String error = "Component instance " + tcId.toString() + " does not exist.";
 			TOSCAExportUtil.logger.error(error);

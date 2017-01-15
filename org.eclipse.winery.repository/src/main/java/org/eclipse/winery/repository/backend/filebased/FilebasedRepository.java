@@ -299,8 +299,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	@Override
 	public boolean exists(GenericId id) {
 		Path absolutePath = this.id2AbsolutePath(id);
-		boolean result = Files.exists(absolutePath);
-		return result;
+		return Files.exists(absolutePath);
 	}
 
 	/**
@@ -661,8 +660,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	@Override
 	public FileTime getLastModifiedTime(RepositoryFileReference ref) throws IOException {
 		Path path = this.ref2AbsolutePath(ref);
-		FileTime res = Files.getLastModifiedTime(path);
-		return res;
+		return Files.getLastModifiedTime(path);
 	}
 
 	/**
@@ -671,8 +669,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	@Override
 	public InputStream newInputStream(RepositoryFileReference ref) throws IOException {
 		Path path = this.ref2AbsolutePath(ref);
-		InputStream res = Files.newInputStream(path);
-		return res;
+		return Files.newInputStream(path);
 	}
 
 }

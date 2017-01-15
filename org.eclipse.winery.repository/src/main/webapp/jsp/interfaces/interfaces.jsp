@@ -88,7 +88,7 @@ function disableAllOutputButtons() {
 }
 
 function interfaceSelectionChanged(noupdate) {
-	iface = $("#interfaces").find(":selected");
+	var iface = $("#interfaces").find(":selected");
 	if (iface.length == 0) {
 		// nothing selected
 		$("#operations").empty();
@@ -164,7 +164,7 @@ function deleteThing(thingId, thingName, urlDetermination, changedFunction) {
 			thingName + " " + thing.text(),
 			urlDetermination(),
 			function() {
-				nextToSelect = determineNextItemToSelect(thing);
+				var nextToSelect = determineNextItemToSelect(thing);
 				thing.remove();
 				nextToSelect.attr("selected", "selected");
 				changedFunction();
@@ -312,8 +312,7 @@ $(function() {
 function getTypeImplementationURL() {
 	var ns = $("#nodetypeimplementationNS").val();
 	var name = $("#nodetypeimplementationName").val();
-	var url = "${pageContext.request.contextPath}/${it.relationshipTypeOrNodeTypeURLFragment}implementations/" + encodeID(ns) + "/" + encodeID(name) + "/";
-	return url;
+	return "${pageContext.request.contextPath}/${it.relationshipTypeOrNodeTypeURLFragment}implementations/" + encodeID(ns) + "/" + encodeID(name) + "/";
 }
 
 function checkNodeTypeImplName() {

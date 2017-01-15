@@ -42,7 +42,7 @@ public class CompletionManager {
 	/**
 	 * {@link TOSCAAnalyzer} object to access the JAXB data model
 	 */
-	TOSCAAnalyzer toscaAnalyzer;
+	private final TOSCAAnalyzer toscaAnalyzer;
 
 	/**
 	 * Map containing the topology solutions.
@@ -51,12 +51,12 @@ public class CompletionManager {
 	 * is another map containing a possible topology solution and a boolean value that determines if the topology is complete.
 	 * When all topologies of the solution map are complete, it will be returned to Winery.
 	 */
-	Map<Integer, Map<TTopologyTemplate, Boolean>> solutions;
+	private final Map<Integer, Map<TTopologyTemplate, Boolean>> solutions;
 
 	/**
 	 * Whether a step-by-step or an one-step approach is conducted
 	 */
-	boolean stepByStep;
+	private final boolean stepByStep;
 
 	/**
 	 * Map containing {@link TNodeTemplate}s and {@link TRelationshipTemplate}s to be chosen by the user in the step-by-step approach.
@@ -76,12 +76,12 @@ public class CompletionManager {
 	/**
 	 * Whether a user interaction for choosing inserted {@link TRelationshipTemplate}s is necessary or not.
 	 */
-	boolean userInteraction = false;
+	private boolean userInteraction = false;
 
 	/**
 	 * The index of the topology solutions map.
 	 */
-	int index;
+	private int index;
 
 	/**
 	 * The class constructor.

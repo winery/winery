@@ -134,7 +134,6 @@ public class InterfacesResource extends EntityWithIdCollectionResource<Interface
 	}
 
 	public String getTypeQName() {
-		String res = this.typeResource.getId().getQName().toString();
-		return res;
+		return this.typeResource.getId().getQName().toString();
 	}
 }

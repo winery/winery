@@ -28,7 +28,7 @@ public class BoundaryDefinitionsJSPData {
 
 	private final TServiceTemplate ste;
 	private final TBoundaryDefinitions defs;
-	private URI baseURI;
+	private final URI baseURI;
 
 
 	/**
