@@ -318,6 +318,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			this.element = this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
 		} catch (IndexOutOfBoundsException e) {
 			if (this instanceof GenericImportResource) {
+				//noinspection StatementWithEmptyBody
 				// everything allright:
 				// ImportResource is a quick hack using 99% of the functionality offered here
 				// As only 1% has to be "quick hacked", we do that instead of a clean design

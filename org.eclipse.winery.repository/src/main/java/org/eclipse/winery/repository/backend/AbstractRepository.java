@@ -65,7 +65,6 @@ public abstract class AbstractRepository implements IRepository {
 		} else {
 			// repository has been manipulated manually,
 			// create mimetype information
-			mimeType = null;
 			try (InputStream is = this.newInputStream(ref);
 					BufferedInputStream bis = new BufferedInputStream(is)) {
 				mimeType = Utils.getMimeType(bis, ref.getFileName());

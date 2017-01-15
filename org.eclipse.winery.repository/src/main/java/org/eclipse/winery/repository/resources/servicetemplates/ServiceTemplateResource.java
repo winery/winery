@@ -187,6 +187,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 				// data on the file system equals the data -> no plans
 				return;
 			} else {
+				//noinspection StatementWithEmptyBody
 				// we have to check for equality later
 			}
 		}
@@ -202,7 +203,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 				// in case, a plan is directly contained in a Model element, we do not need to do anything
 				continue;
 			}
-			PlanModelReference planModelReference = plan.getPlanModelReference();
+			PlanModelReference planModelReference;
 			if ((planModelReference = plan.getPlanModelReference()) != null) {
 				String ref = planModelReference.getReference();
 				if ((ref == null) || ref.startsWith("../")) {

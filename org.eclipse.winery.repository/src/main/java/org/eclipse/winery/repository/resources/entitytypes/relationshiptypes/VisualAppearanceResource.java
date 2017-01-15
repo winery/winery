@@ -26,7 +26,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.constants.Defaults;
 import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.constants.QNames;
@@ -34,13 +33,14 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.resources.GenericVisualAppearanceResource;
-import org.restdoc.annotations.RestDoc;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
+import org.restdoc.annotations.RestDoc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
@@ -161,7 +161,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			jg.writeString("Label");
 			jg.writeStartObject();
 			jg.writeStringField("id", "label");
-			jg.writeStringField("label", "(" + ((RelationshipTypeResource) this.res).getName() + ")");
+			jg.writeStringField("label", "(" + this.res.getName() + ")");
 			jg.writeStringField("cssClass", "relationshipTypeLabel");
 			jg.writeFieldName("location");
 			jg.writeNumber(0.5);

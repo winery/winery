@@ -380,7 +380,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		IHasTypeReference typeRes = (EntityTypeImplementationResource) this.res;
 		QName type = typeRes.getType();
 		TOSCAComponentId typeId;
-		TNodeType nodeType = null;
+		TNodeType nodeType;
 		if (typeRes instanceof NodeTypeImplementationResource) {
 			// TODO: refactor: This is more a model/repo utilities thing than something which should happen here...
 

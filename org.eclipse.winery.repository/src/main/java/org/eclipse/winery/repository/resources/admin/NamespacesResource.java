@@ -176,7 +176,7 @@ public class NamespacesResource extends AbstractAdminResource {
 	}
 
 	private static String generatePrefix(String namespace) {
-		String prefix = null;
+		String prefix;
 		Collection<String> allPrefixes = NamespacesResource.INSTANCE.getAllPrefixes();
 
 		// TODO: generate prefix using URI (and not "arbitrary" prefix)

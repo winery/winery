@@ -302,6 +302,7 @@ public class TOSCAExportUtil {
 
 					// END: generate TOSCA conforming PropertiesDefinition
 				} else {
+					//noinspection StatementWithEmptyBody
 					// otherwise WPD exists, but is derived from XSD
 					// we DO NOT have to remove the winery properties definition from the output to allow "debugging" of the CSAR
 				}

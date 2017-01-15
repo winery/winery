@@ -76,7 +76,7 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 	}
 
 	private void setTagsIfNull() {
-		TTags tags = null;
+		TTags tags;
 		if (this.res instanceof ServiceTemplateResource) {
 			tags = ((ServiceTemplateResource) this.res).getServiceTemplate().getTags();
 			if (tags == null) {
