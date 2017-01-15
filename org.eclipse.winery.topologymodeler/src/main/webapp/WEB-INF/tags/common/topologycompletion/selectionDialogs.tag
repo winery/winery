@@ -111,7 +111,7 @@
 
 							require(["winery-topologycompletion"], function(completer) {
 								completer.complete(document.getElementById('overwriteTopology').checked,document.getElementById('openInNewWindow').checked,document.getElementById('topologyName').value, document.getElementById('topologyNamespace').value, document.getElementById('completionStyle').checked,
-								"<%=repositoryURL%>", "<%=serviceTemplateName%>", "<%=topologyTemplateURL%>");
+										"<%=repositoryURL%>", "<%=serviceTemplateName%>", "<%=topologyTemplateURL%>");
 							});
 
 						}
@@ -124,13 +124,13 @@
 
 <script>
 	$(function() {
-		chooseRelationshipTemplateDiag = $('#chooseRelationshipTemplateDiag');
+		var chooseRelationshipTemplateDiag = $('#chooseRelationshipTemplateDiag');
 
 		chooseRelationshipTemplateDiag.on('show', function() {
 			$(this).find('form')[0].reset();
 		});
 
-		chooseNodeTemplateDiag = $('#chooseNodeTemplateDiag');
+		var chooseNodeTemplateDiag = $('#chooseNodeTemplateDiag');
 
 		chooseNodeTemplateDiag.on('show', function() {
 			$(this).find('form')[0].reset();
@@ -143,20 +143,20 @@
 			$(document.getElementById("nodeTemplateSelector")).remove();
 		});
 
-		chooseTopologyDiag = $('#chooseTopologyDiag');
+		var chooseTopologyDiag = $('#chooseTopologyDiag');
 
 		chooseTopologyDiag.on('show', function() {
 			$(this).find('form')[0].reset();
 		});
 
 		chooseTopologyDiag.on('hidden.bs.modal', function () {
-		  	for (var i = 0; i < Connections.length; i++) {
+			for (var i = 0; i < Connections.length; i++) {
 				jsPlumb.detach(Connections[i]);
 			}
 			$(document.getElementById("topologyTemplateSelector")).remove();
 		});
 
-		enterCompletionInformationDiag = $('#enterCompletionInformationDiag');
+		var enterCompletionInformationDiag = $('#enterCompletionInformationDiag');
 
 		enterCompletionInformationDiag.on('show', function() {
 			$(this).find('form')[0].reset();
