@@ -61,7 +61,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * @param id
 	 * @return
 	 */
-	public boolean flagAsExisting(GenericId id);
+	boolean flagAsExisting(GenericId id);
 
 	/**
 	 * Checks whether the associated TOSA element exists
@@ -69,20 +69,20 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * @param id the id to check
 	 * @return true iff the TOSCA element belonging to the given ID exists
 	 */
-	public boolean exists(GenericId id);
+	boolean exists(GenericId id);
 
 	/**
 	 * Deletes the referenced object from the repository
 	 *
 	 * @param ref
 	 */
-	public void forceDelete(RepositoryFileReference ref) throws IOException;
+	void forceDelete(RepositoryFileReference ref) throws IOException;
 
 	/**
 	 * @param ref reference to check
 	 * @return true if the file associated with the given reference exists
 	 */
-	public boolean exists(RepositoryFileReference ref);
+	boolean exists(RepositoryFileReference ref);
 
 	/**
 	 * Puts the given content to the given file. Replaces existing content.
@@ -95,7 +95,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 *
 	 * @throws IOException if something goes wrong
 	 */
-	public void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException;
+	void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException;
 
 	/**
 	 * Puts the given content to the given file. Replaces existing content.
@@ -106,7 +106,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * @param content the content to put into the file
 	 * @throws IOException if something goes wrong
 	 */
-	public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
+	void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
 
 	/**
 	 * Creates an opened inputStream of the contents referenced by ref. The
@@ -116,7 +116,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * @return an inputstream
 	 * @throws IOException if something goes wrong
 	 */
-	public InputStream newInputStream(RepositoryFileReference ref) throws IOException;
+	InputStream newInputStream(RepositoryFileReference ref) throws IOException;
 
 	/**
 	 * Returns the size of the file referenced by ref
@@ -159,7 +159,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * @param idClass class of the Ids to search for
 	 * @return empty set if no ids are available
 	 */
-	public <T extends TOSCAComponentId> SortedSet<T> getAllTOSCAComponentIds(Class<T> idClass);
+	<T extends TOSCAComponentId> SortedSet<T> getAllTOSCAComponentIds(Class<T> idClass);
 
 	/**
 	 * Returns the set of <em>all</em> ids nested in the given reference
@@ -176,22 +176,22 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * @return the set of Ids nested in the given reference. Empty set if there
 	 *         are no or the reference itself does not exist.
 	 */
-	public <T extends TOSCAElementId> SortedSet<T> getNestedIds(GenericId ref, Class<T> idClass);
+	<T extends TOSCAElementId> SortedSet<T> getNestedIds(GenericId ref, Class<T> idClass);
 
 	/**
 	 * Returns the set of files nested in the given reference
 	 */
-	public SortedSet<RepositoryFileReference> getContainedFiles(GenericId id);
+	SortedSet<RepositoryFileReference> getContainedFiles(GenericId id);
 
 	/**
 	 * Returns all namespaces used by all known TOSCA components
 	 */
-	public Collection<Namespace> getUsedNamespaces();
+	Collection<Namespace> getUsedNamespaces();
 
 	/**
 	 * Returns all namespaces specific for a given TOSCA component
 	 *
 	 * @param clazz the TOSCA component class which namespaces' should be returned.
 	 */
-	public Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz);
+	Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz);
 }

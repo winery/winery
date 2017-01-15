@@ -39,7 +39,7 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
 	 * String is used as return type as Java's QName also uses String as
 	 * parameter to denote a namespace
 	 */
-	public SortedSet<String> getNamespaces();
+	SortedSet<String> getNamespaces();
 
 	/**
 	 * Returns a list of the QNames of all available types. Types can be node

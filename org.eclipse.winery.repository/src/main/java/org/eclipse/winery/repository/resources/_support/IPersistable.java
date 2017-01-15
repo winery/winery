@@ -20,5 +20,5 @@ public interface IPersistable {
 	 * @throws IllegalStateException if an JAXBException occurred. This should
 	 *             never happen.
 	 */
-	public void persist() throws IOException;
+	void persist() throws IOException;
 }

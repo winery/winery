@@ -26,9 +26,9 @@ import org.eclipse.winery.repository.resources.IHasTypeReference;
 public interface IEntityTemplateResource<E extends TEntityTemplate> extends IHasTypeReference {
 
 	@Path("properties/")
-	public PropertiesResource getPropertiesResource();
+	PropertiesResource getPropertiesResource();
 
 	@DELETE
-	public Response onDelete();
+	Response onDelete();
 
 }

@@ -16,5 +16,5 @@ public interface IIdDetermination<EntityT> {
 	/**
 	 * @return the id of the given entity
 	 */
-	public String getId(EntityT e);
+	String getId(EntityT e);
 }

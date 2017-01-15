@@ -20,12 +20,12 @@ public interface IHasTypeReference {
 	 * @return the QName of the type with full namespace, never null (according
 	 *         to spec)
 	 */
-	public QName getType();
+	QName getType();
 
 	/**
 	 * Sets the type and directly persists the resource
 	 */
-	public Response setType(QName type);
+	Response setType(QName type);
 
 	/**
 	 * Calls setType(QName) with QName.valueOf(typeStr)
@@ -34,6 +34,6 @@ public interface IHasTypeReference {
 	 *
 	 * @param typeStr a textual representation of a QName
 	 */
-	public Response setType(String typeStr);
+	Response setType(String typeStr);
 
 }

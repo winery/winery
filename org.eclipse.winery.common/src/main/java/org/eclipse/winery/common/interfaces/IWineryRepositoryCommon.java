@@ -43,7 +43,7 @@ public interface IWineryRepositoryCommon {
 	 *
 	 * @param id
 	 */
-	public void forceDelete(GenericId id) throws IOException;
+	void forceDelete(GenericId id) throws IOException;
 
 	/**
 	 * Renames a TOSCA component id
@@ -51,7 +51,7 @@ public interface IWineryRepositoryCommon {
 	 * @param oldId the old id
 	 * @param newId the new id
 	 */
-	public void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException;
+	void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException;
 
 	 /**
 	  * Deletes all TOSCA components nested in the given namespace
@@ -59,7 +59,6 @@ public interface IWineryRepositoryCommon {
 	  * @param toscaComponentIdClazz the type of TOSCA components to delete
 	  * @param namespace the namespace to delete
 	  */
-	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException;
-
+	void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException;
 
 }
