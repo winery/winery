@@ -55,7 +55,7 @@ body {
 	border-radius: 10px 10px 0 0;
 	line-height: 27px;
 	text-decoration: none;
-	font-family: arial;
+	font-family: arial, sans-serif;
 	color: #787878;
 	font-size: 14px;
 	text-shadow: 1px 1px 0 white;
@@ -218,7 +218,7 @@ a.styledTabMenuButton > div.left {
 a.styledTabMenuButton > div.center {
 	line-height: 29px;
 	text-decoration: none;
-	font-family: arial;
+	font-family: arial, sans-serif;
 	color: #787878;
 	font-size: 14px;
 	text-shadow: 1px 1px 0 white;
@@ -261,7 +261,7 @@ div.mainContentContainer > div.middle {
 	width: 987px;
 	min-height: 350px;
 	padding: 0 35px 0 35px;
-	font-family: arial, verdana;
+	font-family: arial, verdana, sans-serif;
 	font-size: 12px;
 	line-height: 19px;
 	color: #494949;
@@ -414,7 +414,7 @@ div.mainContentContainer > div.top > div.informationContainer {
 	width: 100%;
 
 	color: #787878;
-	font-family: arial;
+	font-family: arial, sans-serif;
 	font-size: 14px;
 	padding-left: 5px;
 	text-decoration: none;
@@ -471,7 +471,7 @@ div.entityContainer > div.center > div.informationContainer {
 	margin-top: 25px;
 	height: 45px;
 	color: #787878;
-	font-family: arial;
+	font-family: arial, sans-serif;
 	font-size: 12px;
 	padding-left: 5px;
 	text-decoration: none;
