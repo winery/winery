@@ -444,11 +444,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		}
 
 		// cleanup dir
-		try {
-			FileUtils.forceDelete(workingDir);
-		} catch (IOException e) {
-			GenericArtifactsResource.LOGGER.debug("Could not delete working directory", e);
-		}
+		FileUtils.forceDelete(workingDir);
 
 		// store the properties in the artifact template
 		if (artifactTemplateResource == null) {

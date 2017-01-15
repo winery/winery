@@ -14,41 +14,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.lang3.SystemUtils;
-import org.eclipse.jgit.dircache.InvalidPathException;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.backend.AbstractRepository;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.IRepositoryAdministration;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,6 +44,43 @@ import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import javax.ws.rs.core.MediaType;
+
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.repository.Constants;
+import org.eclipse.winery.repository.backend.AbstractRepository;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepositoryAdministration;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang3.SystemUtils;
+import org.eclipse.jgit.dircache.InvalidPathException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * When it comes to a storage of plain files, we use Java 7's nio internally.
@@ -224,13 +226,8 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	}
 
 	@Override
-	public void forceDelete(GenericId id) throws IOException {
-		try {
-			FileUtils.forceDelete(this.id2AbsolutePath(id));
-		} catch (IOException e) {
-			FilebasedRepository.LOGGER.debug("Could not delete id", id);
-			throw e;
-		}
+	public void forceDelete(GenericId id) {
+		FileUtils.forceDelete(this.id2AbsolutePath(id));
 	}
 
 	@Override
@@ -276,8 +273,8 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		}
 
 	}
-		
-	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException {
+
+	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) {
 		// instantiate new tosca component id with "ID" as id
 		// this is used to get the absolute path
 		TOSCAComponentId id = BackendUtils.getTOSCAcomponentId(toscaComponentIdClazz, namespace.getEncoded(), "ID", true);
@@ -287,12 +284,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		// do not delete the id, delete the complete namespace
 		// patrent folder is the namespace folder
 		path = path.getParent();
-		try {
-			FileUtils.forceDelete(path);
-		} catch (IOException e) {
-			FilebasedRepository.LOGGER.debug("Could not delete tosca components of namepsace", e);
-			throw e;
-		}
+		FileUtils.forceDelete(path);
 	}
 
 	@Override
