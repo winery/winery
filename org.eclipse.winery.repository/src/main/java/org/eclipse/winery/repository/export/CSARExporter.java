@@ -103,7 +103,7 @@ public class CSARExporter {
 	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, JAXBException {
 		CSARExporter.LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
-		Map<RepositoryFileReference, String> refMap = new HashMap<RepositoryFileReference, String>();
+		Map<RepositoryFileReference, String> refMap = new HashMap<>();
 		Collection<String> definitionNames = new ArrayList<>();
 
 		final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out);

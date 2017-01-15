@@ -536,7 +536,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@Path("tags/")
 	public final TagsResource getTags() {
 
-		List<TTag> tagList = new ArrayList<TTag>();
+		List<TTag> tagList = new ArrayList<>();
 
 		TTags tags = null;
 

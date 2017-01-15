@@ -115,7 +115,7 @@ public class XSDImportResource extends GenericImportResource {
 			XSNamedMap components = model.getComponents(type);
 			//@SuppressWarnings("unchecked")
 			int len = components.getLength();
-			result = new ArrayList<String>(len);
+			result = new ArrayList<>(len);
 			for (int i = 0; i < len; i++) {
 				XSObject item = components.item(i);
 				// if queried for TYPE_DEFINITION, then XSD base types (such as IDREF) are also returned

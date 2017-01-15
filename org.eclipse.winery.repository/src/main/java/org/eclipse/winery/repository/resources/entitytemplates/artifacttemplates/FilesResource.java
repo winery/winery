@@ -109,7 +109,7 @@ public class FilesResource {
 		}
 		FileMeta fileMeta = new FileMeta(fileName, size, URL, thumbnailURL);
 
-		List<FileMeta> metas = new ArrayList<FileMeta>();
+		List<FileMeta> metas = new ArrayList<>();
 		metas.add(fileMeta);
 		return Response.created(Utils.createURI(URL)).entity(this.getData4jqueryFileUpload(metas)).build();
 	}
@@ -124,7 +124,7 @@ public class FilesResource {
 	}
 
 	private List<FileMeta> getAllFileMetas() {
-		List<FileMeta> res = new ArrayList<FileMeta>();
+		List<FileMeta> res = new ArrayList<>();
 		SortedSet<RepositoryFileReference> fileRefs = Repository.INSTANCE.getContainedFiles(this.fileDir);
 		for (RepositoryFileReference ref : fileRefs) {
 			res.add(new FileMeta(ref));

@@ -568,7 +568,7 @@ public class Utils {
 	public static String getAllXSDefinitionsForTypeAheadSelection(short type) {
 		SortedSet<XSDImportId> allImports = Repository.INSTANCE.getAllTOSCAComponentIds(XSDImportId.class);
 
-		Map<Namespace, Collection<String>> data = new HashMap<Namespace, Collection<String>>();
+		Map<Namespace, Collection<String>> data = new HashMap<>();
 
 		for (XSDImportId id : allImports) {
 			XSDImportResource resource = new XSDImportResource(id);
@@ -577,7 +577,7 @@ public class Utils {
 			Collection<String> list;
 			if ((list = data.get(id.getNamespace())) == null) {
 				// list does not yet exist
-				list = new ArrayList<String>();
+				list = new ArrayList<>();
 				data.put(id.getNamespace(), list);
 			}
 			assert (list != null);
@@ -588,7 +588,7 @@ public class Utils {
 		ArrayNode rootNode = Utils.mapper.createArrayNode();
 
 		// ensure ordering in JSON object
-		Collection<Namespace> allns = new TreeSet<Namespace>();
+		Collection<Namespace> allns = new TreeSet<>();
 		allns.addAll(data.keySet());
 
 		for (Namespace ns : allns) {
@@ -599,7 +599,7 @@ public class Utils {
 				groupEntry.put("text", ns.getDecoded());
 				ArrayNode children = Utils.mapper.createArrayNode();
 				groupEntry.put("children", children);
-				Collection<String> sortedLocalNames = new TreeSet<String>();
+				Collection<String> sortedLocalNames = new TreeSet<>();
 				sortedLocalNames.addAll(localNames);
 				for (String localName : sortedLocalNames) {
 					String value = "{" + ns.getDecoded() + "}" + localName;

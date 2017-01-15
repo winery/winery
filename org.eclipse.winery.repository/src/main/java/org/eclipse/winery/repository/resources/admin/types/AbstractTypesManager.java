@@ -65,7 +65,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 		// now, this.configuration is filled with stored data
 
 		// copy over information from configuration to internal data structure
-		this.hashTypeStringToType = new HashMap<String, TypeWithShortName>();
+		this.hashTypeStringToType = new HashMap<>();
 		Iterator<String> keys = this.configuration.getKeys();
 		while (keys.hasNext()) {
 			String key = keys.next();

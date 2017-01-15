@@ -33,7 +33,7 @@ public class TTopologyTemplateSerializer extends JsonSerializer<TTopologyTemplat
 	 * @param value the list of entity templates to serialize
 	 */
 	public void serialize(List<TEntityTemplate> value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
-		List<TRelationshipTemplate> relationshipTemplates = new ArrayList<TRelationshipTemplate>();
+		List<TRelationshipTemplate> relationshipTemplates = new ArrayList<>();
 
 		jgen.writeFieldName("nodeTemplates");
 		jgen.writeStartObject();

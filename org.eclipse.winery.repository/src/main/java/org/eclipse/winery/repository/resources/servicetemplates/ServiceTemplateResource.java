@@ -181,7 +181,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		PlansId plansContainerId = new PlansId((ServiceTemplateId) this.getId());
 		SortedSet<PlanId> nestedPlans = Repository.INSTANCE.getNestedIds(plansContainerId, PlanId.class);
 
-		Set<PlanId> plansToAdd = new HashSet<PlanId>();
+		Set<PlanId> plansToAdd = new HashSet<>();
 		plansToAdd.addAll(nestedPlans);
 
 		if (nestedPlans.isEmpty()) {

@@ -564,8 +564,8 @@ public class Util {
 			return;
 		}
 		String[] split = s.split(separator);
-		for (int i = 0; i < split.length; i++) {
-			sb.append(split[i]);
+		for (String aSplit : split) {
+			sb.append(aSplit);
 			sb.append(".");
 		}
 	}

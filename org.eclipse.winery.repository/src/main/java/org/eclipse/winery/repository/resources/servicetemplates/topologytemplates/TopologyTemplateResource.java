@@ -251,7 +251,7 @@ public class TopologyTemplateResource {
 	@Path("relationshiptemplates/")
 	public RelationshipTemplatesResource getRelationshipTemplatesResource() {
 		// FIXME: onDelete will not work. See getNodeTemplatesResource
-		List<TRelationshipTemplate> l = new ArrayList<TRelationshipTemplate>();
+		List<TRelationshipTemplate> l = new ArrayList<>();
 		for (TEntityTemplate t : this.topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
 			if (t instanceof TRelationshipTemplate) {
 				l.add((TRelationshipTemplate) t);

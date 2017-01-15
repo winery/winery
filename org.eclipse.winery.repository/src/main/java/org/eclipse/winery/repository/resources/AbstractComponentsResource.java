@@ -231,7 +231,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	public Collection<AbstractComponentInstanceResource> getAll() {
 		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
 		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
-		ArrayList<AbstractComponentInstanceResource> res = new ArrayList<AbstractComponentInstanceResource>(allTOSCAcomponentIds.size());
+		ArrayList<AbstractComponentInstanceResource> res = new ArrayList<>(allTOSCAcomponentIds.size());
 		for (TOSCAComponentId id : allTOSCAcomponentIds) {
 			AbstractComponentInstanceResource r = AbstractComponentsResource.getComponentInstaceResource(id);
 			res.add(r);

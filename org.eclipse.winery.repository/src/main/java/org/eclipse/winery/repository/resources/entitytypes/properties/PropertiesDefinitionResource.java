@@ -26,7 +26,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
@@ -35,12 +34,13 @@ import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.properties.winery.WinerysPropertiesDefinitionResource;
+
+import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDoc;
 import org.restdoc.annotations.RestDocParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jersey.api.view.Viewable;
 
 /**
  * Models
@@ -140,12 +140,15 @@ public class PropertiesDefinitionResource {
 
 		// replace old properties definition by new one
 		PropertiesDefinition def = new PropertiesDefinition();
-		if (name.equals("xsdtype")) {
-			def.setType(qname);
-		} else if (name.equals("xsdelement")) {
-			def.setElement(qname);
-		} else {
-			return Response.status(Status.BAD_REQUEST).entity("Invalid name. Choose xsdelement or xsdtype").build();
+		switch (name) {
+			case "xsdtype":
+				def.setType(qname);
+				break;
+			case "xsdelement":
+				def.setElement(qname);
+				break;
+			default:
+				return Response.status(Status.BAD_REQUEST).entity("Invalid name. Choose xsdelement or xsdtype").build();
 		}
 		this.getEntityType().setPropertiesDefinition(def);
 		List<String> errors = new ArrayList<>();

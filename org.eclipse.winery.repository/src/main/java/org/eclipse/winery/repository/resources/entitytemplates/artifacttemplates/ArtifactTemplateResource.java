@@ -79,7 +79,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	public ArtifactTemplateResource(ArtifactTemplateId id) {
 		super(id);
 		// we provide the minimum requirements for the resource
-		this.entityTemplateResource = new TEntityTemplateResource<TArtifactTemplate>(null, this.getTArtifactTemplate(), 0, null, this);
+		this.entityTemplateResource = new TEntityTemplateResource<>(null, this.getTArtifactTemplate(), 0, null, this);
 	}
 
 	/**

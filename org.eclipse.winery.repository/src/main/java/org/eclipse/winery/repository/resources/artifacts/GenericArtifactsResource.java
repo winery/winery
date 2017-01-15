@@ -516,7 +516,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 */
 	public List<QName> getAllArtifactTypes() {
 		SortedSet<ArtifactTypeId> allArtifactTypes = Repository.INSTANCE.getAllTOSCAComponentIds(ArtifactTypeId.class);
-		List<QName> res = new ArrayList<QName>(allArtifactTypes.size());
+		List<QName> res = new ArrayList<>(allArtifactTypes.size());
 		for (ArtifactTypeId id : allArtifactTypes) {
 			res.add(id.getQName());
 		}

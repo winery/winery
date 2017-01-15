@@ -84,7 +84,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 			return this.getListOfAllEntityIdsAsList();
 		} else {
 			// return data ready for consumption by select2
-			List<Select2DataItem> res = new ArrayList<Select2DataItem>(this.list.size());
+			List<Select2DataItem> res = new ArrayList<>(this.list.size());
 			for (EntityT o : this.list) {
 				String id = this.getId(o);
 				Select2DataItem di = new Select2DataItem(id, id);
@@ -95,7 +95,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	}
 
 	public List<String> getListOfAllEntityIdsAsList() {
-		List<String> res = new ArrayList<String>(this.list.size());
+		List<String> res = new ArrayList<>(this.list.size());
 		for (EntityT o : this.list) {
 			// We assume that different Object serializations *always* have different hashCodes
 			res.add(this.getId(o));
@@ -108,7 +108,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	 */
 	public List<EntityResourceT> getAllEntityResources() {
 		List<String> listOfAllSubResources = this.getListOfAllEntityIdsAsList();
-		List<EntityResourceT> res = new ArrayList<EntityResourceT>(listOfAllSubResources.size());
+		List<EntityResourceT> res = new ArrayList<>(listOfAllSubResources.size());
 		for (String id : listOfAllSubResources) {
 			res.add(this.getEntityResourceFromDecodedId(id));
 		}

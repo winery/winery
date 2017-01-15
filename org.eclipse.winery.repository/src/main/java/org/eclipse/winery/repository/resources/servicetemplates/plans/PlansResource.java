@@ -41,7 +41,6 @@ import org.eclipse.winery.repository.resources.admin.types.PlanTypesManager;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -174,9 +173,6 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			jGenerator.writeEndObject();
 			jGenerator.close();
 			sw.close();
-		} catch (JsonGenerationException e) {
-			PlansResource.LOGGER.error(e.getMessage(), e);
-			return Response.serverError().build();
 		} catch (IOException e) {
 			PlansResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().build();

@@ -86,7 +86,7 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 	@Override
 	public Response getJSON() {
 		Collection<RelationshipTypeImplementationId> allImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
-		ArrayList<QName> res = new ArrayList<QName>(allImplementations.size());
+		ArrayList<QName> res = new ArrayList<>(allImplementations.size());
 		for (RelationshipTypeImplementationId id : allImplementations) {
 			res.add(id.getQName());
 		}

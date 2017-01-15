@@ -196,7 +196,7 @@ public class CSARImporter {
 				errors.add("No entry definitions defined and Definitions directory does not exist.");
 				return;
 			}
-			final List<IOException> exceptions = new ArrayList<IOException>();
+			final List<IOException> exceptions = new ArrayList<>();
 			Files.walkFileTree(definitionsDir, new SimpleFileVisitor<Path>() {
 
 				@Override
@@ -771,7 +771,7 @@ public class CSARImporter {
 			}
 			Set<Path> allFiles;
 			if (Files.isRegularFile(path)) {
-				allFiles = new HashSet<Path>();
+				allFiles = new HashSet<>();
 				allFiles.add(path);
 			} else {
 				assert (Files.isDirectory(path));

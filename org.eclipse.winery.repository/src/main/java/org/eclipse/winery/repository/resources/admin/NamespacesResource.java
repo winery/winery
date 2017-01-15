@@ -77,7 +77,7 @@ public class NamespacesResource extends AbstractAdminResource {
 
 	private Collection<String> getAllPrefixes() {
 		Iterator<String> keys = this.configuration.getKeys();
-		HashSet<String> res = new HashSet<String>();
+		HashSet<String> res = new HashSet<>();
 		while (keys.hasNext()) {
 			String key = keys.next();
 			String prefix = this.configuration.getString(key);
@@ -195,7 +195,7 @@ public class NamespacesResource extends AbstractAdminResource {
 	 * @return all namespaces registered with this manager.
 	 */
 	private HashSet<Namespace> getRegisteredNamespaces() {
-		HashSet<Namespace> res = new HashSet<Namespace>();
+		HashSet<Namespace> res = new HashSet<>();
 		Iterator<String> keys = this.configuration.getKeys();
 		while (keys.hasNext()) {
 			String key = keys.next();
@@ -230,7 +230,7 @@ public class NamespacesResource extends AbstractAdminResource {
 
 		// convert sortedset to arraylist
 		// and group list by namespace string and count components
-		List<String> listOfAllTOSCAComponentIds = new ArrayList<String>();
+		List<String> listOfAllTOSCAComponentIds = new ArrayList<>();
 		for (TOSCAComponentId toscaComponentId : setOfAllTOSCAComponentIds) {
 			listOfAllTOSCAComponentIds.add(toscaComponentId.getNamespace().toString());
 		}
@@ -259,7 +259,7 @@ public class NamespacesResource extends AbstractAdminResource {
 	public static Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz) {
 		HashSet<Namespace> res = NamespacesResource.INSTANCE.getRegisteredNamespaces();
 		res.addAll(Repository.INSTANCE.getComponentsNamespaces(clazz));
-		ArrayList<Namespace> list = new ArrayList<Namespace>(res);
+		ArrayList<Namespace> list = new ArrayList<>(res);
 		Collections.sort(list);
 		return list;
 	}
@@ -288,7 +288,7 @@ public class NamespacesResource extends AbstractAdminResource {
 		// We now have all namespaces
 		// We need to convert from Namespace to String
 
-		TreeSet<String> stringNamespaces = new TreeSet<String>();
+		TreeSet<String> stringNamespaces = new TreeSet<>();
 		for (Namespace ns : namespaces) {
 			stringNamespaces.add(ns.getDecoded());
 		}

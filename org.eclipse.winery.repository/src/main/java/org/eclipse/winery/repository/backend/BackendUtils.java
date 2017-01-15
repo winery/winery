@@ -577,7 +577,7 @@ public class BackendUtils {
 	 * template
 	 */
 	public static List<TNodeTemplate> getAllNestedNodeTemplates(TServiceTemplate serviceTemplate) {
-		List<TNodeTemplate> l = new ArrayList<TNodeTemplate>();
+		List<TNodeTemplate> l = new ArrayList<>();
 		TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
 		if (topologyTemplate == null) {
 			return Collections.emptyList();
@@ -627,7 +627,7 @@ public class BackendUtils {
 	}
 
 	public static Collection<QName> getArtifactTemplatesOfReferencedDeploymentArtifacts(TNodeTemplate nodeTemplate) {
-		List<QName> l = new ArrayList<QName>();
+		List<QName> l = new ArrayList<>();
 
 		// DAs may be assigned directly to a node template
 		Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(nodeTemplate.getDeploymentArtifacts());
@@ -646,7 +646,7 @@ public class BackendUtils {
 	}
 
 	public static Collection<QName> getArtifactTemplatesOfReferencedImplementationArtifacts(TNodeTemplate nodeTemplate) {
-		List<QName> l = new ArrayList<QName>();
+		List<QName> l = new ArrayList<>();
 
 		// IAs may be assigned via node type implementations
 		QName nodeTypeQName = nodeTemplate.getType();

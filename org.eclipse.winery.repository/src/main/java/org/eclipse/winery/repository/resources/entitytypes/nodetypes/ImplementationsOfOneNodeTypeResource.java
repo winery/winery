@@ -91,7 +91,7 @@ public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneTy
 	@Override
 	public Response getJSON() {
 		Collection<NodeTypeImplementationId> allImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, this.getTypeId().getQName());
-		ArrayList<QName> res = new ArrayList<QName>(allImplementations.size());
+		ArrayList<QName> res = new ArrayList<>(allImplementations.size());
 		for (NodeTypeImplementationId id : allImplementations) {
 			res.add(id.getQName());
 		}

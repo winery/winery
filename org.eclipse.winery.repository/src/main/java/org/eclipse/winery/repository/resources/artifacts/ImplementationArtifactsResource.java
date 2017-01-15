@@ -60,7 +60,7 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
 
 	@Override
 	public Collection<ImplementationArtifactResource> getAllArtifactResources() {
-		Collection<ImplementationArtifactResource> res = new ArrayList<ImplementationArtifactResource>(this.implementationArtifacts.size());
+		Collection<ImplementationArtifactResource> res = new ArrayList<>(this.implementationArtifacts.size());
 		for (ImplementationArtifact da : this.implementationArtifacts) {
 			ImplementationArtifactResource r = new ImplementationArtifactResource(da, this.implementationArtifacts, this.res);
 			res.add(r);
@@ -72,7 +72,7 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
 	public List<InterfaceResource> getInterfacesOfAssociatedType() {
 		boolean isNodeTypeImplementation = this.res instanceof NodeTypeImplementationResource;
 		QName type;
-		List<InterfaceResource> interfaces = new ArrayList<InterfaceResource>();
+		List<InterfaceResource> interfaces = new ArrayList<>();
 		if (isNodeTypeImplementation) {
 			type = this.getNTI().getType();
 			NodeTypeResource typeResource = (NodeTypeResource) new NodeTypesResource().getComponentInstaceResource(type);

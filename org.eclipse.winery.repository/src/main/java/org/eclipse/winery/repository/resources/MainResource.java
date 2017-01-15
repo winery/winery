@@ -153,7 +153,7 @@ public class MainResource {
 		@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite) {
 		// @formatter:on
 		CSARImporter importer = new CSARImporter();
-		List<String> errors = new ArrayList<String>();
+		List<String> errors = new ArrayList<>();
 		boolean ow;
 		ow = (overwrite != null) && overwrite;
 		try {

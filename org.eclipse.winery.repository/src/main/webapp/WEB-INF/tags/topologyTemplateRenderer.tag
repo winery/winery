@@ -112,8 +112,8 @@ function doLayout() {
 	// can be used later to call a doLayout()
 	boolean somethingWithoutPosition = false;
 
-	Collection<TRelationshipTemplate> relationshipTemplates = new ArrayList<TRelationshipTemplate>();
-	Collection<TNodeTemplate> nodeTemplates = new ArrayList<TNodeTemplate>();
+	Collection<TRelationshipTemplate> relationshipTemplates = new ArrayList<>();
+	Collection<TNodeTemplate> nodeTemplates = new ArrayList<>();
 
 	// the minimum x/y coordinates.
 	// used to move the content to the top left corner

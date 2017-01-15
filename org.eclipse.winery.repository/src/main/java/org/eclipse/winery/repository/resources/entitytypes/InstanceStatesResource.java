@@ -65,7 +65,7 @@ public class InstanceStatesResource {
 
 	public List<String> getInstanceStates() {
 		List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
-		ArrayList<String> states = new ArrayList<String>(instanceStates.size());
+		ArrayList<String> states = new ArrayList<>(instanceStates.size());
 		for (InstanceState instanceState : instanceStates) {
 			states.add(instanceState.getState());
 		}

@@ -65,7 +65,7 @@ public class XSDImportsResource extends AbstractComponentsResource<XSDImportReso
 		Set<XSDImportId> importsOfNS = this.getImportsOfNS(nsString);
 
 		// TreeSet enables ordering
-		Set<String> allNCNames = new TreeSet<String>();
+		Set<String> allNCNames = new TreeSet<>();
 
 		for (XSDImportId imp : importsOfNS) {
 			XSDImportResource res = new XSDImportResource(imp);
@@ -89,7 +89,7 @@ public class XSDImportsResource extends AbstractComponentsResource<XSDImportReso
 		// FIXME: Currently not supported by the repository, therefore, we filter by hand
 		Set<XSDImportId> allImports = Repository.INSTANCE.getAllTOSCAComponentIds(XSDImportId.class);
 		Namespace ns = new Namespace(nsString, true);
-		Set<XSDImportId> importsOfNs = new HashSet<XSDImportId>();
+		Set<XSDImportId> importsOfNs = new HashSet<>();
 		for (XSDImportId imp : allImports) {
 			if (imp.getNamespace().equals(ns)) {
 				importsOfNs.add(imp);

@@ -57,7 +57,7 @@ public class DeploymentArtifactsResource extends GenericArtifactsResource<Deploy
 
 	@Override
 	public Collection<DeploymentArtifactResource> getAllArtifactResources() {
-		Collection<DeploymentArtifactResource> res = new ArrayList<DeploymentArtifactResource>(this.deploymentArtifacts.size());
+		Collection<DeploymentArtifactResource> res = new ArrayList<>(this.deploymentArtifacts.size());
 		for (TDeploymentArtifact da : this.deploymentArtifacts) {
 			DeploymentArtifactResource r = new DeploymentArtifactResource(da, this.deploymentArtifacts, this.res);
 			res.add(r);
