@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Oliver Kopp - initial API and implementation
+ *     Oliver Kopp - initial API and implementation, improvements
  *     Lukas Harzenetter - added showAllItems member
  *     Nicole Keppler - Bugfixes, added get-Method for TOSCAComponentId
  *******************************************************************************/
@@ -28,7 +28,7 @@ import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates
 import org.eclipse.winery.repository.resources.entitytemplates.policytemplates.PolicyTemplatesResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationsResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationsResource;
-import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypesResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,14 +101,13 @@ public final class GenericComponentPageData {
 	 */
 	public Collection<? extends TOSCAComponentId> getTypeSelectorData() {
 		Class<? extends TOSCAComponentId> typeIdClass;
-		if (this.resourceClass.equals(ArtifactTemplatesResource.class)) {
+		if (this.resourceClass == ArtifactTemplatesResource.class) {
 			typeIdClass = ArtifactTypeId.class;
-		} else if (this.resourceClass.equals(NodeTypeImplementationsResource.class) ||
-				this.resourceClass.equals(NodeTypesResource.class)) {
+		} else if (this.resourceClass == NodeTypeImplementationsResource.class) {
 			typeIdClass = NodeTypeId.class;
-		} else if (this.resourceClass.equals(RelationshipTypeImplementationsResource.class)) {
+		} else if (this.resourceClass == RelationshipTypeImplementationsResource.class) {
 			typeIdClass = RelationshipTypeId.class;
-		} else if (this.resourceClass.equals(PolicyTemplatesResource.class)) {
+		} else if (this.resourceClass == PolicyTemplatesResource.class) {
 			typeIdClass = PolicyTypeId.class;
 		} else {
 			return Collections.emptyList();
