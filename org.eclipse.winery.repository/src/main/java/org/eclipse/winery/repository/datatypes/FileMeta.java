@@ -41,7 +41,7 @@ public class FileMeta {
 	private long size;
 	private String url;
 	private String deleteUrl;
-	private String deleteType = "DELETE";
+	private static final String deleteType = "DELETE";
 	private String thumbnailUrl;
 
 
