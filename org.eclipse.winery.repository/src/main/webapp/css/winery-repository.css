@@ -31,8 +31,7 @@ body {
 #header {
 	width: 100%;
 	height: 87px;
-	background: url('../images/header_background.png');
-	background-repeat: no-repeat;
+	background: url('../images/header_background.png') no-repeat;
 }
 
 #showabout {
