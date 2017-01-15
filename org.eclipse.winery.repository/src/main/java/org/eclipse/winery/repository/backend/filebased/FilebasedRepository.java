@@ -194,7 +194,6 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			}
 			repositoryPath = repo.toPath();
 		} else {
-			assert (!operationalFileSystemAccess);
 			// we do not have access to the file system
 			throw new IllegalStateException("No write access to file system");
 		}

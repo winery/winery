@@ -432,7 +432,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		// TODO: refactor: this is more a RepositoryUtils thing than a special thing here; see also importFile at CSARImporter
 
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(artifactTemplateId);
-		RepositoryFileReference fref = new RepositoryFileReference(fileDir, zipFile.getName().toString());
+		RepositoryFileReference fref = new RepositoryFileReference(fileDir, zipFile.getName());
 		try (InputStream is = Files.newInputStream(zipFile.toPath());
 				BufferedInputStream bis = new BufferedInputStream(is)) {
 			String mediaType = Utils.getMimeType(bis, zipFile.getName());

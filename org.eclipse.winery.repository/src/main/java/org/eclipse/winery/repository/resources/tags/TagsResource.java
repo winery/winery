@@ -119,6 +119,9 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 			tags = ((NodeTypeImplementationResource) this.res).getNTI().getTags();
 		} else if (this.res instanceof RelationshipTypeImplementationResource) {
 			tags = ((RelationshipTypeImplementationResource) this.res).getRTI().getTags();
+		} else {
+			LOGGER.error("A tag addition seems to have been requested for a TOSCA element, where no tags are available");
+			return;
 		}
 
 		tags.getTag().add(tag);

@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.admin;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -21,7 +19,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -30,14 +27,14 @@ import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.restdoc.annotations.RestDoc;
-import org.restdoc.annotations.RestDocParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+import org.restdoc.annotations.RestDoc;
+import org.restdoc.annotations.RestDocParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RepositoryAdminResource {
 
@@ -99,8 +96,6 @@ public class RepositoryAdminResource {
 	@Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
 	public Response dumpRepository() {
 		StreamingOutput so = output -> ((IRepositoryAdministration) Repository.INSTANCE).doDump(output);
-		StringBuilder sb = new StringBuilder();
-		sb.append("attachment;filename=\"repository.zip\"");
-		return Response.ok().header("Content-Disposition", sb.toString()).type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
+		return Response.ok().header("Content-Disposition", "attachment;filename=\"repository.zip\"").type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
 	}
 }

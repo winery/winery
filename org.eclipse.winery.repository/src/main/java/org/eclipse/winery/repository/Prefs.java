@@ -131,6 +131,7 @@ public class Prefs implements ServletContextListener {
 			// Prefs.LOGGER.info("Using jclouds as interface to the repository");
 			// this.repository = new JCloudsBasedRepository(provider, identity, credential, location, containerName, endPoint);
 		} // else {
+		//noinspection ConstantConditions
 		if (provider == null) {
 			String repositoryLocation = this.properties.getProperty("repositoryPath");
 			Prefs.LOGGER.debug("Repository location: {}", repositoryLocation);

@@ -578,8 +578,6 @@ public class Utils {
 				list = new ArrayList<>();
 				data.put(id.getNamespace(), list);
 			}
-			assert (list != null);
-
 			list.addAll(allLocalNames);
 		}
 
