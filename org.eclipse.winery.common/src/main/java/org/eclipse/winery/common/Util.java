@@ -291,7 +291,7 @@ public class Util {
 		return localName;
 	}
 
-	public static <T extends Object> JAXBElement<T> getJAXBElement(Class<T> clazz, T obj) {
+	public static <T> JAXBElement<T> getJAXBElement(Class<T> clazz, T obj) {
 		String namespace = null;
 		XmlRootElement xmlRootElement = clazz.getAnnotation(XmlRootElement.class);
 		if (xmlRootElement != null) {
@@ -326,7 +326,7 @@ public class Util {
 	 * <li>JAXBcontext is created at each call</li>
 	 * </ul>
 	 */
-	public static <T extends Object> String getXMLAsString(Class<T> clazz, T obj) throws Exception {
+	public static <T> String getXMLAsString(Class<T> clazz, T obj) throws Exception {
 		// copied from Utils java, but we create an own JAXBcontext here
 		// JAXBSupport cannot be used as this relies on a MockElement, which we do not want to factor out to winery.common
 

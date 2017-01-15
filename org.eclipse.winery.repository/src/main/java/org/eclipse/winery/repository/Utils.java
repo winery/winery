@@ -515,7 +515,7 @@ public class Utils {
 	 * @param clazz the Class of the passed object, required if obj is null
 	 * @param obj the object to serialize
 	 */
-	public static <T extends Object> Response getXML(Class<T> clazz, T obj) {
+	public static <T> Response getXML(Class<T> clazz, T obj) {
 		// see commit ab4b5c547619c058990 for an implementation using getJAXBElement,
 		// which can be directly passed as entity
 		// the issue is that we want to have a *formatted* XML
@@ -525,7 +525,7 @@ public class Utils {
 		return Response.ok().type(MediaType.TEXT_XML).entity(xml).build();
 	}
 
-	public static <T extends Object> String getXMLAsString(Class<T> clazz, T obj, boolean includeProcessingInstruction) {
+	public static <T> String getXMLAsString(Class<T> clazz, T obj, boolean includeProcessingInstruction) {
 		JAXBElement<T> rootElement = Util.getJAXBElement(clazz, obj);
 		Marshaller m = JAXBSupport.createMarshaller(includeProcessingInstruction);
 		StringWriter w = new StringWriter();
@@ -548,7 +548,7 @@ public class Utils {
 		}
 	}
 
-	public static <T extends Object> String getXMLAsString(T obj, boolean includeProcessingInstruction) {
+	public static <T> String getXMLAsString(T obj, boolean includeProcessingInstruction) {
 		if (obj == null) {
 			return "";
 		}
