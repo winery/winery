@@ -44,7 +44,6 @@ public class GitBasedRepository extends FilebasedRepository {
 	private static final Object COMMIT_LOCK = new Object();
 	private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
 
-	private final Repository gitRepo;
 	private final Git git;
 
 
@@ -57,11 +56,11 @@ public class GitBasedRepository extends FilebasedRepository {
 	public GitBasedRepository(String repositoryLocation) throws IOException, NoWorkTreeException, GitAPIException {
 		super(repositoryLocation);
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		this.gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
+		Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
 		if (!new File(this.determineRepositoryPath(repositoryLocation) + "/.git").exists()) {
-		    this.gitRepo.create();
+		    gitRepo.create();
 		}
-		this.git = new Git(this.gitRepo);
+		this.git = new Git(gitRepo);
 		if (!this.git.status().call().isClean()) {
             this.addCommit();
 		}
