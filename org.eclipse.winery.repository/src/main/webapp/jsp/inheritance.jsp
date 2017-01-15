@@ -14,7 +14,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <div class="form-group">
-	<label class="control-label" for="abstract">Abstract</label>
+	<label class="control-label" for="form-control">Abstract</label>
 	<select class="form-control" style="width:100px;" id="isAbstract" onchange="updateValue('abstract', this.options[this.selectedIndex].value);">
 		<option value="yes"<c:if test="${it.isAbstract=='yes'}"> selected="selected"</c:if>>yes</option>
 		<option value="no"<c:if test="${it.isAbstract=='no'}"> selected="selected"</c:if>>no</option>
