@@ -369,15 +369,9 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 * generator. Also sets the proeprties according to the requirements of
 	 * OpenTOSCA.
 	 *
-	 * @param interfaceNameStr
-	 * @param javapackage
-	 * @param uriInfo
-	 * @param artifactTemplateId
 	 * @param artifactTemplateResource the resource associated with the
 	 *            artifactTempalteId. If null, the object is created in this
 	 *            method
-	 *
-	 * @return {@inheritDoc}
 	 */
 	private Response generateImplementationArtifact(String interfaceNameStr, String javapackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId, ArtifactTemplateResource artifactTemplateResource) {
 		TInterface iface;

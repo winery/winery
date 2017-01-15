@@ -57,9 +57,6 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 *
 	 * Typically, the given TOSCA element is created if a configuration is asked
 	 * for
-	 *
-	 * @param id
-	 * @return
 	 */
 	boolean flagAsExisting(GenericId id);
 
@@ -73,8 +70,6 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 
 	/**
 	 * Deletes the referenced object from the repository
-	 *
-	 * @param ref
 	 */
 	void forceDelete(RepositoryFileReference ref) throws IOException;
 
@@ -172,7 +167,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 *
 	 * @param ref a reference to the TOSCA element to be checked. The path
 	 *            belonging to this element is checked.
-	 * @param idClass
+	 * @param idClass the class of the Id
 	 * @return the set of Ids nested in the given reference. Empty set if there
 	 *         are no or the reference itself does not exist.
 	 */

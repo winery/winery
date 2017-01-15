@@ -18,7 +18,6 @@ public abstract class PrefsTestEnabled extends Prefs {
 	/**
 	 * @param initializeRepository true if the repository should be initialized
 	 *            as provided in winery.properties
-	 * @throws IOException
 	 */
 	protected PrefsTestEnabled(boolean initializeRepository) throws IOException {
 		super(initializeRepository);

@@ -85,9 +85,10 @@ public class Prefs implements ServletContextListener {
 	/**
 	 * Constructor for Unit testing ONLY!
 	 *
+	 * <emph>Do not call! (except from Unit testing code)</emph>
+	 *
 	 * @param initializeRepository true if the repository should be initialized
 	 *            as provided in winery.properties
-	 * @warning Do not call! (except from Unit testing code)
 	 */
 	protected Prefs(boolean initializeRepository) throws IOException {
 		this();

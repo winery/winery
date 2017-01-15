@@ -74,7 +74,6 @@ public abstract class GenericVisualAppearanceResource {
 	}
 
 	/**
-	 * @param res
 	 * @param otherAttributes the other attributes of the node/relationship type
 	 * @param id the id of this subresource required for storing the images
 	 */

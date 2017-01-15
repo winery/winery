@@ -25,7 +25,6 @@ public interface IRepositoryAdministration {
 	 *
 	 * @param out stream to use to dump the data to. Currently, a ZIP output
 	 *            stream is returned.
-	 * @throws IOException
 	 */
 	void doDump(OutputStream out) throws IOException;
 

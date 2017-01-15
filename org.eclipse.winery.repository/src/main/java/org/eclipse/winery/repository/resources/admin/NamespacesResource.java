@@ -127,7 +127,6 @@ public class NamespacesResource extends AbstractAdminResource {
 	 * Deletes given namespace from the repository
 	 *
 	 * @param URI to delete. The namespace is URLencoded.
-	 * @return
 	 */
 	@DELETE
 	@Path("{namespace}")

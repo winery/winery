@@ -44,7 +44,6 @@ public class IdUtil {
 	 * @param id the id to transform to a path
 	 * @param doubleEncode true if each sub fragment should be double encoded,
 	 *            false if it should be encoded only once
-	 * @return
 	 */
 	private static String getPathFragment(final GenericId id, final boolean doubleEncode) {
 		String toInsert;

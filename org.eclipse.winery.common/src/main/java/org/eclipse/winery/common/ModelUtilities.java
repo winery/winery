@@ -23,7 +23,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.constants.QNames;
 import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
@@ -49,6 +48,8 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -281,8 +282,6 @@ public class ModelUtilities {
 
 	/**
 	 * Returns the Properties. If no properties exist, the element is created
-	 *
-	 * @return
 	 */
 	public static org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties getProperties(TBoundaryDefinitions defs) {
 		org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties properties = defs.getProperties();

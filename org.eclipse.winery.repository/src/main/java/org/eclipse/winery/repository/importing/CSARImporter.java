@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -164,8 +165,6 @@ public class CSARImporter {
 	 * @param asyncWPDParsing true if WPD should be parsed asynchronously to
 	 *            speed up the import. Required, because JUnit terminates the
 	 *            used ExecutorService
-	 * @throws InvalidCSARException
-	 * @throws IOException
 	 */
 	void importFromDir(final Path path, final List<String> errors, final boolean overwrite, final boolean asyncWPDParsing) throws IOException {
 		Path toscaMetaPath = path.resolve("TOSCA-Metadata/TOSCA.meta");
@@ -280,10 +279,6 @@ public class CSARImporter {
 	 * Imports a self-service meta data description (if available)
 	 *
 	 * The first service template in the provided entry definitions is taken
-	 *
-	 * @param tmf
-	 *
-	 * @param errors
 	 */
 	private void importSelfServiceMetaData(final TOSCAMetaFile tmf, final Path rootPath, Path entryDefinitions, final List<String> errors) {
 		final Path selfServiceDir = rootPath.resolve(Constants.DIRNAME_SELF_SERVICE_METADATA);
@@ -377,10 +372,6 @@ public class CSARImporter {
 	 *            meta file. If null, no files must be referenced from the given
 	 *            definitions
 	 * @param overwrite true: existing contents are overwritten
-	 * @param asyncWPDParsing
-	 * @param definitions the path to the definitions to import
-	 *
-	 * @throws IOException
 	 */
 	public void importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors, boolean overwrite, boolean asyncWPDParsing) throws IOException {
 		if (defsPath == null) {
@@ -571,7 +562,7 @@ public class CSARImporter {
 	 * @param wid the Winery id of the entitytype
 	 * @param newDefs the definitions, the entiy type is contained in. The
 	 *            imports might be adjusted here
-	 * @param errors
+	 * @param errors Used to collect the errors
 	 */
 	private static void adjustEntityType(TEntityType ci, EntityTypeId wid, Definitions newDefs, final List<String> errors) {
 		PropertiesDefinition propertiesDefinition = ci.getPropertiesDefinition();
@@ -646,8 +637,6 @@ public class CSARImporter {
 	 *            the plan
 	 * @param wid Winery's internal id of the service template
 	 * @param st the the service template to be imported {@inheritDoc}
-	 *
-	 * @throws InvalidCSARException
 	 */
 	private void adjustServiceTemplate(Path rootPath, TOSCAMetaFile tmf, ServiceTemplateId wid, TServiceTemplate st, final List<String> errors) {
 		TPlans plans = st.getPlans();
@@ -815,7 +804,6 @@ public class CSARImporter {
 	 * @param tmf the TOSCAMetaFile object used to determine the mimetype. Must
 	 *            not be null.
 	 * @param rootPath used to relativize p to determine the mime type
-	 * @throws InvalidCSARException
 	 */
 	private void importFile(Path p, RepositoryFileReference fref, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
 		if (tmf == null) {
@@ -869,13 +857,7 @@ public class CSARImporter {
 	 */
 	private void handleExclude(Exclude excl, Path localRoot, Set<Path> allFiles) {
 		PathMatcher pathMatcher = localRoot.getFileSystem().getPathMatcher("glob:" + excl.getPattern());
-		Iterator<Path> it = allFiles.iterator();
-		while (it.hasNext()) {
-			Path curPath = it.next();
-			if (pathMatcher.matches(curPath)) {
-				it.remove();
-			}
-		}
+		allFiles.removeIf(pathMatcher::matches);
 	}
 
 	/**

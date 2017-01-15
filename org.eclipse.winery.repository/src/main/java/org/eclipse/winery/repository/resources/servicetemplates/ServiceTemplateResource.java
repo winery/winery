@@ -169,8 +169,6 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	 * Synchronizes the known plans with the data in the XML. When there is a
 	 * stored file, but no known entry in the XML, we guess "BPEL" as language
 	 * and "build plan" as type.
-	 *
-	 * @throws IOException
 	 */
 	@Override
 	public void synchronizeReferences() {

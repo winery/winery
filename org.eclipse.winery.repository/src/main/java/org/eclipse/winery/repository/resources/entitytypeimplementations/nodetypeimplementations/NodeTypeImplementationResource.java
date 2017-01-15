@@ -46,8 +46,6 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 	 * Even if both node type implementations and relationship type
 	 * implementations have implementation artifacts, there is no common
 	 * supertype. To avoid endless casts, we just implement the method here
-	 *
-	 * @return
 	 */
 	@Path("implementationartifacts/")
 	public ImplementationArtifactsResource getImplementationArtifacts() {

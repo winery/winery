@@ -83,9 +83,6 @@ public class FileUtils {
 	/**
 	 * Creates the given directory including its parent directories, if they do
 	 * not exist.
-	 *
-	 * @param path
-	 * @throws IOException
 	 */
 	public static void createDirectory(Path path) throws IOException {
 		Path parent = path.getParent();

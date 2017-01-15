@@ -40,8 +40,6 @@ public interface IWineryRepositoryCommon {
 	 * given id from the repository
 	 *
 	 * We assume that each id is a directory
-	 *
-	 * @param id
 	 */
 	void forceDelete(GenericId id) throws IOException;
 

@@ -733,7 +733,6 @@ public class BackendUtils {
 	 *            color
 	 * @param qname the QName of the color attribute
 	 * @param otherAttributes the plain "XML" attributes. They are used to check
-	 * @param res
 	 */
 	public static String getColorAndSetDefaultIfNotExisting(String name, QName qname, Map<QName, String> otherAttributes, TopologyGraphElementEntityTypeResource res) {
 		String colorStr = otherAttributes.get(qname);
@@ -750,7 +749,6 @@ public class BackendUtils {
 	 * @param tcId The element type id to get the location for
 	 * @param uri uri to use if in XML export mode, null if in CSAR export mode
 	 * @param wrapperElementLocalName the local name of the wrapper element
-	 * @return
 	 */
 	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
 		String loc = BackendUtils.getPathInsideRepo(tcId);

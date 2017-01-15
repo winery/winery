@@ -36,9 +36,6 @@ public class InheritanceIllustration {
 	}
 
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		A theObject = new B();
 		X.doSomething(theObject);

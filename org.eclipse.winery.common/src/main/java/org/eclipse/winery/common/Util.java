@@ -448,11 +448,7 @@ public class Util {
 	public static SortedMap<String, SortedSet<String>> convertQNameListToNamespaceToLocalNameList(List<QName> list) {
 		SortedMap<String, SortedSet<String>> res = new TreeMap<>();
 		for (QName qname : list) {
-			SortedSet<String> localNameSet = res.get(qname.getNamespaceURI());
-			if (localNameSet == null) {
-				localNameSet = new TreeSet<>();
-				res.put(qname.getNamespaceURI(), localNameSet);
-			}
+			SortedSet<String> localNameSet = res.computeIfAbsent(qname.getNamespaceURI(), k -> new TreeSet<>());
 			localNameSet.add(qname.getLocalPart());
 		}
 		return res;
@@ -532,7 +528,7 @@ public class Util {
 			return text;
 		}
 
-		StringBuffer res = new StringBuffer();
+		StringBuilder res = new StringBuilder();
 
 		// handle start
 		String start = text.substring(0, 1);

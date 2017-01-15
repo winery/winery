@@ -23,7 +23,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties.PropertyMappings;
@@ -31,6 +30,8 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDoc;
 
 public class PropertyMappingsResource {
@@ -93,9 +94,7 @@ public class PropertyMappingsResource {
 		}
 
 		// replace propertyMapping if it exists
-		Iterator<TPropertyMapping> iterator = this.propertyMappings.getPropertyMapping().iterator();
-		while (iterator.hasNext()) {
-			TPropertyMapping propertyMapping = iterator.next();
+		for (TPropertyMapping propertyMapping : this.propertyMappings.getPropertyMapping()) {
 			if (propertyMapping.getServiceTemplatePropertyRef().equals(serviceTemplatePropertyRef)) {
 				// we found a property with the same mapping
 				// just update it ...
