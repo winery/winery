@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Utils {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Utils.class.getName());
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Utils.class.getName());
 
 	/**
 	 * This method searches {@link TNodeType}s in the repository that match a requirement.
@@ -96,7 +96,7 @@ public class Utils {
 			}
 		}
 
-		logger.error("No NodeTemplate with " + id + " exists");
+		LOGGER.error("No NodeTemplate with " + id + " exists");
 
 		return null;
 
@@ -119,7 +119,7 @@ public class Utils {
 			}
 		}
 
-		logger.error("No NodeType with " + id + " exists");
+		LOGGER.error("No NodeType with " + id + " exists");
 
 		// no type could be found for the given ID, this case cannot occur if the topology was modelled in the Winery Topology Modeler
 		return null;

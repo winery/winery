@@ -60,7 +60,7 @@ import org.w3c.dom.Text;
 
 public class ModelUtilities {
 
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ModelUtilities.class);
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
 
 
 	/**
@@ -153,7 +153,7 @@ public class ModelUtilities {
 		try {
 			db = dbf.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			ModelUtilities.logger.debug(e.getMessage(), e);
+			ModelUtilities.LOGGER.debug(e.getMessage(), e);
 			throw new IllegalStateException("Could not instantiate document builder", e);
 		}
 		Document doc = db.newDocument();
@@ -200,7 +200,7 @@ public class ModelUtilities {
 		try {
 			docBuilder = docFactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			ModelUtilities.logger.debug(e.getMessage(), e);
+			ModelUtilities.LOGGER.debug(e.getMessage(), e);
 			throw new IllegalStateException("Could not instantiate document builder", e);
 		}
 		Document doc = docBuilder.newDocument();

@@ -106,7 +106,7 @@ import org.w3c.dom.Document;
 
 public class TOSCAExportUtil {
 
-	private static final XLogger logger = XLoggerFactory.getXLogger(TOSCAExportUtil.class);
+	private static final XLogger LOGGER = XLoggerFactory.getXLogger(TOSCAExportUtil.class);
 
 	/*
 	 * these two are GLOBAL VARIABLES leading to the fact that this class has to
@@ -204,7 +204,7 @@ public class TOSCAExportUtil {
 	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws JAXBException {
 		if (!Repository.INSTANCE.exists(tcId)) {
 			String error = "Component instance " + tcId.toString() + " does not exist.";
-			TOSCAExportUtil.logger.error(error);
+			TOSCAExportUtil.LOGGER.error(error);
 			throw new IllegalStateException(error);
 		}
 
@@ -277,7 +277,7 @@ public class TOSCAExportUtil {
 					// Determine location
 					String loc = BackendUtils.getImportLocationForWinerysPropertiesDefinitionXSD((EntityTypeId) tcId, uri, wrapperElementLocalName);
 					if (uri == null) {
-						TOSCAExportUtil.logger.trace("CSAR Export mode. Putting XSD into CSAR");
+						TOSCAExportUtil.LOGGER.trace("CSAR Export mode. Putting XSD into CSAR");
 						// CSAR Export mode
 						// XSD has to be put into the CSAR
 						Document document = ModelUtilities.getWinerysPropertiesDefinitionXSDAsDocument(wpd);
@@ -286,7 +286,7 @@ public class TOSCAExportUtil {
 						String locInCSAR = Util.URLdecode(loc);
 						// furthermore, the path has to start from the root of the CSAR; currently, it starts from Definitions/
 						locInCSAR = locInCSAR.substring(3);
-						TOSCAExportUtil.logger.trace("Location in CSAR: {}", locInCSAR);
+						TOSCAExportUtil.LOGGER.trace("Location in CSAR: {}", locInCSAR);
 						this.referencesToPathInCSARMap.put(new DummyRepositoryFileReferenceForGeneratedXSD(document), locInCSAR);
 					}
 					imp.setLocation(loc);
