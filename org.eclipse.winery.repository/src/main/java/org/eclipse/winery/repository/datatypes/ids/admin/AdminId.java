@@ -19,11 +19,11 @@ import org.eclipse.winery.common.ids.XMLId;
  * the prefixes of namespaces
  */
 public abstract class AdminId extends GenericId {
-	
+
 	protected AdminId(XMLId xmlId) {
 		super(xmlId);
 	}
-	
+
 	@Override
 	public int compareTo(GenericId o) {
 		if (o instanceof AdminId) {
@@ -32,12 +32,12 @@ public abstract class AdminId extends GenericId {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	@Override
 	public GenericId getParent() {
 		return null;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof AdminId) {
@@ -46,10 +46,10 @@ public abstract class AdminId extends GenericId {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.getXmlId().hashCode();
 	}
-	
+
 }

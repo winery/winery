@@ -36,18 +36,18 @@ import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 
 public class PlanFileResource {
-	
+
 	private final PlanId planId;
 	private TPlan plan;
 	private ServiceTemplateResource res;
-	
-	
+
+
 	public PlanFileResource(ServiceTemplateResource res, PlanId planId, TPlan plan) {
 		this.res = res;
 		this.planId = planId;
 		this.plan = plan;
 	}
-	
+
 	/**
 	 * Extracts the file reference from plan's planModelReference
 	 */
@@ -56,7 +56,7 @@ public class PlanFileResource {
 		File f = new File(reference);
 		return new RepositoryFileReference(this.planId, f.getName());
 	}
-	
+
 	@PUT
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
 	@RestDoc(methodDescription = "Resource currently works for BPMN4TOSCA plans only")
@@ -67,7 +67,7 @@ public class PlanFileResource {
 		@FormDataParam("file") FormDataBodyPart body
 	) {
 	// @formatter:on
-		
+
 		String fileName = fileDetail.getFileName();
 		RepositoryFileReference ref = new RepositoryFileReference(this.planId, fileName);
 		RepositoryFileReference oldRef = this.getFileRef();
@@ -81,21 +81,21 @@ public class PlanFileResource {
 			PlansResource.setPlanModelReference(this.plan, this.planId, fileName);
 			persistanceNecessary = true;
 		}
-		
+
 		// Really store it
 		try {
 			Repository.INSTANCE.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 		} catch (IOException e1) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
 		}
-		
+
 		if (persistanceNecessary) {
 			return BackendUtils.persist(this.res);
 		} else {
 			return Response.noContent().build();
 		}
 	}
-	
+
 	@PUT
 	@Consumes({MediaType.APPLICATION_JSON})
 	// @formatter:off

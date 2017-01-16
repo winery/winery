@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *     Lukas Harzenetter, Nicole Keppler - forceDelete for Namespaces
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
@@ -32,9 +33,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedSet;
 
-import javax.naming.NameParser;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -109,32 +110,28 @@ import com.sun.jersey.core.header.ContentDisposition;
 
 /**
  * Contains generic utility functions for the Backend
- * 
+ *
  * Contains everything that is useful for our ids etc. Does <em>not</em> contain
  * anything that has to do with resources
  */
 public class BackendUtils {
-	
-	private static final Logger logger = LoggerFactory.getLogger(BackendUtils.class);
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
 
 	/**
 	 * Deletes the whole namespace in the component
-	 *
-	 * @param toscaComponentIdClazz
-	 * @param namespaceStr
-	 * @return
 	 */
 	public static Response delete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, String namespaceStr) {
 		Namespace namespace = new Namespace(namespaceStr, true);
 		try {
 			Repository.INSTANCE.forceDelete(toscaComponentIdClazz, namespace);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
 	}
-	
+
 	/**
 	 * Deletes given file/dir and returns appropriate response code
 	 */
@@ -145,12 +142,12 @@ public class BackendUtils {
 		try {
 			Repository.INSTANCE.forceDelete(id);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
 	}
-	
+
 	/**
 	 * Deletes given file and returns appropriate response code
 	 */
@@ -161,19 +158,19 @@ public class BackendUtils {
 		try {
 			Repository.INSTANCE.forceDelete(ref);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.ok().build();
 	}
-	
+
 	/**
 	 * Generates given TOSCA element and returns appropriate response code <br  />
-	 * 
+	 *
 	 * In the case of an existing resource, the other possible return code is
 	 * 302. This code has no Status constant, therefore we use Status.CONFLICT,
 	 * which is also possible.
-	 * 
+	 *
 	 * @return <ul>
 	 *         <li>
 	 *         <ul>
@@ -227,21 +224,21 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Sends the file if modified and "not modified" if not modified future work
 	 * may put each file with a unique id in a separate folder in tomcat * use
 	 * that static URL for each file * if file is modified, URL of file changes
 	 * * -> client always fetches correct file
-	 * 
+	 *
 	 * additionally "Vary: Accept" header is added (enables caching of the
 	 * response)
-	 * 
+	 *
 	 * method header for calling method public <br />
 	 * <code>Response getXY(@HeaderParam("If-Modified-Since") String modified) {...}</code>
-	 * 
-	 * 
+	 *
+	 *
 	 * @param ref references the file to be send
 	 * @param modified - HeaderField "If-Modified-Since" - may be "null"
 	 * @return Response to be sent to the client
@@ -249,25 +246,25 @@ public class BackendUtils {
 	public static Response returnRepoPath(RepositoryFileReference ref, String modified) {
 		return BackendUtils.returnRefAsResponseBuilder(ref, modified).build();
 	}
-	
+
 	/**
 	 * @return true if given fileDate is newer then the modified date (or
 	 *         modified is null)
 	 */
-	public static boolean isFileNewerThanModifiedDate(long millis, String modified) {
+	private static boolean isFileNewerThanModifiedDate(long millis, String modified) {
 		if (modified == null) {
 			return true;
 		}
-		
+
 		Date modifiedDate = null;
-		
+
 		assert (Locale.getDefault() == Locale.ENGLISH);
 		try {
 			modifiedDate = DateUtils.parseDate(modified, org.apache.http.impl.cookie.DateUtils.DEFAULT_PATTERNS);
 		} catch (ParseException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 		}
-		
+
 		if (modifiedDate != null) {
 			// modifiedDate does not carry milliseconds, but fileDate does
 			// therefore we have to do a range-based comparison
@@ -275,13 +272,13 @@ public class BackendUtils {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * This is not repository specific, but we leave it close to the only caller
-	 * 
+	 *
 	 * If the passed ref is newer than the modified date (or the modified date
 	 * is null), an OK response with an inputstream pointing to the path is
 	 * returned
@@ -290,25 +287,25 @@ public class BackendUtils {
 		if (!Repository.INSTANCE.exists(ref)) {
 			return Response.status(Status.NOT_FOUND);
 		}
-		
+
 		FileTime lastModified;
 		try {
 			lastModified = Repository.INSTANCE.getLastModifiedTime(ref);
 		} catch (IOException e1) {
-			BackendUtils.logger.debug("Could not get lastModifiedTime", e1);
+			BackendUtils.LOGGER.debug("Could not get lastModifiedTime", e1);
 			return Response.serverError();
 		}
-		
+
 		// do we really need to send the file or can send "not modified"?
 		if (!BackendUtils.isFileNewerThanModifiedDate(lastModified.toMillis(), modified)) {
 			return Response.status(Status.NOT_MODIFIED);
 		}
-		
+
 		ResponseBuilder res;
 		try {
 			res = Response.ok(Repository.INSTANCE.newInputStream(ref));
 		} catch (IOException e) {
-			BackendUtils.logger.debug("Could not open input stream", e);
+			BackendUtils.LOGGER.debug("Could not open input stream", e);
 			return Response.serverError();
 		}
 		res = res.lastModified(new Date(lastModified.toMillis()));
@@ -318,7 +315,7 @@ public class BackendUtils {
 		try {
 			res = res.header(HttpHeaders.CONTENT_TYPE, Repository.INSTANCE.getMimeType(ref));
 		} catch (IOException e) {
-			BackendUtils.logger.debug("Could not determine mime type", e);
+			BackendUtils.LOGGER.debug("Could not determine mime type", e);
 			return Response.serverError();
 		}
 		// set filename
@@ -326,14 +323,14 @@ public class BackendUtils {
 		res.header("Content-Disposition", contentDisposition);
 		return res;
 	}
-	
+
 	/**
 	 * Updates the given property in the given configuration. Currently always
 	 * returns "no content", because the underlying class does not report any
 	 * errors during updating. <br />
-	 * 
+	 *
 	 * If null or "" is passed as value, the property is cleared
-	 * 
+	 *
 	 * @return Status.NO_CONTENT
 	 */
 	public static Response updateProperty(Configuration configuration, String property, String val) {
@@ -344,7 +341,7 @@ public class BackendUtils {
 		}
 		return Response.noContent().build();
 	}
-	
+
 	/**
 	 * Persists the resource and returns appropriate response
 	 */
@@ -353,48 +350,60 @@ public class BackendUtils {
 		try {
 			res.persist();
 		} catch (IOException e) {
-			BackendUtils.logger.debug("Could not persist resource", e);
+			BackendUtils.LOGGER.debug("Could not persist resource", e);
 			r = Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
 			return r;
 		}
 		r = Response.noContent().build();
 		return r;
 	}
-	
+
+	public static Response rename(TOSCAComponentId oldId, TOSCAComponentId newId) {
+		try {
+			Repository.INSTANCE.rename(oldId, newId);
+		} catch (IOException e) {
+			BackendUtils.LOGGER.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		URI uri = Utils.getAbsoluteURI(newId);
+
+		return Response.created(uri).entity(uri.toString()).build();
+	}
+
 	/**
 	 * Writes data to file. Replaces the file's content with the given content.
 	 * The file does not need to exist
-	 * 
+	 *
 	 * @param ref Reference to the File to write to (overwrite)
 	 * @param content the data to write
 	 * @return a JAX-RS Response containing the result. NOCONTENT if successful,
 	 *         InternalSeverError otherwise
 	 */
-	public static Response putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) {
+	public static Response putContentToFile(RepositoryFileReference ref, String content, @SuppressWarnings("SameParameterValue") MediaType mediaType) {
 		try {
 			Repository.INSTANCE.putContentToFile(ref, content, mediaType);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
 	}
-	
+
 	public static Response putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) {
 		try {
 			Repository.INSTANCE.putContentToFile(ref, inputStream, mediaType);
 		} catch (IOException e) {
-			BackendUtils.logger.error(e.getMessage(), e);
+			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
 	}
-	
+
 	public static <T extends TOSCAComponentId> T getTOSCAcomponentId(Class<T> idClass, String qnameStr) {
 		QName qname = QName.valueOf(qnameStr);
 		return BackendUtils.getTOSCAcomponentId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
 	}
-	
+
 	public static <T extends TOSCAComponentId> T getTOSCAcomponentId(Class<T> idClass, QName qname) {
 		// we got two implementation possibilities: one is to directly use the
 		// QName constructor,
@@ -403,13 +412,13 @@ public class BackendUtils {
 		// exist at all ids
 		return BackendUtils.getTOSCAcomponentId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
 	}
-	
+
 	public static <T extends TOSCAComponentId> T getTOSCAcomponentId(Class<T> idClass, String namespace, String id, boolean URLencoded) {
 		Constructor<T> constructor;
 		try {
 			constructor = idClass.getConstructor(String.class, String.class, boolean.class);
 		} catch (NoSuchMethodException | SecurityException e) {
-			BackendUtils.logger.error("Could not get constructor for id " + idClass.getName(), e);
+			BackendUtils.LOGGER.error("Could not get constructor for id " + idClass.getName(), e);
 			throw new IllegalStateException(e);
 		}
 		T tcId;
@@ -417,12 +426,12 @@ public class BackendUtils {
 			tcId = constructor.newInstance(namespace, id, URLencoded);
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException e) {
-			BackendUtils.logger.error("Could not create id instance", e);
+			BackendUtils.LOGGER.error("Could not create id instance", e);
 			throw new IllegalStateException(e);
 		}
 		return tcId;
 	}
-	
+
 	/**
 	 * @param id the id to determine the namespace of the parent for
 	 * @return the namespace of the first TOSCAcomponentId found in the ID
@@ -435,23 +444,17 @@ public class BackendUtils {
 		}
 		return ((TOSCAComponentId) parent).getNamespace();
 	}
-	
+
 	public static String getName(TOSCAComponentId instanceId) {
 		// TODO: Here is a performance issue as we don't use caching or a database
 		// Bad, but without performance loss: Use "text = instanceId.getXmlId().getDecoded();"
 		TExtensibleElements instanceElement = AbstractComponentsResource.getComponentInstaceResource(instanceId).getElement();
 		return ModelUtilities.getNameWithIdFallBack(instanceElement);
 	}
-	
-/**
-	 * Do <em>not</em> use this for creating URLs. Use
-	 *
-	 * {@link org.eclipse.winery.repository.Utils.getURLforPathInsideRepo(String)}
-	 *
-	 * or
-	 *
-	 * {@link org.eclipse.winery.repository.Utils.getAbsoluteURL(GenericId)
-	 * instead.
+
+    /**
+	 * Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
+	 * or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
 	 * @return the path starting from the root element to the current element.
 	 *         Separated by "/", URLencoded, but <b>not</b> double encoded. With
@@ -459,10 +462,8 @@ public class BackendUtils {
 	 * @throws IllegalStateException if id is of an unknown subclass of id
 	 */
 	public static String getPathInsideRepo(GenericId id) {
-		if (id == null) {
-			throw new NullPointerException("id is null");
-		}
-		
+		Objects.requireNonNull(id);
+
 		// for creating paths see also org.eclipse.winery.repository.Utils.getIntermediateLocationStringForType(String, String)
 		// and org.eclipse.winery.common.Util.getRootPathFragment(Class<? extends TOSCAcomponentId>)
 		if (id instanceof AdminId) {
@@ -484,16 +485,10 @@ public class BackendUtils {
 			throw new IllegalStateException("Unknown subclass of GenericId " + id.getClass());
 		}
 	}
-	
-/**
-	 * Do <em>not</em> use this for creating URLs. Use
-	 *
-	 * {@link org.eclipse.winery.repository.Utils.getURLforPathInsideRepo(String)}
-	 *
-	 * or
-	 *
-	 * {@link org.eclipse.winery.repository.Utils.getAbsoluteURL(GenericId)
-	 * instead.
+
+	/**
+ 	* Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
+ 	* or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
 	 * @return the path starting from the root element to the current element.
 	 *         Separated by "/", parent URLencoded. Without trailing slash.
@@ -501,25 +496,24 @@ public class BackendUtils {
 	public static String getPathInsideRepo(RepositoryFileReference ref) {
 		return BackendUtils.getPathInsideRepo(ref.getParent()) + ref.getFileName();
 	}
-	
+
 	/**
 	 * Returns the reference to the definitions XML storing the TOSCA for the
 	 * given id
-	 * 
+	 *
 	 * @param id the id to lookup
 	 * @return the reference
 	 */
 	public static RepositoryFileReference getRefOfDefinitions(TOSCAComponentId id) {
 		String name = Util.getTypeForComponentId(id.getClass());
 		name = name + Constants.SUFFIX_TOSCA_DEFINITIONS;
-		RepositoryFileReference ref = new RepositoryFileReference(id, name);
-		return ref;
+		return new RepositoryFileReference(id, name);
 	}
-	
+
 	/**
 	 * Returns the reference to the properties file storing the TOSCA
 	 * information for the given id
-	 * 
+	 *
 	 * @param id the id to lookup
 	 * @return the reference
 	 */
@@ -544,11 +538,10 @@ public class BackendUtils {
 				name = Util.getTypeForElementId(tId.getClass()) + Constants.SUFFIX_PROPERTIES;
 			}
 		}
-		
-		RepositoryFileReference ref = new RepositoryFileReference(id, name);
-		return ref;
+
+		return new RepositoryFileReference(id, name);
 	}
-	
+
 	/**
 	 * @param qNameOfTheType the QName of the type, where all TOSCAComponentIds,
 	 *            where the associated element points to the type
@@ -565,7 +558,7 @@ public class BackendUtils {
 				resource = (IHasTypeReference) AbstractComponentsResource.getComponentInstaceResource(id);
 			} catch (ClassCastException e) {
 				String error = "Requested following the type, but the component instance does not implmenet IHasTypeReference";
-				BackendUtils.logger.error(error);
+				BackendUtils.LOGGER.error(error);
 				throw new IllegalStateException(error);
 			}
 			// The resource may have been freshly initialized due to existence of a directory
@@ -578,13 +571,13 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Returns a list of the topology template nested in the given service
 	 * template
 	 */
 	public static List<TNodeTemplate> getAllNestedNodeTemplates(TServiceTemplate serviceTemplate) {
-		List<TNodeTemplate> l = new ArrayList<TNodeTemplate>();
+		List<TNodeTemplate> l = new ArrayList<>();
 		TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
 		if (topologyTemplate == null) {
 			return Collections.emptyList();
@@ -596,7 +589,7 @@ public class BackendUtils {
 		}
 		return l;
 	}
-	
+
 	private static Collection<QName> getAllReferencedArtifactTemplates(TDeploymentArtifacts tDeploymentArtifacts) {
 		if (tDeploymentArtifacts == null) {
 			return Collections.emptyList();
@@ -614,7 +607,7 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 	private static Collection<QName> getAllReferencedArtifactTemplates(TImplementationArtifacts tImplementationArtifacts) {
 		if (tImplementationArtifacts == null) {
 			return Collections.emptyList();
@@ -632,14 +625,14 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 	public static Collection<QName> getArtifactTemplatesOfReferencedDeploymentArtifacts(TNodeTemplate nodeTemplate) {
-		List<QName> l = new ArrayList<QName>();
-		
+		List<QName> l = new ArrayList<>();
+
 		// DAs may be assigned directly to a node template
 		Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(nodeTemplate.getDeploymentArtifacts());
 		l.addAll(allReferencedArtifactTemplates);
-		
+
 		// DAs may be assigned via node type implementations
 		QName nodeTypeQName = nodeTemplate.getType();
 		Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, nodeTypeQName);
@@ -648,13 +641,13 @@ public class BackendUtils {
 			allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getDeploymentArtifacts());
 			l.addAll(allReferencedArtifactTemplates);
 		}
-		
+
 		return l;
 	}
-	
+
 	public static Collection<QName> getArtifactTemplatesOfReferencedImplementationArtifacts(TNodeTemplate nodeTemplate) {
-		List<QName> l = new ArrayList<QName>();
-		
+		List<QName> l = new ArrayList<>();
+
 		// IAs may be assigned via node type implementations
 		QName nodeTypeQName = nodeTemplate.getType();
 		Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, nodeTypeQName);
@@ -663,41 +656,53 @@ public class BackendUtils {
 			Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getImplementationArtifacts());
 			l.addAll(allReferencedArtifactTemplates);
 		}
-		
+
 		return l;
 	}
-	
+
 	/**
 	 * Creates a new TDefintions element wrapping a TOSCA Component instance.
 	 * The namespace of the tosca component is used as namespace and
 	 * {@code winery-defs-for-} concatenated with the (unique) ns prefix and
 	 * idOfContainedElement is used as id
-	 * 
-	 * @param toscAcomponentId the id of the element the wrapper is used for
-	 * 
+     *
+	 * @param tcId the id of the element the wrapper is used for
+	 * @param defs the definitions to update
 	 * @return a definitions element prepared for wrapping a TOSCA component
 	 *         instance
 	 */
-	public static Definitions createWrapperDefinitions(TOSCAComponentId tcId) {
-		ObjectFactory of = new ObjectFactory();
-		Definitions defs = of.createDefinitions();
-		
+	public static Definitions updateWrapperDefinitions(TOSCAComponentId tcId, Definitions defs) {
 		// set target namespace
 		// an internal namespace is not possible
 		//   a) tPolicyTemplate and tArtfactTemplate do NOT support the "targetNamespace" attribute
 		//   b) the imports statement would look bad as it always imported the artificial namespace
 		defs.setTargetNamespace(tcId.getNamespace().getDecoded());
-		
+
 		// set a unique id to create a valid definitions element
 		// we do not use UUID to be more human readable and deterministic (for debugging)
 		String prefix = NamespacesResource.getPrefix(tcId.getNamespace());
 		String elId = tcId.getXmlId().getDecoded();
 		String id = "winery-defs-for_" + prefix + "-" + elId;
 		defs.setId(id);
-		
 		return defs;
 	}
-	
+
+	/**
+	 * Creates a new TDefintions element wrapping a TOSCA Component instance.
+	 * The namespace of the tosca component is used as namespace and
+	 * {@code winery-defs-for-} concatenated with the (unique) ns prefix and
+	 * idOfContainedElement is used as id
+	 *
+	 * @param tcId the id of the element the wrapper is used for
+	 * @return a definitions element prepared for wrapping a TOSCA component
+	 *         instance
+	 */
+	public static Definitions createWrapperDefinitions(TOSCAComponentId tcId) {
+		ObjectFactory of = new ObjectFactory();
+		Definitions defs = of.createDefinitions();
+		return updateWrapperDefinitions(tcId, defs);
+	}
+
 	/**
 	 * @throws IOException if content could not be updated in the repository
 	 * @throws IllegalStateException if an JAXBException occurred. This should
@@ -712,7 +717,7 @@ public class BackendUtils {
 			m = JAXBSupport.createMarshaller(true);
 			m.marshal(o, out);
 		} catch (JAXBException e) {
-			BackendUtils.logger.error("Could not put content to file", e);
+			BackendUtils.LOGGER.error("Could not put content to file", e);
 			throw new IllegalStateException(e);
 		}
 		byte[] data = out.toByteArray();
@@ -720,15 +725,14 @@ public class BackendUtils {
 		// this may throw an IOExcpetion. We propagate this exception.
 		Repository.INSTANCE.putContentToFile(ref, in, mediaType);
 	}
-	
+
 	/**
 	 * Updates the color if the color is not yet existent
-	 * 
+	 *
 	 * @param name the name of the component. Used as basis for a generated
 	 *            color
 	 * @param qname the QName of the color attribute
 	 * @param otherAttributes the plain "XML" attributes. They are used to check
-	 * @param res
 	 */
 	public static String getColorAndSetDefaultIfNotExisting(String name, QName qname, Map<QName, String> otherAttributes, TopologyGraphElementEntityTypeResource res) {
 		String colorStr = otherAttributes.get(qname);
@@ -739,13 +743,12 @@ public class BackendUtils {
 		}
 		return colorStr;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param tcId The element type id to get the location for
 	 * @param uri uri to use if in XML export mode, null if in CSAR export mode
 	 * @param wrapperElementLocalName the local name of the wrapper element
-	 * @return
 	 */
 	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
 		String loc = BackendUtils.getPathInsideRepo(tcId);
@@ -760,7 +763,7 @@ public class BackendUtils {
 		}
 		return loc;
 	}
-	
+
 	/**
 	 * @param ref the file to read from
 	 */
@@ -772,70 +775,70 @@ public class BackendUtils {
 		try {
 			is = Repository.INSTANCE.newInputStream(ref);
 		} catch (IOException e) {
-			BackendUtils.logger.debug("Could not create input stream", e);
+			BackendUtils.LOGGER.debug("Could not create input stream", e);
 			return null;
 		}
-		
+
 		// we rely on xerces to parse the XSD
 		// idea based on http://stackoverflow.com/a/5165177/873282
 		XSImplementation impl = new XSImplementationImpl();
 		XSLoader schemaLoader = impl.createXSLoader(null);
-		
+
 		// minimal LSInput implementation sufficient for XSLoader in Oracle's JRE7
 		LSInput input = new LSInput() {
-			
+
 			@Override
 			public void setSystemId(String systemId) {
 			}
-			
+
 			@Override
 			public void setStringData(String stringData) {
 			}
-			
+
 			@Override
 			public void setPublicId(String publicId) {
 			}
-			
+
 			@Override
 			public void setEncoding(String encoding) {
 			}
-			
+
 			@Override
 			public void setCharacterStream(Reader characterStream) {
 			}
-			
+
 			@Override
 			public void setCertifiedText(boolean certifiedText) {
 			}
-			
+
 			@Override
 			public void setByteStream(InputStream byteStream) {
 			}
-			
+
 			@Override
 			public void setBaseURI(String baseURI) {
 			}
-			
+
 			@Override
 			public String getSystemId() {
 				return null;
 			}
-			
+
 			@Override
 			public String getStringData() {
 				return null;
 			}
-			
+
 			@Override
 			public String getPublicId() {
 				return BackendUtils.getPathInsideRepo(ref);
 			}
-			
+
 			@Override
 			public String getEncoding() {
 				return "UTF-8";
 			}
-			
+
 			@Override
 			public Reader getCharacterStream() {
 				try {
@@ -845,68 +848,67 @@ public class BackendUtils {
 					throw new IllegalStateException("UTF-8 is unkown", e);
 				}
 			}
-			
+
 			@Override
 			public boolean getCertifiedText() {
 				return false;
 			}
-			
+
 			@Override
 			public InputStream getByteStream() {
 				return null;
 			}
-			
+
 			@Override
 			public String getBaseURI() {
 				return null;
 			}
 		};
-		XSModel model = schemaLoader.load(input);
-		return model;
+		return schemaLoader.load(input);
 	}
-	
+
 	/**
 	 * Derives Winery's Properties Definition from an existing properties
 	 * definition
-	 * 
+	 *
 	 * @param ci the entity type to try to modify the WPDs
 	 * @param errors the list to add errors to
 	 */
 	public static void deriveWPD(TEntityType ci, List<String> errors) {
-		BackendUtils.logger.trace("deriveWPD");
+		BackendUtils.LOGGER.trace("deriveWPD");
 		PropertiesDefinition propertiesDefinition = ci.getPropertiesDefinition();
 		QName element = propertiesDefinition.getElement();
 		if (element == null) {
-			BackendUtils.logger.debug("only works for an element definition, not for types");
+			BackendUtils.LOGGER.debug("only works for an element definition, not for types");
 		} else {
-			BackendUtils.logger.debug("Looking for the definition of {" + element.getNamespaceURI() + "}" + element.getLocalPart());
+			BackendUtils.LOGGER.debug("Looking for the definition of {" + element.getNamespaceURI() + "}" + element.getLocalPart());
 			// fetch the XSD defining the element
 			XSDImportsResource importsRes = new XSDImportsResource();
 			Map<String, RepositoryFileReference> mapFromLocalNameToXSD = importsRes.getMapFromLocalNameToXSD(element.getNamespaceURI(), false);
 			RepositoryFileReference ref = mapFromLocalNameToXSD.get(element.getLocalPart());
 			if (ref == null) {
 				String msg = "XSD not found for " + element.getNamespaceURI() + " / " + element.getLocalPart();
-				BackendUtils.logger.debug(msg);
+				BackendUtils.LOGGER.debug(msg);
 				errors.add(msg);
 				return;
 			}
-			
+
 			XSModel xsModel = BackendUtils.getXSModel(ref);
 			XSElementDeclaration elementDeclaration = xsModel.getElementDeclaration(element.getLocalPart(), element.getNamespaceURI());
 			if (elementDeclaration == null) {
 				String msg = "XSD model claimed to contain declaration for {" + element.getNamespaceURI() + "}" + element.getLocalPart() + ", but it did not.";
-				BackendUtils.logger.debug(msg);
+				BackendUtils.LOGGER.debug(msg);
 				errors.add(msg);
 				return;
 			}
-			
+
 			// go through the XSD definition and
 			XSTypeDefinition typeDefinition = elementDeclaration.getTypeDefinition();
 			if (typeDefinition instanceof XSComplexTypeDefinition) {
 				XSComplexTypeDefinition cTypeDefinition = (XSComplexTypeDefinition) typeDefinition;
 				XSParticle particle = cTypeDefinition.getParticle();
 				if (particle == null) {
-					BackendUtils.logger.debug("XSD does not follow the requirements put by winery: Complex type does not contain particles");
+					BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Complex type does not contain particles");
 				} else {
 					XSTerm term = particle.getTerm();
 					if (term instanceof XSModelGroup) {
@@ -956,37 +958,37 @@ public class BackendUtils {
 								wpd.setNamespace(element.getNamespaceURI());
 								wpd.setPropertyDefinitionKVList(list);
 								ModelUtilities.replaceWinerysPropertiesDefinition(ci, wpd);
-								BackendUtils.logger.debug("Successfully generated WPD");
+								BackendUtils.LOGGER.debug("Successfully generated WPD");
 							} else {
-								BackendUtils.logger.debug("XSD does not follow the requirements put by winery: Not all types in the sequence are simple types");
+								BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Not all types in the sequence are simple types");
 							}
 						} else {
-							BackendUtils.logger.debug("XSD does not follow the requirements put by winery: Model group is not a sequence");
+							BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Model group is not a sequence");
 						}
 					} else {
-						BackendUtils.logger.debug("XSD does not follow the requirements put by winery: Not a model group");
+						BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: Not a model group");
 					}
 				}
 			} else {
-				BackendUtils.logger.debug("XSD does not follow the requirements put by winery: No Complex Type Definition");
+				BackendUtils.LOGGER.debug("XSD does not follow the requirements put by winery: No Complex Type Definition");
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns all components available of the given id type
-	 * 
+	 *
 	 * Similar functionality as {@link
 	 * IGenericRepository#getAllTOSCAComponentIds(java.lang.Class)}, but it crawls through the repository
 	 *
 	 * This method is required as we do not use a database.
-	 * 
+	 *
 	 * @param idClass class of the Ids to search for
 	 * @return empty set if no ids are available
 	 */
 	public <T extends TOSCAElementId> SortedSet<T> getAllTOSCAElementIds(Class<T> idClass) {
 		throw new IllegalStateException("Not yet implemented");
-		
+
 		/*
 		 Implementation idea:
 		   * switch of instance of idClass
@@ -995,11 +997,11 @@ public class BackendUtils {
 		   * (other special handlings; check spec where each type can be linked from)
 		 */
 	}
-	
+
 	/**
 	 * Converts the given collection of TOSCA Component Ids to a collection of
 	 * QNames by using the getQName() method.
-	 * 
+	 *
 	 * This is required for QNameChooser.tag
 	 */
 	public static Collection<QName> convertTOSCAComponentIdCollectionToQNameCollection(Collection<? extends TOSCAComponentId> col) {
@@ -1009,5 +1011,5 @@ public class BackendUtils {
 		}
 		return res;
 	}
-	
+
 }

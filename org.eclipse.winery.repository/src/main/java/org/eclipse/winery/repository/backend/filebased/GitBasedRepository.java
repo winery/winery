@@ -13,38 +13,25 @@
 package org.eclipse.winery.repository.backend.filebased;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+
+import javax.ws.rs.core.MediaType;
+
+import org.eclipse.winery.common.RepositoryFileReference;
 
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CleanCommand;
 import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
-import org.eclipse.jgit.api.errors.CheckoutConflictException;
-import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoHeadException;
-import org.eclipse.jgit.api.errors.NoMessageException;
-import org.eclipse.jgit.api.errors.UnmergedPathsException;
-import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.repository.Prefs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.MediaType;
 
 /**
  * Allows to reset repository to a certain commit id
@@ -54,10 +41,9 @@ public class GitBasedRepository extends FilebasedRepository {
 	/**
 	 * Used for synchronizing the method {@link GitBasedRepository#addCommit()}
 	 */
-	private static final Object commitLock = new Object();
-	private static final Logger logger = LoggerFactory.getLogger(GitBasedRepository.class);
-	
-	private final Repository gitRepo;
+	private static final Object COMMIT_LOCK = new Object();
+	private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
+
 	private final Git git;
 
 
@@ -70,11 +56,11 @@ public class GitBasedRepository extends FilebasedRepository {
 	public GitBasedRepository(String repositoryLocation) throws IOException, NoWorkTreeException, GitAPIException {
 		super(repositoryLocation);
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		this.gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
+		Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
 		if (!new File(this.determineRepositoryPath(repositoryLocation) + "/.git").exists()) {
-		    this.gitRepo.create();
+		    gitRepo.create();
 		}
-		this.git = new Git(this.gitRepo);
+		this.git = new Git(gitRepo);
 		if (!this.git.status().call().isClean()) {
             this.addCommit();
 		}
@@ -83,11 +69,11 @@ public class GitBasedRepository extends FilebasedRepository {
 	/**
 	 * This method is is synchronized with an extra static object (meaning all instances are locked).
 	 * This is to ensure that every commit only has one change.
-	 * 
+	 *
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
 	 */
 	public void addCommit() throws GitAPIException {
-		synchronized (commitLock) {
+		synchronized (COMMIT_LOCK) {
 			AddCommand add = this.git.add();
 			add.addFilepattern(".");
 			add.call();
@@ -131,7 +117,7 @@ public class GitBasedRepository extends FilebasedRepository {
 		try {
 			this.addCommit();
 		} catch (GitAPIException e) {
-			logger.trace(e.getMessage(), e);
+			LOGGER.trace(e.getMessage(), e);
 		}
 	}
 }

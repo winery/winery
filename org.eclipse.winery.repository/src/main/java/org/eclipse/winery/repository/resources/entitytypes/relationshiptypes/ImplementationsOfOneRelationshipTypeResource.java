@@ -29,20 +29,20 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 public class ImplementationsOfOneRelationshipTypeResource extends ImplementationsOfOneType {
-	
+
 	public ImplementationsOfOneRelationshipTypeResource(RelationshipTypeId typeId) {
 		super(typeId);
 	}
-	
-	
-	private static final Logger logger = LoggerFactory.getLogger(ImplementationsOfOneRelationshipTypeResource.class);
-	
-	
+
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationsOfOneRelationshipTypeResource.class);
+
+
 	/**
 	 * required by implementations.jsp
-	 * 
+	 *
 	 * Method similar top the one of ImplementationsOfOneNodeTypeResource
-	 * 
+	 *
 	 * @return for each node type implementation implementing the associated
 	 *         node type
 	 */
@@ -54,7 +54,7 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 		try {
 			JsonGenerator jGenerator = jsonFactory.createGenerator(tableDataSW);
 			jGenerator.writeStartArray();
-			
+
 			Collection<RelationshipTypeImplementationId> allNTIids = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
 			for (RelationshipTypeImplementationId ntiID : allNTIids) {
 				jGenerator.writeStartArray();
@@ -67,26 +67,26 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 			tableDataSW.close();
 			res = tableDataSW.toString();
 		} catch (Exception e) {
-			ImplementationsOfOneRelationshipTypeResource.logger.error(e.getMessage(), e);
+			ImplementationsOfOneRelationshipTypeResource.LOGGER.error(e.getMessage(), e);
 			res = "[]";
 		}
 		return res;
 	}
-	
+
 	@Override
 	public String getType() {
 		return "relationshiptype";
 	}
-	
+
 	@Override
 	public String getTypeStr() {
 		return "Relationship Type";
 	}
-	
+
 	@Override
 	public Response getJSON() {
 		Collection<RelationshipTypeImplementationId> allImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
-		ArrayList<QName> res = new ArrayList<QName>(allImplementations.size());
+		ArrayList<QName> res = new ArrayList<>(allImplementations.size());
 		for (RelationshipTypeImplementationId id : allImplementations) {
 			res.add(id.getQName());
 		}

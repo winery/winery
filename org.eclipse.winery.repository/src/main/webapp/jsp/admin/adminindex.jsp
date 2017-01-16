@@ -15,7 +15,7 @@
 <%@page import="org.eclipse.winery.repository.resources.SubMenuData"%>
 
 <%
-java.util.List<SubMenuData> subMenus = new java.util.ArrayList<SubMenuData>();
+java.util.List<SubMenuData> subMenus = new java.util.ArrayList<>();
 
 SubMenuData data;
 

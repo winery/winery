@@ -11,15 +11,15 @@
  *******************************************************************************/
 /**
  * This package contains the REST resources
- * 
+ *
  * Mostly, they produces Viewables, where a JSP and the current resource is
  * passed As the JSP itself handles plain Java objects and not Responses, the
  * resources have also methods returning POJOs. This might be ugly design, but
  * was quick to implement.
- * 
+ *
  * The package structure is mirrored in src/main/webapp/jsp to ease finding the
  * JSPs belonging to a resource.
- * 
+ *
  * The resources are <em>not</em> in line with the resource model of the TOSCA
  * container. Especially, we do not employ HATEOAS here.
  */

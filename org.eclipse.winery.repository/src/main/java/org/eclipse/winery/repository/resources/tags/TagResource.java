@@ -22,15 +22,15 @@ public class TagResource extends EntityWithoutIdResource<TTag> {
 	public TagResource(TTag o, int idx, List<TTag> list, IPersistable res) {
 		super(o, idx, list, res);
 	}
-	
+
 	public String getId(){
 		return this.idDetermination.getId(o);
 	}
-	
+
 	public String getName(){
 		return this.o.getName();
 	}
-	
+
 	public String getValue(){
 		return this.o.getValue();
 	}

@@ -19,7 +19,7 @@ import org.eclipse.winery.common.constants.MimeTypes;
  * see also {@link org.eclipse.winery.common.constants.MimeTypes}
  */
 public class MediaTypes {
-	
+
 	public static final MediaType MEDIATYPE_TOSCA_DEFINITIONS = MediaType.valueOf(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS);
-	
+
 }

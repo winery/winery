@@ -21,13 +21,13 @@ import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 
 public class DeploymentArtifactResource extends GenericArtifactResource<TDeploymentArtifact> {
-	
+
 	private final TDeploymentArtifact a;
-	
-	
+
+
 	/**
 	 * Converts the given artifactId to an DeploymentArtifact.
-	 * 
+	 *
 	 * <em>SIDE EFFECT</em> Adds it to the DeploymentArtifacts list if it does
 	 * not yet exist.
 	 */
@@ -43,45 +43,45 @@ public class DeploymentArtifactResource extends GenericArtifactResource<TDeploym
 		deploymentArtifacts.add(ia);
 		return ia;
 	}
-	
+
 	public DeploymentArtifactResource(String artifactId, List<TDeploymentArtifact> deploymentArtifacts, IPersistable res) {
 		this(DeploymentArtifactResource.getDeploymentArtifact(artifactId, deploymentArtifacts), deploymentArtifacts, res);
 	}
-	
+
 	public DeploymentArtifactResource(IIdDetermination<TDeploymentArtifact> idDetermination, TDeploymentArtifact o, int idx, List<TDeploymentArtifact> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
 		this.a = o;
 	}
-	
+
 	public DeploymentArtifactResource(TDeploymentArtifact deploymentArtifact, List<TDeploymentArtifact> deploymentArtifacts, IPersistable res) {
 		this(new IIdDetermination<TDeploymentArtifact>() {
-			
+
 			@Override
 			public String getId(TDeploymentArtifact e) {
 				return e.getName();
 			}
 		}, deploymentArtifact, deploymentArtifacts.indexOf(deploymentArtifact), deploymentArtifacts, res);
 	}
-	
+
 	public TDeploymentArtifact getDeploymentArtifact() {
 		return this.a;
 	}
-	
+
 	@Override
 	public void setArtifactType(ArtifactTypeId artifactTypeId) {
 		this.getDeploymentArtifact().setArtifactType(artifactTypeId.getQName());
 		BackendUtils.persist(this.res);
 	}
-	
+
 	@Override
 	public void setArtifactTemplate(ArtifactTemplateId artifactTemplateId) {
 		this.getDeploymentArtifact().setArtifactRef(artifactTemplateId.getQName());
 		BackendUtils.persist(this.res);
 	}
-	
+
 	@Override
 	public TDeploymentArtifact getA() {
 		return this.a;
 	}
-	
+
 }

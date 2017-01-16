@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @SuppressWarnings("serial")
 public class TopologyTemplateModule extends SimpleModule {
-	
+
 	public TopologyTemplateModule() {
 		this.addSerializer(TTopologyTemplate.class, new TTopologyTemplateSerializer());
 	}

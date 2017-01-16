@@ -25,14 +25,14 @@ import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.resources.admin.types.ConstraintTypesManager;
 
 public class BoundaryDefinitionsJSPData {
-	
+
 	private final TServiceTemplate ste;
 	private final TBoundaryDefinitions defs;
-	private URI baseURI;
-	
-	
+	private final URI baseURI;
+
+
 	/**
-	 * 
+	 *
 	 * @param ste the service template of the boundary definitions. Required to
 	 *            get a list of all plans
 	 * @param baseURI the base URI of the service. Requried for rendering the
@@ -43,7 +43,7 @@ public class BoundaryDefinitionsJSPData {
 		this.defs = ste.getBoundaryDefinitions();
 		this.baseURI = baseURI;
 	}
-	
+
 	private String getDefinedProperties() {
 		Properties p = ModelUtilities.getProperties(this.defs);
 		Object o = p.getAny();
@@ -55,7 +55,7 @@ public class BoundaryDefinitionsJSPData {
 			return Utils.getXMLAsString(p.getAny());
 		}
 	}
-	
+
 	/**
 	 * Helper method to return an initialized properties object only containing
 	 * the user-defined properties. The TOSCA properties-element is not returned
@@ -66,35 +66,35 @@ public class BoundaryDefinitionsJSPData {
 		s = StringEscapeUtils.escapeHtml4(s);
 		return s;
 	}
-	
+
 	public String getDefinedPropertiesAsJSONString() {
 		String s = this.getDefinedProperties();
 		s = StringEscapeUtils.escapeEcmaScript(s);
 		return s;
 	}
-	
+
 	public TBoundaryDefinitions getDefs() {
 		return this.defs;
 	}
-	
+
 	public String getBoundaryDefinitionsAsXMLStringEncoded() {
 		String res = Utils.getXMLAsString(this.defs);
 		return Functions.escapeXml(res);
 	}
-	
+
 	public Collection<TypeWithShortName> getConstraintTypes() {
 		return ConstraintTypesManager.INSTANCE.getTypes();
 	}
-	
+
 	public Collection<QName> getAllPolicyTypes() {
 		SortedSet<PolicyTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(PolicyTypeId.class);
 		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
 	}
-	
+
 	public String getRepositoryURL() {
 		return this.baseURI.toString();
 	}
-	
+
 	public List<Select2DataItem> getlistOfAllPlans() {
 		TPlans plans = this.ste.getPlans();
 		if (plans == null) {

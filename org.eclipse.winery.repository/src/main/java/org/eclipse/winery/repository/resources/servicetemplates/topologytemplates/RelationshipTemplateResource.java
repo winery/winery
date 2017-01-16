@@ -19,7 +19,7 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
 import org.eclipse.winery.repository.resources.entitytemplates.TEntityTemplateResource;
 
 public class RelationshipTemplateResource extends TEntityTemplateResource<TRelationshipTemplate> {
-	
+
 	public RelationshipTemplateResource(IIdDetermination<TRelationshipTemplate> idDetermination, TRelationshipTemplate o, int idx, List<TRelationshipTemplate> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
 	}

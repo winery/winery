@@ -9,6 +9,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Tino Stadelmaier, Philipp Meyer - rename id and/or namespace
  *******************************************************************************/
 --%>
 <%@tag description="Wrapper for resources, which are backed by definitions and thus offer an XML div" pageEncoding="UTF-8"%>
@@ -123,6 +124,53 @@
 	</div>
 
 <script>
+
+$(function() {
+	$("#component_name").editable({
+		ajaxOptions: {
+			type: 'post'
+		},
+		mode: 'inline',
+
+		params: function (params) {
+			// adjust params according to Winery's expectations
+			delete params.pk;
+			params.id = params.value;
+			delete params.value;
+			delete params.name;
+			return params;
+		},
+		error: function(e, params) {
+			vShowError("id/name " +params + " already exists in the current namespace, please enter a new id/name.");
+		},
+	}).on("save", function (e, params) {
+		window.location.replace(params.response);
+	});
+
+	$("#component_namespace").editable({
+		ajaxOptions: {
+			type: 'post'
+		},
+		mode: 'inline',
+
+		params: function (params) {
+			// adjust params according to Winery's expectations
+			delete params.pk;
+			params.ns = params.value;
+			params.id="";
+			delete params.value;
+			delete params.name;
+			return params;
+		},
+		error: function(e, params) {
+			debugger;
+			vShowError("id/name already exists in the chosen namespace, please choose a different namespace.");
+		},
+	}).on("save", function (e, params) {
+		window.location.replace(params.response);
+	});
+});
+
 function openOverviewPage() {
 	window.location="../../";
 }
@@ -130,7 +178,7 @@ function openOverviewPage() {
 function deployOnOpenTOSCAContainer() {
 	$("#deployBtn").button('loading');
 
-	urlToUpload = window.location.href;
+	var urlToUpload = window.location.href;
 	var hash = window.location.hash;
 	if (hash != "") {
 		urlToUpload = urlToUpload.substr(0, urlToUpload.length - hash.length)

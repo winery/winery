@@ -17,12 +17,12 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 
 public class CollectionsHelper {
-	
+
 	private CollectionsHelper() {
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param <X>
 	 * @param resource the resource to be persisted
 	 * @param idDetermination the object to use to determine the id of the
@@ -38,5 +38,5 @@ public class CollectionsHelper {
 		}
 		return res;
 	}
-	
+
 }

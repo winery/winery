@@ -19,15 +19,15 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.ids.GenericId;
 
 public class ResourceCreationResult {
-	
+
 	private Status status = null;
 	private URI uri = null;
 	private GenericId id = null;
-	
-	
+
+
 	public ResourceCreationResult() {
 	}
-	
+
 	public ResourceCreationResult(Status status) {
 		this.setStatus(status);
 	}
@@ -37,38 +37,38 @@ public class ResourceCreationResult {
 		this.setId(id);
 		this.setUri(uri);
 	}
-	
+
 	public Status getStatus() {
 		return this.status;
 	}
-	
+
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	
+
 	public URI getUri() {
 		return this.uri;
 	}
-	
+
 	public void setUri(URI uri) {
 		this.uri = uri;
 	}
-	
+
 	public GenericId getId() {
 		return this.id;
 	}
-	
+
 	public void setId(GenericId id) {
 		this.id = id;
 	}
-	
+
 	public boolean isSuccess() {
 		return this.getStatus() == Status.CREATED;
 	}
-	
+
 	/**
 	 * The possibly existing URI is used as location in Response.created
-	 * 
+	 *
 	 * @return a Response created based on the contained data
 	 */
 	public Response getResponse() {

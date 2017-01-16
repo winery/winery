@@ -14,5 +14,5 @@ package org.eclipse.winery.repository.resources.entitytypeimplementations.nodety
 import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferenceResource;
 
 public class NodeTypeImplementationsResource extends AbstractComponentsWithTypeReferenceResource<NodeTypeImplementationResource> {
-	
+
 }

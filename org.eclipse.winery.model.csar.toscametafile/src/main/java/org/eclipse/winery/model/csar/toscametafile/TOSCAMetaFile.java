@@ -25,21 +25,21 @@ import com.springsource.util.parser.manifest.ManifestContents;
  * <br />
  * Copyright 2013 IAAS University of Stuttgart <br />
  * <br />
- * 
+ *
  * @author Rene Trefft - rene.trefft@developers.opentosca.org
- * 
+ *
  */
 public class TOSCAMetaFile implements Serializable {
-	
+
 	private static final long serialVersionUID = 5636441655503533546L;
-	
+
 	Map<String, String> block0 = new HashMap<String, String>();
 	List<Map<String, String>> fileBlocks = new ArrayList<Map<String, String>>();
-	
-	
+
+
 	/**
 	 * Creates a new TOSCA meta file.
-	 * 
+	 *
 	 * @param manifestContent to create from
 	 */
 	public TOSCAMetaFile(ManifestContents manifestContent) {
@@ -51,33 +51,33 @@ public class TOSCAMetaFile implements Serializable {
 			this.fileBlocks.add(fileBlock);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Value of attribute <code>CSAR-Version</code> in block 0.
 	 */
 	public String getCSARVersion() {
 		return this.block0.get(TOSCAMetaFileAttributes.CSAR_VERSION);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Value of attribute <code>TOSCA-Meta-Version</code> in block 0.
 	 */
 	public String getTOSCAMetaVersion() {
 		return this.block0.get(TOSCAMetaFileAttributes.TOSCA_META_VERSION);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Value of attribute <code>Created-By</code> in block 0.
 	 */
 	public String getCreatedBy() {
 		return this.block0.get(TOSCAMetaFileAttributes.CREATED_BY);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Value of attribute <code>Entry-Definitions</code> in block 0
 	 *         (contains relative path to the root TOSCA file in the CSAR). If
 	 *         attribute is not specified <code>null</code>.
@@ -85,9 +85,9 @@ public class TOSCAMetaFile implements Serializable {
 	public String getEntryDefinitions() {
 		return this.block0.get(TOSCAMetaFileAttributes.ENTRY_DEFINITIONS);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Value of attribute <code>Description</code> in block 0 (contains
 	 *         description of CSAR). If attribute is not specified
 	 *         <code>null</code>.
@@ -95,9 +95,9 @@ public class TOSCAMetaFile implements Serializable {
 	public String getDescription() {
 		return this.block0.get(TOSCAMetaFileAttributes.DESCRIPTION);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Value of attribute <code>Topology</code> in block 0 (contains
 	 *         relative path to topology picture in the CSAR). If attribute is
 	 *         not specified <code>null</code>.
@@ -105,17 +105,17 @@ public class TOSCAMetaFile implements Serializable {
 	public String getTopology() {
 		return this.block0.get(TOSCAMetaFileAttributes.TOPOLOGY);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Block 0 (contains meta data about the CSAR itself).
 	 */
 	public Map<String, String> getBlock0() {
 		return this.block0;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return File blocks (block 1 to last block; contains meta data of files
 	 *         in the CSAR). Every block is a element
 	 *         <code>Map&lt;String, String&gt;</code> in the returned
@@ -124,10 +124,10 @@ public class TOSCAMetaFile implements Serializable {
 	public List<Map<String, String>> getFileBlocks() {
 		return this.fileBlocks;
 	}
-	
+
 	/**
 	 * Returns the mime type for the given name
-	 * 
+	 *
 	 * @param name a reference to a file
 	 * @return the mime type associated with the given name, null if no mime
 	 *         type was found
@@ -150,5 +150,5 @@ public class TOSCAMetaFile implements Serializable {
 		// nothing found
 		return null;
 	}
-	
+
 }

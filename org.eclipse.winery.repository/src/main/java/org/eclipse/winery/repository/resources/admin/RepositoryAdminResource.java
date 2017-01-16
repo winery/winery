@@ -30,20 +30,20 @@ import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+
+import com.sun.jersey.api.view.Viewable;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 import org.restdoc.annotations.RestDoc;
 import org.restdoc.annotations.RestDocParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.view.Viewable;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
-
 public class RepositoryAdminResource {
-	
-	private static final Logger logger = LoggerFactory.getLogger(RepositoryAdminResource.class);
-	
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryAdminResource.class);
+
+
 	// @formatter:off
 	@GET
 	@Produces(MediaType.TEXT_HTML) // we cannot add MimeTypes.MIMETYPE_ZIP as dumpRepository also produces that mimetype
@@ -79,7 +79,7 @@ public class RepositoryAdminResource {
 			return Response.ok().entity(viewable).build();
 		}
 	}
-	
+
 	/**
 	 * Imports the given ZIP
 	 */
@@ -89,24 +89,22 @@ public class RepositoryAdminResource {
 		((IRepositoryAdministration) Repository.INSTANCE).doImport(uploadedInputStream);
 		return Response.noContent().build();
 	}
-	
+
 	@DELETE
 	public void deleteRepositoryData() {
 		((IRepositoryAdministration) Repository.INSTANCE).doClear();
 	}
-	
+
 	@GET
 	@Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
 	public Response dumpRepository() {
 		StreamingOutput so = new StreamingOutput() {
-			
+
 			@Override
 			public void write(OutputStream output) throws IOException, WebApplicationException {
 				((IRepositoryAdministration) Repository.INSTANCE).doDump(output);
 			}
 		};
-		StringBuilder sb = new StringBuilder();
-		sb.append("attachment;filename=\"repository.zip\"");
-		return Response.ok().header("Content-Disposition", sb.toString()).type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
+		return Response.ok().header("Content-Disposition", "attachment;filename=\"repository.zip\"").type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
 	}
 }
