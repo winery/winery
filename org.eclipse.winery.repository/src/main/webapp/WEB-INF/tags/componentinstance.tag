@@ -130,7 +130,7 @@ $(function() {
 		ajaxOptions: {
 			type: 'post'
 		},
-		mode: 'inline',
+		mode: 'inline',		
 
 		params: function (params) {
 			// adjust params according to Winery's expectations
@@ -145,7 +145,12 @@ $(function() {
 		},
 	}).on("save", function (e, params) {
 		window.location.replace(params.response);
-	});
+	})
+
+	$('#editNameButton').on('click', function (e) {    
+		e.stopPropagation();		
+		$('#component_name').editable('toggle');
+	})
 
 	$("#component_namespace").editable({
 		ajaxOptions: {
@@ -168,7 +173,12 @@ $(function() {
 		},
 	}).on("save", function (e, params) {
 		window.location.replace(params.response);
-	});
+	})
+
+	$('#editNamespaceButton').on('click', function (e) {
+		e.stopPropagation();
+		$('#component_namespace').editable('toggle');
+	})
 });
 
 function openOverviewPage() {
