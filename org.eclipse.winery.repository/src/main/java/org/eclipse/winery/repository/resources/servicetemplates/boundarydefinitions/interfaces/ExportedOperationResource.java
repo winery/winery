@@ -44,14 +44,14 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 public class ExportedOperationResource extends EntityWithIdResource<TExportedOperation> {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ExportedOperationResource.class);
-	
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExportedOperationResource.class);
+
+
 	public ExportedOperationResource(IIdDetermination<TExportedOperation> idDetermination, TExportedOperation o, int idx, List<TExportedOperation> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getJSONRepresentation() {
@@ -70,15 +70,14 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 			jg.writeEndObject();
 			jg.close();
 		} catch (Exception e) {
-			ExportedOperationResource.logger.error(e.getMessage(), e);
+			ExportedOperationResource.LOGGER.error(e.getMessage(), e);
 			throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build());
 		}
-		String res = sw.toString();
-		return res;
+		return sw.toString();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return "NodeOperation" | "RelationshipOperation" | "Plan" | null. null
 	 *         is returned if no type is set
 	 */
@@ -95,7 +94,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 			return null;
 		}
 	}
-	
+
 	@Path("type")
 	@PUT
 	public Response setType(String type) {
@@ -132,7 +131,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 		}
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	/**
 	 * @return null if no reference is set
 	 */
@@ -162,12 +161,12 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 			return null;
 		}
 	}
-	
+
 	@Path("ref")
 	@PUT
 	public Response setReference(String ref) {
 		TServiceTemplate ste = ((ServiceTemplateResource) this.res).getServiceTemplate();
-		
+
 		// we assume that a correctly set type also means that getX (getNodeOperation, ...) returns non null
 		switch (this.getType()) {
 		case "NodeOperation":
@@ -187,7 +186,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 		}
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	@Path("interfacename")
 	@GET
 	public String getInterfaceName() {
@@ -201,7 +200,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 			throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unsupported state of ExportedOperation").build());
 		}
 	}
-	
+
 	@Path("interfacename")
 	@PUT
 	public Response setInterfaceName(String interfacename) {
@@ -216,7 +215,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 		}
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	@Path("operationname")
 	@GET
 	public String getOperationName() {
@@ -230,7 +229,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 			throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unsupported state of ExportedOperation").build());
 		}
 	}
-	
+
 	@Path("operationname")
 	@PUT
 	public Response setOperationName(String name) {
@@ -245,5 +244,5 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 		}
 		return BackendUtils.persist(this.res);
 	}
-	
+
 }

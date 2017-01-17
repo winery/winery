@@ -23,7 +23,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties.PropertyMappings;
@@ -31,19 +30,21 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDoc;
 
 public class PropertyMappingsResource {
-	
+
 	private final PropertyMappings propertyMappings;
 	private final ServiceTemplateResource res;
-	
-	
+
+
 	public PropertyMappingsResource(PropertyMappings propertyMappings, ServiceTemplateResource res) {
 		this.propertyMappings = propertyMappings;
 		this.res = res;
 	}
-	
+
 	@Path("{serviceTemplatePropertyRef}")
 	@DELETE
 	public Response onDelete(@PathParam("serviceTemplatePropertyRef") String serviceTemplatePropertyRef) {
@@ -60,13 +61,13 @@ public class PropertyMappingsResource {
 		// otherwise "iterator.remove()" has called and the resource persisted
 		return Response.status(Status.NOT_FOUND).build();
 	}
-	
+
 	private void updatePropertyMapping(TPropertyMapping propertyMapping, String serviceTemplatePropertyRef, TEntityTemplate template, String targetPropertyRef) {
 		propertyMapping.setServiceTemplatePropertyRef(serviceTemplatePropertyRef);
 		propertyMapping.setTargetObjectRef(template);
 		propertyMapping.setTargetPropertyRef(targetPropertyRef);
 	}
-	
+
 	@RestDoc(methodDescription = "Creates or updates a property mapping with the given fields")
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -86,16 +87,14 @@ public class PropertyMappingsResource {
 		if (StringUtils.isEmpty(targetPropertyRef)) {
 			return Response.status(Status.BAD_REQUEST).entity("targetPropertyRef must not be empty").build();
 		}
-		
+
 		TEntityTemplate template = ModelUtilities.findNodeTemplateOrRequirementOfNodeTemplateOrCapabilityOfNodeTemplateOrRelationshipTemplate(this.res.getServiceTemplate().getTopologyTemplate(), targetObjectRef);
 		if (template == null) {
 			return Response.status(Status.BAD_REQUEST).entity("targetObjectRef " + targetObjectRef + " could not be resolved.").build();
 		}
-		
+
 		// replace propertyMapping if it exists
-		Iterator<TPropertyMapping> iterator = this.propertyMappings.getPropertyMapping().iterator();
-		while (iterator.hasNext()) {
-			TPropertyMapping propertyMapping = iterator.next();
+		for (TPropertyMapping propertyMapping : this.propertyMappings.getPropertyMapping()) {
 			if (propertyMapping.getServiceTemplatePropertyRef().equals(serviceTemplatePropertyRef)) {
 				// we found a property with the same mapping
 				// just update it ...
@@ -104,7 +103,7 @@ public class PropertyMappingsResource {
 				return BackendUtils.persist(this.res);
 			}
 		}
-		
+
 		// the property mapping didn't exist,
 		// we create a new one
 		TPropertyMapping newPropertyMapping = new TPropertyMapping();
@@ -112,5 +111,5 @@ public class PropertyMappingsResource {
 		this.propertyMappings.getPropertyMapping().add(newPropertyMapping);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 }

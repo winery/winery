@@ -17,15 +17,15 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 
 public class ArtifactTemplateId extends EntityTemplateId {
-	
+
 	public ArtifactTemplateId(Namespace namespace, XMLId xmlId) {
 		super(namespace, xmlId);
 	}
-	
+
 	public ArtifactTemplateId(String ns, String id, boolean URLencoded) {
 		super(ns, id, URLencoded);
 	}
-	
+
 	public ArtifactTemplateId(QName qname) {
 		super(qname);
 	}

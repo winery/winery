@@ -25,7 +25,7 @@ import org.restdoc.annotations.RestDoc;
  * Ensures that the AbstractComponentInstance has a getName method
  */
 public interface IHasName {
-	
+
 	@GET
 	@Path("name")
 	// @formatter:off
@@ -34,10 +34,10 @@ public interface IHasName {
 	"Some other ComponentInstances either carry a name or an ID. ")
 	// @formatter:on
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getName();
-	
+	String getName();
+
 	@PUT
 	@Path("name")
-	public Response setName(@FormParam("value") String name);
-	
+	Response setName(@FormParam("value") String name);
+
 }

@@ -22,22 +22,22 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
 
 public class InterfaceResource extends EntityWithIdResource<TInterface> {
-	
+
 	private final TInterface iface;
-	
-	
+
+
 	public InterfaceResource(IIdDetermination<TInterface> idDetermination, TInterface o, int idx, List<TInterface> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
 		this.iface = o;
 	}
-	
+
 	/**
 	 * required by artifacts.jsp
 	 */
 	public String getName() {
 		return this.iface.getName();
 	}
-	
+
 	@Path("operations/")
 	public OperationsResource getOperationsResouce() {
 		List<TOperation> list = this.o.getOperation();

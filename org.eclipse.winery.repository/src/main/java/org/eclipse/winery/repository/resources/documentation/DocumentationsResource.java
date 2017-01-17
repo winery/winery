@@ -29,19 +29,19 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.view.Viewable;
 
 public class DocumentationsResource extends EntityWithoutIdCollectionResource<DocumentationResource, TDocumentation> {
-	
-	private static final Logger logger = LoggerFactory.getLogger(DocumentationResource.class);
-	
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentationResource.class);
+
+
 	public DocumentationsResource(IPersistable res, List<TDocumentation> documentations) {
 		super(DocumentationResource.class, TDocumentation.class, documentations, res);
 	}
-	
+
 	@Override
 	public Viewable getHTML() {
 		return new Viewable("/jsp/documentation.jsp", this.list);
 	}
-	
+
 	/**
 	 * Adds a new documentation
 	 */

@@ -15,12 +15,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class UtilsTest {
-	
+
 	@Test
 	public void testCreateID() {
 		Assert.assertEquals("Frank_s_test", Utils.createXMLid("Frank's test").getDecoded());
 		Assert.assertEquals("MyNodeType", Utils.createXMLid("MyNodeType").getDecoded());
 		Assert.assertEquals("A_Node_Type", Utils.createXMLid("A Node Type").getDecoded());
 	}
-	
+
 }

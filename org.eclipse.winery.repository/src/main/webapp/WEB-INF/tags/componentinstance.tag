@@ -188,7 +188,7 @@ function openOverviewPage() {
 function deployOnOpenTOSCAContainer() {
 	$("#deployBtn").button('loading');
 
-	urlToUpload = window.location.href;
+	var urlToUpload = window.location.href;
 	var hash = window.location.hash;
 	if (hash != "") {
 		urlToUpload = urlToUpload.substr(0, urlToUpload.length - hash.length)

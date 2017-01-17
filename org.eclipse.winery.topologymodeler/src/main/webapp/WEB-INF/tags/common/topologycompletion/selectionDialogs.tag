@@ -84,14 +84,38 @@
 				<h4 class="modal-title">Topology Completion</h4>
 			</div>
 			<div class="modal-body">
+				<p> Select Save Option: </p>
 				<form id="enterCompletionInformationForm" enctype="multipart/form-data">
-				  <fieldset>
-					<p> Select Save Option: </p>
-					<p> <input type="radio" id="overwriteTopology" name="overwriteTopology" onclick="document.getElementById('topologyNamespace').disabled = true; document.getElementById('topologyName').disabled = true; document.getElementById('openInNewWindow').disabled = true;" checked> Overwrite Topology<br>
-					<input type="radio" id="overwriteTopology" name="overwriteTopology" onclick="document.getElementById('topologyNamespace').disabled = false; document.getElementById('topologyName').disabled = false;document.getElementById('openInNewWindow').disabled = false;"> Create new Topology </p> <p> Name: <input id="topologyName" name="topologyName" disabled="disabled" type="text" size="30" maxlength="30"> </p> <p>Namespace: <input id="topologyNamespace" name="topologyNamespace" disabled="disabled" type="text" size="50" maxlength="60"> </p>
-					<input id="openInNewWindow" name="openInNewWindow" type="checkbox" disabled="disabled" /> Open Topology in new Window <br>
-					<input id="completionStyle" name="completionStyle" type="checkbox" /> Complete Topology Step-by-Step
-				  </fieldset>
+					<fieldset>
+						<ul>
+							<li>
+								<input type="radio" id="overwriteTopology" name="overwriteTopology"
+									   onclick="document.getElementById('topologyNamespace').disabled = true; document.getElementById('topologyName').disabled = true; document.getElementById('openInNewWindow').disabled = true;" checked>
+								<label for="overwriteTopology">Overwrite Topology</label>
+							</li>
+							<li>
+								<input type="radio" id="createNewTopology" name="overwriteTopology"
+									   onclick="document.getElementById('topologyNamespace').disabled = false; document.getElementById('topologyName').disabled = false;document.getElementById('openInNewWindow').disabled = false;">
+								<label for="createNewTopology">Create new Topology</label>
+							</li>
+							<li>
+							  Name: <input id="topologyName" name="topologyName" disabled="disabled" type="text" size="30"
+											 maxlength="30">
+							</li>
+							<li>
+							  Namespace: <input id="topologyNamespace" name="topologyNamespace" disabled="disabled"
+												 type="text" size="50" maxlength="60">
+							</li>
+							<li>
+								<input id="openInNewWindow" name="openInNewWindow" type="checkbox" disabled="disabled"/>
+								<label for="openInNewWindow">Open Topology in new Window</label>
+							</li>
+							<li>
+								<input id="completionStyle" name="completionStyle" type="checkbox"/>
+								<label for="completionStyle">Complete Topology Step-by-Step</label>
+							</li>
+						</ul>
+					</fieldset>
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -111,7 +135,7 @@
 
 							require(["winery-topologycompletion"], function(completer) {
 								completer.complete(document.getElementById('overwriteTopology').checked,document.getElementById('openInNewWindow').checked,document.getElementById('topologyName').value, document.getElementById('topologyNamespace').value, document.getElementById('completionStyle').checked,
-								"<%=repositoryURL%>", "<%=serviceTemplateName%>", "<%=topologyTemplateURL%>");
+										"<%=repositoryURL%>", "<%=serviceTemplateName%>", "<%=topologyTemplateURL%>");
 							});
 
 						}
@@ -124,13 +148,13 @@
 
 <script>
 	$(function() {
-		chooseRelationshipTemplateDiag = $('#chooseRelationshipTemplateDiag');
+		var chooseRelationshipTemplateDiag = $('#chooseRelationshipTemplateDiag');
 
 		chooseRelationshipTemplateDiag.on('show', function() {
 			$(this).find('form')[0].reset();
 		});
 
-		chooseNodeTemplateDiag = $('#chooseNodeTemplateDiag');
+		var chooseNodeTemplateDiag = $('#chooseNodeTemplateDiag');
 
 		chooseNodeTemplateDiag.on('show', function() {
 			$(this).find('form')[0].reset();
@@ -143,20 +167,20 @@
 			$(document.getElementById("nodeTemplateSelector")).remove();
 		});
 
-		chooseTopologyDiag = $('#chooseTopologyDiag');
+		var chooseTopologyDiag = $('#chooseTopologyDiag');
 
 		chooseTopologyDiag.on('show', function() {
 			$(this).find('form')[0].reset();
 		});
 
 		chooseTopologyDiag.on('hidden.bs.modal', function () {
-		  	for (var i = 0; i < Connections.length; i++) {
+			for (var i = 0; i < Connections.length; i++) {
 				jsPlumb.detach(Connections[i]);
 			}
 			$(document.getElementById("topologyTemplateSelector")).remove();
 		});
 
-		enterCompletionInformationDiag = $('#enterCompletionInformationDiag');
+		var enterCompletionInformationDiag = $('#enterCompletionInformationDiag');
 
 		enterCompletionInformationDiag.on('show', function() {
 			$(this).find('form')[0].reset();

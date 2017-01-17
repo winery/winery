@@ -17,17 +17,17 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 
 public final class ServiceTemplateId extends EntityTemplateId {
-	
+
 	public ServiceTemplateId(Namespace namespace, XMLId xmlId) {
 		super(namespace, xmlId);
 	}
-	
+
 	public ServiceTemplateId(String ns, String id, boolean URLencoded) {
 		super(ns, id, URLencoded);
 	}
-	
+
 	public ServiceTemplateId(QName qname) {
 		super(qname);
 	}
-	
+
 }

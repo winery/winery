@@ -27,15 +27,15 @@ import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
 public class RelationshipTypeImplementationResource extends EntityTypeImplementationResource implements INodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
-	
+
 	public RelationshipTypeImplementationResource(RelationshipTypeImplementationId id) {
 		super(id);
 	}
-	
+
 	public TRelationshipTypeImplementation getRTI() {
 		return (TRelationshipTypeImplementation) this.getElement();
 	}
-	
+
 	/**
 	 * Even if both node type implementations and relationship type
 	 * implementations have implementation artifacts, there is no common
@@ -51,33 +51,33 @@ public class RelationshipTypeImplementationResource extends EntityTypeImplementa
 		}
 		return new ImplementationArtifactsResource(implementationArtifacts.getImplementationArtifact(), this);
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TRelationshipTypeImplementation();
 	}
-	
+
 	@Override
 	public void copyIdToFields(TOSCAComponentId id) {
 		this.getRTI().setTargetNamespace(id.getNamespace().getDecoded());
 		this.getRTI().setName(id.getXmlId().getDecoded());
 	}
-	
+
 	@Override
 	public QName getType() {
 		return this.getRTI().getRelationshipType();
 	}
-	
+
 	@Override
 	public Response setType(QName type) {
 		this.getRTI().setRelationshipType(type);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Override
 	public Response setType(String typeStr) {
 		QName qname = QName.valueOf(typeStr);
 		return this.setType(qname);
 	}
-	
+
 }

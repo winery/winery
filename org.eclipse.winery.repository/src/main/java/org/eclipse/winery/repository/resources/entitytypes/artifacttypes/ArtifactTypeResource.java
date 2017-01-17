@@ -29,15 +29,15 @@ import org.eclipse.winery.repository.datatypes.select2.Select2OptGroup;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 
 public class ArtifactTypeResource extends EntityTypeResource {
-	
+
 	public ArtifactTypeResource(ArtifactTypeId id) {
 		super(id);
 	}
-	
-	
+
+
 	private final QName qnameFileExtension = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "fileExtension");
-	
-	
+
+
 	/**
 	 * @return the file extension associated with this artifact type. May be
 	 *         null
@@ -47,19 +47,19 @@ public class ArtifactTypeResource extends EntityTypeResource {
 	public String getAssociatedFileExtension() {
 		return this.getDefinitions().getOtherAttributes().get(this.qnameFileExtension);
 	}
-	
+
 	@PUT
 	@Path("/fileextension")
 	public Response setAssociatedFileExtension(String fileExtension) {
 		this.getDefinitions().getOtherAttributes().put(this.qnameFileExtension, fileExtension);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TArtifactType();
 	}
-	
+
 	@Override
 	public SortedSet<Select2OptGroup> getListOfAllInstances() {
 		return this.getListOfAllInstances(ArtifactTemplateId.class);

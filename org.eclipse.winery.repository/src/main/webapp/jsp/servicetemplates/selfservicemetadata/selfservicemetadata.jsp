@@ -125,7 +125,7 @@ $('#showXMLTab').on('shown.bs.tab', function (e) {
 				</div>
 
 				<div class="form-group">
-					<label class="control-label" for="fileDiv">Icon</label>
+					<label class="control-label" for="iconDiv">Icon</label>
 					<div style="display: block; width: 100%" id="iconDiv">
 						<input id="fileInput" name="file" type="file" style="display:none" accept="image/*">
 						<input name="fileText" id="fileText" type="text" class="form-control" style="width:300px; display:inline;" onclick="letUserChooseAFile();" required="required">

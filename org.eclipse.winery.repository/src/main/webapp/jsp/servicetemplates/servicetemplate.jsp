@@ -9,7 +9,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
- *    Kálmán Képes
+ *    KÃ¡lmÃ¡n KÃ©pes
  *******************************************************************************/
 --%>
 <%@page import="org.eclipse.winery.repository.resources.SubMenuData"%>
@@ -18,7 +18,7 @@
 
 <%-- add submenus after the submenus defined for the type --%>
 <%
-java.util.List<SubMenuData> subMenus = new java.util.ArrayList<SubMenuData>(5);
+java.util.List<SubMenuData> subMenus = new java.util.ArrayList<>(5);
 
 SubMenuData data;
 

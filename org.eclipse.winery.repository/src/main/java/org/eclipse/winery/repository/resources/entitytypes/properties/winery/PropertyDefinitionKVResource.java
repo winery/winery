@@ -29,26 +29,26 @@ import org.restdoc.annotations.RestDoc;
 
 /**
  * Models a definition of one property
- * 
+ *
  * This is NOT in line with CSPRD01, which forces one element of one type
  */
 public class PropertyDefinitionKVResource extends EntityWithIdResource<PropertyDefinitionKV> {
-	
+
 	public PropertyDefinitionKVResource(IIdDetermination<PropertyDefinitionKV> idDetermination, PropertyDefinitionKV o, int idx, List<PropertyDefinitionKV> list, AbstractComponentInstanceResource res) {
 		super(idDetermination, o, idx, list, res);
 	}
-	
+
 	public PropertyDefinitionKVResource(IIdDetermination<PropertyDefinitionKV> idDetermination, PropertyDefinitionKV o, int idx, List<PropertyDefinitionKV> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
 	}
-	
+
 	@GET
 	@RestDoc(methodDescription = "@return type is the 'id' of the type ('shortType'), not the full type name")
 	@Path("type")
 	public String getType() {
 		return this.o.getType();
 	}
-	
+
 	@PUT
 	@RestDoc(methodDescription = "@return type is the 'id' of the type ('shortType'), not the full type name")
 	@Path("type")

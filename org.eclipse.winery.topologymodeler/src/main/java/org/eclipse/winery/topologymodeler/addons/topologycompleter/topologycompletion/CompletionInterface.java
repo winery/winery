@@ -43,7 +43,7 @@ public class CompletionInterface {
 	/**
 	 * Logger for debug reasons.
 	 */
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CompletionInterface.class.getName());
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CompletionInterface.class.getName());
 
 	/**
 	 * This global variable is returned to the Winery Topology Modelerer via getCurrentTopology() to display intermediate results when an user interaction is necessary.
@@ -98,15 +98,15 @@ public class CompletionInterface {
 	public String complete(String topology, String serviceTemplateName, String topologyTemplateURL, Boolean overwriteTopology,
 			String topologyName, String topologyNamespace, String repositoryURL, boolean stepByStep, boolean restarted) {
 
-		logger.info("Starting completion...");
+		LOGGER.info("Starting completion...");
 
 		////////////////////////////////////////
 		// STEP 1: Receive topology from Winery
 		////////////////////////////////////////
 
-		logger.info("Saving to: " + topologyTemplateURL);
+		LOGGER.info("Saving to: " + topologyTemplateURL);
 
-		logger.info("The service template to be completed is: " + serviceTemplateName);
+		LOGGER.info("The service template to be completed is: " + serviceTemplateName);
 
 		// receive types from repository
 		IWineryRepositoryClient client = WineryRepositoryClientFactory.getWineryRepositoryClient();
@@ -120,11 +120,11 @@ public class CompletionInterface {
 		// Step 2: Analyze topology content
 		/////////////////////////////////////
 
-		logger.info("The modelled topology as XML: " + topology);
+		LOGGER.info("The modelled topology as XML: " + topology);
 
 		TTopologyTemplate topologyTemplate = JAXBHelper.getTopologyAsJaxBObject(topology);
 
-		logger.info("Analyzing topology...");
+		LOGGER.info("Analyzing topology...");
 
 		// analyze the received topology
 		TOSCAAnalyzer toscaAnalyzer = new TOSCAAnalyzer();
@@ -139,7 +139,7 @@ public class CompletionInterface {
 			/////////////////////////////////////////
 			// Step 3: Invoke the topology completion
 			/////////////////////////////////////////
-			logger.info("Invoking Topology Completion...");
+			LOGGER.info("Invoking Topology Completion...");
 
 			CompletionManager completionManager = new CompletionManager(toscaAnalyzer, stepByStep);
 			List<TTopologyTemplate> completedTopology = completionManager.manageCompletion(topologyTemplate);
@@ -174,7 +174,7 @@ public class CompletionInterface {
 				return Constants.CompletionMessages.STEPBYSTEP.toString();
 			}
 
-			logger.info("Completion successful!");
+			LOGGER.info("Completion successful!");
 
 			if (completedTopology.size() == 1) {
 				// solution is unique, save the topology

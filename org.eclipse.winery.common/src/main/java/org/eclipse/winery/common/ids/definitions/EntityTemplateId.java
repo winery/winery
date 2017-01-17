@@ -22,21 +22,21 @@ import org.eclipse.winery.common.ids.elements.TOSCAElementId;
  * <em>directly nested</em> in a Definitions element. RelationshipTemplates and
  * NodeTemplates are not. When approaching an EntityTemplateId, it is a thing
  * directly nested in a Definitions element.
- * 
+ *
  * The others have {@link TOSCAElementId} as parent
  */
 public abstract class EntityTemplateId extends TOSCAComponentId {
-	
+
 	public EntityTemplateId(Namespace namespace, XMLId xmlId) {
 		super(namespace, xmlId);
 	}
-	
+
 	public EntityTemplateId(String ns, String id, boolean URLencoded) {
 		super(ns, id, URLencoded);
 	}
-	
+
 	public EntityTemplateId(QName qname) {
 		super(qname);
 	}
-	
+
 }

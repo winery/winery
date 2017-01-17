@@ -37,46 +37,45 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
  * Bundles all general JAXB functionality
  */
 public class JAXBSupport {
-	
-	private static final Logger logger = LoggerFactory.getLogger(JAXBSupport.class);
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(JAXBSupport.class);
+
 	// thread-safe JAXB as inspired by https://jaxb.java.net/guide/Performance_and_thread_safety.html
 	// The other possibility: Each subclass sets JAXBContext.newInstance(theSubClass.class); in its static {} part.
 	// This seems to be more complicated than listing all subclasses in initContext
 	public final static JAXBContext context = JAXBSupport.initContext();
-	
+
 	private final static PrefixMapper prefixMapper = new PrefixMapper();
-	
-	
+
+
 	/**
 	 * Follows
 	 * https://jaxb.java.net/2.2.5/docs/release-documentation.html#marshalling
 	 * -changing-prefixes
-	 * 
+	 *
 	 * See http://www.jarvana.com/jarvana/view/com/sun/xml/bind/jaxb-impl/2.2.2/
 	 * jaxb-impl-2.2.2-javadoc.jar!/com/sun/xml/bind/marshaller/
 	 * NamespacePrefixMapper.html for a JavaDoc of the NamespacePrefixMapper
 	 */
 	private static class PrefixMapper extends NamespacePrefixMapper {
-		
+
 		@Override
 		public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
 			if (namespaceUri.equals("")) {
 				return "";
 			}
-			
+
 			// this does not work to get TOSCA elements without prefix
 			// possibly because the attribute "name" is present without prefix
 			//	if (namespaceUri.equals(Namespaces.TOSCA_NAMESPACE)) {
 			//		return "";
 			//	}
-			
-			String prefix = NamespacesResource.getPrefix(namespaceUri);
-			return prefix;
+
+			return NamespacesResource.getPrefix(namespaceUri);
 		}
 	}
-	
-	
+
+
 	private static JAXBContext initContext() {
 		JAXBContext context;
 		try {
@@ -91,15 +90,15 @@ public class JAXBSupport {
 					MockXMLElement.class);
 			// @formatter:on
 		} catch (JAXBException e) {
-			JAXBSupport.logger.error("Could not initialize JAXBContext", e);
+			JAXBSupport.LOGGER.error("Could not initialize JAXBContext", e);
 			throw new IllegalStateException(e);
 		}
 		return context;
 	}
-	
+
 	/**
 	 * Creates a marshaller
-	 * 
+	 *
 	 * @throws IllegalStateException if marshaller could not be instantiated
 	 */
 	public static Marshaller createMarshaller(boolean includeProcessingInstruction) {
@@ -114,25 +113,25 @@ public class JAXBSupport {
 				m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			}
 		} catch (JAXBException e) {
-			JAXBSupport.logger.error("Could not instantiate marshaller", e);
+			JAXBSupport.LOGGER.error("Could not instantiate marshaller", e);
 			throw new IllegalStateException(e);
 		}
-		
+
 		return m;
 	}
-	
+
 	/**
 	 * Creates an unmarshaller
-	 * 
+	 *
 	 * @throws IllegalStateException if unmarshaller could not be instantiated
 	 */
 	public static Unmarshaller createUnmarshaller() {
 		try {
 			return JAXBSupport.context.createUnmarshaller();
 		} catch (JAXBException e) {
-			JAXBSupport.logger.error("Could not instantiate unmarshaller", e);
+			JAXBSupport.LOGGER.error("Could not instantiate unmarshaller", e);
 			throw new IllegalStateException(e);
 		}
 	}
-	
+
 }

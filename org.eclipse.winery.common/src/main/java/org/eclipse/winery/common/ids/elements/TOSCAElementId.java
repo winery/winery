@@ -16,24 +16,24 @@ import org.eclipse.winery.common.ids.XMLId;
 
 /**
  * Models an ID of a TOSCA element, which is NOT a TOSCAcomponentId
- * 
+ *
  * It has a parent and an xmlId
  */
 public abstract class TOSCAElementId extends GenericId {
-	
+
 	private final GenericId parent;
-	
-	
+
+
 	public TOSCAElementId(GenericId parent, XMLId xmlId) {
 		super(xmlId);
 		this.parent = parent;
 	}
-	
+
 	@Override
 	public GenericId getParent() {
 		return this.parent;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof TOSCAElementId) {
@@ -44,7 +44,7 @@ public abstract class TOSCAElementId extends GenericId {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public int compareTo(GenericId o1) {
 		if (o1 instanceof TOSCAElementId) {
@@ -60,12 +60,12 @@ public abstract class TOSCAElementId extends GenericId {
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.getParent().hashCode() ^ this.getXmlId().hashCode();
 	}
-	
+
 	@Override
 	public String toString() {
 		String res;

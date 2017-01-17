@@ -18,12 +18,13 @@ import java.util.Date;
 
 import javax.ws.rs.core.MediaType;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.Utils;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,24 +32,23 @@ import org.slf4j.LoggerFactory;
  * Provides basic implementations for {@link IRepository}
  */
 public abstract class AbstractRepository implements IRepository {
-	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractRepository.class);
-	
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRepository.class);
+
+
 	/**
-	 * 
+	 *
 	 * @param ref the file reference to store the mime type for
 	 * @return a reference to the file holding the mime type
 	 */
 	private RepositoryFileReference getMimeFileRef(RepositoryFileReference ref) {
 		String fileName = ref.getFileName() + Constants.SUFFIX_MIMETYPE;
-		RepositoryFileReference mimeFileRef = new RepositoryFileReference(ref.getParent(), fileName);
-		return mimeFileRef;
+		return new RepositoryFileReference(ref.getParent(), fileName);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
-	 * 
+	 *
 	 * This is a simple implementation using the information put by
 	 * setMimeType(RepositoryFileReference ref) or determining the mime type
 	 * using Utils.getMimeType. If the latter is done, the mime type is
@@ -65,28 +65,27 @@ public abstract class AbstractRepository implements IRepository {
 		} else {
 			// repository has been manipulated manually,
 			// create mimetype information
-			mimeType = null;
 			try (InputStream is = this.newInputStream(ref);
-					BufferedInputStream bis = new BufferedInputStream(is);) {
+					BufferedInputStream bis = new BufferedInputStream(is)) {
 				mimeType = Utils.getMimeType(bis, ref.getFileName());
 			}
 			if (mimeType != null) {
 				// successful execution
 				this.setMimeType(ref, MediaType.valueOf(mimeType));
 			} else {
-				AbstractRepository.logger.debug("Could not determine mimetype");
+				AbstractRepository.LOGGER.debug("Could not determine mimetype");
 			}
 		}
 		return mimeType;
 	}
-	
+
 	/**
 	 * Stores the mime type of the given file reference in a separate file
-	 * 
+	 *
 	 * This method calls putContentToFile(), where the filename is appended with
 	 * Constants.SUFFIX_MIMETYPE and a null mime type. The latter indicates that
 	 * no "normal" file is stored.
-	 * 
+	 *
 	 * @param ref the file reference
 	 * @param mediaType the mimeType
 	 */
@@ -94,17 +93,17 @@ public abstract class AbstractRepository implements IRepository {
 		RepositoryFileReference mimeFileRef = this.getMimeFileRef(ref);
 		this.putContentToFile(mimeFileRef, mediaType.toString(), null);
 	}
-	
+
 	@Override
 	public Date getConfigurationLastUpdate(GenericId id) {
 		RepositoryFileReference ref = BackendUtils.getRefOfConfiguration(id);
 		return this.getLastUpdate(ref);
 	}
-	
+
 	@Override
 	public Configuration getConfiguration(GenericId id) {
 		RepositoryFileReference ref = BackendUtils.getRefOfConfiguration(id);
 		return this.getConfiguration(ref);
 	}
-	
+
 }

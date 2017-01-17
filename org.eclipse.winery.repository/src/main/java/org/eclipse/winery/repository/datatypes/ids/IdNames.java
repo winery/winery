@@ -12,19 +12,19 @@
 package org.eclipse.winery.repository.datatypes.ids;
 
 /**
- * This class is the brother of {@link org.eclipse.winery.common.id.IdNames}
- * 
+ * This class is the brother of {@link org.eclipse.winery.common.ids.IdNames}
+ *
  * It includes all id names used additionally in the local ids
  */
 public class IdNames {
-	
+
 	// the files belonging to one artifact template are nested in the sub
 	// directory "files"
 	public static final String ARTIFACTTEMPLATEDIRECTORY = "files";
-	
+
 	public static final String CONSTRAINTTYPES = "constrainttypes";
 	public static final String NAMESPACES = "namespaces";
 	public static final String PLANLANGUAGES = "planlanguages";
 	public static final String PLANTYPES = "plantypes";
-	
+
 }

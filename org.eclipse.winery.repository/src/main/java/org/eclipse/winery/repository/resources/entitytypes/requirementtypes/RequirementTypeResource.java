@@ -19,26 +19,26 @@ import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 
 public class RequirementTypeResource extends EntityTypeResource {
-	
+
 	public RequirementTypeResource(RequirementTypeId id) {
 		super(id);
 	}
-	
+
 	/**
 	 * Convenience method to avoid casting at the caller's side.
 	 */
 	public TRequirementType getRequirementType() {
 		return (TRequirementType) this.getElement();
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TRequirementType();
 	}
-	
+
 	@Path("requiredcapabilitytype/")
 	public RequiredCapabilityTypeResource getRequiredCapabilityTypeResource() {
 		return new RequiredCapabilityTypeResource(this);
 	}
-	
+
 }

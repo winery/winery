@@ -37,7 +37,7 @@ import com.sun.jersey.api.view.Viewable;
 
 public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag> {
 
-	private static final Logger logger = LoggerFactory.getLogger(TagsResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TagsResource.class);
 
 	public TagsResource(IPersistable res, List<TTag> list) {
 		super(TagResource.class, TTag.class, list, res);
@@ -49,11 +49,11 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 
 	/**
 	 * Adds an element using form-encoding
-	 * 
+	 *
 	 * This is necessary as TRequirementRef contains an IDREF and the XML
 	 * snippet itself does not contain the target id
-	 * 
-	 * 
+	 *
+	 *
 	 * @param name
 	 *            the optional name of the requirement
 	 * @param value
@@ -76,7 +76,7 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 	}
 
 	private void setTagsIfNull() {
-		TTags tags = null;
+		TTags tags;
 		if (this.res instanceof ServiceTemplateResource) {
 			tags = ((ServiceTemplateResource) this.res).getServiceTemplate().getTags();
 			if (tags == null) {
@@ -119,6 +119,9 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 			tags = ((NodeTypeImplementationResource) this.res).getNTI().getTags();
 		} else if (this.res instanceof RelationshipTypeImplementationResource) {
 			tags = ((RelationshipTypeImplementationResource) this.res).getRTI().getTags();
+		} else {
+			LOGGER.error("A tag addition seems to have been requested for a TOSCA element, where no tags are available");
+			return;
 		}
 
 		tags.getTag().add(tag);

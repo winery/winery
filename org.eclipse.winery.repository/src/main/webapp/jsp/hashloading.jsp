@@ -13,7 +13,7 @@
 --%>
 <script>
 	function switchStyledTabSelection(element, onSuccess) {
-		target = element.attr("href");
+		var target = element.attr("href");
 		target = target.replace('#','');
 		target += "/";
 		$(".styledTabMenuButton2ndlevel").removeClass("selected");
@@ -124,7 +124,7 @@
 		var posColon = hash.indexOf(";");
 		if (posColon >= 0) {
 			// search for additionalData
-			secondColon = hash.indexOf(";", posColon+1);
+			var secondColon = hash.indexOf(";", posColon+1);
 			if (secondColon > 0) {
 				// include the ";" in the additional data
 				additionalData = hash.substr(secondColon);

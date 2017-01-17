@@ -40,12 +40,12 @@ public class DeferredCompleter {
 	/**
 	 * The TOSCA {@link TTopologyTemplate} document
 	 */
-	TTopologyTemplate topology;
+	private TTopologyTemplate topology;
 
 	/**
 	 * A Map containing the requirements removed during the algorithm and their corresponding {@link TNodeTemplate}.
 	 */
-	Map<TRequirement, TNodeTemplate> removedRequirements;
+	private Map<TRequirement, TNodeTemplate> removedRequirements;
 
 	/**
 	 * Constructor of the class.

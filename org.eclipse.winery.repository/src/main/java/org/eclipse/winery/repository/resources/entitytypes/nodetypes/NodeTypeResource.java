@@ -29,28 +29,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
-	
-	private static final Logger logger = LoggerFactory.getLogger(NodeTypeResource.class);
-	
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(NodeTypeResource.class);
+
+
 	public NodeTypeResource(NodeTypeId id) {
 		super(id);
 	}
-	
+
 	/**
 	 * Convenience method to avoid casting at the caller's side.
 	 */
 	public TNodeType getNodeType() {
 		return (TNodeType) this.getElement();
 	}
-	
+
 	/** sub-resources **/
-	
+
 	@Path("implementations/")
 	public ImplementationsOfOneNodeTypeResource getImplementations() {
 		return new ImplementationsOfOneNodeTypeResource((NodeTypeId) this.id);
 	}
-	
+
 	@Path("instancestates/")
 	public InstanceStatesResource getInstanceStatesResource() {
 		TTopologyElementInstanceStates instanceStates = this.getNodeType().getInstanceStates();
@@ -61,7 +61,7 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 		}
 		return new InstanceStatesResource(instanceStates, this);
 	}
-	
+
 	@Path("interfaces/")
 	public InterfacesResource getInterfaces() {
 		Interfaces interfaces = this.getNodeType().getInterfaces();
@@ -71,7 +71,7 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 		}
 		return new InterfacesResource(null, interfaces.getInterface(), this);
 	}
-	
+
 	@Path("requirementdefinitions/")
 	public RequirementDefinitionsResource getRequirementDefinitions() {
 		RequirementDefinitions definitions = this.getNodeType().getRequirementDefinitions();
@@ -81,7 +81,7 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 		}
 		return new RequirementDefinitionsResource(this, definitions.getRequirementDefinition());
 	}
-	
+
 	@Path("capabilitydefinitions/")
 	public CapabilityDefinitionsResource getCapabilityDefinitions() {
 		CapabilityDefinitions definitions = this.getNodeType().getCapabilityDefinitions();
@@ -91,15 +91,15 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 		}
 		return new CapabilityDefinitionsResource(this, definitions.getCapabilityDefinition());
 	}
-	
+
 	@Path("visualappearance/")
 	public VisualAppearanceResource getVisualAppearanceResource() {
 		return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), (NodeTypeId) this.id);
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TNodeType();
 	}
-	
+
 }

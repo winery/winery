@@ -15,23 +15,23 @@ package org.eclipse.winery.repository.resources;
  * Data used to render a submenu item
  */
 public class SubMenuData {
-	
+
 	private final String href;
 	private final String text;
-	
+
 	public static final SubMenuData SUBMENU_DOCUMENTATION = new SubMenuData("#documentation", "Documentation");
 	public static final SubMenuData SUBMENU_XML = new SubMenuData("#xml", "XML");
-	
-	
+
+
 	public SubMenuData(String href, String text) {
 		this.href = href;
 		this.text = text;
 	}
-	
+
 	public String getHref() {
 		return this.href;
 	}
-	
+
 	public String getText() {
 		return this.text;
 	}

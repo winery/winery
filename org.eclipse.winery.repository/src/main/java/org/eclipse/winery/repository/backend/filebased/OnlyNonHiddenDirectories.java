@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class OnlyNonHiddenDirectories implements DirectoryStream.Filter<Path> {
-	
+
 	@Override
 	public boolean accept(Path entry) throws IOException {
 		// we return only non-hidden directories

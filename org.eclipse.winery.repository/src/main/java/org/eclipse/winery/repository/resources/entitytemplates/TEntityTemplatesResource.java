@@ -22,9 +22,9 @@ import org.eclipse.winery.repository.resources._support.collections.withid.Entit
  * This resource models the list of TEntityTemplates
  */
 public abstract class TEntityTemplatesResource<R extends EntityWithIdResource<T>, T extends TEntityTemplate> extends EntityWithIdCollectionResource<R, T> {
-	
+
 	public TEntityTemplatesResource(Class<R> entityResourceTClazz, Class<T> entityTClazz, List<T> list, IPersistable res) {
 		super(entityResourceTClazz, entityTClazz, list, res);
 	}
-	
+
 }

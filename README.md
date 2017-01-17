@@ -84,15 +84,19 @@ This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 ** An Implementation Artifact may carry a `name` attribute
 ** The contents of properties of Boundary Definitions are processed in `lax` mode
 
-## Eclipse setup
-This howto is based on [Eclipse Standard 4.3].
+## IDE Setup
+
+### IntelliJ Ultimate
+- First of all, generate a war to have all dependencies fetched by maven.
+- Open `pom.xml` in the main directory
+- Setup tomcat as usal.
+- Recommended: Get a JRebel license from <https://my.rebel.com>. It is for free if JRebel may post to your Twitter account.
+
+### Eclipse setup
+This howto is based on [Eclipse IDE for Java EE Developers].
 First of all, generate a war to have all dependencies fetched by maven.
 
-### Required plugins
-* JST Server Adapters Extensions
-* Eclipse Java EE Developer Tools
-* Eclipse Java Web Developer Tools
-* [m2e-wtp]: Maven Integration for WTP
+### Recommended plugins
 * [AnyEdit](http://andrei.gmxhome.de/anyedit/) for ensuring that tabs are always used
 ** Configure: Window -> Preferences -> General / Editors / AnyEdit Tools -> "Auto - Convert EXCLUSION file list" -> "Add filter" -> "*.java", "Convert...": 4 spaces for a tab
 
@@ -103,14 +107,13 @@ First of all, generate a war to have all dependencies fetched by maven.
 ### Make Winery projects known to Eclipse
 1. Import all projects
   * Use "Existing Maven Projects". `mvn eclips:m2eclipse` currently does not enable "maven" in eclipse.
-2. For each project: right click, –> Team –> Share Project –> Git –> Next –> check "Use or create repository in parent folder of project" –> Finish
-3. At `org.eclipse.winery.repository` and ` org.eclipse.winery.topologymodeler`:
+2. At `org.eclipse.winery.repository` and ` org.eclipse.winery.topologymodeler`:
   * Right click -> Properties -> JavaScript -> Include Path -> Source -> Expand folder -> Select "Excluded" -> "Edit..."
   * Exclusion Patterns: Add multiple -> Select "3rd party" -> "OK"
   * Exclusion Patterns: Add multiple -> Select "components" -> "OK"
   * "Finish" -> "OK"
 
-### Setup Tomcat
+#### Setup Tomcat
 1. Open servers window: Window -> Show View -> Other -> Server -> Servers
 2. New server wizard... -> Apache -> Tomcat v7.0 Server -> Next -> Winery -> Add -> Finish
 3. Rename the Server to "Apache Tomcat v7.0"
@@ -118,7 +121,7 @@ First of all, generate a war to have all dependencies fetched by maven.
 Now you can see the Tomcat v7.0 Server at localhost [Stopped, Republish] in your server window.
 Select it and click on the green play button in the window.
 
-Now winery can be viewed at http://localhost:8080/winery/
+Now, Winery can be viewed at http://localhost:8080/winery/
 
 ### Configure Winery (optional)
 The repository location can be changed:
@@ -130,9 +133,11 @@ Copy `winery.properties` to `path-to-workspace\.metadata\.plugins\org.eclipse.ws
 * See [README.md of the topology modeler](org.eclipse.winery.topologymodeler/README.md)
 
 #### Libraries
-
-* Do NOT update to jQuery 2.1.0. When using with firefox, line 5571 in jquery.js fails: `divStyle is null`. That means `window.getComputedStyle( div, null );` returned `null`, too.
-* Do NOT update to jsPlumb 1.5.5. The new connection type determination does not play well together with Winery's usage of jsPlumb. See [jsPlumb#165].
+* Do NOT update to jQuery 2.1.0.
+  When using with firefox, line 5571 in jquery.js fails: `divStyle is null`.
+  That means `window.getComputedStyle( div, null );` returned `null`, too.
+* Do NOT update to jsPlumb 1.5.5.
+  The new connection type determination does not play well together with Winery's usage of jsPlumb. See [jsPlumb#165].
 
 ## Acknowledgements
 The initial code contribution has been supported by the [Federal Ministry for Economic Affairs and Energy] as part of the [CloudCycle] project (01MD11023).
@@ -169,7 +174,7 @@ See http://www.opentosca.org/#publications for a list of publications in the Ope
  [CloudCycle]: http://www.cloudcycle.org/en/
  [DOI:10.1109/MIC.2012.43]: http://dx.doi.org/10.1109/MIC.2012.43
  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
- [Eclipse Standard 4.3]: http://www.eclipse.org/downloads/
+ [Eclipse IDE for Java EE Developers]: https://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/neon2
  [Federal Ministry for Economic Affairs and Energy]: http://www.bmwi.de/EN/
  [frontend-maven-plugin]: https://github.com/eirslett/frontend-maven-plugin
  [jsPlumb#165]: https://github.com/jsplumb/jsPlumb/issues/165

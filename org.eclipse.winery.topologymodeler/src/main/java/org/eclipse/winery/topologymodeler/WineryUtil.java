@@ -20,29 +20,29 @@ import java.util.TreeSet;
 import org.eclipse.winery.common.interfaces.QNameWithName;
 
 public class WineryUtil {
-	
+
 	/**
 	 * LocalName is the ID of the element, whereas Name is the speaking name
 	 */
 	public static class LocalNameNamePair implements Comparable<LocalNameNamePair> {
-		
+
 		String localName;
 		String name;
-		
-		
+
+
 		public LocalNameNamePair(String localName, String name) {
 			this.localName = localName;
 			this.name = name;
 		}
-		
+
 		public String getLocalName() {
 			return this.localName;
 		}
-		
+
 		public String getName() {
 			return this.name;
 		}
-		
+
 		/**
 		 * Ordering according to name
 		 */
@@ -50,12 +50,12 @@ public class WineryUtil {
 		public int compareTo(LocalNameNamePair otherPair) {
 			return this.name.compareTo(otherPair.name);
 		}
-		
+
 		@Override
 		public int hashCode() {
 			return this.localName.hashCode();
 		}
-		
+
 		@Override
 		public boolean equals(Object o) {
 			if (o instanceof LocalNameNamePair) {
@@ -65,8 +65,8 @@ public class WineryUtil {
 			}
 		}
 	}
-	
-	
+
+
 	public static SortedMap<String, SortedSet<LocalNameNamePair>> convertQNameWithNameListToNamespaceToLocalNameNamePairList(List<QNameWithName> list) {
 		if (list == null) {
 			throw new IllegalArgumentException("list may not be null");
@@ -83,5 +83,5 @@ public class WineryUtil {
 		}
 		return res;
 	}
-	
+
 }

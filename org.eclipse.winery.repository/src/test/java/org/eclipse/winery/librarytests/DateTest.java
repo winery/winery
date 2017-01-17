@@ -21,7 +21,7 @@ import org.apache.commons.lang3.time.DateUtils;
  * Date parsing test, when the system locale is not ENGLISH
  */
 public class DateTest {
-	
+
 	public static void main(String[] args) throws ParseException {
 		// In case the following line is commented, this method throws a ParseException
 		Locale.setDefault(Locale.ENGLISH);
@@ -29,5 +29,5 @@ public class DateTest {
 		Date modifiedDate = DateUtils.parseDate(modified, org.apache.http.impl.cookie.DateUtils.DEFAULT_PATTERNS);
 		System.out.println(modifiedDate);
 	}
-	
+
 }
