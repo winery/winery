@@ -18,5 +18,5 @@ import org.eclipse.winery.repository.resources.AbstractComponentsResource;
  * The actual implementation is done in the AbstractComponentsResource
  */
 public class PolicyTypesResource extends AbstractComponentsResource<PolicyTypeResource> {
-	
+
 }

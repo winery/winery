@@ -46,22 +46,22 @@ import org.w3c.dom.Document;
 import com.sun.jersey.api.view.Viewable;
 
 public class BoundaryDefinitionsResource {
-	
+
 	private final ServiceTemplateResource serviceTemplateResource;
 	private final TBoundaryDefinitions boundaryDefinitions;
-	
-	
+
+
 	public BoundaryDefinitionsResource(ServiceTemplateResource serviceTemplateResource, TBoundaryDefinitions boundaryDefinitions) {
 		this.serviceTemplateResource = serviceTemplateResource;
 		this.boundaryDefinitions = boundaryDefinitions;
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getHTML(@Context UriInfo uriInfo) {
 		return new Viewable("/jsp/servicetemplates/boundarydefinitions/boundarydefinitions.jsp", new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()));
 	}
-	
+
 	@PUT
 	@RestDoc(methodDescription = "Replaces the boundary definitions by the information given in the XML")
 	@Consumes(MediaType.TEXT_XML)
@@ -69,7 +69,7 @@ public class BoundaryDefinitionsResource {
 		this.serviceTemplateResource.getServiceTemplate().setBoundaryDefinitions(boundaryDefinitions);
 		return BackendUtils.persist(this.serviceTemplateResource);
 	}
-	
+
 	@Path("properties/")
 	@PUT
 	@Consumes(MediaType.TEXT_XML)
@@ -79,7 +79,7 @@ public class BoundaryDefinitionsResource {
 		properties.setAny(doc.getDocumentElement());
 		return BackendUtils.persist(this.serviceTemplateResource);
 	}
-	
+
 	@Path("requirements/")
 	public RequirementsResource getRequiremensResource() {
 		Requirements requirements = this.boundaryDefinitions.getRequirements();
@@ -90,7 +90,7 @@ public class BoundaryDefinitionsResource {
 		List<TRequirementRef> refs = requirements.getRequirement();
 		return new RequirementsResource(this.serviceTemplateResource, refs);
 	}
-	
+
 	@Path("capabilities/")
 	public CapabilitiesResource getCapabilitiesResource() {
 		Capabilities caps = this.boundaryDefinitions.getCapabilities();
@@ -101,7 +101,7 @@ public class BoundaryDefinitionsResource {
 		List<TCapabilityRef> refs = caps.getCapability();
 		return new CapabilitiesResource(this.serviceTemplateResource, refs);
 	}
-	
+
 	@Path("policies/")
 	public PoliciesResource getPoliciesResource() {
 		Policies policies = this.boundaryDefinitions.getPolicies();
@@ -111,7 +111,7 @@ public class BoundaryDefinitionsResource {
 		}
 		return new PoliciesResource(policies.getPolicy(), this.serviceTemplateResource);
 	}
-	
+
 	/**
 	 * This path is below "boundary definitions" to ease implementation If it
 	 * was modeled following the XSD, it would have been nested below
@@ -131,7 +131,7 @@ public class BoundaryDefinitionsResource {
 		}
 		return new PropertyMappingsResource(propertyMappings, this.serviceTemplateResource);
 	}
-	
+
 	@Path("interfaces/")
 	public InterfacesResource getInterfacesResource() {
 		Interfaces interfaces = this.boundaryDefinitions.getInterfaces();

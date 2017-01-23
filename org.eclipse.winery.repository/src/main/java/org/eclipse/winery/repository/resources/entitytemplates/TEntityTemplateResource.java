@@ -27,12 +27,12 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
 
 public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWithIdResource<E> implements IEntityTemplateResource<E>, IHasTypeReference {
-	
+
 	/**
 	 * This constructor is used for both entity templates nested in an component
 	 * instance as well as for entity templates being component instances
 	 * itself.
-	 * 
+	 *
 	 * As Java does not support multi-inheritance, we implemented a quick hack
 	 * to re-use this class as inner implementation at templates extending
 	 * AbstractComponentInstanceResourceDefinitionsBacked
@@ -40,7 +40,7 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
 	public TEntityTemplateResource(IIdDetermination<E> idDetermination, E o, int idx, List<E> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
 	}
-	
+
 	//	public String getId() {
 	//		return this.template.getId();
 	//	}
@@ -49,7 +49,7 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
 	//		// TODO: There is no check for uniqueness of the given id
 	//		this.template.setId(id);
 	//	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -57,13 +57,13 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
 	public QName getType() {
 		return this.o.getType();
 	}
-	
+
 	@Path("type")
 	@GET
 	public String getTypeAsQNameString() {
 		return this.getType().toString();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -72,7 +72,7 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
 		this.o.setType(type);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -80,7 +80,7 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
 	public Response setType(String typeStr) {
 		return this.setType(QName.valueOf(typeStr));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -88,5 +88,5 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
 	public PropertiesResource getPropertiesResource() {
 		return new PropertiesResource(this.o, (AbstractComponentInstanceResource) this.res);
 	}
-	
+
 }

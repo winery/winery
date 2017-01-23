@@ -12,14 +12,14 @@
 package org.eclipse.winery.common.constants;
 
 public class Defaults {
-	
+
 	public static final String DEFAULT_RT_HOVER_COLOR = "black";
-	
+
 	// files are in src/main/webapp/images/relationshiptype
 	// convention: below the prefix, then the filename is either ...Left.png or ...Right.png
 	public static final String DEFAULT_RT_ARROWHEAD_SOURCE = "none";
 	public static final String DEFAULT_RT_ARROWHEAD_TARGET = "PlainArrow";
-	
+
 	public static final String DEFAULT_RT_DASH = "plain";
 	public static final String DEFAULT_RT_LINEWIDTH = "1";
 }

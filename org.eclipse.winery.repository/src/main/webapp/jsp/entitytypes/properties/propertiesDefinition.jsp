@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,7 +8,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Oliver Kopp - initial API and implementation and/or initial documentation, maintainance
  *    Yves Schubert - switch to bootstrap 3
  *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
@@ -130,7 +130,7 @@ $(function(){
 <p>
 	<%-- TODO: if clicked on the "label" of the input field (i.e., the content of the input tag), the input should be selected. This is not the default at HTML5 - see http://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_input_type_radio --%>
 
-	<input id="nopropdef" type="radio" name="kind" value="none" <c:if test="${not it.isWineryKeyValueProperties and empty it.entityType.propertiesDefinition.element and empty t.entityType.propertiesDefinition.type}">checked="checked"</c:if>><span class="cursorpointer" id="textnone">(none)</span></input>
+	<input id="nopropdef" type="radio" name="kind" value="none" <c:if test="${not it.isWineryKeyValueProperties and empty it.entityType.propertiesDefinition.element and empty it.entityType.propertiesDefinition.type}">checked="checked"</c:if>><span class="cursorpointer" id="textnone">(none)</span></input>
 	<br/>
 
 	<input id="xsdelementradio" type="radio" name="kind" value="element" <c:if test="${not empty it.entityType.propertiesDefinition.element}">checked="checked"</c:if>><span class="cursorpointer" id="textxmlelement">XML element</span></input>
@@ -235,7 +235,6 @@ $(function() {
 		} else if (target == "type") {
 			disableKVproperties();
 			clearXSDElementSelection();
-			enableKVproperties();
 		} else if (target == "KV") {
 			<c:if test="${not it.isWineryKeyValuePropertiesDerivedFromXSD}">
 			<%-- only empty the k/v properties if not derived from XSD--%>
@@ -243,6 +242,7 @@ $(function() {
 			</c:if>
 			clearXSDElementSelection();
 			clearXSDTypeSelection();
+			enableKVproperties();
 		} else {
 			vShowError("UI not consistent to code");
 		}

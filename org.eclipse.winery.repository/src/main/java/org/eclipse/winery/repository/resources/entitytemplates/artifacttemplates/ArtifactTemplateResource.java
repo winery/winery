@@ -8,22 +8,9 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.SortedSet;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
@@ -31,6 +18,7 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactTemplate.ArtifactReferences;
@@ -57,13 +45,26 @@ import org.eclipse.winery.repository.resources.entitytypeimplementations.relatio
 import org.eclipse.winery.repository.resources.entitytypes.artifacttypes.ArtifactTypeResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.SortedSet;
+
 /**
  * Models an Artifact Template with its artifact references
- * 
+ *
  * The associated files (through tArtifactReference) are stored directly within
  * this resource. The element <ArtifactReference> is generated during export
  * only
- * 
+ *
  * This class inherits from AbstractComponentInstanceResourceDefinitionsBacked
  * and not from TEntityTemplateResource<TArtifactTemplate>, because
  * ArtifactTemplates are directly available under TDefinitions and we need the
@@ -71,16 +72,16 @@ import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateR
  */
 
 public class ArtifactTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IEntityTemplateResource<TArtifactTemplate>, IHasName {
-	
+
 	private final TEntityTemplateResource<TArtifactTemplate> entityTemplateResource;
-	
-	
+
+
 	public ArtifactTemplateResource(ArtifactTemplateId id) {
 		super(id);
 		// we provide the minimum requirements for the resource
-		this.entityTemplateResource = new TEntityTemplateResource<TArtifactTemplate>(null, this.getTArtifactTemplate(), 0, null, this);
+		this.entityTemplateResource = new TEntityTemplateResource<>(null, this.getTArtifactTemplate(), 0, null, this);
 	}
-	
+
 	/**
 	 * @return null if no artifact type resource is defined
 	 */
@@ -88,11 +89,11 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		ArtifactTypeId atId = new ArtifactTypeId(this.getTArtifactTemplate().getType());
 		return new ArtifactTypeResource(atId);
 	}
-	
+
 	private TArtifactTemplate getTArtifactTemplate() {
 		return (TArtifactTemplate) this.element;
 	}
-	
+
 	@Override
 	public String getName() {
 		String name = this.getTArtifactTemplate().getName();
@@ -102,31 +103,31 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 			return name;
 		}
 	}
-	
+
 	@Override
 	public Response setName(String name) {
 		this.getTArtifactTemplate().setName(name);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TArtifactTemplate();
 	}
-	
+
 	@Override
-	protected void copyIdToFields() {
-		this.getTArtifactTemplate().setId(this.getId().getXmlId().getDecoded());
+	public void copyIdToFields(TOSCAComponentId id) {
+		this.getTArtifactTemplate().setId(id.getXmlId().getDecoded());
 		// Namespace cannot be set as the namespace is contained in TDefinitions only
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void synchronizeReferences() {
 		TArtifactTemplate template = this.getTArtifactTemplate();
-		
+
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId((ArtifactTemplateId) this.id);
 		SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(fileDir);
 		if (files.isEmpty()) {
@@ -140,7 +141,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 				// determine path
 				// path relative from the root of the CSAR is ok (COS01, line 2663)
 				String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
-				
+
 				// put path into data structure
 				// we do not use Inlude/Exclude as we directly reference a concrete file
 				TArtifactReference artRef = new TArtifactReference();
@@ -149,53 +150,53 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 			}
 		}
 	}
-	
+
 	@Path("files/")
 	public FilesResource getFilesResource() {
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId((ArtifactTemplateId) this.id);
 		return new FilesResource(fileDir);
 	}
-	
+
 	/***********************************************************************
 	 * "inheritance" from TEntityTemplateResource<TArtifactTemplate> *
-	 * 
+	 *
 	 * Offering all methods of TEntityTemplateResource<TArtifactTemplate> and
 	 * forwarding it to our private instance of it
 	 */
-	
+
 	@Override
 	public QName getType() {
 		return this.entityTemplateResource.getType();
 	}
-	
+
 	@Override
 	public Response setType(QName type) {
 		this.entityTemplateResource.setType(type);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Override
 	public Response setType(String typeStr) {
 		this.entityTemplateResource.setType(typeStr);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Override
 	public PropertiesResource getPropertiesResource() {
 		return new PropertiesResource(this.getTArtifactTemplate(), this);
 	}
-	
+
 	int getReferenceCount() {
 		// We do not use a database, therefore, we have to go through all possibilities pointing to the artifact template
 		// DAs and IAs point to an artifact template
 		// DAs are contained in Node Type Implementations and Node Templates
 		// IAs are contained in Node Type Implementations and Relationship Type Implementations
-		
+
 		int count = 0;
-		
+
 		Collection<TDeploymentArtifact> allDAs = new HashSet<>();
 		Collection<TImplementationArtifact> allIAs = new HashSet<>();
-		
+
 		// handle Node Type Implementation, which contains DAs and IAs
 		SortedSet<NodeTypeImplementationId> nodeTypeImplementations = Repository.INSTANCE.getAllTOSCAComponentIds(NodeTypeImplementationId.class);
 		for (NodeTypeImplementationId ntiId : nodeTypeImplementations) {
@@ -209,7 +210,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 				allIAs.addAll(implementationArtifacts.getImplementationArtifact());
 			}
 		}
-		
+
 		// check all Relationshiptype Implementations for IAs
 		SortedSet<RelationshipTypeImplementationId> relationshipTypeImplementations = Repository.INSTANCE.getAllTOSCAComponentIds(RelationshipTypeImplementationId.class);
 		for (RelationshipTypeImplementationId rtiId : relationshipTypeImplementations) {
@@ -219,7 +220,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 				allIAs.addAll(implementationArtifacts.getImplementationArtifact());
 			}
 		}
-		
+
 		// check all node templates for DAs
 		SortedSet<ServiceTemplateId> serviceTemplates = Repository.INSTANCE.getAllTOSCAComponentIds(ServiceTemplateId.class);
 		for (ServiceTemplateId sid : serviceTemplates) {
@@ -238,11 +239,11 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 				}
 			}
 		}
-		
+
 		// now we have all DAs and IAs
-		
+
 		QName ourQName = this.getQName();
-		
+
 		// check DAs for artifact templates
 		for (TDeploymentArtifact da : allDAs) {
 			QName artifactRef = da.getArtifactRef();
@@ -250,7 +251,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 				count++;
 			}
 		}
-		
+
 		// check IAs for artifact templates
 		for (TImplementationArtifact ia : allIAs) {
 			QName artifactRef = ia.getArtifactRef();
@@ -258,19 +259,19 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 				count++;
 			}
 		}
-		
+
 		return count;
 	}
-	
+
 	/**
 	 * Query parameter {@code type}:<br />
 	 * Returns the type of the artifact template
-	 * 
+	 *
 	 * Query parameter {@code referenceCount}:<br />
 	 * Determines the number of elements known by the repository which point to
 	 * this resource. This method probably can be moved up the type hierarchy.
 	 * Currently, it is only required here by the topology modeler.
-	 * 
+	 *
 	 * @return the type of the artifact template OR the number of references
 	 *         pointing to this resource
 	 */
@@ -287,9 +288,9 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 			// we enforce the query parameter to be extensible to other queries
 			return Response.status(Status.BAD_REQUEST).entity("You have to pass the query parameter referenceCount or type").build();
 		}
-		
+
 	}
-	
+
 	/* not yet implemented */
 	/*
 	@GET
@@ -304,5 +305,5 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		return Response.ok().entity(res).build();
 	}
 	*/
-	
+
 }

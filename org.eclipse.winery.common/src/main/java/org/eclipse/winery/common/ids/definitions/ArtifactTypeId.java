@@ -17,17 +17,17 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 
 public class ArtifactTypeId extends EntityTypeId {
-	
+
 	public ArtifactTypeId(Namespace namespace, XMLId xmlId) {
 		super(namespace, xmlId);
 	}
-	
+
 	public ArtifactTypeId(String ns, String id, boolean URLencoded) {
 		super(ns, id, URLencoded);
 	}
-	
+
 	public ArtifactTypeId(QName qname) {
 		this(new Namespace(qname.getNamespaceURI(), false), new XMLId(qname.getLocalPart(), false));
 	}
-	
+
 }

@@ -34,12 +34,17 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.JAXBHelper;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.RESTHelper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class contains resources used for the topology completion.
  *
  */
 @Path("/")
 public class TopologyCompletionResource {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TopologyCompletionResource.class);
 
 	/**
 	 * Adds selected {@link TNodeTemplate}s and {@link TRelationshipTemplate}s
@@ -129,7 +134,7 @@ public class TopologyCompletionResource {
 			return Response.ok().build();
 
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			LOGGER.error("Could not save topology", e);
 			return Response.serverError().build();
 		}
 	}

@@ -14,5 +14,5 @@ package org.eclipse.winery.repository.resources.entitytypeimplementations.relati
 import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferenceResource;
 
 public class RelationshipTypeImplementationsResource extends AbstractComponentsWithTypeReferenceResource<RelationshipTypeImplementationResource> {
-	
+
 }

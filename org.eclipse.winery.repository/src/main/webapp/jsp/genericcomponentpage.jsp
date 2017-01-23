@@ -61,7 +61,7 @@
 <div class="middle" id="ccontainer">
 	<br />
 
-	<table cellpadding=0 cellspacing=0 style="margin-top: 0px; margin-left: 30px;">
+	<table cellpadding=0 cellspacing=0 style="margin-top: 0; margin-left: 30px;">
 		<tr>
 			<td valign="top" style="padding-top: 25px; width: 680px;">
 				<div id="searchBoxContainer">

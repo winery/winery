@@ -16,24 +16,24 @@ package org.eclipse.winery.repository.datatypes.select2;
  * this element in a TreeMap
  */
 public class Select2DataItem implements Comparable<Select2DataItem> {
-	
+
 	private final String id;
 	private final String text;
-	
-	
+
+
 	public Select2DataItem(String id, String text) {
 		this.id = id;
 		this.text = text;
 	}
-	
+
 	public String getId() {
 		return this.id;
 	}
-	
+
 	public String getText() {
 		return this.text;
 	}
-	
+
 	/**
 	 * Sort order is based on text
 	 */
@@ -41,7 +41,7 @@ public class Select2DataItem implements Comparable<Select2DataItem> {
 	public int compareTo(Select2DataItem o) {
 		return this.getText().compareTo(o.getText());
 	}
-	
+
 	/**
 	 * Equality is checked at id level
 	 */
@@ -52,5 +52,5 @@ public class Select2DataItem implements Comparable<Select2DataItem> {
 		}
 		return this.getId().equals(((Select2DataItem) o).getId());
 	}
-	
+
 }

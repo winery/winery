@@ -26,25 +26,25 @@ import org.xml.sax.SAXException;
 
 /**
  * Class to produce DocumentBuilders with a pre-loaded TOSCA XSD.
- * 
+ *
  * In a separate class as TOSCA XSD loading takes a few seconds
  */
 public class TOSCADocumentBuilderFactory {
-	
-	private static final Logger logger = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
+
 	public static final TOSCADocumentBuilderFactory INSTANCE = new TOSCADocumentBuilderFactory();
 	private final DocumentBuilderFactory factory;
-	
-	
+
+
 	public TOSCADocumentBuilderFactory() {
 		this.factory = DocumentBuilderFactory.newInstance();
-		
+
 		this.factory.setNamespaceAware(true);
-		
+
 		// we do not need DTD validation
 		this.factory.setValidating(false);
-		
+
 		// we do XSD validation
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema;
@@ -55,11 +55,11 @@ public class TOSCADocumentBuilderFactory {
 			this.factory.setSchema(schema);
 		} catch (SAXException e) {
 			// TODO: load xml.xsd in offline mode
-			TOSCADocumentBuilderFactory.logger.error("Schema could not be initalized", e);
-			TOSCADocumentBuilderFactory.logger.debug("We continue nevertheless to enable offline usage");
+			TOSCADocumentBuilderFactory.LOGGER.error("Schema could not be initalized", e);
+			TOSCADocumentBuilderFactory.LOGGER.debug("We continue nevertheless to enable offline usage");
 		}
 	}
-	
+
 	public DocumentBuilder getTOSCADocumentBuilder() {
 		DocumentBuilder db;
 		try {
@@ -69,5 +69,5 @@ public class TOSCADocumentBuilderFactory {
 		}
 		return db;
 	}
-	
+
 }

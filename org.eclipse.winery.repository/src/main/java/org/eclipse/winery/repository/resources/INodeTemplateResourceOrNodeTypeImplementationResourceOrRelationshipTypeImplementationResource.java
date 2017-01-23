@@ -17,7 +17,7 @@ import org.eclipse.winery.common.ids.Namespace;
  * Implementors can have IAs or DAs attached
  */
 public interface INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
-	
+
 	Namespace getNamespace();
-	
+
 }

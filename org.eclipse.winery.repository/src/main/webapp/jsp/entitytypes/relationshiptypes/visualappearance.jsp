@@ -47,7 +47,7 @@
 		</form>
 	</div>
 
-	<div class="tab-pane" id="arrow">
+	<div class="tab-pane" id="arrowDiv">
 		<br />
 		<form>
 			<fieldset>

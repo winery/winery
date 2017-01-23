@@ -21,7 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestCSARImporter {
-	
+
 	/**
 	 * Ensure that Repository.INSTANCE exists
 	 */
@@ -31,10 +31,10 @@ public class TestCSARImporter {
 		// We do not need them directly, but constructing them has the side effect that Repository.INSTANCE is != null
 		new PrefsTestEnabledUsingConfiguredRepository();
 	}
-	
+
 	/**
 	 * Quick hack to test Moodle Import
-	 * 
+	 *
 	 * Currently, no CSARs are put into the test resources, we rely on local
 	 * CSARs
 	 */
@@ -42,7 +42,7 @@ public class TestCSARImporter {
 	public void testMoodleImport() throws Exception {
 		CSARImporter i = new CSARImporter();
 		Path p = FileSystems.getDefault().getPath("C:\\Users\\Oliver\\BTSync\\Projects\\OpenTOSCA\\MoodleInteropCSAR\\trunk");
-		List<String> errors = new ArrayList<String>();
+		List<String> errors = new ArrayList<>();
 		i.importFromDir(p, errors, true, false);
 	}
 }

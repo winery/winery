@@ -27,7 +27,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
@@ -46,6 +45,8 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
 import org.eclipse.winery.repository.resources.interfaces.ParametersResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,17 +56,17 @@ import org.slf4j.LoggerFactory;
  * the type of a plan is outside the system of TOSCA.
  */
 public class PlanResource extends EntityWithIdResource<TPlan> implements IHasName {
-	
-	private static final Logger logger = LoggerFactory.getLogger(PlanResource.class);
-	
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PlanResource.class);
+
+
 	public PlanResource(IIdDetermination<TPlan> idDetermination, TPlan o, int idx, List<TPlan> list, ServiceTemplateResource res) {
 		super(idDetermination, o, idx, list, res);
 	}
-	
+
 	/**
 	 * Ugly hack to get the parent service template resource
-	 * 
+	 *
 	 */
 	public ServiceTemplateResource getServiceTemplateResource() {
 		// Solution proposal 1: Each sub-resource should know its parent service
@@ -77,7 +78,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 		// Does not work when plan is used at as component instance (then,
 		// serviceTemplateResource is null). In this case, a plan is not associated
 		// with a service template.
-		
+
 		// we cannot use "((PlanId) id).getParent()" as this "only" returns an
 		// ID
 		// we could create a newly resource based on that ID
@@ -87,17 +88,16 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 		// template resource to the plan resource
 		return (ServiceTemplateResource) this.res;
 	}
-	
+
 	/**
 	 * Determines the id of the current resource
 	 */
 	private PlanId getId() {
 		ServiceTemplateId sId = (ServiceTemplateId) this.getServiceTemplateResource().getId();
 		PlansId psId = new PlansId(sId);
-		PlanId pId = new PlanId(psId, new XMLId(this.o.getId(), false));
-		return pId;
+		return new PlanId(psId, new XMLId(this.o.getId(), false));
 	}
-	
+
 	@Override
 	@DELETE
 	public Response onDelete() {
@@ -113,7 +113,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 			return res;
 		}
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response getHTML(@Context UriInfo uriInfo) {
@@ -134,7 +134,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 			return Response.seeOther(fileURI).build();
 		}
 	}
-	
+
 	@Override
 	public String getName() {
 		String name = this.o.getName();
@@ -143,44 +143,44 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 		}
 		return name;
 	}
-	
+
 	@Override
 	public Response setName(@FormParam("value") String name) {
 		this.o.setName(name);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	@Path("file")
 	public PlanFileResource getPlanFileResource() {
 		return new PlanFileResource((ServiceTemplateResource) this.res, this.getId(), this.o);
 	}
-	
+
 	@GET
 	@Path("type")
 	public String getType() {
 		return this.o.getPlanType();
 	}
-	
+
 	@PUT
 	@Path("type")
 	public Response setType(@FormParam("type") String type) {
 		this.o.setPlanType(type);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	@GET
 	@Path("language")
 	public String getLanguage() {
 		return this.o.getPlanLanguage();
 	}
-	
+
 	@PUT
 	@Path("language")
 	public Response setLanguage(@FormParam("language") String language) {
 		this.o.setPlanType(language);
 		return BackendUtils.persist(this.res);
 	}
-	
+
 	@Path("inputparameters/")
 	public ParametersResource getInputParametersResource() {
 		InputParameters inputParameters = this.o.getInputParameters();
@@ -190,7 +190,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 		}
 		return new ParametersResource(inputParameters.getInputParameter(), this.getServiceTemplateResource());
 	}
-	
+
 	@Path("outputparameters/")
 	public ParametersResource getOutputParametersResource() {
 		OutputParameters outputParameters = this.o.getOutputParameters();

@@ -19,5 +19,5 @@ import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferen
  * AbstractComponentsWithTypeReferenceResource
  */
 public class PolicyTemplatesResource extends AbstractComponentsWithTypeReferenceResource<PolicyTemplateResource> {
-	
+
 }

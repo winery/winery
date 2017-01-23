@@ -16,6 +16,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="w" uri="http://www.eclipse.org/winery/repository/functions"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags/" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:kvtablediag allSubResources="${it.allEntityResources}" url="tags/" labelForSingleItem="Tag" typeClass="<%=org.eclipse.winery.model.tosca.TTag.class%>"/>

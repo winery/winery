@@ -72,7 +72,7 @@ define(function() {
 		var topology;
 		require(["winery-topologymodeler-AMD"], function(wt) {
 			topology = wt.getTopologyTemplateAsXML(true);
-		
+
 			// call to the completion JSP which will call the java component
 			$.post("jsp/topologyCompletion/topologyCompletion.jsp", {topology: topology, stName: serviceTemplateName, templateURL: topologyTemplateURL, overwriteTopology: overwriteTopology, topologyName: topologyName, topologyNamespace: topologyNamespace, repositoryURL: repositoryURL, stepByStep: stepByStep, openInNewWindow: openInNewWindow, restarted: "false"},
 				/**

@@ -32,33 +32,33 @@ import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
 /**
  * Tests client methods with a pre-configured client stored in a local static
  * field.
- * 
+ *
  * Client creation and multiple repositories are not tested. This should be
  * subject to other test classes.
- * 
+ *
  * TODO: This class expects things to be existent in the namespace "test". This
  * should be enforced in a preload.
  */
 @RunWith(JUnit4.class)
 public class TestWineryRepositoryClient {
-	
+
 	// private final String repositoryURI = "http://2471.de:8080/wineydev";
 	private static final String repositoryURI = "http://localhost:8080/winery";
-	
+
 	private static final boolean USE_PROXY = true;
-	
+
 	private static final IWineryRepositoryClient client = new WineryRepositoryClient(TestWineryRepositoryClient.USE_PROXY);
 	static {
 		TestWineryRepositoryClient.client.addRepository(TestWineryRepositoryClient.repositoryURI);
 	}
-	
+
 	/**
 	 * The namespace to put new things in. <br />
 	 * TODO: Is deleted completely after testing
 	 */
 	private static final String namespaceForNewArtifacts = "http://www.example.org/test/wineryclient/";
-	
-	
+
+
 	@Test
 	public void getAllNodeTypes() {
 		Collection<TNodeType> allTypes = TestWineryRepositoryClient.client.getAllTypes(TNodeType.class);
@@ -67,7 +67,7 @@ public class TestWineryRepositoryClient {
 			Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
 		}
 	}
-	
+
 	@Test
 	public void getAllRelationshipTypes() {
 		Collection<TRelationshipType> allTypes = TestWineryRepositoryClient.client.getAllTypes(TRelationshipType.class);
@@ -76,36 +76,36 @@ public class TestWineryRepositoryClient {
 			Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
 		}
 	}
-	
+
 	@Test
 	public void getAllNodeTypesWithAssociatedElements() {
 		Collection<TDefinitions> allTypes = TestWineryRepositoryClient.client.getAllTypesWithAssociatedElements(TNodeType.class);
 		Assert.assertNotNull(allTypes);
 	}
-	
+
 	@Test
 	public void getAllRelationshipTypesWithAssociatedElements() {
 		Collection<TDefinitions> allTypes = TestWineryRepositoryClient.client.getAllTypesWithAssociatedElements(TRelationshipType.class);
 		Assert.assertNotNull(allTypes);
 	}
-	
+
 	@Test
 	public void getPropertiesOfAllNodeTypes() {
 		// TODO
 	}
-	
+
 	@Test
 	public void getPropertiesOfAllRelationshipTypes() {
 		// TODO
 	}
-	
+
 	@Test
 	public void getTestTopologyTemplate() {
 		QName serviceTemplate = new QName("test", "test");
 		TTopologyTemplate topologyTemplate = TestWineryRepositoryClient.client.getTopologyTemplate(serviceTemplate);
 		Assert.assertNotNull(topologyTemplate);
 	}
-	
+
 	@Test
 	public void getPropertiesOfTestTopologyTemplate() {
 		QName serviceTemplate = new QName("test", "test");
@@ -116,29 +116,29 @@ public class TestWineryRepositoryClient {
 			// TODO
 		}
 	}
-	
+
 	@Test
 	public void artifactTypeForWARfiles() {
 		QName artifactType = TestWineryRepositoryClient.client.getArtifactTypeQNameForExtension("war");
 		Assert.assertNotNull("Artifact Type for .war does not exist", artifactType);
 	}
-	
+
 	@Test
 	public void createArtifactTemplate() throws IOException, QNameAlreadyExistsException {
 		// assure that the artifact type exists
 		QName artifactTypeQName = TestWineryRepositoryClient.client.getArtifactTypeQNameForExtension("war");
 		Assert.assertNotNull("Artifact Type for .war does not exist", artifactTypeQName);
-		
+
 		// assure that the artifact template does not yet exist
 		// one possibility is to delete the artifact template, the other
 		// possibility is to
-		
+
 		QName artifactTemplateQName = new QName(TestWineryRepositoryClient.namespaceForNewArtifacts, "artifactTemplate");
 		ArtifactTemplateId atId = new ArtifactTemplateId(artifactTemplateQName);
-		
+
 		// ensure that the template does not exist yet
 		TestWineryRepositoryClient.client.forceDelete(atId);
-		
+
 		TestWineryRepositoryClient.client.createArtifactTemplate(artifactTemplateQName, artifactTypeQName);
 	}
 }

@@ -24,42 +24,42 @@ import org.apache.commons.httpclient.methods.PutMethod;
  * level code to simplify the usage.
  */
 public class HighLevelRestApi {
-	
+
 	/**
 	 * This method implements the HTTP Put Method
-	 * 
+	 *
 	 * @param uri Resource URI
 	 * @param requestPayload Content which has to be put into the Resource
 	 * @return ResponseCode of HTTP Interaction
 	 */
 	@SuppressWarnings("deprecation")
 	public static HttpResponseMessage Put(String uri, String requestPayload, String acceptHeaderValue) {
-		
+
 		PutMethod method = new PutMethod(uri);
 		// requestPayload = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 		// requestPayload;
-		
+
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
 		method.setRequestBody(requestPayload);
-		
+
 		HttpResponseMessage responseMessage = LowLevelRestApi.executeHttpMethod(method);
-		
+
 		// kill <?xml... in front of response
 		HighLevelRestApi.cleanResponseBody(responseMessage);
-		
+
 		return responseMessage;
 	}
-	
+
 	/**
 	 * This method implements the HTTP Post Method
-	 * 
+	 *
 	 * @param uri Resource URI
 	 * @param requestPayload Content which has to be posted into the Resource
 	 * @return ResponseCode of HTTP Interaction
 	 */
 	@SuppressWarnings("deprecation")
 	public static HttpResponseMessage Post(String uri, String requestPayload, String acceptHeaderValue) {
-		
+
 		PostMethod method = null;
 		if (uri.contains("?")) {
 			System.out.println("Found query trying to split");
@@ -78,10 +78,10 @@ public class HighLevelRestApi {
 		HighLevelRestApi.cleanResponseBody(responseMessage);
 		return responseMessage;
 	}
-	
+
 	/**
 	 * This method implements the HTTP Get Method
-	 * 
+	 *
 	 * @param uri Resource URI
 	 * @return Content represented by the Resource URI
 	 */
@@ -104,7 +104,7 @@ public class HighLevelRestApi {
 		HighLevelRestApi.cleanResponseBody(responseMessage);
 		return responseMessage;
 	}
-	
+
 	private static NameValuePair[] createNameValuePairArrayFromQuery(String query) {
 		// example:
 		// csarID=Moodle.csar&serviceTemplateID={http://www.example.com/tosca/ServiceTemplates/Moodle}Moodle&nodeTemplateID={http://www.example.com/tosca/ServiceTemplates/Moodle}VmApache
@@ -124,22 +124,22 @@ public class HighLevelRestApi {
 		}
 		return nameValuePairArray;
 	}
-	
+
 	/**
 	 * This method implements the HTTP Delete Method
-	 * 
+	 *
 	 * @param uri Resource URI
 	 * @return ResponseCode of HTTP Interaction
 	 */
 	public static HttpResponseMessage Delete(String uri, String acceptHeaderValue) {
-		
+
 		DeleteMethod method = new DeleteMethod(uri);
 		HighLevelRestApi.setAcceptHeader(method, acceptHeaderValue);
 		HttpResponseMessage responseMessage = LowLevelRestApi.executeHttpMethod(method);
 		HighLevelRestApi.cleanResponseBody(responseMessage);
 		return responseMessage;
 	}
-	
+
 	private static void setAcceptHeader(HttpMethodBase method, String value) {
 		if (!value.equals("")) {
 			method.setRequestHeader("Accept", value);
@@ -147,7 +147,7 @@ public class HighLevelRestApi {
 			method.setRequestHeader("Accept", "application/xml");
 		}
 	}
-	
+
 	private static void cleanResponseBody(HttpResponseMessage responseMessage) {
 		System.out.println("ResponseBody: \n");
 		System.out.println(responseMessage.getResponseBody());

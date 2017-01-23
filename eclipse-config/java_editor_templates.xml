@@ -15,6 +15,6 @@ public Response put${name}(@FormParam(value="${name}") String ${name}) {&#13;
 		${thing}Id resId = new ${thing}Id((${thing}sId) this.id, xmlId);&#13;
 		return new ${thing}Resource(resId);&#13;
 	}&#13;
-</template><template autoinsert="true" context="java" deleted="false" description="SLF4Jlogger" enabled="true" name="logger">	private static final Logger logger = LoggerFactory.getLogger(${enclosing_type}.class);&#13;
-</template><template autoinsert="true" context="java" deleted="false" description="SLF4Jlogger" enabled="true" name="logger">	private static final Logger logger = LoggerFactory.getLogger(${enclosing_type}.class);&#13;
+</template><template autoinsert="true" context="java" deleted="false" description="SLF4Jlogger" enabled="true" name="logger">	private static final Logger LOGGER = LoggerFactory.getLogger(${enclosing_type}.class);&#13;
+</template><template autoinsert="true" context="java" deleted="false" description="SLF4Jlogger" enabled="true" name="logger">	private static final Logger LOGGER = LoggerFactory.getLogger(${enclosing_type}.class);&#13;
 </template></templates>

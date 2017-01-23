@@ -12,16 +12,23 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.IOUtils;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
@@ -38,26 +45,20 @@ import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataI
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class exports a CSAR crawling from the the given GenericId<br/>
@@ -69,7 +70,7 @@ public class CSARExporter {
 
 	public static final String PATH_TO_NAMESPACES_PROPERTIES = "winery/Namespaces.properties";
 
-	private static final Logger logger = LoggerFactory.getLogger(CSARExporter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CSARExporter.class);
 
 	private static final String DEFINITONS_PATH_PREFIX = "Definitions/";
 
@@ -80,15 +81,14 @@ public class CSARExporter {
 	private static String getDefinitionsName(TOSCAComponentId id) {
 		// the prefix is globally unique and the id locally in a namespace
 		// therefore a concatenation of both is also unique
-		String res = NamespacesResource.getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
-		return res;
+		return NamespacesResource.getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
 	}
 
 	public static String getDefinitionsFileName(TOSCAComponentId id) {
 		return CSARExporter.getDefinitionsName(id) + Constants.SUFFIX_TOSCA_DEFINITIONS;
 	}
 
-	public static String getDefinitionsPathInsideCSAR(TOSCAComponentId id) {
+	private static String getDefinitionsPathInsideCSAR(TOSCAComponentId id) {
 		return CSARExporter.DEFINITONS_PATH_PREFIX + CSARExporter.getDefinitionsFileName(id);
 	}
 
@@ -100,10 +100,10 @@ public class CSARExporter {
 	 * @param out the outputstream to write to
 	 * @throws JAXBException
 	 */
-	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, XMLStreamException, JAXBException {
-		CSARExporter.logger.trace("Starting CSAR export with {}", entryId.toString());
+	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, JAXBException {
+		CSARExporter.LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
-		Map<RepositoryFileReference, String> refMap = new HashMap<RepositoryFileReference, String>();
+		Map<RepositoryFileReference, String> refMap = new HashMap<>();
 		Collection<String> definitionNames = new ArrayList<>();
 
 		final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out);
@@ -154,31 +154,31 @@ public class CSARExporter {
 		try {
 			transformer = tFactory.newTransformer();
 		} catch (TransformerConfigurationException e1) {
-			CSARExporter.logger.debug(e1.getMessage(), e1);
+			CSARExporter.LOGGER.debug(e1.getMessage(), e1);
 			throw new IllegalStateException("Could not instantiate transformer", e1);
 		}
 
 		// write all referenced files
 		for (RepositoryFileReference ref : refMap.keySet()) {
 			String archivePath = refMap.get(ref);
-			CSARExporter.logger.trace("Creating {}", archivePath);
+			CSARExporter.LOGGER.trace("Creating {}", archivePath);
 			ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
 			zos.putArchiveEntry(archiveEntry);
 			if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
-				CSARExporter.logger.trace("Special treatment for generated XSDs");
+				CSARExporter.LOGGER.trace("Special treatment for generated XSDs");
 				Document document = ((DummyRepositoryFileReferenceForGeneratedXSD) ref).getDocument();
 				DOMSource source = new DOMSource(document);
 				StreamResult result = new StreamResult(zos);
 				try {
 					transformer.transform(source, result);
 				} catch (TransformerException e) {
-					CSARExporter.logger.debug("Could not serialize generated xsd", e);
+					CSARExporter.LOGGER.debug("Could not serialize generated xsd", e);
 				}
 			} else {
 				try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
 					IOUtils.copy(is, zos);
 				} catch (Exception e) {
-					CSARExporter.logger.error("Could not copy file content to ZIP outputstream", e);
+					CSARExporter.LOGGER.error("Could not copy file content to ZIP outputstream", e);
 				}
 			}
 			zos.closeArchiveEntry();
@@ -208,7 +208,7 @@ public class CSARExporter {
 			try {
 				pconf.save(zos);
 			} catch (ConfigurationException e) {
-				CSARExporter.logger.debug(e.getMessage(), e);
+				CSARExporter.LOGGER.debug(e.getMessage(), e);
 				zos.write("#Could not export properties".getBytes());
 				zos.write(("#" + e.getMessage()).getBytes());
 			}
@@ -244,25 +244,23 @@ public class CSARExporter {
 			for (ApplicationOption option : options.getOption()) {
 				String url = option.getIconUrl();
 				if (Util.isRelativeURI(url)) {
-					RepositoryFileReference ref = new RepositoryFileReference(id, url);
-					if (Repository.INSTANCE.exists(ref)) {
-						refMap.put(ref, targetDir + url);
-					} else {
-						CSARExporter.logger.error("Data corrupt: pointing to non-existent file " + ref);
-					}
+					putRefIntoRefMap(targetDir, refMap, id, url);
 				}
-
 				url = option.getPlanInputMessageUrl();
 				if (Util.isRelativeURI(url)) {
-					RepositoryFileReference ref = new RepositoryFileReference(id, url);
-					if (Repository.INSTANCE.exists(ref)) {
-						refMap.put(ref, targetDir + url);
-					} else {
-						CSARExporter.logger.error("Data corrupt: pointing to non-existent file " + ref);
-					}
+					putRefIntoRefMap(targetDir, refMap, id, url);
 				}
 			}
 		}
+	}
+
+	private void putRefIntoRefMap(String targetDir, Map<RepositoryFileReference, String> refMap, SelfServiceMetaDataId id, String url) {
+		RepositoryFileReference ref = new RepositoryFileReference(id, url);
+		if (Repository.INSTANCE.exists(ref)) {
+            refMap.put(ref, targetDir + url);
+        } else {
+            CSARExporter.LOGGER.error("Data corrupt: pointing to non-existent file " + ref);
+        }
 	}
 
 	private void addSelfServiceMetaData(ServiceTemplateId entryId, Map<RepositoryFileReference, String> refMap) {

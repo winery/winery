@@ -23,33 +23,33 @@ import org.eclipse.winery.repository.resources.admin.types.PlanTypesManager;
 import com.sun.jersey.api.view.Viewable;
 
 public class AdminTopResource {
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getHTML() {
 		return new Viewable("/jsp/admin/adminindex.jsp", this);
 	}
-	
+
 	@Path("namespaces/")
 	public NamespacesResource getNamespacesResource() {
 		return NamespacesResource.INSTANCE;
 	}
-	
+
 	@Path("repository/")
 	public RepositoryAdminResource getRepositoryAdminResource() {
 		return new RepositoryAdminResource();
 	}
-	
+
 	@Path("planlanguages/")
 	public PlanLanguagesManager getPlanLanguagesResource() {
 		return PlanLanguagesManager.INSTANCE;
 	}
-	
+
 	@Path("plantypes/")
 	public PlanTypesManager getPlanTypesResource() {
 		return PlanTypesManager.INSTANCE;
 	}
-	
+
 	@Path("constrainttypes/")
 	public ConstraintTypesManager getConstraintTypesManager() {
 		return ConstraintTypesManager.INSTANCE;

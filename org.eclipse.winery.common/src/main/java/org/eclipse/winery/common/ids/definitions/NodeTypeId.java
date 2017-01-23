@@ -17,17 +17,17 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 
 public final class NodeTypeId extends TopologyGraphElementEntityTypeId {
-	
+
 	public NodeTypeId(Namespace namespace, XMLId xmlId) {
 		super(namespace, xmlId);
 	}
-	
+
 	public NodeTypeId(String ns, String id, boolean URLencoded) {
 		super(ns, id, URLencoded);
 	}
-	
+
 	public NodeTypeId(QName type) {
 		super(type);
 	}
-	
+
 }

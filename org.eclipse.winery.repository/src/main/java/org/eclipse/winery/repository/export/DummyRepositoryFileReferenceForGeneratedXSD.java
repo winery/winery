@@ -18,10 +18,10 @@ import org.w3c.dom.Document;
  * Class used to indicate reference to a generated XSD
  */
 public class DummyRepositoryFileReferenceForGeneratedXSD extends RepositoryFileReference {
-	
+
 	private final Document document;
-	
-	
+
+
 	/**
 	 * @param document the W3C DOM Document holding the generated XSD
 	 */
@@ -31,7 +31,7 @@ public class DummyRepositoryFileReferenceForGeneratedXSD extends RepositoryFileR
 		super(new DummyParentForGeneratedXSDRef(), Integer.toString(document.hashCode()));
 		this.document = document;
 	}
-	
+
 	public Document getDocument() {
 		return this.document;
 	}

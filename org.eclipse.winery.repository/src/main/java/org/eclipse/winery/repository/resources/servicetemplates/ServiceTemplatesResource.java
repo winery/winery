@@ -14,5 +14,5 @@ package org.eclipse.winery.repository.resources.servicetemplates;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 public class ServiceTemplatesResource extends AbstractComponentsResource<ServiceTemplateResource> {
-	
+
 }

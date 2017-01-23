@@ -15,7 +15,7 @@ package org.eclipse.winery.common.ids;
  * The names of ids, used to set XMLids for collections of things
  */
 public class IdNames {
-	
+
 	public static final String DEPLOYMENTARTIFACTS = "deploymentartifacts";
 	public static final String INSTANCESTATES = "instancestates";
 	public static final String INTERFACES = "interfaces"; // used at node type

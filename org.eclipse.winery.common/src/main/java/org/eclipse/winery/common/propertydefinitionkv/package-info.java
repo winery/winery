@@ -11,13 +11,13 @@
  *******************************************************************************/
 /**
  * This package defines the data structures for key/value property handling
- * 
+ *
  * The XML Schema is generated based on the user configuration. The namespace
  * for the schema is the namespace of the respective type with
  * {@code /propertiesdefinition/<localname>} appended, where {@code <localname>}
  * is the local name of the entity type, where the properties definition is
  * defined.
- * 
+ *
  */
 @XmlSchema(namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, elementFormDefault = XmlNsForm.QUALIFIED)
 package org.eclipse.winery.common.propertydefinitionkv;

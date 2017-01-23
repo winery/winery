@@ -29,14 +29,14 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 
 public final class RequirementDefinitionResource extends AbstractReqOrCapDefResource<TRequirementDefinition> {
-	
+
 	private TRequirementDefinition reqDef;
-	
-	
+
+
 	/**
 	 * Constructor has to follow the pattern of EnetityTResource as the
 	 * constructor is invoked by reflection in EntityWithIdcollectionResource
-	 * 
+	 *
 	 * @param res the resource this req def is nested in. Has to be of Type
 	 *            "NodeTypeResource". Due to the implementation of
 	 *            org.eclipse.winery .repository.resources._support.collections.
@@ -48,7 +48,7 @@ public final class RequirementDefinitionResource extends AbstractReqOrCapDefReso
 		super(idDetermination, reqDef, idx, list, (NodeTypeResource) res, RequirementDefinitionResource.getConstraints(reqDef));
 		this.reqDef = reqDef;
 	}
-	
+
 	/**
 	 * Quick fix to avoid internal server error when opening
 	 * RequirementDefinitions Tab
@@ -56,7 +56,7 @@ public final class RequirementDefinitionResource extends AbstractReqOrCapDefReso
 	public RequirementDefinitionResource(IIdDetermination<TRequirementDefinition> idDetermination, TRequirementDefinition reqDef, int idx, List<TRequirementDefinition> list, IPersistable res) {
 		this(idDetermination, reqDef, idx, list, (AbstractComponentInstanceResource) res);
 	}
-	
+
 	/**
 	 * Fetch the list of constraints from the given definition. If the list does
 	 * not exist, the list is created an stored in the given def
@@ -69,11 +69,11 @@ public final class RequirementDefinitionResource extends AbstractReqOrCapDefReso
 		}
 		return constraints.getConstraint();
 	}
-	
+
 	public QName getType() {
 		return this.reqDef.getRequirementType();
 	}
-	
+
 	@PUT
 	@Path("type")
 	public Response setType(@FormParam(value = "type") String value) {
@@ -81,7 +81,7 @@ public final class RequirementDefinitionResource extends AbstractReqOrCapDefReso
 		this.reqDef.setRequirementType(qname);
 		return BackendUtils.persist(this.parent);
 	}
-	
+
 	@Override
 	public String getId(TRequirementDefinition e) {
 		return e.getName();

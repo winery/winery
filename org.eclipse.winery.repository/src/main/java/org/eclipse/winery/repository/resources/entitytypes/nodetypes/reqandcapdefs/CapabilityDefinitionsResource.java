@@ -28,23 +28,23 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.view.Viewable;
 
 public class CapabilityDefinitionsResource extends RequirementOrCapabilityDefinitionsResource<CapabilityDefinitionResource, TCapabilityDefinition> {
-	
-	private static final Logger logger = LoggerFactory.getLogger(CapabilityDefinitionsResource.class);
-	
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CapabilityDefinitionsResource.class);
+
+
 	public CapabilityDefinitionsResource(NodeTypeResource res, List<TCapabilityDefinition> defs) {
 		super(CapabilityDefinitionResource.class, TCapabilityDefinition.class, defs, res);
 	}
-	
+
 	@Override
 	public Viewable getHTML() {
 		return new Viewable("/jsp/entitytypes/nodetypes/reqandcapdefs/capdefs.jsp", this);
 	}
-	
+
 	@Override
 	public Collection<QName> getAllTypes() {
 		SortedSet<CapabilityTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(CapabilityTypeId.class);
 		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
 	}
-	
+
 }
