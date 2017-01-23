@@ -139,8 +139,7 @@ public class CSARExporter {
 		// if we export a ServiceTemplate, data for the self-service portal might exist
 		if (entryId instanceof ServiceTemplateId) {
 			ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
-			this.addSelfServiceMetaData(serviceTemplateId, refMap);
-			this.addSelfServiceMetaDataAsJSON(serviceTemplateId, zos);
+			this.addSelfServiceMetaData(serviceTemplateId, refMap, zos);
 		}
 
 		// now, refMap contains all files to be added to the CSAR
@@ -225,6 +224,11 @@ public class CSARExporter {
 	private void addSelfServiceMetaData(ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) {
 		SelfServicePortalResource res = new SelfServicePortalResource(entryId);
 
+		// This method is also called if the directory SELFSERVICE-Metadata exists without content.
+		// The current assumption is that this is enough for an existance.
+		// Thus, we have to take care of the case of an empty directory and add a default data.xml
+		res.ensureDataXmlExists();
+
 		refMap.put(res.data_xml_ref, targetDir + "data.xml");
 
 		// The schema says that the images have to exist
@@ -263,12 +267,13 @@ public class CSARExporter {
         }
 	}
 
-	private void addSelfServiceMetaData(ServiceTemplateId entryId, Map<RepositoryFileReference, String> refMap) {
-		SelfServiceMetaDataId id = new SelfServiceMetaDataId(entryId);
+	private void addSelfServiceMetaData(ServiceTemplateId serviceTemplateId, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream zos) throws IOException {
+		SelfServiceMetaDataId id = new SelfServiceMetaDataId(serviceTemplateId);
 		if (Repository.INSTANCE.exists(id)) {
 			// add everything in the root of the CSAR
 			String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
-			addSelfServiceMetaData(entryId, targetDir, refMap);
+			addSelfServiceMetaData(serviceTemplateId, targetDir, refMap);
+			this.addSelfServiceMetaDataAsJSON(serviceTemplateId, zos);
 		}
 	}
 
