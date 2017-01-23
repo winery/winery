@@ -224,8 +224,9 @@ public class CSARExporter {
 	private void addSelfServiceMetaData(ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) {
 		SelfServicePortalResource res = new SelfServicePortalResource(entryId);
 
-		// This method is also called if the directory SELFSERVICE-Metadata exists without content.
-		// The current assumption is that this is enough for an existance.
+		// This method is also called if the directory SELFSERVICE-Metadata exists without content and even if the directory does not exist at all,
+		// but the ServiceTemplate itself exists.
+		// The current assumption is that this is enough for an existence.
 		// Thus, we have to take care of the case of an empty directory and add a default data.xml
 		res.ensureDataXmlExists();
 
@@ -269,12 +270,12 @@ public class CSARExporter {
 
 	private void addSelfServiceMetaData(ServiceTemplateId serviceTemplateId, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream zos) throws IOException {
 		SelfServiceMetaDataId id = new SelfServiceMetaDataId(serviceTemplateId);
-		if (Repository.INSTANCE.exists(id)) {
-			// add everything in the root of the CSAR
-			String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
-			addSelfServiceMetaData(serviceTemplateId, targetDir, refMap);
-			this.addSelfServiceMetaDataAsJSON(serviceTemplateId, zos);
-		}
+		// We add the selfservice information regardless of the existance. - i.e., no "if (Repository.INSTANCE.exists(id)) {"
+		// This ensures that the name of the application is
+		// add everything in the root of the CSAR
+		String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
+		addSelfServiceMetaData(serviceTemplateId, targetDir, refMap);
+		this.addSelfServiceMetaDataAsJSON(serviceTemplateId, zos);
 	}
 
 	private void addSelfServiceMetaDataAsJSON(ServiceTemplateId serviceTemplateId, ArchiveOutputStream zos) throws IOException {
