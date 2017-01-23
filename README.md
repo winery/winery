@@ -13,11 +13,7 @@ Winery is also part of the OpenTOSCA ecosystem where more information is availab
 Winery uses maven and [bower] for fetching dependencies and building.
 Bower is installed automatically using the [frontend-maven-plugin].
 We recommend installing JDK8 by using `choco install jdk8` to be able to update it via `choco upgrade all`. See at the homepage of [chocolatey] for more information.
-Please follow the the next steps ("Make models available" and "Making the wars") before importing the project into an IDE.
-
-### Make models available
-The models are versioned aside from the main project.
-Go into each model directory (`org.eclipse.winery.model.csar.toscametafile`, `org.eclipse.winery.model.selfservice`, `org.eclipse.winery.model.tosca`) and do a `mvn install`.
+Please follow the the next step "Making the wars" before importing the project into an IDE.
 
 ### Making the wars
 Run `mvn package`.
