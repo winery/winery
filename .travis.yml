@@ -4,7 +4,7 @@ language: java
 jdk:
   - oraclejdk8
 
-#We build at Ubuntu 14.04 (Trusty Tahr) as we want to use a more recent Ubuntu version
+#We build at Ubuntu 14.04 (Trusty Thar) as we want to use a more recent Ubuntu version
 sudo: required
 dist: trusty
 
@@ -17,20 +17,19 @@ before_install:
   - mvn install
   - cd ..
   #- mvn install
-  
+
   - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
   - java -jar jpm4j.jar -u init
   - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
-  
-#run the build with maven and cobertura for codecoverage
+
 script:
-  #- mvn install
-  - mvn cobertura:cobertura
+ mvn install -DskipTests=false --fail-at-end
+#  - mvn jacoco:report-aggregate
 
 #upload codecov report
 after_script:
   - bash <(curl -s https://codecov.io/bash)
-  - ~/jpm/bin/codacy-coverage-reporter -l Java -r target/site/cobertura/coverage.xml
+#  - ~/jpm/bin/codacy-coverage-reporter -l Java -r target/site/jacoco-agregate/jacoco.xml
 
 #We do not need special build commands, as we use the default maven configuration
 #For more information see https://docs.travis-ci.com/user/languages/java

@@ -59,6 +59,9 @@
     <prerequisites>
         <maven>3.0.3</maven>
     </prerequisites>
+	<properties>
+		<skipTests>true</skipTests>
+	</properties>
 	<modules>
 		<module>org.eclipse.winery.generators.ia</module>
 		<module>org.eclipse.winery.common</module>
@@ -88,17 +91,23 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.7</version>
-				<configuration>
-					<formats>
-						<format>html</format>
-						<format>xml</format>
-					</formats>
-					<aggregate>true</aggregate>
-					<check />
-				</configuration>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.8</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
