@@ -13,11 +13,7 @@ Winery is also part of the OpenTOSCA ecosystem where more information is availab
 Winery uses maven and [bower] for fetching dependencies and building.
 Bower is installed automatically using the [frontend-maven-plugin].
 We recommend installing JDK8 by using `choco install jdk8` to be able to update it via `choco upgrade all`. See at the homepage of [chocolatey] for more information.
-Please follow the the next steps ("Make models available" and "Making the wars") before importing the project into an IDE.
-
-### Make models available
-The models are versioned aside from the main project.
-Go into each model directory (`org.eclipse.winery.model.csar.toscametafile`, `org.eclipse.winery.model.selfservice`, `org.eclipse.winery.model.tosca`) and do a `mvn install`.
+Please follow the the next step "Making the wars" before importing the project into an IDE.
 
 ### Making the wars
 Run `mvn package`.
@@ -86,42 +82,13 @@ This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 
 ## IDE Setup
 
-### IntelliJ Ultimate
-- First of all, generate a war to have all dependencies fetched by maven.
-- Open `pom.xml` in the main directory
-- Setup tomcat as usal.
-- Recommended: Get a JRebel license from <https://my.rebel.com>. It is for free if JRebel may post to your Twitter account.
+### IntelliJ Ultimate setup
+
+See [config/IntelliJ IDEA/README.md](config/IntelliJ IDEA/README.md).
 
 ### Eclipse setup
-This howto is based on [Eclipse IDE for Java EE Developers].
-First of all, generate a war to have all dependencies fetched by maven.
 
-### Recommended plugins
-* [AnyEdit](http://andrei.gmxhome.de/anyedit/) for ensuring that tabs are always used
-** Configure: Window -> Preferences -> General / Editors / AnyEdit Tools -> "Auto - Convert EXCLUSION file list" -> "Add filter" -> "*.java", "Convert...": 4 spaces for a tab
-
-### Optional plugins
-* [Eclipse Code Recommenders](http://www.eclipse.org/recommenders/)
-* [VJET JavaScript IDE](http://www.eclipse.org/proposals/webtools.vjet/)
-
-### Make Winery projects known to Eclipse
-1. Import all projects
-  * Use "Existing Maven Projects". `mvn eclips:m2eclipse` currently does not enable "maven" in eclipse.
-2. At `org.eclipse.winery.repository` and ` org.eclipse.winery.topologymodeler`:
-  * Right click -> Properties -> JavaScript -> Include Path -> Source -> Expand folder -> Select "Excluded" -> "Edit..."
-  * Exclusion Patterns: Add multiple -> Select "3rd party" -> "OK"
-  * Exclusion Patterns: Add multiple -> Select "components" -> "OK"
-  * "Finish" -> "OK"
-
-#### Setup Tomcat
-1. Open servers window: Window -> Show View -> Other -> Server -> Servers
-2. New server wizard... -> Apache -> Tomcat v7.0 Server -> Next -> Winery -> Add -> Finish
-3. Rename the Server to "Apache Tomcat v7.0"
-
-Now you can see the Tomcat v7.0 Server at localhost [Stopped, Republish] in your server window.
-Select it and click on the green play button in the window.
-
-Now, Winery can be viewed at http://localhost:8080/winery/
+See [config/Eclipse/README.md](config/Eclipse/README.md).
 
 ### Configure Winery (optional)
 The repository location can be changed:

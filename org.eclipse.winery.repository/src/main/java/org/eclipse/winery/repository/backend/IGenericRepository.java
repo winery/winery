@@ -61,7 +61,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	boolean flagAsExisting(GenericId id);
 
 	/**
-	 * Checks whether the associated TOSA element exists
+	 * Checks whether the associated TOSCA element exists
 	 *
 	 * @param id the id to check
 	 * @return true iff the TOSCA element belonging to the given ID exists

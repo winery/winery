@@ -29,8 +29,6 @@
 				<p>	Supporting <a href="docs.oasis-open.org/tosca/TOSCA/v1.0/os/TOSCA-v1.0-os.html">TOSCA-v1.0 &ndash;
                     Topology and Orchestration Specification for Cloud Applications Version 1.0. 25 November 2013. OASIS Standard.</a><br/>
 					<br/>
-					Part of the <a href="http://www.cloudcycle.org">CloudCycle</a> ecosystem.<br/>
-					<br/>
 					Code contributions by Oliver Kopp, Tobias Binz, Uwe Breitenbücher, Kálmán Képes, Rene Trefft, Yves Schubert, Timur Sungur, Jerome Tagliaferri, and Tobias Unger.
 				</p>
 				<h3>License</h3>
