@@ -28,8 +28,6 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.taglibs.standard.functions.Functions;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.selfservice.Application;
@@ -42,12 +40,14 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import org.apache.commons.io.IOUtils;
+import org.apache.taglibs.standard.functions.Functions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SelfServicePortalResource implements IPersistable {
 
@@ -87,6 +87,14 @@ public class SelfServicePortalResource implements IPersistable {
 		this.icon_jpg_ref = new RepositoryFileReference(this.id, "icon.jpg");
 		this.image_jpg_ref = new RepositoryFileReference(this.id, "image.jpg");
 		this.application = this.getData();
+	}
+
+	public void ensureDataXmlExists() {
+		if (!Repository.INSTANCE.exists(this.data_xml_ref)) {
+			// this.application is already initialized with a default value.
+			// So we just need to persist this resource
+			BackendUtils.persist(this);
+		}
 	}
 
 	@GET
@@ -152,6 +160,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@PUT
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response putIcon(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
+		ensureDataXmlExists();
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
 		return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
@@ -167,6 +176,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@PUT
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response putImage(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
+		ensureDataXmlExists();
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
 		return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}

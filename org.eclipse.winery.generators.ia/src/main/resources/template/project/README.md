@@ -1,4 +1,4 @@
-# Generated Implementation Artivact Skeleton for IA_CLASS_NAME
+# Generated Implementation Artifact Skeleton for IA_CLASS_NAME
 
 * Interface Name: IA_CLASS_NAME
 * Namespace: IA_NAMESPACE
@@ -10,8 +10,8 @@ To develop and build this Implementation Artifact you need Maven and Eclipse.
 - How to install maven is described at the end of this file
 - If you use an Eclipse workspace for the first time with a maven project you've to run this command before starting eclipse:
   `mvn -Declipse.workspace="<your_workspace_location>" eclipse:configure-workspace`
-  - When using Windows: Make sure you replace '\' (backslashes) with '/' ('slashes')
-  - It doesn't hurt to run it multiple times
+  - When using Windows: Make sure you replace `\` (backslashes) with `/` (slashes)
+  - It does not hurt to run it multiple times
   - This command must not be executed in a particular folder
 
 ## Preparations

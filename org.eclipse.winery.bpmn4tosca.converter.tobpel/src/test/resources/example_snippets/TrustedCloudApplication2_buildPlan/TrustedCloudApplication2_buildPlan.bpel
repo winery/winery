@@ -1,0 +1,2149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<process xmlns:ns0="http://siserver.org/wsdl" xmlns:tns="ba.example" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="TrustedCloudApplication2_buildPlan" targetNamespace="ba.example" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
+    <extensions>
+        <extension mustUnderstand="yes" namespace="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight"/>
+    </extensions>
+    <partnerLinks>
+        <partnerLink initializePartnerRole="yes" myRole="TrustedCloudApplication2_buildPlanProvider" name="client" partnerLinkType="tns:TrustedCloudApplication2_buildPlan" partnerRole="TrustedCloudApplication2_buildPlanRequester"/>
+    </partnerLinks>
+    <variables>
+        <variable messageType="tns:TrustedCloudApplication2_buildPlanRequestMessage" name="input"/>
+        <variable messageType="tns:TrustedCloudApplication2_buildPlanResponseMessage" name="output"/>
+        <variable name="prop_OpenStack_accessKey" type="xsd:string"/>
+        <variable name="prop_OpenStack_regionEndpoint" type="xsd:string"/>
+        <variable name="prop_OpenStack_secretKey" type="xsd:string"/>
+        <variable name="prop_Ubuntu-13_10-Server-VM_NumCpus" type="xsd:string"/>
+        <variable name="prop_Ubuntu-13_10-Server-VM_Memory" type="xsd:string"/>
+        <variable name="prop_Ubuntu-13_10-Server-VM_ServerIP" type="xsd:string"/>
+        <variable name="prop_Ubuntu-13_10-Server-VM_InstanceId" type="xsd:string"/>
+        <variable name="prop_Ubuntu-13_10-Server-VM_instanceType" type="xsd:string"/>
+        <variable name="prop_Ubuntu-13_10-Server-VM_SSHUser" type="xsd:string"/>
+        <variable name="prop_Ubuntu-13_10-Server-VM_SSHPrivateKey" type="xsd:string"/>
+        <variable name="prop_Ubuntu-13_10-Server-VM_keyPairName" type="xsd:string"/>
+        <variable name="prop_Ubuntu-13_10-Server-VM_securityGroup" type="xsd:string"/>
+        <variable name="prop_ubuntu_AMIId_0" type="xsd:string"/>
+        <variable name="instanceDataAPIUrl13" type="xsd:string"/>
+        <variable name="bpel4restlightVarResponse14" type="xsd:anyType"/>
+        <variable name="OpenTOSCAContainerAPIServiceInstanceID15" type="xsd:string"/>
+        <variable name="prop_ubuntuFilePathVar20_21" type="xsd:string"/>
+        <variable name="prop_containerApiFileURL22_23" type="xsd:string"/>
+        <variable name="prop_mkdirScript25_26" type="xsd:string"/>
+        <variable name="prop_ubuntuFilePathVar39_40" type="xsd:string"/>
+        <variable name="prop_containerApiFileURL41_42" type="xsd:string"/>
+        <variable name="prop_mkdirScript44_45" type="xsd:string"/>
+        <variable name="prop_runShFile58_59" type="xsd:string"/>
+        <variable name="prop_runShFile66_67" type="xsd:string"/>
+        <variable name="prop_ubuntuFilePathVar74_75" type="xsd:string"/>
+        <variable name="prop_containerApiFileURL76_77" type="xsd:string"/>
+        <variable name="prop_mkdirScript79_80" type="xsd:string"/>
+        <variable name="prop_ubuntuFilePathVar93_94" type="xsd:string"/>
+        <variable name="prop_containerApiFileURL95_96" type="xsd:string"/>
+        <variable name="prop_mkdirScript98_99" type="xsd:string"/>
+        <variable name="prop_runShFile112_113" type="xsd:string"/>
+    </variables>
+    <sequence>
+        <receive createInstance="yes" name="receiveInput" operation="initiate" partnerLink="client" portType="tns:TrustedCloudApplication2_buildPlan" variable="input"/>
+        <assign>
+            <copy>
+                <from>
+                    <literal/>
+                </from>
+                <to variable="prop_OpenStack_accessKey"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>129.69.209.127</literal>
+                </from>
+                <to variable="prop_OpenStack_regionEndpoint"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal/>
+                </from>
+                <to variable="prop_OpenStack_secretKey"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>1</literal>
+                </from>
+                <to variable="prop_Ubuntu-13_10-Server-VM_NumCpus"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>1024</literal>
+                </from>
+                <to variable="prop_Ubuntu-13_10-Server-VM_Memory"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal/>
+                </from>
+                <to variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal/>
+                </from>
+                <to variable="prop_Ubuntu-13_10-Server-VM_InstanceId"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>m1.small</literal>
+                </from>
+                <to variable="prop_Ubuntu-13_10-Server-VM_instanceType"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>ubuntu</literal>
+                </from>
+                <to variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal/>
+                </from>
+                <to variable="prop_Ubuntu-13_10-Server-VM_SSHPrivateKey"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>KalleKeyPair</literal>
+                </from>
+                <to variable="prop_Ubuntu-13_10-Server-VM_keyPairName"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>default</literal>
+                </from>
+                <to variable="prop_Ubuntu-13_10-Server-VM_securityGroup"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>ubuntu-13.10-server-cloudimg-amd64</literal>
+                </from>
+                <to variable="prop_ubuntu_AMIId_0"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/InstallIATomcatNodeImple/files/tomcatInstall.sh</literal>
+                </from>
+                <to variable="prop_ubuntuFilePathVar20_21"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal/>
+                </from>
+                <to variable="prop_containerApiFileURL22_23"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>mkdir -p ~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/InstallIATomcatNodeImple/files</literal>
+                </from>
+                <to variable="prop_mkdirScript25_26"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/startIATomcatImpl/files/tomcatStart.sh</literal>
+                </from>
+                <to variable="prop_ubuntuFilePathVar39_40"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal/>
+                </from>
+                <to variable="prop_containerApiFileURL41_42"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>mkdir -p ~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/startIATomcatImpl/files</literal>
+                </from>
+                <to variable="prop_mkdirScript44_45"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>sudo sh ~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/InstallIATomcatNodeImple/files/tomcatInstall.sh</literal>
+                </from>
+                <to variable="prop_runShFile58_59"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>sudo sh ~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/startIATomcatImpl/files/tomcatStart.sh</literal>
+                </from>
+                <to variable="prop_runShFile66_67"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/installIATomcatWAR/files/warInstall.sh</literal>
+                </from>
+                <to variable="prop_ubuntuFilePathVar74_75"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal/>
+                </from>
+                <to variable="prop_containerApiFileURL76_77"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>mkdir -p ~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/installIATomcatWAR/files</literal>
+                </from>
+                <to variable="prop_mkdirScript79_80"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/TomcatWARDA/files/sample.war</literal>
+                </from>
+                <to variable="prop_ubuntuFilePathVar93_94"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal/>
+                </from>
+                <to variable="prop_containerApiFileURL95_96"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>mkdir -p ~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/TomcatWARDA/files</literal>
+                </from>
+                <to variable="prop_mkdirScript98_99"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>sudo sh ~/TrustedCloudApplication2.csar/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/installIATomcatWAR/files/warInstall.sh</literal>
+                </from>
+                <to variable="prop_runShFile112_113"/>
+            </copy>
+            <copy>
+                <from>
+                    <literal>
+                        <tns:TrustedCloudApplication2_buildPlanResponse>
+                            <tns:CorrelationID>tns:CorrelationID</tns:CorrelationID>
+                        </tns:TrustedCloudApplication2_buildPlanResponse>
+                    </literal>
+                </from>
+                <to part="payload" variable="output"/>
+            </copy>
+        </assign>
+        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assignFromInputToString1426097934582" validate="no">
+    <bpel:copy>
+        <!-- instanceDataAPIUrl, instanceDataAPIUrl13, assignFromInputToString1426097934582 -->
+        <bpel:from part="payload" variable="input">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='instanceDataAPIUrl']/text()]]></bpel:query>
+                </bpel:from>
+        <bpel:to variable="instanceDataAPIUrl13"/>
+    </bpel:copy>
+</bpel:assign>
+        <bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">
+    <!-- instanceDataAPIUrl13, TrustedCloudApplication2.csar, {http://trustedcloud.de}TrustedCloudApplication2, bpel4restlightVarResponse14  -->
+	<bpel4RestLight:POST accept="application/xml" response="bpel4restlightVarResponse14" uri="$bpelvar[instanceDataAPIUrl13]/serviceInstances?csarID=TrustedCloudApplication2.csar&amp;serviceTemplateID={http://trustedcloud.de}TrustedCloudApplication2"/>
+</bpel:extensionActivity>
+        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assignServiceInstance1426097934587" validate="no">
+    <bpel:copy>
+        <!-- //*[local-name()='link' and namespace-uri()='http://opentosca.org/api/pp']/@*[local-name()='href' and namespace-uri()='http://www.w3.org/1999/xlink'] -->
+        <bpel:from variable="bpel4restlightVarResponse14">
+                    <bpel:query xmlns:pp="http://opentosca.org/api/pp" xmlns:xlink="http://www.w3.org/1999/xlink" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[string(//pp:link/@xlink:href)]]></bpel:query>
+                </bpel:from>
+        <bpel:to variable="OpenTOSCAContainerAPIServiceInstanceID15"/>
+    </bpel:copy>
+</bpel:assign>
+        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assignCorrelationID">
+            <bpel:copy>
+                <bpel:from part="payload" variable="input">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:CorrelationID]]></bpel:query>
+                </bpel:from>
+                <bpel:to part="payload" variable="output">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:CorrelationID]]></bpel:query>
+                </bpel:to>
+            </bpel:copy>
+        </bpel:assign>
+        <flow>
+            <links>
+                <link name="seqEdge0"/>
+                <link name="seqEdge1"/>
+                <link name="seqEdge2"/>
+                <link name="seqEdge3"/>
+                <link name="seqEdge4"/>
+                <link name="seqEdge5"/>
+            </links>
+            <scope name="OpenStack_scope">
+                <sources>
+                    <source linkName="seqEdge5"/>
+                </sources>
+                <partnerLinks>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL2" partnerLinkType="tns:InvokePortTypePLT1" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL8" partnerLinkType="tns:InvokePortTypePLT7" partnerRole="Requestee"/>
+                </partnerLinks>
+                <variables>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest3"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse4"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest9"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse10"/>
+                    <variable name="bpel4restlightVarResponse16" type="xsd:anyType"/>
+                    <variable name="nodeInstanceURLbpel4restlightVarResponse17" type="xsd:string"/>
+                </variables>
+                <correlationSets>
+                    <correlationSet name="InvokePortTypeCorrelationSet6" properties="tns:InvokePortTypeProperty5"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet12" properties="tns:InvokePortTypeProperty11"/>
+                </correlationSets>
+                <sequence name="OpenStack_mainSequence">
+                    <sequence name="OpenStack_prePhase">
+                        <empty/>
+                    </sequence>
+                    <sequence name="OpenStack_provisioningPhase">
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceAmazonEC2VM</impl:InterfaceName>
+					<impl:NodeTemplateID>OpenStack</impl:NodeTemplateID>
+
+					<impl:OperationName>create</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097934194</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>instanceType</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>accessKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>regionEndpoint</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>secretKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>keyPairName</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>securityGroup</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>AMIid</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_instanceType"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="instanceType"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:accessKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="accessKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_OpenStack_regionEndpoint"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="regionEndpoint"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:secretKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="secretKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_keyPairName"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="keyPairName"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_securityGroup"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="securityGroup"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_ubuntu_AMIId_0"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="AMIid"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL2"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest3" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest3" operation="invokeOperationAsync" partnerLink="InvokePortTypePL2" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet6"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse4" operation="callback" partnerLink="InvokePortTypePL2" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse4">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet6"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse4">
+                            <bpel:copy>
+                                <bpel:from part="invokeResponse" variable="CallbackPortTypeinvokeResponseResponse4">
+                                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="instanceId"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+                                </bpel:from>
+                                <bpel:to variable="prop_Ubuntu-13_10-Server-VM_InstanceId"/>
+                            </bpel:copy>
+                            <bpel:copy>
+                                <bpel:from part="invokeResponse" variable="CallbackPortTypeinvokeResponseResponse4">
+                                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="publicDNS"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+                                </bpel:from>
+                                <bpel:to variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+                            </bpel:copy>
+                        </bpel:assign>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>start</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097934555</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest9"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest9">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest9">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest9">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest9">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL8"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest9">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest9">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest9" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest9" operation="invokeOperationAsync" partnerLink="InvokePortTypePL8" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet12"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse10" operation="callback" partnerLink="InvokePortTypePL8" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse10">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet12"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse10"/>
+                    </sequence>
+                    <sequence name="OpenStack_postPhase">
+                        <bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">
+    <!-- instanceDataAPIUrl13, bpel4restlightVarResponse16, {http://trustedcloud.de}OpenStack, OpenTOSCAContainerAPIServiceInstanceID15, nodeTemplateID  -->
+	<bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse16" uri="$bpelvar[instanceDataAPIUrl13]/nodeInstances?nodeTemplateID={http://trustedcloud.de}OpenStack&amp;serviceInstanceID=$bpelvar[OpenTOSCAContainerAPIServiceInstanceID15]"/>
+</bpel:extensionActivity>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="$assignName" validate="no">
+    <bpel:copy>
+        <!-- nodeInstanceURLbpel4restlightVarResponse17, bpel4restlightVarResponse16 -->
+        <bpel:from variable="bpel4restlightVarResponse16">
+                                    <bpel:query xmlns:pp="http://opentosca.org/api/pp" xmlns:xlink="http://www.w3.org/1999/xlink" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[string(//pp:NodeInstanceList/pp:nodeinstances/pp:link/@xlink:href)]]></bpel:query>
+                                </bpel:from>
+        <bpel:to variable="nodeInstanceURLbpel4restlightVarResponse17"/>
+    </bpel:copy>
+</bpel:assign>
+                        <bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">
+    <!-- nodeInstanceURLbpel4restlightVarResponse17, bpel4restlightVarResponse16  -->
+	<bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse16" uri="$bpelvar[nodeInstanceURLbpel4restlightVarResponse17]/properties"/>
+</bpel:extensionActivity>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assignPropertyVarsToAnyElement1426097934594">
+                            <bpel:copy>
+	<!-- prop_OpenStack_accessKey, bpel4restlightVarResponse16, accessKey, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_OpenStack_accessKey">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse16">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='accessKey' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_OpenStack_secretKey, bpel4restlightVarResponse16, secretKey, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_OpenStack_secretKey">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse16">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='secretKey' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_OpenStack_regionEndpoint, bpel4restlightVarResponse16, regionEndpoint, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_OpenStack_regionEndpoint">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse16">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='regionEndpoint' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                        </bpel:assign>
+                        <bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">
+    <!-- bpel4restlightVarResponse16,nodeInstanceURLbpel4restlightVarResponse17  -->
+	<bpel4RestLight:PUT accept="application/xml" request="bpel4restlightVarResponse16" uri="$bpelvar[nodeInstanceURLbpel4restlightVarResponse17]/properties"/>
+</bpel:extensionActivity>
+                    </sequence>
+                </sequence>
+            </scope>
+            <scope name="Ubuntu-13_10-Server-VM_scope">
+                <targets>
+                    <joinCondition>$seqEdge4</joinCondition>
+                    <target linkName="seqEdge4"/>
+                </targets>
+                <sources>
+                    <source linkName="seqEdge3"/>
+                </sources>
+                <variables>
+                    <variable name="bpel4restlightVarResponse18" type="xsd:anyType"/>
+                    <variable name="nodeInstanceURLbpel4restlightVarResponse19" type="xsd:string"/>
+                </variables>
+                <sequence name="Ubuntu-13_10-Server-VM_mainSequence">
+                    <sequence name="Ubuntu-13_10-Server-VM_prePhase">
+                        <empty/>
+                    </sequence>
+                    <sequence name="Ubuntu-13_10-Server-VM_provisioningPhase">
+                        <empty/>
+                    </sequence>
+                    <sequence name="Ubuntu-13_10-Server-VM_postPhase">
+                        <bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">
+    <!-- instanceDataAPIUrl13, bpel4restlightVarResponse18, {http://trustedcloud.de}Ubuntu-13_10-Server-VM, OpenTOSCAContainerAPIServiceInstanceID15, nodeTemplateID  -->
+	<bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse18" uri="$bpelvar[instanceDataAPIUrl13]/nodeInstances?nodeTemplateID={http://trustedcloud.de}Ubuntu-13_10-Server-VM&amp;serviceInstanceID=$bpelvar[OpenTOSCAContainerAPIServiceInstanceID15]"/>
+</bpel:extensionActivity>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="$assignName" validate="no">
+    <bpel:copy>
+        <!-- nodeInstanceURLbpel4restlightVarResponse19, bpel4restlightVarResponse18 -->
+        <bpel:from variable="bpel4restlightVarResponse18">
+                                    <bpel:query xmlns:pp="http://opentosca.org/api/pp" xmlns:xlink="http://www.w3.org/1999/xlink" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[string(//pp:NodeInstanceList/pp:nodeinstances/pp:link/@xlink:href)]]></bpel:query>
+                                </bpel:from>
+        <bpel:to variable="nodeInstanceURLbpel4restlightVarResponse19"/>
+    </bpel:copy>
+</bpel:assign>
+                        <bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">
+    <!-- nodeInstanceURLbpel4restlightVarResponse19, bpel4restlightVarResponse18  -->
+	<bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse18" uri="$bpelvar[nodeInstanceURLbpel4restlightVarResponse19]/properties"/>
+</bpel:extensionActivity>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assignPropertyVarsToAnyElement1426097934638">
+                            <bpel:copy>
+	<!-- prop_Ubuntu-13_10-Server-VM_instanceType, bpel4restlightVarResponse18, instanceType, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_Ubuntu-13_10-Server-VM_instanceType">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse18">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='instanceType' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_Ubuntu-13_10-Server-VM_Memory, bpel4restlightVarResponse18, Memory, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_Ubuntu-13_10-Server-VM_Memory">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse18">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='Memory' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_Ubuntu-13_10-Server-VM_ServerIP, bpel4restlightVarResponse18, ServerIP, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse18">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='ServerIP' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_Ubuntu-13_10-Server-VM_keyPairName, bpel4restlightVarResponse18, keyPairName, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_Ubuntu-13_10-Server-VM_keyPairName">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse18">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='keyPairName' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_Ubuntu-13_10-Server-VM_NumCpus, bpel4restlightVarResponse18, NumCpus, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_Ubuntu-13_10-Server-VM_NumCpus">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse18">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='NumCpus' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_Ubuntu-13_10-Server-VM_securityGroup, bpel4restlightVarResponse18, securityGroup, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_Ubuntu-13_10-Server-VM_securityGroup">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse18">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='securityGroup' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_Ubuntu-13_10-Server-VM_SSHPrivateKey, bpel4restlightVarResponse18, SSHPrivateKey, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHPrivateKey">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse18">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='SSHPrivateKey' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_Ubuntu-13_10-Server-VM_InstanceId, bpel4restlightVarResponse18, InstanceId, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_Ubuntu-13_10-Server-VM_InstanceId">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse18">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='InstanceId' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                            <bpel:copy>
+	<!-- prop_Ubuntu-13_10-Server-VM_SSHUser, bpel4restlightVarResponse18, SSHUser, http://www.example.com/tosca/Types/OpenTosca -->
+	<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser">
+	</bpel:from>
+	<bpel:to variable="bpel4restlightVarResponse18">
+	    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()='SSHUser' and namespace-uri()='http://www.example.com/tosca/Types/OpenTosca']]]></bpel:query>
+	</bpel:to>
+</bpel:copy>
+                        </bpel:assign>
+                        <bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">
+    <!-- bpel4restlightVarResponse18,nodeInstanceURLbpel4restlightVarResponse19  -->
+	<bpel4RestLight:PUT accept="application/xml" request="bpel4restlightVarResponse18" uri="$bpelvar[nodeInstanceURLbpel4restlightVarResponse19]/properties"/>
+</bpel:extensionActivity>
+                    </sequence>
+                </sequence>
+            </scope>
+            <scope name="Tomcat_scope">
+                <targets>
+                    <joinCondition>$seqEdge2</joinCondition>
+                    <target linkName="seqEdge2"/>
+                </targets>
+                <sources>
+                    <source linkName="seqEdge1"/>
+                </sources>
+                <partnerLinks>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL28" partnerLinkType="tns:InvokePortTypePLT27" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL34" partnerLinkType="tns:InvokePortTypePLT33" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL47" partnerLinkType="tns:InvokePortTypePLT46" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL53" partnerLinkType="tns:InvokePortTypePLT52" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL61" partnerLinkType="tns:InvokePortTypePLT60" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL69" partnerLinkType="tns:InvokePortTypePLT68" partnerRole="Requestee"/>
+                </partnerLinks>
+                <variables>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest29"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse30"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest35"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse36"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest48"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse49"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest54"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse55"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest62"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse63"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest70"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse71"/>
+                </variables>
+                <correlationSets>
+                    <correlationSet name="InvokePortTypeCorrelationSet32" properties="tns:InvokePortTypeProperty31"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet38" properties="tns:InvokePortTypeProperty37"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet51" properties="tns:InvokePortTypeProperty50"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet57" properties="tns:InvokePortTypeProperty56"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet65" properties="tns:InvokePortTypeProperty64"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet73" properties="tns:InvokePortTypeProperty72"/>
+                </correlationSets>
+                <sequence name="Tomcat_mainSequence">
+                    <sequence name="Tomcat_prePhase">
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign24" validate="no">
+	<!-- assign24,string(concat($input.payload//*[local-name()='csarEntrypoint']/text(),'/Content/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/InstallIATomcatNodeImple/files/tomcatInstall.sh')), prop_containerApiFileURL22_23 -->
+		    <!-- queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0" variable="prop_containerApiFileURL22_23" -->
+	<bpel:copy>
+		<bpel:from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+			<![CDATA[string(concat($input.payload//*[local-name()='csarEntrypoint']/text(),'/Content/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/InstallIATomcatNodeImple/files/tomcatInstall.sh'))]]>
+		</bpel:from>
+		<bpel:to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+		    <![CDATA[$prop_containerApiFileURL22_23]]>
+		</bpel:to>
+	</bpel:copy>
+</bpel:assign>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>runScript</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097935051</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>script</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest29"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest29">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest29">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_mkdirScript25_26"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest29">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="script"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest29">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest29">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL28"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest29">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest29">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest29" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest29" operation="invokeOperationAsync" partnerLink="InvokePortTypePL28" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet32"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse30" operation="callback" partnerLink="InvokePortTypePL28" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse30">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet32"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse30"/>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>transferFile</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097935349</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sourceURLorLocalAbsolutePath</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>targetAbsolutePath</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_containerApiFileURL22_23"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sourceURLorLocalAbsolutePath"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_ubuntuFilePathVar20_21"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="targetAbsolutePath"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL34"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest35" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest35" operation="invokeOperationAsync" partnerLink="InvokePortTypePL34" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet38"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse36" operation="callback" partnerLink="InvokePortTypePL34" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse36">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet38"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse36"/>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign43" validate="no">
+	<!-- assign43,string(concat($input.payload//*[local-name()='csarEntrypoint']/text(),'/Content/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/startIATomcatImpl/files/tomcatStart.sh')), prop_containerApiFileURL41_42 -->
+		    <!-- queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0" variable="prop_containerApiFileURL41_42" -->
+	<bpel:copy>
+		<bpel:from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+			<![CDATA[string(concat($input.payload//*[local-name()='csarEntrypoint']/text(),'/Content/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/startIATomcatImpl/files/tomcatStart.sh'))]]>
+		</bpel:from>
+		<bpel:to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+		    <![CDATA[$prop_containerApiFileURL41_42]]>
+		</bpel:to>
+	</bpel:copy>
+</bpel:assign>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>runScript</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097935676</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>script</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest48"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest48">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest48">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_mkdirScript44_45"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest48">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="script"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest48">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest48">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL47"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest48">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest48">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest48" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest48" operation="invokeOperationAsync" partnerLink="InvokePortTypePL47" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet51"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse49" operation="callback" partnerLink="InvokePortTypePL47" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse49">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet51"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse49"/>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>transferFile</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097935839</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sourceURLorLocalAbsolutePath</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>targetAbsolutePath</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_containerApiFileURL41_42"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sourceURLorLocalAbsolutePath"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_ubuntuFilePathVar39_40"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="targetAbsolutePath"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL53"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest54" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest54" operation="invokeOperationAsync" partnerLink="InvokePortTypePL53" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet57"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse55" operation="callback" partnerLink="InvokePortTypePL53" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse55">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet57"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse55"/>
+                    </sequence>
+                    <sequence name="Tomcat_provisioningPhase">
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assignShCallScriptVar" validate="no">
+	<!-- assignShCallScriptVar,$prop_runShFile58_59, prop_runShFile58_59 -->
+		    <!-- queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0" variable="prop_runShFile58_59" -->
+	<bpel:copy>
+		<bpel:from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+			<![CDATA[$prop_runShFile58_59]]>
+		</bpel:from>
+		<bpel:to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+		    <![CDATA[$prop_runShFile58_59]]>
+		</bpel:to>
+	</bpel:copy>
+</bpel:assign>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>runScript</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097936061</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>script</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest62"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest62">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest62">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_runShFile58_59"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest62">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="script"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest62">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest62">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL61"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest62">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest62">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest62" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest62" operation="invokeOperationAsync" partnerLink="InvokePortTypePL61" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet65"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse63" operation="callback" partnerLink="InvokePortTypePL61" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse63">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet65"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse63"/>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assignShCallScriptVar" validate="no">
+	<!-- assignShCallScriptVar,$prop_runShFile66_67, prop_runShFile66_67 -->
+		    <!-- queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0" variable="prop_runShFile66_67" -->
+	<bpel:copy>
+		<bpel:from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+			<![CDATA[$prop_runShFile66_67]]>
+		</bpel:from>
+		<bpel:to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+		    <![CDATA[$prop_runShFile66_67]]>
+		</bpel:to>
+	</bpel:copy>
+</bpel:assign>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>runScript</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097936264</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>script</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest70"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest70">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest70">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_runShFile66_67"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest70">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="script"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest70">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest70">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL69"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest70">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest70">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest70" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest70" operation="invokeOperationAsync" partnerLink="InvokePortTypePL69" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet73"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse71" operation="callback" partnerLink="InvokePortTypePL69" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse71">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet73"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse71"/>
+                    </sequence>
+                    <sequence name="Tomcat_postPhase">
+                        <empty/>
+                    </sequence>
+                </sequence>
+            </scope>
+            <scope name="WAR_scope">
+                <targets>
+                    <joinCondition>$seqEdge0</joinCondition>
+                    <target linkName="seqEdge0"/>
+                </targets>
+                <partnerLinks>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL82" partnerLinkType="tns:InvokePortTypePLT81" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL88" partnerLinkType="tns:InvokePortTypePLT87" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL101" partnerLinkType="tns:InvokePortTypePLT100" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL107" partnerLinkType="tns:InvokePortTypePLT106" partnerRole="Requestee"/>
+                    <partnerLink initializePartnerRole="yes" myRole="Requester" name="InvokePortTypePL115" partnerLinkType="tns:InvokePortTypePLT114" partnerRole="Requestee"/>
+                </partnerLinks>
+                <variables>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest83"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse84"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest89"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse90"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest102"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse103"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest108"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse109"/>
+                    <variable messageType="ns0:invokeOperationAsyncMessage" name="InvokePortTypeinvokeOperationAsyncMessageRequest116"/>
+                    <variable messageType="ns0:invokeResponse" name="CallbackPortTypeinvokeResponseResponse117"/>
+                </variables>
+                <correlationSets>
+                    <correlationSet name="InvokePortTypeCorrelationSet86" properties="tns:InvokePortTypeProperty85"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet92" properties="tns:InvokePortTypeProperty91"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet105" properties="tns:InvokePortTypeProperty104"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet111" properties="tns:InvokePortTypeProperty110"/>
+                    <correlationSet name="InvokePortTypeCorrelationSet119" properties="tns:InvokePortTypeProperty118"/>
+                </correlationSets>
+                <sequence name="WAR_mainSequence">
+                    <sequence name="WAR_prePhase">
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign78" validate="no">
+	<!-- assign78,string(concat($input.payload//*[local-name()='csarEntrypoint']/text(),'/Content/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/installIATomcatWAR/files/warInstall.sh')), prop_containerApiFileURL76_77 -->
+		    <!-- queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0" variable="prop_containerApiFileURL76_77" -->
+	<bpel:copy>
+		<bpel:from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+			<![CDATA[string(concat($input.payload//*[local-name()='csarEntrypoint']/text(),'/Content/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/installIATomcatWAR/files/warInstall.sh'))]]>
+		</bpel:from>
+		<bpel:to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+		    <![CDATA[$prop_containerApiFileURL76_77]]>
+		</bpel:to>
+	</bpel:copy>
+</bpel:assign>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>runScript</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097936508</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>script</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest83"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest83">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest83">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_mkdirScript79_80"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest83">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="script"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest83">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest83">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL82"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest83">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest83">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest83" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest83" operation="invokeOperationAsync" partnerLink="InvokePortTypePL82" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet86"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse84" operation="callback" partnerLink="InvokePortTypePL82" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse84">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet86"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse84"/>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>transferFile</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097936711</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sourceURLorLocalAbsolutePath</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>targetAbsolutePath</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_containerApiFileURL76_77"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sourceURLorLocalAbsolutePath"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_ubuntuFilePathVar74_75"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="targetAbsolutePath"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL88"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest89" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest89" operation="invokeOperationAsync" partnerLink="InvokePortTypePL88" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet92"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse90" operation="callback" partnerLink="InvokePortTypePL88" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse90">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet92"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse90"/>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign97" validate="no">
+	<!-- assign97,string(concat($input.payload//*[local-name()='csarEntrypoint']/text(),'/Content/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/TomcatWARDA/files/sample.war')), prop_containerApiFileURL95_96 -->
+		    <!-- queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0" variable="prop_containerApiFileURL95_96" -->
+	<bpel:copy>
+		<bpel:from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+			<![CDATA[string(concat($input.payload//*[local-name()='csarEntrypoint']/text(),'/Content/artifacttemplates/http%253A%252F%252Fopentosca.org%252Ftypes%252Flifecycle/TomcatWARDA/files/sample.war'))]]>
+		</bpel:from>
+		<bpel:to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+		    <![CDATA[$prop_containerApiFileURL95_96]]>
+		</bpel:to>
+	</bpel:copy>
+</bpel:assign>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>runScript</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097936941</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>script</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest102"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest102">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest102">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_mkdirScript98_99"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest102">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="script"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest102">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest102">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL101"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest102">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest102">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest102" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest102" operation="invokeOperationAsync" partnerLink="InvokePortTypePL101" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet105"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse103" operation="callback" partnerLink="InvokePortTypePL101" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse103">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet105"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse103"/>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>transferFile</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097937320</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sourceURLorLocalAbsolutePath</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>targetAbsolutePath</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_containerApiFileURL95_96"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sourceURLorLocalAbsolutePath"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_ubuntuFilePathVar93_94"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="targetAbsolutePath"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL107"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest108" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest108" operation="invokeOperationAsync" partnerLink="InvokePortTypePL107" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet111"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse109" operation="callback" partnerLink="InvokePortTypePL107" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse109">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet111"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse109"/>
+                    </sequence>
+                    <sequence name="WAR_provisioningPhase">
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assignShCallScriptVar" validate="no">
+	<!-- assignShCallScriptVar,$prop_runShFile112_113, prop_runShFile112_113 -->
+		    <!-- queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0" variable="prop_runShFile112_113" -->
+	<bpel:copy>
+		<bpel:from expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+			<![CDATA[$prop_runShFile112_113]]>
+		</bpel:from>
+		<bpel:to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+		    <![CDATA[$prop_runShFile112_113]]>
+		</bpel:to>
+	</bpel:copy>
+</bpel:assign>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
+	<bpel:copy>
+		<bpel:from>
+			<bpel:literal>
+				<impl:invokeOperationAsync xmlns:impl="http://siserver.org/schema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+					<impl:CsarID>TrustedCloudApplication2.csar</impl:CsarID>
+
+					<impl:ServiceTemplateIDNamespaceURI>http://trustedcloud.de</impl:ServiceTemplateIDNamespaceURI>
+					<impl:ServiceTemplateIDLocalPart>TrustedCloudApplication2</impl:ServiceTemplateIDLocalPart>
+					<impl:InterfaceName>InterfaceUbuntu</impl:InterfaceName>
+					<impl:NodeTemplateID>Ubuntu-13_10-Server-VM</impl:NodeTemplateID>
+
+					<impl:OperationName>runScript</impl:OperationName>
+					<impl:ReplyTo/>
+					<impl:MessageID>1426097937694</impl:MessageID>
+					<impl:Params>
+                                                <impl:Param>
+                                                    <impl:key>sshKey</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>hostname</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>script</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                                <impl:Param>
+                                                    <impl:key>sshUser</impl:key>
+                                                    <impl:value>value</impl:value>
+                                                </impl:Param>
+                                            </impl:Params>
+
+				</impl:invokeOperationAsync>
+			</bpel:literal>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest116"/>
+	</bpel:copy>
+	
+<bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest116">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshKey"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_ServerIP"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest116">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="hostname"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_runShFile112_113"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest116">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="script"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+<bpel:copy>
+		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_SSHUser"/>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest116">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="Param" and namespace-uri()="http://siserver.org/schema"]/*[local-name()="key" and text()="sshUser"]/following-sibling::*[local-name()="value"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+
+<bpel:copy>
+  	<bpel:from>
+   					<bpel:literal>
+     					<wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        					<wsa:Address>http://localhost:9763/services/SIServerCallback</wsa:Address>
+     					</wsa:ReplyTo>
+   					</bpel:literal>
+ 				</bpel:from>
+ 				<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest116">
+ 				</bpel:to>
+			</bpel:copy>
+                            <bpel:copy>
+            	<bpel:from endpointReference="myRole" partnerLink="InvokePortTypePL115"/>
+            	<bpel:to header="ReplyTo" variable="InvokePortTypeinvokeOperationAsyncMessageRequest116">
+            	                    <bpel:query xmlns:wsa="http://www.w3.org/2005/08/addressing" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[/*[local-name()='Address']]]></bpel:query>
+
+            	</bpel:to>
+            </bpel:copy>
+                            <bpel:copy>
+		<bpel:from part="payload" variable="input">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:planCallbackAddress_invoker]]></bpel:query>
+		</bpel:from>
+		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest116">
+			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[//*[local-name()="ReplyTo" and namespace-uri()="http://siserver.org/schema"]]]></bpel:query>
+		</bpel:to>
+	</bpel:copy>
+                        </bpel:assign>
+                        <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest116" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest116" operation="invokeOperationAsync" partnerLink="InvokePortTypePL115" portType="ns0:InvokePortType">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="yes" set="InvokePortTypeCorrelationSet119"/>
+                            </bpel:correlations>
+                        </bpel:invoke>
+                        <bpel:receive xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="receive_CallbackPortTypeinvokeResponseResponse117" operation="callback" partnerLink="InvokePortTypePL115" portType="ns0:CallbackPortType" variable="CallbackPortTypeinvokeResponseResponse117">
+                            <bpel:correlations>
+                                <bpel:correlation initiate="no" set="InvokePortTypeCorrelationSet119"/>
+                            </bpel:correlations>
+                        </bpel:receive>
+                        <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="assign_CallbackPortTypeinvokeResponseResponse117"/>
+                    </sequence>
+                    <sequence name="WAR_postPhase">
+                        <empty/>
+                    </sequence>
+                </sequence>
+            </scope>
+            <scope name="con_21_scope">
+                <targets>
+                    <joinCondition>$seqEdge5</joinCondition>
+                    <target linkName="seqEdge5"/>
+                </targets>
+                <sources>
+                    <source linkName="seqEdge4"/>
+                </sources>
+                <sequence name="con_21_mainSequence">
+                    <sequence name="con_21_prePhase">
+                        <empty/>
+                    </sequence>
+                    <sequence name="con_21_provisioningPhase">
+                        <empty/>
+                    </sequence>
+                    <sequence name="con_21_postPhase">
+                        <empty/>
+                    </sequence>
+                </sequence>
+            </scope>
+            <scope name="con_117_scope">
+                <targets>
+                    <joinCondition>$seqEdge1</joinCondition>
+                    <target linkName="seqEdge1"/>
+                </targets>
+                <sources>
+                    <source linkName="seqEdge0"/>
+                </sources>
+                <sequence name="con_117_mainSequence">
+                    <sequence name="con_117_prePhase">
+                        <empty/>
+                    </sequence>
+                    <sequence name="con_117_provisioningPhase">
+                        <empty/>
+                    </sequence>
+                    <sequence name="con_117_postPhase">
+                        <empty/>
+                    </sequence>
+                </sequence>
+            </scope>
+            <scope name="con_129_scope">
+                <targets>
+                    <joinCondition>$seqEdge3</joinCondition>
+                    <target linkName="seqEdge3"/>
+                </targets>
+                <sources>
+                    <source linkName="seqEdge2"/>
+                </sources>
+                <sequence name="con_129_mainSequence">
+                    <sequence name="con_129_prePhase">
+                        <empty/>
+                    </sequence>
+                    <sequence name="con_129_provisioningPhase">
+                        <empty/>
+                    </sequence>
+                    <sequence name="con_129_postPhase">
+                        <empty/>
+                    </sequence>
+                </sequence>
+            </scope>
+        </flow>
+        <assign>
+            <bpel:copy xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
+                <bpel:from header="ReplyTo" variable="input">
+                    <bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[string(/*[local-name()='Address'])]]></bpel:query>
+                </bpel:from>
+                <bpel:to endpointReference="partnerRole" partnerLink="client"/>
+            </bpel:copy>
+        </assign>
+        <invoke inputVariable="output" name="callbackClient" operation="onResult" partnerLink="client" portType="tns:TrustedCloudApplication2_buildPlanCallback"/>
+    </sequence>
+    <import importType="http://schemas.xmlsoap.org/wsdl/" location="invoker.wsdl" namespace="http://siserver.org/wsdl"/>
+    <import importType="http://www.w3.org/2001/XMLSchema" location="invoker.xsd" namespace="http://siserver.org/schema"/>
+    <import importType="http://schemas.xmlsoap.org/wsdl/" location="TrustedCloudApplication2_buildPlan.wsdl" namespace="ba.example"/>
+</process>

@@ -88,13 +88,14 @@ import org.w3c.dom.Element;
  */
 public class Utils {
 
-	private static final XLogger logger = XLoggerFactory.getXLogger(Utils.class);
+	private static final XLogger LOGGER = XLoggerFactory.getXLogger(Utils.class);
 
 
 	public static URI createURI(String uri) {
 		try {
 			return new URI(uri);
 		} catch (URISyntaxException e) {
+			LOGGER.error("uri " + uri + " caused an exception", e);
 			throw new IllegalStateException();
 		}
 	}
@@ -248,7 +249,7 @@ public class Utils {
 				return (Class<? extends TOSCAComponentId>) Class.forName(fullClassName);
 			} catch (ClassNotFoundException e2) {
 				String errorMsg = "Could not find id class for component container, " + fullClassName;
-				Utils.logger.error(errorMsg);
+				Utils.LOGGER.error(errorMsg);
 				throw new IllegalStateException(errorMsg);
 			}
 		}
@@ -300,7 +301,7 @@ public class Utils {
 		try {
 			res = Utils.mapper.writeValueAsString(o);
 		} catch (Exception e) {
-			Utils.logger.error(e.getMessage(), e);
+			Utils.LOGGER.error(e.getMessage(), e);
 			return null;
 		}
 		return res;
@@ -316,7 +317,7 @@ public class Utils {
 		try {
 			res = (Class<? extends GenericId>) Class.forName(className);
 		} catch (ClassNotFoundException e) {
-			Utils.logger.error("Could not find id class for id type", e);
+			Utils.LOGGER.error("Could not find id class for id type", e);
 			res = null;
 		}
 		return res;
@@ -482,7 +483,7 @@ public class Utils {
 			try {
 				return MediaType.valueOf(Utils.getMimeType(is, fileName));
 			} catch (Exception e) {
-				Utils.logger.debug("Could not determine mimetype for " + fileName, e);
+				Utils.LOGGER.debug("Could not determine mimetype for " + fileName, e);
 				// just keep the old one
 				return mediaType;
 			}
@@ -520,7 +521,7 @@ public class Utils {
 		try {
 			m.marshal(rootElement, w);
 		} catch (JAXBException e) {
-			Utils.logger.error("Could not put content to string", e);
+			Utils.LOGGER.error("Could not put content to string", e);
 			throw new IllegalStateException(e);
 		}
 		return w.toString();
@@ -545,20 +546,20 @@ public class Utils {
 	}
 
 	public static String getAllXSDElementDefinitionsForTypeAheadSelection() {
-		Utils.logger.entry();
+		Utils.LOGGER.entry();
 		try {
 			return Utils.getAllXSDefinitionsForTypeAheadSelection(XSConstants.ELEMENT_DECLARATION);
 		} finally {
-			Utils.logger.exit();
+			Utils.LOGGER.exit();
 		}
 	}
 
 	public static String getAllXSDTypeDefinitionsForTypeAheadSelection() {
-		Utils.logger.entry();
+		Utils.LOGGER.entry();
 		try {
 			return Utils.getAllXSDefinitionsForTypeAheadSelection(XSConstants.TYPE_DEFINITION);
 		} finally {
-			Utils.logger.exit();
+			Utils.LOGGER.exit();
 		}
 	}
 
@@ -659,8 +660,8 @@ public class Utils {
 		instanceResourceClassName += "Resource";
 		instanceResourceClassName = packageName + "." + instanceResourceClassName;
 
-		Utils.logger.debug("idClassName: {}", idClassName);
-		Utils.logger.debug("className: {}", instanceResourceClassName);
+		Utils.LOGGER.debug("idClassName: {}", idClassName);
+		Utils.LOGGER.debug("className: {}", instanceResourceClassName);
 
 		// Get instance of id class having "type" as id
 		Class<? extends TOSCAComponentId> idClass;
