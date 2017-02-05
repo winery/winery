@@ -1,0 +1,3 @@
+- [ ] Change in CHANGELOG.md described
+- [ ] Tests created for changes
+- [ ] Screenshots added (for UI changes)
