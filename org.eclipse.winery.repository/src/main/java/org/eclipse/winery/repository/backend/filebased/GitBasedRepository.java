@@ -12,26 +12,20 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.ws.rs.core.MediaType;
-
-import org.eclipse.winery.common.RepositoryFileReference;
-
-import org.eclipse.jgit.api.AddCommand;
-import org.eclipse.jgit.api.CleanCommand;
-import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.winery.common.RepositoryFileReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.MediaType;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Allows to reset repository to a certain commit id
@@ -39,7 +33,7 @@ import org.slf4j.LoggerFactory;
 public class GitBasedRepository extends FilebasedRepository {
 
 	/**
-	 * Used for synchronizing the method {@link GitBasedRepository#addCommit()}
+	 * Used for synchronizing the method {@link GitBasedRepository#addCommit(RepositoryFileReference)}
 	 */
 	private static final Object COMMIT_LOCK = new Object();
 	private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
@@ -62,7 +56,7 @@ public class GitBasedRepository extends FilebasedRepository {
 		}
 		this.git = new Git(gitRepo);
 		if (!this.git.status().call().isClean()) {
-            this.addCommit();
+            this.addCommit(null);
 		}
 	}
 
@@ -72,14 +66,20 @@ public class GitBasedRepository extends FilebasedRepository {
 	 *
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
 	 */
-	public void addCommit() throws GitAPIException {
+	public void addCommit(RepositoryFileReference ref) throws GitAPIException {
 		synchronized (COMMIT_LOCK) {
 			AddCommand add = this.git.add();
 			add.addFilepattern(".");
 			add.call();
 
 			CommitCommand commit = this.git.commit();
-			commit.setMessage("Commit through Winery");
+			String message;
+			if (ref == null) {
+				message = "Commit through Winery";
+			} else {
+				message = ref.toString() + " was updated";
+			}
+			commit.setMessage(message);
 			commit.call();
 		}
 	}
@@ -115,7 +115,7 @@ public class GitBasedRepository extends FilebasedRepository {
 	public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
 		super.putContentToFile(ref, inputStream, mediaType);
 		try {
-			this.addCommit();
+			this.addCommit(ref);
 		} catch (GitAPIException e) {
 			LOGGER.trace(e.getMessage(), e);
 		}
