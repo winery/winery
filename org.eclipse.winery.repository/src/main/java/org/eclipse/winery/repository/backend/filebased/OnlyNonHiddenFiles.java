@@ -23,7 +23,7 @@ import org.eclipse.winery.repository.Constants;
  * Constants.SUFFIX_MIMETYPE
  */
 public class OnlyNonHiddenFiles implements DirectoryStream.Filter<Path> {
-	
+
 	@Override
 	public boolean accept(Path entry) throws IOException {
 		// we return only non-hidden files

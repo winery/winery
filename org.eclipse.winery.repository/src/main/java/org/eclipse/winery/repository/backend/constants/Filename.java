@@ -15,10 +15,10 @@ package org.eclipse.winery.repository.backend.constants;
  * TODO: check which of them can be removed
  */
 public class Filename {
-	
+
 	public static final String FILENAME_BIG_ICON = "bigIcon.png";
 	public static final String FILENAME_SMALL_ICON = "smallIcon.png";
-	
+
 	public static final String FILENAME_JSON_NODETEMPLATES = "nodetemplates.json";
 	public static final String FILENAME_JSON_PARENTCACHE = "parents.json";
 	public static final String FILENAME_JSON_PLAN = "Plan.json";
@@ -43,5 +43,5 @@ public class Filename {
 	public static final String FILENAME_PROPERTIES_SERVICETEMPLATE = "ServiceTemplate.properties";
 	public static final String FILENAME_PROPERTIES_TAGS = "tags.properties";
 	public static final String FILENAME_PROPERTIES_VISUALAPPEARANCE = "VisualAppearance.properties";
-	
+
 }

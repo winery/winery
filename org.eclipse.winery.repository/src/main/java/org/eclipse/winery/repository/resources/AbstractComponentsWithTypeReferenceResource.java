@@ -29,19 +29,19 @@ import org.restdoc.annotations.RestDocParam;
  * as these templates are directly nested in a TDefinitionsElement
  */
 public abstract class AbstractComponentsWithTypeReferenceResource<T extends AbstractComponentInstanceResource> extends AbstractComponentsResource<T> {
-	
+
 	/**
 	 * Creates the resource and sets the specified type
-	 * 
+	 *
 	 * In contrast to the other component instances in this package, we
 	 * additionally need the parameter "type" to set the type of the artifact
 	 * template.
-	 * 
+	 *
 	 * @param namespace Namespace of the template
 	 * @param name name attribute of the template
 	 * @param type: QName of the type, format: {namespace}localname is retrieved
 	 *            from namespace manager
-	 * 
+	 *
 	 * @return URI of the created Resource, null if resource already exists,
 	 *         URI_internalServerError if an internal server error occurred
 	 */
@@ -67,5 +67,5 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 		}
 		return creationResult.getResponse();
 	}
-	
+
 }

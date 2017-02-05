@@ -15,18 +15,18 @@ import org.eclipse.winery.common.ids.GenericId;
 
 /**
  * Holds a reference to a file "object" stored in the repository
- * 
+ *
  * Directories are NOT supported as we would have to reflect parent
  * relationships there, too.
- * 
+ *
  * One has to create TOSCAelementId-objects for directories (e.g., scc-data)
  */
 public class RepositoryFileReference implements Comparable<RepositoryFileReference> {
-	
+
 	protected final GenericId parent;
 	protected final String fileName;
-	
-	
+
+
 	/**
 	 * @param parent the id of the toscaElement the file is nested in
 	 * @param fileName the file name. <em>Must not</em> contain any illegal
@@ -43,15 +43,15 @@ public class RepositoryFileReference implements Comparable<RepositoryFileReferen
 		this.parent = parent;
 		this.fileName = fileName;
 	}
-	
+
 	public GenericId getParent() {
 		return this.parent;
 	}
-	
+
 	public String getFileName() {
 		return this.fileName;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof RepositoryFileReference) {
@@ -61,12 +61,12 @@ public class RepositoryFileReference implements Comparable<RepositoryFileReferen
 			return false;
 		}
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return this.getParent().hashCode() ^ this.getFileName().hashCode();
 	}
-	
+
 	@Override
 	public int compareTo(RepositoryFileReference o) {
 		int res;
@@ -76,7 +76,7 @@ public class RepositoryFileReference implements Comparable<RepositoryFileReferen
 		}
 		return res;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.getParent().toString() + " / " + this.getFileName();

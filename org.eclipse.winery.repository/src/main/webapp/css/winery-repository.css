@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,8 @@
  * Contributors:
  *    Uwe Breitenbücher - initial implementation
  *    Oliver Kopp - improvements
+ *    Nicole Keppler - add class for only showing namespaces
+ *    Philipp Meyer - add styles for pagination and tooltips
  *******************************************************************************/
 
 /* override jquery redmond theme */
@@ -29,8 +31,7 @@ body {
 #header {
 	width: 100%;
 	height: 87px;
-	background: url('../images/header_background.png');
-	background-repeat: no-repeat;
+	background: url('../images/header_background.png') no-repeat;
 }
 
 #showabout {
@@ -51,13 +52,13 @@ body {
 	margin-left: 30px;
 	padding-left: 10px;
 	padding-right: 10px;
-	border-radius: 10px 10px 0px 0px;
+	border-radius: 10px 10px 0 0;
 	line-height: 27px;
 	text-decoration: none;
-	font-family: arial;
+	font-family: arial, sans-serif;
 	color: #787878;
 	font-size: 14px;
-	text-shadow: 1px 1px 0px white;
+	text-shadow: 1px 1px 0 white;
 }
 
 #header > span {
@@ -68,7 +69,7 @@ body {
 
 #headerelements {
 	position: relative;
-	bottom: 0px;
+	bottom: 0;
 }
 
 #tabs {
@@ -82,7 +83,7 @@ body {
 	left: 50%;
 	margin: 10px 0 0 -500px;
 	padding-bottom: 15px;
-	border-radius: 0px 0px 18px 18px;
+	border-radius: 0 0 18px 18px;
 	border-bottom: 1px solid #AEAEAE;
 	border-right: 1px solid #AEAEAE;
 	box-shadow: 3px 3px 9px #888888;
@@ -117,7 +118,7 @@ body.modal-open > #mainContainer.overflown {
 }
 
 .listheading {
-	margin: 0px 0px 15px 0px;
+	margin: 0 0 15px 0;
 }
 
 .listcontent {
@@ -128,10 +129,8 @@ body.modal-open > #mainContainer.overflown {
 	width: 140px;
 }
 
-#buttonList > a {
-	width: 85px;
-	float: left;
-	margin-top: 10px;
+#buttonList > a, #buttonList > button {
+	margin-top: 5px;
 }
 
 .rightbutton {
@@ -219,10 +218,10 @@ a.styledTabMenuButton > div.left {
 a.styledTabMenuButton > div.center {
 	line-height: 29px;
 	text-decoration: none;
-	font-family: arial;
+	font-family: arial, sans-serif;
 	color: #787878;
 	font-size: 14px;
-	text-shadow: 1px 1px 0px white;
+	text-shadow: 1px 1px 0 white;
 	padding-left: 5px;
 }
 
@@ -261,8 +260,8 @@ div.mainContentContainer > div.top.twolines {
 div.mainContentContainer > div.middle {
 	width: 987px;
 	min-height: 350px;
-	padding: 0px 35px 0px 35px;
-	font-family: arial, verdana;
+	padding: 0 35px 0 35px;
+	font-family: arial, verdana, sans-serif;
 	font-size: 12px;
 	line-height: 19px;
 	color: #494949;
@@ -415,7 +414,7 @@ div.mainContentContainer > div.top > div.informationContainer {
 	width: 100%;
 
 	color: #787878;
-	font-family: arial;
+	font-family: arial, sans-serif;
 	font-size: 14px;
 	padding-left: 5px;
 	text-decoration: none;
@@ -472,7 +471,7 @@ div.entityContainer > div.center > div.informationContainer {
 	margin-top: 25px;
 	height: 45px;
 	color: #787878;
-	font-family: arial;
+	font-family: arial, sans-serif;
 	font-size: 12px;
 	padding-left: 5px;
 	text-decoration: none;
@@ -495,6 +494,33 @@ div.entityContainer > div.center > div.informationContainer > div.namespace {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
+}
+div.entityContainer > div.center > div.informationContainer > div.namespace > div.namespaceOnly {
+ 	font-size: 14px;
+ 	font-weight: bold;
+ 	height: 18px;
+	float:left;
+	white-space: nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	width: 260px;
+	direction: rtl;
+	text-align: left;
+}
+
+.namespace .tooltip {
+	text-shadow: none;
+	width: auto;
+}
+.namespace .tooltip .tooltip-inner {
+	width: auto;
+	max-width: 100%;
+}
+
+div.entityContainer > div.center > div.informationContainer > div.namespace > div.numberOfComponentInstances {
+	float: right;
+	margin-left: 20px;
+	text-shadow: none;
 }
 
 div.entityContainer.serviceTemplate > div.left {
@@ -716,8 +742,8 @@ input.qnameinput {
 	cursor: default;
 	float: right;
 	margin-right: 10px;
-	/* 0px is required to have the tabs below not being pushed down */
-	height: 0px;
+	/* 0 is required to have the tabs below not being pushed down */
+	height: 0;
 }
 
 #constraintlist {
@@ -741,17 +767,17 @@ input.qnameinput {
 	background: url('../images/overviewShadowMiddle.jpg');
 	width: 35px;
 	position: relative;
-	padding:0px;
+	padding: 0;
 }
 
 #overviewtopshadow {
-	top: 0px;
+	top: 0;
 	background-image: url("../images/overviewShadowTop.jpg");
 	height: 269px;
 }
 
 #overviewbottomshadow {
-	bottom: 0px;
+	bottom: 0;
 	background-image: url("../images/overviewShadowBottom.jpg");
 	height: 269px;
 	position: absolute;
@@ -789,7 +815,7 @@ div.colorpickerdiv {
 div.col-xs-4.bordered {
 	width: 32%;
 	border: 1px solid #DADADA;
-	padding: 0px;
+	padding: 0;
 
 }
 
@@ -821,14 +847,14 @@ div.titledTableBox {
 	margin-bottom: 5px;
 	margin-right: 10px;
 	border: 1px solid #aeaeae;
-	padding: 0px;
-	margin-left: 0px;
-	padding-left: 0px !important;
+	padding: 0;
+	margin-left: 0;
+	padding-left: 0 !important;
 }
 .listheading {
 	background: url("../images/header_background.png") repeat scroll 0 -39px transparent;
 	height: 30px;
-	margin: 0px;
+	margin: 0;
 	padding-left: 7px;
 	line-height: 30px;
 	font-size: 12px;
@@ -844,10 +870,10 @@ div.titledTableBox {
 }
 
 .listcontent {
-	border: 0px;
+	border: 0;
 	width: 100%;
-	margin: 0px;
-	border-top: 0px;
+	margin: 0;
+	border-top: 0;
 }
 
 .topologyTemplatePreviewSizing {
@@ -865,4 +891,28 @@ div.policiesContainer > div.header {
 
 div.policiesContainer > div.content > div.policy > textarea.policy_xml {
 	display: none;
+}
+
+#paginator {
+	display: flex;
+	margin-top: 10px;
+}
+
+#pageSize{
+	margin-right: 20px;
+	margin-left: 30px;
+}
+
+#pages{
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.pageSelector{
+	margin: 0 1px 0 1px;
+}
+
+.pageRepresentative{
+	font-size: large;
+	margin: 0 1px 0 1px;
 }

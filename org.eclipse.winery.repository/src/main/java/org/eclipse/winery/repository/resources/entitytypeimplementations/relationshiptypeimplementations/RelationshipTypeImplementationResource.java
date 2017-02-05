@@ -8,14 +8,12 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
@@ -24,16 +22,20 @@ import org.eclipse.winery.repository.resources.INodeTypeImplementationResourceOr
 import org.eclipse.winery.repository.resources.artifacts.ImplementationArtifactsResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.EntityTypeImplementationResource;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
+
 public class RelationshipTypeImplementationResource extends EntityTypeImplementationResource implements INodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
-	
+
 	public RelationshipTypeImplementationResource(RelationshipTypeImplementationId id) {
 		super(id);
 	}
-	
+
 	public TRelationshipTypeImplementation getRTI() {
 		return (TRelationshipTypeImplementation) this.getElement();
 	}
-	
+
 	/**
 	 * Even if both node type implementations and relationship type
 	 * implementations have implementation artifacts, there is no common
@@ -49,33 +51,33 @@ public class RelationshipTypeImplementationResource extends EntityTypeImplementa
 		}
 		return new ImplementationArtifactsResource(implementationArtifacts.getImplementationArtifact(), this);
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TRelationshipTypeImplementation();
 	}
-	
+
 	@Override
-	protected void copyIdToFields() {
-		this.getRTI().setTargetNamespace(this.getId().getNamespace().getDecoded());
-		this.getRTI().setName(this.getId().getXmlId().getDecoded());
+	public void copyIdToFields(TOSCAComponentId id) {
+		this.getRTI().setTargetNamespace(id.getNamespace().getDecoded());
+		this.getRTI().setName(id.getXmlId().getDecoded());
 	}
-	
+
 	@Override
 	public QName getType() {
 		return this.getRTI().getRelationshipType();
 	}
-	
+
 	@Override
 	public Response setType(QName type) {
 		this.getRTI().setRelationshipType(type);
 		return BackendUtils.persist(this);
 	}
-	
+
 	@Override
 	public Response setType(String typeStr) {
 		QName qname = QName.valueOf(typeStr);
 		return this.setType(qname);
 	}
-	
+
 }

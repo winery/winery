@@ -1,0 +1,93 @@
+// see http://www.gradle.org/docs/current/userguide/tutorial_java_projects.html
+apply plugin: 'java'
+
+// or use the application plugin - see https://docs.gradle.org/current/userguide/application_plugin.html
+// apply plugin: 'application'
+
+// enables generation of eclipse project configurations via `gradlew eclipse`
+apply plugin: 'eclipse'
+
+// see https://github.com/ben-manes/gradle-versions-plugin
+apply plugin: 'com.github.ben-manes.versions'
+
+group = 'org.opentosca.winery'
+
+// the version of the software is stored in gradle.properties
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+// if using the application plugin
+// mainClassName = "org.gradle.sample.Main"
+
+compileJava {
+	// files are all encoded using UTF-8
+	options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+	// files are all encoded using UTF-8
+	options.encoding = 'UTF-8'
+}
+
+javadoc {
+	options {
+		// files are all encoded using UTF-8
+		encoding = 'UTF-8'
+		version = true
+		author = true
+	}
+}
+
+configurations {
+	// if a project depends on apache commons logging, enable this line and include jcl-over-slf4j below.
+	// we will include jcl-over-slf4j to enable logback as backend for components requiring the old-fashioned apache commons logging
+	// all*.exclude group: 'commons-logging', name: 'commons-logging'
+}
+
+// Example dependency
+dependencies {
+	// logback is the "successor" of log4j
+	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.3'
+
+	// enables usage of logback instead of commons-logging
+	// compile group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.12', transitive: false
+
+	// in case [XLlogger](http://www.slf4j.org/extensions.html#extended_logger) is required
+	// compile group:'org.slf4j', name:'slf4j-ext', version:'1.7.12'
+
+    compile 'org.jgrapht:jgrapht-core:0.9.1'
+
+    compile 'org.apache.velocity:velocity:1.7'
+
+    compile 'com.fasterxml.jackson.core:jackson-core:2.6.1'
+
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.0.1'
+
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.1'
+
+    compile 'junit:junit:4.4'
+}
+
+repositories {
+	jcenter()
+}
+
+buildscript {
+	repositories {
+		// jcenter instead of mavenCentral, because of com.github.ben-manes.versions
+		jcenter()
+	}
+
+	dependencies {
+		// enables `gradlew dependencyUpdates -Drevision=release` showing possible updates on libraries
+		// see https://github.com/ben-manes/gradle-versions-plugin
+		classpath 'com.github.ben-manes:gradle-versions-plugin:0.9'
+	}
+}
+
+eclipse {
+	// setup your Java classpath variable GRADLE_USER_HOME to C:/users/<login>/.gradle
+	// we use GRADLE_USER_HOME instead of GRADLE_HOME, because this is also the environment variable honored by gradle: http://mrhaki.blogspot.de/2010/09/gradle-goodness-changing-gradle-user.html
+	// pathVariables GRADLE_USER_HOME: gradle.gradleUserHomeDir
+}

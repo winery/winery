@@ -18,9 +18,9 @@ import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdResource;
 
 public class RequirementResource extends EntityWithoutIdResource<TRequirementRef> {
-	
+
 	public RequirementResource(TRequirementRef o, int idx, List<TRequirementRef> list, IPersistable res) {
 		super(o, idx, list, res);
 	}
-	
+
 }

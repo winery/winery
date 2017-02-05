@@ -34,24 +34,24 @@ import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
 
 public class RequiredCapabilityTypeResource {
-	
+
 	private RequirementTypeResource requirementTypeResource;
-	
-	
+
+
 	public RequiredCapabilityTypeResource(RequirementTypeResource requirementTypeResource) {
 		this.requirementTypeResource = requirementTypeResource;
 	}
-	
+
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getHTML() {
 		return new Viewable("/jsp/entitytypes/requirementtypes/requiredcapabilitytype.jsp", this);
 	}
-	
+
 	public TRequirementType getRequirementType() {
 		return this.requirementTypeResource.getRequirementType();
 	}
-	
+
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response putRequiredCapabilityType(String type) {
@@ -68,13 +68,13 @@ public class RequiredCapabilityTypeResource {
 			throw new NotFoundException("Given QName could not be resolved to an existing capability type");
 		}
 	}
-	
+
 	@DELETE
 	public Response deleteRequiredCapabilityType() {
 		this.getRequirementType().setRequiredCapabilityType(null);
 		return BackendUtils.persist(this.requirementTypeResource);
 	}
-	
+
 	/** required for jsp **/
 	public Collection<QName> getAllCapabilityTypes() {
 		SortedSet<CapabilityTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(CapabilityTypeId.class);

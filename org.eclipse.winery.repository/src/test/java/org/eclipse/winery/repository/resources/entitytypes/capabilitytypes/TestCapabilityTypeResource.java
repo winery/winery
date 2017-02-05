@@ -26,26 +26,26 @@ import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.resources.TestResource;
 
 public class TestCapabilityTypeResource extends TestResource {
-	
+
 	private static final CapabilityTypeId id = new CapabilityTypeId(new Namespace("http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes", false), new XMLId("ContainerCapability", false));
-	
-	
+
+
 	@BeforeClass
 	public static void init() throws Exception {
 		// enable git-backed repository
 		new PrefsTestEnabledGitBackedRepository();
 	}
-	
+
 	@Before
 	public void setRevision() throws Exception {
 		((GitBasedRepository) Repository.INSTANCE).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
 	}
-	
+
 	@Test
 	public void getElementAsXMLString() throws IOException {
 		// ensure that no test object exists
 		Repository.INSTANCE.forceDelete(TestCapabilityTypeResource.id);
-		
+
 		CapabilityTypeResource res = new CapabilityTypeResource(TestCapabilityTypeResource.id);
 		String s = res.getDefinitionsAsXMLString();
 		Assert.assertNotNull(s);

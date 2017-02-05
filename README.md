@@ -1,34 +1,22 @@
-# Winery
+# Eclipse Winery
 Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these topologies.
-It is an Eclipse project and thus support is available through its project page https://projects.eclipse.org/projects/soa.winery.
-Winery is also part of the OpenTOSCA ecosystem where more information is available at http://www.opentosca.org.
+It is an Eclipse project and thus support is available through its project page <https://projects.eclipse.org/projects/soa.winery>.
+Winery is also part of the OpenTOSCA ecosystem where more information is available at <http://www.opentosca.org>.
 
-**The code and the linked libraries are NOT approved by Eclipse Legal. Dependencies are fetched from external mirrors and not from an Eclipse repository.**
+**The code and the linked libraries are NOT approved by Eclipse Legal.**
 
 ## Runtime Requirements
-* Java 7
+* Java 8
 * Servlet 3.0 capable container (e.g., Tomcat 7)
 
 ## Development Information
-
 Winery uses maven and [bower] for fetching dependencies and building.
-Bower has to be installed manually as described in the next section.
+Bower is installed automatically using the [frontend-maven-plugin].
+We recommend installing JDK8 by using `choco install jdk8` to be able to update it via `choco upgrade all`. See at the homepage of [chocolatey] for more information.
+Please follow the the next step "Making the wars" before importing the project into an IDE.
 
-## Install bower
-
-1. Install [nodejs]. Just use the latest version to get the latest node package manager (npm).
-1. Run `npm install -g bower`
-1. Ensure that `git` is in your path: Some javascript libraries are fetched via git.
-
-
-## Make models available
-
-The models are versioned aside from the main project.
-Go into each model directory (`org.eclipse.winery.model.csar.toscametafile`, `org.eclipse.winery.model.selfservice`, `org.eclipse.winery.model.tosca`) and do a `mvn install`.
-
-
-## Making the wars
-Run `mvn clean package`.
+### Making the wars
+Run `mvn package`.
 In case [bower] fails, try to investigate using `mvn package -X`.
 You can start bower manually in `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler` by issuing `bower install`.
 
@@ -92,41 +80,15 @@ This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 ** An Implementation Artifact may carry a `name` attribute
 ** The contents of properties of Boundary Definitions are processed in `lax` mode
 
-## Eclipse setup
-This howto is based on [Eclipse Standard 4.3].
-First of all, generate a war to have all dependencies fetched by maven.
+## IDE Setup
 
-### Required plugins
-* JST Server Adapters Extensions
-* Eclipse Java EE Developer Tools
-* Eclipse Java Web Developer Tools
-* [m2e-wtp]: Maven Integration for WTP
-* [AnyEdit](http://andrei.gmxhome.de/anyedit/) for ensuring that tabs are always used
-** Configure: Window -> Preferences -> General / Editors / AnyEdit Tools -> "Auto - Convert EXCLUSION file list" -> "Add filter" -> "*.java", "Convert...": 4 spaces for a tab
+### IntelliJ Ultimate setup
 
-### Optional plugins
-* [Eclipse Code Recommenders](http://www.eclipse.org/recommenders/)
-* [VJET JavaScript IDE](http://www.eclipse.org/proposals/webtools.vjet/)
+See [config/IntelliJ IDEA/README.md](config/IntelliJ IDEA/README.md).
 
-### Make Winery projects known to Eclipse
-1. Import all projects
-  * Use "Existing Maven Projects". `mvn eclips:m2eclipse` currently does not enable "maven" in eclipse.
-2. For each project: right click, –> Team –> Share Project –> Git –> Next –> check "Use or create repository in parent folder of project" –> Finish
-3. At `org.eclipse.winery.repository` and ` org.eclipse.winery.topologymodeler`:
-  * Right click -> Properties -> JavaScript -> Include Path -> Source -> Expand folder -> Select "Excluded" -> "Edit..."
-  * Exclusion Patterns: Add multiple -> Select "3rd party" -> "OK"
-  * Exclusion Patterns: Add multiple -> Select "components" -> "OK"
-  * "Finish" -> "OK"
+### Eclipse setup
 
-### Setup Tomcat
-1. Open servers window: Window -> Show View -> Other -> Server -> Servers
-2. New server wizard... -> Apache -> Tomcat v7.0 Server -> Next -> Winery -> Add -> Finish
-3. Rename the Server to "Apache Tomcat v7.0"
-
-Now you can see the Tomcat v7.0 Server at localhost [Stopped, Republish] in your server window.
-Select it and click on the green play button in the window.
-
-Now winery can be viewed at http://localhost:8080/winery/
+See [config/Eclipse/README.md](config/Eclipse/README.md).
 
 ### Configure Winery (optional)
 The repository location can be changed:
@@ -138,15 +100,18 @@ Copy `winery.properties` to `path-to-workspace\.metadata\.plugins\org.eclipse.ws
 * See [README.md of the topology modeler](org.eclipse.winery.topologymodeler/README.md)
 
 #### Libraries
-
-* Do NOT update to jQuery 2.1.0. When using with firefox, line 5571 in jquery.js fails: `divStyle is null`. That means `window.getComputedStyle( div, null );` returned null, too.
-* Do NOT update to jsPlumb 1.5.5. The new connection type determination does not play well together with Winery's usage of jsPlumb.
+* Do NOT update to jQuery 2.1.0.
+  When using with firefox, line 5571 in jquery.js fails: `divStyle is null`.
+  That means `window.getComputedStyle( div, null );` returned `null`, too.
+* Do NOT update to jsPlumb 1.5.5.
+  The new connection type determination does not play well together with Winery's usage of jsPlumb. See [jsPlumb#165].
 
 ## Acknowledgements
-The initial code contribution has been supported by the [Federal Ministry of Economics and Technology] as part of the [CloudCycle project] (01MD11023).
+The initial code contribution has been supported by the [Federal Ministry for Economic Affairs and Energy] as part of the [CloudCycle] project (01MD11023).
+Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the [SmartOrchestra] project (01MD16001F).
 
 ## License
-Copyright (c) 2012-2014 University of Stuttgart.
+Copyright (c) 2012-2016 University of Stuttgart.
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the [Eclipse Public License v1.0]
@@ -169,16 +134,20 @@ See http://www.opentosca.org/#publications for a list of publications in the Ope
 ### Programming
 * Joshua Bloch. Effective Java, 2nd edition. Addison-Wesley
 
+ [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
  [bug421284]: https://bugs.eclipse.org/bugs/show_bug.cgi?id=421284
  [bower]: https://github.com/bower/bower
+ [chocolatey]: http://chocolatey.org/
+ [CloudCycle]: http://www.cloudcycle.org/en/
  [DOI:10.1109/MIC.2012.43]: http://dx.doi.org/10.1109/MIC.2012.43
- [nodejs]: http://nodejs.org/download/
  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
- [Eclipse Standard 4.3]: http://www.eclipse.org/downloads/
- [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
- [Federal Ministry of Economics and Technology]: http://www.bmwi.de/EN/root.html
- [CloudCycle project]: http://www.cloudcycle.org/en/
- [m2eclipse]: http://eclipse.org/m2e/
+ [Eclipse IDE for Java EE Developers]: https://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/neon2
+ [Federal Ministry for Economic Affairs and Energy]: http://www.bmwi.de/EN/
+ [frontend-maven-plugin]: https://github.com/eirslett/frontend-maven-plugin
+ [jsPlumb#165]: https://github.com/jsplumb/jsPlumb/issues/165
  [m2e-wtp]: http://eclipse.org/m2e-wtp/
+ [m2eclipse]: http://eclipse.org/m2e/
+ [nodejs]: http://nodejs.org/download/
  [Scalable JavaScript Application Architecture]: http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012
+ [SmartOrchestra]: http://smartorchestra.de/en/
  [TerrificJS]: http://terrifically.org/

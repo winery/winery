@@ -40,21 +40,21 @@ import com.jayway.restassured.response.Response;
 
 /**
  * REST-based testing of requirement definitions
- * 
+ *
  * We use a fixed method sort order as we create resources in one test and work
  * with them in the next step
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestRequirementDefinitions {
-	
+
 	@BeforeClass
 	public static void init() throws Exception {
 		// enable git-backed repository
 		new PrefsTestEnabledGitBackedRepository();
-		
+
 		// we use a half-filled repository
 		((GitBasedRepository) Repository.INSTANCE).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
-		
+
 		// we test on the Amazon EC2 node type
 		// could be any other node type without requirement definitions
 		//
@@ -62,7 +62,7 @@ public class TestRequirementDefinitions {
 		RestAssured.urlEncodingEnabled = false;
 		RestAssured.basePath = "/org.eclipse.winery.repository/nodetypes/http%253A%252F%252Fwww.example.org%252Ftosca%252Fnodetypes/Amazon_EC2/requirementdefinitions";
 	}
-	
+
 	@Test
 	public void test01_NoRequirementDefinitions() throws Exception {
 		RestAssured.given()
@@ -114,14 +114,14 @@ public class TestRequirementDefinitions {
 				.statusCode(200)
 			.when()
 				.get("test/constraints/");
-		
+
 		// extract answer
 		JsonPath jsonPath = JsonPath.from(response.asString());
-		
+
 		Assert.assertEquals("One id", jsonPath.getList("").size(),  1);
-		
+
 		String id = jsonPath.getString("[0]");
-		
+
 		// TODO: check content
 		RestAssured
 				.given()

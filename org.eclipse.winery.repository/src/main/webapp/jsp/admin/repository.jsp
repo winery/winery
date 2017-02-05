@@ -23,59 +23,6 @@
 	<button class="btn btn-default" onclick="$('#upRepoZipDiag').modal('show');">Import Repository</button>
 </div>
 
-<%
-org.eclipse.winery.repository.backend.IRepository rep;
-rep = org.eclipse.winery.repository.Prefs.INSTANCE.getRepository();
-boolean isGitBasedRepo = (rep instanceof org.eclipse.winery.repository.backend.filebased.GitBasedRepository);
-
-// We only support the commit and reset buttons if we can authenticate at the repository
-// This is a hack to offer different versions of winery at dev.winery.opentosca.org and winery.opentosca.org
-
-	if (isGitBasedRepo) {
-%>
-<h4>Versioning</h4>
-<div>
-<button id="commitBtn" class="btn btn-default" onclick="doCommit();" data-loading-text="committing...">Commit</button>
-<button id="resetBtn" class="btn btn-danger" onclick="doReset();" data-loading-text="resetting...">Reset</button>
-</div>
-
-<script>
-function doCommit() {
-	$("#commitBtn").button("loading");
-	$.ajax({
-		url: "repository/?commit",
-		async: false,
-		error: function(jqXHR, textStatus, errorThrown) {
-			$("#commitBtn").button("reset");
-			vShowAJAXError("Could not commit", jqXHR, errorThrown);
-		},
-		success: function(data, textSTatus, jqXHR) {
-			$("#commitBtn").button("reset");
-			vShowSuccess("Successfully committed changes.");
-		}
-	});
-}
-
-function doReset() {
-	$("#resetBtn").button("loading");
-	$.ajax({
-		url: "repository/?reset",
-		async: false,
-		error: function(jqXHR, textStatus, errorThrown) {
-			$("#resetBtn").button("reset");
-			vShowAJAXError("Could not reset", jqXHR, errorThrown);
-		},
-		success: function(data, textSTatus, jqXHR) {
-			$("#resetBtn").button("reset");
-			vShowSuccess("Successfully reset to last known state.");
-		}
-	});
-}
-</script>
-<%
-}
-%>
-
 <t:simpleSingleFileUpload
 	title="Upload Repository Content"
 	text="Repository dump file"

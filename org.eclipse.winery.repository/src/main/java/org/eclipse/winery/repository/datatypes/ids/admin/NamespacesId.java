@@ -15,12 +15,12 @@ import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
 public class NamespacesId extends AdminId {
-	
+
 	private final static XMLId xmlId = new XMLId(IdNames.NAMESPACES, false);
-	
-	
+
+
 	public NamespacesId() {
 		super(NamespacesId.xmlId);
 	}
-	
+
 }

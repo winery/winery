@@ -21,36 +21,36 @@ package org.eclipse.winery.common.beans;
  * The name field is optional
  */
 public class NamespaceIdOptionalName {
-	
+
 	private String namespace;
 	private String id;
 	private String name = null;
-	
-	
+
+
 	public NamespaceIdOptionalName() {
-		
+
 	}
-	
+
 	public String getNamespace() {
 		return this.namespace;
 	}
-	
+
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
-	
+
 	public String getId() {
 		return this.id;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}

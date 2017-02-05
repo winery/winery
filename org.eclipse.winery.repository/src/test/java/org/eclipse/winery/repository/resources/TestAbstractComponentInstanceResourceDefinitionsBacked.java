@@ -22,33 +22,33 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestAbstractComponentInstanceResourceDefinitionsBacked extends TestResource {
-	
+
 	private static final CapabilityTypeId id = new CapabilityTypeId(TestResource.NS, new XMLId("testCapabilityType", false));
-	
-	
+
+
 	@Test
 	public void testPlainPersist() throws IOException {
 		// ensure that no test object exists
 		Repository.INSTANCE.forceDelete(TestAbstractComponentInstanceResourceDefinitionsBacked.id);
-		
+
 		CapabilityTypeResource res = new CapabilityTypeResource(TestAbstractComponentInstanceResourceDefinitionsBacked.id);
 		res.persist();
 		Assert.assertTrue("Element has to exist", Repository.INSTANCE.exists(TestAbstractComponentInstanceResourceDefinitionsBacked.id));
 	}
-	
+
 	@Test
 	public void testPersistWithData() throws IOException {
 		// ensure that no test object exists
 		Repository.INSTANCE.forceDelete(TestAbstractComponentInstanceResourceDefinitionsBacked.id);
-		
+
 		CapabilityTypeResource res = new CapabilityTypeResource(TestAbstractComponentInstanceResourceDefinitionsBacked.id);
 		res.getElement().getAny().add(new MockXMLElement());
 		res.persist();
 		Assert.assertTrue("Element has to exist", Repository.INSTANCE.exists(TestAbstractComponentInstanceResourceDefinitionsBacked.id));
-		
+
 		// reload data
 		res = new CapabilityTypeResource(TestAbstractComponentInstanceResourceDefinitionsBacked.id);
-		
+
 		Assert.assertEquals(1, res.getElement().getAny().size());
 	}
 }

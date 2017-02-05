@@ -37,12 +37,12 @@ import org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycompl
  */
 public class CompletionManager {
 
-	private static final Logger logger = Logger.getLogger(CompletionManager.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(CompletionManager.class.getName());
 
 	/**
 	 * {@link TOSCAAnalyzer} object to access the JAXB data model
 	 */
-	TOSCAAnalyzer toscaAnalyzer;
+	private final TOSCAAnalyzer toscaAnalyzer;
 
 	/**
 	 * Map containing the topology solutions.
@@ -51,12 +51,12 @@ public class CompletionManager {
 	 * is another map containing a possible topology solution and a boolean value that determines if the topology is complete.
 	 * When all topologies of the solution map are complete, it will be returned to Winery.
 	 */
-	Map<Integer, Map<TTopologyTemplate, Boolean>> solutions;
+	private final Map<Integer, Map<TTopologyTemplate, Boolean>> solutions;
 
 	/**
 	 * Whether a step-by-step or an one-step approach is conducted
 	 */
-	boolean stepByStep;
+	private final boolean stepByStep;
 
 	/**
 	 * Map containing {@link TNodeTemplate}s and {@link TRelationshipTemplate}s to be chosen by the user in the step-by-step approach.
@@ -76,12 +76,12 @@ public class CompletionManager {
 	/**
 	 * Whether a user interaction for choosing inserted {@link TRelationshipTemplate}s is necessary or not.
 	 */
-	boolean userInteraction = false;
+	private boolean userInteraction = false;
 
 	/**
 	 * The index of the topology solutions map.
 	 */
-	int index;
+	private int index;
 
 	/**
 	 * The class constructor.
@@ -146,7 +146,7 @@ public class CompletionManager {
 		// the choices will be returned in every step. A combination of the step-by-step approach and a deferred topology is not
 		// possible because every path of the depth search can lead to a dead end.
 		if (stepByStep && deferredRelations.isEmpty()) {
-			logger.info("Completing topology step by step.");
+			LOGGER.info("Completing topology step by step.");
 
 			List<TTopologyTemplate> solutionList = new ArrayList<TTopologyTemplate>();
 
@@ -162,7 +162,7 @@ public class CompletionManager {
 
 				solutionList.add(topology);
 
-				logger.info("Returning topology for user interaction");
+				LOGGER.info("Returning topology for user interaction");
 
 				return solutionList;
 
@@ -181,14 +181,14 @@ public class CompletionManager {
 				topology.getNodeTemplateOrRelationshipTemplate().remove(genericRelationship);
 
 				solutionList.add(topology);
-				logger.info("Returning topology for user interaction");
+				LOGGER.info("Returning topology for user interaction");
 
 				return solutionList;
 			} else if (unfulfilledRequirements.isEmpty() && placeHolders.isEmpty() && deferredRelations.isEmpty()) {
 
 				// the topology is complete, return it to Winery
 
-				logger.info("The topology is complete.");
+				LOGGER.info("The topology is complete.");
 
 				nodeTemplateUserInteraction = false;
 				solutionList.add(topology);
@@ -215,7 +215,7 @@ public class CompletionManager {
 					// check if the map still contains any incomplete topologies. If this is the case, the recursion will continue.
 					// Otherwise the solutions map is returned.
 					if (!solutions.values().contains(false)) {
-						logger.info("The topology is complete.");
+						LOGGER.info("The topology is complete.");
 						List<TTopologyTemplate> sol = new ArrayList<TTopologyTemplate>();
 
 						for (Integer i : solutions.keySet()) {
@@ -226,7 +226,7 @@ public class CompletionManager {
 				}
 			} else if (!unfulfilledRequirements.isEmpty() && placeHolders.isEmpty() && deferredRelations.isEmpty()) {
 
-				logger.info("The topology contains Requirements, but no Place Holders.");
+				LOGGER.info("The topology contains Requirements, but no Place Holders.");
 
 				// complete a topology containing Requirements in one step using the RequirementCompleter class
 				RequirementCompleter requirementCompleter = new RequirementCompleter(topology);
@@ -247,7 +247,7 @@ public class CompletionManager {
 
 			} else if (unfulfilledRequirements.isEmpty() && !placeHolders.isEmpty() || !unfulfilledRequirements.isEmpty() && !placeHolders.isEmpty()) {
 
-				logger.info("The topology contains one or more PlaceHolders.");
+				LOGGER.info("The topology contains one or more PlaceHolders.");
 
 				// complete a topology containing place holders in one step using the PlaceHolderCompleter class
 				PlaceHolderCompleter placeHolderCompleter = new PlaceHolderCompleter(topology);
@@ -291,7 +291,7 @@ public class CompletionManager {
 				}
 			} else if (!deferredRelations.isEmpty()) {
 
-				logger.info("The topology contains deferred RelationshipTemplates.");
+				LOGGER.info("The topology contains deferred RelationshipTemplates.");
 
 				// complete a topology containing deferred Relationship Templates in one step using the DeferredCompleter class
 				DeferredCompleter deferredCompleter = new DeferredCompleter(topology);

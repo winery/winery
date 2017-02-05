@@ -8,28 +8,14 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates;
-
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
@@ -52,17 +38,32 @@ import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ServiceTemplateResource.class);
-	
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplateResource.class);
+
+
 	public ServiceTemplateResource(ServiceTemplateId id) {
 		super(id);
 	}
-	
+
 	/** sub-resources **/
-	
+
 	@Path("topologytemplate/")
 	public TopologyTemplateResource getTopologyTemplateResource() {
 		if (this.getServiceTemplate().getTopologyTemplate() == null) {
@@ -73,7 +74,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		}
 		return new TopologyTemplateResource(this);
 	}
-	
+
 	@Path("plans/")
 	public PlansResource getPlansResource() {
 		TPlans plans = this.getServiceTemplate().getPlans();
@@ -83,12 +84,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		}
 		return new PlansResource(plans.getPlan(), this);
 	}
-	
+
 	@Path("selfserviceportal/")
 	public SelfServicePortalResource getSelfServicePortalResource() {
 		return new SelfServicePortalResource(this);
 	}
-	
+
 	@Path("boundarydefinitions/")
 	public BoundaryDefinitionsResource getBoundaryDefinitionsResource() {
 		TBoundaryDefinitions boundaryDefinitions = this.getServiceTemplate().getBoundaryDefinitions();
@@ -98,7 +99,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		}
 		return new BoundaryDefinitionsResource(this, boundaryDefinitions);
 	}
-	
+
 	@Override
 	public String getName() {
 		String name = this.getServiceTemplate().getName();
@@ -108,13 +109,13 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		}
 		return name;
 	}
-	
+
 	@Override
 	public Response setName(String name) {
 		this.getServiceTemplate().setName(name);
 		return BackendUtils.persist(this);
 	}
-	
+
 	// @formatter:off
 	@GET
 	@RestDoc(methodDescription="Returns the associated node type, which can be substituted by this service template.<br />" +
@@ -130,15 +131,15 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 			return Response.ok(qname.toString()).build();
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return null if there is no substitutable node type
 	 */
 	public QName getSubstitutableNodeType() {
 		return this.getServiceTemplate().getSubstitutableNodeType();
 	}
-	
+
 	@DELETE
 	@RestDoc(methodDescription = "Removes the association to substitutable node type")
 	@Path("substitutableNodeType")
@@ -147,62 +148,62 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		BackendUtils.persist(this);
 		return Response.noContent().build();
 	}
-	
+
 	public TServiceTemplate getServiceTemplate() {
 		return (TServiceTemplate) this.getElement();
 	}
-	
+
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TServiceTemplate();
 	}
-	
+
 	@Override
-	protected void copyIdToFields() {
-		this.getServiceTemplate().setId(this.getId().getXmlId().getDecoded());
-		this.getServiceTemplate().setTargetNamespace(this.getId().getNamespace().getDecoded());
+	public void copyIdToFields(TOSCAComponentId id) {
+		this.getServiceTemplate().setId(id.getXmlId().getDecoded());
+		this.getServiceTemplate().setName(id.getXmlId().getDecoded());
+		this.getServiceTemplate().setTargetNamespace(id.getNamespace().getDecoded());
 	}
-	
+
 	/**
 	 * Synchronizes the known plans with the data in the XML. When there is a
 	 * stored file, but no known entry in the XML, we guess "BPEL" as language
 	 * and "build plan" as type.
-	 * 
-	 * @throws IOException
 	 */
 	@Override
 	public void synchronizeReferences() {
 		// locally stored plans
 		TPlans plans = this.getServiceTemplate().getPlans();
-		
+
 		// plans stored in the repository
 		PlansId plansContainerId = new PlansId((ServiceTemplateId) this.getId());
 		SortedSet<PlanId> nestedPlans = Repository.INSTANCE.getNestedIds(plansContainerId, PlanId.class);
-		
-		Set<PlanId> plansToAdd = new HashSet<PlanId>();
+
+		Set<PlanId> plansToAdd = new HashSet<>();
 		plansToAdd.addAll(nestedPlans);
-		
+
 		if (nestedPlans.isEmpty()) {
 			if (plans == null) {
 				// data on the file system equals the data -> no plans
 				return;
 			} else {
+				//noinspection StatementWithEmptyBody
 				// we have to check for equality later
 			}
 		}
-		
+
 		if (plans == null) {
 			plans = new TPlans();
 			this.getServiceTemplate().setPlans(plans);
 		}
-		
+
 		for (Iterator<TPlan> iterator = plans.getPlan().iterator(); iterator.hasNext();) {
 			TPlan plan = iterator.next();
 			if (plan.getPlanModel() != null) {
 				// in case, a plan is directly contained in a Model element, we do not need to do anything
 				continue;
 			}
-			PlanModelReference planModelReference = plan.getPlanModelReference();
+			PlanModelReference planModelReference;
 			if ((planModelReference = plan.getPlanModelReference()) != null) {
 				String ref = planModelReference.getReference();
 				if ((ref == null) || ref.startsWith("../")) {
@@ -226,7 +227,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 				}
 			}
 		}
-		
+
 		// add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
 		List<TPlan> thePlans = plans.getPlan();
 		for (PlanId planId : plansToAdd) {
@@ -235,29 +236,28 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 				throw new IllegalStateException("Currently, only one file per plan is supported.");
 			}
 			RepositoryFileReference ref = files.iterator().next();
-			
+
 			TPlan plan = new TPlan();
 			plan.setId(planId.getXmlId().getDecoded());
 			plan.setName(planId.getXmlId().getDecoded());
 			plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
 			plan.setPlanLanguage(org.eclipse.winery.common.constants.Namespaces.URI_BPEL20_EXECUTABLE);
-			
+
 			// create a PlanModelReferenceElement pointing to that file
 			String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
 			// path is relative from the definitions element
 			path = "../" + path;
 			PlanModelReference pref = new PlanModelReference();
 			pref.setReference(path);
-			
+
 			plan.setPlanModelReference(pref);
 			thePlans.add(plan);
 		}
-		
+
 		try {
 			this.persist();
 		} catch (IOException e) {
 			throw new IllegalStateException("Could not persist resource", e);
 		}
-		return;
 	}
 }

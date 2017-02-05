@@ -17,17 +17,17 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 
 public abstract class EntityTypeId extends TOSCAComponentId {
-	
+
 	public EntityTypeId(Namespace namespace, XMLId xmlId) {
 		super(namespace, xmlId);
 	}
-	
+
 	public EntityTypeId(String ns, String id, boolean URLencoded) {
 		super(ns, id, URLencoded);
 	}
-	
+
 	public EntityTypeId(QName type) {
 		super(type);
 	}
-	
+
 }

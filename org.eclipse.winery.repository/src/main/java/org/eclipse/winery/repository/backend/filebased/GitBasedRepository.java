@@ -16,6 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.ws.rs.core.MediaType;
+
+import org.eclipse.winery.common.RepositoryFileReference;
+
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CleanCommand;
 import org.eclipse.jgit.api.CommitCommand;
@@ -26,11 +30,8 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.winery.common.RepositoryFileReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.MediaType;
 
 /**
  * Allows to reset repository to a certain commit id
@@ -40,9 +41,9 @@ public class GitBasedRepository extends FilebasedRepository {
 	/**
 	 * Used for synchronizing the method {@link GitBasedRepository#addCommit(RepositoryFileReference)}
 	 */
-	private static final Object commitLock = new Object();
-	private static final Logger logger = LoggerFactory.getLogger(GitBasedRepository.class);
-	
+	private static final Object COMMIT_LOCK = new Object();
+	private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
+
 	private final Repository gitRepo;
 	private final Git git;
 
@@ -56,24 +57,24 @@ public class GitBasedRepository extends FilebasedRepository {
 	public GitBasedRepository(String repositoryLocation) throws IOException, NoWorkTreeException, GitAPIException {
 		super(repositoryLocation);
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		this.gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
+		this.gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(true).build();
 		if (!new File(this.determineRepositoryPath(repositoryLocation) + File.separator + ".git").exists()) {
-		    this.gitRepo.create();
+			this.gitRepo.create();
 		}
 		this.git = new Git(this.gitRepo);
 		if (!this.git.status().call().isClean()) {
-            this.addCommit(null);
+			this.addCommit(null);
 		}
 	}
-
+	
 	/**
 	 * This method is is synchronized with an extra static object (meaning all instances are locked).
 	 * This is to ensure that every commit only has one change.
-	 * 
+	 *
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
 	 */
 	public void addCommit(RepositoryFileReference ref) throws GitAPIException {
-		synchronized (commitLock) {
+		synchronized (COMMIT_LOCK) {
 			AddCommand add = this.git.add();
 			add.addFilepattern(".");
 			add.call();
@@ -121,7 +122,7 @@ public class GitBasedRepository extends FilebasedRepository {
 		try {
 			this.addCommit(ref);
 		} catch (GitAPIException e) {
-			logger.trace(e.getMessage(), e);
+			LOGGER.trace(e.getMessage(), e);
 		}
 	}
 }

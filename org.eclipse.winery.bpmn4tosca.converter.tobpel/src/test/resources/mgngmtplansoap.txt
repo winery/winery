@@ -1,0 +1,20 @@
+<body>
+<p:planInput xmlns:p="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">
+      <!--Exactly 1 occurrence-->
+      <containerAPIServiceInstanceURL xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">http://localhost:1337/containerapi/instancedata</containerAPIServiceInstanceURL>
+      <!--Exactly 1 occurrence-->
+      <csarId xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">ToscaManagementTopology.csar</csarId>
+	  <!--Exactly 1 occurrence-->
+	  <serviceTemplateId xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">{http://tempuri.org}ToscaManagementTopology</serviceTemplateId>
+      <!--Exactly 1 occurrence-->
+      <serviceTemplateIdNamespaceURI xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">http://tempuri.org</serviceTemplateIdNamespaceURI>
+      <!--Exactly 1 occurrence-->
+      <serviceTemplateIdLocalPart xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">ToscaManagementTopology</serviceTemplateIdLocalPart>
+      <!--Exactly 1 occurrence-->
+      <serviceInstanceId xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"></serviceInstanceId>
+      <!--Exactly 1 occurrence-->
+      <correlationId xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">corr123</correlationId>
+      <!--Exactly 1 occurrence-->
+      <planCallbackUrl xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">http://iaas.uni-stuttgart.de/plancallback</planCallbackUrl>
+   </p:planInput>
+</body>

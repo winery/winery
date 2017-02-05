@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -10,6 +10,7 @@
  * Contributors:
  *    Yves Schubert - initial API and implementation and/or initial documentation
  *    Oliver Kopp - minor improvements
+ *    Lukas Balzer, Nicole Keppler - switch to bootstrap-touchspin
  *******************************************************************************/
 --%>
 <%@tag description="A spinner with the possibility to set to inphty via button" pageEncoding="UTF-8"%>
@@ -47,46 +48,55 @@ We decided to use JSP tags to avoid an additional JavaScript library
 	<label for="${id}">${label}</label>
 	<div class="row">
 		<div class="col-lg-${width}">
-		    <div class="input-group">
-				<input id="${id}" class="spinner form-control" name="${name}" type="text" <c:if test="${not empty changedfunction}">onblur="${changedfunction}();"</c:if>/>
-				<c:if test="${not empty withinphty}">
-					<span class="input-group-addon" style="cursor: pointer; border-left:0" onclick="setToInfin('${id}'<c:if test="${not empty changedfunction}">, ${changedfunction}</c:if>);">&infin;</span>
-				</c:if>
+			<div class="input-sm">
+				<input id="${id}" type="text" value="" name="${name}"
+					   <c:if test="${not empty changedfunction}">onblur="${changedfunction}();"</c:if> />
 			</div>
 		</div>
 	</div>
 </div>
 
 <script>
-<%--
-included multiple times.
-Drawback when not using HTML5 components and keeping the JavaScript functions closed to the HTML code
---%>
-function setToInfin(id, changedFunction) {
-	var spinner = $("#" + id);
-	spinner.val('∞'); // &inphty; - jQuery does not decode that, but places the plain text. Therefore, we directly pass the char we want
-	if (changedFunction !== undefined) {
-		changedFunction();
+	<%--
+	included multiple times.
+	Drawback when not using HTML5 components and keeping the JavaScript functions closed to the HTML code
+	--%>
+	function setToInfin(id, changedFunction) {
+		var spinner = $("#" + id);
+		spinner.val('∞'); // &inphty; - jQuery does not decode that, but places the plain text. Therefore, we directly pass the char we want
+		if (changedFunction !== undefined) {
+			changedFunction();
+		}
 	}
-}
 
-$(function() {
-	var param = {}
-	<c:if test="${not empty min}">
-	param.minimum = "${min}";
-	</c:if>
-	<c:if test="${empty max}">
-	param.maximum = 1000;
-	</c:if>
+	$(function() {
+		var param = {}
+		<c:if test="${not empty min}">
+		param.min = "${min}";
+		</c:if>
+		<c:if test="${empty max}">
+		param.max = 1000;
+		</c:if>
+		<c:if test="${not empty withinphty}">
+		param.postfix='∞';
+		param.postfix_extraclass= "btn btn-default";
+		</c:if>
+		param.verticalbuttons = true;
+		param.verticalupclass= 'glyphicon glyphicon-chevron-up';
+		param.verticaldownclass= 'glyphicon glyphicon-chevron-down';
+		//use touchspin plugin
+		$("#${id}").TouchSpin(param);
+		<c:if test="${not empty withinphty}">
+		$("#${id}").parent().find('.bootstrap-touchspin-postfix').on('mousedown',
+				function(){
+					//register mousedown function for calling the setToInf function
+					setToInfin('${id}'<c:if test="${not empty changedfunction}">, ${changedfunction}</c:if>);
+				});
+		</c:if>
+		<c:if test="${not empty changedfunction}">
+		$("#${id}").on('valueChanged', ${changedfunction});
+		</c:if>
 
-	// use bootstrap-spinedit plugin
-	$("#${id}").spinedit(param);
-
-	<c:if test="${not empty changedfunction}">
-	$("#${id}").on('valueChanged', ${changedfunction});
-	</c:if>
-
-});
+	});
 
 </script>
-

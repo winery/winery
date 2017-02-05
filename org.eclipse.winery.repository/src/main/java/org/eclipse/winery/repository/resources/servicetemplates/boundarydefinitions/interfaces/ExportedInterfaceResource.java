@@ -21,14 +21,14 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
 
 public class ExportedInterfaceResource extends EntityWithIdResource<TExportedInterface> {
-	
+
 	public ExportedInterfaceResource(IIdDetermination<TExportedInterface> idDetermination, TExportedInterface o, int idx, List<TExportedInterface> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
 	}
-	
+
 	@Path("exportedoperations/")
 	public ExportedOperationsResource getExportedOperationsResource() {
 		return new ExportedOperationsResource(this.o.getOperation(), this.res);
 	}
-	
+
 }
