@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids;
 
+import org.eclipse.winery.common.Util;
+
 /**
  * Superclass for all IDs appearing in Winery. These are:
  * <ul>
@@ -51,6 +53,7 @@ public abstract class GenericId implements Comparable<GenericId> {
 	
 	@Override
 	public String toString() {
-		return this.getClass().toString() + " / " + this.getXmlId().toString();
+		String idName = Util.getEverythingBetweenTheLastDotAndBeforeId(this.getClass());
+		return idName + " / " + this.getXmlId().toString();
 	}
 }

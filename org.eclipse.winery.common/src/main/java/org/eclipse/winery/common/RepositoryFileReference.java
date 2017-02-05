@@ -79,6 +79,6 @@ public class RepositoryFileReference implements Comparable<RepositoryFileReferen
 	
 	@Override
 	public String toString() {
-		return this.getParent().toString() + "/" + this.getFileName();
+		return this.getParent().toString() + " / " + this.getFileName();
 	}
 }

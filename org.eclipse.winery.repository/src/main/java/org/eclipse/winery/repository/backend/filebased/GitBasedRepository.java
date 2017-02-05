@@ -13,34 +13,20 @@
 package org.eclipse.winery.repository.backend.filebased;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CleanCommand;
 import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
-import org.eclipse.jgit.api.errors.CheckoutConflictException;
-import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoHeadException;
-import org.eclipse.jgit.api.errors.NoMessageException;
-import org.eclipse.jgit.api.errors.UnmergedPathsException;
-import org.eclipse.jgit.api.errors.WrongRepositoryStateException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.repository.Prefs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +38,7 @@ import javax.ws.rs.core.MediaType;
 public class GitBasedRepository extends FilebasedRepository {
 
 	/**
-	 * Used for synchronizing the method {@link GitBasedRepository#addCommit()}
+	 * Used for synchronizing the method {@link GitBasedRepository#addCommit(RepositoryFileReference)}
 	 */
 	private static final Object commitLock = new Object();
 	private static final Logger logger = LoggerFactory.getLogger(GitBasedRepository.class);
@@ -71,12 +57,12 @@ public class GitBasedRepository extends FilebasedRepository {
 		super(repositoryLocation);
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		this.gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
-		if (!new File(this.determineRepositoryPath(repositoryLocation) + "/.git").exists()) {
+		if (!new File(this.determineRepositoryPath(repositoryLocation) + File.separator + ".git").exists()) {
 		    this.gitRepo.create();
 		}
 		this.git = new Git(this.gitRepo);
 		if (!this.git.status().call().isClean()) {
-            this.addCommit();
+            this.addCommit(null);
 		}
 	}
 
@@ -86,14 +72,18 @@ public class GitBasedRepository extends FilebasedRepository {
 	 * 
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
 	 */
-	public void addCommit() throws GitAPIException {
+	public void addCommit(RepositoryFileReference ref) throws GitAPIException {
 		synchronized (commitLock) {
 			AddCommand add = this.git.add();
 			add.addFilepattern(".");
 			add.call();
 
 			CommitCommand commit = this.git.commit();
-			commit.setMessage("Commit through Winery");
+			String message = "Commit through Winery";
+			if (ref != null) {
+				message = ref.toString() + " was updated";
+			}
+			commit.setMessage(message);
 			commit.call();
 		}
 	}
@@ -129,7 +119,7 @@ public class GitBasedRepository extends FilebasedRepository {
 	public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
 		super.putContentToFile(ref, inputStream, mediaType);
 		try {
-			this.addCommit();
+			this.addCommit(ref);
 		} catch (GitAPIException e) {
 			logger.trace(e.getMessage(), e);
 		}
