@@ -44,9 +44,7 @@ public class GitBasedRepository extends FilebasedRepository {
 	private static final Object COMMIT_LOCK = new Object();
 	private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
 
-	private final Repository gitRepo;
 	private final Git git;
-
 
 	/**
 	 * @param repositoryLocation the location of the repository
@@ -57,35 +55,51 @@ public class GitBasedRepository extends FilebasedRepository {
 	public GitBasedRepository(String repositoryLocation) throws IOException, NoWorkTreeException, GitAPIException {
 		super(repositoryLocation);
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		this.gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(true).build();
+		Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(true).build();
 		if (!new File(this.determineRepositoryPath(repositoryLocation) + File.separator + ".git").exists()) {
-			this.gitRepo.create();
+			gitRepo.create();
 		}
-		this.git = new Git(this.gitRepo);
+		this.git = new Git(gitRepo);
 		if (!this.git.status().call().isClean()) {
-			this.addCommit(null);
+			this.addCommit("Files changed externally.");
 		}
 	}
-	
+
 	/**
-	 * This method is is synchronized with an extra static object (meaning all instances are locked).
+	 * This method is synchronized with an extra static object (meaning all instances are locked).
+	 * The same lock object is also used in {@link #addCommit(RepositoryFileReference)}.
 	 * This is to ensure that every commit only has one change.
 	 *
+	 * @param message The message that is used in the commit.
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
 	 */
-	public void addCommit(RepositoryFileReference ref) throws GitAPIException {
+	public void addCommit(String message) throws GitAPIException {
 		synchronized (COMMIT_LOCK) {
 			AddCommand add = this.git.add();
 			add.addFilepattern(".");
 			add.call();
 
 			CommitCommand commit = this.git.commit();
-			String message = "Commit through Winery";
+			commit.setMessage(message);
+			commit.call();
+		}
+	}
+
+	/**
+	 * This method is synchronized with an extra static object (meaning all instances are locked).
+	 * The same lock object is also used in {@link #addCommit(String)}.
+	 * This is to ensure that every commit only has one change.
+	 *
+	 * @param ref RepositoryFileReference to the file that was changed.
+	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
+	 */
+	public void addCommit(RepositoryFileReference ref) throws GitAPIException {
+		synchronized (COMMIT_LOCK) {
+			String message = "Files changed externally.";
 			if (ref != null) {
 				message = ref.toString() + " was updated";
 			}
-			commit.setMessage(message);
-			commit.call();
+			addCommit(message);
 		}
 	}
 
