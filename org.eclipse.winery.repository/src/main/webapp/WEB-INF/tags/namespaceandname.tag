@@ -59,7 +59,7 @@
                         <a href="${uri}/?csar" class="exportButton"></a>
                         <a href="${uri}/?edit" class="editButton"></a>
                             <%-- we need double encoding of the URL as the passing to javascript: decodes the given string once --%>
-                        <a href="javascript:deleteCI('${wc:escapeHtml4(t.xmlId.decoded)}', '${uri}/');" class="deleteButton" onclick="element = $(this).parent().parent().parent();"></a>
+                        <a href="javascript:deleteCI('${wc:escapeHtml4(t.xmlId.decoded)}', '${v:URLencode(uri)}/');" class="deleteButton" onclick="element = $(this).parent().parent().parent();"></a>
                     </div>
                 </div>
                 <div class="right"></div>
