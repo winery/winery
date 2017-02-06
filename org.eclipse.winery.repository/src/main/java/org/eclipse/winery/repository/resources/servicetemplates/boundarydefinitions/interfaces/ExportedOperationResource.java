@@ -37,11 +37,11 @@ import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExportedOperationResource extends EntityWithIdResource<TExportedOperation> {
 
@@ -54,7 +54,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getJSONRepresentation() {
+	public Response getJSON() {
 		JsonFactory jsonFactory = new JsonFactory();
 		StringWriter sw = new StringWriter();
 		try {
@@ -73,7 +73,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 			ExportedOperationResource.LOGGER.error(e.getMessage(), e);
 			throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build());
 		}
-		return sw.toString();
+		return Response.ok(sw.toString()).build();
 	}
 
 	/**
