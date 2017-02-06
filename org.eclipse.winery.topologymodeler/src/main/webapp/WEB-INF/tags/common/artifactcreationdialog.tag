@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,8 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Niko Stadelmaier - removal of select2 library
+ *    Philipp Meyer - removal of select2 library
  *******************************************************************************/
 --%>
 <%@tag description="Dialog for adding an implementation / deployment artifact" pageEncoding="UTF-8"%>
@@ -68,7 +70,7 @@ function addArtifact() {
 
 	// make a clean form
 	disabledFields.forEach(function(element) {
-		$("#"+element).attr("disabled", "disabled");
+		$("#"+element).prop("disabled", "true");
 	});
 	$("input[name='artifactTemplateCreation']").attr("disabled", "disabled");
 
@@ -333,16 +335,9 @@ function openAdd${name}ArtifactDiag() {
 		}
 	});
 }
-
-requirejs(["select2"], function() {
-	$("#interfaceName").select2();
 	<c:if test="${not isDeploymentArtifact}">
 	// the dependend select cannot be a select2 until https://github.com/ivaynberg/select2/issues/1656 is resolved
-	//$("#operationName").select2();
 	</c:if>
-	$("#artifactType").select2();
-	$("#artifactTemplateToLink").select2();
-});
 
 requirejs(['tmpl', 'jquery.ui.widget', 'jquery.fileupload', 'jquery.fileupload-ui'], function() {
 	$('#fileupload').fileupload({

@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -10,6 +10,7 @@
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
  *    Tobias Binz - communication with the nested iframe
+ *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 
@@ -26,7 +27,7 @@
 <pol:policydiag allPolicyTypes="${it.allPolicyTypes}" repositoryURL="${it.repositoryURL}" />
 
 <b:browseForServiceTemplatePropertyReqOrCap definedPropertiesAsJSONString="${it.definedPropertiesAsJSONString}" />
-
+<%-- TODO: check refactoring for select2--%>
 <div class="modal fade" id="propertyMappingDiag">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -421,6 +422,14 @@
 
 	</div>
 
+	<script type="text/x-tmpl" id="select-template">
+
+		{% for (var i=0; i<o.source.length; i++) { %}
+    		<option value={% o.source[i].id %}>{%=o.source[i].name%}</option>
+		{% } %}
+
+	</script>
+
 	<script>
 	// initialize interface selection
 	require(["winery-support-common"], function(wsc) {
@@ -428,14 +437,14 @@
 			$("#interface").on("change", function() {
 				updateOperationsField();
 			});
-			if ($("#interface").select2("val") != "") {
+			if ($("#interface").val()!= "") {
 				updateOperationsField();
 			}
 		}, true);
 	});
 
 	function getInterfacesAndInterfaceURLs() {
-		var iface = $("#interface").select2("val");
+		var iface = $("#interface").val();
 		iface = encodeID(iface);
 
 		var ifacesURL = "boundarydefinitions/interfaces/";
@@ -448,7 +457,7 @@
 
 	function getOperationsAndOperationURLs() {
 		var ifaceURL = getInterfacesAndInterfaceURLs().ifaceURL;
-		var operation = $("#operation").select2("val");
+		var operation = $("#operation").val();
 		operation = encodeID(operation);
 
 		var operationsURL = ifaceURL + "exportedoperations/";
@@ -463,7 +472,7 @@
 	 * Updates the field of the exported operation
 	 */
 	function updateOperationsField() {
-		var iface = $("#interface").select2("val");
+		var iface = $("#interface").val();
 		var urls = getInterfacesAndInterfaceURLs();
 
 		$.ajax({
@@ -497,7 +506,7 @@
 	}
 
 	$("#operation").on("change", function() {
-		var operation = $("#operation").select2("val");
+		var operation = $("#operation").val();
 		var urls = getOperationsAndOperationURLs();
 		$.ajax({
 			url: urls.operationURL,
@@ -524,13 +533,13 @@
 		});
 
 		updateTarget();
-	})
+	});
 
 	/**
 	 * Updates the content at "Target": Reference and Target Interface/Operation
 	 */
 	function updateTarget() {
-		var operation = $("#operation").select2("val");
+		var operation = $("#operation").val();
 		if (operation != "") {
 			var urls = getOperationsAndOperationURLs();
 			// At the beginning of the usage, there is no operation selected
@@ -898,9 +907,11 @@ function updateTargetOperation(operationNameToSelect) {
 	}
 
 	if (select2data != null) {
-		$("#TargetOperation").select2({
-			data:select2data
-		});
+	var convDataArray = select2data.map(function(item){
+		return {id: item.id, name: item.text};
+	});
+
+		$("#TargetOperation").html(tmpl("select-template", convDataArray));
 		var valueToSelect = null;
 		if ((typeof operationNameToSelect !== "undefined") && (operationNameToSelect != null)) {
 			valueToSelect = operationNameToSelect;
@@ -912,7 +923,7 @@ function updateTargetOperation(operationNameToSelect) {
 			}
 		}
 		if (valueToSelect != null) {
-			$("#TargetOperation").select2('val', valueToSelect);
+			$("#TargetOperation").val(valueToSelect);
 		}
 	}
 
@@ -932,7 +943,10 @@ function updateTargetInterfaceAndOperationFromInterfaceURL(ifaceURL, interfaceNa
 		$("#TargetInterface").data("url1", ifaceURL[0]);
 		$("#TargetInterface").data("url2", ifaceURL[1]);
 	}
-	$("#TargetInterface").select2({data:select2data});
+	var convDataArray = select2data.map(function(item){
+		return {id: item.id, name: item.text};
+	});
+	$("#TargetInterface").html(tmpl("select-template", convDataArray));
 
 	var valueToSelect = null;
 	if ((typeof interfaceNameToSelect !== "undefined") && (interfaceNameToSelect != null)) {
@@ -945,7 +959,7 @@ function updateTargetInterfaceAndOperationFromInterfaceURL(ifaceURL, interfaceNa
 		}
 	}
 	if (valueToSelect != null) {
-		$("#TargetInterface").select2('val', valueToSelect);
+		$("#TargetInterface").val(valueToSelect);
 	}
 
 	updateTargetOperation(operationNameToSelect);
@@ -1001,7 +1015,7 @@ $("#relationshipTemplateRefForOperation").on("change", function() {
 });
 
 function storeTargetInterface(val) {
-	val = val || $("#TargetInterface").select2("val");
+	val = val || $("#TargetInterface").val();
 	var url = $("#operation").data("url") + "interfacename";
 	 // when selecting a new operation, both targetinterface and targetoperation are updated; this leads to race conditions at the backend and one chang would be lost. Therefore, we do the calls synchronously
 	$.ajax({
@@ -1018,7 +1032,7 @@ function storeTargetInterface(val) {
 }
 
 function storeTargetOperation(val) {
-	val = val || $("#TargetOperation").select2("val");
+	val = val || $("#TargetOperation").val();
 	var url = $("#operation").data("url") + "operationname";
 	// when selecting a new operation, both targetinterface and targetoperation are updated; this leads to race conditions at the backend and one chang would be lost. Therefore, we do the calls synchronously
 	$.ajax({
@@ -1051,7 +1065,7 @@ function deleteCurrentlySelectedInterface() {
 			type: "DELETE"
 		}).done(function () {
 			require(["winery-support-common"], function (wsc) {
-				wsc.removeItemFromSelect2Field($("#interface"), $("#interface").select2("data").id);
+				wsc.removeItemFromSelect2Field($("#interface"), $("#interface").val())
 				vShowSuccess("Successfully deleted interface");
 			});
 		}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -1068,7 +1082,7 @@ function deleteCurrentlySelectedOperation() {
 			type: "DELETE"
 		}).done(function () {
 			require(["winery-support-common"], function (wsc) {
-				wsc.removeItemFromSelect2Field($("#operation"), $("#operation").select2("data").id);
+				wsc.removeItemFromSelect2Field($("#operation"), $("#operation").val());
 				vShowSuccess("Successfully deleted operation");
 			});
 		}).fail(function(jqXHR, textStatus, errorThrown) {
