@@ -59,6 +59,9 @@
     <prerequisites>
         <maven>3.0.3</maven>
     </prerequisites>
+	<properties>
+		<skipTests>true</skipTests>
+	</properties>
 	<modules>
 		<module>org.eclipse.winery.common</module>
 		<module>org.eclipse.winery.repository</module>
@@ -87,6 +90,25 @@
 						<phase>process-resources</phase>
 						<goals>
 							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.8</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>
