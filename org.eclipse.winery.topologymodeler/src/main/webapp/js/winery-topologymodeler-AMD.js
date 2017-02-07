@@ -23,9 +23,11 @@ define(
 
 		var topologyTemplateURL;
 
-		var module = {
+		return {
+			openChooseTopologyToImportDiag: openChooseTopologyToImportDiag,
+			importTopology: importTopology,
 			save: save,
-			setTopologyTemplateURL: function(url) {
+			setTopologyTemplateURL: function (url) {
 				topologyTemplateURL = url;
 			},
 			getTopologyTemplateAsXML: getTopologyTemplateAsXML,
@@ -33,7 +35,6 @@ define(
 			TOSCA_NAMESPACE: TOSCA_NAMESPACE,
 			TOSCA_WINERY_EXTENSIONS_NAMESPACE: TOSCA_WINERY_EXTENSIONS_NAMESPACE
 		};
-		return module;
 
 		function writeReqOrCaps(elements, xmlw, globalWrapperElementName, singleElementWrapperName) {
 			if (elements.length != 0) {
@@ -52,6 +53,14 @@ define(
 				xmlw.writeEndElement();
 			}
 
+		}
+
+		function openChooseTopologyToImportDiag() {
+			$("#chooseTopologyToImportDiag").modal("show");
+		}
+
+		function importTopology() {
+			console.log("I'm here");
 		}
 
 		/**

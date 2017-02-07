@@ -439,7 +439,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 
 		<button data-toggle="button" class="btn btn-default" onclick="togglePrintView(!$(this).hasClass('active'));">Print View</button>
 
-		<button class="btn btn-success topbutton" onclick="winery.events.fire(winery.events.name.command.IMPORT_TOPOLOGY);" id="importBtn">Import Topology</button>
+		<button class="btn btn-default topbutton" onclick="winery.events.fire(winery.events.name.command.IMPORT_TOPOLOGY);" id="importBtn">Import Topology</button>
 
 		<div class="btn-group">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Other <span class="caret"></span></button>
@@ -639,8 +639,10 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 </script>
 <script>
 require(["winery-topologymodeler-AMD"], function(wt) {
+	winery.events.register(winery.events.name.command.IMPORT_TOPOLOGY, wt.openChooseTopologyToImportDiag);
 	winery.events.register(winery.events.name.command.SAVE, wt.save);
 	wt.setTopologyTemplateURL("<%=topologyTemplateURL%>");
+
 });
 </script>
 <script>
@@ -1486,6 +1488,25 @@ function onDoneRegisterConnectionTypesAndConnectNodeTemplates() {
 <script type="text/x-tmpl" id="tmpl-option">
 <option value="{%=o.value%}"{% if (o.selected) { %} selected="selected"{% } %}>{%=o.text%}</option>
 </script>
+
+<div class="modal fade" id="chooseTopologyToImportDiag">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Select Topology to Import</h4>
+			</div>
+			<div class="modal-body">
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" onclick="require(['winery-topologymodeler-AMD'], function(wt) {wt.importTopology();})">Add</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 	</body>
 </html>
