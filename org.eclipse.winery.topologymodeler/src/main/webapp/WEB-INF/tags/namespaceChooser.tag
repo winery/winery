@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,7 +9,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
- *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 <%@tag description="places a bootstrap form control to chooose a namespace. A new namespace can be created" pageEncoding="UTF-8"%>
@@ -38,19 +37,16 @@
 </div>
 
 <script>
-	// we have to use data as select2 does not allow "createSearchChoice" when using <select> as underlying html element
-require("bootstrap3-typeahead", function(){
-	$("#${idOfInput}").typeahead({
-
-		source:[
-			<c:forEach var="ns" items="${allNamespaces}" varStatus="loop">
-			{id:"${ns}",name:"${ns}"}<c:if test="${!loop.last}">,</c:if>
-			</c:forEach>
-		],
-		autoSelect : true,
-		showHintOnFocus: true
-	});
-	$("#${idOfInput}").val("${selected}");
-	$("#${idOfInput}").typeahead("lookup", "${selected}");
-})
+// we have to use data as select2 does not allow "createSearchChoice" when using <select> as underlying html element
+$("#${idOfInput}").select2({
+	createSearchChoice: function(term) {
+		// enables creation of new namespaces
+		return {id:term, text:term};
+	},
+	data:[
+		<c:forEach var="ns" items="${allNamespaces}" varStatus="loop">
+			{id:"${ns}",text:"${ns}"}<c:if test="${!loop.last}">,</c:if>
+		</c:forEach>
+	]
+}).select2("val", "${selected}");
 </script>

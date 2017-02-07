@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
- *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 
 /**
@@ -154,7 +153,7 @@ define([], function() {
 			// see https://github.com/ivaynberg/select2/issues/535#issuecomment-30210641 for a disucssion
 			vShowNotification("The select field shows stale data. Refresh the page to get rid of that.")
 		}
-	
+
 		/**
 		 * Fetches select2 data from the given URL and initializes the field provided by the fieldId
 		 *
@@ -168,30 +167,21 @@ define([], function() {
 				url: url,
 				dataType: "json"
 			}).done(function (result) {
-
-				var convResult = result.map(function(item){
-					return {id: item.id, name: item.text};
-				});
-				var params = {"source": convResult,
-					showHintOnFocus: "all"
-				};
+				var params = {"data": result};
 				if (typeof allowAdditions === "boolean") {
-					// params.createSearchChoice = function(term) {
-					// 	// enables creation of new namespaces
-					// 	return {id:term, text:term};
-					// }
-				}
-				// console.log("params", params);
-				// init select2 and select first item
-				require(["bootstrap3-typeahead"], function(){
-					$("#" + fieldId).typeahead(params);
-					if (result.length === 0) {
-						$("#" + fieldId).val("");
-					} else {
-						$("#" + fieldId).val(result[0].id);
-						$("#" + fieldId).typeahead("lookup", result[0].name);
+					params.createSearchChoice = function(term) {
+						// enables creation of new namespaces
+						return {id:term, text:term};
 					}
-				});
+				}
+
+				// init select2 and select first item
+				$("#" + fieldId).select2(params);
+				if (result.length === 0) {
+					$("#" + fieldId).select2("val", null);
+				} else {
+					$("#" + fieldId).select2("val", result[0].id);
+				}
 
 				if (typeof onSuccess === "function") {
 					onSuccess();
@@ -241,11 +231,11 @@ define([], function() {
 			}
 		}
 
-		/**
+				/**
 		 * Updates the XML in the orion editor based on the values given in the input fields.
 		 * Shows error if XML is invalid
 		 *
-		 * changed to work with standard html select fields - select2 has been removed
+		 * Works only with SELECT2 fields
 		 *
 		 * @param idPrefix: (new|edit)${shortName}, derived names: [idPrefix]Name, [idPrefix]Id, Orion[idPrefix]XML
 		 * @param hasIdField: whether the Id should be read and written
@@ -292,13 +282,13 @@ define([], function() {
 				// write each selectField to xml
 				// for that, we have to determine the QName
 				$(selectFields).each(function(i, m) {
-
-					var content = $("#" + idPrefix + m.fieldSuffix).val();
+					var content = $("#" + idPrefix + m.fieldSuffix).select2("val");
 
 					if (content == VALUE_OF_NONE_CHOOSEN) {
 						// if nothing is chosen do not put it into the result
 						return;
 					}
+
 					// determine qname of type
 					//getQNameOutOfFullQName(type, xmlDoc.firstChild) does not always work as xmlDoc.firstChild does not have ALL *available* namespace prefixes
 					var typeNSAndId = getNamespaceAndLocalNameFromQName(content);

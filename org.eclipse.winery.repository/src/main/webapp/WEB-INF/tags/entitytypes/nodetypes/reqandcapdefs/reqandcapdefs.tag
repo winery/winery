@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -10,8 +10,6 @@
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
  *    Yves Schubert - switch to bootstrap 3, integration with spinnerwithinphty
- *    Niko Stadelmaier - removal of select2 library
- *    Philipp Meyer - removal of select2 library
  *******************************************************************************/
 --%>
 <%@tag description="Models Requirement and Capability Definitions" pageEncoding="UTF-8"%>
@@ -322,7 +320,7 @@ function createReqOrCapDef() {
 			// Data has been validated at the server
 			// We can just add the local data
 			var name = $('#reqorcapname').val();
-			var type = $('#type :selected').text(); // TODO: make href to be consistent with other lines
+			var type = $('#type').select2("data").text; // TODO: make href to be consistent with other lines
 			var lbound = $('#lowerbound').val();
 			var ubound = $('#upperbound').val();
 			var constraints = "<button class=\"btn btn-xs\" onclick=\"editConstraints('" + name + "');\">Constraints...</button>";

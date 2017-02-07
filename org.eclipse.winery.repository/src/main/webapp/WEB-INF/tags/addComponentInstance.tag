@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,7 +9,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
- *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 <%@tag description="used by genericcomponentpage.jsp and by implementations.jsp to create a component instance" pageEncoding="UTF-8"%>
@@ -51,7 +50,7 @@ function createResource(nameOfResource, fields, url, onSuccess) cannot be used a
 				<%-- Either directly given ... --%>
 				<c:when test="${not empty type}">
 					<%-- then, we just submit it together with the other data --%>
-					<input id="ciType" type="text" class="form-control" name="type" value="${type}"/>
+					<input id="ciType" type="hidden" class="form-control" name="type" value="${type}"/>
 				</c:when>
 				<%-- ... or a list is given given. --%>
 				<%-- This is somewhat ugly as the UI displays no type dialog if no types are existing, but a template is to be created.
@@ -62,11 +61,11 @@ function createResource(nameOfResource, fields, url, onSuccess) cannot be used a
 					<div class="form-group">
 						<label for="ciType" class="control-label">Type</label>
 						<%-- similar code to artifacts.jsp.openLink${name}ArtifactDiag().ajax.success --%>
-						<input id="ciType" name="type" class="form-control">
-							<%-- <c:forEach var="typeId" items="${typeSelectorData}">
+						<select id="ciType" name="type" class="form-control">
+							<c:forEach var="typeId" items="${typeSelectorData}">
 								<option value="${typeId.QName}">${typeId.xmlId.decoded}</option>
-							</c:forEach> --%>
-						</input>
+							</c:forEach>
+						</select>
 					</div>
 				</c:when>
 			</c:choose>
@@ -85,20 +84,7 @@ function createResource(nameOfResource, fields, url, onSuccess) cannot be used a
 
 <script>
 <c:if test="${empty type and not empty typeSelectorData}">
-	require(["bootstrap3-typeahead"], function(){
-
-
-		$("#ciType").typeahead({
-			source : [
-				<c:forEach var="typeId" items="${typeSelectorData}" varStatus="loop">
-				{id:"${typeId.QName}",name:"${typeId.xmlId.decoded}"}<c:if test="${!loop.last}">,</c:if>
-				</c:forEach>
-			],
-			autoSelect: true,
-			showHintOnFocus: true
-		});
-	});
-
+$("#ciType").select2();
 </c:if>
 
 $("#addComponentInstanceDiag").on("shown.bs.modal", function() {

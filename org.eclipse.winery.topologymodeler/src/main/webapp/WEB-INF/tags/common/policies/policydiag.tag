@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,7 +9,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
- *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 
@@ -38,7 +37,7 @@
 				<div class="form-group">
 					<label for="policyTemplate" class="control-label">Policy Template:</label>
 
-					<select id="policyTemplate" class="form-control" name="policyTemplate"></select>
+					<input id="policyTemplate" class="form-control" name="policyTemplate"></input>
 				</div>
 
 				<o:orioneditorarea areaid="OrionpolicyXML" withoutsavebutton="true" />
@@ -57,145 +56,136 @@
 <textarea id="emptyPolicy" class="hidden">${wc:XMLAsString(clazz, null)}</textarea>
 
 <script>
-	//global variable set by showUpdateDiagForPolicy and read by addOrUpdatePolicy
-	var currentPolicyElement;
+//global variable set by showUpdateDiagForPolicy and read by addOrUpdatePolicy
+var currentPolicyElement;
 
-	// possibly this is a duplicate information as we also have "currentlySelectedNodeTemplate" (or similar)
-	var currentNodeTemplateElement;
+// possibly this is a duplicate information as we also have "currentlySelectedNodeTemplate" (or similar)
+var currentNodeTemplateElement;
 
-	function updatePolicyTemplateSelect(valueToSelect) {
-		require(["winery-support-common"], function(w) {
-			var type = $("#policyType").val();
-			var fragment = w.getURLFragmentOutOfFullQName(type);
-			var url = "${repositoryURL}/policytypes/" + fragment + "/instances/";
-			$.ajax(url, {
-				dataType: 'json'
-			}).fail(function(jqXHR, textStatus, errorThrown) {
-				vShowAJAXError("Could not get policy templates", jqXHR, errorThrown);
-			}).done(function(data) {
-				// add "(none)" to available items
-				var none = {
-					id: "(none)",
-					text: "(none)"
-				};
-//			data.unshift(none);
+function updatePolicyTemplateSelect(valueToSelect) {
+	require(["winery-support-common"], function(w) {
+		var type = $("#policyType").val();
+		var fragment = w.getURLFragmentOutOfFullQName(type);
+		var url = "${repositoryURL}/policytypes/" + fragment + "/instances/";
+		$.ajax(url, {
+			dataType: 'json'
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			vShowAJAXError("Could not get policy templates", jqXHR, errorThrown);
+		}).done(function(data) {
+			// add "(none)" to available items
+			var none = {
+				id: "(none)",
+				text: "(none)"
+			};
+			data.unshift(none);
 
-				if (typeof valueToSelect === "undefined") {
-					valueToSelect = "(none)";
-				}
-				//create select optgroups out of data
-				var polTemp = $("#policyTemplate");
-				polTemp.empty();
-				polTemp.append($("<option value='(none)'>(none)</option>"));
-				$.each(data, function(index, val){
-					var optGrp = $("<optgroup label=' " + val.text + "'>");
-					$.each(val.children, function(index, item){
-						var option = $("<option value='" + item.id + "'>" + item.text + "</option>");
-						optGrp.append(option);
-					});
-					polTemp.append(optGrp);
-				});
-			$("#policyTemplate")
-				.val(valueToSelect);
-			});
-		});
-	}
-
-	function showUpdateDiagForPolicy(policyElement) {
-		currentPolicyElement = policyElement;
-
-		$("#deletePolicy").show();
-		$("#updatePolicy").show();
-		$("#addPolicy").hide();
-
-		var name = policyElement.children("div.name").text();
-		var type = policyElement.children("span.type").text();
-
-		$("#policyName").val(name);
-		$("#policyType").val(type);
-
-		// onchange of type is not called, we have to update the template selection field for ourselves
-		// we also have to select the current user's choice
-		updatePolicyTemplateSelect(policyElement.children("span.template").text());
-
-		var diag = $("#PolicyDiag");
-		require(["winery-support-common"], function(w) {
-			w.replaceDialogShownHookForOrionUpdate(diag, "OrionpolicyXML", currentPolicyElement.children("textarea").val());
-			diag.modal("show");
-		});
-	}
-
-	function showAddDiagForPolicy(nodeTemplateElement) {
-		currentNodeTemplateElement = nodeTemplateElement;
-
-		$("#deletePolicy").hide();
-		$("#updatePolicy").hide();
-		$("#addPolicy").show();
-
-		$("#policyName").val("");
-
-		// fill policy template select field
-		updatePolicyTemplateSelect();
-
-		var diag = $("#PolicyDiag");
-		require(["winery-support-common"], function(w) {
-			w.replaceDialogShownHookForOrionUpdate(diag, "OrionpolicyXML", $("#emptyPolicy").val());
-			diag.modal("show");
-		});
-	}
-
-	function addOrUpdatePolicy(doAdd) {
-		if (highlightRequiredFields()) {
-			vShowError("Please fill in all required fields");
-			return;
-		}
-
-		require(["winery-support-common", "tmpl"], function(wsc, tmpl) {
-			var res = wsc.synchronizeNameAndType("policy", false, [{
-				attribute: "policyType",
-				fieldSuffix: "Type",
-			}, {
-				attribute: "policyRef",
-				fieldSuffix: "Template"
-			}]);
-
-			if (res) {
-				var policyTemplate = {id: $("#policyTemplate :selected").val(), text: $("#policyTemplate :selected").text()};
-				var renderData = {
-					name: $("#policyName").val(),
-
-					policyTypeText: $("#policyType :selected").text(),
-					policyTypeVal: $("#policyType").val(),
-
-					policyTemplateText: policyTemplate.text,
-					policyTemplateVal: policyTemplate.id,
-
-					xml: res.xml
-				};
-				var div = tmpl("tmpl-policy", renderData);
-				if (doAdd) {
-					currentNodeTemplateElement.children("div.policiesContainer").children("div.content").children("div.addnewpolicy").before(div);
-				} else {
-					currentPolicyElement.replaceWith(div);
-				}
-				$("#PolicyDiag").modal("hide");
-			} else {
-				vShowError("Could not synchronize XML fields");
+			if (typeof valueToSelect === "undefined") {
+				valueToSelect = "(none)";
 			}
+
+			$("#policyTemplate")
+				.select2({data: data})
+				.select2("val", valueToSelect);
 		});
+	});
+}
+
+function showUpdateDiagForPolicy(policyElement) {
+	currentPolicyElement = policyElement;
+
+	$("#deletePolicy").show();
+	$("#updatePolicy").show();
+	$("#addPolicy").hide();
+
+	var name = policyElement.children("div.name").text();
+	var type = policyElement.children("span.type").text();
+
+	$("#policyName").val(name);
+	$("#policyType").val(type);
+
+	// onchange of type is not called, we have to update the template selection field for ourselves
+	// we also have to select the current user's choice
+	updatePolicyTemplateSelect(policyElement.children("span.template").text());
+
+	var diag = $("#PolicyDiag");
+	require(["winery-support-common"], function(w) {
+		w.replaceDialogShownHookForOrionUpdate(diag, "OrionpolicyXML", currentPolicyElement.children("textarea").val());
+		diag.modal("show");
+	});
+}
+
+function showAddDiagForPolicy(nodeTemplateElement) {
+	currentNodeTemplateElement = nodeTemplateElement;
+
+	$("#deletePolicy").hide();
+	$("#updatePolicy").hide();
+	$("#addPolicy").show();
+
+	$("#policyName").val("");
+
+	// fill policy template select field
+	updatePolicyTemplateSelect();
+
+	var diag = $("#PolicyDiag");
+	require(["winery-support-common"], function(w) {
+		w.replaceDialogShownHookForOrionUpdate(diag, "OrionpolicyXML", $("#emptyPolicy").val());
+		diag.modal("show");
+	});
+}
+
+function addOrUpdatePolicy(doAdd) {
+	if (highlightRequiredFields()) {
+		vShowError("Please fill in all required fields");
+		return;
 	}
 
+	require(["winery-support-common", "tmpl"], function(wsc, tmpl) {
+		var res = wsc.synchronizeNameAndType("policy", false, [{
+			attribute: "policyType",
+			fieldSuffix: "Type",
+		}, {
+			attribute: "policyRef",
+			fieldSuffix: "Template"
+		}]);
 
-	function deletePolicy() {
-		// We just have to remove the HTML element:
-		// The save operation converts the information in the HTML to XML
-		currentPolicyElement.remove();
-		$("#PolicyDiag").modal("hide");
-	}
+		if (res) {
+			var policyTemplate = $("#policyTemplate").select2("data");
+			var renderData = {
+				name: $("#policyName").val(),
+
+				policyTypeText: $("#policyType :selected").text(),
+				policyTypeVal: $("#policyType").val(),
+
+				policyTemplateText: policyTemplate.text,
+				policyTemplateVal: policyTemplate.id,
+
+				xml: res.xml
+			};
+			var div = tmpl("tmpl-policy", renderData);
+			if (doAdd) {
+				currentNodeTemplateElement.children("div.policiesContainer").children("div.content").children("div.addnewpolicy").before(div);
+			} else {
+				currentPolicyElement.replaceWith(div);
+			}
+			$("#PolicyDiag").modal("hide");
+		} else {
+			vShowError("Could not synchronize XML fields");
+		}
+	});
+}
 
 
-	$("#policyType")
-			.on("change", updatePolicyTemplateSelect);
+function deletePolicy() {
+	// We just have to remove the HTML element:
+	// The save operation converts the information in the HTML to XML
+	currentPolicyElement.remove();
+	$("#PolicyDiag").modal("hide");
+}
+
+
+$("#policyType")
+	.select2()
+	.on("change", updatePolicyTemplateSelect);
 </script>
 
 <%-- parameters: o.id, o.name, o.policyType, o.policyRef, o.xml. Has to be consistent with the HTML generated by policies.tag --%>

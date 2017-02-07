@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,7 +9,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
- *	  Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 <%@tag description="Dialog parts for choosing a QName" pageEncoding="UTF-8"%>
@@ -39,8 +38,9 @@
 
 <script>
 $(function(){
+	$("#${idOfSelectField}").select2();
 	<c:if test="${not empty selected}">
-		$("#${idOfSelectField}").val(${selected});
+		$("#${idOfSelectField}").select2("val", "${selected}");
 	</c:if>
 });
 </script>

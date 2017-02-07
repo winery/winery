@@ -9,7 +9,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
- *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 <%@tag description="places a bootstrap form control to chooose a namespace. A new namespace can be created" pageEncoding="UTF-8"%>
@@ -34,24 +33,20 @@
 <!-- createArtifactTemplate class is required for artifactcreationdialog -->
 <div class="form-group createArtifactTemplate">
 	<label for="${idOfInput}" class="control-label">Namespace</label>
-	<input type="select" class="form-control" name="${nameOfInput}" id="${idOfInput}"></input>
+	<input type="hidden" class="form-control" name="${nameOfInput}" id="${idOfInput}"></input>
 </div>
 
 <script>
-
-require(["bootstrap3-typeahead"], function () {
-
-    $("#${idOfInput}").typeahead({
-
-        source:[
-            <c:forEach var="ns" items="${allNamespaces}" varStatus="loop">
-            {id:"${ns.decoded}",name:"${ns.decoded}"}<c:if test="${!loop.last}">,</c:if>
-            </c:forEach>
-        ],
-        autoSelect : true,
-        showHintOnFocus: true
-    });
-            <%--.typeahead("val", "${selected}");--%>
-})
-
+// we have to use data as select2 does not allow "createSearchChoice" when using <select> as underlying html element
+$("#${idOfInput}").select2({
+	createSearchChoice: function(term) {
+		// enables creation of new namespaces
+		return {id:term, text:term};
+	},
+	data:[
+		<c:forEach var="ns" items="${allNamespaces}" varStatus="loop">
+			{id:"${ns.decoded}",text:"${ns.decoded}"}<c:if test="${!loop.last}">,</c:if>
+		</c:forEach>
+	]
+}).select2("val", "${selected}");
 </script>
