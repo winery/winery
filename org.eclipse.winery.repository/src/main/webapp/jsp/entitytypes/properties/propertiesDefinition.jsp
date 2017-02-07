@@ -10,7 +10,6 @@
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation, maintainance
  *    Yves Schubert - switch to bootstrap 3
- *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -273,7 +272,7 @@ $(function() {
 			async: true,
 			contentType: "text/plain",
 			processData: false,
-			data: $(this).val(),
+			data: e.val,
 			error: function(jqXHR, textStatus, errorThrown) {
 				vShowAJAXError("Could not update namespace", jqXHR, errorThrown);
 			},

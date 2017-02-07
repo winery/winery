@@ -10,7 +10,6 @@
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
  *    Yves Schubert - switch to bootstrap 3
- *    Niko Stadelmaier - removal of select2 library
  *    Lukas Balzer, Nicole Keppler - switch to bootstrap-touchspin
  *******************************************************************************/
 --%>
@@ -47,6 +46,8 @@
 	<link type="text/css" href="${pageContext.request.contextPath}/css/winery-repository.css" rel="Stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/pnotify/jquery.pnotify.default.css" media="all" rel="stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/pnotify/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" />
+	<link type="text/css" href="${pageContext.request.contextPath}/components/select2/select2.css" media="all" rel="stylesheet" />
+	<link type="text/css" href="${pageContext.request.contextPath}/components/select2/select2-bootstrap.css" media="all" rel="stylesheet" />
 
 	<link type="text/css" href="${pageContext.request.contextPath}/components/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.css" media="all" rel="stylesheet" />
 	<link type="text/css" href="${pageContext.request.contextPath}/components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" media="all" rel="stylesheet" />
@@ -86,7 +87,7 @@
 
 				"pnotify": "../components/pnotify/jquery.pnotify",
 
-				"bootstrap3-typeahead": "../components/bootstrap3-typeahead/bootstrap3-typeahead",
+				"select2": "../components/select2/select2",
 
 				"tmpl": "../components/blueimp-tmpl/js/tmpl",
 
@@ -103,12 +104,14 @@
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap/dist/js/bootstrap.js'></script>
 
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/jquery-typing/plugin/jquery.typing-0.3.2.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/components/select2/select2.js"></script>
 
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/wysihtml5/dist/wysihtml5-0.3.0.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/handlebars/handlebars.min.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.min.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/components/x-editable/dist/inputs-ext/wysihtml5/wysihtml5.js"></script>
+
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js'></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/winery-support-non-AMD.js"></script>
 	<script type="text/javascript" src="${w:topologyModelerURI()}/js/winery-common.js"></script>
