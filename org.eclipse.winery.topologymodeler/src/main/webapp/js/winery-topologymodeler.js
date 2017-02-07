@@ -294,6 +294,8 @@ function keyComboAllowedAndNodeTemplatesSelected() {
 winery.events.name = {};
 winery.events.name.command = {};
 
+winery.events.name.command.IMPORT_TOPOLOGY = "importTopology";
+
 winery.events.name.SELECTION_CHANGED = "selectionchanged";
 winery.events.name.command.SELECT_ALL_NODETEMPLATES = "selectAllNodeTemplates";
 winery.events.name.command.UNSELECT_ALL_NODETEMPLATES = "unselectAllNodeTemplates";
