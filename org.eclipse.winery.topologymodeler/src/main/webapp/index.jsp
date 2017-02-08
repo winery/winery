@@ -510,7 +510,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 
 <%
 		List<TEntityTemplate> templateList = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
-		List<TRelationshipTemplate> relationshipTemplates = new LinkedList<TRelationshipTemplate>();
+		List<TRelationshipTemplate> relationshipTemplates = new LinkedList<>();
 		for (TEntityTemplate template: templateList) {
 			if (template instanceof TRelationshipTemplate) {
 				relationshipTemplates.add((TRelationshipTemplate) template);
