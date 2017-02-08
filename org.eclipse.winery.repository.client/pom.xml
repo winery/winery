@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-core</artifactId>
-			<version>1.17</version>
+			<version>1.19.3</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>1.17</version>
+			<version>1.19.3</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-core</artifactId>
-			<version>1.17</version>
+			<version>1.19.3</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -136,7 +136,7 @@
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-multipart</artifactId>
-			<version>1.17</version>
+			<version>1.19.3</version>
 			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
@@ -172,20 +172,13 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-servlet</artifactId>
-			<version>1.11</version>
+			<version>1.19.3</version>
 			<scope>compile</scope>
-			<!-- 1.11 depends on server 1.11, but we use 1.17 -->
-			<exclusions>
-				<exclusion>
-					<groupId>com.sun.jersey</groupId>
-					<artifactId>jersey-server</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
-			<version>1.17</version>
+			<version>1.19.3</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
