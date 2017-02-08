@@ -13,12 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -35,6 +39,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
@@ -244,6 +249,8 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * artifactcreationdialog.tag. Especially the "name" field is used there at
 	 * the UI
 	 *
+	 * @param grouped if given, the JSON output is grouped by namespace
+	 *
 	 * @return A list of all ids of all instances of this component type. If the
 	 *         "name" attribute is required, that name is used as id <br />
 	 *         Format:
@@ -252,7 +259,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getListOfAllIds() {
+	public String getListOfAllIds(@QueryParam("grouped") String grouped) {
 		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
 		boolean supportsNameAttribute = Util.instanceSupportsNameAttribute(idClass);
 		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
@@ -262,19 +269,49 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 			JsonGenerator jg = jsonFactory.createGenerator(sw);
 			// We produce org.eclipse.winery.repository.client.WineryRepositoryClient.NamespaceAndId by hand here
 			// Refactoring could move this class to common and fill it here
-			jg.writeStartArray();
-			for (TOSCAComponentId id : allTOSCAcomponentIds) {
-				jg.writeStartObject();
-				jg.writeStringField("namespace", id.getNamespace().getDecoded());
-				jg.writeStringField("id", id.getXmlId().getDecoded());
-				if (supportsNameAttribute) {
-					AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
-					String name = ((IHasName) componentInstaceResource).getName();
-					jg.writeStringField("name", name);
+			if (grouped == null) {
+				jg.writeStartArray();
+				for (TOSCAComponentId id : allTOSCAcomponentIds) {
+					jg.writeStartObject();
+					jg.writeStringField("namespace", id.getNamespace().getDecoded());
+					jg.writeStringField("id", id.getXmlId().getDecoded());
+					if (supportsNameAttribute) {
+						AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
+						String name = ((IHasName) componentInstaceResource).getName();
+						jg.writeStringField("name", name);
+					}
+					jg.writeEndObject();
 				}
+				jg.writeEndArray();
+			} else {
+				jg.writeStartObject();
+				allTOSCAcomponentIds.stream().map(x -> x.getNamespace().toString()).collect(Collectors.joining(","));
+				Map<Namespace, ? extends List<? extends TOSCAComponentId>> groupedIds = allTOSCAcomponentIds.stream().collect(Collectors.groupingBy(id -> id.getNamespace()));
+				groupedIds.entrySet().stream().sorted().forEach(entry -> {
+					try {
+						jg.writeFieldName(entry.getKey().getDecoded());
+						jg.writeStartArray();
+						entry.getValue().forEach(id -> {
+							try {
+								jg.writeStartObject();
+								jg.writeStringField("id", id.getXmlId().getDecoded());
+								if (supportsNameAttribute) {
+									AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
+									String name = ((IHasName) componentInstaceResource).getName();
+									jg.writeStringField("name", name);
+								}
+								jg.writeEndObject();
+							} catch (IOException e) {
+								AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
+							}
+						});
+						jg.writeEndArray();
+					} catch (IOException e) {
+						AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
+					}
+				});
 				jg.writeEndObject();
 			}
-			jg.writeEndArray();
 			jg.close();
 		} catch (Exception e) {
 			AbstractComponentsResource.LOGGER.error(e.getMessage(), e);
