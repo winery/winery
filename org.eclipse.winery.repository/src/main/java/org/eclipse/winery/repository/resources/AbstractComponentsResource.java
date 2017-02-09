@@ -285,13 +285,12 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 				jg.writeEndArray();
 			} else {
 				jg.writeStartObject();
-				allTOSCAcomponentIds.stream().map(x -> x.getNamespace().toString()).collect(Collectors.joining(","));
 				Map<Namespace, ? extends List<? extends TOSCAComponentId>> groupedIds = allTOSCAcomponentIds.stream().collect(Collectors.groupingBy(id -> id.getNamespace()));
-				groupedIds.entrySet().stream().sorted().forEach(entry -> {
+				groupedIds.keySet().stream().sorted().forEach(namespace -> {
 					try {
-						jg.writeFieldName(entry.getKey().getDecoded());
+						jg.writeFieldName(namespace.getDecoded());
 						jg.writeStartArray();
-						entry.getValue().forEach(id -> {
+						groupedIds.get(namespace).forEach(id -> {
 							try {
 								jg.writeStartObject();
 								jg.writeStringField("id", id.getXmlId().getDecoded());
