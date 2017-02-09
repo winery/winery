@@ -80,6 +80,8 @@ public class Prefs implements ServletContextListener {
 	 */
 	public Prefs() {
 		Prefs.INSTANCE = this;
+		// globally use unix line endings - see http://stackoverflow.com/a/6128248/873282
+		System.setProperty("line.separator", "\r");
 	}
 
 	/**

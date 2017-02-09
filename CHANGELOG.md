@@ -14,6 +14,7 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 * SELFSERVICE-Metadata is now additionally contained under the servicetemplates path in the CSAR
 * `csarName`, `version`, and `authors` are now contained in `data.xml` and `data.json`, too.
+* Enfore `LF` line endings in the repository
 
 ### Fixed
 * Bounary definitions can be browsed for exported operations again
