@@ -95,6 +95,12 @@ The repository location can be changed:
 Copy `winery.properties` to `path-to-workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\winery`.
 
 ### Trouble shooting
+* IntelliJ
+  * `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already`:
+    * `mvn clean package`
+    * Build -> Build Artifacts... -> org.eclipse.winery.repository.war:exploded: Clean
+    * Build -> Rebuild Project
+  * Has issues with a new selfserivce portal model:  Use [everything](https://www.voidtools.com/) (`choco install everything`) to locate all "selfservice metadata jars" and delete them. Otherwise, Winery does not compile.
 * In case some JavaScript libraries cannot be found by the browser, execute `bower prune`, `bower install`, `bower update` in both `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler`.
 * See [README.md of the repository](org.eclipse.winery.repository/README.md)
 * See [README.md of the topology modeler](org.eclipse.winery.topologymodeler/README.md)
