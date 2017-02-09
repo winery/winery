@@ -761,7 +761,7 @@ public class Utils {
 		boolean res;
 		try {
 			ClientResponse response = wr.head();
-			res = (response.getClientResponseStatus().getFamily().equals(Family.SUCCESSFUL));
+			res = (response.getStatusInfo().getFamily().equals(Family.SUCCESSFUL));
 		} catch (com.sun.jersey.api.client.ClientHandlerException ex) {
 			// In the case of a java.net.ConnectException, return false
 			res = false;
