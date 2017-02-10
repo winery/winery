@@ -439,7 +439,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 
 		<button data-toggle="button" class="btn btn-default" onclick="togglePrintView(!$(this).hasClass('active'));">Print View</button>
 
-		<%-- <button class="btn btn-default topbutton" onclick="winery.events.fire(winery.events.name.command.IMPORT_TOPOLOGY);" id="importBtn">Import Topology</button> --%>
+		<button class="btn btn-default topbutton" onclick="winery.events.fire(winery.events.name.command.IMPORT_TOPOLOGY);" id="importBtn">Import Topology</button>
 
 		<div class="btn-group">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Other <span class="caret"></span></button>
