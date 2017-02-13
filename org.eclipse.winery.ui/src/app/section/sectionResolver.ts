@@ -2,7 +2,7 @@ import { Injectable }             from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot,
     ActivatedRouteSnapshot } from '@angular/router';
 
-import { sections } from '../sections.config';
+import { sections } from '../configuration';
 import { isNullOrUndefined } from 'util';
 
 @Injectable()

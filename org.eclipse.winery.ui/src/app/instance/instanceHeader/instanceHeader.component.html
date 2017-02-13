@@ -1,10 +1,10 @@
 <div class="top" [class.twolines]="needTwoLines">
     <div class="informationContainer">
         <div id="component_name" class="name editable editable-click">
-            {{selectedComponent}}
+            {{ selectedComponentName }}
         </div>
         <div id="component_namespace" class="namespace editable editable-click">
-            {{selectedNamespace}}
+            {{ selectedNamespace }}
         </div>
     </div>
     <div class="managementButtons">
@@ -14,14 +14,14 @@
     </div>
     <div class="subMenu">
 
-        <a *ngFor="let tab of tabOptions"
+        <a *ngFor="let item of subMenu"
            class="styledTabMenuButton styledTabMenuButton2ndlevel"
-           [class.selected]="tab[1] === selectedSubmenueTab"
-           [routerLink]="['./'+ tab[1]]">
+           [class.selected]="item === selectedTab"
+           [routerLink]="['./' + item | lowercase | removeWhiteSpaces ]"
+           (click)="selectedTab = item">
             <div class="left"></div>
-            <div class="center">{{tab[0]}}</div>
+            <div class="center">{{ item }}</div>
             <div class="right"></div>
         </a>
-
     </div>
 </div>

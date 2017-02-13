@@ -14,6 +14,7 @@ import { ImplementationsComponent } from './implementations/implementations.comp
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
 import { PropertyDefinitionComponent } from './propertyDefinition/propertyDefinition.component';
+import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 
 @NgModule({
     imports: [
@@ -32,6 +33,7 @@ import { PropertyDefinitionComponent } from './propertyDefinition/propertyDefini
         InstanceStatesComponent,
         InterfacesComponent,
         PropertyDefinitionComponent,
+        RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
         VisualAppearanceComponent,
     ],

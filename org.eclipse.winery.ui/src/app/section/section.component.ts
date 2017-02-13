@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NavigationEnd, Router, ActivatedRoute, Params } from '@angular/router';
-
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
-import { sections } from '../sections.config';
-import { isNullOrUndefined } from 'util';
+import { sections } from '../configuration';
 
 @Component({
     selector: 'winery-section-component',
@@ -27,6 +24,11 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     }
 
+    /**
+     * @override
+     *
+     * Subscribe to the url on initialisation in order to get the corresponding resource type.
+     */
     ngOnInit(): void {
         this.routeSub = this.route
             .url

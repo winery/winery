@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
     selector: 'winery-repository',
     templateUrl: './wineryRepository.html',
 })
-/**
+/*
  * This component represents the root component for the Winery Repository.
  */
 export class WineryRepositoryComponent {
