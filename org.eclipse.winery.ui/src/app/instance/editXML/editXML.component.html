@@ -1,4 +1,12 @@
+<script>
+	/*global require*/
+	require(["orion/editor/edit"], function(edit) {
+		edit({className: "editor"});
+	});
+</script>
+
 <div>
-    <span>XML editor here..</span>
+    <div id="XML" class="orionxmleditordiv"><pre class="editor" data-editor-lang="xml">{{xmlData}}</pre></div>
 </div>
 <button class="btn btn-default" type="button">Save</button>
+

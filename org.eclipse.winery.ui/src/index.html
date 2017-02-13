@@ -6,6 +6,14 @@
     <title>Winery Repository</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/current/built-editor.css"/>
+    <script src="http://eclipse.org/orion/editor/releases/current/built-editor.min.js"></script>
+    <script>
+	/*global require*/
+	require(["orion/editor/edit"], function(edit) {
+		edit({className: "editor"});
+	});
+</script>
 </head>
 
 <body>
