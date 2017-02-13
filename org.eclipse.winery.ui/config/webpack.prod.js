@@ -4,7 +4,7 @@ const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const common = require('./webpack.common.js');
-
+var TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 const ENV = process.env.ENV = process.env.NODE_ENV = 'production';
 
 module.exports = webpackMerge(common, {

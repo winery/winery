@@ -1,13 +1,13 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'urlEncode'
+    name: 'urlEncode'
 })
 
 export class UrlEncodePipe implements PipeTransform {
-  transform(value: any, args: any[]): any {
-    if (value) {
-      return encodeURIComponent(value);
+    transform(value: any, args: any[]): any {
+        if (value) {
+            return encodeURIComponent(value);
+        }
     }
-  }
 }

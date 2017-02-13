@@ -1,1 +1,1 @@
-export * from "./other.component"
+export * from './other.component'

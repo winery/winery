@@ -1,8 +1,8 @@
-import { NodeTypeSubmenue } from "./subMenueEnums/nodeTypesSubmenue.enum";
-import { ResourceTypes } from "../resourceTypes.enum";
-import { ServiceTemplateSubmenue } from "./subMenueEnums/serviceTemplateSubmenue.enum";
-import { RelationshipTypeSubmenue } from "./subMenueEnums/relationshipTypesSubmenue.enum";
-import { AdminSubmenue } from "./subMenueEnums/adminSubmenue.enum";
+import { NodeTypeSubmenue } from './subMenueEnums/nodeTypesSubmenue.enum';
+import { ResourceTypes } from '../resourceTypes.enum';
+import { ServiceTemplateSubmenue } from './subMenueEnums/serviceTemplateSubmenue.enum';
+import { RelationshipTypeSubmenue } from './subMenueEnums/relationshipTypesSubmenue.enum';
+import { AdminSubmenue } from './subMenueEnums/adminSubmenue.enum';
 
 export class SubmenueCollection {
     nodeTypeSubmenue = NodeTypeSubmenue;

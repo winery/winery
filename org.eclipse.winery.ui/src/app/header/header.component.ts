@@ -1,5 +1,5 @@
-import {Component} from "@angular/core";
-import {Router} from "@angular/router";
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'winery-header',
@@ -12,6 +12,6 @@ export class HeaderComponent {
     }
 
     showAbout(): void {
-        console.log("showing about...");
+        console.log('showing about...');
     }
 }

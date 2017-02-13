@@ -48,22 +48,23 @@ export class InstanceHeaderComponent {
                         let tabCounter = 0;
                         let sTab: string;
                         for (let tab in submenue) {
-
-                            if (index % 2 === 0) {
-                                let iTab = tab;
-                                if (iTab.length > 3) {
-                                    iTab = iTab.replace(/([A-Z])/g, ' $1').trim();
+                            if (submenue.hasOwnProperty(tab)) {
+                                if (index % 2 === 0) {
+                                    let iTab = tab;
+                                    if (iTab.length > 3) {
+                                        iTab = iTab.replace(/([A-Z])/g, ' $1').trim();
+                                    }
+                                    sTab = iTab;
+                                } else {
+                                    this.tabOptions[tabCounter] = [];
+                                    let href = tab;
+                                    this.tabOptions[tabCounter].push(sTab);
+                                    this.tabOptions[tabCounter].push(href);
+                                    // console.log("index: "+ index + " tabCounter: "+ tabCounter + " sTab: "+ sTab + " href: "+ href);
+                                    tabCounter++;
                                 }
-                                sTab = iTab;
-                            } else {
-                                this.tabOptions[tabCounter] = [];
-                                let href = tab;
-                                this.tabOptions[tabCounter].push(sTab);
-                                this.tabOptions[tabCounter].push(href);
-                                // console.log("index: "+ index + " tabCounter: "+ tabCounter + " sTab: "+ sTab + " href: "+ href);
-                                tabCounter++;
+                                index++;
                             }
-                            index++;
                         }
                         if (this.tabOptions.length > 7) {
                             this.needTwoLines = true;
