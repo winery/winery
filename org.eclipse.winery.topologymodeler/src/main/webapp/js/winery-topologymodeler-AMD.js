@@ -59,8 +59,9 @@ define(
 			$("#chooseTopologyToImportDiag").modal("show");
 		}
 
-		function importTopology() {
+		function importTopology(serviceTemplateQName) {
 			console.log("I'm here");
+			console.log(serviceTemplateQName);
 		}
 
 		/**
