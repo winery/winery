@@ -1,0 +1,27 @@
+<div class="top" [class.twolines]="needTwoLines">
+    <div class="informationContainer">
+        <div id="component_name" class="name editable editable-click">
+            {{selectedComponent}}
+        </div>
+        <div id="component_namespace" class="namespace editable editable-click">
+            {{selectedNamespace}}
+        </div>
+    </div>
+    <div class="managementButtons">
+        <button class="btn btn-danger">Delete</button>
+        <button class="btn btn-info">XML</button>
+        <button class="btn btn-info">CSAR</button>
+    </div>
+    <div class="subMenu">
+
+        <a *ngFor="let tab of tabOptions"
+           class="styledTabMenuButton styledTabMenuButton2ndlevel"
+           [class.selected]="tab[1] === selectedSubmenueTab"
+           [routerLink]="['./'+ tab[1]]">
+            <div class="left"></div>
+            <div class="center">{{tab[0]}}</div>
+            <div class="right"></div>
+        </a>
+
+    </div>
+</div>

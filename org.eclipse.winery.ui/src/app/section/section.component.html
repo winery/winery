@@ -1,0 +1,20 @@
+<div id="contentContainer">
+  <div id="searchBoxContainer">
+    <input type="text" id="searchBox">
+  </div>
+  <div id="componentContainer">
+    <winery-entity-container
+      *ngFor="let item of componentData"
+      componentName={{item.name}}
+      componentId="{{item.id}}"
+      namespace={{item.namespace}}
+      resourceType="{{selectedResource}}">
+      <!-- slice the plural 's' from the resource -->
+    </winery-entity-container>
+  </div>
+</div>
+<div id="sidebar">
+  <button class="btn btn-default">Add new</button>
+  <button class="btn btn-default">Import CSAR</button>
+  <button class="btn btn-default">Show all items</button>
+</div>
