@@ -6,14 +6,40 @@
     <title>Winery Repository</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Orion Editor start-->
+
+    <!-- Global version -->
     <link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/current/built-editor.css"/>
-    <script src="http://eclipse.org/orion/editor/releases/current/built-editor.min.js"></script>
+    <script src="http://eclipse.org/orion/editor/releases/current/built-editor.js"></script>
     <script>
-	/*global require*/
-	require(["orion/editor/edit"], function(edit) {
-		edit({className: "editor"});
-	});
-</script>
+        if (window.addEventListener) {
+            window.addEventListener('load', function() {
+                require(["orion/editor/edit"], function(edit) {
+                        edit({className: "editor"});
+                });
+            }, false);
+        }
+    </script>
+
+    <!-- AMD version -->
+    <!--&lt;!&ndash;-->
+    <!--<link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/current/built-editor.css"/>-->
+    <!--<script src="http://requirejs.org/docs/release/2.1.4/minified/require.js"></script>-->
+    <!--<script>-->
+        <!--require(["http://eclipse.org/orion/editor/releases/current/built-editor-amd.min.js"], function(edit) {-->
+            <!--edit({className: "editor"});-->
+        <!--});-->
+    <!--</script>-->
+    -->
+
+    <!--<style>-->
+        <!--pre.editor{-->
+            <!--padding: 0px;-->
+            <!--border: 1px solid lightgrey;-->
+        <!--}-->
+    <!--</style>-->
+    <!-- Orion Editor end-->
 </head>
 
 <body>

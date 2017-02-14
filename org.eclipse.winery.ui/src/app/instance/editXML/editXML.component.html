@@ -1,12 +1,8 @@
-<script>
-	/*global require*/
-	require(["orion/editor/edit"], function(edit) {
-		edit({className: "editor"});
-	});
-</script>
 
 <div>
-    <div id="XML" class="orionxmleditordiv"><pre class="editor" data-editor-lang="xml">{{xmlData}}</pre></div>
-</div>
+    Quick hack fix the bug with 0 px size of the editor
+    <pre class="editor" data-editor-lang="application/xml">
+        {{xmlData}}
+    </pre>
 <button class="btn btn-default" type="button">Save</button>
-
+</div>
