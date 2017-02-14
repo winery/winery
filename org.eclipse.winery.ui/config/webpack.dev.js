@@ -28,9 +28,9 @@ module.exports = webpackMerge(common, {
         new webpack.DefinePlugin({
             'process.env': {
                 'ENV': JSON.stringify(ENV),
-                'NODE_ENV': JSON.stringify(ENV),
+                'NODE_ENV': JSON.stringify(ENV)
             }
-        }),
+        })
     ],
 
     /*
@@ -39,11 +39,15 @@ module.exports = webpackMerge(common, {
     devServer: {
         port: 3000,
         historyApiFallback: {
-            index: '/'
+            index: '/',
+            // rewrite rule in order to support dots in the url
+            rewrites: [
+                { from: /[\/]+.*[.].*[\/]/, to: '/' }
+            ]
         },
         watchOptions: {aggregateTimeout: 300, poll: 1000},
         outputPath: helpers.root('dist'),
         publicPath: '/'
-    },
+    }
 
 });
