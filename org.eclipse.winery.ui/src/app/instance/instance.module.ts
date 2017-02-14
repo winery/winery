@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-
 import { EditXMLComponent } from './editXML/editXML.component';
 import { InstanceComponent } from './instance.component';
 import { InstanceHeaderComponent } from './instanceHeader/instanceHeader.component';
@@ -13,7 +12,7 @@ import { InterfacesComponent } from './interfaces/interfaces.component';
 import { ImplementationsComponent } from './implementations/implementations.component';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
-import { PropertyDefinitionComponent } from './propertyDefinition/propertyDefinition.component';
+import { PropertyDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 
 @NgModule({
