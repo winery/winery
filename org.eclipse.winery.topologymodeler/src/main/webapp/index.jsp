@@ -174,7 +174,7 @@
 	Done. <br>
 	Fetching all service templates...
 	<%
-		Collection<TServiceTemplate> allServiceTemplates = client.getAllTypes(TServiceTemplate.class);
+		List<QName> allServiceTemplates = client.getQNameListOfAllTypes(TServiceTemplate.class);
 	%>
 	Done <br>
 	Fetching javascript and icons...
@@ -1519,7 +1519,7 @@ function onDoneRegisterConnectionTypesAndConnectNodeTemplates() {
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary" onclick="require(['winery-topologymodeler-AMD'], function(wt) {wt.importTopology($('serviceTemplate').select2('data').id);})">Add</button>
+				<button type="button" id="importButon" class="btn btn-primary" data-loading="Adding..."  onclick="require(['winery-topologymodeler-AMD'], function(wt) {wt.importTopology('<%=repositoryURL%>/servicetemplates/', $('#serviceTemplate').select2('data').id);})">Add</button>
 			</div>
 		</div>
 	</div>
