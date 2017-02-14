@@ -206,7 +206,7 @@ function vCreateTdClickFunction(url, keyName, valueName) {
 }
 
 /**
- * This function is also availble at winery-support-common.js
+ * This function is also available at winery-support-common.js
  * This function here is due to legacy reasons and all callers should move to winery-support-common.js
  *
  * @param qname a QName in the form {namespace}localname
