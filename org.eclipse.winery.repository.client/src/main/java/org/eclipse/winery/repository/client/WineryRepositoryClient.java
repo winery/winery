@@ -382,7 +382,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <T extends TEntityType> List<QName> getQNameListOfAllTypes(Class<T> className) {
+	public <T extends TExtensibleElements> List<QName> getQNameListOfAllTypes(Class<T> className) {
 		String path = Util.getURLpathFragmentForCollection(className);
 		Map<WebResource, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
 		Collection<List<NamespaceIdOptionalName>> namespaceAndIdListCollection = wRtoNamespaceAndIdListMapOfAllTypes.values();

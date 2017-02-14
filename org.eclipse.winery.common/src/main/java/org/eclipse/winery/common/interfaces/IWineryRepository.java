@@ -49,9 +49,11 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
 	 * This method obsoletes methods like "getQNameListOfAllArtifactTypes": One
 	 * just has to call getQNameListOfAllTypes(TArtifactType.class)
 	 *
+	 * TExtensibleElements has to be used because of TServiceTemplate
+	 *
 	 * @return List of QNames of all types
 	 */
-	<T extends TEntityType> List<QName> getQNameListOfAllTypes(Class<T> type);
+	<T extends TExtensibleElements> List<QName> getQNameListOfAllTypes(Class<T> type);
 
 	/**
 	 * Get the TEntityType belonging to the given QName
