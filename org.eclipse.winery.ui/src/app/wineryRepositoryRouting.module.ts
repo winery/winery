@@ -1,13 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import { InstanceComponent } from './instance/instance.component';
 import { OtherComponent } from './other/other.component';
 import { SectionComponent } from './section/section.component';
 import { SectionResolver } from './resolver/section.resolver';
 import { NotFoundComponent } from './404/notFound.component';
 import { NamespaceResolver } from './resolver/namespace.resolver';
+import { HttpModule } from '@angular/http';
 
 const appRoutes: Routes = [
     { path: 'admin', component: InstanceComponent },
@@ -23,6 +23,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         BrowserModule,
+        HttpModule,
         RouterModule.forRoot(appRoutes),
     ],
     exports: [

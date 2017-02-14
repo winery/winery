@@ -10,6 +10,7 @@ import { UrlDecodePipe } from './pipes/urlDecode.pipe';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
 import { InstanceModule } from './instance/instance.module';
 import { NotFoundComponent } from './404/notFound.component';
+import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import { NotFoundComponent } from './404/notFound.component';
         EntityContainerComponent,
         SectionComponent,
         HeaderComponent,
+        LoaderComponent,
         NotFoundComponent,
         OtherComponent,
         WineryRepositoryComponent,

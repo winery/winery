@@ -31,7 +31,7 @@ export class InstanceService {
                     'Valid Sources and Targets', 'Implementations', 'Property Definition',
                     'Inheritance', 'Documentation', 'XML'];
                 break;
-            //TODO: add all;
+            // TODO: add all;
             default:
                 subMenu = [''];
         }
