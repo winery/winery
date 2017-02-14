@@ -28,6 +28,9 @@ TODO not working yet
 
 
 ## Generate WineryUi.war
+**BEFORE** building the production build or the war file, it must be ensured, that the ``<base href="/">`` is changed to ``<base href="./">``,
+ otherwise it will not work if hosted on tomcat. For more information, [see here](http://stackoverflow.com/questions/39018765/deploy-angular-2-app-with-webpack-to-tomcat-404-errors).
+
 1. Do production build
 2. `npm run war`
 
