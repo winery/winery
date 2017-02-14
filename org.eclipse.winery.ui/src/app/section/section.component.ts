@@ -20,9 +20,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     constructor(private route: ActivatedRoute,
                 private service: SectionService,
-                private router: Router) {
-
-    }
+    ) { }
 
     /**
      * @override
@@ -31,9 +29,9 @@ export class SectionComponent implements OnInit, OnDestroy {
      */
     ngOnInit(): void {
         this.routeSub = this.route
-            .url
-            .subscribe(url => {
-                this.selectedResource = sections[url[0].path];
+            .data
+            .subscribe(data => {
+                this.selectedResource = data['resolveData'].section;
                 this.componentData = this.service.getSectionData(this.selectedResource);
             });
     }

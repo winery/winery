@@ -12,12 +12,16 @@ import { RequirementDefinitionsComponent } from './requirementDefinitions/requir
 import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
 import { PropertyDefinitionComponent } from './propertyDefinition/propertyDefinition.component';
+import { InstanceResolver } from '../resolver/instance.resolver';
 
 const instanceRoutes: Routes = [
     {
-        path: ':section/:namespace/:componentId',
+        path: ':section/:namespace/:instanceId',
         // path: '',
         component: InstanceComponent,
+        resolve: {
+            resolveData: InstanceResolver
+        },
         children: [
             // { path: '', component: InstanceComponent },
             { path: 'capabilitydefinitions', component: CapabilityDefinitionsComponent },
@@ -42,7 +46,9 @@ const instanceRoutes: Routes = [
     exports: [
         RouterModule
     ],
-    providers: [],
+    providers: [
+        InstanceResolver
+    ],
 })
 export class InstanceRouterModule {
 }

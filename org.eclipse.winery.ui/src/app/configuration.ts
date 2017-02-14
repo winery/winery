@@ -12,24 +12,3 @@ export const sections = {
     policytemplate: 'policyTemplate',
     imports: 'xSDImport',
 };
-
-export class Configuration {
-
-    public static getSubMenuByResource(type: string): string[] {
-        let subMenu: string[];
-
-        switch (type.toLowerCase()) {
-            case 'nodetype':
-                subMenu = ['Visual Appearance', 'Instance States', 'Interfaces', 'Implementations',
-                    'Requirement Definitions' , 'Capability Definitions', 'Property Definition',
-                    'Inheritance', 'Documentation', 'XML'];
-                break;
-                //TODO: add all;
-            default:
-                subMenu = [''];
-        }
-
-        return subMenu;
-    }
-
-}

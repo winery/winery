@@ -10,6 +10,12 @@ import { RemoveWhiteSpacesPipe } from '../../pipes/removeWhiteSpaces.pipe';
     ],
     providers: [
         RemoveWhiteSpacesPipe
+    ],
+    inputs: [
+        'selectedNamespace',
+        'selectedComponentName',
+        'selectedResource',
+        'subMenu'
     ]
 })
 
@@ -26,7 +32,6 @@ export class InstanceHeaderComponent implements OnInit {
     constructor(private router: Router) {}
 
     ngOnInit(): void {
-        console.log(this.subMenu);
         if (this.subMenu.length > 7) {
             this.needTwoLines = true;
         }

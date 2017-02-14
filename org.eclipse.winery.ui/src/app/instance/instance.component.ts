@@ -1,9 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { sections, Configuration } from '../configuration';
 import { InstanceService } from './instance.service';
-import { InstanceData } from './instanceData';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -14,7 +12,6 @@ import { InstanceData } from './instanceData';
 export class InstanceComponent implements OnInit, OnDestroy {
 
     availableTabs: string[];
-    componentData: InstanceData;
     selectedResource: string;
     selectedComponentName: string;
     selectedNamespace: string;
@@ -26,23 +23,17 @@ export class InstanceComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.routeSub = this.route
-            .url
-            .subscribe(url => {
-                this.selectedResource = sections[url[0].path];
-                this.selectedNamespace = decodeURIComponent(decodeURIComponent(url[1].path));
-                this.selectedComponentName = url[2].path;
+            .data
+            .subscribe(data => {
+                this.selectedResource = data['resolveData'].section;
+                this.selectedNamespace = decodeURIComponent(decodeURIComponent(data['resolveData'].namespace));
+                this.selectedComponentName = data['resolveData'].instanceId;
 
-                this.componentData = this.service.getInstanceData(this.selectedResource);
-
-                this.getSubMenuForResource();
+                this.availableTabs = this.service.getSubMenuByResource(this.selectedResource);
             });
     }
 
     ngOnDestroy(): void {
         this.routeSub.unsubscribe();
-    }
-
-    getSubMenuForResource() {
-        this.availableTabs = Configuration.getSubMenuByResource(this.selectedResource);
     }
 }
