@@ -11,6 +11,12 @@
  *    Yves Schubert - switch to bootstrap 3
  *******************************************************************************/
 
+/**
+ * Duplicate implementation of winrey-common.js: getNamespaceAndLocalNameFromQName
+ *
+ * @param qnameStr A QNAme string in the form {namespace}localName
+ * @returns {{namespace: string, localName: string}}
+ */
 function getQName(qnameStr) {
 	var pos = qnameStr.indexOf("}");
 	var namespace = qnameStr.substring(1, pos);
