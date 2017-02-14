@@ -5,16 +5,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { InstanceComponent } from './instance/instance.component';
 import { OtherComponent } from './other/other.component';
 import { SectionComponent } from './section/section.component';
-import { SectionResolver } from './section/sectionResolver';
+import { SectionResolver } from './resolver/section.resolver';
 import { NotFoundComponent } from './404/notFound.component';
+import { NamespaceResolver } from './resolver/namespace.resolver';
 
 const appRoutes: Routes = [
     { path: 'admin', component: InstanceComponent },
     { path: 'other', component: OtherComponent },
-    { path: ':section', component: SectionComponent },
-    { path: ':section/:namespace', component: SectionComponent },
-    { path: '', redirectTo: '/servicetemplates', pathMatch: 'full' },
     { path: 'notfound', component: NotFoundComponent },
+    { path: ':section', component: SectionComponent, resolve: { resolveData: SectionResolver } },
+    { path: ':section/:namespace', component: SectionComponent, resolve: { resolveData: NamespaceResolver } },
+    { path: '', redirectTo: '/servicetemplates', pathMatch: 'full' },
     { path: '**', component: NotFoundComponent },
     // TODO: add namespaces, other routes available in other, etc...
 ];

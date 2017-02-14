@@ -1,19 +1,21 @@
 import { Injectable }             from '@angular/core';
-import { Router, Resolve, RouterStateSnapshot,
-    ActivatedRouteSnapshot } from '@angular/router';
+import {
+    Router, Resolve, RouterStateSnapshot,
+    ActivatedRouteSnapshot, ResolveData
+} from '@angular/router';
 
-import { sections } from '../sections.config';
+import { sections } from '../configuration';
 import { isNullOrUndefined } from 'util';
 
 @Injectable()
-export class SectionResolver implements Resolve<String> {
+export class SectionResolver implements Resolve<ResolveData> {
     constructor(private router: Router) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): String {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): ResolveData {
         let section = sections[route.params['section']];
 
         if (!isNullOrUndefined(section)) {
-            return section.toLower();
+            return { section: section };
         } else { // id not found
             this.router.navigate(['/notfound']);
             return null;

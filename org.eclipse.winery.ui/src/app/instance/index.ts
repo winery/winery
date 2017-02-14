@@ -1,1 +1,1 @@
-export * from "./instance.component"
+export * from './instance.component'

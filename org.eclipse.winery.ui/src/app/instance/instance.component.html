@@ -1,5 +1,10 @@
 <div class="mainContentContainer {{selectedResource}}">
-    <winery-instance-header [selectedResource]="selectedResource"></winery-instance-header>
+    <winery-instance-header
+        [selectedResource]="selectedResource"
+        [selectedComponentName]="selectedComponentName"
+        [selectedNamespace]="selectedNamespace"
+        [subMenu]="availableTabs"
+    ></winery-instance-header>
     <div class="middle" id="ccontainer">
         <router-outlet></router-outlet>
     </div>

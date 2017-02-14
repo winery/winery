@@ -11,10 +11,11 @@ export class SectionService {
     getSectionData(type: string): SectionData[] {
         console.log('getting componentData for ' + type);
         return [
-            {id: 'component_1', namespace: 'http://example[dot]org/', name: 'Component 1'},
-            {id: 'component_20', namespace: 'http://example[dot]org/', name: 'Component 20'},
-            {id: 'component_397', namespace: 'http://example[dot]org/', name: 'Component 397'},
-            {id: 'component_873', namespace: 'http://example[dot]org/', name: 'Component 873'},
+            { id: 'Apache-2.4', namespace: 'http://opentosca.org/nodetypes' },
+            { id: 'Component.1', namespace: 'http://example.org/' },
+            { id: 'Component_20', namespace: 'http://example[dot]org/' },
+            { id: 'Component_397', namespace: 'http://example[dot]org/' },
+            { id: 'Component_873', namespace: 'http://example[dot]org/' },
         ];
     }
 }

@@ -1,10 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { sections } from '../sections.config';
 import { InstanceService } from './instance.service';
-import { InstanceData } from './instanceData';
-
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -13,21 +10,26 @@ import { InstanceData } from './instanceData';
     ]
 })
 export class InstanceComponent implements OnInit, OnDestroy {
-    componentData: InstanceData;
+
+    availableTabs: string[];
     selectedResource: string;
+    selectedComponentName: string;
+    selectedNamespace: string;
     routeSub: Subscription;
 
     constructor(private route: ActivatedRoute,
-        private service: InstanceService
-    ) { }
+                private service: InstanceService) {
+    }
 
     ngOnInit(): void {
         this.routeSub = this.route
-            .url
-            .subscribe(url => {
-                console.log(url);
-                this.selectedResource = sections[url[0].path];
-                this.componentData = this.service.getInstanceData(this.selectedResource);
+            .data
+            .subscribe(data => {
+                this.selectedResource = data['resolveData'].section;
+                this.selectedNamespace = decodeURIComponent(decodeURIComponent(data['resolveData'].namespace));
+                this.selectedComponentName = data['resolveData'].instanceId;
+
+                this.availableTabs = this.service.getSubMenuByResource(this.selectedResource);
             });
     }
 

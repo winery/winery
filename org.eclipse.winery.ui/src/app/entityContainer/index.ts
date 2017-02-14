@@ -1,1 +1,1 @@
-export * from "./entityContainer.component"
+export * from './entityContainer.component'
