@@ -15,7 +15,7 @@ export class SectionResolver implements Resolve<ResolveData> {
         let section = sections[route.params['section']];
 
         if (!isNullOrUndefined(section)) {
-            return { section: section };
+            return { section: section, path: route.params['section'] };
         } else { // id not found
             this.router.navigate(['/notfound']);
             return null;

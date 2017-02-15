@@ -8,18 +8,13 @@ export class InstanceService {
     constructor() {
     }
 
-    getInstanceData(type: string): InstanceData {
-        console.log('getting InstanceData for ' + type);
-        return {id: 'component_1', namespace: 'http://example[dot]org/', name: 'Component 1', resourceType: 'nodeType'};
-    }
-
     public getSubMenuByResource(type: string): string[] {
         let subMenu: string[];
 
         switch (type.toLowerCase()) {
             case 'nodetype':
                 subMenu = ['Visual Appearance', 'Instance States', 'Interfaces', 'Implementations',
-                    'Requirement Definitions' , 'Capability Definitions', 'Property Definition',
+                    'Requirement Definitions' , 'Capability Definitions', 'Properties Definition',
                     'Inheritance', 'Documentation', 'XML'];
                 break;
             case 'servicetemplate':
@@ -28,10 +23,39 @@ export class InstanceService {
                 break;
             case 'relationshiptype':
                 subMenu = ['Visual Appearance', 'Instance States', 'Source Interfaces', 'Target Interfaces',
-                    'Valid Sources and Targets', 'Implementations', 'Property Definition',
+                    'Valid Sources and Targets', 'Implementations', 'Properties Definition',
                     'Inheritance', 'Documentation', 'XML'];
                 break;
-            //TODO: add all;
+            case 'artifacttype':
+                subMenu = ['Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                break;
+            case 'artifacttemplate':
+                subMenu = ['Files', 'Properties', 'Documentation', 'XML'];
+                break;
+            case 'requirementtype':
+                subMenu = ['Required Capability Type', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                break;
+            case 'capabilitytype':
+                subMenu = ['Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                break;
+            case 'nodetypeimplementation':
+                subMenu = ['Implementation Artifacts', 'Deployment Artifacts', 'Inheritance', 'Documentation', 'XML'];
+                break;
+            case 'relationshiptypeimplementation':
+                subMenu = ['Implementation Artifacts', 'Inheritance', 'Documentation', 'XML'];
+                break;
+            case 'policytype':
+                subMenu = [''];
+                break;
+            case 'policytemplate':
+                subMenu = [''];
+                break;
+            case 'xsdimport':
+                subMenu = [''];
+                break;
+            case 'wsdlimport':
+                subMenu = [''];
+                break;
             default:
                 subMenu = [''];
         }

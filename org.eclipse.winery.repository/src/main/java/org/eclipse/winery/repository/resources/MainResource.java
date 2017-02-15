@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzentter - remove ending "/" for all resources
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
@@ -57,79 +58,79 @@ import com.sun.jersey.multipart.FormDataParam;
 @Path("/")
 public class MainResource {
 
-	@Path("API/")
+	@Path("API")
 	public APIResource api() {
 		return new APIResource();
 	}
 
-	@Path("artifacttemplates/")
+	@Path("artifacttemplates")
 	public ArtifactTemplatesResource artifacttemplates() {
 		return new ArtifactTemplatesResource();
 	}
 
-	@Path("artifacttypes/")
+	@Path("artifacttypes")
 	public ArtifactTypesResource artifactypes() {
 		return new ArtifactTypesResource();
 	}
 
-	@Path("admin/")
+	@Path("admin")
 	public AdminTopResource admin() {
 		return new AdminTopResource();
 	}
 
-	@Path("capabilitytypes/")
+	@Path("capabilitytypes")
 	public CapabilityTypesResource capabilitytypes() {
 		return new CapabilityTypesResource();
 	}
 
-	@Path("imports/")
+	@Path("imports")
 	public ImportsResource imports() {
 		return new ImportsResource();
 	}
 
-	@Path("nodetypes/")
+	@Path("nodetypes")
 	public NodeTypesResource nodetypes() {
 		return new NodeTypesResource();
 	}
 
-	@Path("nodetypeimplementations/")
+	@Path("nodetypeimplementations")
 	public NodeTypeImplementationsResource nodetypeimplementations() {
 		return new NodeTypeImplementationsResource();
 	}
 
-	@Path("other/")
+	@Path("other")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Viewable getOtherElements() {
 		return new Viewable("/jsp/otherElements.jsp");
 	}
 
-	@Path("policytemplates/")
+	@Path("policytemplates")
 	public PolicyTemplatesResource policytemplates() {
 		return new PolicyTemplatesResource();
 	}
 
-	@Path("policytypes/")
+	@Path("policytypes")
 	public PolicyTypesResource policytypes() {
 		return new PolicyTypesResource();
 	}
 
-	@Path("relationshiptypes/")
+	@Path("relationshiptypes")
 	public RelationshipTypesResource relationshiptypes() {
 		return new RelationshipTypesResource();
 	}
 
-	@Path("requirementtypes/")
+	@Path("requirementtypes")
 	public RequirementTypesResource requirementtypes() {
 		return new RequirementTypesResource();
 	}
 
-	@Path("relationshiptypeimplementations/")
+	@Path("relationshiptypeimplementations")
 	public RelationshipTypeImplementationsResource relationshiptypeimplementations() {
 		return new RelationshipTypeImplementationsResource();
 	}
 
-	@Path("servicetemplates/")
+	@Path("servicetemplates")
 	public ServiceTemplatesResource servicetemplates() {
 		return new ServiceTemplatesResource();
 	}

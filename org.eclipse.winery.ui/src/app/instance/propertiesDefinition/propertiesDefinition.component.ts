@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
-    templateUrl: 'propertyDefinition.component.html'
+    templateUrl: 'propertiesDefinition.component.html'
 })
 export class PropertyDefinitionComponent implements OnInit {
     constructor() {

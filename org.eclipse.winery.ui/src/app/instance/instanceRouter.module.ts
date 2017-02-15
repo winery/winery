@@ -11,26 +11,24 @@ import { ImplementationsComponent } from './implementations/implementations.comp
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
-import { PropertyDefinitionComponent } from './propertyDefinition/propertyDefinition.component';
+import { PropertyDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
 import { InstanceResolver } from '../resolver/instance.resolver';
 
 const instanceRoutes: Routes = [
     {
         path: ':section/:namespace/:instanceId',
-        // path: '',
         component: InstanceComponent,
         resolve: {
             resolveData: InstanceResolver
         },
         children: [
-            // { path: '', component: InstanceComponent },
             { path: 'capabilitydefinitions', component: CapabilityDefinitionsComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'implementations', component: ImplementationsComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'instancestates', component: InstanceStatesComponent },
             { path: 'interfaces', component: InterfacesComponent },
-            { path: 'propertydefinition', component: PropertyDefinitionComponent },
+            { path: 'propertiesdefinition', component: PropertyDefinitionComponent },
             { path: 'requirementdefinitions', component: RequirementDefinitionsComponent },
             { path: 'visualappearance', component: VisualAppearanceComponent},
             { path: 'xml', component: EditXMLComponent }

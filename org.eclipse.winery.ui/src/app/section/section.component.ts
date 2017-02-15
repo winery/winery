@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
-import { sections } from '../configuration';
 
 @Component({
     selector: 'winery-section-component',
@@ -15,6 +14,7 @@ import { sections } from '../configuration';
 export class SectionComponent implements OnInit, OnDestroy {
 
     componentData: SectionData[];
+    loading: boolean = true;
     selectedResource: string;
     routeSub: Subscription;
 
@@ -30,13 +30,20 @@ export class SectionComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.routeSub = this.route
             .data
-            .subscribe(data => {
-                this.selectedResource = data['resolveData'].section;
-                this.componentData = this.service.getSectionData(this.selectedResource);
-            });
+            .subscribe(data => this.getComponentData(data));
     }
 
     ngOnDestroy(): void {
         this.routeSub.unsubscribe();
+    }
+
+    private getComponentData(data: any) {
+        let resolved = data['resolveData'];
+        this.selectedResource = resolved.section;
+        this.service.getSectionData(resolved.path)
+            .subscribe(resources => {
+               this.componentData = resources;
+               this.loading = false;
+            });
     }
 }

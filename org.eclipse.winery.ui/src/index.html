@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- base must be set before ANYTHING else is referenced -->
+    <!--
+    The base MUST be set before ANYTHING else is referenced, otherwise angular won't find anything.
+    If hosted on a tomcat server, the base MUST be href="./".
+    If hosted on lite server, it MUST be href="/".
+    -->
     <base href="/">
     <title>Winery Repository</title>
     <meta charset="UTF-8">
@@ -10,6 +14,8 @@
 </head>
 
 <body>
-<winery-repository>Loading Winery Repository...</winery-repository>
+<winery-repository>
+    <div class="loader"></div>
+</winery-repository>
 </body>
 </html>

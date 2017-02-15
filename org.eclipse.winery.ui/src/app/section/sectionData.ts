@@ -3,6 +3,6 @@
  */
 export class SectionData {
   id: string;
-  name: string;
+  name?: string;
   namespace: string;
 }
