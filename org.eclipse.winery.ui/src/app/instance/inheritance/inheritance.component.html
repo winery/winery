@@ -1,1 +1,27 @@
-inheritance component
+<div>
+    <div class="form-group">
+        <label class="control-label">Abstract</label>
+        <select class="form-control" style="width: 100px">
+            <option [selected]="inheritanceData.abstract">yes</option>
+            <option [selected]="!inheritanceData.abstract">no</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Final</label>
+        <select class="form-control" style="width: 100px">
+            <option [selected]="inheritanceData.final">yes</option>
+            <option [selected]="!inheritanceData.final">no</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Derived from</label>
+        <div>
+            <select class="form-control" style="width:600px; display:inline; margin-right: 10px;">
+                <option>(none)</option>
+                <option *ngFor="let item of inheritanceData.derivedFrom" [selected]="item.selected" [value]="item.QName">{{item.name}}</option>
+            </select>
+            <button class="btn btn-info btn-sm">open</button>
+        </div>
+    </div>
+    <button (click)="saveToServer()" class="btn btn-info btn-sm">save</button>
+</div>
