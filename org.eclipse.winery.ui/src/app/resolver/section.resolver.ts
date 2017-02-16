@@ -6,12 +6,13 @@ import {
 
 import { sections } from '../configuration';
 import { isNullOrUndefined } from 'util';
+import { ResolverData } from './resolverData';
 
 @Injectable()
-export class SectionResolver implements Resolve<ResolveData> {
+export class SectionResolver implements Resolve<ResolverData> {
     constructor(private router: Router) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): ResolveData {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): ResolverData {
         let section = sections[route.params['section']];
 
         if (!isNullOrUndefined(section)) {

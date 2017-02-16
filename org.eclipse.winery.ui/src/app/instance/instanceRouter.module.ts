@@ -18,9 +18,7 @@ const instanceRoutes: Routes = [
     {
         path: ':section/:namespace/:instanceId',
         component: InstanceComponent,
-        resolve: {
-            resolveData: InstanceResolver
-        },
+        resolve: { resolveData: InstanceResolver },
         children: [
             { path: 'capabilitydefinitions', component: CapabilityDefinitionsComponent },
             { path: 'documentation', component: DocumentationComponent },

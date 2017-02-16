@@ -1,14 +1,23 @@
 import { Injectable } from '@angular/core';
 
 import { InstanceData } from './instanceData';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class InstanceService {
 
-    constructor() {
-    }
+    selectedResource: string;
+    selectedComponentId: string;
+    selectedNamespace: string;
+    path: string;
 
-    public getSubMenuByResource(type: string): string[] {
+    constructor() {}
+
+    public getSubMenuByResource(type?: string): string[] {
+        if (isNullOrUndefined(type)) {
+            type = this.selectedResource;
+        }
+
         let subMenu: string[];
 
         switch (type.toLowerCase()) {
@@ -61,5 +70,12 @@ export class InstanceService {
         }
 
         return subMenu;
+    }
+
+    public setSharedData(selectedResource: string, selectedComponentId: string, selectedNamespace: string, path: string): void {
+        this.selectedNamespace = selectedNamespace;
+        this.selectedComponentId = selectedComponentId;
+        this.selectedResource = selectedResource;
+        this.path = path;
     }
 }

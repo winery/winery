@@ -12,3 +12,5 @@ export const sections = {
     policytemplate: 'policyTemplate',
     imports: 'xSDImport',
 };
+
+export const backendBaseUri = 'http://127.0.0.1:8080/winery/';

@@ -13,7 +13,7 @@ import { RemoveWhiteSpacesPipe } from '../../pipes/removeWhiteSpaces.pipe';
     ],
     inputs: [
         'selectedNamespace',
-        'selectedComponentName',
+        'selectedComponentId',
         'selectedResource',
         'subMenu'
     ]
@@ -22,7 +22,7 @@ import { RemoveWhiteSpacesPipe } from '../../pipes/removeWhiteSpaces.pipe';
 export class InstanceHeaderComponent implements OnInit {
 
     @Input() selectedNamespace: string;
-    @Input() selectedComponentName: string;
+    @Input() selectedComponentId: string;
     @Input() selectedResource: string;
     @Input() subMenu: string[];
 

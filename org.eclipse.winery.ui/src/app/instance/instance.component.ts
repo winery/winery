@@ -13,8 +13,10 @@ export class InstanceComponent implements OnInit, OnDestroy {
 
     availableTabs: string[];
     selectedResource: string;
-    selectedComponentName: string;
+    selectedComponentId: string;
     selectedNamespace: string;
+    path: string;
+
     routeSub: Subscription;
 
     constructor(private route: ActivatedRoute,
@@ -26,10 +28,13 @@ export class InstanceComponent implements OnInit, OnDestroy {
             .data
             .subscribe(data => {
                 this.selectedResource = data['resolveData'].section;
-                this.selectedNamespace = decodeURIComponent(decodeURIComponent(data['resolveData'].namespace));
-                this.selectedComponentName = data['resolveData'].instanceId;
+                this.selectedNamespace = data['resolveData'].namespace;
+                this.selectedComponentId = data['resolveData'].instanceId;
+                this.path = data['resolveData'].path;
 
-                this.availableTabs = this.service.getSubMenuByResource(this.selectedResource);
+                this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId, this.path);
+
+                this.availableTabs = this.service.getSubMenuByResource();
             });
     }
 
