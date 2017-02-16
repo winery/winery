@@ -14,10 +14,12 @@ import { RequirementDefinitionsComponent } from './requirementDefinitions/requir
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
 import { PropertyDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
+import { LoaderModule } from '../loader/loader.module';
 
 @NgModule({
     imports: [
         BrowserModule,
+        LoaderModule,
         InstanceRouterModule,
     ],
     exports: [],

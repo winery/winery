@@ -1,7 +1,7 @@
-export class InheritanceData {
+export interface InheritanceData {
     abstract: boolean;
     final: boolean;
     derivedFrom: [
-        {name: string, QName: string, selected: boolean}
-        ]
+        {name: string, QName: string, selected?: boolean}
+    ];
 }

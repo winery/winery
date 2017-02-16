@@ -11,18 +11,19 @@ import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module'
 import { InstanceModule } from './instance/instance.module';
 import { NotFoundComponent } from './404/notFound.component';
 import { LoaderComponent } from './loader/loader.component';
+import { LoaderModule } from './loader/loader.module';
 
 @NgModule({
     imports: [
         BrowserModule,
         InstanceModule,
+        LoaderModule,
         WineryRepositoryRoutingModule,
     ],
     declarations: [
         EntityContainerComponent,
         SectionComponent,
         HeaderComponent,
-        LoaderComponent,
         NotFoundComponent,
         OtherComponent,
         WineryRepositoryComponent,

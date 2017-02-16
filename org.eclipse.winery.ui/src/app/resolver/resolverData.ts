@@ -1,4 +1,4 @@
-export class ResolverData {
+export interface ResolverData {
     instanceId?: string;
     namespace?: string;
     section: string;

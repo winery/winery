@@ -8,9 +8,12 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - add JSON implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -18,10 +21,14 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.backend.Repository;
 
 import com.sun.jersey.api.view.Viewable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for managing inheritance properties: abstract, final, derivedFromn
@@ -37,7 +44,7 @@ import com.sun.jersey.api.view.Viewable;
 public class InheritanceResource {
 
 	private AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal managedResource;
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(InheritanceResource.class);
 
 	public InheritanceResource(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
 		this.managedResource = res;
@@ -70,5 +77,37 @@ public class InheritanceResource {
 		res.remove(this.managedResource.getId());
 		// FEATURE: Possibly exclude all subtypes to avoid circles. However, this could be disappointing for users who know what they are doing
 		return res;
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getInheritanceManagementJSON() {
+		JsonFactory jsonFactory = new JsonFactory();
+		StringWriter sw = new StringWriter();
+		try {
+			JsonGenerator jg = jsonFactory.createGenerator(sw);
+			jg.writeStartObject();
+			jg.writeStringField("abstract", this.managedResource.getIsAbstract());
+			jg.writeStringField("final", this.managedResource.getIsFinal());
+			jg.writeFieldName("derivedFrom");
+			jg.writeStartArray();
+			for (TOSCAComponentId type : this.getPossibleSuperTypes()) {
+				jg.writeStartObject();
+				jg.writeStringField("name", type.getXmlId().toString());
+				jg.writeStringField("QName", type.getQName().toString());
+				if (this.managedResource.getDerivedFrom() != null) {
+					jg.writeBooleanField("selected", this.managedResource.getDerivedFrom().contains(type.getQName().toString()));
+				}
+				jg.writeEndObject();
+			}
+			jg.writeEndArray();
+			jg.writeEndObject();
+			jg.close();
+		} catch (IOException e) {
+			this.LOGGER.error(e.getMessage(), e);
+			return "[]";
+		}
+
+		return sw.toString();
 	}
 }

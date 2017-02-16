@@ -15,7 +15,7 @@ export class SectionService {
         let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(backendBaseUri + type.toLowerCase(), options)
+        return this.http.get(backendBaseUri + type.toLowerCase() + '/', options)
             .map(res => res.json());
     }
 }
