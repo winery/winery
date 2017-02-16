@@ -17,17 +17,19 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Tests client methods with a pre-configured client stored in a local static
@@ -45,7 +47,7 @@ public class TestWineryRepositoryClient {
 	// private final String repositoryURI = "http://2471.de:8080/wineydev";
 	private static final String repositoryURI = "http://localhost:8080/winery";
 
-	private static final boolean USE_PROXY = true;
+	private static final boolean USE_PROXY = false;
 
 	private static final IWineryRepositoryClient client = new WineryRepositoryClient(TestWineryRepositoryClient.USE_PROXY);
 	static {
@@ -87,6 +89,16 @@ public class TestWineryRepositoryClient {
 	public void getAllRelationshipTypesWithAssociatedElements() {
 		Collection<TDefinitions> allTypes = TestWineryRepositoryClient.client.getAllTypesWithAssociatedElements(TRelationshipType.class);
 		Assert.assertNotNull(allTypes);
+	}
+
+	@Test
+	public void getAllServiceTemplates() {
+		Collection<TServiceTemplate> allTypes = TestWineryRepositoryClient.client.getAllTypes(TServiceTemplate.class);
+		Assert.assertNotEquals(0, allTypes.size());
+		for (TServiceTemplate type : allTypes) {
+			Assert.assertNotNull("name is null", type.getName());
+			Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
+		}
 	}
 
 	@Test

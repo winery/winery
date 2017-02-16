@@ -101,8 +101,7 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 		try {
 			this.res.persist();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Could not persist resource", e);
 		}
 	}
 

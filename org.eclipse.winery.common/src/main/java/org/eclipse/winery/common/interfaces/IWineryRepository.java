@@ -21,6 +21,7 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 /**
@@ -48,9 +49,11 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
 	 * This method obsoletes methods like "getQNameListOfAllArtifactTypes": One
 	 * just has to call getQNameListOfAllTypes(TArtifactType.class)
 	 *
+	 * TExtensibleElements has to be used because of TServiceTemplate
+	 *
 	 * @return List of QNames of all types
 	 */
-	<T extends TEntityType> List<QName> getQNameListOfAllTypes(Class<T> type);
+	<T extends TExtensibleElements> List<QName> getQNameListOfAllTypes(Class<T> type);
 
 	/**
 	 * Get the TEntityType belonging to the given QName
@@ -89,12 +92,14 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
 	 * templates, artifact types. Note that artifact templates are
 	 * TEntityTemplates and thus cannot be retrieved by this method.
 	 *
+	 * We have to use TExtensibleElements instead of TEntityTypes to offer fetching of service templates, too.
+	 *
 	 * This method obsoletes methods like "getAllArtifactTypes": One just has to
 	 * call getallTypes(TArtifactType.class)
 	 *
 	 * @return List of all types
 	 */
-	<T extends TEntityType> Collection<T> getAllTypes(Class<T> type);
+	<T extends TExtensibleElements> Collection<T> getAllTypes(Class<T> type);
 
 	/**
 	 * @return List of all types with associated elements (such as deployment

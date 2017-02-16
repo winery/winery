@@ -59,8 +59,30 @@ define(
 			$("#chooseTopologyToImportDiag").modal("show");
 		}
 
-		function importTopology() {
-			console.log("I'm here");
+		function importTopology(urlPrefix, serviceTemplateQName) {
+			$("#importButon").button('loading');
+			$.ajax({
+				url: topologyTemplateURL + "merge",
+				type: "POST",
+				contentType: 'text/plain',
+				data: serviceTemplateQName,
+				success: function(data, textStatus, jqXHR) {
+					$("#importButon").button('reset');
+					vShowSuccess("successfully saved. Reloading page...");
+					window.location.reload(true);
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#importButon").button('reset');
+					vShowAJAXError("Could not import", jqXHR, errorThrown);
+				}
+			});
+
+			// currently does not work as we do not support rendering based on JSON data
+
+			// var topologyTemplateURL = urlPrefix + w.getURLFragmentOutOfFullQName(serviceTemplateQName) + "/" + "topologytemplate/";
+			// $.getJSON(topologyTemplateURL, function(topologyTemplate) {
+			// 	console.log(topologyTemplate);
+			// });
 		}
 
 		/**
