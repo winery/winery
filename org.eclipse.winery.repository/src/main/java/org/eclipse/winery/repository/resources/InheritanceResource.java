@@ -17,13 +17,19 @@ import java.io.StringWriter;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 
 import com.sun.jersey.api.view.Viewable;
@@ -56,14 +62,6 @@ public class InheritanceResource {
 		return new Viewable("/jsp/inheritance.jsp", this);
 	}
 
-	public String getIsAbstract() {
-		return this.managedResource.getIsAbstract();
-	}
-
-	public String getIsFinal() {
-		return this.managedResource.getIsAbstract();
-	}
-
 	public String getDerivedFrom() {
 		return this.managedResource.getDerivedFrom();
 	}
@@ -79,6 +77,23 @@ public class InheritanceResource {
 		return res;
 	}
 
+	/**
+	 * Produces a JSON object containing all necessary data for displaying and editing the inheritance.
+	 *
+	 * @return JSON object in the format
+	 * {
+	 *    "abstract": "no",
+	 *    "final": "yes",
+	 *    "derivedFrom": [
+	 *      {
+	 *        "name": [name]
+	 *        "QName": "{[namespace]}[name]"
+	 *        "selected": true|false
+	 *      },
+	 *      ...
+	 *    ]
+	 *  }
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getInheritanceManagementJSON() {
@@ -104,10 +119,65 @@ public class InheritanceResource {
 			jg.writeEndObject();
 			jg.close();
 		} catch (IOException e) {
-			this.LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return "[]";
 		}
 
 		return sw.toString();
+	}
+
+	/**
+	 * Saves the inheritance management from a putted json object in the format:
+	 * {
+	 *   "abstract": "no",
+	 *   "final": "yes",
+	 *   "derivedFrom":
+	 *   {
+	 *     "QName": "{[namespace]}[name]"
+	 *   }
+	 * }
+	 *
+	 * @param json Should at least contain values for abstract, final and QName.
+	 * @return Response
+	 */
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response saveInheritanceManagementFromJSON(String json) {
+		JsonFactory jsonFactory = new JsonFactory();
+		boolean abstractEdited = false;
+		boolean finalEdited = false;
+		boolean qNameEdited = false;
+
+		try {
+			JsonParser parser = jsonFactory.createParser(json);
+			while(!parser.isClosed()) {
+				JsonToken token = parser.nextToken();
+				if (JsonToken.FIELD_NAME.equals(token)) {
+					String key = parser.getCurrentName();
+					// Move to the next value
+					parser.nextToken();
+					switch (key) {
+						case "abstract":
+							abstractEdited = this.managedResource.putTBoolean(parser.getValueAsString(), "setAbstract");
+							break;
+						case "final":
+							finalEdited = this.managedResource.putTBoolean(parser.getValueAsString(), "setFinal");
+							break;
+						case "QName":
+							qNameEdited = this.managedResource.putDerivedFrom(parser.getValueAsString());
+							break;
+					}
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.error("Could not parse Inheritance Data");
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+		}
+
+		if (!abstractEdited || !finalEdited || !qNameEdited) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+		return BackendUtils.persist(this.managedResource);
 	}
 }

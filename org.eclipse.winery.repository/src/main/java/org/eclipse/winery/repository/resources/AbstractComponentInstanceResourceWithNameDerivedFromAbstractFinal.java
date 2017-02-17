@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - add JSON implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
@@ -71,9 +72,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 		return BackendUtils.persist(this);
 	}
 
-	@GET
-	@Path("derivedFrom")
-	public String getDerivedFrom() {
+	String getDerivedFrom() {
 		// TOSCA does not introduce a type like WithNameDerivedFromAbstractFinal
 		// We could enumerate all possible implementing classes
 		// Or use java reflection, what we're doing now.
@@ -102,9 +101,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 		}
 	}
 
-	@PUT
-	@Path("derivedFrom")
-	public Response putDerivedFrom(String type) {
+	boolean putDerivedFrom(String type) {
 		QName qname = QName.valueOf(type);
 
 		// see getDerivedFrom for verbose comments
@@ -116,13 +113,13 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 			method.invoke(this.getElement(), derivedFrom);
 		} catch (ClassCastException e) {
 			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Seems that *Implementation is now Definitions backed, but not yet fully implemented", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return false;
 		} catch (Exception e) {
 			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not set derivedFrom", e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return false;
 		}
 
-		return BackendUtils.persist(this);
+		return true;
 	}
 
 	/**
@@ -151,7 +148,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 	 * @param methodName the method to call: setAbstract|setFinal
 	 * @return {@inheritDoc}
 	 */
-	private Response putTBoolean(String tBooleanStr, String methodName) {
+	boolean putTBoolean(String tBooleanStr, String methodName) {
 		// see getDerivedFrom for verbose comments
 
 		Method method;
@@ -161,38 +158,23 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 			method.invoke(this.getElement(), tBoolean);
 		} catch (Exception e) {
 			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not set tBoolean " + methodName, e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return false;
 		}
 
-		return BackendUtils.persist(this);
+		return true;
+		//return BackendUtils.persist(this);
 	}
 
 	/**
 	 * Method name is not "getAbstract" as ${it.abstract} does not work as
 	 * "abstract" is not allowed at that place
 	 */
-	@GET
-	@Path("abstract")
-	public String getIsAbstract() {
+	String getIsAbstract() {
 		return this.getTBoolean("getAbstract");
 	}
 
-	@PUT
-	@Path("abstract")
-	public Response putIsAbstract(String isAbstract) {
-		return this.putTBoolean(isAbstract, "setAbstract");
-	}
-
-	@GET
-	@Path("final")
-	public String getIsFinal() {
+	String getIsFinal() {
 		return this.getTBoolean("getFinal");
-	}
-
-	@PUT
-	@Path("final")
-	public Response putIsFinal(String isFinal) {
-		return this.putTBoolean(isFinal, "setFinal");
 	}
 
 	/**
