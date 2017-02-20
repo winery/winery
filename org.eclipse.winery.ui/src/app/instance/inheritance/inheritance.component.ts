@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { InheritanceService } from "./inheritance.service";
-import { InheritanceData } from "./inheritanceData";
+import { InheritanceService } from './inheritance.service';
+import { InheritanceData } from './inheritanceData';
 import { InstanceService } from '../instance.service';
 
 
@@ -28,8 +28,23 @@ export class InheritanceComponent implements OnInit {
     }
 
     saveToServer() {
-        console.log('posting');
-        /*this.service.saveInheritanceData(this.inheritanceData)
-            .subscribe();*/
+        this.loading = true;
+        this.service.saveInheritanceData(this.inheritanceData)
+            .subscribe(response => {
+               this.loading = false;
+               console.log(response);
+            });
+    }
+
+    onAbstractChange(value: string): void {
+        this.inheritanceData.isAbstract = value;
+    }
+
+    onFinalChange(value: string): void {
+        this.inheritanceData.isFinal = value;
+    }
+
+    onDerivedFromChange(value: string): void {
+        this.inheritanceData.derivedFrom = value;
     }
 }

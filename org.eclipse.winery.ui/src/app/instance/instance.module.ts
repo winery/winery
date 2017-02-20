@@ -15,10 +15,12 @@ import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabili
 import { PropertyDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { LoaderModule } from '../loader/loader.module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
         BrowserModule,
+        FormsModule,
         LoaderModule,
         InstanceRouterModule,
     ],

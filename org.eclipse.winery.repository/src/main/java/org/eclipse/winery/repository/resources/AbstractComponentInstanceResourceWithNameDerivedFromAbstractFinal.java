@@ -32,13 +32,14 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TEntityType.DerivedFrom;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.resources.jsonClasses.InheritanceResourceJSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Models a component instance with name, derived from, abstract, and final <br />
  * Tags are provided by AbstractComponentInstanceResource
- *
+ * <p>
  * This class mirrors
  * AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinalConfigurationBacked
  * . We did not include interfaces as the getters are currently only called at
@@ -47,7 +48,6 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal extends AbstractComponentInstanceResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.class);
-
 
 	protected AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal(TOSCAComponentId id) {
 		super(id);
@@ -72,7 +72,15 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 		return BackendUtils.persist(this);
 	}
 
-	String getDerivedFrom() {
+	/**
+	 * @return resource managing abstract, final, derivedFrom
+	 */
+	@Path("inheritance/")
+	public InheritanceResource getInheritanceManagement() {
+		return new InheritanceResource(this);
+	}
+
+	public String getDerivedFrom() {
 		// TOSCA does not introduce a type like WithNameDerivedFromAbstractFinal
 		// We could enumerate all possible implementing classes
 		// Or use java reflection, what we're doing now.
@@ -101,33 +109,12 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 		}
 	}
 
-	boolean putDerivedFrom(String type) {
-		QName qname = QName.valueOf(type);
-
-		// see getDerivedFrom for verbose comments
-		Method method;
-		DerivedFrom derivedFrom = new DerivedFrom();
-		derivedFrom.setTypeRef(qname);
-		try {
-			method = this.getElement().getClass().getMethod("setDerivedFrom", DerivedFrom.class);
-			method.invoke(this.getElement(), derivedFrom);
-		} catch (ClassCastException e) {
-			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Seems that *Implementation is now Definitions backed, but not yet fully implemented", e);
-			return false;
-		} catch (Exception e) {
-			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not set derivedFrom", e);
-			return false;
-		}
-
-		return true;
-	}
-
 	/**
 	 * @param methodName the method to call: getAbstract|getFinal
 	 * @return {@inheritDoc}
 	 */
-	private String getTBoolean(String methodName) {
-		// see getDerivedFrom for verbose comments
+	public String getTBoolean(String methodName) {
+		// see getAvailableSuperClasses for verbose comments
 		Method method;
 		TBoolean tBoolean;
 		try {
@@ -144,45 +131,29 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 		}
 	}
 
-	/**
-	 * @param methodName the method to call: setAbstract|setFinal
-	 * @return {@inheritDoc}
-	 */
-	boolean putTBoolean(String tBooleanStr, String methodName) {
-		// see getDerivedFrom for verbose comments
+	Response putInheritance(InheritanceResourceJSON json) {
+		QName qname = QName.valueOf(json.getDerivedFrom());
 
+		// see getAvailableSuperClasses for verbose comments
 		Method method;
-		TBoolean tBoolean = TBoolean.fromValue(tBooleanStr);
+		DerivedFrom derivedFrom = new DerivedFrom();
+		derivedFrom.setTypeRef(qname);
+
 		try {
-			method = this.getElement().getClass().getMethod(methodName, TBoolean.class);
-			method.invoke(this.getElement(), tBoolean);
+			method = this.getElement().getClass().getMethod("setDerivedFrom", DerivedFrom.class);
+			method.invoke(this.getElement(), derivedFrom);
+			method = this.getElement().getClass().getMethod("setAbstract", TBoolean.class);
+			method.invoke(this.getElement(), TBoolean.fromValue(json.getIsAbstract()));
+			method = this.getElement().getClass().getMethod("setFinal", TBoolean.class);
+			method.invoke(this.getElement(), TBoolean.fromValue(json.getIsFinal()));
+		} catch (ClassCastException e) {
+			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Seems that *Implementation is now Definitions backed, but not yet fully implemented", e);
+			throw new IllegalStateException(e);
 		} catch (Exception e) {
-			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not set tBoolean " + methodName, e);
-			return false;
+			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not set inheritance resource", e);
+			throw new IllegalStateException(e);
 		}
-
-		return true;
-		//return BackendUtils.persist(this);
-	}
-
-	/**
-	 * Method name is not "getAbstract" as ${it.abstract} does not work as
-	 * "abstract" is not allowed at that place
-	 */
-	String getIsAbstract() {
-		return this.getTBoolean("getAbstract");
-	}
-
-	String getIsFinal() {
-		return this.getTBoolean("getFinal");
-	}
-
-	/**
-	 * @return resource managing abstract, final, derivedFrom
-	 */
-	@Path("inheritance/")
-	public InheritanceResource getInheritanceManagement() {
-		return new InheritanceResource(this);
+		return BackendUtils.persist(this);
 	}
 
 }

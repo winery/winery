@@ -33,6 +33,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 
 import com.sun.jersey.api.view.Viewable;
+import org.eclipse.winery.repository.resources.jsonClasses.InheritanceResourceJSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,17 +67,6 @@ public class InheritanceResource {
 		return this.managedResource.getDerivedFrom();
 	}
 
-	/** JSP Data **/
-
-	public SortedSet<? extends TOSCAComponentId> getPossibleSuperTypes() {
-		// sorted by Name, not by namespace
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(this.managedResource.getId().getClass());
-		SortedSet<? extends TOSCAComponentId> res = new TreeSet<>(allTOSCAcomponentIds);
-		res.remove(this.managedResource.getId());
-		// FEATURE: Possibly exclude all subtypes to avoid circles. However, this could be disappointing for users who know what they are doing
-		return res;
-	}
-
 	/**
 	 * Produces a JSON object containing all necessary data for displaying and editing the inheritance.
 	 *
@@ -84,46 +74,17 @@ public class InheritanceResource {
 	 * {
 	 *    "abstract": "no",
 	 *    "final": "yes",
-	 *    "derivedFrom": [
-	 *      {
-	 *        "name": [name]
-	 *        "QName": "{[namespace]}[name]"
-	 *        "selected": true|false
-	 *      },
+	 *    "derivedFrom": "[QName]",
+	 *    "availableSuperClasses": [
+	 *      { "name": [name], "QName": "[QName]" },
 	 *      ...
 	 *    ]
 	 *  }
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getInheritanceManagementJSON() {
-		JsonFactory jsonFactory = new JsonFactory();
-		StringWriter sw = new StringWriter();
-		try {
-			JsonGenerator jg = jsonFactory.createGenerator(sw);
-			jg.writeStartObject();
-			jg.writeStringField("abstract", this.managedResource.getIsAbstract());
-			jg.writeStringField("final", this.managedResource.getIsFinal());
-			jg.writeFieldName("derivedFrom");
-			jg.writeStartArray();
-			for (TOSCAComponentId type : this.getPossibleSuperTypes()) {
-				jg.writeStartObject();
-				jg.writeStringField("name", type.getXmlId().toString());
-				jg.writeStringField("QName", type.getQName().toString());
-				if (this.managedResource.getDerivedFrom() != null) {
-					jg.writeBooleanField("selected", this.managedResource.getDerivedFrom().contains(type.getQName().toString()));
-				}
-				jg.writeEndObject();
-			}
-			jg.writeEndArray();
-			jg.writeEndObject();
-			jg.close();
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-			return "[]";
-		}
-
-		return sw.toString();
+	public InheritanceResourceJSON getInheritanceManagementJSON() {
+		return new InheritanceResourceJSON(this.managedResource);
 	}
 
 	/**
@@ -131,10 +92,7 @@ public class InheritanceResource {
 	 * {
 	 *   "abstract": "no",
 	 *   "final": "yes",
-	 *   "derivedFrom":
-	 *   {
-	 *     "QName": "{[namespace]}[name]"
-	 *   }
+	 *   "derivedFrom": "[QName]"
 	 * }
 	 *
 	 * @param json Should at least contain values for abstract, final and QName.
@@ -142,42 +100,7 @@ public class InheritanceResource {
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveInheritanceManagementFromJSON(String json) {
-		JsonFactory jsonFactory = new JsonFactory();
-		boolean abstractEdited = false;
-		boolean finalEdited = false;
-		boolean qNameEdited = false;
-
-		try {
-			JsonParser parser = jsonFactory.createParser(json);
-			while(!parser.isClosed()) {
-				JsonToken token = parser.nextToken();
-				if (JsonToken.FIELD_NAME.equals(token)) {
-					String key = parser.getCurrentName();
-					// Move to the next value
-					parser.nextToken();
-					switch (key) {
-						case "abstract":
-							abstractEdited = this.managedResource.putTBoolean(parser.getValueAsString(), "setAbstract");
-							break;
-						case "final":
-							finalEdited = this.managedResource.putTBoolean(parser.getValueAsString(), "setFinal");
-							break;
-						case "QName":
-							qNameEdited = this.managedResource.putDerivedFrom(parser.getValueAsString());
-							break;
-					}
-				}
-			}
-		} catch (IOException e) {
-			LOGGER.error("Could not parse Inheritance Data");
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
-		}
-
-		if (!abstractEdited || !finalEdited || !qNameEdited) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-
-		return BackendUtils.persist(this.managedResource);
+	public Response saveInheritanceManagementFromJSON(InheritanceResourceJSON json) {
+		return this.managedResource.putInheritance(json);
 	}
 }

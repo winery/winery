@@ -8,6 +8,7 @@ import { SectionResolver } from './resolver/section.resolver';
 import { NotFoundComponent } from './404/notFound.component';
 import { NamespaceResolver } from './resolver/namespace.resolver';
 import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
     { path: 'admin', component: InstanceComponent },
@@ -23,6 +24,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         BrowserModule,
+        FormsModule,
         HttpModule,
         RouterModule.forRoot(appRoutes),
     ],
