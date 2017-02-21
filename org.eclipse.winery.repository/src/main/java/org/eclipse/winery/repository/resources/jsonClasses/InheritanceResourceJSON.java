@@ -33,7 +33,7 @@ public class InheritanceResourceJSON {
 	public InheritanceResourceJSON(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
 		this.isAbstract = res.getTBoolean("getAbstract");
 		this.isFinal = res.getTBoolean("getFinal");
-		this.derivedFrom = res.getDerivedFrom();
+		this.derivedFrom = res.getDerivedFrom() == null ? "(none)" : res.getDerivedFrom();
 		this.createDerivedFromList(res);
 	}
 

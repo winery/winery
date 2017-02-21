@@ -27,7 +27,11 @@
                     {{ item.name }}
                 </option>
             </select>
-            <button class="btn btn-info btn-sm">open</button>
+            <button class="btn btn-info btn-sm"
+                    [routerLink]="openSuperClassLink"
+                    [disabled]="inheritanceData?.derivedFrom === '(none)'">
+                open
+            </button>
         </div>
     </div>
     <button (click)="saveToServer()" class="btn btn-info btn-sm">save</button>

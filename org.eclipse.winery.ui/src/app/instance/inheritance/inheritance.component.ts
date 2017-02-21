@@ -12,6 +12,7 @@ import { InstanceService } from '../instance.service';
 export class InheritanceComponent implements OnInit {
 
     inheritanceData: InheritanceData;
+    openSuperClassLink: string = '';
     loading: boolean = true;
 
     constructor(
@@ -23,6 +24,7 @@ export class InheritanceComponent implements OnInit {
         this.service.getInheritanceData(this.sharedData.path)
             .subscribe(inheritance => {
                 this.inheritanceData = inheritance;
+                this.setButtonLink();
                 this.loading = false;
             });
     }
@@ -38,5 +40,17 @@ export class InheritanceComponent implements OnInit {
 
     onDerivedFromChange(value: string): void {
         this.inheritanceData.derivedFrom = value;
+        this.setButtonLink();
+    }
+
+    private setButtonLink(): void {
+        let parts = this.inheritanceData.derivedFrom.split('}');
+
+        // can be '(none)'
+        if (parts.length > 1) {
+            let namespace = parts[0].slice(1);
+            let name = parts[1];
+            this.openSuperClassLink = '/' + this.sharedData.selectedResource.toLowerCase() + 's/' + encodeURIComponent(encodeURIComponent(namespace)) + '/' + name;
+        }
     }
 }
