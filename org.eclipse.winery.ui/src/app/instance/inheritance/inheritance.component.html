@@ -4,14 +4,14 @@
 <div *ngIf="!loading">
     <div class="form-group">
         <label class="control-label">Abstract</label>
-        <select class="form-control" style="width: 100px" (change)="onAbstractChange($event.target.value)">
+        <select [(ngModel)]="inheritanceData.isAbstract" class="form-control" style="width: 100px">
             <option [selected]="inheritanceData.isAbstract === 'yes'">yes</option>
             <option [selected]="inheritanceData.isAbstract === 'no'">no</option>
         </select>
     </div>
     <div class="form-group">
         <label class="control-label">Final</label>
-        <select class="form-control" style="width: 100px" (change)="onFinalChange($event.target.value)">
+        <select [(ngModel)]="inheritanceData.isFinal" class="form-control" style="width: 100px">
             <option [selected]="inheritanceData.isFinal === 'yes'">yes</option>
             <option [selected]="inheritanceData.isFinal === 'no'">no</option>
         </select>

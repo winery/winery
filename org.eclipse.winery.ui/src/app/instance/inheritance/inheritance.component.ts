@@ -36,14 +36,6 @@ export class InheritanceComponent implements OnInit {
             });
     }
 
-    onAbstractChange(value: string): void {
-        this.inheritanceData.isAbstract = value;
-    }
-
-    onFinalChange(value: string): void {
-        this.inheritanceData.isFinal = value;
-    }
-
     onDerivedFromChange(value: string): void {
         this.inheritanceData.derivedFrom = value;
     }
