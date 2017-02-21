@@ -42,6 +42,7 @@ Each of these projects are versioned separately.
 * org.eclipse.winery.model.csar.toscametafile: model for TOSCA meta files contained in a CSAR
 * org.eclipse.winery.model.selfservice: model for the self service portal
 * org.eclipse.winery.model.tosca: model for TOCSA
+* org.eclipse.winery.model.tosca.yaml: model for TOCSA Simple Profile in YAML
 
 ### Support projects
 * org.eclipse.winery.highlevelrestapi: support library to REST calls.
