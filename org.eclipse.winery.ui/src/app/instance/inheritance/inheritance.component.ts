@@ -14,6 +14,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { InheritanceService } from './inheritance.service';
 import { InheritanceApiData } from './inheritanceApiData';
 import { InstanceService } from '../instance.service';
+import { NotificationsService } from 'angular2-notifications';
 
 
 @Component({
@@ -28,7 +29,8 @@ export class InheritanceComponent implements OnInit {
 
     constructor(
         private sharedData: InstanceService,
-        private service: InheritanceService
+        private service: InheritanceService,
+        private notify: NotificationsService
     ) {}
 
     ngOnInit() {
@@ -59,12 +61,13 @@ export class InheritanceComponent implements OnInit {
 
     private handlePutResponse(response: any) {
         this.loading = false;
-        console.log(response);
+        this.notify.success('Success', 'The data was saved successfully');
     }
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log(error);
+        console.log('inheritanceComponent', error);
+        this.notify.error('Error', error);
     }
 
 }

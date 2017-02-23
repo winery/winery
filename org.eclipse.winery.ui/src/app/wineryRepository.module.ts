@@ -22,15 +22,16 @@ import { UrlDecodePipe } from './pipes/urlDecode.pipe';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
 import { InstanceModule } from './instance/instance.module';
 import { NotFoundComponent } from './404/notFound.component';
-import { LoaderComponent } from './loader/loader.component';
 import { LoaderModule } from './loader/loader.module';
-import { QNameSelectorComponent } from './qNameSelector/qNameSelector.component';
+import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
+
 
 @NgModule({
     imports: [
         BrowserModule,
         InstanceModule,
         LoaderModule,
+        SimpleNotificationsModule.forRoot(),
         WineryRepositoryRoutingModule,
     ],
     declarations: [
@@ -42,6 +43,9 @@ import { QNameSelectorComponent } from './qNameSelector/qNameSelector.component'
         WineryRepositoryComponent,
         UrlDecodePipe,
         UrlEncodePipe,
+    ],
+    providers: [
+        NotificationsService
     ],
     bootstrap: [WineryRepositoryComponent]
 })

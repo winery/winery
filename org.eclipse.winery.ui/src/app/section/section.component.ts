@@ -15,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
+import { NotificationsService } from "angular2-notifications";
 
 @Component({
     selector: 'winery-section-component',
@@ -32,6 +33,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     constructor(private route: ActivatedRoute,
                 private service: SectionService,
+                private notify: NotificationsService
     ) { }
 
     /**
@@ -69,6 +71,6 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log(error);
+        this.notify.error('Error', 'An error has occured:' + error);
     }
 }

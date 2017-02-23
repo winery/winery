@@ -13,8 +13,9 @@
 -->
 
 <div id="mainContainer" class="notoverflown">
-  <winery-header (selectedSite)="changeSelectionSite($event)"></winery-header>
-  <div id="mainContent">
-    <router-outlet></router-outlet>
-  </div>
+    <winery-header (selectedSite)="changeSelectionSite($event)"></winery-header>
+    <div id="mainContent">
+        <router-outlet></router-outlet>
+        <simple-notifications [options]="options"></simple-notifications>
+    </div>
 </div>

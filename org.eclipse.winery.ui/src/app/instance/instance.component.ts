@@ -14,6 +14,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InstanceService } from './instance.service';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -32,22 +33,29 @@ export class InstanceComponent implements OnInit, OnDestroy {
     routeSub: Subscription;
 
     constructor(private route: ActivatedRoute,
-                private service: InstanceService) {
+                private service: InstanceService,
+                private notify: NotificationsService) {
     }
 
     ngOnInit(): void {
         this.routeSub = this.route
             .data
             .subscribe(data => {
-                this.selectedResource = data['resolveData'].section;
-                this.selectedNamespace = data['resolveData'].namespace;
-                this.selectedComponentId = data['resolveData'].instanceId;
-                this.path = data['resolveData'].path;
+                    this.selectedResource = data['resolveData'].section;
+                    this.selectedNamespace = data['resolveData'].namespace;
+                    this.selectedComponentId = data['resolveData'].instanceId;
+                    this.path = data['resolveData'].path;
 
-                this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId, this.path);
+                    this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId, this.path);
 
-                this.availableTabs = this.service.getSubMenuByResource();
-            });
+                    this.availableTabs = this.service.getSubMenuByResource();
+                },
+                error => this.handleError(error));
+    }
+
+    handleError(error: any) {
+        // console.log(error)
+        this.notify.error('Error', 'An Error has occured:' + error);
     }
 
     ngOnDestroy(): void {

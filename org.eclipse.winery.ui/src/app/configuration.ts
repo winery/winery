@@ -25,4 +25,4 @@ export const sections = {
     imports: 'xSDImport',
 };
 
-export const backendBaseUri = 'http://localhost:8080/winery';
+export const backendBaseUri = 'http://lo calhost:8080/winery';

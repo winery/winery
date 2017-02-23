@@ -13,6 +13,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { QNameService } from './qNameSelector.service';
 import { AvailableSuperclassesApiData } from './availableSuperclassesApiData';
+import { NotificationsService } from "angular2-notifications";
 
 @Component({
     selector: 'winery-qNameSelector',
@@ -37,7 +38,7 @@ export class QNameSelectorComponent implements OnInit {
     loading: boolean = true;
 
 
-    constructor(private service: QNameService) {}
+    constructor(private service: QNameService, private notify: NotificationsService) {}
 
     ngOnInit() {
         this.selectedResource = this.selectedResource.toLowerCase() + 's';
@@ -68,7 +69,7 @@ export class QNameSelectorComponent implements OnInit {
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log(error);
+        this.notify.error('Error', 'An error has occured: ' + error);
     }
 
     private setButtonLink(): void {

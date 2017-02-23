@@ -23,4 +23,9 @@ export class WineryRepositoryComponent {
     // region variables
     name = 'Winery Repository';
     // endregion
+    options = {
+        position: ['top', 'right'],
+        timeOut: 3000,
+        lastOnBottom: true
+    };
 }
