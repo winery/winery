@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 ZTE Corporation.
+ * Copyright 2016 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,36 +15,20 @@
  */
 package org.eclipse.winery.model.tosca.yaml;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+/**
+ *  
+ * @author Huabing Zhao
+ *
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DataType extends YAMLElement {
 
     private String derived_from = "tosca.datatypes.Root";
     private String version = "";
-    private Map<String, PropertyDefinition> properties = new HashMap<String, PropertyDefinition>();
-
-    public String getDerived_from() {
-        return derived_from;
-    }
-
-    public void setDerived_from(String derived_from) {
-        this.derived_from = derived_from;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public Map<String, PropertyDefinition> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, PropertyDefinition> properties) {
-        this.properties = properties;
-    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 ZTE Corporation.
+ * Copyright 2016 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author 10090474
+ *  
+ * @author Huabing Zhao
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class CsarMeta extends YAMLElement {
   private String type;
   private String version;

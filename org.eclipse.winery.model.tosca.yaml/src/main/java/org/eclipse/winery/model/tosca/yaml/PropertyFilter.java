@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 ZTE Corporation.
+ * Copyright 2016 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,19 @@ package org.eclipse.winery.model.tosca.yaml;
 
 import java.util.HashMap;
 
-public class PropertyFilter extends HashMap<String, ConstraintClause>{
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 1L;
+/**
+ *  
+ * @author Huabing Zhao
+ *
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class PropertyFilter extends HashMap<String, ConstraintClause>{
 
   public PropertyFilter(String propertyName, ConstraintClause constraintClause) {
     super();

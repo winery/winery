@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 ZTE Corporation.
+ * Copyright 2016 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,74 +15,22 @@
  */
 package org.eclipse.winery.model.tosca.yaml;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+/**
+ *  
+ * @author Huabing Zhao
+ *
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Requirement {
   private String node = "";
   private RequirementRelationship relationship;
   private String capability = "";
   private NodeFilter node_filter;
   private int[] occurrences;
-
-  public Requirement() {
-    super();
-  }
-
-  public Requirement(NodeFilter node_filter) {
-    super();
-    this.node_filter = node_filter;
-  }
-
-  public Requirement(String node) {
-    super();
-    this.node = node;
-  }
-
-  public String getNode() {
-    return node;
-  }
-
-  public void setNode(String node) {
-    if (node != null) {
-      this.node = node;
-    }
-  }
-
-  public RequirementRelationship getRelationship() {
-    return relationship;
-  }
-
-  public void setRelationship(RequirementRelationship relationship) {
-    this.relationship = relationship;
-  }
-
-  public String getCapability() {
-    return capability;
-  }
-
-  public void setCapability(String capability) {
-    if (capability != null) {
-      this.capability = capability;
-    }
-  }
-
-  public NodeFilter getNode_filter() {
-    return node_filter;
-  }
-
-  public void setNode_filter(NodeFilter node_filter) {
-    if (node_filter != null) {
-      this.node_filter = node_filter;
-    }
-  }
-
-  public int[] getOccurrences() {
-    return occurrences;
-  }
-
-  public void setOccurrences(int[] occurrences) {
-    if (occurrences != null && occurrences.length == 2) {
-      this.occurrences = occurrences;
-    }
-  }
-
 }

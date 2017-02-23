@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 ZTE Corporation.
+ * Copyright 2016 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,18 @@
  */
 package org.eclipse.winery.model.tosca.yaml;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ *  
+ * @author Huabing Zhao
+ *
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EntrySchema {
-  private String type = "";
-  
-  public EntrySchema() {
-    
-  }
-
-  public EntrySchema(String type) {
-    super();
-    this.type = type;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
-  }
-  
+  private String type = "";  
 }

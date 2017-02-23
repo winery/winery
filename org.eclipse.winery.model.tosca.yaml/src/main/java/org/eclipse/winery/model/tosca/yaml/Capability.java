@@ -18,24 +18,18 @@ package org.eclipse.winery.model.tosca.yaml;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ *  
+ * @author Huabing Zhao
+ *
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Capability {
 	private Map<String, Object> properties = new HashMap<String, Object>();
-
-    public Capability() {
-    }
-
-    public Capability(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-
-    public void setProperties(Map<String, Object> properties) {
-		if (properties != null) {
-			this.properties = properties;
-		}
-	}
-
-	public Map<String, Object> getProperties() {
-		return this.properties;
-	}
-
 }

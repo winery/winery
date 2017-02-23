@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 ZTE Corporation.
+ * Copyright 2016 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,18 @@ import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ *  
+ * @author Huabing Zhao
+ *
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Input extends YAMLElement {
   private String type = "";
   @SerializedName("default")
@@ -28,53 +40,4 @@ public class Input extends YAMLElement {
   private boolean required = false;
   private List<Map<String, Object>> constraints = new ArrayList<Map<String, Object>>();
   private EntrySchema entry_schema;
-
-  public String getType() {
-    return this.type;
-  }
-
-  public void setType(String type) {
-    if (type != null) {
-      this.type = type;
-    }
-  }
-
-  public Object getDefault() {
-    return this.defaultValue;
-  }
-
-  public void setDefault(Object defaultValue) {
-    if (defaultValue != null) {
-      this.defaultValue = defaultValue;
-    }
-  }
-
-  public List<Map<String, Object>> getConstraints() {
-    return this.constraints;
-  }
-
-  public void setConstraints(List<Map<String, Object>> constraints) {
-    if (constraints != null) {
-      this.constraints = constraints;
-    }
-  }
-
-  public boolean isRequired() {
-    return required;
-  }
-
-  public void setRequired(boolean required) {
-    this.required = required;
-  }
-
-  public EntrySchema getEntry_schema() {
-    return entry_schema;
-  }
-
-  public void setEntry_schema(EntrySchema entry_schema) {
-    if (entry_schema != null) {
-      this.entry_schema = entry_schema;
-    }
-  }
-
 }

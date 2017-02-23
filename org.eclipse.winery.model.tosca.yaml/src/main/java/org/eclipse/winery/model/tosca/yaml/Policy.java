@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 ZTE Corporation.
+ * Copyright 2016 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,46 +18,21 @@ package org.eclipse.winery.model.tosca.yaml;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ *  
+ * @author Huabing Zhao
+ *
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Policy extends YAMLElement {
   private String type = "";
   private String description = "";
   private Map<String, Object> properties = new HashMap<String, Object>();
   private String[] targets = new String[0];
-  
-  public String getType() {
-    return type;
-  }
-  
-  public void setType(String type) {
-    if (type != null) {
-      this.type = type;
-    }
-  }
-  
-  public String getDescription() {
-    return description;
-  }
-  
-  public void setDescription(String description) {
-    if (description != null) {
-      this.description = description;
-    }
-  }
-  
-  public Map<String, Object> getProperties() {
-    return properties;
-  }
-  
-  public void setProperties(Map<String, Object> properties) {
-    this.properties = properties;
-  }
-  
-  public String[] getTargets() {
-    return targets;
-  }
-  
-  public void setTargets(String[] targets) {
-    this.targets = targets;
-  }
-
 }

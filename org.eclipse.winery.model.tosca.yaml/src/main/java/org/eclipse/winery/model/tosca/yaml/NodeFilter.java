@@ -1,5 +1,5 @@
 /**
- * Copyright 2017 ZTE Corporation.
+ * Copyright 2016 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,19 @@ package org.eclipse.winery.model.tosca.yaml;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ *  
+ * @author Huabing Zhao
+ *
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class NodeFilter extends PropertiesFilter{
 
   private List<CapabilityFilter> capabilities = new ArrayList<>();
-
-
-  public void setCapabilities(List<CapabilityFilter> capabilities) {
-    if (capabilities != null) {
-        this.capabilities = capabilities;
-    }
-  }
-
-  public List<CapabilityFilter> getCapabilities() {
-    return this.capabilities;
-  }
-
 }

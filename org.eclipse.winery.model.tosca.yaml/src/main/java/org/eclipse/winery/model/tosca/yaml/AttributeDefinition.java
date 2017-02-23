@@ -17,48 +17,23 @@ package org.eclipse.winery.model.tosca.yaml;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+/**
+ *  
+ * @author Huabing Zhao
+ *
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AttributeDefinition extends YAMLElement {
   private String type = "";
   @SerializedName("default")
   private Object defaultValue = "";
   private String status = "supported";
   private EntrySchema entry_schema;
-
-  public String getType() {
-    return this.type;
-  }
-
-  public void setType(String type) {
-    if (type != null) {
-      this.type = type;
-    }
-  }
-
-  public Object getDefault() {
-    return this.defaultValue;
-  }
-
-  public void setDefault(Object defaultValue) {
-    if (defaultValue != null) {
-      this.defaultValue = defaultValue;
-    }
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-  
-  public EntrySchema getEntry_schema() {
-    return entry_schema;
-  }
-  
-  public void setEntry_schema(EntrySchema entry_schema) {
-    this.entry_schema = entry_schema;
-  }
 
 }
