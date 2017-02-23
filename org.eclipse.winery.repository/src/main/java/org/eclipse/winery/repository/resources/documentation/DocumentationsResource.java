@@ -14,7 +14,9 @@ package org.eclipse.winery.repository.resources.documentation;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -42,6 +44,11 @@ public class DocumentationsResource extends EntityWithoutIdCollectionResource<Do
 		return new Viewable("/jsp/documentation.jsp", this.list);
 	}
 
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public DocumentationResourceAPIData getDocumentation(){
+		return new DocumentationResourceAPIData(this.getAllEntityResources());
+	}
 	/**
 	 * Adds a new documentation
 	 */

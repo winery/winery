@@ -11,15 +11,39 @@
  *******************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
+import {DocumentationService} from './documentation.service'
+import {DocumentationApiData} from './documentationApiData'
+import { InstanceService } from '../instance.service';
 
 @Component({
     selector: 'winery-instance-documentation',
-    templateUrl: 'documentation.component.html'
+    templateUrl: 'documentation.component.html',
+    providers:[InstanceService,DocumentationService]
 })
+
 export class DocumentationComponent implements OnInit {
-    constructor() {
-    }
+    documentationApiData: DocumentationApiData;
+    loading: boolean = true;
+    constructor(
+        private sharedData: InstanceService,
+        private service: DocumentationService
+    ) {}
 
     ngOnInit() {
+        this.service.getInheritanceData(this.sharedData.path)
+            .subscribe(
+                data => this.handleData(data),
+                error => this.handleError(error)
+            );
+    }
+
+    private handleData(docu: DocumentationApiData) {
+        this.documentationApiData = docu;
+        this.loading = false;
+    }
+
+    private handleError(error: any): void {
+        this.loading = false;
+        console.log(error);
     }
 }

@@ -30,6 +30,10 @@ public class DocumentationResource extends EntityWithoutIdResource<TDocumentatio
 		super(o, idx, list, res);
 	}
 
+	public TDocumentation getDocu(){
+		return this.o;
+	}
+
 	@PUT
 	@Consumes(MediaType.TEXT_HTML)
 	@Produces(MediaType.TEXT_PLAIN)
