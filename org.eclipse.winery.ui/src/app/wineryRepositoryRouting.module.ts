@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzentter - initial API and implementation
+ *******************************************************************************/
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -8,6 +20,7 @@ import { SectionResolver } from './resolver/section.resolver';
 import { NotFoundComponent } from './404/notFound.component';
 import { NamespaceResolver } from './resolver/namespace.resolver';
 import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
     { path: 'admin', component: InstanceComponent },
@@ -23,6 +36,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         BrowserModule,
+        FormsModule,
         HttpModule,
         RouterModule.forRoot(appRoutes),
     ],

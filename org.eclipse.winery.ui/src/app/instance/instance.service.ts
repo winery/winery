@@ -1,14 +1,35 @@
+/*******************************************************************************
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzentter - initial API and implementation
+ *******************************************************************************/
+
 import { Injectable } from '@angular/core';
 
 import { InstanceData } from './instanceData';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class InstanceService {
 
-    constructor() {
-    }
+    selectedResource: string;
+    selectedComponentId: string;
+    selectedNamespace: string;
+    path: string;
 
-    public getSubMenuByResource(type: string): string[] {
+    constructor() {}
+
+    public getSubMenuByResource(type?: string): string[] {
+        if (isNullOrUndefined(type)) {
+            type = this.selectedResource;
+        }
+
         let subMenu: string[];
 
         switch (type.toLowerCase()) {
@@ -61,5 +82,12 @@ export class InstanceService {
         }
 
         return subMenu;
+    }
+
+    public setSharedData(selectedResource: string, selectedNamespace: string, selectedComponentId: string, path: string): void {
+        this.selectedNamespace = selectedNamespace;
+        this.selectedComponentId = selectedComponentId;
+        this.selectedResource = selectedResource;
+        this.path = path;
     }
 }
