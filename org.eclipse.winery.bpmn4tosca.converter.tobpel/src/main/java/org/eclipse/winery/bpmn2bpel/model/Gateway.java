@@ -9,8 +9,33 @@
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
  *******************************************************************************/
+/*******************************************************************************
+ * Modifications Copyright 2017 ZTE Corporation.
+ *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.model;
 
-public abstract class Gateway extends Node {
+import java.util.ArrayList;
+import java.util.List;
 
+public abstract class Gateway extends Node {
+	private List<GatewayBranch> branchList = new ArrayList<GatewayBranch>();
+
+	public List<GatewayBranch> getBranchList() {
+		return branchList;
+	}
+
+	public void setBranchList (List<GatewayBranch> branches) {
+		this.branchList = branches;
+	}
+	
+	public GatewayBranch getBranch(String id) {
+		for(GatewayBranch branch : branchList) {
+			if(id.equals(branch.getId())) {
+				return branch;
+			}
+		}
+		
+		return null;
+	}
+	
 }

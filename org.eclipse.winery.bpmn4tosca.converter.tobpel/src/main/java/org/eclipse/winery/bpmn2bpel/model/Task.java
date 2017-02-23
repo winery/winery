@@ -9,6 +9,9 @@
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
  *******************************************************************************/
+/*******************************************************************************
+ * Modifications Copyright 2017 ZTE Corporation.
+ *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.model;
 
 import java.util.ArrayList;
@@ -22,21 +25,10 @@ import org.eclipse.winery.bpmn2bpel.model.param.Parameter;
 
 public abstract class Task extends Node {
 
-	private String name;
-
 	private Map<String, Parameter> inputParams = new HashMap<String, Parameter>();
 
 	private Map<String, Parameter> outputParams = new HashMap<String, Parameter>();
-
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	
 	public void addInputParameter(Parameter param) {
 		inputParams.put(param.getName(), param);
 	}

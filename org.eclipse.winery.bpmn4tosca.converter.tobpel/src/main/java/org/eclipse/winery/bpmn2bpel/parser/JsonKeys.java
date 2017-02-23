@@ -11,6 +11,9 @@
  *     Sebastian Wagner - initial API and implementation
  *     Armin Hüneburg - rename interface to fit modeler
  *******************************************************************************/
+/*******************************************************************************
+ * Modifications Copyright 2017 ZTE Corporation.
+ *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.parser;
 
 public interface JsonKeys {
@@ -39,6 +42,12 @@ public interface JsonKeys {
 	public static final String NODE_INTERFACE_NAME = "interface";
 
 	public static final String CONNECTIONS = "connections";
+	
+	public static final String CONDITIONS = "conditions";
+	
+	public static final String CONDITION = "condition";
+	
+	public static final String DEFAULT = "default";
 
 
 	/*
@@ -50,6 +59,10 @@ public interface JsonKeys {
 	public static final String TASK_TYPE_START_EVENT = "StartEvent";
 
 	public static final String TASK_TYPE_END_EVENT = "EndEvent";
+	
+	public static final String TASK_TYPE_GATEWAY_EXCLUSIVE = "ExclusiveGateway";
+	
+	public static final String TASK_TYPE_GATEWAY_EXCLUSIVE_END = "ExclusiveGatewayEnd";
 
 
 	/*

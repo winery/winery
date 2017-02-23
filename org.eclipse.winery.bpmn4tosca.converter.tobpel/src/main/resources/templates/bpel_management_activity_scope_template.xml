@@ -13,7 +13,14 @@
      *******************************************************************************/
 
 -->
-#foreach( $mngmtTask in $mngmtTaskList)
+
+<!-- 
+
+	/*******************************************************************************
+     * Modifications Copyright 2017 ZTE Corporation.
+     *******************************************************************************/
+
+ -->
 
 #set( $taskName = $mngmtTask.getName() )
 #set( $taskInterface = $mngmtTask.getInterfaceName() )
@@ -312,4 +319,4 @@
 	</sequence>
 </scope>
 
-#end
+

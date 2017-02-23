@@ -9,6 +9,9 @@
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
  *******************************************************************************/
+/*******************************************************************************
+ * Modifications Copyright 2017 ZTE Corporation.
+ *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.planwriter;
 
 import java.util.ArrayList;
@@ -34,6 +37,7 @@ public class ManagementTaskTemplateWrapper extends ManagementTask {
 		super();
 		setId(task.getId());
 		setName(task.getName());
+		setType(task.getType());
 		setInterfaceName(task.getInterfaceName());
 		setNodeTemplateId(task.getNodeTemplateId());
 		setNodeOperation(task.getNodeOperation());

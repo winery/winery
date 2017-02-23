@@ -10,6 +10,9 @@
  *     Sebastian Wagner - initial API and implementation
  *     Armin Hüneburg - fixed path handling
  *******************************************************************************/
+/*******************************************************************************
+ * Modifications Copyright 2017 ZTE Corporation.
+ *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.planwriter;
 
 import java.io.StringWriter;
@@ -26,7 +29,7 @@ import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.traverse.GraphIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.eclipse.winery.bpmn2bpel.model.Gateway;
 import org.eclipse.winery.bpmn2bpel.model.Link;
 import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
 
@@ -48,7 +51,7 @@ public class BpelPlanArtefactWriter {
 		log.debug("Completing BPEL process template...");
 
 		/* Traverse  the management flow and add the management tasks in the order of their execution to a list */
-		List<ManagementTask> managementTaskSeq = new ArrayList<ManagementTask>();
+		List<Node> managementTaskSeq = new ArrayList<Node>();
 		GraphIterator<Node, Link> iterator = new DepthFirstIterator<Node, Link>(mangagementFlow);
 		while (iterator.hasNext()) {
 			Node node = iterator.next();
@@ -57,6 +60,8 @@ public class BpelPlanArtefactWriter {
 				/* Wrapper adds convenience functions that can be accessed from the Velocity template */
 				ManagementTaskTemplateWrapper taskWrapper = new ManagementTaskTemplateWrapper((ManagementTask) node); //TODO move to factory and remove setters from constructor
 				managementTaskSeq.add(taskWrapper);
+			} else if(node instanceof Gateway) {
+				managementTaskSeq.add(node);
 			}
 		}
 
