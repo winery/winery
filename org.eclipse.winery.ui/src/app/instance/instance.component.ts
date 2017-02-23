@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzentter - initial API and implementation
+ *******************************************************************************/
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -13,8 +25,10 @@ export class InstanceComponent implements OnInit, OnDestroy {
 
     availableTabs: string[];
     selectedResource: string;
-    selectedComponentName: string;
+    selectedComponentId: string;
     selectedNamespace: string;
+    path: string;
+
     routeSub: Subscription;
 
     constructor(private route: ActivatedRoute,
@@ -26,10 +40,13 @@ export class InstanceComponent implements OnInit, OnDestroy {
             .data
             .subscribe(data => {
                 this.selectedResource = data['resolveData'].section;
-                this.selectedNamespace = decodeURIComponent(decodeURIComponent(data['resolveData'].namespace));
-                this.selectedComponentName = data['resolveData'].instanceId;
+                this.selectedNamespace = data['resolveData'].namespace;
+                this.selectedComponentId = data['resolveData'].instanceId;
+                this.path = data['resolveData'].path;
 
-                this.availableTabs = this.service.getSubMenuByResource(this.selectedResource);
+                this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId, this.path);
+
+                this.availableTabs = this.service.getSubMenuByResource();
             });
     }
 
