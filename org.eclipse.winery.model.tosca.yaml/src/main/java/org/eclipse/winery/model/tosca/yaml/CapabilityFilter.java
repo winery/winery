@@ -28,8 +28,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class CapabilityFilter extends HashMap<String, PropertiesFilter> {
 
   public CapabilityFilter(String capabilityName, PropertiesFilter propertiesFilter) {

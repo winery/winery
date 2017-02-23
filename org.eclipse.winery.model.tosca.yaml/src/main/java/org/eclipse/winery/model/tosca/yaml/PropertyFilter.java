@@ -27,7 +27,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class PropertyFilter extends HashMap<String, ConstraintClause>{
 
