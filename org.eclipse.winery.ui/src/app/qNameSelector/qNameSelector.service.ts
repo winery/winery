@@ -11,23 +11,24 @@
  *******************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { SectionData } from './sectionData';
-import { Headers, RequestOptions, Http } from '@angular/http';
-import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs';
+import { Headers, RequestOptions, Http } from '@angular/http';
 import { backendBaseUri } from '../configuration';
+import { AvailableSuperclassesApiData } from './availableSuperclassesApiData';
 
 @Injectable()
-export class SectionService {
+export class QNameService {
+
+    private path: string;
 
     constructor(private http: Http) {
     }
 
-    getSectionData(type: string): Observable<SectionData[]> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+    getAvailableSuperClasses(path: string): Observable<AvailableSuperclassesApiData> {
+        let headers = new Headers({ 'Accept': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + '/' + type.toLowerCase() + '/', options)
+        return this.http.get(backendBaseUri + decodeURIComponent(path), options)
             .map(res => res.json());
     }
 }

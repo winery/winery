@@ -1,6 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzentter - initial API and implementation
+ *******************************************************************************/
+
 import { Component, OnInit, Input } from '@angular/core';
 import { InheritanceService } from './inheritance.service';
-import { InheritanceData } from './inheritanceData';
+import { InheritanceApiData } from './inheritanceApiData';
 import { InstanceService } from '../instance.service';
 
 
@@ -11,8 +23,7 @@ import { InstanceService } from '../instance.service';
 })
 export class InheritanceComponent implements OnInit {
 
-    inheritanceData: InheritanceData;
-    openSuperClassLink: string = '';
+    inheritanceApiData: InheritanceApiData;
     loading: boolean = true;
 
     constructor(
@@ -22,35 +33,38 @@ export class InheritanceComponent implements OnInit {
 
     ngOnInit() {
         this.service.getInheritanceData(this.sharedData.path)
-            .subscribe(inheritance => {
-                this.inheritanceData = inheritance;
-                this.setButtonLink();
-                this.loading = false;
-            });
+            .subscribe(
+                data => this.handleData(data),
+                error => this.handleError(error)
+            );
     }
 
-    saveToServer() {
+    onSelectedValueChanged(value: string) {
+        this.inheritanceApiData.derivedFrom = value;
+    }
+
+    public saveToServer(): void {
         this.loading = true;
-        this.service.saveInheritanceData(this.inheritanceData)
-            .subscribe(response => {
-               this.loading = false;
-               console.log(response);
-            });
+        this.service.saveInheritanceData(this.inheritanceApiData)
+            .subscribe(
+                data => this.handlePutResponse(data),
+                error => this.handleError(error)
+            );
     }
 
-    onDerivedFromChange(value: string): void {
-        this.inheritanceData.derivedFrom = value;
-        this.setButtonLink();
+    private handleData(inheritance: InheritanceApiData) {
+        this.inheritanceApiData = inheritance;
+        this.loading = false;
     }
 
-    private setButtonLink(): void {
-        let parts = this.inheritanceData.derivedFrom.split('}');
-
-        // can be '(none)'
-        if (parts.length > 1) {
-            let namespace = parts[0].slice(1);
-            let name = parts[1];
-            this.openSuperClassLink = '/' + this.sharedData.selectedResource.toLowerCase() + 's/' + encodeURIComponent(encodeURIComponent(namespace)) + '/' + name;
-        }
+    private handlePutResponse(response: any) {
+        this.loading = false;
+        console.log(response);
     }
+
+    private handleError(error: any): void {
+        this.loading = false;
+        console.log(error);
+    }
+
 }

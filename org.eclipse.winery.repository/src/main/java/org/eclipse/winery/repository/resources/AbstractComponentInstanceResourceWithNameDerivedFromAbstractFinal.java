@@ -17,6 +17,8 @@ import java.lang.reflect.Method;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
@@ -25,7 +27,8 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TEntityType.DerivedFrom;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.resources.jsonClasses.InheritanceResourceJSON;
+import org.eclipse.winery.repository.resources.apiData.AvailableSuperclassesApiData;
+import org.eclipse.winery.repository.resources.apiData.InheritanceResourceApiData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +73,13 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 	@Path("inheritance/")
 	public InheritanceResource getInheritanceManagement() {
 		return new InheritanceResource(this);
+	}
+
+	@GET
+	@Path("getAvailableSuperClasses")
+	@Produces(MediaType.APPLICATION_JSON)
+	public AvailableSuperclassesApiData getAvailableSuperClasses() {
+		return new AvailableSuperclassesApiData(this);
 	}
 
 	public String getDerivedFrom() {
@@ -123,8 +133,13 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 		}
 	}
 
-	Response putInheritance(InheritanceResourceJSON json) {
-		QName qname = QName.valueOf(json.getDerivedFrom());
+	/**
+	 *
+	 * @param json
+	 * @return Response
+	 */
+	Response putInheritance(InheritanceResourceApiData json) {
+		QName qname = QName.valueOf(json.derivedFrom);
 
 		// see getAvailableSuperClasses for verbose comments
 		Method method;
@@ -135,9 +150,9 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 			method = this.getElement().getClass().getMethod("setDerivedFrom", DerivedFrom.class);
 			method.invoke(this.getElement(), derivedFrom);
 			method = this.getElement().getClass().getMethod("setAbstract", TBoolean.class);
-			method.invoke(this.getElement(), TBoolean.fromValue(json.getIsAbstract()));
+			method.invoke(this.getElement(), TBoolean.fromValue(json.isAbstract));
 			method = this.getElement().getClass().getMethod("setFinal", TBoolean.class);
-			method.invoke(this.getElement(), TBoolean.fromValue(json.getIsFinal()));
+			method.invoke(this.getElement(), TBoolean.fromValue(json.isFinal));
 		} catch (ClassCastException e) {
 			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Seems that *Implementation is now Definitions backed, but not yet fully implemented", e);
 			throw new IllegalStateException(e);

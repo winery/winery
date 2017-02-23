@@ -20,9 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.sun.jersey.api.view.Viewable;
-import org.eclipse.winery.repository.resources.jsonClasses.InheritanceResourceJSON;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.winery.repository.resources.apiData.InheritanceResourceApiData;
 
 /**
  * Class for managing inheritance properties: abstract, final, derivedFromn
@@ -43,12 +41,6 @@ public class InheritanceResource {
 		this.managedResource = res;
 	}
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/inheritance.jsp", this);
-	}
-
 	public String getDerivedFrom() {
 		return this.managedResource.getDerivedFrom();
 	}
@@ -60,17 +52,13 @@ public class InheritanceResource {
 	 * {
 	 *    "abstract": "no",
 	 *    "final": "yes",
-	 *    "derivedFrom": "[QName]",
-	 *    "availableSuperClasses": [
-	 *      { "name": [name], "QName": "[QName]" },
-	 *      ...
-	 *    ]
+	 *    "derivedFrom": "[QName]"
 	 *  }
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public InheritanceResourceJSON getInheritanceManagementJSON() {
-		return new InheritanceResourceJSON(this.managedResource);
+	public InheritanceResourceApiData getInheritanceManagementJSON() {
+		return new InheritanceResourceApiData(this.managedResource);
 	}
 
 	/**
@@ -86,7 +74,7 @@ public class InheritanceResource {
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveInheritanceManagementFromJSON(InheritanceResourceJSON json) {
+	public Response saveInheritanceManagementFromJSON(InheritanceResourceApiData json) {
 		return this.managedResource.putInheritance(json);
 	}
 }
