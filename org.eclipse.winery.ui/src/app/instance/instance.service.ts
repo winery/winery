@@ -84,10 +84,12 @@ export class InstanceService {
         return subMenu;
     }
 
-    public setSharedData(selectedResource: string, selectedNamespace: string, selectedComponentId: string, path: string): void {
+    public setSharedData(selectedResource: string, selectedNamespace: string, selectedComponentId: string): void {
         this.selectedNamespace = selectedNamespace;
         this.selectedComponentId = selectedComponentId;
         this.selectedResource = selectedResource;
-        this.path = path;
+        this.path = '/' + this.selectedResource.toLowerCase() + 's/'
+            + encodeURIComponent(encodeURIComponent(this.selectedNamespace)) + '/'
+            + this.selectedComponentId + '/';
     }
 }

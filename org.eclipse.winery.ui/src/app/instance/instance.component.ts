@@ -27,7 +27,6 @@ export class InstanceComponent implements OnInit, OnDestroy {
     selectedResource: string;
     selectedComponentId: string;
     selectedNamespace: string;
-    path: string;
 
     routeSub: Subscription;
 
@@ -42,9 +41,8 @@ export class InstanceComponent implements OnInit, OnDestroy {
                 this.selectedResource = data['resolveData'].section;
                 this.selectedNamespace = data['resolveData'].namespace;
                 this.selectedComponentId = data['resolveData'].instanceId;
-                this.path = data['resolveData'].path;
 
-                this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId, this.path);
+                this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId);
 
                 this.availableTabs = this.service.getSubMenuByResource();
             });

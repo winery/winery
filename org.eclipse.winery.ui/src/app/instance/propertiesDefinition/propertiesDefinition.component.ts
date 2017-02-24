@@ -11,15 +11,33 @@
  *******************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
+import { InstanceService } from '../instance.service';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
     templateUrl: 'propertiesDefinition.component.html'
 })
 export class PropertyDefinitionComponent implements OnInit {
-    constructor() {
+
+    xsdelement: string;
+    xsdtype: string;
+
+    constructor(private sharedData: InstanceService) {
     }
 
     ngOnInit() {
+    }
+
+    onNoneSelected(): void {
+        console.log('none');
+    }
+    onXmlElementSelected(): void {
+        console.log('xml elmeent');
+    }
+    onXmlTypeSelected(): void {
+        console.log('xml t');
+    }
+    onCustomKeyValuePairSelected(): void {
+        console.log('cuzstiom');
     }
 }

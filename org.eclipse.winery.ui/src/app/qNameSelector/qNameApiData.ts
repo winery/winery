@@ -15,3 +15,8 @@ export interface QNameApiData {
     name: string;
     qName: string;
 }
+
+export interface QNameList {
+    list: [QNameApiData];
+}
+

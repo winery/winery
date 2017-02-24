@@ -11,48 +11,27 @@
  *******************************************************************************/
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { QNameService } from './qNameSelector.service';
-import { AvailableSuperclassesApiData } from './availableSuperclassesApiData';
+import { QNameList } from './qNameApiData';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-qNameSelector',
     templateUrl: 'qNameSelector.component.html',
-    providers: [
-      QNameService
-    ],
 })
-export class QNameSelectorComponent implements OnInit {
+export class QNameSelectorComponent {
 
     @Input() title: string;
-    @Input() selectedValue: string;
+    @Input() displayList: QNameList;
     @Input() selectedResource: string;
-    @Input() selectedNamespace: string;
-    @Input() selectedComponentId: string;
+    @Input() selectedValue: string;
 
     @Output() selectedValueChanged = new EventEmitter();
 
-    availableSuperClasses: AvailableSuperclassesApiData;
+    qNameList: QNameList;
     openSuperClassLink: string = '';
     queryPath: string;
-    loading: boolean = true;
 
-
-    constructor(private service: QNameService) {}
-
-    ngOnInit() {
-        this.selectedResource = this.selectedResource.toLowerCase() + 's';
-
-        this.queryPath = '/' + this.selectedResource
-            + '/' + encodeURIComponent(encodeURIComponent(encodeURIComponent(this.selectedNamespace)))
-            + '/' + this.selectedComponentId
-            + '/getAvailableSuperClasses';
-
-        this.service.getAvailableSuperClasses(this.queryPath)
-            .subscribe(
-                data => this.handleData(data),
-                error => this.handleError(error)
-            );
-    }
+    constructor() {}
 
     onChange(value: string): void {
         this.selectedValue = value;
@@ -60,18 +39,16 @@ export class QNameSelectorComponent implements OnInit {
         this.selectedValueChanged.emit({ value: this.selectedValue});
     }
 
-    private handleData(availableSuperClasses: AvailableSuperclassesApiData): void {
-        this.availableSuperClasses = availableSuperClasses;
+    private handleData(availableSuperClasses: QNameList): void {
+        this.qNameList = availableSuperClasses;
         this.setButtonLink();
-        this.loading = false;
-    }
-
-    private handleError(error: any): void {
-        this.loading = false;
-        console.log(error);
     }
 
     private setButtonLink(): void {
+        if (isNullOrUndefined(this.selectedValue)) {
+            this.selectedValue = '(none)';
+        }
+
         let parts = this.selectedValue.split('}');
 
         // can be '(none)'

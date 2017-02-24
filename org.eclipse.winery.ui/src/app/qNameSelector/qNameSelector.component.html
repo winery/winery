@@ -11,24 +11,27 @@
  *     Lukas Harzentter - initial API and implementation
  *******************************************************************************/
 -->
-<div [class.hidden]="!loading">
-    <winery-loader></winery-loader>
-</div>
-<div *ngIf="!loading" class="form-group">
-    <label class="control-label">{{ title }}</label>
-    <div>
-        <select class="form-control" style="width:600px; display:inline; margin-right: 10px;" (change)="onChange($event.target.value)">
-            <option>(none)</option>
-            <option *ngFor="let item of availableSuperClasses.classes"
-                    [selected]="selectedValue === item.qName"
-                    [value]="item.qName">
-                {{ item.name }}
-            </option>
-        </select>
-        <button class="btn btn-info btn-sm"
-                [routerLink]="openSuperClassLink"
-                [disabled]="selectedValue === '(none)'">
-            open
-        </button>
+<div [ngSwitch]="displayList" class="form-group">
+    <div *ngSwitchCase="undefined">
+        <winery-loader></winery-loader>
     </div>
+    <div *ngSwitchDefault="">
+        <label class="control-label">{{ title }}</label>
+        <div>
+            <select class="form-control" style="width:600px; display:inline; margin-right: 10px;" (change)="onChange($event.target.value)">
+                <option>(none)</option>
+                <option *ngFor="let item of displayList?.list"
+                        [selected]="selectedValue === item.qName"
+                        [value]="item.qName">
+                    {{ item.name }}
+                </option>
+            </select>
+            <button class="btn btn-info btn-sm"
+                    [routerLink]="openSuperClassLink"
+                    [disabled]="selectedValue === '(none)'">
+                open
+            </button>
+        </div>
+    </div>
+
 </div>

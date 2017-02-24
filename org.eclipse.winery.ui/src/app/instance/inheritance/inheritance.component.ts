@@ -10,10 +10,12 @@
  *     Lukas Harzentter - initial API and implementation
  *******************************************************************************/
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { InheritanceService } from './inheritance.service';
 import { InheritanceApiData } from './inheritanceApiData';
 import { InstanceService } from '../instance.service';
+import { QNameList } from '../../qNameSelector/qNameApiData';
+import { isNullOrUndefined } from 'util';
 
 
 @Component({
@@ -24,6 +26,7 @@ import { InstanceService } from '../instance.service';
 export class InheritanceComponent implements OnInit {
 
     inheritanceApiData: InheritanceApiData;
+    availableSuperClasses: QNameList;
     loading: boolean = true;
 
     constructor(
@@ -32,9 +35,15 @@ export class InheritanceComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.service.getInheritanceData(this.sharedData.path)
+        this.service.setPath(this.sharedData.path);
+        this.service.getInheritanceData()
             .subscribe(
-                data => this.handleData(data),
+                data => this.handleInheritanceData(data),
+                error => this.handleError(error)
+            );
+        this.service.getAvailableSuperClasses()
+            .subscribe(
+                data => this.handleSuperClassData(data),
                 error => this.handleError(error)
             );
     }
@@ -52,9 +61,20 @@ export class InheritanceComponent implements OnInit {
             );
     }
 
-    private handleData(inheritance: InheritanceApiData) {
+    private handleInheritanceData(inheritance: InheritanceApiData) {
         this.inheritanceApiData = inheritance;
-        this.loading = false;
+
+        if (!isNullOrUndefined(this.availableSuperClasses)) {
+            this.loading = false;
+        }
+    }
+
+    private handleSuperClassData(superClasses: QNameList) {
+        this.availableSuperClasses = superClasses;
+
+        if (!isNullOrUndefined(this.inheritanceApiData)) {
+            this.loading = false;
+        }
     }
 
     private handlePutResponse(response: any) {
