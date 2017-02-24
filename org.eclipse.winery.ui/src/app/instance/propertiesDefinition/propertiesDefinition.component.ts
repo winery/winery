@@ -10,7 +10,7 @@
  *     Lukas Harzentter, Niko Stadelmaier- initial API and implementation
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
@@ -40,8 +40,9 @@ export class PropertyDefinitionComponent implements OnInit {
     activeElement: string;
 
     constructor(private sharedData: InstanceService,
-                private service: PropertiesDefinitionService) {
-    }
+                private service: PropertiesDefinitionService,
+                private zone : NgZone
+    ) {}
 
     // region ########## Angular Callbacks ##########
     /**
@@ -80,6 +81,9 @@ export class PropertyDefinitionComponent implements OnInit {
                 data => this.handleXmlTypeDefinitions(data),
                 error => this.handleError(error)
             );
+        // Force angular to re-render the dom in order to clean the select.
+        this.showSelect = false;
+        this.zone.run(() => console.log('rendering'));
     }
 
     /**
@@ -92,6 +96,9 @@ export class PropertyDefinitionComponent implements OnInit {
                 data => this.handleXmlElementDefinitions(data),
                 error => this.handleError(error)
             );
+        // Force angular to re-render the dom in order to clean the select.
+        this.showSelect = false;
+        this.zone.run(() => console.log('rendering'));
     }
 
     /**

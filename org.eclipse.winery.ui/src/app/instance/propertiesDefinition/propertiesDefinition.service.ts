@@ -27,19 +27,19 @@ export class PropertiesDefinitionService {
 
     /**
      * Deletes all the properties definitions.
-     * 
+     *
      * @returns {Observable<Response>}
      */
     deletePropertiesDefinitions(): Observable<Response> {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.delete(backendBaseUri +  'propertiesdefinition/', options);
+        return this.http.delete(backendBaseUri + this.path + 'propertiesdefinition/', options);
     }
 
     /**
      * Gets the properties definitions data.
-     * 
+     *
      * @returns {Observable<PropertiesDefinitionsResourceApiData>}
      */
     getPropertiesDefinitionsData(): Observable<PropertiesDefinitionsResourceApiData> {
@@ -48,7 +48,7 @@ export class PropertiesDefinitionService {
 
     /**
      * Gets the items for the select box for the XML Element.
-     * 
+     *
      * @returns {Observable<XsdDefinitionsApiData>}
      */
     getXsdElementDefinitions(): Observable<XsdDefinitionsApiData> {
@@ -66,7 +66,7 @@ export class PropertiesDefinitionService {
 
     /**
      * Sets the path this service should use as base path.
-     * 
+     *
      * @param path string
      */
     setPath(path: string): void {
@@ -75,8 +75,8 @@ export class PropertiesDefinitionService {
 
     /**
      * Private method for DRY principle. It is used to get all kinds of data
-     * for the specified sub path. 
-     * 
+     * for the specified sub path.
+     *
      * @param requestPath string The path which is specific for each request.
      * @returns {Observable<any>}
      */
