@@ -7,7 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzentter - initial API and Implementation
+ *     Lukas Balzer, Nicole Keppler - using documentationService to get Data
  *******************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
@@ -18,7 +19,7 @@ import { InstanceService } from '../instance.service';
 @Component({
     selector: 'winery-instance-documentation',
     templateUrl: 'documentation.component.html',
-    providers:[InstanceService,DocumentationService]
+    providers: [ DocumentationService ]
 })
 
 export class DocumentationComponent implements OnInit {
@@ -26,11 +27,15 @@ export class DocumentationComponent implements OnInit {
     loading: boolean = true;
     constructor(
         private sharedData: InstanceService,
-        private service: DocumentationService
-    ) {}
+        private service: DocumentationService,
+
+    ) {
+        this.documentationApiData = new DocumentationApiData( 'default documentation value' );
+
+    }
 
     ngOnInit() {
-        this.service.getInheritanceData(this.sharedData.path)
+        this.service.getDocumentationData(this.sharedData.path)
             .subscribe(
                 data => this.handleData(data),
                 error => this.handleError(error)

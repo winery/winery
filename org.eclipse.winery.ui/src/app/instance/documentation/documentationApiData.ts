@@ -7,9 +7,13 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Balzer - initial API and implementation
+ *     Lukas Balzer, Nicole Keppler - initial API and implementation
  *******************************************************************************/
 
-export class DocumentationApiData{
-    documentation : string;
+export class DocumentationApiData {
+    documentation: string;
+
+    constructor(doc: string) {
+        this.documentation = doc;
+    }
 }

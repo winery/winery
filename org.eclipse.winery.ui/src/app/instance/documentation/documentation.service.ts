@@ -7,7 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Balzer - initial API and implementation
+ *     Lukas Balzer - initial API and Implementation
+ *     Nicole Keppler - fixes for path routing
  *******************************************************************************/
 
 
@@ -18,20 +19,20 @@ import { Headers, RequestOptions, Http } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 
 @Injectable()
-export class DocumentationService{
+export class DocumentationService {
     private path: string;
 
     constructor(private http: Http) {
     }
 
-    getInheritanceData(path: string): Observable<DocumentationApiData> {
+    getDocumentationData(path: string): Observable<DocumentationApiData> {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-
-
+        if (path.indexOf('documentation') === -1) {
+            path += '/documentation/';
+        } else {
             path += '/';
-
-
+        }
         this.path = path;
 
         return this.http.get(backendBaseUri + decodeURIComponent(path), options)

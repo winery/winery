@@ -74,9 +74,9 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 		this.res = res;
 	}
 
-	/**
+	/** ToDo can we delete this method or is this method somewhere else needed except for documentation?
 	 * Returns a list of ids of all entities nested here
-	 */
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getListOfAllEntityIds(@QueryParam("select2") String select2) {
@@ -93,7 +93,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 			return res;
 		}
 	}
-
+	 */
 	public List<String> getListOfAllEntityIdsAsList() {
 		List<String> res = new ArrayList<>(this.list.size());
 		for (EntityT o : this.list) {
