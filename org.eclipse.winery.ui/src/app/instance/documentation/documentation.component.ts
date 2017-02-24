@@ -12,8 +12,8 @@
  *******************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
-import {DocumentationService} from './documentation.service'
-import {DocumentationApiData} from './documentationApiData'
+import { DocumentationService } from './documentation.service';
+import { DocumentationApiData } from './documentationApiData';
 import { InstanceService } from '../instance.service';
 
 @Component({
@@ -45,6 +45,23 @@ export class DocumentationComponent implements OnInit {
     private handleData(docu: DocumentationApiData) {
         this.documentationApiData = docu;
         this.loading = false;
+    }
+
+
+
+    private saveToServer() {
+        this.loading = true;
+        this.service.saveDocumentationData(this.documentationApiData)
+            .subscribe(
+                data => this.handleCUResponse(data),
+                error => this.handleError(error)
+            );
+        console.log(this.documentationApiData.documentation);
+    }
+
+    private handleCUResponse(response: any) {
+        this.loading = false;
+        console.log(response);
     }
 
     private handleError(error: any): void {

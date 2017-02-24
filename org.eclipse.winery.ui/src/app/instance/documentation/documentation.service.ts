@@ -38,4 +38,16 @@ export class DocumentationService {
         return this.http.get(backendBaseUri + decodeURIComponent(path), options)
             .map(res => res.json());
     }
+
+    saveDocumentationData(documentationData: DocumentationApiData): Observable<any> {
+        let headers = new Headers({'Content-Type': 'application/json', 'Accept': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let docCopy = new DocumentationApiData(
+            documentationData.documentation
+        );
+        console.log( 'service path for save' + this.path );
+        console.log(JSON.stringify(docCopy));
+
+        return this.http.put(backendBaseUri + decodeURIComponent(this.path), JSON.stringify(docCopy), options);
+    }
 }

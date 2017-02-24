@@ -35,11 +35,11 @@ public class DocumentationResource extends EntityWithoutIdResource<TDocumentatio
 	}
 
 	@PUT
-	@Consumes(MediaType.TEXT_HTML)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response setValue(String documentation) {
+	@Consumes(MediaType.APPLICATION_JSON)
+		// TODO: how to implement put and post together
+	public Response setValue(DocumentationResourceAPIData newValue){
 		this.o.getContent().clear();
-		this.o.getContent().add(documentation);
+		this.o.getContent().add(newValue);
 		this.list.set(this.idx, this.o);
 		return CollectionsHelper.persist(this.res, this.idDetermination, this.o);
 	}

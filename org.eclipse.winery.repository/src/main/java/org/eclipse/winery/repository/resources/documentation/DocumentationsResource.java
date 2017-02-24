@@ -53,15 +53,16 @@ public class DocumentationsResource extends EntityWithoutIdCollectionResource<Do
 	 * Adds a new documentation
 	 */
 	@POST
-	@Consumes(MediaType.TEXT_HTML)
-	public Response addNewElement(String documentation) {
-		if (documentation == null) {
-			return Response.status(Status.BAD_REQUEST).entity("No content provided").build();
-		}
-		TDocumentation doc = new TDocumentation();
-		doc.getContent().add(documentation);
-		// TODO: check for duplicates as in instance states
-		this.list.add(doc);
-		return CollectionsHelper.persist(this.res, this, doc);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addNewElement(DocumentationResourceAPIData docData) {
+		// TODO: how to implement put and post together
+		if (docData == null) {
+				return Response.status(Status.BAD_REQUEST).entity("No content provided").build();
+			}
+			TDocumentation doc = new TDocumentation();
+			doc.getContent().add(docData.documentation);
+			// TODO: check for duplicates as in instance states
+			this.list.add(doc);
+			return CollectionsHelper.persist(this.res, this, doc);
 	}
 }
