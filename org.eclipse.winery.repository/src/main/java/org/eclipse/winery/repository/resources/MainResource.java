@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzentter - remove ending "/" for all resources
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 

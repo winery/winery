@@ -55,6 +55,7 @@
 <%@page import="com.sun.jersey.api.client.ClientResponse"%>
 <%@page import="com.sun.jersey.api.client.config.ClientConfig"%>
 <%@page import="com.sun.jersey.api.client.config.DefaultClientConfig"%>
+<%@ page import="org.eclipse.winery.model.tosca.TServiceTemplate" %>
 
 <%-- nc.. = non-common .. --%>
 <%@taglib prefix="ncnt"  tagdir="/WEB-INF/tags/templates/nodetemplates" %>
@@ -128,10 +129,7 @@
 	}
 
 	String topologyTemplateURL = repositoryURL + "/servicetemplates/" + Util.DoubleURLencode(serviceTemplateQName) + "/topologytemplate/";
-
 	String serviceTemplateName = client.getName(new ServiceTemplateId(serviceTemplateQName));
-
-	Collection<TRelationshipType> relationshipTypes = client.getAllTypes(TRelationshipType.class);
 %>
 <!DOCTYPE html>
 <html>
@@ -167,7 +165,20 @@
 
 <body data-demo-id="drawingarea" data-library="jquery">
 
-<div id="loading">loading...</div>
+<div id="loading">
+	loading... <br>
+	Fetching all relationship types...
+	<%
+		Collection<TRelationshipType> relationshipTypes = client.getAllTypes(TRelationshipType.class);
+	%>
+	Done. <br>
+	Fetching all service templates...
+	<%
+		List<QName> allServiceTemplates = client.getQNameListOfAllTypes(TServiceTemplate.class);
+	%>
+	Done <br>
+	Fetching javascript and icons...
+</div>
 
 <script type='text/javascript' src='${pageContext.request.contextPath}/components/requirejs/require.js'></script>
 <script>
@@ -439,7 +450,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 
 		<button data-toggle="button" class="btn btn-default" onclick="togglePrintView(!$(this).hasClass('active'));">Print View</button>
 
-		<%-- <button class="btn btn-default topbutton" onclick="winery.events.fire(winery.events.name.command.IMPORT_TOPOLOGY);" id="importBtn">Import Topology</button> --%>
+		<button class="btn btn-default topbutton" onclick="winery.events.fire(winery.events.name.command.IMPORT_TOPOLOGY);" id="importBtn">Import Topology</button>
 
 		<div class="btn-group">
 			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Other <span class="caret"></span></button>
@@ -1489,6 +1500,9 @@ function onDoneRegisterConnectionTypesAndConnectNodeTemplates() {
 <option value="{%=o.value%}"{% if (o.selected) { %} selected="selected"{% } %}>{%=o.text%}</option>
 </script>
 
+
+<%-- dialog for choosoing a topology template --%>
+
 <div class="modal fade" id="chooseTopologyToImportDiag">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -1498,10 +1512,14 @@ function onDoneRegisterConnectionTypesAndConnectNodeTemplates() {
 			</div>
 			<div class="modal-body">
 
+				<form>
+					<ct:QNameChooser allQNames="<%=allServiceTemplates%>" idOfSelectField="serviceTemplate" labelOfSelectField="Topology Template" />
+				</form>
+
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" class="btn btn-primary" onclick="require(['winery-topologymodeler-AMD'], function(wt) {wt.importTopology();})">Add</button>
+				<button type="button" id="importButon" class="btn btn-primary" data-loading="Adding..."  onclick="require(['winery-topologymodeler-AMD'], function(wt) {wt.importTopology('<%=repositoryURL%>/servicetemplates/', $('#serviceTemplate').select2('data').id);})">Add</button>
 			</div>
 		</div>
 	</div>

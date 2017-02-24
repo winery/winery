@@ -11,12 +11,18 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates.topologytemplates;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -26,7 +32,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -40,16 +48,17 @@ import org.eclipse.winery.repository.client.IWineryRepositoryClient;
 import org.eclipse.winery.repository.client.WineryRepositoryClientFactory;
 import org.eclipse.winery.repository.json.TopologyTemplateModule;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-import org.restdoc.annotations.RestDoc;
-import org.restdoc.annotations.RestDocParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplatesResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.view.Viewable;
+import org.restdoc.annotations.RestDoc;
+import org.restdoc.annotations.RestDocParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TopologyTemplateResource {
 
@@ -239,6 +248,80 @@ public class TopologyTemplateResource {
 			res = Response.serverError().entity(e.getMessage()).build();
 		}
 		return res;
+	}
+
+	/**
+	 * Only works for relationship templates connecting node templates; and not capabilities
+	 */
+	@Path("merge/")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@POST
+	public Response mergeWithOtherTopologyTemplate(String strOtherServiceTemplateQName) {
+		QName otherServiceTemplateQName = QName.valueOf(strOtherServiceTemplateQName);
+		ServiceTemplateId otherServiceTemplateId = new ServiceTemplateId(otherServiceTemplateQName);
+		ServiceTemplateResource otherServiceTemplateResource = (ServiceTemplateResource) ServiceTemplatesResource.getComponentInstaceResource(otherServiceTemplateId);
+		Optional<Integer> shiftLeft = this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+				.filter(x -> x instanceof TNodeTemplate)
+				.map(x -> (TNodeTemplate) x)
+				.max(Comparator.comparingInt(n -> Integer.valueOf(ModelUtilities.getLeft(n))))
+				.map(n -> Integer.valueOf(ModelUtilities.getLeft(n)));
+		if (!shiftLeft.isPresent()) {
+			return Response.status(Response.Status.BAD_REQUEST).entity("No node templates in existing in topology to merge").build();
+		} else {
+			Map<String, String> idMapping = new HashMap<>();
+
+			// collect existing node template ids
+			this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+					.filter(x -> x instanceof TNodeTemplate)
+					.map(x -> (TNodeTemplate) x)
+					// the existing ids are left unchanged
+					.forEach(x -> idMapping.put(x.getId(), x.getId()));
+
+			// collect existing node template ids
+			this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
+					.filter(x -> x instanceof TRelationshipTemplate)
+					.map(x -> (TRelationshipTemplate) x)
+					// the existing ids are left unchanged
+					.forEach(x -> idMapping.put(x.getId(), x.getId()));
+
+			// patch the ids of node templates and add them
+			otherServiceTemplateResource.getServiceTemplate().getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().stream()
+					.filter(x -> x instanceof TNodeTemplate)
+					.map(x -> (TNodeTemplate) x)
+					.forEach(nt -> {
+						String newId = nt.getId();
+						while (idMapping.containsKey(newId)) {
+							newId = newId + "-new";
+						}
+						idMapping.put(nt.getId(), newId);
+						nt.setId(newId);
+						int newLeft = Integer.valueOf(ModelUtilities.getLeft((TNodeTemplate) nt)) + shiftLeft.get();
+						ModelUtilities.setLeft((TNodeTemplate) nt, Integer.toString(newLeft));
+						this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(nt);
+					});
+
+			// patch the ids of relationship templates and add them
+			otherServiceTemplateResource.getServiceTemplate().getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().stream()
+					.filter(x -> x instanceof TRelationshipTemplate)
+					.map(x -> (TRelationshipTemplate) x)
+					.forEach(rt -> {
+						String newId = rt.getId();
+						while (idMapping.containsKey(newId)) {
+							newId = newId + "-new";
+						}
+						idMapping.put(rt.getId(), newId);
+						rt.setId(newId);
+						this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(rt);
+					});
+
+			try {
+				this.serviceTemplateRes.persist();
+				return Response.noContent().build();
+			} catch (IOException e) {
+				LOGGER.error("Could not persist", e);
+				return Response.serverError().entity(e.getMessage()).build();
+			}
+		}
 	}
 
 	@Path("nodetemplates/")

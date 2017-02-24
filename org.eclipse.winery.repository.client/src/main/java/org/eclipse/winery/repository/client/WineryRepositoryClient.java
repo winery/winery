@@ -382,7 +382,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <T extends TEntityType> List<QName> getQNameListOfAllTypes(Class<T> className) {
+	public <T extends TExtensibleElements> List<QName> getQNameListOfAllTypes(Class<T> className) {
 		String path = Util.getURLpathFragmentForCollection(className);
 		Map<WebResource, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
 		Collection<List<NamespaceIdOptionalName>> namespaceAndIdListCollection = wRtoNamespaceAndIdListMapOfAllTypes.values();
@@ -441,7 +441,8 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 						LOGGER.trace("Probably found valid data for {}/{}", nsAndId.getNamespace(), nsAndId.getId());
 						result = (T) definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
 
-						this.cache((TEntityType) result, new QName(nsAndId.getNamespace(), nsAndId.getId()));
+						// caching disabled as we also handle TServiceTemplates
+						//this.cache((TEntityType) result, new QName(nsAndId.getNamespace(), nsAndId.getId()));
 					}
 				}
 
@@ -510,7 +511,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <T extends TEntityType> Collection<T> getAllTypes(Class<T> c) {
+	public <T extends TExtensibleElements> Collection<T> getAllTypes(Class<T> c) {
 		String urlPathFragment = Util.getURLpathFragmentForCollection(c);
 		Collection<T> allTypes = this.getAllTypes(urlPathFragment, c);
 		return allTypes;
