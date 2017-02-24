@@ -5,7 +5,7 @@ export interface PropertiesDefinitionKVList {
     type: string;
 }
 
-export interface WinerysPropertiesDefiniton {
+export interface WinerysPropertiesDefinition {
     namespace: string;
     elementName: string;
     propertiesDefinitionKVList: PropertiesDefinitionKVList[];
@@ -20,6 +20,6 @@ interface PropertiesDefinitions {
 export interface PropertiesDefinitonsResourceApiData {
     xsdElementDefinitions: SelectData[];
     xsdTypeDefinitions: SelectData[];
-    propertiesDefinitions: any;
-    winerysPropertiesDefiniton: WinerysPropertiesDefiniton;
+    propertiesDefinition: any;
+    winerysPropertiesDefinition: WinerysPropertiesDefinition;
 }

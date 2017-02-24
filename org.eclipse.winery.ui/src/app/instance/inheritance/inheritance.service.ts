@@ -55,6 +55,6 @@ export class InheritanceService {
         copy.isAbstract = inheritanceData.isAbstract;
         copy.isFinal = inheritanceData.isFinal;
 
-        return this.http.put(backendBaseUri + decodeURIComponent(this.path), JSON.stringify(copy), options);
+        return this.http.put(backendBaseUri + this.path + 'inheritance/', JSON.stringify(copy), options);
     }
 }

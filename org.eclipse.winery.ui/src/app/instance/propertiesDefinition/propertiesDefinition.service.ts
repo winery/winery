@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Niko Stadelmaier - initial API and implementation
  *******************************************************************************/
 
 import { Injectable } from '@angular/core';
@@ -28,7 +28,7 @@ export class PropertiesDefinitionService {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + this.path + 'propertiesdefiniton/', options)
+        return this.http.get(backendBaseUri + this.path + 'propertiesdefinition/', options)
             .map(res => res.json());
     }
 

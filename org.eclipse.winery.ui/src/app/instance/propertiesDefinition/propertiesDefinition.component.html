@@ -8,28 +8,30 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzentter, Niko Stadelmaier - initial API and implementation
  *******************************************************************************/
 -->
-<div>
-    <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()">
-    <label for="nopropdef" class="cursorpointer" name="nopropdef">(none)</label>
-    <br>
-    <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()">
-    <label for="xsdelementradio" class="cursorpointer">XML element</label>
-    <a id="xsdelement" class="editable editable-click editable-empty">{{ xsdelement }}</a>
-    <br>
-    <input id="xsdtyperadio" type="radio" name="kind" (click)="onXmlTypeSelected()">
-    <label for="xsdtyperadio" class="cursorpointer">XML type</label>
-    <a id="xsdtype" class="editable editable-click editable-empty">{{ xsdtype }}</a>
-    <br>
-    <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()">
-    <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
 </div>
-<div>
-    <winery-qNameSelector
-        [title]="'XML Element'"
-    ></winery-qNameSelector>
+<div *ngIf="!loading">
+    <div>
+        <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()" [checked]="isNoneSelected()">
+        <label for="nopropdef" class="cursorpointer" name="nopropdef">(none)</label>
+        <br>
+        <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()" [checked]="isXmlElementSelected()">
+        <label for="xsdelementradio" class="cursorpointer">XML element</label>
+        <a id="xsdelement" class="editable editable-click editable-empty">{{ xsdElement }}</a>
+        <br>
+        <input id="xsdtyperadio" type="radio" name="kind" (click)="onXmlTypeSelected()" [checked]="isXmlTypeSelected()">
+        <label for="xsdtyperadio" class="cursorpointer">XML type</label>
+        <a id="xsdtype" class="editable editable-click editable-empty">{{ xsdType }}</a>
+        <br>
+        <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()" [checked]="isCustomSelected()">
+        <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
+    </div>
+    <div *ngIf="showSelect">
+        <ng-select [items]="selectedItems"></ng-select>
+    </div>
 </div>
 
-<ng-select [items]="items"></ng-select>

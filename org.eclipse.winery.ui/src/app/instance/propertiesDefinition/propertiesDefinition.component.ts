@@ -7,13 +7,15 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzentter, Niko Stadelmaier- initial API and implementation
  *******************************************************************************/
 
 import { Component, OnInit } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import { PropertiesDefinitonsResourceApiData } from './propertiesDefinitionsResourceApiData';
+import { SelectData } from '../../interfaces/selectData';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
@@ -24,10 +26,13 @@ import { PropertiesDefinitonsResourceApiData } from './propertiesDefinitionsReso
 })
 export class PropertyDefinitionComponent implements OnInit {
 
-    xsdelement: string;
-    xsdtype: string;
+    xsdElement: string;
+    xsdType: string;
+    loading: boolean = true;
+    showSelect: boolean = false;
 
-    items: Array<any>;
+    resourceApiData: PropertiesDefinitonsResourceApiData;
+    selectedItems: SelectData[];
 
     constructor(private sharedData: InstanceService,
                 private propertiesService: PropertiesDefinitionService) {
@@ -36,26 +41,58 @@ export class PropertyDefinitionComponent implements OnInit {
     ngOnInit() {
         this.propertiesService.setPath(this.sharedData.path);
         this.propertiesService.getPropertiesDefinitionsData()
-            .subscribe(data => this.handlePropertiesDefinitionData(data));
+            .subscribe(
+                data => this.handlePropertiesDefinitionData(data),
+                error => this.handleError(error)
+            );
     }
 
-    handlePropertiesDefinitionData(data: PropertiesDefinitonsResourceApiData) {
-        console.log(data);
-    };
-
     onNoneSelected(): void {
-        console.log('none');
+        this.showSelect = false;
     }
 
     onXmlElementSelected(): void {
-        console.log('xml elmeent');
+        this.showSelect = false;
+        this.selectedItems = this.resourceApiData.xsdElementDefinitions;
+        this.showSelect = true;
     }
 
     onXmlTypeSelected(): void {
-        console.log('xml t');
+        this.showSelect = false;
+        this.selectedItems = this.resourceApiData.xsdTypeDefinitions;
+        this.showSelect = true;
     }
 
     onCustomKeyValuePairSelected(): void {
-        console.log('cuzstiom');
+        this.showSelect = false;
+       // show table...
+    }
+
+    isNoneSelected(): boolean {
+        return !this.isCustomSelected() && !this.isXmlElementSelected() && !this.isXmlTypeSelected();
+    }
+
+    isXmlElementSelected(): boolean {
+        return !isNullOrUndefined(this.resourceApiData.propertiesDefinition)
+            && !isNullOrUndefined(this.resourceApiData.propertiesDefinition.element);
+    }
+
+    isXmlTypeSelected(): boolean {
+        return !isNullOrUndefined(this.resourceApiData.propertiesDefinition)
+            && !isNullOrUndefined(this.resourceApiData.propertiesDefinition.type);
+    }
+
+    isCustomSelected(): boolean {
+        return isNullOrUndefined(this.resourceApiData.propertiesDefinition)
+            && !isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition);
+    }
+
+    private handlePropertiesDefinitionData(data: PropertiesDefinitonsResourceApiData) {
+        this.resourceApiData = data;
+        this.loading = false;
+    };
+
+    private handleError(error: any): void  {
+        console.log(error);
     }
 }
