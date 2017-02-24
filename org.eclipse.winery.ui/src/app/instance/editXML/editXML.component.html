@@ -14,9 +14,8 @@
 -->
 
 <div>
-    Quick hack fix the bug with 0 px size of the editor
-    <pre class="editor" data-editor-lang="application/xml">
+    <pre id = "{{id}}" class="editor" [attr.data-editor-lang]="dataEditorLang" [style.height.px]="height">
         {{xmlData}}
     </pre>
-<button class="btn btn-default" type="button">Save</button>
+    <button class="btn btn-default" type="button">Save</button>
 </div>

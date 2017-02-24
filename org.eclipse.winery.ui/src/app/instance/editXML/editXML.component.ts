@@ -11,21 +11,32 @@
  *     Lukas Harzentter - initial API and implementation
  *******************************************************************************/
 
-import { Component, OnInit, Input } from '@angular/core';
-
+import {Component, OnInit, Input, ElementRef} from '@angular/core';
+import {ResizeEvent} from 'angular2-resizable';
 
 @Component({
     selector: 'winery-instance-editXML',
     templateUrl: 'editXML.component.html'
 })
 export class EditXMLComponent implements OnInit {
-     xmlData: string ;
-     testdata: string;
+    xmlData: string ;
+    testdata: string;
     @Input() areaid: string;
     id: string = 'id';
 
+    styleAttr: any;
+    dataEditorLang: any;
+
+    // Set height to 300 px
+    height = 300;
+
+    chooseData: string;
+
     constructor() {
+        this.dataEditorLang = 'application/xml';
+        // this.styleAttr = null;
     }
+
 
     ngOnInit() {
         this.xmlData = `
@@ -51,5 +62,6 @@ function() {
     window.console.log(a);
 }
 `;
+        this.chooseData = this.xmlData;
     }
 }
