@@ -12,31 +12,49 @@
 
 import { Component, OnInit } from '@angular/core';
 import { InstanceService } from '../instance.service';
+import { PropertiesDefinitionService } from './propertiesDefinition.service';
+import { PropertiesDefinitonsResourceApiData } from './propertiesDefinitionsResourceApiData';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
-    templateUrl: 'propertiesDefinition.component.html'
+    templateUrl: 'propertiesDefinition.component.html',
+    providers: [
+        PropertiesDefinitionService
+    ]
 })
 export class PropertyDefinitionComponent implements OnInit {
 
     xsdelement: string;
     xsdtype: string;
 
-    constructor(private sharedData: InstanceService) {
+    items: Array<any>;
+
+    constructor(private sharedData: InstanceService,
+                private propertiesService: PropertiesDefinitionService) {
     }
 
     ngOnInit() {
+        this.propertiesService.setPath(this.sharedData.path);
+        this.propertiesService.getPropertiesDefinitionsData()
+            .subscribe(data => this.handlePropertiesDefinitionData(data));
     }
+
+    handlePropertiesDefinitionData(data: PropertiesDefinitonsResourceApiData) {
+        console.log(data);
+    };
 
     onNoneSelected(): void {
         console.log('none');
     }
+
     onXmlElementSelected(): void {
         console.log('xml elmeent');
     }
+
     onXmlTypeSelected(): void {
         console.log('xml t');
     }
+
     onCustomKeyValuePairSelected(): void {
         console.log('cuzstiom');
     }

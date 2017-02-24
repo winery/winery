@@ -29,9 +29,11 @@ import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { LoaderModule } from '../loader/loader.module';
 import { FormsModule } from '@angular/forms';
 import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
+import { SelectModule } from 'ng2-select';
 
 @NgModule({
     imports: [
+        SelectModule,
         BrowserModule,
         FormsModule,
         LoaderModule,
