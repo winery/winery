@@ -1,7 +1,22 @@
-import { SelectData } from '../../interfaces/selectData';
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzentter, Niko Stadelmaier - initial API and implementation
+ */
 
 export interface PropertiesDefinitionKVList {
     key: string;
+    type: string;
+}
+
+export interface PropertiesDefinition {
+    element: string;
     type: string;
 }
 
@@ -12,14 +27,7 @@ export interface WinerysPropertiesDefinition {
     isDerivedFromXSD: boolean;
 }
 
-interface PropertiesDefinitions {
-    element: string;
-    type: string;
-}
-
-export interface PropertiesDefinitonsResourceApiData {
-    xsdElementDefinitions: SelectData[];
-    xsdTypeDefinitions: SelectData[];
-    propertiesDefinition: any;
+export interface PropertiesDefinitionsResourceApiData {
+    propertiesDefinition: PropertiesDefinition;
     winerysPropertiesDefinition: WinerysPropertiesDefinition;
 }

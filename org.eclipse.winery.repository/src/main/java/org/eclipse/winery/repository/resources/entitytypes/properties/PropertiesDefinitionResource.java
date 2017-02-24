@@ -12,16 +12,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.properties;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,6 +34,7 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 import org.eclipse.winery.repository.resources.apiData.PropertiesDefinitionResourceApiData;
+import org.eclipse.winery.repository.resources.apiData.XsdDefinitionsApiData;
 import org.eclipse.winery.repository.resources.entitytypes.properties.winery.WinerysPropertiesDefinitionResource;
 
 import com.sun.jersey.api.view.Viewable;
@@ -85,10 +81,31 @@ public class PropertiesDefinitionResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public PropertiesDefinitionResourceApiData getJson() {
-		ArrayNode xsdTypes = Utils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.TYPE_DEFINITION);
-		ArrayNode xsdElements = Utils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.ELEMENT_DECLARATION);
 		PropertiesDefinition definition = this.getEntityType().getPropertiesDefinition();
-		return new PropertiesDefinitionResourceApiData(xsdElements, xsdTypes, definition, this.wpd);
+		return new PropertiesDefinitionResourceApiData(definition, this.wpd);
+	}
+
+	@GET
+	@Path("{type}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public XsdDefinitionsApiData getXsdDefinitionJson(@PathParam("type") String type) {
+		ArrayNode definitions = null;
+
+		switch (type) {
+			case "element":
+				definitions = Utils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.ELEMENT_DECLARATION);
+				break;
+			case "type":
+				definitions = Utils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.TYPE_DEFINITION);
+				break;
+		}
+
+		if (definitions == null) {
+			LOGGER.error("No such parameter available in this call", type);
+			throw new InvalidParameterException("No such parameter available in this call");
+		}
+
+		return new XsdDefinitionsApiData(definitions);
 	}
 
 	public TEntityType getEntityType() {

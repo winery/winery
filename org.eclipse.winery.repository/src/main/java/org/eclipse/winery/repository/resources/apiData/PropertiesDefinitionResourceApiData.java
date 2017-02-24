@@ -18,21 +18,15 @@ import org.eclipse.winery.model.tosca.TEntityType;
 
 public class PropertiesDefinitionResourceApiData {
 
-	public ArrayNode xsdElementDefinitions;
-	public ArrayNode xsdTypeDefinitions;
 	public TEntityType.PropertiesDefinition propertiesDefinition;
 	public WinerysPropertiesDefinition winerysPropertiesDefinition;
 
 	public PropertiesDefinitionResourceApiData() {}
 
 	public PropertiesDefinitionResourceApiData(
-			ArrayNode xsdElementDefinitions,
-			ArrayNode xsdTypeDefinitions,
 			TEntityType.PropertiesDefinition propertiesDefinition,
 			WinerysPropertiesDefinition winerysPropertiesDefinition
 	) {
-		this.xsdElementDefinitions = xsdElementDefinitions;
-		this.xsdTypeDefinitions = xsdTypeDefinitions;
 		this.propertiesDefinition = propertiesDefinition;
 		this.winerysPropertiesDefinition = winerysPropertiesDefinition;
 	}

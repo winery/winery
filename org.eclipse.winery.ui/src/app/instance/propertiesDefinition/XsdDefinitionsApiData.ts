@@ -1,4 +1,3 @@
-<!--
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -8,7 +7,10 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzentter, Niko Stadelmaier - initial API and implementation
  */
--->
-capabilityDefinitions component
+import { SelectData } from '../../interfaces/selectData';
+
+export interface XsdDefinitionsApiData {
+    xsdDefinitions: SelectData[];
+}
