@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -27,7 +27,6 @@ export class InstanceComponent implements OnInit, OnDestroy {
     selectedResource: string;
     selectedComponentId: string;
     selectedNamespace: string;
-    path: string;
 
     routeSub: Subscription;
 
@@ -42,9 +41,8 @@ export class InstanceComponent implements OnInit, OnDestroy {
                 this.selectedResource = data['resolveData'].section;
                 this.selectedNamespace = data['resolveData'].namespace;
                 this.selectedComponentId = data['resolveData'].instanceId;
-                this.path = data['resolveData'].path;
 
-                this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId, this.path);
+                this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId);
 
                 this.availableTabs = this.service.getSubMenuByResource();
             });

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,10 +8,15 @@
  *
  * Contributors:
  *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ */
 
 
 export interface QNameApiData {
     name: string;
     qName: string;
 }
+
+export interface QNameList {
+    list: [QNameApiData];
+}
+

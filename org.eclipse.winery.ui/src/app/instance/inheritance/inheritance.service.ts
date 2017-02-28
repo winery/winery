@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) -2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,13 +8,14 @@
  *
  * Contributors:
  *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ */
 
 import { Injectable } from '@angular/core';
 import { InheritanceApiData } from './inheritanceApiData';
 import { Observable } from 'rxjs';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
+import { QNameList } from '../../qNameSelector/qNameApiData';
 
 @Injectable()
 export class InheritanceService {
@@ -24,20 +25,24 @@ export class InheritanceService {
     constructor(private http: Http) {
     }
 
-    getInheritanceData(path: string): Observable<InheritanceApiData> {
+    getInheritanceData(): Observable<InheritanceApiData> {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        if (path.indexOf('inheritance') === -1) {
-            path += '/inheritance/';
-        } else {
-            path += '/';
-        }
-
-        this.path = path;
-
-        return this.http.get(backendBaseUri + decodeURIComponent(path), options)
+        return this.http.get(backendBaseUri + this.path + 'inheritance/', options)
             .map(res => res.json());
+    }
+
+    getAvailableSuperClasses(): Observable<QNameList> {
+        let headers = new Headers({ 'Accept': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.get(backendBaseUri + this.path + 'getAvailableSuperClasses', options)
+            .map(res => res.json());
+    }
+
+    setPath(path: string): void {
+        this.path = path;
     }
 
     saveInheritanceData(inheritanceData: InheritanceApiData): Observable<any> {
@@ -50,6 +55,6 @@ export class InheritanceService {
         copy.isAbstract = inheritanceData.isAbstract;
         copy.isFinal = inheritanceData.isFinal;
 
-        return this.http.put(backendBaseUri + decodeURIComponent(this.path), JSON.stringify(copy), options);
+        return this.http.put(backendBaseUri + this.path + 'inheritance/', JSON.stringify(copy), options);
     }
 }
