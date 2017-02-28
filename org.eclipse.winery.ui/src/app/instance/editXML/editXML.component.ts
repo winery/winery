@@ -11,17 +11,21 @@
  *     Lukas Harzentter - initial API and implementation
  */
 
-import {Component, OnInit, Input, ElementRef} from '@angular/core';
-import {ResizeEvent} from 'angular2-resizable';
+import { Component, OnInit, Input, ElementRef } from '@angular/core';
+import { InstanceService } from '../instance.service';
+import { QNameList } from '../../qNameSelector/qNameApiData';
+import { isNullOrUndefined } from 'util';
+import { EditXMLService } from './editXML.service';
 
 @Component({
     selector: 'winery-instance-editXML',
-    templateUrl: 'editXML.component.html'
+    templateUrl: 'editXML.component.html',
+    providers: [EditXMLService],
 })
 export class EditXMLComponent implements OnInit {
-    xmlData: string ;
+    xmlData2: string ;
     testdata: string;
-    @Input() areaid: string;
+
     id: string = 'id';
 
     styleAttr: any;
@@ -32,14 +36,31 @@ export class EditXMLComponent implements OnInit {
 
     chooseData: string;
 
-    constructor() {
+    availableSuperClasses: QNameList;
+    loading: boolean = true;
+    xmlData: string;
+
+
+
+    constructor(
+        private sharedData: InstanceService,
+        private service: EditXMLService,
+    ) {
         this.dataEditorLang = 'application/xml';
         // this.styleAttr = null;
     }
 
 
     ngOnInit() {
-        this.xmlData = `
+
+        this.service.setPath(this.sharedData.path);
+        this.service.getXmlData()
+            .subscribe(
+                data => this.handleXmlData(data),
+                error => this.handleError(error)
+            );
+
+        this.xmlData2 = `
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <tosca:Definitions id="winery-defs-for_ns5-ChangeName" targetNamespace="http://www.w3.org/XML/1998/namespace3" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns0="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
     <tosca:NodeType name="ChangeName" targetNamespace="http://www.w3.org/XML/1998/namespace2" winery:bordercolor="#8cb215">
@@ -63,5 +84,28 @@ function() {
 }
 `;
         this.chooseData = this.xmlData;
+    }
+
+
+    private handleSuperClassData(superClasses: QNameList) {
+        this.availableSuperClasses = superClasses;
+
+        if (!isNullOrUndefined(this.xmlData)) {
+            this.loading = false;
+        }
+    }
+
+    private handleXmlData(xml: string) {
+        this.xmlData = xml;
+
+        if (!isNullOrUndefined(this.availableSuperClasses)) {
+            this.loading = false;
+        }
+    }
+
+
+    private handleError(error: any): void {
+        this.loading = false;
+        console.log(error);
     }
 }
