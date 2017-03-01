@@ -39,13 +39,19 @@
     <div *ngIf="showCustomKeyValue">
         <tabset>
             <tab heading="Properties">
-                <table-component [data]="data" [columns]="columns" (cellSelected)="onCellSelected($event)" )></table-component>
-            </tab>
-            <tab heading="Wrapper">
+                <table-component
+                    [data]="data"
+                    [columns]="columns"
+                    (cellSelected)="onCellSelected($event)"
 
-            </tab>
-        </tabset>
-    </div>
+            >
+            </table-component>
+        </tab>
+        <tab heading="Wrapper">
+
+        </tab>
+    </tabset>
+</div>
 
 </div>
 

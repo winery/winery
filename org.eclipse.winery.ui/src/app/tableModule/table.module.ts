@@ -7,34 +7,26 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - initial API and implementation
  */
 
 import { NgModule } from '@angular/core';
-
-import { PropertiesDefinitionComponent }   from './propertiesDefinition.component';
-import { MdTabsModule } from '@angular/material';
-import { LoaderModule } from '../../loader/loader.module';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { SelectModule } from 'ng2-select';
-import { TableModule } from '../../tableModule/table.module';
-import { TabsModule } from 'ng2-bootstrap';
-
+import { Ng2TableModule } from 'ng2-table';
+import { TableComponent } from './table.component';
+import { PaginationModule } from 'ng2-bootstrap';
 
 @NgModule({
     imports: [
-        TableModule,
-        TabsModule.forRoot(),
-        SelectModule,
+        PaginationModule.forRoot(),
+        Ng2TableModule,
         BrowserModule,
         FormsModule,
-        LoaderModule,
-        MdTabsModule
     ],
-    exports: [],
-    declarations: [PropertiesDefinitionComponent],
+    exports: [TableComponent],
+    declarations: [TableComponent],
     providers: [],
 })
-export class PropertiesDefinitionModule {
+export class TableModule {
 }

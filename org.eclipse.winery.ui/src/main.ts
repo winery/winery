@@ -18,7 +18,7 @@ import { WineryRepositoryModule } from './app/wineryRepository.module';
 import './css/wineryCommon.css';
 import './css/wineryRepository.css';
 import './css/bootstrap.min.css';
-
+require('font-awesome/css/font-awesome.css');
 if (process.env.ENV === 'production') {
     enableProdMode();
 }
