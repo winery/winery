@@ -30,12 +30,25 @@
     <link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/current/built-editor.css"/>
     <script src="http://eclipse.org/orion/editor/releases/current/built-editor.js"></script>
     <script>
+        if (window.winery === undefined) {
+            window.winery = {};
+        }
+
+        if (window.winery.orionareas === undefined) {
+            window.winery.orionareas = {};
+        }
+
         if (window.addEventListener) {
             window.addEventListener('load', function() {
                 require(["orion/editor/edit"], function(edit) {
-                        edit({className: "editor"});
+                    var config = {
+                        editor: edit({className: "editor",
+                                parent:"xml"}),
+                }
+                    window.winery.orionareas["xml"] = config;
                 });
-            }, false);
+            }
+            , false);
         }
     </script>
 

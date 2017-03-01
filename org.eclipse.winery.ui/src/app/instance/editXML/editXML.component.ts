@@ -13,18 +13,18 @@
 
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { InstanceService } from '../instance.service';
-import { QNameList } from '../../qNameSelector/qNameApiData';
 import { isNullOrUndefined } from 'util';
 import { EditXMLService } from './editXML.service';
+import { WindowRefService } from './windowRef.service';
+
 
 @Component({
     selector: 'winery-instance-editXML',
     templateUrl: 'editXML.component.html',
-    providers: [EditXMLService],
+    providers: [EditXMLService, WindowRefService ],
 })
 export class EditXMLComponent implements OnInit {
-    xmlData2: string ;
-    id: string = 'id';
+    id: string = 'XML';
     styleAttr: any;
     dataEditorLang: any;
 
@@ -33,12 +33,13 @@ export class EditXMLComponent implements OnInit {
 
     loading: boolean = true;
     xmlData: string;
-
+    window: any;
 
 
     constructor(
         private sharedData: InstanceService,
         private service: EditXMLService,
+        private windowService : WindowRefService,
     ) {
         this.dataEditorLang = 'application/xml';
         // this.styleAttr = null;
@@ -47,29 +48,16 @@ export class EditXMLComponent implements OnInit {
 
     ngOnInit() {
 
+        this.window = this.windowService.nativeWindow;
+
         this.service.setPath(this.sharedData.path);
+
         this.service.getXmlData()
             .subscribe(
                 data => this.handleXmlData(data),
                 error => this.handleError(error)
             );
-
-        this.xmlData2 = `
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<tosca:Definitions id="winery-defs-for_ns5-ChangeName" targetNamespace="http://www.w3.org/XML/1998/namespace3" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns0="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
-    <tosca:NodeType name="ChangeName" targetNamespace="http://www.w3.org/XML/1998/namespace2" winery:bordercolor="#8cb215">
-        <winery:PropertiesDefinition elementname="Properties" namespace="http://www.w3.org/XML/1998/namespace/propertiesdefinition/winery">
-            <winery:properties>
-                <winery:key>TestProperty</winery:key>
-                <winery:type>xsd:string</winery:type>
-            </winery:properties>
-        </winery:PropertiesDefinition>
-    </tosca:NodeType>
-</tosca:Definitions>
-`;
-
     }
-
 
     private handleXmlData(xml: string) {
         this.xmlData = xml;
@@ -85,8 +73,10 @@ export class EditXMLComponent implements OnInit {
     }
 
      saveXmlData(): void {
+
         console.log("save button clicked");
-        this.service.saveXmlData(this.xmlData)
+
+        this.service.saveXmlData(this.window.winery.orionareas.xml.editor[0].getText())
             .subscribe (
                 data => this.handlePutResponse(data),
                 error => this.handleError(error)

@@ -13,9 +13,7 @@
  */
 -->
 
-<div>
-    <pre id = "{{id}}" class="editor" [attr.data-editor-lang]="dataEditorLang" [style.height.px]="height">
-        {{xmlData}}
-    </pre>
+<div id = {{id}}>
+    <pre  class="editor" [attr.data-editor-lang]="dataEditorLang" [style.height.px]="height">{{xmlData}}</pre>
     <button class="btn btn-default" type="button" (click)="saveXmlData()">Save</button>
 </div>
