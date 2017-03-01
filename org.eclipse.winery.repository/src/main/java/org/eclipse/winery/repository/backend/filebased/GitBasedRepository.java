@@ -55,7 +55,7 @@ public class GitBasedRepository extends FilebasedRepository {
 	public GitBasedRepository(String repositoryLocation) throws IOException, NoWorkTreeException, GitAPIException {
 		super(repositoryLocation);
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(true).build();
+		Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
 		if (!new File(this.determineRepositoryPath(repositoryLocation) + File.separator + ".git").exists()) {
 			gitRepo.create();
 		}
