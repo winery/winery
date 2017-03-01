@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter, Niko Stadelmaier- initial API and implementation
+ *     Lukas Harzenetter, Niko Stadelmaier- initial API and implementation
  */
 
 import { Component, OnInit, NgZone } from '@angular/core';
@@ -18,6 +18,8 @@ import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
 import isEmpty = hbs.Utils.isEmpty;
 import { XsdDefinitionsApiData } from './XsdDefinitionsApiData';
+import { ActivatedRoute } from '@angular/router';
+import { PropertiesDefinitionResolverData } from '../../interfaces/resolverData';
 
 const EMPTY = 'Empty';
 
@@ -28,20 +30,23 @@ const EMPTY = 'Empty';
         PropertiesDefinitionService
     ]
 })
-export class PropertyDefinitionComponent implements OnInit {
+export class PropertiesDefinitionComponent implements OnInit {
 
     xsdElement = EMPTY;
     xsdType = EMPTY;
     loading: boolean = true;
     showSelect: boolean = false;
+    showCustomKeyValue: boolean = false;
 
     resourceApiData: PropertiesDefinitionsResourceApiData;
     selectedItems: SelectData[];
     activeElement: string;
 
-    constructor(private sharedData: InstanceService,
-                private service: PropertiesDefinitionService,
-                private zone : NgZone
+    constructor(
+        private route: ActivatedRoute,
+        private sharedData: InstanceService,
+        private service: PropertiesDefinitionService,
+        private zone: NgZone
     ) {}
 
     // region ########## Angular Callbacks ##########
@@ -51,7 +56,14 @@ export class PropertyDefinitionComponent implements OnInit {
     ngOnInit() {
         this.service.setPath(this.sharedData.path);
         this.getPropertiesDefinitionsResourceApiData();
+        this.route
+            .data
+            .subscribe(
+                data => this.handleRouterData(data),
+                error => this.handleError(error)
+            );
     }
+
     // endregion
 
     // region ########## Template Callbacks ##########
@@ -61,8 +73,7 @@ export class PropertyDefinitionComponent implements OnInit {
      * to the backend to delete all properties definitions.
      */
     onNoneSelected(): void {
-        this.emptyDescriptionString();
-        this.showSelect = false;
+        this.clearAdditionalHtmlElements();
         this.loading = true;
         this.service.deletePropertiesDefinitions()
             .subscribe(
@@ -78,12 +89,10 @@ export class PropertyDefinitionComponent implements OnInit {
     onXmlElementSelected(): void {
         this.service.getXsdElementDefinitions()
             .subscribe(
-                data => this.handleXmlTypeDefinitions(data),
+                data => this.handleXmlElementDefinitions(data),
                 error => this.handleError(error)
             );
-        // Force angular to re-render the dom in order to clean the select.
-        this.showSelect = false;
-        this.zone.run(() => console.log('rendering'));
+        this.forceSelectClear();
     }
 
     /**
@@ -93,12 +102,10 @@ export class PropertyDefinitionComponent implements OnInit {
     onXmlTypeSelected(): void {
         this.service.getXsdTypeDefinitions()
             .subscribe(
-                data => this.handleXmlElementDefinitions(data),
+                data => this.handleXmlTypeDefinitions(data),
                 error => this.handleError(error)
             );
-        // Force angular to re-render the dom in order to clean the select.
-        this.showSelect = false;
-        this.zone.run(() => console.log('rendering'));
+        this.forceSelectClear();
     }
 
     /**
@@ -106,13 +113,13 @@ export class PropertyDefinitionComponent implements OnInit {
      * a table to enter those pairs.
      */
     onCustomKeyValuePairSelected(): void {
-        this.emptyDescriptionString();
-        this.showSelect = false;
+        this.clearAdditionalHtmlElements();
+        this.showCustomKeyValue = true;
         // show table...
     }
 
     /**
-     * Called by the template, if in the select box is a property selected.
+     * Called by the template, if a property is selected in the select box .
      */
     xmlValueSelected(event: any): void {
         if (!this.xsdElement.includes(EMPTY)) {
@@ -124,6 +131,7 @@ export class PropertyDefinitionComponent implements OnInit {
             this.resourceApiData.propertiesDefinition.type = event.text;
         }
     }
+
     // endregion
 
     // region ########## Get selected value methods ##########
@@ -157,6 +165,7 @@ export class PropertyDefinitionComponent implements OnInit {
         return isNullOrUndefined(this.resourceApiData.propertiesDefinition)
             && !isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition);
     }
+
     // endregion
     // endregion
 
@@ -204,7 +213,7 @@ export class PropertyDefinitionComponent implements OnInit {
         this.selectedItems = xsdDefinitionsApiData.xsdDefinitions;
 
         if (this.xsdElement.includes(EMPTY) || this.xsdElement.length === 0) {
-            this.emptyDescriptionString('element');
+            this.clearAdditionalHtmlElements('element');
         }
 
         this.showSelect = true;
@@ -213,8 +222,8 @@ export class PropertyDefinitionComponent implements OnInit {
     private handleXmlTypeDefinitions(xsdDefinitionsApiData: XsdDefinitionsApiData): void {
         this.selectedItems = xsdDefinitionsApiData.xsdDefinitions;
 
-        if (this.xsdElement.includes(EMPTY) || this.xsdType.length === 0) {
-            this.emptyDescriptionString('type');
+        if (this.xsdType.includes(EMPTY) || this.xsdType.length === 0) {
+            this.clearAdditionalHtmlElements('type');
         }
 
         this.showSelect = true;
@@ -229,12 +238,19 @@ export class PropertyDefinitionComponent implements OnInit {
         console.log(error);
     }
 
+    private handleRouterData(resolverData: any) {
+        console.log(resolverData);
+    }
+
     /**
-     * Adds behaviour for showing "Empty" on property change.
+     * Behaviour for selection change.
+     * Clears the additional HTML elements from the page.
      *
      * @param type
      */
-    private emptyDescriptionString(type = '') {
+    private clearAdditionalHtmlElements(type = '') {
+        this.showCustomKeyValue = false;
+
         if (type.toLowerCase().includes('type')) {
             this.xsdType = '';
             this.xsdElement = EMPTY;
@@ -242,9 +258,18 @@ export class PropertyDefinitionComponent implements OnInit {
             this.xsdType = EMPTY;
             this.xsdElement = '';
         } else {
+            this.showSelect = false;
             this.xsdElement = EMPTY;
             this.xsdType = EMPTY;
         }
+    }
+
+    /**
+     * Force angular to re-render the dom in order to clean the select.
+     */
+    private forceSelectClear(): void {
+        this.showSelect = false;
+        this.zone.run(() => console.log('rendering'));
     }
 
     // endregion

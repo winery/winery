@@ -7,12 +7,23 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
-export interface ResolverData {
-    instanceId?: string;
-    namespace?: string;
+export interface SectionResolverData {
     section: string;
     path: string;
+}
+
+export interface NamespaceResolverData extends SectionResolverData {
+    namespace: string;
+}
+
+export interface InstanceResolverData extends NamespaceResolverData {
+    instanceId: string;
+}
+
+export interface PropertiesDefinitionResolverData {
+    propertiesSelected: boolean;
+    wrappingSelected: boolean;
 }

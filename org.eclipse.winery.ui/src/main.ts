@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';

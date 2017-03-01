@@ -8,7 +8,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter, Niko Stadelmaier - initial API and implementation
+ *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 -->
 <div [class.hidden]="!loading">
@@ -33,5 +33,16 @@
     <div *ngIf="showSelect">
         <ng-select [items]="selectedItems" (selected)="xmlValueSelected($event)" (active)="active"></ng-select>
     </div>
+    <div *ngIf="showCustomKeyValue">
+        <md-tab-group>
+            <md-tab label="Properties">
+                table
+            </md-tab>
+            <md-tab label="Wrapping">
+                select dinges
+            </md-tab>
+        </md-tab-group>
+    </div>
+
 </div>
 

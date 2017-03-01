@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
 import { NgModule } from '@angular/core';
@@ -24,12 +24,12 @@ import { InterfacesComponent } from './interfaces/interfaces.component';
 import { ImplementationsComponent } from './implementations/implementations.component';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
-import { PropertyDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { LoaderModule } from '../loader/loader.module';
 import { FormsModule } from '@angular/forms';
 import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
 import { SelectModule } from 'ng2-select';
+import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 
 @NgModule({
     imports: [
@@ -37,6 +37,7 @@ import { SelectModule } from 'ng2-select';
         BrowserModule,
         FormsModule,
         LoaderModule,
+        PropertiesDefinitionModule,
         InstanceRouterModule,
     ],
     exports: [],
@@ -50,7 +51,6 @@ import { SelectModule } from 'ng2-select';
         InstanceHeaderComponent,
         InstanceStatesComponent,
         InterfacesComponent,
-        PropertyDefinitionComponent,
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
         VisualAppearanceComponent,
