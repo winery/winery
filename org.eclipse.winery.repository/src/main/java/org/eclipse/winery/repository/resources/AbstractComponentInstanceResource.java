@@ -66,7 +66,7 @@ import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources._support.IPersistable;
-import org.eclipse.winery.repository.resources.documentation.DocumentationsResource;
+import org.eclipse.winery.repository.resources.documentation.DocumentationResource;
 import org.eclipse.winery.repository.resources.imports.genericimports.GenericImportResource;
 import org.eclipse.winery.repository.resources.tags.TagsResource;
 
@@ -535,8 +535,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	}
 
 	@Path("documentation/")
-	public DocumentationsResource getDocumentationsResource() {
-		return new DocumentationsResource(this, this.getElement().getDocumentation());
+	public DocumentationResource getDocumentationsResource() {
+		return new DocumentationResource(this, this.getElement().getDocumentation());
 	}
 
 	@Path("tags/")

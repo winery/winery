@@ -14,34 +14,50 @@ package org.eclipse.winery.repository.resources.documentation;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TDocumentation;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.CollectionsHelper;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdResource;
 
-public class DocumentationResource extends EntityWithoutIdResource<TDocumentation> {
+public class DocumentationResource {
 
-	public DocumentationResource(TDocumentation o, int idx, List<TDocumentation> list, IPersistable res) {
-		super(o, idx, list, res);
+	private final AbstractComponentInstanceResource abstractComponentInstanceResource;
+	private final List<TDocumentation> documentation;
+
+	public DocumentationResource(AbstractComponentInstanceResource abstractComponentInstanceResource, List<TDocumentation> documentation) {
+		this.abstractComponentInstanceResource = abstractComponentInstanceResource;
+		this.documentation = documentation;
 	}
 
-	public TDocumentation getDocu(){
-		return this.o;
+	@GET
+	public String onGet() {
+		if (documentation.isEmpty()) {
+			return "";
+		} else {
+			List<Object> content = documentation.get(0).getContent();
+			if (content.isEmpty()) {
+				return "";
+			}
+			return content.get(0).toString();
+		}
 	}
 
 	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
-		// TODO: how to implement put and post together
-	public Response setValue(DocumentationResourceAPIData newValue){
-		this.o.getContent().clear();
-		this.o.getContent().add(newValue);
-		this.list.set(this.idx, this.o);
-		return CollectionsHelper.persist(this.res, this.idDetermination, this.o);
+	public Response onPost(String documentation) {
+		this.documentation.clear();
+		TDocumentation tDocumentation = new TDocumentation();
+		tDocumentation.getContent().add(documentation);
+		this.documentation.add(tDocumentation);
+		return BackendUtils.persist(this.abstractComponentInstanceResource);
 	}
 
 }
