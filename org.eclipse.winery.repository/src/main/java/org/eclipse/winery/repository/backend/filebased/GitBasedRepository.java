@@ -91,7 +91,7 @@ public class GitBasedRepository extends FilebasedRepository {
 		synchronized (COMMIT_LOCK) {
 			String message;
 			if (ref == null) {
-				message = "Files changed externally."
+				message = "Files changed externally.";
 			} else {
 				message = ref.toString() + " was updated";
 			}
