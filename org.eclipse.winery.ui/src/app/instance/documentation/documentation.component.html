@@ -16,6 +16,6 @@
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading">
-    <textarea name="Text1" cols="40" rows="5" [(ngModel)]="documentationApiData.documentation">{{documentationApiData.documentation}}</textarea>
-    <button (click)="saveToServer()" class="btn btn-info btn-sm">save</button>
+    <textarea class="texDoc" name="Text1" [(ngModel)]="documentationApiData.documentation">{{documentationApiData.documentation}}</textarea>
+    <button (click)="saveToServer()" class="btn btn-info btn-sm saveButton">save</button>
 </div>
