@@ -19,12 +19,16 @@ import { InstanceService } from '../instance.service';
 @Component({
     selector: 'winery-instance-documentation',
     templateUrl: 'documentation.component.html',
-    providers: [ DocumentationService ]
+    providers: [ DocumentationService ],
+    styleUrls: [
+        'documentation.component.css'
+    ]
 })
 
 export class DocumentationComponent implements OnInit {
     documentationApiData: DocumentationApiData;
     loading: boolean = true;
+    isEmpty: boolean = true;
     constructor(
         private sharedData: InstanceService,
         private service: DocumentationService,
@@ -44,6 +48,11 @@ export class DocumentationComponent implements OnInit {
 
     private handleData(docu: DocumentationApiData) {
         this.documentationApiData = docu;
+        if (this.documentationApiData.documentation === 'empty') {
+            this.isEmpty = true;
+        } else {
+            this.isEmpty = false;
+        }
         this.loading = false;
     }
 
@@ -51,7 +60,7 @@ export class DocumentationComponent implements OnInit {
 
     private saveToServer() {
         this.loading = true;
-        this.service.saveDocumentationData(this.documentationApiData)
+        this.service.saveDocumentationData(this.documentationApiData, this.isEmpty)
             .subscribe(
                 data => this.handleCUResponse(data),
                 error => this.handleError(error)

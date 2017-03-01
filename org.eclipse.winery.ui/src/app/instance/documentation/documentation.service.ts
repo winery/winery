@@ -34,12 +34,11 @@ export class DocumentationService {
             path += '/';
         }
         this.path = path;
-
         return this.http.get(backendBaseUri + decodeURIComponent(path), options)
             .map(res => res.json());
     }
 
-    saveDocumentationData(documentationData: DocumentationApiData): Observable<any> {
+    saveDocumentationData(documentationData: DocumentationApiData, isEmpty: boolean ): Observable<any> {
         let headers = new Headers({'Content-Type': 'application/json', 'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
         let docCopy = new DocumentationApiData(
@@ -47,7 +46,11 @@ export class DocumentationService {
         );
         console.log( 'service path for save' + this.path );
         console.log(JSON.stringify(docCopy));
-
-        return this.http.put(backendBaseUri + decodeURIComponent(this.path), JSON.stringify(docCopy), options);
+        isEmpty = false;
+        if (isEmpty) {
+           // return this.http.post(backendBaseUri + decodeURIComponent(this.path), JSON.stringify(docCopy), options);
+        } else {
+            return this.http.put(backendBaseUri + decodeURIComponent(this.path), JSON.stringify(docCopy), options);
+        }
     }
 }
