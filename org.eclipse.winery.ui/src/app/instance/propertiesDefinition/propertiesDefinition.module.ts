@@ -18,9 +18,18 @@ import { LoaderModule } from '../../loader/loader.module';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { SelectModule } from 'ng2-select';
+import { TabsModule } from 'ng2-bootstrap';
+import { Ng2TableModule } from 'ng2-table';
+import { PaginationModule } from 'ng2-bootstrap';
+// import { NgTableComponent, NgTableFilteringDirective, NgTablePagingDirective, NgTableSortingDirective } from 'ng2-table/ng2-table';
+
+
 
 @NgModule({
     imports: [
+        PaginationModule.forRoot(),
+        Ng2TableModule,
+        TabsModule.forRoot(),
         SelectModule,
         BrowserModule,
         FormsModule,

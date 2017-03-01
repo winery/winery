@@ -30,6 +30,7 @@ import { FormsModule } from '@angular/forms';
 import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
 import { SelectModule } from 'ng2-select';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
+import { TableComponent } from "./tableComponent/table.component";
 
 @NgModule({
     imports: [
@@ -42,6 +43,7 @@ import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDef
     ],
     exports: [],
     declarations: [
+        TableComponent,
         CapabilityDefinitionsComponent,
         DocumentationComponent,
         EditXMLComponent,

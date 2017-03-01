@@ -19,7 +19,8 @@
         <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()" [checked]="isNoneSelected()">
         <label for="nopropdef" class="cursorpointer" name="nopropdef">(none)</label>
         <br>
-        <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()" [checked]="isXmlElementSelected()">
+        <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()"
+               [checked]="isXmlElementSelected()">
         <label for="xsdelementradio" class="cursorpointer">XML element</label>
         <a id="xsdelement" class="editable editable-click editable-empty">{{ xsdElement }}</a>
         <br>
@@ -27,21 +28,23 @@
         <label for="xsdtyperadio" class="cursorpointer">XML type</label>
         <a id="xsdtype" class="editable editable-click editable-empty">{{ xsdType }}</a>
         <br>
-        <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()" [checked]="isCustomSelected()">
+        <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()"
+               [checked]="isCustomSelected()">
         <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
     </div>
     <div *ngIf="showSelect">
         <ng-select [items]="selectedItems" (selected)="xmlValueSelected($event)" (active)="active"></ng-select>
     </div>
+
     <div *ngIf="showCustomKeyValue">
-        <md-tab-group>
-            <md-tab label="Properties">
-                table
-            </md-tab>
-            <md-tab label="Wrapping">
-                select dinges
-            </md-tab>
-        </md-tab-group>
+        <tabset>
+            <tab heading="Properties">
+                <table-component [data]="data" [columns]="columns" (cellSelected)="onCellSelected($event)" )></table-component>
+            </tab>
+            <tab heading="Wrapper">
+
+            </tab>
+        </tabset>
     </div>
 
 </div>
