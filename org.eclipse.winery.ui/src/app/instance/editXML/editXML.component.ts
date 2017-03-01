@@ -8,7 +8,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
 
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
@@ -24,19 +24,13 @@ import { EditXMLService } from './editXML.service';
 })
 export class EditXMLComponent implements OnInit {
     xmlData2: string ;
-    testdata: string;
-
     id: string = 'id';
-
     styleAttr: any;
     dataEditorLang: any;
 
     // Set height to 300 px
     height = 300;
 
-    chooseData: string;
-
-    availableSuperClasses: QNameList;
     loading: boolean = true;
     xmlData: string;
 
@@ -74,38 +68,33 @@ export class EditXMLComponent implements OnInit {
 </tosca:Definitions>
 `;
 
-        this.testdata = `
-/*
- * This is an Orion editor sample.
- */
-function() {
-    var a = 'hi there!';
-    window.console.log(a);
-}
-`;
-        this.chooseData = this.xmlData;
     }
 
 
-    private handleSuperClassData(superClasses: QNameList) {
-        this.availableSuperClasses = superClasses;
+    private handleXmlData(xml: string) {
+        this.xmlData = xml;
 
         if (!isNullOrUndefined(this.xmlData)) {
             this.loading = false;
         }
     }
 
-    private handleXmlData(xml: string) {
-        this.xmlData = xml;
-
-        if (!isNullOrUndefined(this.availableSuperClasses)) {
-            this.loading = false;
-        }
-    }
-
-
     private handleError(error: any): void {
         this.loading = false;
         console.log(error);
+    }
+
+     saveXmlData(): void {
+        console.log("save button clicked");
+        this.service.saveXmlData(this.xmlData)
+            .subscribe (
+                data => this.handlePutResponse(data),
+                error => this.handleError(error)
+        );
+    }
+
+    private handlePutResponse(response: any) {
+        this.loading = false;
+        console.log(response);
     }
 }

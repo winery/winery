@@ -9,7 +9,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
 -->
 
@@ -17,5 +17,5 @@
     <pre id = "{{id}}" class="editor" [attr.data-editor-lang]="dataEditorLang" [style.height.px]="height">
         {{xmlData}}
     </pre>
-    <button class="btn btn-default" type="button">Save</button>
+    <button class="btn btn-default" type="button" (click)="saveXmlData()">Save</button>
 </div>

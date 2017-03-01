@@ -40,16 +40,13 @@ export class EditXMLService {
     }
 
     // TODO: change to save xml data
-    saveXmlData(inheritanceData: InheritanceApiData): Observable<any> {
-        let headers = new Headers({ 'Content-Type': 'application/xml', 'Accept': 'application/xml' });
+    saveXmlData(xmlData: String): Observable<any> {
+        let headers = new Headers({
+            'Content-Type': 'text/xml',
+            'Accept': '' });
         let options = new RequestOptions({ headers: headers });
-
         // create a copy to not send unnecessary data to the server
-        let copy = new InheritanceApiData();
-        copy.derivedFrom = inheritanceData.derivedFrom;
-        copy.isAbstract = inheritanceData.isAbstract;
-        copy.isFinal = inheritanceData.isFinal;
 
-        return this.http.put(backendBaseUri + this.path + 'xml/', JSON.stringify(copy), options);
+        return this.http.put(backendBaseUri + this.path, xmlData, options);
     }
 }
