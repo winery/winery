@@ -31,6 +31,10 @@ module.exports = {
         chunkFilename: '[id].chunk.js',
     },
 
+//    externals: [
+//        require('webpack-require-http')
+//    ],
+
     /*
      * http://webpack.github.io/docs/configuration.html#resolve
      */
@@ -39,6 +43,9 @@ module.exports = {
         extensions: ['', '.ts', '.js', '.json', '.css', '.scss', '.html'],
         // Make sure root is src
         root: helpers.root('src'),
+        alias: {
+            "orion/editor/edit": "http://www.eclipse.org/orion/editor/releases/current/built-editor.min.js"
+        }
     },
 
     module: {

@@ -15,8 +15,6 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseUri } from '../../configuration';
-import { QNameList } from '../../qNameSelector/qNameApiData';
-import { InheritanceApiData } from '../inheritance/inheritanceApiData';
 
 
 @Injectable()

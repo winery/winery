@@ -15,13 +15,13 @@ import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { isNullOrUndefined } from 'util';
 import { EditXMLService } from './editXML.service';
-import { WindowRefService } from './windowRef.service';
 
+declare var requirejs: any;
 
 @Component({
     selector: 'winery-instance-editXML',
     templateUrl: 'editXML.component.html',
-    providers: [EditXMLService, WindowRefService ],
+    providers: [EditXMLService]
 })
 export class EditXMLComponent implements OnInit {
     id: string = 'XML';
@@ -35,11 +35,12 @@ export class EditXMLComponent implements OnInit {
     xmlData: string;
     window: any;
 
+    orioneditor: any = undefined;
+
 
     constructor(
         private sharedData: InstanceService,
         private service: EditXMLService,
-        private windowService : WindowRefService,
     ) {
         this.dataEditorLang = 'application/xml';
         // this.styleAttr = null;
@@ -47,20 +48,31 @@ export class EditXMLComponent implements OnInit {
 
 
     ngOnInit() {
-
-        this.window = this.windowService.nativeWindow;
+        Promise.all([
+            require("http://www.eclipse.org/orion/editor/releases/current/built-editor.min.js"),
+            require("http://eclipse.org/orion/editor/releases/current/built-editor.css")
+        ]).then(function() {
+            requirejs(["orion/editor/edit"], function(edit: any) {
+                this.orioneditor = edit({className: "editor", parent:"xml"})[0];
+                this.receiveXmlData();
+            }.bind(this));
+        }.bind(this));
 
         this.service.setPath(this.sharedData.path);
+    }
 
+    private receiveXmlData() {
         this.service.getXmlData()
             .subscribe(
                 data => this.handleXmlData(data),
                 error => this.handleError(error)
             );
+
     }
 
     private handleXmlData(xml: string) {
-        this.xmlData = xml;
+        this.orioneditor.setText(xml);
+        //this.xmlData = xml;
 
         if (!isNullOrUndefined(this.xmlData)) {
             this.loading = false;
@@ -76,7 +88,7 @@ export class EditXMLComponent implements OnInit {
 
         console.log("save button clicked");
 
-        this.service.saveXmlData(this.window.winery.orionareas.xml.editor[0].getText())
+        this.service.saveXmlData(this.orioneditor.getText())
             .subscribe (
                 data => this.handlePutResponse(data),
                 error => this.handleError(error)
