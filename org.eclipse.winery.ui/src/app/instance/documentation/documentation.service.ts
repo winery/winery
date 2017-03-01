@@ -8,12 +8,9 @@
  *
  * Contributors:
  *     Lukas Balzer - initial API and Implementation
- *     Nicole Keppler - fixes for path routing
- *******************************************************************************/
-
-
+ *     Nicole Keppler - fixes for path routing, saveData
+ */
 import { Injectable } from '@angular/core';
-import { DocumentationApiData } from './documentationApiData';
 import { Observable } from 'rxjs';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
@@ -25,8 +22,9 @@ export class DocumentationService {
     constructor(private http: Http) {
     }
 
-    getDocumentationData(path: string): Observable<DocumentationApiData> {
-        let headers = new Headers({ 'Accept': 'application/json' });
+    getDocumentationData(path: string): Observable<string> {
+        console.log('get request');
+        let headers = new Headers({ 'Accept': 'text/plain' });
         let options = new RequestOptions({ headers: headers });
         if (path.indexOf('documentation') === -1) {
             path += '/documentation/';
@@ -35,22 +33,12 @@ export class DocumentationService {
         }
         this.path = path;
         return this.http.get(backendBaseUri + decodeURIComponent(path), options)
-            .map(res => res.json());
+            .map(res => res.text());
     }
 
-    saveDocumentationData(documentationData: DocumentationApiData, isEmpty: boolean ): Observable<any> {
-        let headers = new Headers({'Content-Type': 'application/json', 'Accept': 'application/json'});
+    saveDocumentationData(documentationData: string): Observable<any> {
+        let headers = new Headers({'Content-Type': 'text/plain', 'Accept': 'text/plain'});
         let options = new RequestOptions({headers: headers});
-        let docCopy = new DocumentationApiData(
-            documentationData.documentation
-        );
-        console.log( 'service path for save' + this.path );
-        console.log(JSON.stringify(docCopy));
-        isEmpty = false;
-        if (isEmpty) {
-           // return this.http.post(backendBaseUri + decodeURIComponent(this.path), JSON.stringify(docCopy), options);
-        } else {
-            return this.http.put(backendBaseUri + decodeURIComponent(this.path), JSON.stringify(docCopy), options);
-        }
+        return this.http.put(backendBaseUri + decodeURIComponent(this.path), documentationData, options);
     }
 }

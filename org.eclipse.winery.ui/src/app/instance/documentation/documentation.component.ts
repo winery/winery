@@ -7,13 +7,10 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and Implementation
- *     Lukas Balzer, Nicole Keppler - using documentationService to get Data
+ *     Lukas Balzer, Nicole Keppler - initial API and implementation
  *******************************************************************************/
-
 import { Component, OnInit } from '@angular/core';
 import { DocumentationService } from './documentation.service';
-import { DocumentationApiData } from './documentationApiData';
 import { InstanceService } from '../instance.service';
 
 @Component({
@@ -26,15 +23,14 @@ import { InstanceService } from '../instance.service';
 })
 
 export class DocumentationComponent implements OnInit {
-    documentationApiData: DocumentationApiData;
+    documentationData: string;
     loading: boolean = true;
-    isEmpty: boolean = true;
     constructor(
         private sharedData: InstanceService,
         private service: DocumentationService,
 
     ) {
-        this.documentationApiData = new DocumentationApiData( 'default documentation value' );
+        this.documentationData = 'default documentation value';
 
     }
 
@@ -46,26 +42,22 @@ export class DocumentationComponent implements OnInit {
             );
     }
 
-    private handleData(docu: DocumentationApiData) {
-        this.documentationApiData = docu;
-        if (this.documentationApiData.documentation === 'empty') {
-            this.isEmpty = true;
-        } else {
-            this.isEmpty = false;
-        }
+    private handleData(docu: string) {
+        this.documentationData = docu;
         this.loading = false;
+        console.log( this.documentationData );
     }
 
 
 
     private saveToServer() {
         this.loading = true;
-        this.service.saveDocumentationData(this.documentationApiData, this.isEmpty)
+        this.service.saveDocumentationData(this.documentationData)
             .subscribe(
                 data => this.handleCUResponse(data),
                 error => this.handleError(error)
             );
-        console.log(this.documentationApiData.documentation);
+        console.log(this.documentationData);
     }
 
     private handleCUResponse(response: any) {
