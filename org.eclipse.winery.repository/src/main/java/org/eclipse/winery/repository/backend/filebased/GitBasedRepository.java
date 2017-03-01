@@ -12,26 +12,20 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.ws.rs.core.MediaType;
-
-import org.eclipse.winery.common.RepositoryFileReference;
-
-import org.eclipse.jgit.api.AddCommand;
-import org.eclipse.jgit.api.CleanCommand;
-import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.winery.common.RepositoryFileReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.MediaType;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Allows to reset repository to a certain commit id
@@ -95,8 +89,10 @@ public class GitBasedRepository extends FilebasedRepository {
 	 */
 	public void addCommit(RepositoryFileReference ref) throws GitAPIException {
 		synchronized (COMMIT_LOCK) {
-			String message = "Files changed externally.";
-			if (ref != null) {
+			String message;
+			if (ref == null) {
+				message = "Files changed externally."
+			} else {
 				message = ref.toString() + " was updated";
 			}
 			addCommit(message);
