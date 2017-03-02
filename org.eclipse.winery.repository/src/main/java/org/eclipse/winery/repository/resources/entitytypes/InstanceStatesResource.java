@@ -58,12 +58,8 @@ public class InstanceStatesResource {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/instancestates.jsp", this);
-	}
-
-	public List<String> getInstanceStates() {
+	@Produces(MediaType.APPLICATION_JSON)
+		public List<String> getInstanceStates() {
 		List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
 		ArrayList<String> states = new ArrayList<>(instanceStates.size());
 		for (InstanceState instanceState : instanceStates) {
