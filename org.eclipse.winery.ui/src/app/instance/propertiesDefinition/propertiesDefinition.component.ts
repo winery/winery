@@ -43,40 +43,22 @@ export class PropertiesDefinitionComponent implements OnInit {
     activeElement: string;
 
     columns: Array<any> = [
-        {title: 'Name', name: 'name', sort: true},
+        {title: 'Name', name: 'key', sort: true},
         {title: 'Type', name: 'type', sort: true},
     ];
-
-    data: Array<any> = [
-        {name: 'test1', type: 'xsd:string'},
-        {name: 'a', type: 'xsd:string'},
-        {name: 'b', type: 'xsd:string'},
-        {name: 'c', type: 'xsd:string'},
-        {name: 'd', type: 'xsd:string'},
-        {name: 'test2', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test4', type: 'xsd:string'},
-        {name: 'test5', type: 'xsd:string'},
-        {name: 'test6', type: 'xsd:string'},
-        {name: 'test7', type: 'xsd:string'},
-        {name: 'test8', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:number'},
-    ];
-
+    data: Array<any> = [{key: 'a', type: 'xsd:string'},
+        {key: 'a', type: 'xsd:string'},
+        {key: 'a', type: 'xsd:string'},
+        {key: 'a', type: 'xsd:string'},
+        {key: 'a', type: 'xsd:string'},
+        {key: 'a', type: 'xsd:string'},
+        {key: 'a', type: 'xsd:string'},
+        {key: 'a', type: 'xsd:string'}]
     constructor(private route: ActivatedRoute,
                 private sharedData: InstanceService,
                 private service: PropertiesDefinitionService,
                 private zone: NgZone) {
 
-    }
-
-    onCellSelected(data: any) {
-        console.log(data);
     }
 
     // region ########## Angular Callbacks ##########
@@ -162,6 +144,18 @@ export class PropertiesDefinitionComponent implements OnInit {
             this.xsdType = event.text;
             this.resourceApiData.propertiesDefinition.type = event.text;
         }
+    }
+
+    onAddClick() {
+
+    }
+
+    onRemoveClick(data: any) {
+
+    }
+
+    onCellSelected(data: any) {
+
     }
 
     // endregion

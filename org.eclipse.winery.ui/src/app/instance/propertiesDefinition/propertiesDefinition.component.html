@@ -43,15 +43,16 @@
                     [data]="data"
                     [columns]="columns"
                     (cellSelected)="onCellSelected($event)"
+                    [itemsPerPage]="10"
+                    (removeBtnClicked)="onRemoveClick($event)"
+                    (addBtnClicked)="onAddClick($event)"
+                >
+                </table-component>
+            </tab>
+            <tab heading="Wrapper">
 
-            >
-            </table-component>
-        </tab>
-        <tab heading="Wrapper">
+            </tab>
+        </tabset>
+    </div>
 
-        </tab>
-    </tabset>
 </div>
-
-</div>
-

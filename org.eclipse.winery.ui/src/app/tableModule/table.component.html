@@ -14,19 +14,15 @@
 
 
 <div>
-    <div style="margin-top: 1rem">
+    <div class="table-component-header">
         <label>Search:</label>
         <input *ngIf="config.filtering" placeholder="Filter all columns"
                [ngTableFiltering]="config.filtering"
                class="form-control"
                (tableChanged)="onChangeTable(config)"/>
-        <div style="margin: 1rem 0rem 1rem 1rem;
-                    height: auto;
-                    display: inline-block;
-                    float: right"
-                    >
-            <button class="rightbutton btn btn-danger btn-xs" (click)="onRemoveClick()">Remove</button>
-            <button class="rightbutton btn btn-primary btn-xs" (click)="onAddClick()">Add</button>
+        <div class="table-component-header-btn-wrap">
+            <button class="rightbutton btn btn-danger btn-xs" (click)="onRemoveClick($event);">Remove</button>
+            <button class="rightbutton btn btn-primary btn-xs" (click)="onAddClick($event);">Add</button>
         </div>
     </div>
 </div>
@@ -50,8 +46,8 @@
     <div style="float: right; margin-top: 20px;">
 
         <span>Show</span>
-        <div style="display: inline-block; width:75px;">
-            <select [(ngModel)]="itemsPerPage" class="form-control">
+        <div class="table-component-select-wrap">
+            <select #itemsPerPageSelect [value]="itemsPerPage" (change)="onItemsPerPageChange($event, itemsPerPageSelect);" class="form-control">
                 <option value="10">10</option>
                 <option value="25">25</option>
                 <option value="50">50</option>
