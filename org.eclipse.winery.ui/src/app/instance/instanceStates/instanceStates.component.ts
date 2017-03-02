@@ -7,19 +7,45 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Huixin Liu, Nicole Keppler - initial API and implementation
  */
 
 import { Component, OnInit } from '@angular/core';
+import { InstanceStateService } from './instanceState.service';
+import { InstanceService } from '../instance.service';
 
 @Component({
     selector: 'winery-instance-instanceStates',
-    templateUrl: 'instanceStates.component.html'
+    templateUrl: 'instanceStates.component.html',
+    providers: [InstanceStateService],
 })
 export class InstanceStatesComponent implements OnInit {
-    constructor() {
+    loading: boolean = true;
+    instanceStates: string[];
+
+    constructor(
+        private sharedData: InstanceService,
+        private service: InstanceStateService
+    ) {
+        this.instanceStates = [];
+        this.instanceStates[0] = 'defaultValue';
     }
 
+
     ngOnInit() {
+        this.service.setPath(this.sharedData.path);
+        this.service.getInstanceStates()
+            .subscribe(
+                data => this.handleInstanceStateData(data),
+                error => this.handleError(error)
+            );
+    }
+
+    private handleInstanceStateData(instanceStates: Array<string>) {
+        this.instanceStates = instanceStates;
+    }
+    private handleError(error: any): void {
+        this.loading = false;
+        console.log(error);
     }
 }
