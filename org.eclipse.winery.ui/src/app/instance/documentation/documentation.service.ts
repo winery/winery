@@ -25,13 +25,10 @@ export class DocumentationService {
     getDocumentationData(path: string): Observable<string> {
         let headers = new Headers({ 'Accept': 'text/plain' });
         let options = new RequestOptions({ headers: headers });
-        if (path.indexOf('documentation') === -1) {
-            path += '/documentation/';
-        } else {
-            path += '/';
-        }
         this.path = path;
-        return this.http.get(backendBaseUri + decodeURIComponent(path), options)
+        console.log('path');
+        console.log(this.path);
+        return this.http.get(backendBaseUri + decodeURIComponent(path + '/'), options)
             .map(res => res.text());
     }
 
