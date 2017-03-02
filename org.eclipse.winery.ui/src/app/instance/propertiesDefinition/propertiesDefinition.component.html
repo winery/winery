@@ -33,7 +33,7 @@
         <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
     </div>
     <div *ngIf="showSelect">
-        <ng-select [items]="selectedItems" (selected)="xmlValueSelected($event)" (active)="active"></ng-select>
+        <ng-select [items]="selectedItems" (selected)="xmlValueSelected($event)"></ng-select>
     </div>
 
     <div *ngIf="showCustomKeyValue">
@@ -41,8 +41,8 @@
             <tab heading="Properties">
                 <table-component [data]="data" [columns]="columns" (cellSelected)="onCellSelected($event)" )></table-component>
             </tab>
-            <tab heading="Wrapper">
-
+            <tab heading="Wrapper" (select)="getAllNamespaces()">
+                <ng-select [items]="allNamespaces" (selected)="wrapperNamespaceSelected($event)" [active]="activeNamespace"></ng-select>
             </tab>
         </tabset>
     </div>

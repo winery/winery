@@ -43,7 +43,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<PropertiesDefinitionsResourceApiData>}
      */
     getPropertiesDefinitionsData(): Observable<PropertiesDefinitionsResourceApiData> {
-        return this.sendJsonRequest('propertiesdefinition/');
+        return this.sendJsonRequest(this.path + 'propertiesdefinition/');
     }
 
     /**
@@ -52,7 +52,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<XsdDefinitionsApiData>}
      */
     getXsdElementDefinitions(): Observable<XsdDefinitionsApiData> {
-        return this.sendJsonRequest('propertiesdefinition/element');
+        return this.sendJsonRequest(this.path + 'propertiesdefinition/element');
     }
 
     /**
@@ -61,7 +61,11 @@ export class PropertiesDefinitionService {
      * @returns {Observable<XsdDefinitionsApiData>}
      */
     getXsdTypeDefinitions(): Observable<XsdDefinitionsApiData> {
-        return this.sendJsonRequest('propertiesdefinition/type');
+        return this.sendJsonRequest(this.path + 'propertiesdefinition/type');
+    }
+
+    getAllNamespaces(): Observable<string[]> {
+        return this.sendJsonRequest('/admin/namespaces');
     }
 
     /**
@@ -84,20 +88,7 @@ export class PropertiesDefinitionService {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + this.path + requestPath, options)
+        return this.http.get(backendBaseUri + requestPath, options)
             .map(res => res.json());
     }
-
-    // saveInheritanceData(inheritanceData: InheritanceApiData): Observable<any> {
-    //     let headers = new Headers({ 'Content-Type': 'application/json', 'Accept': 'application/json' });
-    //     let options = new RequestOptions({ headers: headers });
-    //
-    //     // create a copy to not send unnecessary data to the server
-    //     let copy = new InheritanceApiData();
-    //     copy.derivedFrom = inheritanceData.derivedFrom;
-    //     copy.isAbstract = inheritanceData.isAbstract;
-    //     copy.isFinal = inheritanceData.isFinal;
-    //
-    //     return this.http.put(backendBaseUri + decodeURIComponent(this.path), JSON.stringify(copy), options);
-    // }
 }

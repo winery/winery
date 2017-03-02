@@ -82,14 +82,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     ngOnInit() {
         this.service.setPath(this.sharedData.path);
         this.getPropertiesDefinitionsResourceApiData();
-        this.route
-            .data
-            .subscribe(
-                data => this.handleRouterData(data),
-                error => this.handleError(error)
-            );
-
-
     }
 
     // endregion
@@ -158,6 +150,16 @@ export class PropertiesDefinitionComponent implements OnInit {
             this.xsdType = event.text;
             this.resourceApiData.propertiesDefinition.type = event.text;
         }
+    }
+
+    getAllNamespaces(): void {
+        this.service.getAllNamespaces()
+            .subscribe(
+                (data) => {
+                    console.log(data);
+                    this.allNamespaces = data;
+                }
+            );
     }
 
     // endregion
@@ -264,10 +266,6 @@ export class PropertiesDefinitionComponent implements OnInit {
      */
     private handleError(error: any): void {
         console.log(error);
-    }
-
-    private handleRouterData(resolverData: any) {
-        console.log(resolverData);
     }
 
     /**
