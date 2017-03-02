@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Lukas Balzer, Nicole Keppler - initial API and implementation
- *******************************************************************************/
+ */
 import { Component, OnInit } from '@angular/core';
 import { DocumentationService } from './documentation.service';
 import { InstanceService } from '../instance.service';
@@ -45,7 +45,6 @@ export class DocumentationComponent implements OnInit {
     private handleData(docu: string) {
         this.documentationData = docu;
         this.loading = false;
-        console.log( this.documentationData );
     }
 
 
@@ -54,15 +53,13 @@ export class DocumentationComponent implements OnInit {
         this.loading = true;
         this.service.saveDocumentationData(this.documentationData)
             .subscribe(
-                data => this.handleCUResponse(data),
+                data => this.handleResponse(data),
                 error => this.handleError(error)
             );
-        console.log(this.documentationData);
     }
 
-    private handleCUResponse(response: any) {
+    private handleResponse(response: any) {
         this.loading = false;
-        console.log(response);
     }
 
     private handleError(error: any): void {

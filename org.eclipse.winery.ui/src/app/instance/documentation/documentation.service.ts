@@ -23,7 +23,6 @@ export class DocumentationService {
     }
 
     getDocumentationData(path: string): Observable<string> {
-        console.log('get request');
         let headers = new Headers({ 'Accept': 'text/plain' });
         let options = new RequestOptions({ headers: headers });
         if (path.indexOf('documentation') === -1) {
