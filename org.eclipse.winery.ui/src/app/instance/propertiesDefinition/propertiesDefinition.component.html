@@ -49,12 +49,12 @@
             <tabset>
                 <tab heading="Properties">
                     <table-component
-                        [data]="data"
+                        [data]="resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList"
                         [columns]="columns"
                         (cellSelected)="onCellSelected($event)"
                         [itemsPerPage]="10"
                         (removeBtnClicked)="onRemoveClick($event)"
-                        (addBtnClicked)="onAddClick($event)">
+                        (addBtnClicked)="staticModal.show()">
                     </table-component>
                 </tab>
                 <tab heading="Wrapper">
@@ -68,6 +68,60 @@
                     </div>
                 </tab>
             </tabset>
+        </div>
+    </div>
+</div>
+<div class="modal fade" bsModal #staticModal="bs-modal" [config]="{backdrop: 'static'}"
+     tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Static modal</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="staticModal.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addPropertyForm">
+                    <div class="form-group">
+                        <label class="control-label" for="propName">Name</label>
+                        <input #propName name="key" class="form-control" id="propName" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label" for="propType">Type</label>
+                        <select #selectProperty name="type" class="form-control" id="propType">
+                            <option value="xsd:string">xsd:string</option>
+                            <option value="xsd:float">xsd:float</option>
+                            <option value="xsd:decimal">xsd:decimal</option>
+                            <option value="xsd:anyURI">xsd:anyURI</option>
+                            <option value="xsd:QName">xsd:QName</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="staticModal.hide()">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="addProperty(selectProperty.value, propName.value); staticModal.hide()">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" bsModal #deletePropModal="bs-modal" id="diagyesno">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="diagyesnotitle"></h4>
+            </div>
+            <div class="modal-body">
+                <p *ngIf="elementToRemove != null" id="diagyesnomsg"> Do you want to delete the Element {{elementToRemove.key}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button id="diagyesnoyesbtn" type="button" class="btn btn-primary" (click)="removeConfirmed();">Yes</button>
+            </div>
         </div>
     </div>
 </div>

@@ -20,10 +20,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { SelectModule } from 'ng2-select';
 import { TableModule } from '../../tableModule/table.module';
 import { TabsModule } from 'ng2-bootstrap';
+import { ModalModule } from 'ng2-bootstrap';
 
 
 @NgModule({
     imports: [
+        ModalModule.forRoot(),
         TableModule,
         TabsModule.forRoot(),
         SelectModule,

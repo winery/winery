@@ -9,7 +9,7 @@
  * Contributors:
  *     Lukas Harzenetter, Niko Stadelmaier- initial API and implementation
  */
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
@@ -17,6 +17,7 @@ import {
     PropertiesDefinitionEnum,
     PropertiesDefinitionsResourceApiData,
     WinerysPropertiesDefinition,
+    PropertiesDefinitionKVList
 } from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
@@ -43,32 +44,13 @@ export class PropertiesDefinitionComponent implements OnInit {
     selectItems: SelectData[];
     activeElement: SelectData;
     allNamespaces: string[];
-
+    selectedCell: any;
+    elementToRemove: any = null;
     columns: Array<any> = [
-        { title: 'Name', name: 'name', sort: true },
-        { title: 'Type', name: 'type', sort: true },
+        {title: 'Name', name: 'key', sort: true},
+        {title: 'Type', name: 'type', sort: true},
     ];
-
-    data: Array<any> = [
-        { name: 'test1', type: 'xsd:string' },
-        { name: 'a', type: 'xsd:string' },
-        { name: 'b', type: 'xsd:string' },
-        { name: 'c', type: 'xsd:string' },
-        { name: 'd', type: 'xsd:string' },
-        { name: 'test2', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test4', type: 'xsd:string' },
-        { name: 'test5', type: 'xsd:string' },
-        { name: 'test6', type: 'xsd:string' },
-        { name: 'test7', type: 'xsd:string' },
-        { name: 'test8', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:number' },
-    ];
+    @ViewChild('deletePropModal') deletePropModalEl: any;
 
     constructor(private sharedData: InstanceService,
                 private service: PropertiesDefinitionService,
@@ -77,7 +59,9 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
 
     onCellSelected(data: any) {
-        console.log(data);
+        if (isNullOrUndefined(data)) {
+            this.selectedCell = data;
+        }
     }
 
     // region ########## Angular Callbacks ##########
@@ -92,6 +76,32 @@ export class PropertiesDefinitionComponent implements OnInit {
     // endregion
 
     // region ########## Template Callbacks ##########
+
+    onRemoveClick(data: any) {
+        if (isNullOrUndefined(data)) {
+            return;
+        } else {
+            console.log(this.deletePropModalEl);
+            this.elementToRemove = data;
+            this.deletePropModalEl.show();
+        }
+    }
+
+    removeConfirmed() {
+        this.deletePropModalEl.hide();
+        this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
+        this.elementToRemove = null;
+    }
+
+    deleteItemFromPropertyDefinitionKvList(itemToDelete: any) {
+        let list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].key === itemToDelete.key) {
+                list.splice(i, 1);
+            }
+        }
+    }
+
     /**
      * Called by the template, if property (none) is selected. It sends a DELETE request
      * to the backend to delete all properties definitions.
@@ -205,6 +215,11 @@ export class PropertiesDefinitionComponent implements OnInit {
                 );
         }
     }
+
+    addProperty(propType: string, propName: string) {
+        this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push({key: propName, type: propType});
+    }
+
     // endregion
 
     // region ########## Private Methods ##########
@@ -238,9 +253,9 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     private handlePropertiesDefinitionData(data: PropertiesDefinitionsResourceApiData): void {
         this.resourceApiData = data;
-
+        console.log('resourceApiDAta', this.resourceApiData);
         // because the selectedValue doesn't get set correctly do it here
-        switch (this.resourceApiData.selectedValue.toString()) {
+        switch (isNullOrUndefined(this.resourceApiData.selectedValue) ? '' : this.resourceApiData.selectedValue.toString()) {
             case 'Element':
                 this.onXmlElementSelected();
                 break;
@@ -270,5 +285,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     private handleError(error: any): void {
         console.log(error);
     }
+
     // endregion
 }

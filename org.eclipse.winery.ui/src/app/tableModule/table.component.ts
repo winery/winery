@@ -45,6 +45,9 @@ export class TableComponent implements OnInit {
     @Output() removeBtnClicked = new EventEmitter <any>();
     @Output() addBtnClicked = new EventEmitter <any>();
 
+    private oldData: Array<any> = this.data;
+    private oldLength = this.oldData.length;
+
     // region #######Table events and functions######
 
     public onChangeTable(config: any, page: any = {page: this.page, itemsPerPage: this.itemsPerPage}): any {
@@ -157,13 +160,32 @@ export class TableComponent implements OnInit {
     }
 
     constructor() {
-        this.length = this.data.length;
+        // this.length = this.data.length;
     }
 
     ngOnInit() {
         this.config.sorting.columns = this.columns;
         this.length = this.data.length;
         this.onChangeTable(this.config);
+    }
+
+    // We "know" that the only way the list can change is
+    // identity or in length so that's all we check
+    ngDoCheck() {
+        if (this.oldData !== this.data) {
+            this.oldData = this.data;
+            this.oldLength = this.data.length;
+            this.onChangeTable(this.config);
+        } else {
+            let newLength = this.data.length;
+            let old = this.oldLength;
+            if (old !== newLength) {
+                // let direction = old < newLength ? 'grew' : 'shrunk';
+                // this.logs.push(`heroes ${direction} from ${old} to ${newLength}`);
+                this.oldLength = newLength;
+                this.onChangeTable(this.config);
+            }
+        }
     }
 
 }
