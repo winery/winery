@@ -27,7 +27,7 @@ export class EditXMLComponent implements OnInit {
     id: string = 'XML';
     dataEditorLang: any;
 
-    // Set height to 300 px
+    // Set height to 500 px
     height = 500;
 
     loading: boolean = true;
