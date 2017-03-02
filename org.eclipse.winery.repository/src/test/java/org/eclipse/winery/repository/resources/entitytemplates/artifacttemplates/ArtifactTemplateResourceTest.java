@@ -11,17 +11,20 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
-public class TestArtifactTemplateResource {
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
+@Ignore("Working on old test repository")
+public class ArtifactTemplateResourceTest {
 
 	@BeforeClass
 	public static void init() throws Exception {

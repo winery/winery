@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,15 +18,18 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.JAXBException;
 
-import org.apache.commons.io.output.NullOutputStream;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 
+import org.apache.commons.io.output.NullOutputStream;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
+@Ignore("Working on old test repository")
 public class TestToscaExporter {
 
 	//private static final TOSCAExportUtil toscaExporter = new TOSCAExportUtil();
