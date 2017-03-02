@@ -157,7 +157,7 @@ export class TableComponent implements OnInit {
     }
 
     constructor() {
-        this.length = this.data.length;
+        // this.length = this.data.length;
     }
 
     ngOnInit() {

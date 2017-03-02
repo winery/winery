@@ -49,7 +49,7 @@
             <tabset>
                 <tab heading="Properties">
                     <table-component
-                        [data]="data"
+                        [data]="resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList"
                         [columns]="columns"
                         (cellSelected)="onCellSelected($event)"
                         [itemsPerPage]="10"

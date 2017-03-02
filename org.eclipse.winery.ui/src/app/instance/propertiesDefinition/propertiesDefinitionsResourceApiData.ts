@@ -27,7 +27,7 @@ export class PropertiesDefinition {
 export class WinerysPropertiesDefinition {
     namespace: string = null;
     elementName: string = null;
-    propertiesDefinitionKVList: PropertiesDefinitionKVList[] = [];
+    propertyDefinitionKVList: PropertiesDefinitionKVList[] = [];
     isDerivedFromXSD: boolean = false;
 }
 
