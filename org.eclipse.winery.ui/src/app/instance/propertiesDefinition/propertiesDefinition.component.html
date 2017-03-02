@@ -63,8 +63,11 @@
                         <input id="wrapperName" class="form-control" (input)="setWrapperName($event)" [value]="resourceApiData.winerysPropertiesDefinition.elementName">
                     </div>
                     <div class="wrapperTabButtom">
-                        <label>Namespace</label>
-                        <ng-select id="namespaceSelector" [items]="allNamespaces" (selected)="wrapperNamespaceSelected($event)" [active]="[activeElement]"></ng-select>
+                        <label for="wrapperNamespace">Namespace</label>
+                        <input id="wrapperNamespace"
+                               class="form-control"
+                               [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"
+                               [typeahead]="allNamespaces">
                     </div>
                 </tab>
             </tabset>
@@ -116,7 +119,7 @@
                 <h4 class="modal-title" id="diagyesnotitle"></h4>
             </div>
             <div class="modal-body">
-                <p *ngIf="elementToRemove != null" id="diagyesnomsg"> Do you want to delete the Element {{elementToRemove.key}}</p>
+                <p *ngIf="elementToRemove != null" id="diagyesnomsg"> Do you want to delete the Element {{elementToRemove.key}} ?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">No</button>

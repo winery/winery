@@ -17,7 +17,6 @@ import {
     PropertiesDefinitionEnum,
     PropertiesDefinitionsResourceApiData,
     WinerysPropertiesDefinition,
-    PropertiesDefinitionKVList
 } from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
@@ -81,7 +80,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         if (isNullOrUndefined(data)) {
             return;
         } else {
-            console.log(this.deletePropModalEl);
+            this.elementToRemove = data;
             this.elementToRemove = data;
             this.deletePropModalEl.show();
         }
@@ -175,6 +174,10 @@ export class PropertiesDefinitionComponent implements OnInit {
         if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition)) {
             this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         }
+        // The key/value pair list my be null
+        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList)) {
+            this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList = [];
+        }
 
         this.activeElement = new SelectData();
         this.activeElement.text = this.resourceApiData.winerysPropertiesDefinition.namespace;
@@ -193,10 +196,6 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     setWrapperName(event: any): void {
         this.resourceApiData.winerysPropertiesDefinition.elementName = event.target.value;
-    }
-
-    wrapperNamespaceSelected(event: any): void {
-        this.resourceApiData.winerysPropertiesDefinition.namespace = event.text;
     }
 
     save(): void {
@@ -253,7 +252,7 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     private handlePropertiesDefinitionData(data: PropertiesDefinitionsResourceApiData): void {
         this.resourceApiData = data;
-        console.log('resourceApiDAta', this.resourceApiData);
+
         // because the selectedValue doesn't get set correctly do it here
         switch (isNullOrUndefined(this.resourceApiData.selectedValue) ? '' : this.resourceApiData.selectedValue.toString()) {
             case 'Element':
@@ -285,6 +284,5 @@ export class PropertiesDefinitionComponent implements OnInit {
     private handleError(error: any): void {
         console.log(error);
     }
-
     // endregion
 }

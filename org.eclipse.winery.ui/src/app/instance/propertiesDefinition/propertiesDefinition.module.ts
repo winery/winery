@@ -13,14 +13,12 @@
 import { NgModule } from '@angular/core';
 
 import { PropertiesDefinitionComponent }   from './propertiesDefinition.component';
-import { MdTabsModule } from '@angular/material';
 import { LoaderModule } from '../../loader/loader.module';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { SelectModule } from 'ng2-select';
 import { TableModule } from '../../tableModule/table.module';
-import { TabsModule } from 'ng2-bootstrap';
-import { ModalModule } from 'ng2-bootstrap';
+import { TabsModule, TypeaheadModule, ModalModule } from 'ng2-bootstrap';
 
 
 @NgModule({
@@ -32,7 +30,7 @@ import { ModalModule } from 'ng2-bootstrap';
         BrowserModule,
         FormsModule,
         LoaderModule,
-        MdTabsModule
+        TypeaheadModule.forRoot()
     ],
     exports: [],
     declarations: [PropertiesDefinitionComponent],
