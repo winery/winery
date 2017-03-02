@@ -20,7 +20,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class TableComponent implements OnInit {
 
     public page: number = 1;
-    @Input() itemsPerPage: number = 5;
+    @Input() itemsPerPage: number = 10;
     @Input() maxSize: number = 5;
     @Input() numPages: number = 1;
     @Input() length: number = 0;

@@ -47,7 +47,17 @@
                 (pageChanged)="onChangeTable(config, $event)"
                 (numPages)="numPages = $event">
     </pagination>
-    <div style="float: right">
-        
+    <div style="float: right; margin-top: 20px;">
+
+        <span>Show</span>
+        <div style="display: inline-block; width:75px;">
+            <select [(ngModel)]="itemsPerPage" class="form-control">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <span>entries</span>
     </div>
 </div>
