@@ -89,11 +89,13 @@ public class GitBasedRepository extends FilebasedRepository {
 	 */
 	public void addCommit(RepositoryFileReference ref) throws GitAPIException {
 		synchronized (COMMIT_LOCK) {
-			String message = "Files changed externally.";
-			if (ref != null) {
-				message = ref.toString() + " was updated";
-			}
-			addCommit(message);
+			String message;
+            if (ref == null) {
+                message = "Files changed externally.";
+            } else {
+                message = ref.toString() + " was updated";
+            }
+            addCommit(message);
 		}
 	}
 
