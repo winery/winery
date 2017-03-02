@@ -7,13 +7,23 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Nicole Keppler - initial API and implementation
+ *     Lukas Harzentter - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.apiData;
 
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+
 import javax.xml.namespace.QName;
 
-public class QNameApiData {
-    public String localname;
-    public String namespace;
+public class QNameWithIdApiData {
+
+	public String name;
+	public QName qName;
+
+	public QNameWithIdApiData() {}
+
+	public QNameWithIdApiData(TOSCAComponentId id) {
+		this.name = id.getXmlId().getDecoded();
+		this.qName = id.getQName();
+	}
 }
