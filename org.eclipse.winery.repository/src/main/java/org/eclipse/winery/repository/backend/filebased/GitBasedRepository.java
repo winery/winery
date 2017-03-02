@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import org.eclipse.jgit.api.*;
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CleanCommand;
+import org.eclipse.jgit.api.CommitCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
