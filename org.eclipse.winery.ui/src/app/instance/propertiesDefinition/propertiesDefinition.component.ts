@@ -9,67 +9,68 @@
  * Contributors:
  *     Lukas Harzenetter, Niko Stadelmaier- initial API and implementation
  */
-
 import { Component, OnInit, NgZone } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
-import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
+import {
+    PropertiesDefinition,
+    PropertiesDefinitionEnum,
+    PropertiesDefinitionsResourceApiData,
+    WinerysPropertiesDefinition,
+} from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
-import isEmpty = hbs.Utils.isEmpty;
-import { XsdDefinitionsApiData } from './XsdDefinitionsApiData';
-import { ActivatedRoute } from '@angular/router';
-import { PropertiesDefinitionResolverData } from '../../interfaces/resolverData';
-
-const EMPTY = 'Empty';
+import { Response } from '@angular/http';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
     templateUrl: 'propertiesDefinition.component.html',
+    styleUrls: [
+        'propertiesDefinition.component.css'
+    ],
     providers: [
         PropertiesDefinitionService
     ]
 })
 export class PropertiesDefinitionComponent implements OnInit {
 
-    xsdElement = EMPTY;
-    xsdType = EMPTY;
+    propertiesEnum = PropertiesDefinitionEnum;
     loading: boolean = true;
     showSelect: boolean = false;
     showCustomKeyValue: boolean = false;
 
     resourceApiData: PropertiesDefinitionsResourceApiData;
-    selectedItems: SelectData[];
-    activeElement: string;
+    selectItems: SelectData[];
+    activeElement: SelectData;
+    allNamespaces: string[];
 
     columns: Array<any> = [
-        {title: 'Name', name: 'name', sort: true},
-        {title: 'Type', name: 'type', sort: true},
+        { title: 'Name', name: 'name', sort: true },
+        { title: 'Type', name: 'type', sort: true },
     ];
 
     data: Array<any> = [
-        {name: 'test1', type: 'xsd:string'},
-        {name: 'a', type: 'xsd:string'},
-        {name: 'b', type: 'xsd:string'},
-        {name: 'c', type: 'xsd:string'},
-        {name: 'd', type: 'xsd:string'},
-        {name: 'test2', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test4', type: 'xsd:string'},
-        {name: 'test5', type: 'xsd:string'},
-        {name: 'test6', type: 'xsd:string'},
-        {name: 'test7', type: 'xsd:string'},
-        {name: 'test8', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:string'},
-        {name: 'test3', type: 'xsd:number'},
+        { name: 'test1', type: 'xsd:string' },
+        { name: 'a', type: 'xsd:string' },
+        { name: 'b', type: 'xsd:string' },
+        { name: 'c', type: 'xsd:string' },
+        { name: 'd', type: 'xsd:string' },
+        { name: 'test2', type: 'xsd:string' },
+        { name: 'test3', type: 'xsd:string' },
+        { name: 'test4', type: 'xsd:string' },
+        { name: 'test5', type: 'xsd:string' },
+        { name: 'test6', type: 'xsd:string' },
+        { name: 'test7', type: 'xsd:string' },
+        { name: 'test8', type: 'xsd:string' },
+        { name: 'test3', type: 'xsd:string' },
+        { name: 'test3', type: 'xsd:string' },
+        { name: 'test3', type: 'xsd:string' },
+        { name: 'test3', type: 'xsd:string' },
+        { name: 'test3', type: 'xsd:string' },
+        { name: 'test3', type: 'xsd:number' },
     ];
 
-    constructor(private route: ActivatedRoute,
-                private sharedData: InstanceService,
+    constructor(private sharedData: InstanceService,
                 private service: PropertiesDefinitionService,
                 private zone: NgZone) {
 
@@ -91,19 +92,12 @@ export class PropertiesDefinitionComponent implements OnInit {
     // endregion
 
     // region ########## Template Callbacks ##########
-    // region ########## Event Handler ##########
     /**
      * Called by the template, if property (none) is selected. It sends a DELETE request
      * to the backend to delete all properties definitions.
      */
     onNoneSelected(): void {
-        this.clearAdditionalHtmlElements();
-        this.loading = true;
-        this.service.deletePropertiesDefinitions()
-            .subscribe(
-                data => this.handleDelete(data),
-                error => this.handleError(error)
-            );
+        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
     }
 
     /**
@@ -111,12 +105,24 @@ export class PropertiesDefinitionComponent implements OnInit {
      * to the backend to get the data for the select dropdown.
      */
     onXmlElementSelected(): void {
+        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Element;
         this.service.getXsdElementDefinitions()
             .subscribe(
-                data => this.handleXmlElementDefinitions(data),
+                data => this.selectItems = data.xsdDefinitions,
                 error => this.handleError(error)
             );
-        this.forceSelectClear();
+
+        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        }
+
+        this.resourceApiData.propertiesDefinition.type = null;
+        this.resourceApiData.winerysPropertiesDefinition = null;
+
+        this.activeElement = new SelectData();
+        this.activeElement.text = this.resourceApiData.propertiesDefinition.element;
+
+//        this.forceSelectClear();
     }
 
     /**
@@ -124,12 +130,24 @@ export class PropertiesDefinitionComponent implements OnInit {
      * to the backend to get the data for the select dropdown.
      */
     onXmlTypeSelected(): void {
+        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Type;
         this.service.getXsdTypeDefinitions()
             .subscribe(
-                data => this.handleXmlTypeDefinitions(data),
+                data => this.selectItems = data.xsdDefinitions,
                 error => this.handleError(error)
             );
-        this.forceSelectClear();
+
+        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        }
+
+        this.resourceApiData.propertiesDefinition.element = null;
+        this.resourceApiData.winerysPropertiesDefinition = null;
+
+        this.activeElement = new SelectData();
+        this.activeElement.text = this.resourceApiData.propertiesDefinition.type;
+
+//        this.forceSelectClear();
     }
 
     /**
@@ -137,70 +155,56 @@ export class PropertiesDefinitionComponent implements OnInit {
      * a table to enter those pairs.
      */
     onCustomKeyValuePairSelected(): void {
-        this.clearAdditionalHtmlElements();
-        this.showCustomKeyValue = true;
-        // show table...
+        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Custom;
+        this.service.getAllNamespaces()
+            .subscribe(
+                data => this.allNamespaces = data,
+                error => this.handleError(error)
+            );
+
+        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition)) {
+            this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+        }
+
+        this.activeElement = new SelectData();
+        this.activeElement.text = this.resourceApiData.winerysPropertiesDefinition.namespace;
     }
 
     /**
      * Called by the template, if a property is selected in the select box .
      */
-    xmlValueSelected(event: any): void {
-        if (!this.xsdElement.includes(EMPTY)) {
-            this.xsdElement = event.text;
+    xmlValueSelected(event: SelectData): void {
+        if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Element) {
             this.resourceApiData.propertiesDefinition.element = event.text;
-        }
-        if (!this.xsdType.includes(EMPTY)) {
-            this.xsdType = event.text;
+        } else if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Type) {
             this.resourceApiData.propertiesDefinition.type = event.text;
         }
     }
 
-    getAllNamespaces(): void {
-        this.service.getAllNamespaces()
-            .subscribe(
-                (data) => {
-                    console.log(data);
-                    this.allNamespaces = data;
-                }
-            );
+    setWrapperName(event: any): void {
+        this.resourceApiData.winerysPropertiesDefinition.elementName = event.target.value;
     }
 
-    // endregion
-
-    // region ########## Get selected value methods ##########
-    /**
-     * Called by the template to evaluate, if (none) was initially selected.
-     */
-    isNoneSelected(): boolean {
-        return !this.isCustomSelected() && !this.isXmlElementSelected() && !this.isXmlTypeSelected();
+    wrapperNamespaceSelected(event: any): void {
+        this.resourceApiData.winerysPropertiesDefinition.namespace = event.text;
     }
 
-    /**
-     * Called by the template to evaluate, if XML Element was initially selected.
-     */
-    isXmlElementSelected(): boolean {
-        return !isNullOrUndefined(this.resourceApiData.propertiesDefinition)
-            && !isNullOrUndefined(this.resourceApiData.propertiesDefinition.element);
+    save(): void {
+        this.loading = true;
+        if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.None) {
+            this.service.deletePropertiesDefinitions()
+                .subscribe(
+                    data => this.handleDelete(data),
+                    error => this.handleError(error)
+                );
+        } else {
+            this.service.postProperteisDefinitions(this.resourceApiData)
+                .subscribe(
+                    data => this.handleSave(data),
+                    error => this.handleError(error)
+                );
+        }
     }
-
-    /**
-     * Called by the template to evaluate, if XML Type was initially selected.
-     */
-    isXmlTypeSelected(): boolean {
-        return !isNullOrUndefined(this.resourceApiData.propertiesDefinition)
-            && !isNullOrUndefined(this.resourceApiData.propertiesDefinition.type);
-    }
-
-    /**
-     * Called by the template to evaluate, if a custom key/value pair was initially selected.
-     */
-    isCustomSelected(): boolean {
-        return isNullOrUndefined(this.resourceApiData.propertiesDefinition)
-            && !isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition);
-    }
-
-    // endregion
     // endregion
 
     // region ########## Private Methods ##########
@@ -235,72 +239,36 @@ export class PropertiesDefinitionComponent implements OnInit {
     private handlePropertiesDefinitionData(data: PropertiesDefinitionsResourceApiData): void {
         this.resourceApiData = data;
 
-        if (!isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
-            this.xsdElement = isNullOrUndefined(this.resourceApiData.propertiesDefinition.element) ? EMPTY : this.resourceApiData.propertiesDefinition.element;
-            this.xsdType = isNullOrUndefined(this.resourceApiData.propertiesDefinition.type) ? EMPTY : this.resourceApiData.propertiesDefinition.type;
+        // because the selectedValue doesn't get set correctly do it here
+        switch (this.resourceApiData.selectedValue.toString()) {
+            case 'Element':
+                this.onXmlElementSelected();
+                break;
+            case 'Type':
+                this.onXmlTypeSelected();
+                break;
+            case 'Custom':
+                this.onCustomKeyValuePairSelected();
+                break;
+            default:
+                this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
         }
 
         this.handleSuccess(data);
     };
 
-    private handleXmlElementDefinitions(xsdDefinitionsApiData: XsdDefinitionsApiData): void {
-        this.selectedItems = xsdDefinitionsApiData.xsdDefinitions;
-
-        if (this.xsdElement.includes(EMPTY) || this.xsdElement.length === 0) {
-            this.clearAdditionalHtmlElements('element');
-        }
-
-        this.showSelect = true;
-    }
-
-    private handleXmlTypeDefinitions(xsdDefinitionsApiData: XsdDefinitionsApiData): void {
-        this.selectedItems = xsdDefinitionsApiData.xsdDefinitions;
-
-        if (this.xsdType.includes(EMPTY) || this.xsdType.length === 0) {
-            this.clearAdditionalHtmlElements('type');
-        }
-
-        this.showSelect = true;
+    private handleSave(data: Response) {
+        this.handleSuccess(data);
+        this.getPropertiesDefinitionsResourceApiData();
     }
 
     /**
-     * Sets loading to false and sets error notification.
+     * Sets loading to false and shows error notification.
      *
      * @param error
      */
     private handleError(error: any): void {
         console.log(error);
     }
-
-    /**
-     * Behaviour for selection change.
-     * Clears the additional HTML elements from the page.
-     *
-     * @param type
-     */
-    private clearAdditionalHtmlElements(type = '') {
-        this.showCustomKeyValue = false;
-
-        if (type.toLowerCase().includes('type')) {
-            this.xsdType = '';
-            this.xsdElement = EMPTY;
-        } else if (type.toLowerCase().includes('element')) {
-            this.xsdType = EMPTY;
-            this.xsdElement = '';
-        } else {
-            this.showSelect = false;
-            this.xsdElement = EMPTY;
-            this.xsdType = EMPTY;
-        }
-    }
-
-    /**
-     * Force angular to re-render the dom in order to clean the select.
-     */
-    private forceSelectClear(): void {
-        this.showSelect = false;
-        this.zone.run(() => console.log('rendering'));
-    }
-
     // endregion
 }

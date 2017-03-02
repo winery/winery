@@ -11,45 +11,62 @@
  *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 -->
-<div [class.hidden]="!loading">
+<div class="localLoader" [class.hidden]="!loading">
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading">
+    <div class="radioWrapper">
+        <div class="left">
+            <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.None">
+            <label for="nopropdef" class="cursorpointer" name="nopropdef">(none)</label>
+            <br>
+            <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.Element">
+            <label for="xsdelementradio" class="cursorpointer">XML element</label>
+            <a id="xsdelement" class="editable editable-click editable-empty">{{ xsdElement }}</a>
+            <br>
+            <input id="xsdtyperadio" type="radio" name="kind" (click)="onXmlTypeSelected()"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.Type">
+            <label for="xsdtyperadio" class="cursorpointer">XML type</label>
+            <a id="xsdtype" class="editable editable-click editable-empty">{{ xsdType }}</a>
+            <br>
+            <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.Custom">
+            <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
+        </div>
+        <div class="right">
+            <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+        </div>
+    </div>
     <div>
-        <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()" [checked]="isNoneSelected()">
-        <label for="nopropdef" class="cursorpointer" name="nopropdef">(none)</label>
-        <br>
-        <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()"
-               [checked]="isXmlElementSelected()">
-        <label for="xsdelementradio" class="cursorpointer">XML element</label>
-        <a id="xsdelement" class="editable editable-click editable-empty">{{ xsdElement }}</a>
-        <br>
-        <input id="xsdtyperadio" type="radio" name="kind" (click)="onXmlTypeSelected()" [checked]="isXmlTypeSelected()">
-        <label for="xsdtyperadio" class="cursorpointer">XML type</label>
-        <a id="xsdtype" class="editable editable-click editable-empty">{{ xsdType }}</a>
-        <br>
-        <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()"
-               [checked]="isCustomSelected()">
-        <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
-    </div>
-    <div *ngIf="showSelect">
-        <ng-select [items]="selectedItems" (selected)="xmlValueSelected($event)"></ng-select>
+        <div *ngIf="(resourceApiData.selectedValue === propertiesEnum.Element
+            || resourceApiData.selectedValue === propertiesEnum.Type)">
+            <ng-select [items]="selectItems" (selected)="xmlValueSelected($event)" [active]="[activeElement]"></ng-select>
+        </div>
+
+        <div *ngIf="resourceApiData.selectedValue === propertiesEnum.Custom">
+            <tabset>
+                <tab heading="Properties">
+                    <table-component
+                        [data]="data"
+                        [columns]="columns"
+                        (cellSelected)="onCellSelected($event)">
+                    </table-component>
+                </tab>
+                <tab heading="Wrapper">
+                    <div class="wrapperTab">
+                        <label for="wrapperName">Name of Wrapper Element</label><br>
+                        <input id="wrapperName" class="form-control" (input)="setWrapperName($event)" [value]="resourceApiData.winerysPropertiesDefinition.elementName">
+                    </div>
+                    <div class="wrapperTabButtom">
+                        <label>Namespace</label>
+                        <ng-select id="namespaceSelector" [items]="allNamespaces" (selected)="wrapperNamespaceSelected($event)" [active]="[activeElement]"></ng-select>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
     </div>
 
-    <div *ngIf="showCustomKeyValue">
-        <tabset>
-            <tab heading="Properties">
-                <table-component
-                    [data]="data"
-                    [columns]="columns"
-                    (cellSelected)="onCellSelected($event)" )>
-
-                </table-component>
-            </tab>
-            <tab heading="Wrapper" (select)="getAllNamespaces()">
-                <ng-select [items]="allNamespaces" (selected)="wrapperNamespaceSelected($event)" [active]="activeNamespace"></ng-select>
-            </tab>
-        </tabset>
-    </div>
 </div>
 

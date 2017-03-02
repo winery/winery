@@ -10,24 +10,29 @@
  *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 
-export interface PropertiesDefinitionKVList {
-    key: string;
-    type: string;
+export enum PropertiesDefinitionEnum {
+    Custom, Element, Type, None
 }
 
-export interface PropertiesDefinition {
-    element: string;
-    type: string;
+export class PropertiesDefinitionKVList {
+    key: string = null;
+    type: string = null;
 }
 
-export interface WinerysPropertiesDefinition {
-    namespace: string;
-    elementName: string;
-    propertiesDefinitionKVList: PropertiesDefinitionKVList[];
-    isDerivedFromXSD: boolean;
+export class PropertiesDefinition {
+    element: string = null;
+    type: string = null;
+}
+
+export class WinerysPropertiesDefinition {
+    namespace: string = null;
+    elementName: string = null;
+    propertiesDefinitionKVList: PropertiesDefinitionKVList[] = [];
+    isDerivedFromXSD: boolean = false;
 }
 
 export interface PropertiesDefinitionsResourceApiData {
     propertiesDefinition: PropertiesDefinition;
     winerysPropertiesDefinition: WinerysPropertiesDefinition;
+    selectedValue: PropertiesDefinitionEnum;
 }

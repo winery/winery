@@ -77,6 +77,13 @@ export class PropertiesDefinitionService {
         this.path = path;
     }
 
+    postProperteisDefinitions(resourceApiData: PropertiesDefinitionsResourceApiData): Observable<Response> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.post(backendBaseUri + this.path + 'propertiesdefinition/', JSON.stringify(resourceApiData), options);
+    }
+
     /**
      * Private method for DRY principle. It is used to get all kinds of data
      * for the specified sub path.
