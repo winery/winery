@@ -14,14 +14,20 @@
 
 
 <div>
-    <div>
+    <div style="margin-top: 1rem">
         <label>Search:</label>
         <input *ngIf="config.filtering" placeholder="Filter all columns"
                [ngTableFiltering]="config.filtering"
                class="form-control"
                (tableChanged)="onChangeTable(config)"/>
-        <button (click)="onRemoveClick()">Remove</button>
-        <button (click)="onAddClick()">Add</button>
+        <div style="margin: 1rem 0rem 1rem 1rem;
+                    height: auto;
+                    display: inline-block;
+                    float: right"
+                    >
+            <button class="rightbutton btn btn-danger btn-xs" (click)="onRemoveClick()">Remove</button>
+            <button class="rightbutton btn btn-primary btn-xs" (click)="onAddClick()">Add</button>
+        </div>
     </div>
 </div>
 <div>
@@ -41,4 +47,7 @@
                 (pageChanged)="onChangeTable(config, $event)"
                 (numPages)="numPages = $event">
     </pagination>
+    <div style="float: right">
+        
+    </div>
 </div>

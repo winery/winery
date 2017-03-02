@@ -144,7 +144,7 @@ export class TableComponent implements OnInit {
     }
 
     onRemoveClick() {
-        this.removeBtnClicked.emit();
+        this.removeBtnClicked.emit(this.currentSelected);
     }
 
     constructor() {
