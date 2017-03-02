@@ -43,12 +43,16 @@ export class PropertiesDefinitionComponent implements OnInit {
     activeElement: string;
 
     columns: Array<any> = [
-        {title: 'Name', name: 'name'},
-        {title: 'Type', name: 'type'},
+        {title: 'Name', name: 'name', sort: true},
+        {title: 'Type', name: 'type', sort: true},
     ];
 
     data: Array<any> = [
         {name: 'test1', type: 'xsd:string'},
+        {name: 'a', type: 'xsd:string'},
+        {name: 'b', type: 'xsd:string'},
+        {name: 'c', type: 'xsd:string'},
+        {name: 'd', type: 'xsd:string'},
         {name: 'test2', type: 'xsd:string'},
         {name: 'test3', type: 'xsd:string'},
         {name: 'test4', type: 'xsd:string'},

@@ -39,13 +39,17 @@
     <div *ngIf="showCustomKeyValue">
         <tabset>
             <tab heading="Properties">
-                <table-component [data]="data" [columns]="columns" (cellSelected)="onCellSelected($event)" )></table-component>
+                <table-component
+                    [data]="data"
+                    [columns]="columns"
+                    (cellSelected)="onCellSelected($event)" )>
+
+                </table-component>
             </tab>
             <tab heading="Wrapper" (select)="getAllNamespaces()">
                 <ng-select [items]="allNamespaces" (selected)="wrapperNamespaceSelected($event)" [active]="activeNamespace"></ng-select>
             </tab>
         </tabset>
     </div>
-
 </div>
 

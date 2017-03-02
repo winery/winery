@@ -1,3 +1,15 @@
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Niko Stadelmaier - initial API and implementation
+ */
+
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
@@ -8,25 +20,29 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class TableComponent implements OnInit {
 
     public page: number = 1;
-    @Input() public itemsPerPage: number = 5;
-    @Input() public maxSize: number = 5;
-    @Input() public numPages: number = 1;
-    @Input() public length: number = 0;
+    @Input() itemsPerPage: number = 5;
+    @Input() maxSize: number = 5;
+    @Input() numPages: number = 1;
+    @Input() length: number = 0;
 
     public rows: Array<any> = [];
 
-    @Input() public columns: Array<any>;
+    @Input() columns: Array<any>;
     @Input() filterString: string;
 
-    @Input() public config: any = {
+    @Input() config: any = {
         paging: true,
-        sorting: {columns: this.columns},
+        sorting: {columns: this.columns || true},
         filtering: {filterString: ''},
         className: ['table-striped', 'table-bordered']
     };
 
     @Input() data: Array<any> = [];
+    currentSelected: any = null;
+
     @Output() cellSelected = new EventEmitter <any>();
+    @Output() removeBtnClicked = new EventEmitter <any>();
+    @Output() addBtnClicked = new EventEmitter <any>();
 
     // region #######Table events and functions######
 
@@ -120,6 +136,15 @@ export class TableComponent implements OnInit {
 
     onCellClick(data: any) {
         this.cellSelected.emit(data);
+        this.currentSelected = data.row;
+    }
+
+    onAddClick() {
+        this.addBtnClicked.emit();
+    }
+
+    onRemoveClick() {
+        this.removeBtnClicked.emit();
     }
 
     constructor() {
@@ -127,6 +152,8 @@ export class TableComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.config.sorting.columns = this.columns;
+        this.length = this.data.length;
         this.onChangeTable(this.config);
     }
 
