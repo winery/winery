@@ -7,19 +7,46 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Nicole Keppler - initial API and implementation
  */
 
 import { Component, OnInit } from '@angular/core';
+import { ImplementationService } from './implementation.service';
+import { ImplementationAPIData } from './implementationAPIData';
+import { InstanceService } from '../instance.service';
 
 @Component({
     selector: 'winery-instance-implementations',
-    templateUrl: 'implementations.component.html'
+    templateUrl: 'implementations.component.html',
+    providers: [ ImplementationService ],
 })
 export class ImplementationsComponent implements OnInit {
-    constructor() {
+    implementationData: ImplementationAPIData;
+    loading: boolean = true;
+
+    constructor(
+        private sharedData: InstanceService,
+        private service: ImplementationService,
+    ) {
+        this.implementationData.name = 'name';
+        this.implementationData.namespace = 'namespace';
     }
 
     ngOnInit() {
+        this.service.getImplementationData(this.sharedData.path)
+            .subscribe(
+                data => this.handleData(data),
+                error => this.handleError(error)
+            );
+    }
+
+    private handleData( impl: ImplementationAPIData){
+        this.implementationData = impl;
+        this.loading = false;
+        console.log(this.implementationData);
+    }
+    private handleError(error: any): void {
+        this.loading = false;
+        console.log(error);
     }
 }
