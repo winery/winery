@@ -77,7 +77,7 @@ export class EditXMLComponent implements OnInit {
     private handleXmlData(xml: string) {
         this.orioneditor.setText(xml);
 
-        if (!isNullOrUndefined(this.xmlData)) {
+        if (!isNullOrUndefined(xml)) {
             this.loading = false;
         }
     }

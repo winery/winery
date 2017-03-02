@@ -12,7 +12,9 @@
  *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
 -->
-
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
 <div id = {{id}}>
     <pre  class="editor" [attr.data-editor-lang]="dataEditorLang" [style.height.px]="height"></pre>
     <button class="btn btn-default" type="button" (click)="saveXmlData()">Save</button>
