@@ -15,12 +15,13 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 @Component({
 
     selector: 'table-component',
-    templateUrl: 'table.component.html'
+    templateUrl: 'table.component.html',
+    styleUrls: ['table.component.css']
 })
 export class TableComponent implements OnInit {
 
     public page: number = 1;
-    @Input() itemsPerPage: number = 5;
+    @Input() itemsPerPage: number = 10;
     @Input() maxSize: number = 5;
     @Input() numPages: number = 1;
     @Input() length: number = 0;
@@ -71,7 +72,7 @@ export class TableComponent implements OnInit {
         if (!config.sorting) {
             return data;
         }
-        console.log('changeSort:config', config);
+        // console.log('changeSort:config', config);
         let columns = this.config.sorting.columns || [];
         let columnName: string = void 0;
         let sort: string = void 0;
@@ -139,12 +140,20 @@ export class TableComponent implements OnInit {
         this.currentSelected = data.row;
     }
 
-    onAddClick() {
+    onAddClick($event: Event) {
+        $event.stopPropagation();
         this.addBtnClicked.emit();
     }
 
-    onRemoveClick() {
-        this.removeBtnClicked.emit();
+    onRemoveClick($event: Event) {
+        $event.stopPropagation();
+        this.removeBtnClicked.emit(this.currentSelected);
+    }
+
+    onItemsPerPageChange(event: Event, selectElement: any) {
+        event.stopPropagation();
+        this.itemsPerPage = selectElement.value;
+        this.onChangeTable(this.config);
     }
 
     constructor() {

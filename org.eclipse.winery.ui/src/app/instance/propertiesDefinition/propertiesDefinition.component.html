@@ -51,7 +51,10 @@
                     <table-component
                         [data]="data"
                         [columns]="columns"
-                        (cellSelected)="onCellSelected($event)">
+                        (cellSelected)="onCellSelected($event)"
+                        [itemsPerPage]="10"
+                        (removeBtnClicked)="onRemoveClick($event)"
+                        (addBtnClicked)="onAddClick($event)">
                     </table-component>
                 </tab>
                 <tab heading="Wrapper">
@@ -67,6 +70,4 @@
             </tabset>
         </div>
     </div>
-
 </div>
-
