@@ -15,17 +15,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.repository.resources.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
-import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
-import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypesResource;
-import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
-import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
-import org.eclipse.winery.repository.resources.interfaces.InterfaceResource;
 
 /**
  * ImplementationArtifact instead of TImplementationArtifact has to be used
