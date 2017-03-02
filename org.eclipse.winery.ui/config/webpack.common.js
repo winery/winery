@@ -31,9 +31,9 @@ module.exports = {
         chunkFilename: '[id].chunk.js',
     },
 
-//    externals: [
-//        require('webpack-require-http')
-//    ],
+    externals: [
+       require('webpack-require-http')
+    ],
 
     /*
      * http://webpack.github.io/docs/configuration.html#resolve

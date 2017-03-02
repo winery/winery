@@ -25,16 +25,13 @@ declare var requirejs: any;
 })
 export class EditXMLComponent implements OnInit {
     id: string = 'XML';
-    styleAttr: any;
     dataEditorLang: any;
 
     // Set height to 300 px
-    height = 300;
+    height = 500;
 
     loading: boolean = true;
     xmlData: string;
-    window: any;
-
     orioneditor: any = undefined;
 
 
@@ -43,22 +40,29 @@ export class EditXMLComponent implements OnInit {
         private service: EditXMLService,
     ) {
         this.dataEditorLang = 'application/xml';
-        // this.styleAttr = null;
     }
 
 
     ngOnInit() {
         Promise.all([
-            require("http://www.eclipse.org/orion/editor/releases/current/built-editor.min.js"),
-            require("http://eclipse.org/orion/editor/releases/current/built-editor.css")
+            require('http://www.eclipse.org/orion/editor/releases/current/built-editor.min.js'),
+            require('http://eclipse.org/orion/editor/releases/current/built-editor.css')
         ]).then(function() {
-            requirejs(["orion/editor/edit"], function(edit: any) {
-                this.orioneditor = edit({className: "editor", parent:"xml"})[0];
+            requirejs(['orion/editor/edit'], function(edit: any) {
+                this.orioneditor = edit({className: 'editor', parent: 'xml'})[0];
                 this.receiveXmlData();
             }.bind(this));
         }.bind(this));
 
         this.service.setPath(this.sharedData.path);
+    }
+
+    saveXmlData(): void {
+        this.service.saveXmlData(this.orioneditor.getText())
+            .subscribe (
+                data => this.handlePutResponse(data),
+                error => this.handleError(error)
+            );
     }
 
     private receiveXmlData() {
@@ -72,7 +76,6 @@ export class EditXMLComponent implements OnInit {
 
     private handleXmlData(xml: string) {
         this.orioneditor.setText(xml);
-        //this.xmlData = xml;
 
         if (!isNullOrUndefined(this.xmlData)) {
             this.loading = false;
@@ -82,17 +85,6 @@ export class EditXMLComponent implements OnInit {
     private handleError(error: any): void {
         this.loading = false;
         console.log(error);
-    }
-
-     saveXmlData(): void {
-
-        console.log("save button clicked");
-
-        this.service.saveXmlData(this.orioneditor.getText())
-            .subscribe (
-                data => this.handlePutResponse(data),
-                error => this.handleError(error)
-        );
     }
 
     private handlePutResponse(response: any) {
