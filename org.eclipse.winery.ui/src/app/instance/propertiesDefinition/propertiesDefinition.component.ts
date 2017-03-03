@@ -45,29 +45,8 @@ export class PropertiesDefinitionComponent implements OnInit {
     allNamespaces: string[];
 
     columns: Array<any> = [
-        { title: 'Name', name: 'name', sort: true },
+        { title: 'Name', name: 'key', sort: true },
         { title: 'Type', name: 'type', sort: true },
-    ];
-
-    data: Array<any> = [
-        { name: 'test1', type: 'xsd:string' },
-        { name: 'a', type: 'xsd:string' },
-        { name: 'b', type: 'xsd:string' },
-        { name: 'c', type: 'xsd:string' },
-        { name: 'd', type: 'xsd:string' },
-        { name: 'test2', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test4', type: 'xsd:string' },
-        { name: 'test5', type: 'xsd:string' },
-        { name: 'test6', type: 'xsd:string' },
-        { name: 'test7', type: 'xsd:string' },
-        { name: 'test8', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:string' },
-        { name: 'test3', type: 'xsd:number' },
     ];
 
     constructor(private sharedData: InstanceService,
@@ -238,9 +217,9 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     private handlePropertiesDefinitionData(data: PropertiesDefinitionsResourceApiData): void {
         this.resourceApiData = data;
-
+        console.log('resourceApiDAta', this.resourceApiData);
         // because the selectedValue doesn't get set correctly do it here
-        switch (this.resourceApiData.selectedValue.toString()) {
+        switch (isNullOrUndefined(this.resourceApiData.selectedValue) ? '' : this.resourceApiData.selectedValue.toString()) {
             case 'Element':
                 this.onXmlElementSelected();
                 break;
