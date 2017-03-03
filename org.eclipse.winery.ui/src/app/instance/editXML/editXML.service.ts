@@ -37,13 +37,11 @@ export class EditXMLService {
         this.path = path;
     }
 
-    // TODO: change to save xml data
     saveXmlData(xmlData: String): Observable<any> {
         let headers = new Headers({
             'Content-Type': 'text/xml',
             'Accept': '' });
         let options = new RequestOptions({ headers: headers });
-        // create a copy to not send unnecessary data to the server
 
         return this.http.put(backendBaseUri + this.path, xmlData, options);
     }
