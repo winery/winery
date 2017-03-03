@@ -144,6 +144,10 @@ export class PropertiesDefinitionComponent implements OnInit {
         if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition)) {
             this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         }
+        // The key/value pair list my be null
+        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList)) {
+            this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList = [];
+        }
 
         this.activeElement = new SelectData();
         this.activeElement.text = this.resourceApiData.winerysPropertiesDefinition.namespace;
@@ -162,10 +166,6 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     setWrapperName(event: any): void {
         this.resourceApiData.winerysPropertiesDefinition.elementName = event.target.value;
-    }
-
-    wrapperNamespaceSelected(event: any): void {
-        this.resourceApiData.winerysPropertiesDefinition.namespace = event.text;
     }
 
     save(): void {

@@ -63,8 +63,11 @@
                         <input id="wrapperName" class="form-control" (input)="setWrapperName($event)" [value]="resourceApiData.winerysPropertiesDefinition.elementName">
                     </div>
                     <div class="wrapperTabButtom">
-                        <label>Namespace</label>
-                        <ng-select id="namespaceSelector" [items]="allNamespaces" (selected)="wrapperNamespaceSelected($event)" [active]="[activeElement]"></ng-select>
+                        <label for="wrapperNamespace">Namespace</label>
+                        <input id="wrapperNamespace"
+                               class="form-control"
+                               [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"
+                               [typeahead]="allNamespaces">
                     </div>
                 </tab>
             </tabset>

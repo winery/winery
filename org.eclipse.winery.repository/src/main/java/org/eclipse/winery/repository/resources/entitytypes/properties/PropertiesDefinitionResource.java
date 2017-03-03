@@ -22,6 +22,7 @@ import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
+import org.eclipse.winery.repository.resources.admin.NamespacesResource;
 import org.eclipse.winery.repository.resources.apiData.PropertiesDefinitionResourceApiData;
 import org.eclipse.winery.repository.resources.apiData.XsdDefinitionsApiData;
 import org.slf4j.Logger;
@@ -149,7 +150,10 @@ public class PropertiesDefinitionResource {
 
 			// create winery properties definition and persist it
 			ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
-
+			String namespace = data.winerysPropertiesDefinition.getNamespace();
+			if (!NamespacesResource.INSTANCE.getIsPrefixKnownForNamespace(namespace)) {
+				NamespacesResource.INSTANCE.addNamespace(namespace);
+			}
 			return BackendUtils.persist(this.parentRes);
 		}
 
