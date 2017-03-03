@@ -23,11 +23,9 @@ export class DocumentationService {
     }
 
     getDocumentationData(path: string): Observable<string> {
-        let headers = new Headers({ 'Accept': 'text/plain' });
+        let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         this.path = path;
-        console.log('path');
-        console.log(this.path);
         return this.http.get(backendBaseUri + decodeURIComponent(path + '/'), options)
             .map(res => res.text());
     }
@@ -35,6 +33,6 @@ export class DocumentationService {
     saveDocumentationData(documentationData: string): Observable<any> {
         let headers = new Headers({'Content-Type': 'text/plain', 'Accept': 'text/plain'});
         let options = new RequestOptions({headers: headers});
-        return this.http.put(backendBaseUri + decodeURIComponent(this.path), documentationData, options);
+        return this.http.put(backendBaseUri + decodeURIComponent(this.path + '/'), documentationData, options);
     }
 }
