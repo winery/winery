@@ -534,6 +534,16 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		return Response.ok().entity(viewable).build();
 	}
 
+
+	@GET
+	@Path("xml/")
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getXMLasString() {
+		return Response.ok().entity(this.getDefinitionsAsXMLString()).build();
+	}
+
+
+
 	@Path("documentation/")
 	public DocumentationResource getDocumentationsResource() {
 		return new DocumentationResource(this, this.getElement().getDocumentation());
