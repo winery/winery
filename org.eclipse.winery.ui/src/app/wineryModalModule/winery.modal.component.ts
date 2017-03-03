@@ -2,8 +2,8 @@ import {
     Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit, ContentChild,
     AfterContentInit
 } from '@angular/core';
-import { WineryModalHeaderComponent } from './winery.modal.header.component';
-import { WineryModalFooterComponent } from './winery.modal.footer.component';
+import {WineryModalHeaderComponent} from './winery.modal.header.component';
+import {WineryModalFooterComponent} from './winery.modal.footer.component';
 
 @Component({
     selector: 'winery-modal-component',
@@ -14,7 +14,7 @@ import { WineryModalFooterComponent } from './winery.modal.footer.component';
         'tabindex': '-1'
     }
 })
-export class WineryModalComponent implements OnInit, AfterViewInit, AfterContentInit {
+export class WineryModalComponent implements AfterViewInit, AfterContentInit {
 
 
     @Input() modalRef: any;
@@ -27,37 +27,21 @@ export class WineryModalComponent implements OnInit, AfterViewInit, AfterContent
     private overrideSize: string = null;
     private cssClass: string = '';
 
-    constructor() {
-
-    }
-
-    ngOnInit() {
-
-    }
-
     ngAfterContentInit(): void {
-        console.log(this.headerContent);
-        console.log(this.footerContent);
 
         this.footerContent.modalRef = this.modalRef;
     }
 
     ngAfterViewInit(): void {
-        console.log(this.modalRef.config);
         if (!this.backdrop) {
             this.modalRef.config.backdrop = 'static';
-        }else {
+        } else {
             this.modalRef.config.backdrop = this.backdrop;
         }
 
         this.modalRef.config.keyboard = this.keyboard;
-        console.log(this.modalRef.config);
-        console.log('size= ' + this.size);
 
         if (ModalSize.validSize(this.size)) this.overrideSize = this.size;
-
-        console.log('size= ' + this.size);
-
     }
 
     getCssClasses(): string {

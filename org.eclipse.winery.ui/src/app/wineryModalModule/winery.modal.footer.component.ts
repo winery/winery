@@ -4,7 +4,7 @@ import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
     selector: 'modal-footer',
     templateUrl: 'winery.modal.footer.component.html'
 })
-export class WineryModalFooterComponent implements OnInit {
+export class WineryModalFooterComponent {
 
     @Input('show-default-buttons') showDefaultButtons: boolean = true;
     @Input('close-button-label') closeButtonLabe: string = 'Cancel';
@@ -12,12 +12,6 @@ export class WineryModalFooterComponent implements OnInit {
     @Input('modal-ref') modalRef: any;
     @Output() onAdd = new EventEmitter<any>();
     @Output() onCancel = new EventEmitter<any>();
-
-    constructor() {
-    }
-
-    ngOnInit() {
-    }
 
     add() {
         this.onAdd.emit();

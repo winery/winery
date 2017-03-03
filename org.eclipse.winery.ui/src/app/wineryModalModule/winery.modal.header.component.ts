@@ -4,12 +4,4 @@ import { Component, OnInit, Input } from '@angular/core';
     selector: 'modal-header',
     templateUrl: 'winery.modal.header.component.html'
 })
-export class WineryModalHeaderComponent implements OnInit {
-
-
-    constructor() {
-    }
-
-    ngOnInit() {
-    }
-}
+export class WineryModalHeaderComponent {}
