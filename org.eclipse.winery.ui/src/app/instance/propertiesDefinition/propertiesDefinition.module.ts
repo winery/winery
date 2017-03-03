@@ -19,6 +19,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { SelectModule } from 'ng2-select';
 import { TableModule } from '../../tableModule/table.module';
 import { TabsModule, TypeaheadModule, ModalModule } from 'ng2-bootstrap';
+import { DuplicateValidator } from './forbiddenNames.directive';
+import { CommonModule } from '@angular/common';
+
 
 
 @NgModule({
@@ -30,10 +33,14 @@ import { TabsModule, TypeaheadModule, ModalModule } from 'ng2-bootstrap';
         BrowserModule,
         FormsModule,
         LoaderModule,
-        TypeaheadModule.forRoot()
+        TypeaheadModule.forRoot(),
+        CommonModule
     ],
     exports: [],
-    declarations: [PropertiesDefinitionComponent],
+    declarations: [
+        PropertiesDefinitionComponent,
+        DuplicateValidator
+    ],
     providers: [],
 })
 export class PropertiesDefinitionModule {

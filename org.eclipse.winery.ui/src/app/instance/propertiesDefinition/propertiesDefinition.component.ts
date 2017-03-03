@@ -9,18 +9,19 @@
  * Contributors:
  *     Lukas Harzenetter, Niko Stadelmaier- initial API and implementation
  */
-import { Component, OnInit, NgZone, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, ElementRef, KeyValueChangeRecord } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
     PropertiesDefinition,
     PropertiesDefinitionEnum,
     PropertiesDefinitionsResourceApiData,
-    WinerysPropertiesDefinition,
+    WinerysPropertiesDefinition, PropertiesDefinitionKVList,
 } from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
 import { Response } from '@angular/http';
+import { NgForm } from '@angular/forms';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
@@ -36,8 +37,6 @@ export class PropertiesDefinitionComponent implements OnInit {
 
     propertiesEnum = PropertiesDefinitionEnum;
     loading: boolean = true;
-    showSelect: boolean = false;
-    showCustomKeyValue: boolean = false;
 
     resourceApiData: PropertiesDefinitionsResourceApiData;
     selectItems: SelectData[];
@@ -49,18 +48,13 @@ export class PropertiesDefinitionComponent implements OnInit {
         {title: 'Name', name: 'key', sort: true},
         {title: 'Type', name: 'type', sort: true},
     ];
+    newProperty: PropertiesDefinitionKVList = new PropertiesDefinitionKVList();
     @ViewChild('deletePropModal') deletePropModalEl: any;
 
+    @ViewChild('staticModal') addPropModal: any;
+
     constructor(private sharedData: InstanceService,
-                private service: PropertiesDefinitionService,
-                private zone: NgZone) {
-
-    }
-
-    onCellSelected(data: any) {
-        if (isNullOrUndefined(data)) {
-            this.selectedCell = data;
-        }
+                private service: PropertiesDefinitionService) {
     }
 
     // region ########## Angular Callbacks ##########
@@ -75,31 +69,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     // endregion
 
     // region ########## Template Callbacks ##########
-
-    onRemoveClick(data: any) {
-        if (isNullOrUndefined(data)) {
-            return;
-        } else {
-            this.elementToRemove = data;
-            this.elementToRemove = data;
-            this.deletePropModalEl.show();
-        }
-    }
-
-    removeConfirmed() {
-        this.deletePropModalEl.hide();
-        this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
-        this.elementToRemove = null;
-    }
-
-    deleteItemFromPropertyDefinitionKvList(itemToDelete: any) {
-        let list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].key === itemToDelete.key) {
-                list.splice(i, 1);
-            }
-        }
-    }
 
     /**
      * Called by the template, if property (none) is selected. It sends a DELETE request
@@ -215,8 +184,64 @@ export class PropertiesDefinitionComponent implements OnInit {
         }
     }
 
+    /**
+     * adds a property to the table and model
+     * @param propType
+     * @param propName
+     */
     addProperty(propType: string, propName: string) {
         this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push({key: propName, type: propType});
+        this.addPropModal.hide();
+    }
+
+    /**
+     * handler for clicks on the add button
+     */
+    onAddClick() {
+        this.newProperty = new PropertiesDefinitionKVList();
+        this.addPropModal.show();
+    }
+
+    /**
+     * handler for clicks on a table cell/row
+     * @param data
+     */
+    onCellSelected(data: any) {
+        if (isNullOrUndefined(data)) {
+            this.selectedCell = data;
+        }
+    }
+
+    /**
+     * handler for clicks on remove button
+     * @param data
+     */
+    onRemoveClick(data: any) {
+        if (isNullOrUndefined(data)) {
+            return;
+        } else {
+            this.elementToRemove = data;
+            this.deletePropModalEl.show();
+        }
+    }
+
+    removeConfirmed() {
+        this.deletePropModalEl.hide();
+        this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
+        this.elementToRemove = null;
+    }
+
+    /**
+     * deletes a property from the table and model
+     * @param itemToDelete
+     */
+    deleteItemFromPropertyDefinitionKvList(itemToDelete: any) {
+        let list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].key === itemToDelete.key) {
+                list.splice(i, 1);
+            }
+        }
     }
 
     // endregion
@@ -284,5 +309,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     private handleError(error: any): void {
         console.log(error);
     }
+
     // endregion
 }

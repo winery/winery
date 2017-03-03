@@ -54,13 +54,16 @@
                         (cellSelected)="onCellSelected($event)"
                         [itemsPerPage]="10"
                         (removeBtnClicked)="onRemoveClick($event)"
-                        (addBtnClicked)="staticModal.show()">
+                        (addBtnClicked)="onAddClick();">
                     </table-component>
                 </tab>
                 <tab heading="Wrapper">
                     <div class="wrapperTab">
                         <label for="wrapperName">Name of Wrapper Element</label><br>
-                        <input id="wrapperName" class="form-control" (input)="setWrapperName($event)" [value]="resourceApiData.winerysPropertiesDefinition.elementName">
+                        <input id="wrapperName"
+                               class="form-control"
+                               (input)="setWrapperName($event)"
+                               [value]="resourceApiData.winerysPropertiesDefinition.elementName">
                     </div>
                     <div class="wrapperTabButtom">
                         <label for="wrapperNamespace">Namespace</label>
@@ -85,10 +88,27 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="addPropertyForm">
+                <form #addPropertyFrom="ngForm" id="addPropertyForm">
                     <div class="form-group">
-                        <label class="control-label" for="propName">Name</label>
-                        <input #propName name="key" class="form-control" id="propName" type="text" />
+                        <label class="control-label" for="key">Name</label>
+                        <input #propName="ngModel"
+                               id="key"
+                               class="form-control"
+                               type="text"
+                               name="key"
+                               required
+                               [(ngModel)]="newProperty.key"
+                               [duplicateValidator]="resourceApiData?.winerysPropertiesDefinition?.propertyDefinitionKVList"/>
+
+                        <div *ngIf="propName.errors && (propName.touched)"
+                             class="alert alert-danger">
+                            <div [hidden]="!propName.errors.duplicateValidator">
+                                No duplicates allowed!
+                            </div>
+                            <div [hidden]="!propName.errors.required">
+                                Name is required
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -105,7 +125,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" (click)="staticModal.hide()">Cancel</button>
-                <button type="button" class="btn btn-primary" (click)="addProperty(selectProperty.value, propName.value); staticModal.hide()">Add</button>
+                <button type="button" [disabled]="!addPropertyFrom?.form.valid" class="btn btn-primary"
+                        (click)="addProperty(selectProperty.value, propName.value); staticModal.hide()">Add</button>
             </div>
         </div>
     </div>
