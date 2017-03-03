@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,6 +9,7 @@
  * Contributors:
  *     Lukas Balzer, Nicole Keppler - initial API and implementation
  */
+
 import { Component, OnInit } from '@angular/core';
 import { DocumentationService } from './documentation.service';
 import { InstanceService } from '../instance.service';
