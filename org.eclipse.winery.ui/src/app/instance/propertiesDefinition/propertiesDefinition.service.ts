@@ -34,7 +34,7 @@ export class PropertiesDefinitionService {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.delete(backendBaseUri + this.path + 'propertiesdefinition/', options);
+        return this.http.delete(backendBaseUri + this.path + '/propertiesdefinition', options);
     }
 
     /**
@@ -43,7 +43,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<PropertiesDefinitionsResourceApiData>}
      */
     getPropertiesDefinitionsData(): Observable<PropertiesDefinitionsResourceApiData> {
-        return this.sendJsonRequest('propertiesdefinition/');
+        return this.sendJsonRequest('/propertiesdefinition');
     }
 
     /**
@@ -52,7 +52,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<XsdDefinitionsApiData>}
      */
     getXsdElementDefinitions(): Observable<XsdDefinitionsApiData> {
-        return this.sendJsonRequest('propertiesdefinition/element');
+        return this.sendJsonRequest('/propertiesdefinition/element');
     }
 
     /**
@@ -61,7 +61,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<XsdDefinitionsApiData>}
      */
     getXsdTypeDefinitions(): Observable<XsdDefinitionsApiData> {
-        return this.sendJsonRequest('propertiesdefinition/type');
+        return this.sendJsonRequest('/propertiesdefinition/type');
     }
 
     /**

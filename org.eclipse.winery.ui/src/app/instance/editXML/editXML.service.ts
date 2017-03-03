@@ -29,7 +29,7 @@ export class EditXMLService {
         let headers = new Headers({ 'Accept': 'application/xml' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + this.path + 'xml/', options)
+        return this.http.get(backendBaseUri + this.path + '/xml/', options)
             .map(res => res.text());
     }
 
@@ -43,6 +43,6 @@ export class EditXMLService {
             'Accept': '' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.put(backendBaseUri + this.path, xmlData, options);
+        return this.http.put(backendBaseUri + this.path + '/', xmlData, options);
     }
 }

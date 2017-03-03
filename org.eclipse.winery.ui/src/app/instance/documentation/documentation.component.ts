@@ -36,7 +36,8 @@ export class DocumentationComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.service.getDocumentationData(this.sharedData.path)
+        this.service.setPath(this.sharedData.path);
+        this.service.getDocumentationData()
             .subscribe(
                 data => this.handleData(data),
                 error => this.handleError(error)

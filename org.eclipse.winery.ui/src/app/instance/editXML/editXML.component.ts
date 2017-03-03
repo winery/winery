@@ -63,6 +63,7 @@ export class EditXMLComponent implements OnInit {
                 data => this.handlePutResponse(data),
                 error => this.handleError(error)
             );
+        this.loading = true;
     }
 
     private receiveXmlData() {
@@ -75,11 +76,8 @@ export class EditXMLComponent implements OnInit {
     }
 
     private handleXmlData(xml: string) {
+        this.loading = false;
         this.orioneditor.setText(xml);
-
-        if (!isNullOrUndefined(xml)) {
-            this.loading = false;
-        }
     }
 
     private handleError(error: any): void {

@@ -22,17 +22,22 @@ export class DocumentationService {
     constructor(private http: Http) {
     }
 
-    getDocumentationData(path: string): Observable<string> {
+    setPath(path: string): void {
+        this.path = path + '/documentation';
+        console.log(this.path);
+    }
+
+    getDocumentationData(): Observable<string> {
         let headers = new Headers({ 'Accept': 'text/plain' });
         let options = new RequestOptions({ headers: headers });
-        this.path = path;
-        return this.http.get(backendBaseUri + decodeURIComponent(path + '/'), options)
+
+        return this.http.get(backendBaseUri + this.path, options)
             .map(res => res.text());
     }
 
     saveDocumentationData(documentationData: string): Observable<any> {
         let headers = new Headers({'Content-Type': 'text/plain', 'Accept': 'text/plain'});
         let options = new RequestOptions({headers: headers});
-        return this.http.put(backendBaseUri + decodeURIComponent(this.path + '/'), documentationData, options);
+        return this.http.put(backendBaseUri + this.path + '/', documentationData, options);
     }
 }

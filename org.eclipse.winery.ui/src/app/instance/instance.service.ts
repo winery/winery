@@ -90,6 +90,6 @@ export class InstanceService {
         this.selectedResource = selectedResource;
         this.path = '/' + this.selectedResource.toLowerCase() + 's/'
             + encodeURIComponent(encodeURIComponent(this.selectedNamespace)) + '/'
-            + this.selectedComponentId + '/';
+            + this.selectedComponentId;
     }
 }
