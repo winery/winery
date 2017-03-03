@@ -23,7 +23,7 @@ export class DocumentationService {
     }
 
     getDocumentationData(path: string): Observable<string> {
-        let headers = new Headers({ 'Accept': 'application/json' });
+        let headers = new Headers({ 'Accept': 'text/plain' });
         let options = new RequestOptions({ headers: headers });
         this.path = path;
         return this.http.get(backendBaseUri + decodeURIComponent(path + '/'), options)
