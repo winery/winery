@@ -15,6 +15,7 @@ import { Observable } from 'rxjs';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import List = _.List;
+import { InstanceStateApiData } from './InstanceStateApiData';
 
 @Injectable()
 export class InstanceStateService {
@@ -24,11 +25,16 @@ export class InstanceStateService {
     constructor(private http: Http) {
     }
 
-    getInstanceStates(): Observable<string[]> {
+    getInstanceStates(): Observable<InstanceStateApiData[]> {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        return this.http.get(backendBaseUri + this.path + 'instancestates/', options)
+        this.path += 'instancestates/';
+        console.log('path');
+        console.log(this.path);
+        console.log('instanceStatesService');
+        return this.http.get(backendBaseUri + this.path , options)
             .map(res => res.json());
+        // [{"state":"ooo"},{"state":"asdfklj"},{"state":"NewState"},{"state":"newTry"},{"state":"newTry2"},{"state":"testJson"}]
     }
 
     setPath(path: string): void {

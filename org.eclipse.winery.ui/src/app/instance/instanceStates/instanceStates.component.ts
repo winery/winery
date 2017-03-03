@@ -13,6 +13,7 @@
 import { Component, OnInit } from '@angular/core';
 import { InstanceStateService } from './instanceState.service';
 import { InstanceService } from '../instance.service';
+import { InstanceStateApiData } from './InstanceStateApiData';
 
 @Component({
     selector: 'winery-instance-instanceStates',
@@ -21,14 +22,13 @@ import { InstanceService } from '../instance.service';
 })
 export class InstanceStatesComponent implements OnInit {
     loading: boolean = true;
-    instanceStates: string[];
+    instanceStates: InstanceStateApiData[];
 
     constructor(
         private sharedData: InstanceService,
         private service: InstanceStateService
     ) {
-        this.instanceStates = [];
-        this.instanceStates[0] = 'defaultValue';
+        console.log('constructor');
     }
 
 
@@ -39,10 +39,20 @@ export class InstanceStatesComponent implements OnInit {
                 data => this.handleInstanceStateData(data),
                 error => this.handleError(error)
             );
+        console.log('onInit');
     }
 
-    private handleInstanceStateData(instanceStates: Array<string>) {
+    private handleInstanceStateData(instanceStates: InstanceStateApiData[]) {
+        console.log('instanceStatesResolved');
+        console.log(instanceStates);
         this.instanceStates = instanceStates;
+        for (let stateObject of this.instanceStates){
+            if (stateObject instanceof InstanceStateApiData) {
+                console.log('instanceof');
+            } else { console.log('its an unknown object');
+            }
+        }
+
     }
     private handleError(error: any): void {
         this.loading = false;
