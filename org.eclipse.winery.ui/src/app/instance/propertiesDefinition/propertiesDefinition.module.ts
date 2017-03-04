@@ -21,6 +21,7 @@ import { TableModule } from '../../tableModule/table.module';
 import { TabsModule, TypeaheadModule, ModalModule } from 'ng2-bootstrap';
 import { DuplicateValidator } from './forbiddenNames.directive';
 import { CommonModule } from '@angular/common';
+import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 
 
 
@@ -34,7 +35,8 @@ import { CommonModule } from '@angular/common';
         FormsModule,
         LoaderModule,
         TypeaheadModule.forRoot(),
-        CommonModule
+        CommonModule,
+        WineryModalModule,
     ],
     exports: [],
     declarations: [

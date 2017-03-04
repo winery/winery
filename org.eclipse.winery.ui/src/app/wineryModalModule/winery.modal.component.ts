@@ -1,12 +1,10 @@
-import {
-    Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit, ContentChild,
-    AfterContentInit
-} from '@angular/core';
-import {WineryModalHeaderComponent} from './winery.modal.header.component';
-import {WineryModalFooterComponent} from './winery.modal.footer.component';
+import { Component, Input, AfterViewInit, ContentChild, AfterContentInit } from '@angular/core';
+import { WineryModalHeaderComponent } from './winery.modal.header.component';
+import { WineryModalFooterComponent } from './winery.modal.footer.component';
+import { isNullOrUndefined } from 'util';
 
 @Component({
-    selector: 'winery-modal-component',
+    selector: 'winery-modal',
     templateUrl: 'winery.modal.component.html',
     host: {
         'class': 'modal fade',
@@ -16,20 +14,23 @@ import {WineryModalFooterComponent} from './winery.modal.footer.component';
 })
 export class WineryModalComponent implements AfterViewInit, AfterContentInit {
 
-
     @Input() modalRef: any;
     @Input() size: any;
     @Input() keyboard: boolean = true;
     @Input() backdrop: string | boolean = true;
-    @ContentChild(WineryModalHeaderComponent) headerContent: any;
-    @ContentChild(WineryModalFooterComponent) footerContent: any;
+    @ContentChild(WineryModalHeaderComponent) headerContent: WineryModalHeaderComponent;
+    @ContentChild(WineryModalFooterComponent) footerContent: WineryModalFooterComponent;
 
     private overrideSize: string = null;
     private cssClass: string = '';
 
     ngAfterContentInit(): void {
-
-        this.footerContent.modalRef = this.modalRef;
+        if (!isNullOrUndefined(this.headerContent)) {
+            this.headerContent.modalRef = this.modalRef;
+        }
+        if (!isNullOrUndefined(this.footerContent)) {
+            this.footerContent.modalRef = this.modalRef;
+        }
     }
 
     ngAfterViewInit(): void {

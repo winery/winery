@@ -49,9 +49,9 @@ export class PropertiesDefinitionComponent implements OnInit {
         {title: 'Type', name: 'type', sort: true},
     ];
     newProperty: PropertiesDefinitionKVList = new PropertiesDefinitionKVList();
-    @ViewChild('deletePropModal') deletePropModalEl: any;
+    @ViewChild('confirmDeleteModal') deletePropModal: any;
 
-    @ViewChild('staticModal') addPropModal: any;
+    @ViewChild('addModal') addPropModal: any;
 
     constructor(private sharedData: InstanceService,
                 private service: PropertiesDefinitionService) {
@@ -69,11 +69,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     // endregion
 
     // region ########## Template Callbacks ##########
-
-    /**
-     * Called by the template, if property (none) is selected. It sends a DELETE request
-     * to the backend to delete all properties definitions.
-     */
+    // region ########## Radio Buttons ##########
     onNoneSelected(): void {
         this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
     }
@@ -99,8 +95,6 @@ export class PropertiesDefinitionComponent implements OnInit {
 
         this.activeElement = new SelectData();
         this.activeElement.text = this.resourceApiData.propertiesDefinition.element;
-
-//        this.forceSelectClear();
     }
 
     /**
@@ -124,8 +118,6 @@ export class PropertiesDefinitionComponent implements OnInit {
 
         this.activeElement = new SelectData();
         this.activeElement.text = this.resourceApiData.propertiesDefinition.type;
-
-//        this.forceSelectClear();
     }
 
     /**
@@ -151,22 +143,9 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.activeElement = new SelectData();
         this.activeElement.text = this.resourceApiData.winerysPropertiesDefinition.namespace;
     }
+    // endregion
 
-    /**
-     * Called by the template, if a property is selected in the select box .
-     */
-    xmlValueSelected(event: SelectData): void {
-        if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Element) {
-            this.resourceApiData.propertiesDefinition.element = event.text;
-        } else if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Type) {
-            this.resourceApiData.propertiesDefinition.type = event.text;
-        }
-    }
-
-    setWrapperName(event: any): void {
-        this.resourceApiData.winerysPropertiesDefinition.elementName = event.target.value;
-    }
-
+    // region ########## Button Callbacks ##########
     save(): void {
         this.loading = true;
         if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.None) {
@@ -185,13 +164,16 @@ export class PropertiesDefinitionComponent implements OnInit {
     }
 
     /**
-     * adds a property to the table and model
-     * @param propType
-     * @param propName
+     * handler for clicks on remove button
+     * @param data
      */
-    addProperty(propType: string, propName: string) {
-        this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push({key: propName, type: propType});
-        this.addPropModal.hide();
+    onRemoveClick(data: any) {
+        if (isNullOrUndefined(data)) {
+            return;
+        } else {
+            this.elementToRemove = data;
+            this.deletePropModal.show();
+        }
     }
 
     /**
@@ -201,49 +183,43 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.newProperty = new PropertiesDefinitionKVList();
         this.addPropModal.show();
     }
+    // endregion
 
     /**
-     * handler for clicks on a table cell/row
-     * @param data
+     * Called by the template, if a property is selected in the select box. Cannot be replaced
+     * by ngModel in the template because the same select is used for element and type definitions.
      */
+    xmlValueSelected(event: SelectData): void {
+        if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Element) {
+            this.resourceApiData.propertiesDefinition.element = event.text;
+        } else if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Type) {
+            this.resourceApiData.propertiesDefinition.type = event.text;
+        }
+    }
+
     onCellSelected(data: any) {
         if (isNullOrUndefined(data)) {
             this.selectedCell = data;
         }
     }
+    // endregion
 
+    // region ########## Modal Callbacks ##########
     /**
-     * handler for clicks on remove button
-     * @param data
+     * Adds a property to the table and model
+     * @param propType
+     * @param propName
      */
-    onRemoveClick(data: any) {
-        if (isNullOrUndefined(data)) {
-            return;
-        } else {
-            this.elementToRemove = data;
-            this.deletePropModalEl.show();
-        }
+    addProperty(propType: string, propName: string) {
+        this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push({key: propName, type: propType});
+        this.addPropModal.hide();
     }
 
     removeConfirmed() {
-        this.deletePropModalEl.hide();
+        this.deletePropModal.hide();
         this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
         this.elementToRemove = null;
     }
-
-    /**
-     * deletes a property from the table and model
-     * @param itemToDelete
-     */
-    deleteItemFromPropertyDefinitionKvList(itemToDelete: any) {
-        let list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].key === itemToDelete.key) {
-                list.splice(i, 1);
-            }
-        }
-    }
-
     // endregion
 
     // region ########## Private Methods ##########
@@ -299,6 +275,19 @@ export class PropertiesDefinitionComponent implements OnInit {
     private handleSave(data: Response) {
         this.handleSuccess(data);
         this.getPropertiesDefinitionsResourceApiData();
+    }
+
+    /**
+     * Deletes a property from the table and model.
+     * @param itemToDelete
+     */
+    private deleteItemFromPropertyDefinitionKvList(itemToDelete: any): void {
+        let list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].key === itemToDelete.key) {
+                list.splice(i, 1);
+            }
+        }
     }
 
     /**

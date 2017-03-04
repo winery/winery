@@ -12,7 +12,6 @@
  */
 -->
 
-
 <div>
     <div class="table-component-header">
         <label>Search:</label>
@@ -21,7 +20,11 @@
                class="form-control"
                (tableChanged)="onChangeTable(config)"/>
         <div class="table-component-header-btn-wrap">
-            <button class="rightbutton btn btn-danger btn-xs" (click)="onRemoveClick($event);">Remove</button>
+            <button class="rightbutton btn btn-danger btn-xs"
+                    (click)="onRemoveClick($event);"
+                    [disabled]="rows.length === 0">
+                Remove
+            </button>
             <button class="rightbutton btn btn-primary btn-xs" (click)="onAddClick($event);">Add</button>
         </div>
     </div>

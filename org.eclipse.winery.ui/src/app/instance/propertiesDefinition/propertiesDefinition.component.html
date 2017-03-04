@@ -11,6 +11,7 @@
  *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 -->
+
 <div class="localLoader" [class.hidden]="!loading">
     <winery-loader></winery-loader>
 </div>
@@ -62,8 +63,7 @@
                         <label for="wrapperName">Name of Wrapper Element</label><br>
                         <input id="wrapperName"
                                class="form-control"
-                               (input)="setWrapperName($event)"
-                               [value]="resourceApiData.winerysPropertiesDefinition.elementName">
+                               [(ngModel)]="resourceApiData.winerysPropertiesDefinition.elementName">
                     </div>
                     <div class="wrapperTabButtom">
                         <label for="wrapperNamespace">Namespace</label>
@@ -77,75 +77,65 @@
         </div>
     </div>
 </div>
-<div class="modal fade" bsModal #staticModal="bs-modal" [config]="{backdrop: 'static'}"
-     tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title pull-left">Static modal</h4>
-                <button type="button" class="close pull-right" aria-label="Close" (click)="staticModal.hide()">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form #addPropertyFrom="ngForm" id="addPropertyForm">
-                    <div class="form-group">
-                        <label class="control-label" for="key">Name</label>
-                        <input #propName="ngModel"
-                               id="key"
-                               class="form-control"
-                               type="text"
-                               name="key"
-                               required
-                               [(ngModel)]="newProperty.key"
-                               [duplicateValidator]="resourceApiData?.winerysPropertiesDefinition?.propertyDefinitionKVList"/>
 
-                        <div *ngIf="propName.errors && (propName.touched)"
-                             class="alert alert-danger">
-                            <div [hidden]="!propName.errors.duplicateValidator">
-                                No duplicates allowed!
-                            </div>
-                            <div [hidden]="!propName.errors.required">
-                                Name is required
-                            </div>
-                        </div>
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <modal-header>
+        <h4 class="modal-title">Add Property</h4>
+    </modal-header>
+    <modal-body>
+        <form #addPropertyFrom="ngForm" id="addPropertyForm">
+            <div class="form-group">
+                <label class="control-label" for="key">Name</label>
+                <input #propName="ngModel"
+                       id="key"
+                       class="form-control"
+                       type="text"
+                       name="key"
+                       required
+                       [(ngModel)]="newProperty.key"
+                       [duplicateValidator]="resourceApiData?.winerysPropertiesDefinition?.propertyDefinitionKVList"/>
+
+                <div *ngIf="propName.errors && (propName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!propName.errors.duplicateValidator">
+                        No duplicates allowed!
                     </div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="propType">Type</label>
-                        <select #selectProperty name="type" class="form-control" id="propType">
-                            <option value="xsd:string">xsd:string</option>
-                            <option value="xsd:float">xsd:float</option>
-                            <option value="xsd:decimal">xsd:decimal</option>
-                            <option value="xsd:anyURI">xsd:anyURI</option>
-                            <option value="xsd:QName">xsd:QName</option>
-                        </select>
+                    <div [hidden]="!propName.errors.required">
+                        Name is required
                     </div>
-                </form>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" (click)="staticModal.hide()">Cancel</button>
-                <button type="button" [disabled]="!addPropertyFrom?.form.valid" class="btn btn-primary"
-                        (click)="addProperty(selectProperty.value, propName.value); staticModal.hide()">Add</button>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="modal fade" bsModal #deletePropModal="bs-modal" id="diagyesno">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="diagyesnotitle"></h4>
+            <div class="form-group">
+                <label class="control-label" for="propType">Type</label>
+                <select #selectProperty name="type" class="form-control" id="propType">
+                    <option value="xsd:string">xsd:string</option>
+                    <option value="xsd:float">xsd:float</option>
+                    <option value="xsd:decimal">xsd:decimal</option>
+                    <option value="xsd:anyURI">xsd:anyURI</option>
+                    <option value="xsd:QName">xsd:QName</option>
+                </select>
             </div>
-            <div class="modal-body">
-                <p *ngIf="elementToRemove != null" id="diagyesnomsg"> Do you want to delete the Element {{elementToRemove.key}} ?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                <button id="diagyesnoyesbtn" type="button" class="btn btn-primary" (click)="removeConfirmed();">Yes</button>
-            </div>
-        </div>
-    </div>
-</div>
+        </form>
+    </modal-body>
+    <modal-footer [show-default-buttons]="false">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addModal.hide()">Cancel</button>
+        <button type="button" [disabled]="!addPropertyFrom?.form.valid" class="btn btn-primary"
+                (click)="addProperty(selectProperty.value, propName.value); addModal.hide()">Add</button>
+    </modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <modal-header>
+        <h4 class="modal-title">Delete Property</h4>
+    </modal-header>
+    <modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.key }}</span>?
+        </p>
+    </modal-body>
+    <modal-footer (onOk)="removeConfirmed();"
+                  [close-button-label]="'No'"
+                  [ok-button-label]="'Yes'">
+    </modal-footer>
+</winery-modal>
