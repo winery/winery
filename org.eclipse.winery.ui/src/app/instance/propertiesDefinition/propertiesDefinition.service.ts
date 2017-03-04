@@ -34,7 +34,7 @@ export class PropertiesDefinitionService {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.delete(backendBaseUri + this.path + 'propertiesdefinition/', options);
+        return this.http.delete(backendBaseUri + this.path + '/propertiesdefinition/', options);
     }
 
     /**
@@ -43,7 +43,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<PropertiesDefinitionsResourceApiData>}
      */
     getPropertiesDefinitionsData(): Observable<PropertiesDefinitionsResourceApiData> {
-        return this.sendJsonRequest(this.path + 'propertiesdefinition/');
+        return this.sendJsonRequest(this.path + '/propertiesdefinition/');
     }
 
     /**
@@ -52,7 +52,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<XsdDefinitionsApiData>}
      */
     getXsdElementDefinitions(): Observable<XsdDefinitionsApiData> {
-        return this.sendJsonRequest(this.path + 'propertiesdefinition/element');
+        return this.sendJsonRequest(this.path + '/propertiesdefinition/element');
     }
 
     /**
@@ -61,7 +61,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<XsdDefinitionsApiData>}
      */
     getXsdTypeDefinitions(): Observable<XsdDefinitionsApiData> {
-        return this.sendJsonRequest(this.path + 'propertiesdefinition/type');
+        return this.sendJsonRequest(this.path + '/propertiesdefinition/type');
     }
 
     getAllNamespaces(): Observable<string[]> {
@@ -81,7 +81,7 @@ export class PropertiesDefinitionService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.post(backendBaseUri + this.path + 'propertiesdefinition/', JSON.stringify(resourceApiData), options);
+        return this.http.post(backendBaseUri + this.path + '/propertiesdefinition/', JSON.stringify(resourceApiData), options);
     }
 
     /**

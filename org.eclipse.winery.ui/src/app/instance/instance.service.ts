@@ -105,6 +105,6 @@ export class InstanceService {
         // instead of getting it from the router, because there might be some child routes included.
         this.path = '/' + this.selectedResource.toLowerCase() + 's/'
             + encodeURIComponent(encodeURIComponent(this.selectedNamespace)) + '/'
-            + this.selectedComponentId + '/';
+            + this.selectedComponentId;
     }
 }

@@ -22,15 +22,6 @@ public abstract class AbstractComponentInstanceWithReferencesResource extends Ab
 		super(id);
 	}
 
-	/**
-	 * Ensures that the presented XML is in line with the stored files
-	 */
-	@Override
-	public Response getXML() {
-		this.synchronizeReferences();
-		return super.getXML();
-	}
-
 	@Override
 	public String getDefinitionsAsXMLString() {
 		this.synchronizeReferences();
