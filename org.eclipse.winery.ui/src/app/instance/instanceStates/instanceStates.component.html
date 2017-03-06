@@ -9,7 +9,14 @@
  *
  * Contributors:
  *     Huixin Liu, Nicole Keppler - initial API and implementation
+ *     Lukas Balzer - initial component visuals
  */
-instanceStates component
-
-<!-- ToDo Tabelle einfügen -->
+-->
+<table-component
+    [data]="['a','b']"
+    [columns]="['a','b']"
+    (cellSelected)="onCellSelected($event)"
+    [itemsPerPage]="10"
+    (removeBtnClicked)="onRemoveClick($event)"
+    (addBtnClicked)="onAddClick();">
+</table-component>

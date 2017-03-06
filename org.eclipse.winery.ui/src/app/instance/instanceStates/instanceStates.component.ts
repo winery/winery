@@ -44,6 +44,18 @@ export class InstanceStatesComponent implements OnInit {
         console.log('onInit');
     }
 
+    onCellSelected(data: any) {
+        console.log('selected');
+    }
+
+    onRemoveClick(data: any) {
+        console.log('remove');
+    }
+
+    onAddClick() {
+        console.log('add');
+    }
+
     private handleInstanceStateData(instanceStates: InstanceStateApiData[]) {
         console.log('instanceStatesResolved');
         console.log(instanceStates);
