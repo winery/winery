@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
+ *     ZTE - support of more gateways
  *******************************************************************************/
 /*******************************************************************************
  * Modifications Copyright 2017 ZTE Corporation.

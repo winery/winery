@@ -10,6 +10,7 @@
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
  *     Armin Hüneburg - rename interface to fit modeler
+ *     ZTE - support of more gateways
  *******************************************************************************/
 /*******************************************************************************
  * Modifications Copyright 2017 ZTE Corporation.

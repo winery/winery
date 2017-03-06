@@ -9,6 +9,7 @@
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
  *     Armin Hüneburg - fixed path handling
+ *     ZTE - support of more gateways
  *******************************************************************************/
 /*******************************************************************************
  * Modifications Copyright 2017 ZTE Corporation.
@@ -60,7 +61,7 @@ public class BpelPlanArtefactWriter {
 				/* Wrapper adds convenience functions that can be accessed from the Velocity template */
 				ManagementTaskTemplateWrapper taskWrapper = new ManagementTaskTemplateWrapper((ManagementTask) node); //TODO move to factory and remove setters from constructor
 				managementTaskSeq.add(taskWrapper);
-			} else if(node instanceof Gateway) {
+			} else if (node instanceof Gateway) {
 				managementTaskSeq.add(node);
 			}
 		}

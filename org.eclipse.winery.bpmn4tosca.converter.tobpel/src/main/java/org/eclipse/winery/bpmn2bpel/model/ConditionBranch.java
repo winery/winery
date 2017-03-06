@@ -1,4 +1,4 @@
-/*
+/*******************************************************************************
  * Copyright 2017 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ * 
+ * Contributors:
+ *     ZTE - support of more gateways
+ *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.model;
 
 public class ConditionBranch extends GatewayBranch {

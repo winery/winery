@@ -1,4 +1,4 @@
-/**
+/*******************************************************************************
  * Copyright 2016-2017 ZTE Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ * 
+ * Contributors:
+ *     ZTE - support of more gateways
+ *******************************************************************************/
 
 package org.eclipse.winery.bpmn2bpel.parser;
 
@@ -27,6 +30,14 @@ import org.eclipse.winery.bpmn2bpel.model.Node;
 import org.eclipse.winery.bpmn2bpel.model.OrGatewayMerge;
 import org.eclipse.winery.bpmn2bpel.model.OrGatewaySplit;
 
+/**
+ * This class will do two things. 
+ * 
+ * First, it will finds all of the following nodes for each exclusive gateway, 
+ * and construct a branch for each following nodes. 
+ * 
+ * second, it will convert the nodes to a management flow.
+ */
 public class SortParser {
 
     private Map<String, Node> nodeMap;
@@ -90,7 +101,7 @@ public class SortParser {
             if (node instanceof OrGatewaySplit) {
                 String endGatewayId = addBranches4Gateway((OrGatewaySplit) node);
                 nodeList.add(node);
-
+                
                 // loop for the next node
                 Set<String> endFollowSet = nodeWithTargetsMap.get(endGatewayId);
                 currentId = endFollowSet.iterator().next();
@@ -112,13 +123,7 @@ public class SortParser {
         return nodeList;
     }
     
-    /**
-     * add children nodes for each branch of gateway
-     * @param gateway
-     * @return
-     */
     private String addBranches4Gateway(OrGatewaySplit gateway) {
-        // 
         String endGatewayId = null;
 
         Iterator<String> iterator = nodeWithTargetsMap.get(gateway.getId()).iterator();

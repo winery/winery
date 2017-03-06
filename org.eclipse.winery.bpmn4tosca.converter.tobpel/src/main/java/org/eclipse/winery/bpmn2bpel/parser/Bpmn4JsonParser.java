@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
+ *     ZTE - support of more gateways
  *******************************************************************************/
 /*******************************************************************************
  * Modifications Copyright 2017 ZTE Corporation.
@@ -88,9 +89,9 @@ public class Bpmn4JsonParser extends Parser {
 				 * management tasks expected which are transformed to tasks in
 				 * our management model
 				 */
-				Node node = createTaskFromJson(jsonNode);
+				Node node = createNodeFromJson(jsonNode);
 				/*
-				 * Task may be null if it could not be created due to missing or
+				 * Node may be null if it could not be created due to missing or
 				 * incorrect fields/values in the Json node
 				 */
 				if (node != null) {
@@ -152,7 +153,7 @@ public class Bpmn4JsonParser extends Parser {
 
 	}
 
-	protected Node createTaskFromJson(JsonNode jsonNode) {
+	protected Node createNodeFromJson(JsonNode jsonNode) {
 		// TODO check if type attributes are set and are correct
 
 		if (!hasRequiredFields(jsonNode, Arrays.asList(JsonKeys.TYPE, JsonKeys.NAME, JsonKeys.ID))) {
@@ -190,7 +191,7 @@ public class Bpmn4JsonParser extends Parser {
 			return null;
 		}
 
-		/* Set generic task attributes */
+		/* Set generic node attributes */
 		node.setId(nodeId);
 		node.setName(nodeName);
 		node.setType(nodeType);
