@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -18,7 +18,7 @@ import { WineryRepositoryModule } from './app/wineryRepository.module';
 import './css/wineryCommon.css';
 import './css/wineryRepository.css';
 import './css/bootstrap.min.css';
-
+require('font-awesome/css/font-awesome.css');
 if (process.env.ENV === 'production') {
     enableProdMode();
 }

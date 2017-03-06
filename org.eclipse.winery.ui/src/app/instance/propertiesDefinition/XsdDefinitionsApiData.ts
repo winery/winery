@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter, Niko Stadelmaier - initial API and implementation
+ *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 import { SelectData } from '../../interfaces/selectData';
 

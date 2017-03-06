@@ -74,9 +74,6 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 		this.res = res;
 	}
 
-	/**
-	 * Returns a list of ids of all entities nested here
-	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getListOfAllEntityIds(@QueryParam("select2") String select2) {

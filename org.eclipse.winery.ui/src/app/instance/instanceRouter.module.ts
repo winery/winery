@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
 import { NgModule } from '@angular/core';
@@ -23,8 +23,9 @@ import { ImplementationsComponent } from './implementations/implementations.comp
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
-import { PropertyDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
-import { InstanceResolver } from '../resolver/instance.resolver';
+import { PropertiesDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
+import { InstanceResolver } from './instance.resolver';
+import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 
 const instanceRoutes: Routes = [
     {
@@ -38,7 +39,7 @@ const instanceRoutes: Routes = [
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'instancestates', component: InstanceStatesComponent },
             { path: 'interfaces', component: InterfacesComponent },
-            { path: 'propertiesdefinition', component: PropertyDefinitionComponent },
+            { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'requirementdefinitions', component: RequirementDefinitionsComponent },
             { path: 'visualappearance', component: VisualAppearanceComponent},
             { path: 'xml', component: EditXMLComponent }
@@ -49,6 +50,7 @@ const instanceRoutes: Routes = [
 @NgModule({
     imports: [
         BrowserModule,
+        PropertiesDefinitionModule,
         RouterModule.forChild(instanceRoutes)
     ],
     exports: [

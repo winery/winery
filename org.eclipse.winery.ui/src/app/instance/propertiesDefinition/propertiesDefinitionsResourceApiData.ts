@@ -7,27 +7,35 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter, Niko Stadelmaier - initial API and implementation
+ *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 
-export interface PropertiesDefinitionKVList {
-    key: string;
-    type: string;
+export enum PropertiesDefinitionEnum {
+    Custom = <any> 'Custom',
+    Element = <any> 'Element',
+    Type = <any> 'Type',
+    None = <any> 'None'
 }
 
-export interface PropertiesDefinition {
-    element: string;
-    type: string;
+export class PropertiesDefinitionKVList {
+    key: string = null;
+    type: string = null;
 }
 
-export interface WinerysPropertiesDefinition {
-    namespace: string;
-    elementName: string;
-    propertiesDefinitionKVList: PropertiesDefinitionKVList[];
-    isDerivedFromXSD: boolean;
+export class PropertiesDefinition {
+    element: string = null;
+    type: string = null;
+}
+
+export class WinerysPropertiesDefinition {
+    namespace: string = null;
+    elementName: string = null;
+    propertyDefinitionKVList: PropertiesDefinitionKVList[] = [];
+    isDerivedFromXSD: boolean = false;
 }
 
 export interface PropertiesDefinitionsResourceApiData {
     propertiesDefinition: PropertiesDefinition;
     winerysPropertiesDefinition: WinerysPropertiesDefinition;
+    selectedValue: PropertiesDefinitionEnum;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,11 +7,11 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzentter - initial API and implementation
  *******************************************************************************/
-/**
- * This package contains abstract resources implementing common functionality to
- * support collections of entities, where the data model does not provide a
- * unique id
- */
-package org.eclipse.winery.repository.resources._support.collections.withoutid;
+
+package org.eclipse.winery.repository.resources.apiData;
+
+public enum PropertiesDefinitionEnum {
+	Custom, Element, Type, None
+}

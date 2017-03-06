@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
 import { Injectable } from '@angular/core';
@@ -29,7 +29,7 @@ export class InheritanceService {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + this.path + 'inheritance/', options)
+        return this.http.get(backendBaseUri + this.path + '/inheritance/', options)
             .map(res => res.json());
     }
 
@@ -37,7 +37,7 @@ export class InheritanceService {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + this.path + 'getAvailableSuperClasses', options)
+        return this.http.get(backendBaseUri + this.path + '/getAvailableSuperClasses', options)
             .map(res => res.json());
     }
 
@@ -55,6 +55,6 @@ export class InheritanceService {
         copy.isAbstract = inheritanceData.isAbstract;
         copy.isFinal = inheritanceData.isFinal;
 
-        return this.http.put(backendBaseUri + this.path + 'inheritance/', JSON.stringify(copy), options);
+        return this.http.put(backendBaseUri + this.path + '/inheritance/', JSON.stringify(copy), options);
     }
 }

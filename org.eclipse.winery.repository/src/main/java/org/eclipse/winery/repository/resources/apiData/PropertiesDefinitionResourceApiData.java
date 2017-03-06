@@ -12,7 +12,6 @@
 
 package org.eclipse.winery.repository.resources.apiData;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityType;
 
@@ -20,6 +19,7 @@ public class PropertiesDefinitionResourceApiData {
 
 	public TEntityType.PropertiesDefinition propertiesDefinition;
 	public WinerysPropertiesDefinition winerysPropertiesDefinition;
+	public PropertiesDefinitionEnum selectedValue;
 
 	public PropertiesDefinitionResourceApiData() {}
 
@@ -29,5 +29,16 @@ public class PropertiesDefinitionResourceApiData {
 	) {
 		this.propertiesDefinition = propertiesDefinition;
 		this.winerysPropertiesDefinition = winerysPropertiesDefinition;
+
+		if ((winerysPropertiesDefinition != null) && (winerysPropertiesDefinition.getIsDerivedFromXSD() == null)) {
+			this.selectedValue = PropertiesDefinitionEnum.Custom;
+		} else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getElement() != null)) {
+			this.selectedValue = PropertiesDefinitionEnum.Element;
+		} else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getType() != null)) {
+			this.selectedValue = PropertiesDefinitionEnum.Type;
+		} else{
+			this.selectedValue = PropertiesDefinitionEnum.None;
+		}
+
 	}
 }

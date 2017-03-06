@@ -8,17 +8,19 @@
  *
  * Contributors:
  *     Huixin Liu, Nicole Keppler - initial API and implementation
+ *     Lukas Balzer - initial component visuals
  */
 
 import { Component, OnInit } from '@angular/core';
 import { InstanceStateService } from './instanceState.service';
 import { InstanceService } from '../instance.service';
 import { InstanceStateApiData } from './InstanceStateApiData';
+import { TableComponent } from '../../tableModule/table.component';
 
 @Component({
     selector: 'winery-instance-instanceStates',
     templateUrl: 'instanceStates.component.html',
-    providers: [InstanceStateService],
+    providers: [InstanceStateService]
 })
 export class InstanceStatesComponent implements OnInit {
     loading: boolean = true;
@@ -58,4 +60,6 @@ export class InstanceStatesComponent implements OnInit {
         this.loading = false;
         console.log(error);
     }
+
+
 }

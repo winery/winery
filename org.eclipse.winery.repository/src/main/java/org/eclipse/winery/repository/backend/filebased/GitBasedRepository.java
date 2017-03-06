@@ -12,14 +12,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.ws.rs.core.MediaType;
-
-import org.eclipse.winery.common.RepositoryFileReference;
-
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CleanCommand;
 import org.eclipse.jgit.api.CommitCommand;
@@ -30,8 +22,14 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.winery.common.RepositoryFileReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.MediaType;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Allows to reset repository to a certain commit id
@@ -39,13 +37,12 @@ import org.slf4j.LoggerFactory;
 public class GitBasedRepository extends FilebasedRepository {
 
 	/**
-	 * Used for synchronizing the method {@link GitBasedRepository#addCommit()}
+	 * Used for synchronizing the method {@link GitBasedRepository#addCommit(RepositoryFileReference)}
 	 */
 	private static final Object COMMIT_LOCK = new Object();
 	private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
 
 	private final Git git;
-
 
 	/**
 	 * @param repositoryLocation the location of the repository
@@ -57,30 +54,52 @@ public class GitBasedRepository extends FilebasedRepository {
 		super(repositoryLocation);
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
-		if (!new File(this.determineRepositoryPath(repositoryLocation) + "/.git").exists()) {
+		if (!new File(this.determineRepositoryPath(repositoryLocation) + File.separator + ".git").exists()) {
 		    gitRepo.create();
 		}
 		this.git = new Git(gitRepo);
 		if (!this.git.status().call().isClean()) {
-            this.addCommit();
+			this.addCommit("Files changed externally.");
 		}
 	}
 
 	/**
-	 * This method is is synchronized with an extra static object (meaning all instances are locked).
+	 * This method is synchronized with an extra static object (meaning all instances are locked).
+	 * The same lock object is also used in {@link #addCommit(RepositoryFileReference)}.
 	 * This is to ensure that every commit only has one change.
 	 *
+	 * @param message The message that is used in the commit.
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
 	 */
-	public void addCommit() throws GitAPIException {
+	public void addCommit(String message) throws GitAPIException {
 		synchronized (COMMIT_LOCK) {
 			AddCommand add = this.git.add();
 			add.addFilepattern(".");
 			add.call();
 
 			CommitCommand commit = this.git.commit();
-			commit.setMessage("Commit through Winery");
+			commit.setMessage(message);
 			commit.call();
+		}
+	}
+
+	/**
+	 * This method is synchronized with an extra static object (meaning all instances are locked).
+	 * The same lock object is also used in {@link #addCommit(String)}.
+	 * This is to ensure that every commit only has one change.
+	 *
+	 * @param ref RepositoryFileReference to the file that was changed.
+	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
+	 */
+	public void addCommit(RepositoryFileReference ref) throws GitAPIException {
+		synchronized (COMMIT_LOCK) {
+			String message;
+            if (ref == null) {
+                message = "Files changed externally.";
+            } else {
+                message = ref.toString() + " was updated";
+            }
+            addCommit(message);
 		}
 	}
 
@@ -115,7 +134,7 @@ public class GitBasedRepository extends FilebasedRepository {
 	public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
 		super.putContentToFile(ref, inputStream, mediaType);
 		try {
-			this.addCommit();
+			this.addCommit(ref);
 		} catch (GitAPIException e) {
 			LOGGER.trace(e.getMessage(), e);
 		}
