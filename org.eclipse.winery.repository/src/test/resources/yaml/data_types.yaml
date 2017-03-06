@@ -1,0 +1,123 @@
+#
+# Copyright 2017 ZTE Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+data_types:
+
+  ##########################################################################
+  # This is the default (root) TOSCA Root Type definition that all complex 
+  # TOSCA Data Types derive from. 
+  ##########################################################################
+
+  tosca.datatypes.Root:
+    description: The TOSCA root Data Type all other TOSCA base Data Types derive from
+
+  ##########################################################################
+  # The Credential type is a complex TOSCA data Type used when describing 
+  # authorization credentials used to access network accessible resources.
+  ##########################################################################
+  tosca.datatypes.Credential:
+    derived_from: tosca.datatypes.Root
+    properties:
+      protocol:
+        type: string
+        required: false
+      token_type:
+        type: string
+        default: password
+      token:
+        type: string
+      keys:
+        type: map
+        required: false
+        entry_schema:
+          type: string
+      user:
+        type: string
+        required: false
+
+
+  ##########################################################################
+  # The Network type is a complex TOSCA data type used to describe logical    
+  # network information.
+  ##########################################################################
+  tosca.datatypes.network.NetworkInfo:
+    derived_from: tosca.datatypes.Root
+    properties:  
+      network_name:
+        type: string
+      network_id:
+        type: string
+      addresses:
+        type: list
+        entry_schema:
+          type: string
+  
+  
+  ##########################################################################
+  # The PortInfo type is a complex TOSCA data type used to describe network 
+  # port information. 
+  ##########################################################################
+  
+  tosca.datatypes.network.PortInfo:
+    derived_from: tosca.datatypes.Root
+    properties:  
+      port_name:
+        type: string
+      port_id:
+        type: string
+      network_id:
+        type: string
+      mac_address:
+        type: string
+      addresses:
+        type: list
+        entry_schema:
+          type: string
+  
+  
+  ##########################################################################
+  # The PortDef type is a TOSCA data Type used to define a network port.
+  ##########################################################################
+  tosca.datatypes.network.PortDef:
+    derived_from: integer
+    constraints:
+      - in_range: [ 1, 65535 ]
+  
+  ##########################################################################
+  # The PortSpec type is a complex TOSCA data Type used when describing port 
+  # specifications for a network connection.
+  ##########################################################################
+  tosca.datatypes.network.PortSpec:
+    derived_from: tosca.datatypes.Root
+    properties:  
+      protocol:
+        type: string
+        required: true
+        default: tcp
+        constraints:
+          - valid_values: [ udp, tcp, igmp ]
+      target: 
+        type: PortDef
+      target_range:
+        type: range
+        constraints:
+          - in_range: [ 1, 65535 ]
+      source:
+        type: PortDef
+      source_range:
+        type: range
+        constraints:
+          - in_range: [ 1, 65535 ]          
