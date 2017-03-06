@@ -24,7 +24,6 @@ export class DocumentationService {
 
     setPath(path: string): void {
         this.path = path + '/documentation';
-        console.log(this.path);
     }
 
     getDocumentationData(): Observable<string> {

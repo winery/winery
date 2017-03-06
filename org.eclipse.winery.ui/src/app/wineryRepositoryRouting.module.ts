@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -16,9 +16,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { InstanceComponent } from './instance/instance.component';
 import { OtherComponent } from './other/other.component';
 import { SectionComponent } from './section/section.component';
-import { SectionResolver } from './resolver/section.resolver';
+import { SectionResolver } from './section/section.resolver';
 import { NotFoundComponent } from './404/notFound.component';
-import { NamespaceResolver } from './resolver/namespace.resolver';
+import { NamespaceResolver } from './namespace/namespace.resolver';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 

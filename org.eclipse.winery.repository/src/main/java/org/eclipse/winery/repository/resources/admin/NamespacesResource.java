@@ -123,6 +123,12 @@ public class NamespacesResource extends AbstractAdminResource {
 		return Response.noContent().build();
 	}
 
+	public void addNamespace(String namespace) {
+		String prefix = generatePrefix(namespace);
+		// directly store it in the internal data structure
+		this.configuration.setProperty(namespace, prefix);
+	}
+
 	/**
 	 * Deletes given namespace from the repository
 	 *
@@ -310,4 +316,5 @@ public class NamespacesResource extends AbstractAdminResource {
 	public boolean getIsPrefixKnownForNamespace(String namespace) {
 		return this.configuration.containsKey(namespace);
 	}
+
 }

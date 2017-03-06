@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'modal-footer',
@@ -7,14 +7,15 @@ import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 export class WineryModalFooterComponent {
 
     @Input('show-default-buttons') showDefaultButtons: boolean = true;
-    @Input('close-button-label') closeButtonLabe: string = 'Cancel';
-    @Input('add-button-label') addButtonLabel: string = 'Add';
+    @Input('close-button-label') closeButtonLabel: string = 'Cancel';
+    @Input('ok-button-label') okButtonLabel: string = 'Add';
     @Input('modal-ref') modalRef: any;
-    @Output() onAdd = new EventEmitter<any>();
+    @Output() onOk = new EventEmitter<any>();
     @Output() onCancel = new EventEmitter<any>();
 
-    add() {
-        this.onAdd.emit();
+    ok() {
+        this.onOk.emit();
+        this.modalRef.hide();
     }
 
     cancel() {

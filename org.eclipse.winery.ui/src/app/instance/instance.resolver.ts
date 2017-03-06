@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
 import { Injectable }             from '@angular/core';
@@ -18,18 +18,25 @@ import {
 
 import { isNullOrUndefined } from 'util';
 import { sections } from '../configuration';
+import { InstanceResolverData } from '../interfaces/resolverData';
 
 @Injectable()
-export class NamespaceResolver implements Resolve<ResolveData> {
-    constructor(private router: Router) {}
+export class InstanceResolver implements Resolve<InstanceResolverData> {
+    constructor(private router: Router) { }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): ResolveData {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): InstanceResolverData {
+        // TODO: get the instance from the server, only return it, when it's valid
         let section = sections[route.params['section']];
         let namespace = route.params['namespace'];
-        // TODO: get the namespace from the server, only return it, when it's valid
+        let instanceId = route.params['instanceId'];
 
-        if (!isNullOrUndefined(namespace) && !isNullOrUndefined(section)) {
-            return { section: section, namespace: namespace };
+        if (!isNullOrUndefined(instanceId) && !isNullOrUndefined(namespace) && !isNullOrUndefined(section)) {
+            return {
+                section: section,
+                namespace: decodeURIComponent(decodeURIComponent(namespace)),
+                instanceId: instanceId,
+                path: state.url,
+            };
         } else { // id not found
             this.router.navigate(['/notfound']);
             return null;

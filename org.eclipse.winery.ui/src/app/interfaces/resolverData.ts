@@ -10,20 +10,20 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+export interface SectionResolverData {
+    section: string;
+    path: string;
+}
 
-@Component({
-    selector: 'winery-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.style.css']
-})
-export class HeaderComponent {
+export interface NamespaceResolverData extends SectionResolverData {
+    namespace: string;
+}
 
-    constructor(private router: Router) {
-    }
+export interface InstanceResolverData extends NamespaceResolverData {
+    instanceId: string;
+}
 
-    showAbout(): void {
-        console.log('showing about...');
-    }
+export interface PropertiesDefinitionResolverData {
+    propertiesSelected: boolean;
+    wrappingSelected: boolean;
 }
