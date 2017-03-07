@@ -11,11 +11,10 @@
  *     Lukas Balzer - initial component visuals
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceStateService } from './instanceState.service';
 import { InstanceService } from '../instance.service';
 import { InstanceStateApiData } from './InstanceStateApiData';
-import { TableComponent } from '../../tableModule/table.component';
 
 @Component({
     selector: 'winery-instance-instanceStates',
@@ -25,7 +24,13 @@ import { TableComponent } from '../../tableModule/table.component';
 export class InstanceStatesComponent implements OnInit {
     loading: boolean = true;
     instanceStates: InstanceStateApiData[];
+    newStateData: InstanceStateApiData = new InstanceStateApiData('');
+    @ViewChild('confirmDeleteModal') deleteStateModal: any;
 
+    @ViewChild('addModal') addStateModal: any;
+    columns: Array<any> = [
+        {title: 'Name', name: 'state', sort: false},
+    ];
     constructor(
         private sharedData: InstanceService,
         private service: InstanceStateService
@@ -46,6 +51,7 @@ export class InstanceStatesComponent implements OnInit {
 
     onCellSelected(data: any) {
         console.log('selected');
+        this.deleteStateModal.show();
     }
 
     onRemoveClick(data: any) {
@@ -54,19 +60,18 @@ export class InstanceStatesComponent implements OnInit {
 
     onAddClick() {
         console.log('add');
+        this.newStateData = new InstanceStateApiData('');
+        this.addStateModal.show();
     }
 
+    addProperty(state: string) {
+        console.log(state);
+    }
     private handleInstanceStateData(instanceStates: InstanceStateApiData[]) {
         console.log('instanceStatesResolved');
         console.log(instanceStates);
         this.instanceStates = instanceStates;
-        for (let stateObject of this.instanceStates){
-            if (stateObject instanceof InstanceStateApiData) {
-                console.log('instanceof');
-            } else { console.log('its an unknown object');
-            }
-        }
-
+        this.loading = false;
     }
     private handleError(error: any): void {
         this.loading = false;

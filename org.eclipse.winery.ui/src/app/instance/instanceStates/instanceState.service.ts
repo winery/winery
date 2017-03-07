@@ -28,7 +28,7 @@ export class InstanceStateService {
     getInstanceStates(): Observable<InstanceStateApiData[]> {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        this.path += 'instancestates/';
+        this.path += '/instancestates/';
         console.log('path');
         console.log(this.path);
         console.log('instanceStatesService');
