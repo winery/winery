@@ -11,4 +11,11 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 -->
-interfaces component
+
+<div *ngIf="loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-selectableList [title]="'Interfaces'"></winery-selectableList>
+    <!--<winery-selectableList [title]="'Operations'"></winery-selectableList>-->
+</div>

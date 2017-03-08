@@ -10,20 +10,24 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Component, OnInit } from '@angular/core';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
-@Component({
-    selector: 'winery-instance-interfaces',
-    templateUrl: 'interfaces.component.html'
+import { SelectableListComponent }   from './selectableList.component';
+
+@NgModule({
+    imports: [
+        FormsModule,
+        BrowserModule
+    ],
+    exports: [
+        SelectableListComponent
+    ],
+    declarations: [
+        SelectableListComponent
+    ],
+    providers: [],
 })
-export class InterfacesComponent implements OnInit {
-
-    loading: boolean = true;
-
-    constructor() {
-    }
-
-    ngOnInit() {
-        this.loading = false;
-    }
+export class SelectableListModule {
 }

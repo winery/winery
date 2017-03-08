@@ -11,11 +11,15 @@
  */
 
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { SelectModule } from 'ng2-select';
+
 import { EditXMLComponent } from './editXML/editXML.component';
 import { InstanceComponent } from './instance.component';
 import { InstanceHeaderComponent } from './instanceHeader/instanceHeader.component';
 import { InstanceRouterModule } from './instanceRouter.module';
-import { BrowserModule } from '@angular/platform-browser';
 import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { InheritanceComponent } from './inheritance/inheritance.component';
@@ -26,10 +30,9 @@ import { RequirementDefinitionsComponent } from './requirementDefinitions/requir
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { LoaderModule } from '../loader/loader.module';
-import { FormsModule } from '@angular/forms';
 import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
-import { SelectModule } from 'ng2-select';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
+import { SelectableListModule } from './interfaces/selectableList/selectableList.module';
 
 
 @NgModule({
@@ -38,6 +41,7 @@ import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDef
         BrowserModule,
         FormsModule,
         LoaderModule,
+        SelectableListModule,
         PropertiesDefinitionModule,
         InstanceRouterModule,
     ],

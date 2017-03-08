@@ -28,9 +28,9 @@ export function duplicateValidator(namesArray: Array<any>): ValidatorFn {
 
 @Directive({
     selector: '[duplicateValidator]',
-    providers: [{provide: NG_VALIDATORS, useExisting: DuplicateValidator, multi: true}]
+    providers: [{provide: NG_VALIDATORS, useExisting: DuplicateValidatorDirective, multi: true}]
 })
-export class DuplicateValidator implements Validator, OnChanges {
+export class DuplicateValidatorDirective implements Validator, OnChanges {
     @Input() duplicateValidator: Array<any>;
     private valFn = Validators.nullValidator;
 
