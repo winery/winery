@@ -27,9 +27,8 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * Tests client methods with a pre-configured client stored in a local static
@@ -41,7 +40,7 @@ import org.junit.runners.JUnit4;
  * TODO: This class expects things to be existent in the namespace "test". This
  * should be enforced in a preload.
  */
-@RunWith(JUnit4.class)
+@Ignore("Winery does not run on travis yet")
 public class TestWineryRepositoryClient {
 
 	// private final String repositoryURI = "http://2471.de:8080/wineydev";
