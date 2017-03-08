@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -92,15 +92,16 @@
 				<form id="createFromArtefactForm" enctype="multipart/form-data">
 					<fieldset>
 						<div class="form-group">
-							<label for="ciType" class="control-label">Type</label> <select
-								id="artefactType" name="type" class="form-control">
+							<label for="artifactType" class="control-label">Type</label>
+							<select id="artifactType" name="type" class="form-control">
 								<c:forEach var="typeId" items="<%=artefactTypes%>">
 									<option value="${typeId.toString()}">${typeId.toString()}</option>
 								</c:forEach>
 							</select>
 						</div>
 						<div class="form-group">
-							<label for="createFromArtefactForm">Select Artefact:</label> <input
+							<label for="createFromArtefactForm">Select Artefact:</label>
+							<input
 								id="createFromArtefactFormUpload" class="form-control"
 								type="file" name="createFromArtefactForm" />
 						</div>
@@ -118,8 +119,8 @@
 						</div>
 						<c:if test="<%=!infrastructureNodeTypes.isEmpty()%>">
 							<div class="form-group" id="infrastructureDiv">
-							<label for="infrastructure">Infrastructure:</label> <select
-								name="infrastructure" class="form-control" id="infrastructureNodeTypes">
+							<label for="infrastructureNodeTypes">Infrastructure:</label>
+							<select name="infrastructure" class="form-control" id="infrastructureNodeTypes">
 								<option value="" selected>None</option>
 								<c:forEach var="t" items="<%=infrastructureNodeTypes%>">
 									<option value="${t.toString()}">${t.toString()}</option>
@@ -175,11 +176,11 @@
 		}
 
 		formData.append("artefactType", artefactType);
-		
+
 		if(infrastructureNodeType != "") {
 			formData.append("infrastructureNodeType", infrastructureNodeType);
 		}
-		
+
 
 		if (nodeTypes == null) {
 			formData.append("nodeTypes", null);
