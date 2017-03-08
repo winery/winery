@@ -46,14 +46,19 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 	/**
 	 * Adds an element using form-encoding
 	 *
-	 * This is necessary as TRequirementRef contains an IDREF and the XML
-	 * snippet itself does not contain the target id
-	 * @param name the optional name of the requirement
-	 * @param value the reference to a requirement in the topology
+	 * FIXME: This is necessary as TRequirementRef contains an IDREF and the XML snippet itself does not contain the target id
+	 *
+	 * TODO: Why can't just addNewElement be used? Why do we need form-based updates?
+	 *
+	 * @param id ignored (TODO - see above - addNewElement?)
+	 * @param name the  name of the tag
+	 * @param value the value of the tag
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addNewElement(@FormParam("id") String id, @FormParam("name") String name,
+	public Response addNewElement(
+			@FormParam("id") String id,
+			@FormParam("name") String name,
 			@FormParam("value") String value) {
 
 		TTag tag = new TTag();
