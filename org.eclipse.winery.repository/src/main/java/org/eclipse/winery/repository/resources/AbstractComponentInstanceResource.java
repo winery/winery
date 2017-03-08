@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +55,6 @@ import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.Utils;
@@ -67,7 +65,10 @@ import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources.documentation.DocumentationsResource;
+import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
+import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.imports.genericimports.GenericImportResource;
+import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.resources.tags.TagsResource;
 
 import com.sun.jersey.api.view.Viewable;
@@ -541,27 +542,37 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 	@Path("tags/")
 	public final TagsResource getTags() {
-
-		List<TTag> tagList = new ArrayList<>();
-
 		TTags tags = null;
 
 		if (this.element instanceof TServiceTemplate){
 			tags = ((TServiceTemplate) this.element).getTags();
+			if (tags == null) {
+				tags = new TTags();
+				((ServiceTemplateResource) this).getServiceTemplate().setTags(tags);
+			}
 		} else if(this.element instanceof TEntityType){
 			tags = ((TEntityType)this.element).getTags();
+			if (tags == null) {
+				tags = new TTags();
+				((EntityTypeResource) this).getEntityType().setTags(tags);
+			}
 		} else if(this.element instanceof TNodeTypeImplementation){
 			tags = ((TNodeTypeImplementation) this.element).getTags();
+			if (tags == null) {
+				tags = new TTags();
+				((NodeTypeImplementationResource) this).getNTI().setTags(tags);
+			}
 		} else if(this.element instanceof TRelationshipTypeImplementation){
 			tags = ((TRelationshipTypeImplementation)this.element).getTags();
+			if (tags == null) {
+				tags = new TTags();
+				((RelationshipTypeImplementationResource) this).getRTI().setTags(tags);
+			}
+		} else {
+			throw new IllegalStateException("tags was called on a resource not supporting tags");
 		}
 
-		if (tags != null && tags.getTag() != null){
-			tagList = tags.getTag();
-		}
-
-
-		return new TagsResource(this, tagList);
+		return new TagsResource(this, tags.getTag());
 	}
 
 }
