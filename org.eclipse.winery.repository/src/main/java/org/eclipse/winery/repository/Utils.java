@@ -215,7 +215,7 @@ public class Utils {
 		sb.append(resource.getXmlId().getEncoded());
 		sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
 		sb.append("\"");
-		return Response.ok().header("Content-Disposition", sb.toString()).type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
+		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
 	}
 
 	/**
