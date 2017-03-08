@@ -6,7 +6,7 @@ command="cd www/winery/\n"
 command="${command}mkdir $TRAVIS_BRANCH\ncd $TRAVIS_BRANCH\nrm *.war\n"
 
 command="${command}mput org.eclipse.winery.repository/target/*.war\n"
-command="${command}mput org.eclipse.winery.repository/target/*.war\n"
+command="${command}mput org.eclipse.winery.topologymodeler/target/*.war\n"
 command="${command}exit\n"
 
 # now $command is complete
