@@ -15,7 +15,10 @@ import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-selectableList',
-    templateUrl: 'selectableList.component.html'
+    templateUrl: 'selectableList.component.html',
+    styleUrls: [
+        'selectableList.component.css',
+    ],
 })
 export class SelectableListComponent implements OnInit {
 

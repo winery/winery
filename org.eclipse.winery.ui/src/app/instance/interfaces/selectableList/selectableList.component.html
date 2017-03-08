@@ -12,19 +12,20 @@
  */
 -->
 <div class="bordered">
-    <div class="list-header">
-        <h5>{{ title }}</h5>
-        <div class="list-header-btn-wrap">
-            <button class="rightbutton btn btn-danger btn-xs"
-                    (click)="onRemove($event);"
-                    [disabled]="rows.length === 0">
-                Remove
-            </button>
-            <button class="rightbutton btn btn-primary btn-xs" (click)="onAdd($event);">Add</button>
-        </div>
+    <div class="listheading">
+        <label>{{ title }}</label>
+        <button class="rightbutton btn btn-danger btn-xs"
+                id="removeIfBtn"
+                (click)="onRemove($event);"
+                [disabled]="rows.length === 0">
+            Remove
+        </button>
+        <button class="rightbutton btn btn-primary btn-xs" id="addIfBtn" (click)="onAdd($event);">Add</button>
     </div>
     <div class="list-content">
-        <ng-content></ng-content>
+        <select name="Interfaces" size="8" id="interfaces" class="listcontent">
+            <option *ngFor="let item of rows" value="{{ item }}">{{ item }}</option>
+        </select>
     </div>
 </div>
 

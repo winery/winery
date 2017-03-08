@@ -16,6 +16,24 @@
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading">
-    <winery-selectableList [title]="'Interfaces'"></winery-selectableList>
-    <!--<winery-selectableList [title]="'Operations'"></winery-selectableList>-->
+    <span>&nbsp;</span>
+    <div style="display: flex;">
+        <winery-selectableList [title]="'Interfaces'"
+                               [rows]="interfacesData.inputParameters">
+        </winery-selectableList>
+        <winery-selectableList [title]="'Operations'" [rows]="operations"></winery-selectableList>
+    </div>
+    <div>
+        <h5>Input Parameters</h5>
+        <winery-table [data]="dataIn"
+                      [columns]="columns"
+                      [disableFiltering]="true">
+        </winery-table>
+
+        <h5>Output Parameters</h5>
+        <winery-table [data]="dataOut"
+                      [columns]="columns"
+                      [disableFiltering]="true">
+        </winery-table>
+    </div>
 </div>

@@ -79,7 +79,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 			interfaces = new SourceInterfaces();
 			this.getRelationshipType().setSourceInterfaces(interfaces);
 		}
-		return new InterfacesResource("source", interfaces.getInterface(), this);
+		return new InterfacesResource(this, interfaces.getInterface());
 	}
 
 	@Path("targetinterfaces/")
@@ -89,7 +89,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 			interfaces = new TargetInterfaces();
 			this.getRelationshipType().setTargetInterfaces(interfaces);
 		}
-		return new InterfacesResource("target", interfaces.getInterface(), this);
+		return new InterfacesResource(this, interfaces.getInterface());
 	}
 
 	@Path("validendings/")

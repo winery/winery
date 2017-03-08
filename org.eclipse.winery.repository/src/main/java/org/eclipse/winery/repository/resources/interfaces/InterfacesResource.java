@@ -11,56 +11,29 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.interfaces;
 
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.resources._support.IPersistable;
-import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
-import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
 
-import com.sun.jersey.api.view.Viewable;
-import org.apache.commons.lang3.StringUtils;
-import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InterfacesResource extends EntityWithIdCollectionResource<InterfaceResource, TInterface> {
+import java.util.List;
+
+public class InterfacesResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(InterfacesResource.class);
 
-	private TopologyGraphElementEntityTypeResource typeResource;
+	private TopologyGraphElementEntityTypeResource res;
+	private List<TInterface> interfaces;
 
-	private String urlPrefix;
-
-
-	public InterfacesResource(IPersistable res, List<TInterface> list) {
-		super(InterfaceResource.class, TInterface.class, list, res);
-	}
-
-	/**
-	 * @param urlPrefix prefix to be prepended to the URL.
-	 *            "source"|"target"|null. E.g., "source" for "sourceinterfaces"
-	 */
-	public InterfacesResource(String urlPrefix, List<TInterface> list, IPersistable typeResource) {
-		super(InterfaceResource.class, TInterface.class, list, typeResource);
-		this.urlPrefix = urlPrefix;
-		this.typeResource = (TopologyGraphElementEntityTypeResource) typeResource;
-	}
-
-	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/interfaces/interfaces.jsp", this);
+	public InterfacesResource(TopologyGraphElementEntityTypeResource res, List<TInterface> interfaces) {
+		this.res = res;
+		this.interfaces = interfaces;
 	}
 
 	/**
@@ -69,71 +42,17 @@ public class InterfacesResource extends EntityWithIdCollectionResource<Interface
 	 *
 	 * @return entity: id of the stored interface
 	 */
-	@POST
-	@RestDoc(methodDescription = "Creates a new interface. Returns conflict if interface already exists")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response onPost(@FormParam("interfaceName") String interfaceName) {
-		if (StringUtils.isEmpty(interfaceName)) {
-			return Response.status(Status.BAD_REQUEST).entity("null interfaceName").build();
-		}
+//	@POST
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces(MediaType.TEXT_PLAIN)
+//	public Response onPost(InterfaceApiData interfaceApiData) {
+//		return BackendUtils.persist(this.res);
+//	}
 
-		TInterface iface = new TInterface();
-		iface.setName(interfaceName);
-
-		// check for duplicates
-		// return "conflict" if interface already exists
-		if (this.alreadyContains(iface)) {
-			return Response.status(Status.CONFLICT).build();
-		}
-
-		this.list.add(iface);
-		return BackendUtils.persist(this.res);
+	@GET
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public List<TInterface> onGet() {
+		return this.interfaces;
 	}
 
-	/**
-	 * Required by interfaces.jsp
-	 */
-	public String getUrlPrefix() {
-		return this.urlPrefix;
-	}
-
-	@Override
-	public String getId(TInterface entity) {
-		return entity.getName();
-	}
-
-	/**
-	 * @return the namespace of the node/relationship type
-	 */
-	public String getNamespace() {
-		return this.typeResource.getId().getNamespace().getDecoded();
-	}
-
-	/**
-	 * @return the name of the node/relationship type
-	 */
-	public String getName() {
-		return this.typeResource.getName();
-	}
-
-	public String getRelationshipTypeOrNodeTypeURLFragment() {
-		if (this.typeResource instanceof RelationshipTypeResource) {
-			return "relationshiptype";
-		} else {
-			return "nodetype";
-		}
-	}
-
-	public String getRelationshipTypeOrNodeType() {
-		if (this.typeResource instanceof RelationshipTypeResource) {
-			return "Relationship Type";
-		} else {
-			return "Node Type";
-		}
-	}
-
-	public String getTypeQName() {
-		return this.typeResource.getId().getQName().toString();
-	}
 }

@@ -14,7 +14,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
 
-    selector: 'table-component',
+    selector: 'winery-table',
     templateUrl: 'table.component.html',
     styleUrls: ['table.component.css']
 })
@@ -25,6 +25,7 @@ export class TableComponent implements OnInit {
     @Input() maxSize: number = 5;
     @Input() numPages: number = 1;
     @Input() length: number = 0;
+    @Input() disableFiltering: boolean = false;
 
     public rows: Array<any> = [];
 

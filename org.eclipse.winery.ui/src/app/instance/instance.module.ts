@@ -33,6 +33,7 @@ import { LoaderModule } from '../loader/loader.module';
 import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { SelectableListModule } from './interfaces/selectableList/selectableList.module';
+import { TableModule } from '../tableModule/table.module';
 
 
 @NgModule({
@@ -44,6 +45,7 @@ import { SelectableListModule } from './interfaces/selectableList/selectableList
         SelectableListModule,
         PropertiesDefinitionModule,
         InstanceRouterModule,
+        TableModule
     ],
     exports: [],
     declarations: [

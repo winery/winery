@@ -14,11 +14,13 @@
 
 <div>
     <div class="table-component-header">
-        <label>Search:</label>
-        <input *ngIf="config.filtering" placeholder="Filter all columns"
-               [ngTableFiltering]="config.filtering"
-               class="form-control"
-               (tableChanged)="onChangeTable(config)"/>
+        <div *ngIf="!disableFiltering">
+            <label>Search:</label>
+            <input *ngIf="config.filtering" placeholder="Filter all columns"
+                   [ngTableFiltering]="config.filtering"
+                   class="form-control"
+                   (tableChanged)="onChangeTable(config)"/>
+        </div>
         <div class="table-component-header-btn-wrap">
             <button class="rightbutton btn btn-danger btn-xs"
                     (click)="onRemoveClick($event);"
