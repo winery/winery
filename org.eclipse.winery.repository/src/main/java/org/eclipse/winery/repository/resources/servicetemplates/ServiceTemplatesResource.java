@@ -44,9 +44,8 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response createFromArtefact(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @FormDataParam("artefactType") QName artifactType, @FormDataParam("nodeTypes") Set<QName> nodeTypes, @FormDataParam("infrastructureNodeType") QName infrastructureNodeType, @FormDataParam("tags") Set<String> tags, @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
-
-		tags = Utils.clean(tags);
+	public Response createFromArtefact(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @FormDataParam("artefactType") QName artifactType, @FormDataParam("nodeTypes") Set<QName> nodeTypes, @FormDataParam("infrastructureNodeType") QName infrastructureNodeType, @FormDataParam("tags") Set<String> sentTags, @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
+		Set<String> tags = Utils.clean(sentTags);
 		nodeTypes = Utils.cleanQNameSet(nodeTypes);
 
 		Collection<ServiceTemplateId> xaasPackages = this.getXaaSPackageTemplates(artifactType);

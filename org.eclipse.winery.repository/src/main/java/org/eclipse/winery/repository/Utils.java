@@ -864,47 +864,20 @@ public class Utils {
 	public static boolean containsNodeType(TServiceTemplate serviceTemplate, QName nodeType) {
 		List<TEntityTemplate> templates = serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate();
 
-		for (TEntityTemplate template : templates) {
-			if (template instanceof TNodeTemplate) {
-				if (((TNodeTemplate) template).getType().equals(nodeType)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return templates.stream().filter(template -> template instanceof TNodeTemplate).anyMatch(template -> template.getType().equals(nodeType));
 	}
 
 	public static boolean containsNodeTypes(TServiceTemplate serviceTemplate, Collection<QName> nodeTypes) {
-		for (QName nodeType : nodeTypes) {
-			if (!Utils.containsNodeType(serviceTemplate, nodeType)) {
-				return false;
-			}
-		}
-		return true;
+		return nodeTypes.stream().allMatch(nodeType -> Utils.containsNodeType(serviceTemplate, nodeType));
 	}
 
 	public static boolean containsTag(TServiceTemplate serviceTemplate, String tagKey) {
-		String value = Utils.getTagValue(serviceTemplate, tagKey);
-		if (value != null) {
-			return true;
-		} else {
-			return false;
-		}
+		return Utils.getTagValue(serviceTemplate, tagKey) != null;
 	}
 
 	public static boolean containsTag(TServiceTemplate serviceTemplate, String tagKey, String tagValue) {
 		String value = Utils.getTagValue(serviceTemplate, tagKey);
-
-		if (value == null) {
-			return false;
-		}
-
-		if (!value.equals(tagValue)) {
-			return false;
-		}
-
-		return true;
+		return value != null && value.equals(tagValue);
 	}
 
 	public static boolean containsTags(TServiceTemplate serviceTemplate, Collection<String> tags) {
