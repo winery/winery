@@ -9,21 +9,14 @@ sudo: required
 dist: trusty
 
 before_install:
-  - cd org.eclipse.winery.model.csar.toscametafile
-  - mvn install
-  - cd ../org.eclipse.winery.model.selfservice
-  - mvn install
-  - cd ../org.eclipse.winery.model.tosca
-  - mvn install
-  - cd ..
-  #- mvn install
-
+  # This is https://github.com/codacy/codacy-coverage-reporter#install-jpm, but the SSL certificate is expired, therefore we directly do the commands of the install script here
+  # This is needec, because we use TypeScript and Java in one project
   - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
   - java -jar jpm4j.jar -u init
   - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
 
 script:
- mvn install -DskipTests=false --fail-at-end
+  - mvn package --fail-at-end
 #  - mvn jacoco:report-aggregate
 
 #upload codecov report
