@@ -29,6 +29,8 @@ after_script:
   - chmod 600 ~/.ssh/id_rsa
   - eval "$(ssh-agent -s)"
   - ssh-add ~/.ssh/id_rsa
+  # Prevent "Are you sure you want to continue connecting (yes/no)? " prompt
+  - echo -e "Host builds.opentosca.org\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - scripts/upload-to-builds.opentosca.org.sh
 
 # We do not need special build commands, as we use the default maven configuration
