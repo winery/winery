@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
 
+
 public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TagsResource.class);
@@ -47,29 +48,28 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 		return new Viewable("/jsp/tags/tags.jsp", this);
 	}
 
+
 	/**
 	 * Adds an element using form-encoding
 	 *
 	 * This is necessary as TRequirementRef contains an IDREF and the XML
 	 * snippet itself does not contain the target id
-	 *
-	 *
-	 * @param name
-	 *            the optional name of the requirement
-	 * @param value
-	 *            the reference to a requirement in the topology
+	 * @param name the optional name of the requirement
+	 * @param value the reference to a requirement in the topology
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addNewElement(@FormParam("id") String id, @FormParam("name") String name,
 			@FormParam("value") String value) {
-		// Implementation adapted from super addNewElement
+
 		TTag tag = new TTag();
 
 		tag.setName(name);
 		tag.setValue(value);
 
-		this.addTagToResource(tag);
+		//this.addTagToResource(tag);
+
+		this.setTagsIfNull();
 
 		this.list.add(tag);
 		return CollectionsHelper.persist(this.res, this, tag);
