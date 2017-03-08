@@ -1,0 +1,66 @@
+#
+# Copyright 2017 ZTE Corporation.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# and the Apache License 2.0 which both accompany this distribution,
+# and are available at http://www.eclipse.org/legal/epl-v10.html
+# and http://www.apache.org/licenses/LICENSE-2.0
+#
+
+##########################################################################
+# Interfaces are reusable entities that define a set of operations that that 
+# can be included as part of a Node type or Relationship Type definition. 
+# Each named operations may have code or scripts associated with them that 
+# orchestrators can execute for when transitioning an application to a given state.  
+##########################################################################
+interface_types:
+
+  ##########################################################################
+  # This is the default (root) TOSCA Interface Type definition that all other 
+  # TOSCA Interface Types derive from.  
+  ##########################################################################
+  tosca.interfaces.Root:
+    description: The TOSCA root Interface Type all other TOSCA base Interface Types derive from
+
+  ##########################################################################
+  # This lifecycle interface defines the essential, normative operations that 
+  # TOSCA nodes may support. 
+  ##########################################################################
+  tosca.interfaces.node.lifecycle.Standard:
+    derived_from: tosca.interfaces.Root
+    create:
+      description: Standard lifecycle create operation.
+    configure:
+      description: Standard lifecycle configure operation.
+    start:
+      description: Standard lifecycle start operation.
+    stop:
+      description: Standard lifecycle stop operation.
+    delete:
+      description: Standard lifecycle delete operation.
+  
+  
+  ##########################################################################
+  # The lifecycle interfaces define the essential, normative operations that 
+  # each TOSCA Relationship Types may support. 
+  ##########################################################################
+  tosca.interfaces.relationship.Configure:
+    derived_from: tosca.interfaces.Root
+    pre_configure_source:
+      description: Operation to pre-configure the source endpoint.
+    pre_configure_target:
+      description: Operation to pre-configure the target endpoint.
+    post_configure_source:
+      description: Operation to post-configure the source endpoint.
+    post_configure_target:
+      description: Operation to post-configure the target endpoint.
+    add_target:
+      description: Operation to notify the source node of a target node being added via a relationship.
+    add_source:
+      description: Operation to notify the target node of a source node which is now available via a relationship.
+      description:
+    target_changed:
+      description: Operation to notify source some property or attribute of the target changed
+    remove_target:
+      description: Operation to remove a target node. 
