@@ -89,7 +89,7 @@
 					<button type="button" class="btn btn-default" onclick="openNewCIdiag();">Add new</button>
 					<button type="button" class="btn btn-default" onclick="importCSAR();">Import CSAR</button>
 					<c:if test="${it.type eq 'ServiceTemplate'}">
-						<button type="button" class="btn btn-default" onclick="$('#createFromArtefactDiag').modal('show');">Create from Artefact</button>
+						<button type="button" class="btn btn-default" onclick="$('#createFromArtifactDiag').modal('show');">Create from Artifact</button>
 					</c:if>
                     <c:choose>
                         <c:when test="${it.showAllItems}">
@@ -122,7 +122,7 @@
 </div>
 
 <c:if test="${it.type eq 'ServiceTemplate'}">
-	<t:createFromArtefactDialog allSubResources="${it.componentInstanceIds}" allNodeTypes="<%=Utils.getAllNodeTypeResources()%>"/>
+	<t:createFromArtifactDialog allSubResources="${it.componentInstanceIds}" allNodeTypes="<%=Utils.getAllNodeTypeResources()%>"/>
 </c:if>
 
 <script>

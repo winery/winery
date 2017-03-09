@@ -44,7 +44,7 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response createFromArtefact(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @FormDataParam("artefactType") QName artifactType, @FormDataParam("nodeTypes") Set<QName> nodeTypes, @FormDataParam("infrastructureNodeType") QName infrastructureNodeType, @FormDataParam("tags") Set<String> sentTags, @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
+	public Response createFromArtifact(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @FormDataParam("artifactType") QName artifactType, @FormDataParam("nodeTypes") Set<QName> nodeTypes, @FormDataParam("infrastructureNodeType") QName infrastructureNodeType, @FormDataParam("tags") Set<String> sentTags, @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
 		Set<String> tags = Utils.clean(sentTags);
 		nodeTypes = Utils.cleanQNameSet(nodeTypes);
 
@@ -75,7 +75,7 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 		xaasPackages.removeAll(toRemove);
 
 		if (xaasPackages.size() <= 0) {
-			return Response.serverError().entity("No suitable ServiceTemplate found for given artefact and configuration").build();
+			return Response.serverError().entity("No suitable ServiceTemplate found for given artifact and configuration").build();
 		}
 
 		// take the first found serviceTemplate
@@ -84,18 +84,18 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 		// create new name for the cloned sTemplate
 		String newTemplateName = fileDetail.getFileName() + "ServiceTemplate";
 
-		// create artefactTemplate for the uploaded artefact
-		ArtifactTemplateId artefactTemplateId = Utils.createArtefactTemplate(uploadedInputStream, fileDetail, body, artifactType, uriInfo);
+		// create artifactTemplate for the uploaded artifact
+		ArtifactTemplateId artifactTemplateId = Utils.createArtifactTemplate(uploadedInputStream, fileDetail, body, artifactType, uriInfo);
 
 		// clone serviceTemplate
 		ServiceTemplateId serviceTemplateId = Utils.cloneServiceTemplate(serviceTemplate, newTemplateName, fileDetail.getFileName());
 
-		if (Utils.hasDA(serviceTemplateId, Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtefact"))) {
+		if (Utils.hasDA(serviceTemplateId, Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"))) {
 
-			// inject artefact as DA into cloned ServiceTemplate
-			Utils.injectArtefactTemplateIntoDeploymentArtefact(serviceTemplateId, Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtefact"), artefactTemplateId);
+			// inject artifact as DA into cloned ServiceTemplate
+			Utils.injectArtifactTemplateIntoDeploymentArtifact(serviceTemplateId, Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"), artifactTemplateId);
 		} else {
-			return Response.serverError().entity("Tagged DeploymentArtefact couldn't be found on given specified NodeTemplate").build();
+			return Response.serverError().entity("Tagged DeploymentArtifact couldn't be found on given specified NodeTemplate").build();
 		}
 
 		URI absUri = Utils.getAbsoluteURI(serviceTemplateId);
@@ -107,12 +107,12 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 		return Response.created(absUri).build();
 	}
 
-	private Collection<ServiceTemplateId> getXaaSPackageTemplates(QName artefactType) {
+	private Collection<ServiceTemplateId> getXaaSPackageTemplates(QName artifactType) {
 		Collection<ServiceTemplateId> xaasPackages = new ArrayList<ServiceTemplateId>();
 		for (ServiceTemplateId serviceTemplate : this.getXaaSPackageTemplates()) {
-			String artefactTypeTagValue = Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageArtefactType");
-			QName taggedArtefactType = QName.valueOf(artefactTypeTagValue);
-			if (taggedArtefactType.equals(artefactType)) {
+			String artifactTypeTagValue = Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageArtifactType");
+			QName taggedArtifactType = QName.valueOf(artifactTypeTagValue);
+			if (taggedArtifactType.equals(artifactType)) {
 				xaasPackages.add(serviceTemplate);
 			}
 		}
@@ -136,8 +136,8 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 				for (TTag tag : tags.getTag()) {
 					switch (tag.getName()) {
 					case "xaasPackageNode":
-					case "xaasPackageArtefactType":
-					case "xaasPackageDeploymentArtefact":
+					case "xaasPackageArtifactType":
+					case "xaasPackageDeploymentArtifact":
 						check++;
 						break;
 					default:

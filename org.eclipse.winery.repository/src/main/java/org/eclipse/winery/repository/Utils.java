@@ -810,7 +810,7 @@ public class Utils {
 		return newSet;
 	}
 
-	public static ServiceTemplateId cloneServiceTemplate(ServiceTemplateId serviceTemplate, String newName, String artefactName) throws JAXBException, IllegalArgumentException, IOException {
+	public static ServiceTemplateId cloneServiceTemplate(ServiceTemplateId serviceTemplate, String newName, String artifactName) throws JAXBException, IllegalArgumentException, IOException {
 
 		ServiceTemplateId newServiceTemplateId = new ServiceTemplateId(serviceTemplate.getNamespace().getDecoded(), newName, false);
 
@@ -819,7 +819,7 @@ public class Utils {
 		Definitions defs = new ServiceTemplateResource(serviceTemplate).getDefinitions();
 
 		defs.setId(newName + "Definitions");
-		defs.setName(newName + "Definitions generated from Artefact " + artefactName);
+		defs.setName(newName + "Definitions generated from Artifact " + artifactName);
 
 		TServiceTemplate oldSTModel = null;
 
@@ -830,7 +830,7 @@ public class Utils {
 		}
 
 		oldSTModel.setId(newName);
-		oldSTModel.setName(newName + " generated from Artefact " + artefactName);
+		oldSTModel.setName(newName + " generated from Artifact " + artifactName);
 
 		// remove xaaspackager tags
 		Collection<TTag> toRemove = new ArrayList<TTag>();
@@ -838,8 +838,8 @@ public class Utils {
 		for (TTag tag : oldSTModel.getTags().getTag()) {
 			switch (tag.getName()) {
 			case "xaasPackageNode":
-			case "xaasPackageArtefactType":
-			case "xaasPackageDeploymentArtefact":
+			case "xaasPackageArtifactType":
+			case "xaasPackageDeploymentArtifact":
 				toRemove.add(tag);
 				break;
 			default:
@@ -898,17 +898,17 @@ public class Utils {
 		return true;
 	}
 
-	public static ArtifactTemplateId createArtefactTemplate(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body, QName artifactType, UriInfo uriInfo) {
+	public static ArtifactTemplateId createArtifactTemplate(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body, QName artifactType, UriInfo uriInfo) {
 
 		ArtifactTemplatesResource templateResource = new ArtifactTemplatesResource();
 		templateResource.onPost("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), artifactType.toString());
 
-		ArtifactTemplateId artefactTemplateId = new ArtifactTemplateId("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), false);
+		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), false);
 
-		ArtifactTemplateResource atRes = new ArtifactTemplateResource(artefactTemplateId);
+		ArtifactTemplateResource atRes = new ArtifactTemplateResource(artifactTemplateId);
 		atRes.getFilesResource().onPost(uploadedInputStream, fileDetail, body, uriInfo);
 
-		return artefactTemplateId;
+		return artifactTemplateId;
 	}
 
 	public static String getTagValue(TServiceTemplate serviceTemplate, String tagKey) {
@@ -922,20 +922,20 @@ public class Utils {
 		return null;
 	}
 
-	public static boolean hasDA(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtefactId) {
+	public static boolean hasDA(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId) {
 		ServiceTemplateResource stRes = new ServiceTemplateResource(serviceTemplate);
 		try {
-			stRes.getTopologyTemplateResource().getNodeTemplatesResource().getEntityResource(nodeTemplateId).getDeploymentArtifacts().getEntityResource(deploymentArtefactId);
+			stRes.getTopologyTemplateResource().getNodeTemplatesResource().getEntityResource(nodeTemplateId).getDeploymentArtifacts().getEntityResource(deploymentArtifactId);
 		} catch (Exception e) {
 			return false;
 		}
 		return true;
 	}
 
-	public static boolean injectArtefactTemplateIntoDeploymentArtefact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtefactId, ArtifactTemplateId artefactTemplate) {
+	public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) {
 
 		ServiceTemplateResource stRes = new ServiceTemplateResource(serviceTemplate);
-		stRes.getTopologyTemplateResource().getNodeTemplatesResource().getEntityResource(nodeTemplateId).getDeploymentArtifacts().getEntityResource(deploymentArtefactId).setArtifactTemplate(artefactTemplate);
+		stRes.getTopologyTemplateResource().getNodeTemplatesResource().getEntityResource(nodeTemplateId).getDeploymentArtifacts().getEntityResource(deploymentArtifactId).setArtifactTemplate(artifactTemplate);
 
 		return true;
 	}
