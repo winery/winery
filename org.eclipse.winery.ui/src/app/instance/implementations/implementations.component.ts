@@ -14,6 +14,8 @@ import { Component, OnInit } from '@angular/core';
 import { ImplementationService } from './implementation.service';
 import { ImplementationAPIData } from './implementationAPIData';
 import { InstanceService } from '../instance.service';
+import { WineryTableComponent } from '../../wineryTableModule/wineryTable.component';
+
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -23,11 +25,17 @@ import { InstanceService } from '../instance.service';
 export class ImplementationsComponent implements OnInit {
     implementationData: ImplementationAPIData[];
     loading: boolean = true;
+    selectedCell: any;
+    columns: Array<any> = [
+        {title: 'Namespace', name: 'namespace', sort: true},
+        {title: 'Name', name: 'localname', sort: true},
+    ];
 
     constructor(
         private sharedData: InstanceService,
         private service: ImplementationService,
     ) {
+        this.implementationData = [];
     }
 
     ngOnInit() {
@@ -40,6 +48,17 @@ export class ImplementationsComponent implements OnInit {
             );
     }
 
+    // region ######## table methods ########
+    onCellSelected(data: any) {
+        console.log('selected');
+    }
+    onRemoveClick(data: any) {
+        console.log('remove');
+    }
+    onAddClick() {
+        console.log('add');
+    }
+    // endregion
     private handleData( impl: ImplementationAPIData[]) {
         this.implementationData = impl;
         this.loading = false;
@@ -49,4 +68,5 @@ export class ImplementationsComponent implements OnInit {
         this.loading = false;
         console.log(error);
     }
+
 }
