@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,53 +7,31 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter - initial API and implementation
+ */
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { QNameService } from './qNameSelector.service';
-import { AvailableSuperclassesApiData } from './availableSuperclassesApiData';
-import { NotificationsService } from "angular2-notifications";
+import { QNameList } from './qNameApiData';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-qNameSelector',
     templateUrl: 'qNameSelector.component.html',
-    providers: [
-      QNameService
-    ],
 })
-export class QNameSelectorComponent implements OnInit {
+export class QNameSelectorComponent {
 
     @Input() title: string;
-    @Input() selectedValue: string;
+    @Input() displayList: QNameList;
     @Input() selectedResource: string;
-    @Input() selectedNamespace: string;
-    @Input() selectedComponentId: string;
+    @Input() selectedValue: string;
 
     @Output() selectedValueChanged = new EventEmitter();
 
-    availableSuperClasses: AvailableSuperclassesApiData;
+    qNameList: QNameList;
     openSuperClassLink: string = '';
     queryPath: string;
-    loading: boolean = true;
 
-
-    constructor(private service: QNameService, private notify: NotificationsService) {}
-
-    ngOnInit() {
-        this.selectedResource = this.selectedResource.toLowerCase() + 's';
-
-        this.queryPath = '/' + this.selectedResource
-            + '/' + encodeURIComponent(encodeURIComponent(encodeURIComponent(this.selectedNamespace)))
-            + '/' + this.selectedComponentId
-            + '/getAvailableSuperClasses';
-
-        this.service.getAvailableSuperClasses(this.queryPath)
-            .subscribe(
-                data => this.handleData(data),
-                error => this.handleError(error)
-            );
-    }
+    constructor() {}
 
     onChange(value: string): void {
         this.selectedValue = value;
@@ -61,18 +39,16 @@ export class QNameSelectorComponent implements OnInit {
         this.selectedValueChanged.emit({ value: this.selectedValue});
     }
 
-    private handleData(availableSuperClasses: AvailableSuperclassesApiData): void {
-        this.availableSuperClasses = availableSuperClasses;
+    private handleData(availableSuperClasses: QNameList): void {
+        this.qNameList = availableSuperClasses;
         this.setButtonLink();
-        this.loading = false;
-    }
-
-    private handleError(error: any): void {
-        this.loading = false;
-        this.notify.error('Error', 'An error has occured: ' + error);
     }
 
     private setButtonLink(): void {
+        if (isNullOrUndefined(this.selectedValue)) {
+            this.selectedValue = '(none)';
+        }
+
         let parts = this.selectedValue.split('}');
 
         // can be '(none)'

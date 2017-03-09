@@ -1,3 +1,4 @@
+<!--
 /*******************************************************************************
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -7,12 +8,21 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
-
-
-import { QNameApiData } from './qNameApiData';
-
-export interface AvailableSuperclassesApiData {
-    classes: [QNameApiData];
+ *     Nicole Keppler - initial API and implementation
+ */
+-->
+div.documentationField{
+    width: 70%;
+    margin-left:auto;
+    margin-rigth:auto;
+    position:relative;
+}
+div.documentationField > .texDoc {
+    width: 100%;
+    display: block;
+    resize: none;
+}
+div.documentationField > div.floatButton {
+    float:right;
+    margin-top: 10px;;
 }

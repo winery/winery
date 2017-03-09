@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter - initial API and implementation
+ */
 
 import { Injectable } from '@angular/core';
 
@@ -25,6 +25,12 @@ export class InstanceService {
 
     constructor() {}
 
+    /**
+     * Get the submenu for the given resource type for displaying a component instance.
+     *
+     * @param type specifies the resource type for this particular instance.
+     * @returns string[] containing all menus for each resource type.
+     */
     public getSubMenuByResource(type?: string): string[] {
         if (isNullOrUndefined(type)) {
             type = this.selectedResource;
@@ -84,10 +90,21 @@ export class InstanceService {
         return subMenu;
     }
 
-    public setSharedData(selectedResource: string, selectedNamespace: string, selectedComponentId: string, path: string): void {
+    /**
+     * Set the shared data for the children. The path to the actual component is also generated.
+     *
+     * @param selectedResource
+     * @param selectedNamespace
+     * @param selectedComponentId
+     */
+    public setSharedData(selectedResource: string, selectedNamespace: string, selectedComponentId: string): void {
         this.selectedNamespace = selectedNamespace;
         this.selectedComponentId = selectedComponentId;
         this.selectedResource = selectedResource;
-        this.path = path;
+        // In order to have always the base path of this instance, create the path here
+        // instead of getting it from the router, because there might be some child routes included.
+        this.path = '/' + this.selectedResource.toLowerCase() + 's/'
+            + encodeURIComponent(encodeURIComponent(this.selectedNamespace)) + '/'
+            + this.selectedComponentId;
     }
 }

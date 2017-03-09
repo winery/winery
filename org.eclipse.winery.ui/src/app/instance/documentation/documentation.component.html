@@ -1,5 +1,5 @@
 <!--
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,9 +8,16 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Nicole Keppler - initial API and implementation
+ */
 -->
-<div>
-    directory.component
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div class="documentationField" *ngIf="!loading">
+    <textarea class="texDoc" [(ngModel)]="documentationData">{{documentationData}}</textarea>
+    <div class="floatButton">
+        <button (click)="saveToServer()" class="btn btn-info btn-sm">save</button>
+    </div>
+
 </div>

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter - initial API and implementation
+ */
 
 import { Injectable }             from '@angular/core';
 import {
@@ -18,13 +18,13 @@ import {
 
 import { sections } from '../configuration';
 import { isNullOrUndefined } from 'util';
-import { ResolverData } from './resolverData';
+import { SectionResolverData } from '../interfaces/resolverData';
 
 @Injectable()
-export class SectionResolver implements Resolve<ResolverData> {
+export class SectionResolver implements Resolve<SectionResolverData> {
     constructor(private router: Router) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): ResolverData {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): SectionResolverData {
         let section = sections[route.params['section']];
 
         if (!isNullOrUndefined(section)) {

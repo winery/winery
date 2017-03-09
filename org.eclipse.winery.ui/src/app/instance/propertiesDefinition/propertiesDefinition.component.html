@@ -1,5 +1,5 @@
 <!--
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,134 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
+ */
 -->
-propertyDefinition component
+
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <div class="radioWrapper">
+        <div class="left">
+            <input id="nopropdef" type="radio" name="kind" (click)="onNoneSelected()"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.None">
+            <label for="nopropdef" class="cursorpointer" name="nopropdef">(none)</label>
+            <br>
+            <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.Element">
+            <label for="xsdelementradio" class="cursorpointer">XML element</label>
+            <a id="xsdelement" class="editable editable-click editable-empty">{{ xsdElement }}</a>
+            <br>
+            <input id="xsdtyperadio" type="radio" name="kind" (click)="onXmlTypeSelected()"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.Type">
+            <label for="xsdtyperadio" class="cursorpointer">XML type</label>
+            <a id="xsdtype" class="editable editable-click editable-empty">{{ xsdType }}</a>
+            <br>
+            <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()"
+                   [checked]="resourceApiData.selectedValue === propertiesEnum.Custom">
+            <label for="customkv" class="cursorpointer">Custom key/value pairs</label>
+        </div>
+        <div class="right">
+            <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+        </div>
+    </div>
+    <div>
+        <div *ngIf="(resourceApiData.selectedValue === propertiesEnum.Element
+            || resourceApiData.selectedValue === propertiesEnum.Type)">
+            <ng-select [items]="selectItems" (selected)="xmlValueSelected($event)" [active]="[activeElement]"></ng-select>
+        </div>
+
+        <div *ngIf="resourceApiData.selectedValue === propertiesEnum.Custom">
+            <tabset>
+                <tab heading="Properties">
+                    <table-component
+                        [data]="resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList"
+                        [columns]="columns"
+                        (cellSelected)="onCellSelected($event)"
+                        [itemsPerPage]="10"
+                        (removeBtnClicked)="onRemoveClick($event)"
+                        (addBtnClicked)="onAddClick();">
+                    </table-component>
+                </tab>
+                <tab heading="Wrapper">
+                    <div class="wrapperTab">
+                        <label for="wrapperName">Name of Wrapper Element</label><br>
+                        <input id="wrapperName"
+                               class="form-control"
+                               [(ngModel)]="resourceApiData.winerysPropertiesDefinition.elementName">
+                    </div>
+                    <div class="wrapperTabButtom">
+                        <label for="wrapperNamespace">Namespace</label>
+                        <input id="wrapperNamespace"
+                               class="form-control"
+                               [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"
+                               [typeahead]="allNamespaces">
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <modal-header>
+        <h4 class="modal-title">Add Property</h4>
+    </modal-header>
+    <modal-body>
+        <form #addPropertyFrom="ngForm" id="addPropertyForm">
+            <div class="form-group">
+                <label class="control-label" for="key">Name</label>
+                <input #propName="ngModel"
+                       id="key"
+                       class="form-control"
+                       type="text"
+                       name="key"
+                       required
+                       [(ngModel)]="newProperty.key"
+                       [duplicateValidator]="resourceApiData?.winerysPropertiesDefinition?.propertyDefinitionKVList"/>
+
+                <div *ngIf="propName.errors && (propName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!propName.errors.duplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!propName.errors.required">
+                        Name is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" for="propType">Type</label>
+                <select #selectProperty name="type" class="form-control" id="propType">
+                    <option value="xsd:string">xsd:string</option>
+                    <option value="xsd:float">xsd:float</option>
+                    <option value="xsd:decimal">xsd:decimal</option>
+                    <option value="xsd:anyURI">xsd:anyURI</option>
+                    <option value="xsd:QName">xsd:QName</option>
+                </select>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer [show-default-buttons]="false">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addModal.hide()">Cancel</button>
+        <button type="button" [disabled]="!addPropertyFrom?.form.valid" class="btn btn-primary"
+                (click)="addProperty(selectProperty.value, propName.value); addModal.hide()">Add</button>
+    </modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <modal-header>
+        <h4 class="modal-title">Delete Property</h4>
+    </modal-header>
+    <modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.key }}</span>?
+        </p>
+    </modal-body>
+    <modal-footer (onOk)="removeConfirmed();"
+                  [close-button-label]="'No'"
+                  [ok-button-label]="'Yes'">
+    </modal-footer>
+</winery-modal>

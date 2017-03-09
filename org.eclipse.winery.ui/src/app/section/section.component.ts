@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter - initial API and implementation
+ */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -16,6 +16,7 @@ import { Subscription } from 'rxjs';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { NotificationsService } from "angular2-notifications";
+import { NotificationService } from "../notificationModule/notificationservice";
 
 @Component({
     selector: 'winery-section-component',
@@ -33,8 +34,8 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     constructor(private route: ActivatedRoute,
                 private service: SectionService,
-                private notify: NotificationsService
-    ) { }
+                private notify: NotificationService) {
+    }
 
     /**
      * @override
@@ -71,6 +72,6 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     private handleError(error: any): void {
         this.loading = false;
-        this.notify.error('Error', 'An error has occured:' + error);
+        this.notify.error(error.toString());
     }
 }

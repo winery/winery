@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,14 +7,15 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter - initial API and implementation
+ */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InstanceService } from './instance.service';
-import { NotificationsService } from 'angular2-notifications';
+import { NotificationService } from "../notificationModule/notificationservice";
+
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -28,25 +29,25 @@ export class InstanceComponent implements OnInit, OnDestroy {
     selectedResource: string;
     selectedComponentId: string;
     selectedNamespace: string;
-    path: string;
 
     routeSub: Subscription;
 
     constructor(private route: ActivatedRoute,
                 private service: InstanceService,
-                private notify: NotificationsService) {
+                private notify: NotificationService
+                ) {
     }
 
     ngOnInit(): void {
         this.routeSub = this.route
             .data
             .subscribe(data => {
-                    this.selectedResource = data['resolveData'].section;
-                    this.selectedNamespace = data['resolveData'].namespace;
-                    this.selectedComponentId = data['resolveData'].instanceId;
-                    this.path = data['resolveData'].path;
+                this.selectedResource = data['resolveData'].section;
+                this.selectedNamespace = data['resolveData'].namespace;
+                this.selectedComponentId = data['resolveData'].instanceId;
 
-                    this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId, this.path);
+
+                    this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId);
 
                     this.availableTabs = this.service.getSubMenuByResource();
                 },
@@ -54,8 +55,8 @@ export class InstanceComponent implements OnInit, OnDestroy {
     }
 
     handleError(error: any) {
-        // console.log(error)
-        this.notify.error('Error', 'An Error has occured:' + error);
+        this.notify.error(error.toString(), 'Error');
+
     }
 
     ngOnDestroy(): void {

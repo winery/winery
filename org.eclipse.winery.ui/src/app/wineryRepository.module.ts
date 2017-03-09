@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter - initial API and implementation
+ */
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -23,15 +23,18 @@ import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module'
 import { InstanceModule } from './instance/instance.module';
 import { NotFoundComponent } from './404/notFound.component';
 import { LoaderModule } from './loader/loader.module';
-import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
-
+import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
+import { CustomOption } from './notificationModule/notificationOptions';
+import { NotificationModule } from './notificationModule/notification.module';
+import { NotificationService } from "./notificationModule/notificationservice";
 
 @NgModule({
     imports: [
         BrowserModule,
         InstanceModule,
         LoaderModule,
-        SimpleNotificationsModule.forRoot(),
+        ToastModule.forRoot(),
+        NotificationModule.forRoot(),
         WineryRepositoryRoutingModule,
     ],
     declarations: [
@@ -45,7 +48,7 @@ import { SimpleNotificationsModule, NotificationsService } from 'angular2-notifi
         UrlEncodePipe,
     ],
     providers: [
-        NotificationsService
+        NotificationService
     ],
     bootstrap: [WineryRepositoryComponent]
 })

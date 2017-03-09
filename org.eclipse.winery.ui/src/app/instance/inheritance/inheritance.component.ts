@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,14 +7,16 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter - initial API and implementation
+ */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { InheritanceService } from './inheritance.service';
 import { InheritanceApiData } from './inheritanceApiData';
 import { InstanceService } from '../instance.service';
-import { NotificationsService } from 'angular2-notifications';
+import { QNameList } from '../../qNameSelector/qNameApiData';
+import { isNullOrUndefined } from 'util';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 
 @Component({
@@ -25,18 +27,24 @@ import { NotificationsService } from 'angular2-notifications';
 export class InheritanceComponent implements OnInit {
 
     inheritanceApiData: InheritanceApiData;
+    availableSuperClasses: QNameList;
     loading: boolean = true;
 
-    constructor(
-        private sharedData: InstanceService,
-        private service: InheritanceService,
-        private notify: NotificationsService
-    ) {}
+    constructor(private sharedData: InstanceService,
+                private service: InheritanceService,
+                private notify: NotificationService) {
+    }
 
     ngOnInit() {
-        this.service.getInheritanceData(this.sharedData.path)
+        this.service.setPath(this.sharedData.path);
+        this.service.getInheritanceData()
             .subscribe(
-                data => this.handleData(data),
+                data => this.handleInheritanceData(data),
+                error => this.handleError(error)
+            );
+        this.service.getAvailableSuperClasses()
+            .subscribe(
+                data => this.handleSuperClassData(data),
                 error => this.handleError(error)
             );
     }
@@ -54,20 +62,30 @@ export class InheritanceComponent implements OnInit {
             );
     }
 
-    private handleData(inheritance: InheritanceApiData) {
+    private handleInheritanceData(inheritance: InheritanceApiData) {
         this.inheritanceApiData = inheritance;
-        this.loading = false;
+
+        if (!isNullOrUndefined(this.availableSuperClasses)) {
+            this.loading = false;
+        }
+    }
+
+    private handleSuperClassData(superClasses: QNameList) {
+        this.availableSuperClasses = superClasses;
+
+        if (!isNullOrUndefined(this.inheritanceApiData)) {
+            this.loading = false;
+        }
     }
 
     private handlePutResponse(response: any) {
         this.loading = false;
-        this.notify.success('Success', 'The data was saved successfully');
+        this.notify.success('Saved changes', 'Success');
     }
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log('inheritanceComponent', error);
-        this.notify.error('Error', error);
+        this.notify.error(error.toString(), 'Error');
     }
 
 }

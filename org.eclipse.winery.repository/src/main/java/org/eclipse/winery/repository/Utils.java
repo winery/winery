@@ -563,7 +563,16 @@ public class Utils {
 		}
 	}
 
+	// TODO: maybe not necessary if everything is working with angular
 	public static String getAllXSDefinitionsForTypeAheadSelection(short type) {
+		try {
+			return Utils.mapper.writeValueAsString(Utils.getAllXSDefinitionsForTypeAheadSelectionRaw(type));
+		} catch (JsonProcessingException e) {
+			throw new IllegalStateException("Could not create JSON", e);
+		}
+	}
+
+	public static ArrayNode getAllXSDefinitionsForTypeAheadSelectionRaw(short type) {
 		SortedSet<XSDImportId> allImports = Repository.INSTANCE.getAllTOSCAComponentIds(XSDImportId.class);
 
 		Map<Namespace, Collection<String>> data = new HashMap<>();
@@ -592,6 +601,7 @@ public class Utils {
 			if (!localNames.isEmpty()) {
 				ObjectNode groupEntry = Utils.mapper.createObjectNode();
 				rootNode.add(groupEntry);
+				groupEntry.put("id", ns.getEncoded());
 				groupEntry.put("text", ns.getDecoded());
 				ArrayNode children = Utils.mapper.createArrayNode();
 				groupEntry.put("children", children);
@@ -603,17 +613,13 @@ public class Utils {
 					String text = localName;
 					ObjectNode o = Utils.mapper.createObjectNode();
 					o.put("text", text);
-					o.put("value", value);
+					o.put("id", value);
 					children.add(o);
 				}
 			}
 		}
 
-		try {
-			return Utils.mapper.writeValueAsString(rootNode);
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("Could not create JSON", e);
-		}
+		return rootNode;
 	}
 
 	public static Response getResponseForException(Exception e) {

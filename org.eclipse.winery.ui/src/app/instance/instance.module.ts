@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter - initial API and implementation
+ */
 
 import { NgModule } from '@angular/core';
 import { EditXMLComponent } from './editXML/editXML.component';
@@ -24,17 +24,21 @@ import { InterfacesComponent } from './interfaces/interfaces.component';
 import { ImplementationsComponent } from './implementations/implementations.component';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
-import { PropertyDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { LoaderModule } from '../loader/loader.module';
 import { FormsModule } from '@angular/forms';
 import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
+import { SelectModule } from 'ng2-select';
+import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
+
 
 @NgModule({
     imports: [
+        SelectModule,
         BrowserModule,
         FormsModule,
         LoaderModule,
+        PropertiesDefinitionModule,
         InstanceRouterModule,
     ],
     exports: [],
@@ -48,7 +52,6 @@ import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component
         InstanceHeaderComponent,
         InstanceStatesComponent,
         InterfacesComponent,
-        PropertyDefinitionComponent,
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
         VisualAppearanceComponent,

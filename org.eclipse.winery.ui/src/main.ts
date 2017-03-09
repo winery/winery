@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,8 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
- *******************************************************************************/
+ *     Lukas Harzenetter - initial API and implementation
+ */
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { enableProdMode }         from '@angular/core';
@@ -18,6 +18,8 @@ import { WineryRepositoryModule } from './app/wineryRepository.module';
 import './css/wineryCommon.css';
 import './css/wineryRepository.css';
 import './css/bootstrap.min.css';
+import 'ng2-toastr/ng2-toastr.css';
+require('font-awesome/css/font-awesome.css');
 
 if (process.env.ENV === 'production') {
     enableProdMode();
