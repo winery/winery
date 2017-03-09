@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -45,7 +45,6 @@ export class InstanceComponent implements OnInit, OnDestroy {
                 this.selectedResource = data['resolveData'].section;
                 this.selectedNamespace = data['resolveData'].namespace;
                 this.selectedComponentId = data['resolveData'].instanceId;
-
 
                     this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId);
 

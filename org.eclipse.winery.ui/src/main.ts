@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add font-awesome, add ng2-toastr css
  */
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';

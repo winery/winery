@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add notifications module
  */
 
 import { Component, ViewContainerRef, OnInit } from '@angular/core';
