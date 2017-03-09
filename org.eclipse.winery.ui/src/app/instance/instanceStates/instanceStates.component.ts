@@ -16,6 +16,7 @@ import { InstanceStateService } from './instanceState.service';
 import { InstanceService } from '../instance.service';
 import { InstanceStateApiData } from './InstanceStateApiData';
 import { Response } from '@angular/http';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-instance-instanceStates',
@@ -25,6 +26,8 @@ import { Response } from '@angular/http';
 export class InstanceStatesComponent implements OnInit {
     loading: boolean = true;
     instanceStates: InstanceStateApiData[];
+    elementToRemove: InstanceStateApiData = null;
+    selectedCell: InstanceStateApiData = null;
     newStateData: InstanceStateApiData = new InstanceStateApiData('');
     @ViewChild('confirmDeleteModal') deleteStateModal: any;
 
@@ -32,9 +35,10 @@ export class InstanceStatesComponent implements OnInit {
     columns: Array<any> = [
         {title: 'Name', name: 'state', sort: false},
     ];
+
     constructor(
         private sharedData: InstanceService,
-        private service: InstanceStateService
+        private service: InstanceStateService,
     ) {
     }
 
@@ -43,15 +47,31 @@ export class InstanceStatesComponent implements OnInit {
         this.service.setPath(this.sharedData.path);
         this.getInstanceStatesApiData();
     }
-
+    // region ######## table methods ########
     onCellSelected(data: any) {
-        console.log('selected');
-        this.deleteStateModal.show();
+        if (! isNullOrUndefined(data)) {
+            this.selectedCell = new InstanceStateApiData(data.row.state);
+        }
     }
 
     onRemoveClick(data: any) {
-        console.log('remove');
+        if (isNullOrUndefined(data)) {
+            return;
+        } else {
+            this.elementToRemove = new InstanceStateApiData(data.state);
+            this.deleteStateModal.show();
+        }
     }
+    removeConfirmed() {
+        this.deleteStateModal.hide();
+        this.service.deleteState(this.elementToRemove)
+            .subscribe(
+                data => this.handleDeleteResponse(data),
+                error => this.handleError(error)
+            );
+        this.elementToRemove = null;
+    }
+    // endregion
     // region ######## event handler ########
     onAddClick() {
         this.newStateData = new InstanceStateApiData('');
@@ -86,7 +106,15 @@ export class InstanceStatesComponent implements OnInit {
             this.getInstanceStatesApiData();
         } else if (data.status === 406) {
             this.loading = false;
-            console.log('Post request not acceptable due to empty state');
+            this.handleError('Post request not acceptable due to empty state');
+        }
+    }
+    private handleDeleteResponse(data: Response) {
+        this.loading = true;
+        if ( data.status === 204) {
+            this.getInstanceStatesApiData();
+        } else {
+            this.handleError(data);
         }
     }
     private handleError(error: any): void {
@@ -94,6 +122,4 @@ export class InstanceStatesComponent implements OnInit {
         console.log(error);
     }
     // endregion
-
-
 }

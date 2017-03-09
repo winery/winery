@@ -57,7 +57,7 @@
     </modal-header>
     <modal-body>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">
-            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.key }}</span>?
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.state }}</span>?
         </p>
     </modal-body>
     <modal-footer (onOk)="removeConfirmed();"

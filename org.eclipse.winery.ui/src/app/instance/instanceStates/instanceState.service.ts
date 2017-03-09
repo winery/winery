@@ -31,14 +31,18 @@ export class InstanceStateService {
         return this.http.get(backendBaseUri + this.path + '/instancestates/' , options)
             .map(res => res.json());
     }
-
-    setPath(path: string): void {
-        this.path = path;
-    }
-
-  addPropertyData(newStateData: InstanceStateApiData): Observable<Response> {
+    addPropertyData(newStateData: InstanceStateApiData): Observable<Response> {
         let headers = new Headers({ 'Content-Type': 'application/json'});
         let options = new RequestOptions({ headers: headers });
-       return this.http.post(backendBaseUri + this.path + '/instancestates/', JSON.stringify(newStateData) , options);
+        return this.http.post(backendBaseUri + this.path + '/instancestates/', JSON.stringify(newStateData) , options);
+    }
+    deleteState(stateToRemove: InstanceStateApiData): Observable<Response> {
+        let headers = new Headers({ 'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+
+        return this.http.delete(backendBaseUri + this.path + '/instancestates/' + stateToRemove.state , options);
+    }
+    setPath(path: string): void {
+        this.path = path;
     }
 }
