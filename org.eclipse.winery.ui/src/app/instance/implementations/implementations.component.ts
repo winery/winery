@@ -10,7 +10,7 @@
  *     Nicole Keppler - initial API and implementation
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ImplementationService } from './implementation.service';
 import { ImplementationAPIData } from './implementationAPIData';
 import { InstanceService } from '../instance.service';
@@ -26,10 +26,14 @@ export class ImplementationsComponent implements OnInit {
     implementationData: ImplementationAPIData[];
     loading: boolean = true;
     selectedCell: any;
+    allNamespaces: string[];
+    selectedNamespace: string;
     columns: Array<any> = [
         {title: 'Namespace', name: 'namespace', sort: true},
         {title: 'Name', name: 'localname', sort: true},
     ];
+    newImplementation: ImplementationAPIData;
+    @ViewChild('addModal') addImplModal: any;
 
     constructor(
         private sharedData: InstanceService,
@@ -57,6 +61,9 @@ export class ImplementationsComponent implements OnInit {
     }
     onAddClick() {
         console.log('add');
+        this.newImplementation = new ImplementationAPIData();
+        this.newImplementation.localname="";
+        this.addImplModal.show();
     }
     // endregion
     private handleData( impl: ImplementationAPIData[]) {
@@ -67,6 +74,8 @@ export class ImplementationsComponent implements OnInit {
     private handleError(error: any): void {
         this.loading = false;
         console.log(error);
+    }
+    private addNewImplementation(localname: string, selectedNamespace: string) {
     }
 
 }

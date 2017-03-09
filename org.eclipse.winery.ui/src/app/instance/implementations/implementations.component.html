@@ -14,8 +14,11 @@
 <p>This page shows implementations available for this type. Go to "Other Elements" to get an overview on all implementations stored in this repository. </p>
 
 
-
-<table-component
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <table-component
             [data]="implementationData"
             [columns]="columns"
             (cellSelected)="onCellSelected($event)"
@@ -23,3 +26,36 @@
             (removeBtnClicked)="onRemoveClick($event)"
             (addBtnClicked)="onAddClick();">
     </table-component>
+</div>
+
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <modal-header>
+        <h4 class="modal-title">Add Node Type Implementation</h4>
+    </modal-header>
+    <modal-body>
+        <form #add From="ngForm" id="addPropertyForm">
+            <div class="form-group">
+                <label class="control-label" for="localname">Name</label>
+                <input #localNameInput="ngModel"
+                       id="localname"
+                       class="form-control"
+                       type="text"
+                       name="localname"
+                       required
+                       [(ngModel)]="newImplementation.localname"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="newNamespace">Namespace</label>
+                <select #selectNamespace name="namespace" class="form-control" id="newNamespace"
+                        [(ngModel)] = "selectedNamespace"
+                        [typeahead]="allNamespaces">
+                </select>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer (onOk)="addNewImplementation(localNameInput.value, selectedNamespace.value)"
+                  [close-button-label]="'Cancel'"
+                  [ok-button-label]="'Add'">
+    </modal-footer>
+</winery-modal>
+
