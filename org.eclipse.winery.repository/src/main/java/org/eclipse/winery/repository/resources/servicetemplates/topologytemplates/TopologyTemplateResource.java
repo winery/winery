@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2015 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -46,12 +46,9 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.client.IWineryRepositoryClient;
 import org.eclipse.winery.repository.client.WineryRepositoryClientFactory;
-import org.eclipse.winery.repository.json.TopologyTemplateModule;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplatesResource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.view.Viewable;
@@ -235,19 +232,8 @@ public class TopologyTemplateResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	// @formatter:on
 	public Response getComponentInstanceJSON() {
-		Response res;
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		mapper.registerModule(new TopologyTemplateModule());
-		try {
-			// convert it to json
-			String json = mapper.writeValueAsString(this.topologyTemplate);
-			res = Response.ok(json).build();
-		} catch (Exception e) {
-			TopologyTemplateResource.LOGGER.error(e.getMessage(), e);
-			res = Response.serverError().entity(e.getMessage()).build();
-		}
-		return res;
+		String json = ModelUtilities.convertTopologyTempalteToJson(this.topologyTemplate);
+		return Response.ok(json).build();
 	}
 
 	/**
