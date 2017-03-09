@@ -46,7 +46,6 @@ import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDef
         CapabilityDefinitionsComponent,
         DocumentationComponent,
         EditXMLComponent,
-        ImplementationsComponent,
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,
