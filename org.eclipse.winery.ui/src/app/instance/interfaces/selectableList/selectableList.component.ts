@@ -25,8 +25,8 @@ export class SelectableListComponent implements OnInit {
     @Input() rows: Array<any>;
     @Input() title: string;
 
-    @Output() removeBtnClicked: EventEmitter<any>;
-    @Output() addBtnClicked: EventEmitter<any>;
+    @Output() removeButtonClicked: EventEmitter<any>;
+    @Output() addButtonClicked: EventEmitter<any>;
 
     currentSelected: any;
 
@@ -41,11 +41,11 @@ export class SelectableListComponent implements OnInit {
 
     onAdd($event: Event) {
         $event.stopPropagation();
-        this.addBtnClicked.emit();
+        this.addButtonClicked.emit();
     }
 
     onRemove($event: Event) {
         $event.stopPropagation();
-        this.removeBtnClicked.emit(this.currentSelected);
+        this.removeButtonClicked.emit(this.currentSelected);
     }
 }

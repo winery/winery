@@ -20,11 +20,14 @@
                 [disabled]="rows.length === 0">
             Remove
         </button>
-        <button class="rightbutton btn btn-primary btn-xs" id="addIfBtn" (click)="onAdd($event);">Add</button>
+        <button class="rightbutton btn btn-primary btn-xs" id="addIfBtn"
+                (click)="onAdd($event);">
+            Add
+        </button>
     </div>
     <div class="list-content">
         <select name="Interfaces" size="8" id="interfaces" class="listcontent">
-            <option *ngFor="let item of rows" value="{{ item }}">{{ item }}</option>
+            <option *ngFor="let item of rows" value="{{ item.name }}">{{ item.name }}</option>
         </select>
     </div>
 </div>

@@ -34,6 +34,7 @@ import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { SelectableListModule } from './interfaces/selectableList/selectableList.module';
 import { TableModule } from '../tableModule/table.module';
+import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { TableModule } from '../tableModule/table.module';
         SelectableListModule,
         PropertiesDefinitionModule,
         InstanceRouterModule,
-        TableModule
+        TableModule,
+        WineryModalModule,
     ],
     exports: [],
     declarations: [

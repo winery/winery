@@ -1,3 +1,4 @@
+///<reference path="interfacesApiData.ts"/>
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -14,6 +15,7 @@ import { Component, OnInit } from '@angular/core';
 import { InterfacesService } from './interfaces.service';
 import { InstanceService } from '../instance.service';
 import { InterfacesApiData } from './interfacesApiData';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -27,22 +29,14 @@ export class InterfacesComponent implements OnInit {
     loading: boolean = true;
     interfacesData: InterfacesApiData[];
 
-
-    interfaces: string[] = [];
-    operations: string[] = [];
+    operations: string[] = null;
+    inputParameters: Array<any> = null;
+    outputParameters: Array<any> = null;
 
     columns: Array<any> = [
         {title: 'Name', name: 'name', sort: true},
         {title: 'Type', name: 'type', sort: true},
         {title: 'Required', name: 'required', sort: false}
-    ];
-    dataIn: Array<any> = [
-        {name: 'in1', type: 'str', required: 'NO'},
-        {name: 'in2', type: 'str', required: 'NO'}
-    ];
-    dataOut: Array<any> = [
-        {name: 'out1', type: 'str', required: 'NO'},
-        {name: 'out2', type: 'str', required: 'NO'}
     ];
 
     constructor(
@@ -59,14 +53,18 @@ export class InterfacesComponent implements OnInit {
             );
     }
 
+    // region ########### Template Callbacks ##########
+    onAddInterface(name: string) {
+        this.interfacesData.push(new InterfacesApiData(name));
+    }
+    onKacke() {
+        console.log('h');
+    }
+    // endregion
+
     // region ########## Private Methods ##########
     private handleInterfacesApiData(data: InterfacesApiData[]) {
         this.interfacesData = data;
-
-        for (let item of this.interfacesData) {
-            this.interfaces.push(item.name);
-        }
-
         this.loading = false;
     }
 

@@ -15,25 +15,46 @@
 <div *ngIf="loading">
     <winery-loader></winery-loader>
 </div>
-<div *ngIf="!loading">
+<div *ngIf="!loading && interfacesData">
     <span>&nbsp;</span>
     <div style="display: flex;">
         <winery-selectableList [title]="'Interfaces'"
-                               [rows]="interfacesData.inputParameters">
+                               [rows]="interfacesData"
+                               (addButtonClicked)="console.log('pimmel')">
         </winery-selectableList>
-        <winery-selectableList [title]="'Operations'" [rows]="operations"></winery-selectableList>
+        <winery-selectableList *ngIf="operations"
+                               [title]="'Operations'"
+                               [rows]="operations">
+        </winery-selectableList>
     </div>
     <div>
-        <h5>Input Parameters</h5>
-        <winery-table [data]="dataIn"
+        <winery-table *ngIf="inputParameters"
+                      [title]="'Input Parameters'"
+                      [data]="inputParameters"
                       [columns]="columns"
                       [disableFiltering]="true">
         </winery-table>
 
-        <h5>Output Parameters</h5>
-        <winery-table [data]="dataOut"
+        <winery-table *ngIf="outputParameters"
+                      [title]="'Output Parameters'"
+                      [data]="outputParameters"
                       [columns]="columns"
                       [disableFiltering]="true">
         </winery-table>
     </div>
 </div>
+
+<winery-modal bsModal #addInterface="bs-modal" [modalRef]="addInterface">
+    <modal-header>
+        <h4 class="modal-title">Add Interface</h4>
+    </modal-header>
+    <modal-body>
+        <label for="interfaceName" class="control-label">Name</label>
+        <input type="text" class="form-control" id="interfaceName"
+               #newInterface required>
+    </modal-body>
+    <modal-footer (onOk)="onAddInterface(newInterface.value);"
+                  [close-button-label]="'Cancel'"
+                  [ok-button-label]="'Add'">
+    </modal-footer>
+</winery-modal>

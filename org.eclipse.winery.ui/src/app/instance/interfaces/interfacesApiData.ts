@@ -13,16 +13,20 @@
 import { YesNoEnum } from '../../interfaces/enums';
 
 export class InterfacesApiData {
-    operation: InterfaceOperationApiData[] = null;
-    name: string =  null;
+    operation: InterfaceOperationApiData[] = [];
+    name: string;
+
+    constructor(name: string = '') {
+        this.name = name;
+    }
 }
 
 export class InterfaceOperationApiData {
     documentation: Array<any> = null;
     any: Array<any> = null;
     otherAttributes: Object = null;
-    inputParameters: InterfaceParameter[] = null;
-    outputParameters: InterfaceParameter[] = null;
+    inputParameters: InterfaceParameter[] = [];
+    outputParameters: InterfaceParameter[] = [];
 }
 
 export class InterfaceParameter {
