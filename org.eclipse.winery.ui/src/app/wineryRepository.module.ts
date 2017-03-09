@@ -26,7 +26,6 @@ import { LoaderModule } from './loader/loader.module';
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { CustomOption } from './notificationModule/notificationOptions';
 import { NotificationModule } from './notificationModule/notification.module';
-import { NotificationService } from "./notificationModule/notificationservice";
 
 @NgModule({
     imports: [
@@ -48,7 +47,7 @@ import { NotificationService } from "./notificationModule/notificationservice";
         UrlEncodePipe,
     ],
     providers: [
-        NotificationService
+        {provide: ToastOptions, useClass: CustomOption}
     ],
     bootstrap: [WineryRepositoryComponent]
 })
