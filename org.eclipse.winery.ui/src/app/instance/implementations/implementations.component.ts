@@ -21,26 +21,26 @@ import {InstanceService} from '../instance.service';
     providers: [ ImplementationService ],
 })
 export class ImplementationsComponent implements OnInit {
-    implementationData: ImplementationAPIData;
+    implementationData: ImplementationAPIData[];
     loading: boolean = true;
 
     constructor(
         private sharedData: InstanceService,
         private service: ImplementationService,
     ) {
-        this.implementationData.name = 'name';
-        this.implementationData.namespace = 'namespace';
     }
 
     ngOnInit() {
-        this.service.getImplementationData(this.sharedData.path)
+        this.service.setPath(this.sharedData.path);
+        console.log('ngOnInit');
+        this.service.getImplementationData()
             .subscribe(
                 data => this.handleData(data),
                 error => this.handleError(error)
             );
     }
 
-    private handleData( impl: ImplementationAPIData){
+    private handleData( impl: ImplementationAPIData[]) {
         this.implementationData = impl;
         this.loading = false;
         console.log(this.implementationData);

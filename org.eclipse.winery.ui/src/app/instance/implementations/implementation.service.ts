@@ -23,17 +23,16 @@ export class ImplementationService {
     constructor(private http: Http) {
     }
 
-    getImplementationData(path: string): Observable<JSON> {
+    getImplementationData(): Observable<ImplementationAPIData[]> {
         console.log('get implementation request');
-        let headers = new Headers({ 'Accept': 'text/json' });
+        let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        if (path.indexOf('implementation') === -1) {
-            path += '/implementation/';
-        } else {
-            path += '/';
-        }
+        console.log(backendBaseUri + this.path + '/implementations/');
+        return this.http.get(backendBaseUri + this.path + '/implementations/', options)
+            .map(res => res.json());
+    }
+    setPath(path: string): void {
         this.path = path;
-        return this.http.get(backendBaseUri + decodeURIComponent(path), options));
     }
 
     /*saveDocumentationData(documentationData: string): Observable<any> {

@@ -17,5 +17,6 @@
     <button (click)="addNewElement()" class="btn btn-info btn-sm">Add</button>
     <button (click)="removeElement()" class="btn btn-danger btn-sm">Remove</button>
 </div>
-<p>trying {{implementationData.name}}</p>
-nothing happens {{implementationData.namespace}}
+<div *ngFor="let impl of implementationData">
+    {{impl.localname}} {{impl.namespace}}
+</div>
