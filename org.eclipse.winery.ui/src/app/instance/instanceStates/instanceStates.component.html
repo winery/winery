@@ -12,7 +12,9 @@
  *     Lukas Balzer - initial component visuals
  */
 -->
-
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
 <div *ngIf="!loading">
     <table-component
         [data]="instanceStates"
@@ -43,10 +45,8 @@
 
         </form>
     </modal-body>
-    <modal-footer [show-default-buttons]="false">
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addModal.hide()">Cancel</button>
-        <button type="button" class="btn btn-primary"
-                (click)="addProperty(propName.value); addModal.hide()">Add</button>
+    <modal-footer (onOk)="addProperty(propName.value)"
+                  [close-button-label]="'Cancel'" [ok-button-label]="'Add'">
     </modal-footer>
 </winery-modal>
 

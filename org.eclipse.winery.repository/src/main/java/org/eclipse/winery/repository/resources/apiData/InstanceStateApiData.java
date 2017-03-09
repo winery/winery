@@ -10,6 +10,6 @@ public class InstanceStateApiData {
         this.state = state;
     }
     public String toString() {
-        return "state: "+this.state;
+        return "state: "+ this.state;
     }
 }
