@@ -15,6 +15,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceStateService } from './instanceState.service';
 import { InstanceService } from '../instance.service';
 import { InstanceStateApiData } from './InstanceStateApiData';
+import { Response } from '@angular/http';
 
 @Component({
     selector: 'winery-instance-instanceStates',
@@ -35,18 +36,12 @@ export class InstanceStatesComponent implements OnInit {
         private sharedData: InstanceService,
         private service: InstanceStateService
     ) {
-        console.log('constructor');
     }
 
 
     ngOnInit() {
         this.service.setPath(this.sharedData.path);
-        this.service.getInstanceStates()
-            .subscribe(
-                data => this.handleInstanceStateData(data),
-                error => this.handleError(error)
-            );
-        console.log('onInit');
+        this.getInstanceStatesApiData();
     }
 
     onCellSelected(data: any) {
@@ -57,26 +52,48 @@ export class InstanceStatesComponent implements OnInit {
     onRemoveClick(data: any) {
         console.log('remove');
     }
-
+    // region ######## event handler ########
     onAddClick() {
-        console.log('add');
         this.newStateData = new InstanceStateApiData('');
         this.addStateModal.show();
     }
-
     addProperty(state: string) {
-        console.log(state);
+        this.loading = true;
+        if (this.newStateData.state !== '') {
+            this.service.addPropertyData(this.newStateData)
+                .subscribe(
+                    data => this.handleAddResponse(data),
+                    error => this.handleError(error)
+                );
+        }
+    }
+    // endregion
+    // region ######## private methods ########
+    private getInstanceStatesApiData(): void {
+        this.service.getInstanceStates()
+            .subscribe(
+                data => this.handleInstanceStateData(data),
+                error => this.handleError(error)
+            );
     }
     private handleInstanceStateData(instanceStates: InstanceStateApiData[]) {
-        console.log('instanceStatesResolved');
-        console.log(instanceStates);
         this.instanceStates = instanceStates;
         this.loading = false;
+    }
+    private handleAddResponse(data: Response) {
+        this.loading = true;
+        if (data.status === 204) {
+            this.getInstanceStatesApiData();
+        } else if (data.status === 406) {
+            this.loading = false;
+            console.log('Post request not acceptable due to empty state');
+        }
     }
     private handleError(error: any): void {
         this.loading = false;
         console.log(error);
     }
+    // endregion
 
 
 }
