@@ -4,7 +4,7 @@ const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const common = require('./webpack.common.js');
-var TypedocWebpackPlugin = require('typedoc-webpack-plugin');
+const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 const ENV = process.env.ENV = process.env.NODE_ENV = 'production';
 
 module.exports = webpackMerge(common, {
@@ -30,7 +30,21 @@ module.exports = webpackMerge(common, {
         /*
          * https://github.com/Microsoft/Typedoc-Webpack-Plugin
          */
-        new TypedocWebpackPlugin({}),
+        new TypedocWebpackPlugin({
+            "mode": "modules",
+            "out": "doc",
+            "theme": "default",
+            "ignoreCompilerErrors": "true",
+            "experimentalDecorators": "true",
+            "emitDecoratorMetadata": "true",
+            "target": "ES5",
+            "moduleResolution": "node",
+            "preserveConstEnums": "true",
+            "stripInternal": "true",
+            "suppressExcessPropertyErrors": "true",
+            "suppressImplicitAnyIndexErrors": "true",
+            "module": "commonjs"
+        }),
 
         /*
          * https://webpack.github.io/docs/list-of-plugins.html#defineplugin

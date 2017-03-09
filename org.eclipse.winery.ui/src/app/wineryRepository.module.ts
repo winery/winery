@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -22,9 +22,7 @@ import { UrlDecodePipe } from './pipes/urlDecode.pipe';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
 import { InstanceModule } from './instance/instance.module';
 import { NotFoundComponent } from './404/notFound.component';
-import { LoaderComponent } from './loader/loader.component';
 import { LoaderModule } from './loader/loader.module';
-import { QNameSelectorComponent } from './qNameSelector/qNameSelector.component';
 
 @NgModule({
     imports: [

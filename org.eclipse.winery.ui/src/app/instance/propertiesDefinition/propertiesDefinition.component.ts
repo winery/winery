@@ -7,42 +7,55 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter, Niko Stadelmaier- initial API and implementation
+ *     Lukas Harzenetter, Niko Stadelmaier- initial API and implementation
  */
-
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, ElementRef, KeyValueChangeRecord } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
-import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
+import {
+    PropertiesDefinition,
+    PropertiesDefinitionEnum,
+    PropertiesDefinitionsResourceApiData,
+    WinerysPropertiesDefinition, PropertiesDefinitionKVList,
+} from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
-import isEmpty = hbs.Utils.isEmpty;
-import { XsdDefinitionsApiData } from './XsdDefinitionsApiData';
-
-const EMPTY = 'Empty';
+import { Response } from '@angular/http';
+import { NgForm } from '@angular/forms';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
     templateUrl: 'propertiesDefinition.component.html',
+    styleUrls: [
+        'propertiesDefinition.component.css'
+    ],
     providers: [
         PropertiesDefinitionService
     ]
 })
-export class PropertyDefinitionComponent implements OnInit {
+export class PropertiesDefinitionComponent implements OnInit {
 
-    xsdElement = EMPTY;
-    xsdType = EMPTY;
+    propertiesEnum = PropertiesDefinitionEnum;
     loading: boolean = true;
-    showSelect: boolean = false;
 
     resourceApiData: PropertiesDefinitionsResourceApiData;
-    selectedItems: SelectData[];
-    activeElement: string;
+    selectItems: SelectData[];
+    activeElement: SelectData;
+    allNamespaces: string[];
+    selectedCell: any;
+    elementToRemove: any = null;
+    columns: Array<any> = [
+        {title: 'Name', name: 'key', sort: true},
+        {title: 'Type', name: 'type', sort: true},
+    ];
+    newProperty: PropertiesDefinitionKVList = new PropertiesDefinitionKVList();
+    @ViewChild('confirmDeleteModal') deletePropModal: any;
+
+    @ViewChild('addModal') addPropModal: any;
 
     constructor(private sharedData: InstanceService,
-                private service: PropertiesDefinitionService,
-                private zone : NgZone
-    ) {}
+                private service: PropertiesDefinitionService) {
+    }
 
     // region ########## Angular Callbacks ##########
     /**
@@ -52,23 +65,13 @@ export class PropertyDefinitionComponent implements OnInit {
         this.service.setPath(this.sharedData.path);
         this.getPropertiesDefinitionsResourceApiData();
     }
+
     // endregion
 
     // region ########## Template Callbacks ##########
-    // region ########## Event Handler ##########
-    /**
-     * Called by the template, if property (none) is selected. It sends a DELETE request
-     * to the backend to delete all properties definitions.
-     */
+    // region ########## Radio Buttons ##########
     onNoneSelected(): void {
-        this.emptyDescriptionString();
-        this.showSelect = false;
-        this.loading = true;
-        this.service.deletePropertiesDefinitions()
-            .subscribe(
-                data => this.handleDelete(data),
-                error => this.handleError(error)
-            );
+        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
     }
 
     /**
@@ -76,14 +79,22 @@ export class PropertyDefinitionComponent implements OnInit {
      * to the backend to get the data for the select dropdown.
      */
     onXmlElementSelected(): void {
+        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Element;
         this.service.getXsdElementDefinitions()
             .subscribe(
-                data => this.handleXmlTypeDefinitions(data),
+                data => this.selectItems = data.xsdDefinitions,
                 error => this.handleError(error)
             );
-        // Force angular to re-render the dom in order to clean the select.
-        this.showSelect = false;
-        this.zone.run(() => console.log('rendering'));
+
+        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        }
+
+        this.resourceApiData.propertiesDefinition.type = null;
+        this.resourceApiData.winerysPropertiesDefinition = null;
+
+        this.activeElement = new SelectData();
+        this.activeElement.text = this.resourceApiData.propertiesDefinition.element;
     }
 
     /**
@@ -91,14 +102,22 @@ export class PropertyDefinitionComponent implements OnInit {
      * to the backend to get the data for the select dropdown.
      */
     onXmlTypeSelected(): void {
+        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Type;
         this.service.getXsdTypeDefinitions()
             .subscribe(
-                data => this.handleXmlElementDefinitions(data),
+                data => this.selectItems = data.xsdDefinitions,
                 error => this.handleError(error)
             );
-        // Force angular to re-render the dom in order to clean the select.
-        this.showSelect = false;
-        this.zone.run(() => console.log('rendering'));
+
+        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        }
+
+        this.resourceApiData.propertiesDefinition.element = null;
+        this.resourceApiData.winerysPropertiesDefinition = null;
+
+        this.activeElement = new SelectData();
+        this.activeElement.text = this.resourceApiData.propertiesDefinition.type;
     }
 
     /**
@@ -106,58 +125,101 @@ export class PropertyDefinitionComponent implements OnInit {
      * a table to enter those pairs.
      */
     onCustomKeyValuePairSelected(): void {
-        this.emptyDescriptionString();
-        this.showSelect = false;
-        // show table...
+        this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Custom;
+        this.service.getAllNamespaces()
+            .subscribe(
+                data => this.allNamespaces = data,
+                error => this.handleError(error)
+            );
+
+        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition)) {
+            this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
+        }
+        // The key/value pair list my be null
+        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList)) {
+            this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList = [];
+        }
+
+        this.activeElement = new SelectData();
+        this.activeElement.text = this.resourceApiData.winerysPropertiesDefinition.namespace;
+    }
+    // endregion
+
+    // region ########## Button Callbacks ##########
+    save(): void {
+        this.loading = true;
+        if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.None) {
+            this.service.deletePropertiesDefinitions()
+                .subscribe(
+                    data => this.handleDelete(data),
+                    error => this.handleError(error)
+                );
+        } else {
+            this.service.postProperteisDefinitions(this.resourceApiData)
+                .subscribe(
+                    data => this.handleSave(data),
+                    error => this.handleError(error)
+                );
+        }
     }
 
     /**
-     * Called by the template, if in the select box is a property selected.
+     * handler for clicks on remove button
+     * @param data
      */
-    xmlValueSelected(event: any): void {
-        if (!this.xsdElement.includes(EMPTY)) {
-            this.xsdElement = event.text;
-            this.resourceApiData.propertiesDefinition.element = event.text;
+    onRemoveClick(data: any) {
+        if (isNullOrUndefined(data)) {
+            return;
+        } else {
+            this.elementToRemove = data;
+            this.deletePropModal.show();
         }
-        if (!this.xsdType.includes(EMPTY)) {
-            this.xsdType = event.text;
+    }
+
+    /**
+     * handler for clicks on the add button
+     */
+    onAddClick() {
+        this.newProperty = new PropertiesDefinitionKVList();
+        this.addPropModal.show();
+    }
+    // endregion
+
+    /**
+     * Called by the template, if a property is selected in the select box. Cannot be replaced
+     * by ngModel in the template because the same select is used for element and type definitions.
+     */
+    xmlValueSelected(event: SelectData): void {
+        if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Element) {
+            this.resourceApiData.propertiesDefinition.element = event.text;
+        } else if (this.resourceApiData.selectedValue === PropertiesDefinitionEnum.Type) {
             this.resourceApiData.propertiesDefinition.type = event.text;
         }
     }
-    // endregion
 
-    // region ########## Get selected value methods ##########
-    /**
-     * Called by the template to evaluate, if (none) was initially selected.
-     */
-    isNoneSelected(): boolean {
-        return !this.isCustomSelected() && !this.isXmlElementSelected() && !this.isXmlTypeSelected();
-    }
-
-    /**
-     * Called by the template to evaluate, if XML Element was initially selected.
-     */
-    isXmlElementSelected(): boolean {
-        return !isNullOrUndefined(this.resourceApiData.propertiesDefinition)
-            && !isNullOrUndefined(this.resourceApiData.propertiesDefinition.element);
-    }
-
-    /**
-     * Called by the template to evaluate, if XML Type was initially selected.
-     */
-    isXmlTypeSelected(): boolean {
-        return !isNullOrUndefined(this.resourceApiData.propertiesDefinition)
-            && !isNullOrUndefined(this.resourceApiData.propertiesDefinition.type);
-    }
-
-    /**
-     * Called by the template to evaluate, if a custom key/value pair was initially selected.
-     */
-    isCustomSelected(): boolean {
-        return isNullOrUndefined(this.resourceApiData.propertiesDefinition)
-            && !isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition);
+    onCellSelected(data: any) {
+        if (isNullOrUndefined(data)) {
+            this.selectedCell = data;
+        }
     }
     // endregion
+
+    // region ########## Modal Callbacks ##########
+    /**
+     * Adds a property to the table and model
+     * @param propType
+     * @param propName
+     */
+    addProperty(propType: string, propName: string) {
+        this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push({key: propName, type: propType});
+        this.addPropModal.hide();
+    }
+
+    removeConfirmed() {
+        this.deletePropModal.hide();
+        this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
+        this.elementToRemove = null;
+    }
     // endregion
 
     // region ########## Private Methods ##########
@@ -192,59 +254,49 @@ export class PropertyDefinitionComponent implements OnInit {
     private handlePropertiesDefinitionData(data: PropertiesDefinitionsResourceApiData): void {
         this.resourceApiData = data;
 
-        if (!isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
-            this.xsdElement = isNullOrUndefined(this.resourceApiData.propertiesDefinition.element) ? EMPTY : this.resourceApiData.propertiesDefinition.element;
-            this.xsdType = isNullOrUndefined(this.resourceApiData.propertiesDefinition.type) ? EMPTY : this.resourceApiData.propertiesDefinition.type;
+        // because the selectedValue doesn't get set correctly do it here
+        switch (isNullOrUndefined(this.resourceApiData.selectedValue) ? '' : this.resourceApiData.selectedValue.toString()) {
+            case 'Element':
+                this.onXmlElementSelected();
+                break;
+            case 'Type':
+                this.onXmlTypeSelected();
+                break;
+            case 'Custom':
+                this.onCustomKeyValuePairSelected();
+                break;
+            default:
+                this.resourceApiData.selectedValue = PropertiesDefinitionEnum.None;
         }
 
         this.handleSuccess(data);
     };
 
-    private handleXmlElementDefinitions(xsdDefinitionsApiData: XsdDefinitionsApiData): void {
-        this.selectedItems = xsdDefinitionsApiData.xsdDefinitions;
-
-        if (this.xsdElement.includes(EMPTY) || this.xsdElement.length === 0) {
-            this.emptyDescriptionString('element');
-        }
-
-        this.showSelect = true;
-    }
-
-    private handleXmlTypeDefinitions(xsdDefinitionsApiData: XsdDefinitionsApiData): void {
-        this.selectedItems = xsdDefinitionsApiData.xsdDefinitions;
-
-        if (this.xsdElement.includes(EMPTY) || this.xsdType.length === 0) {
-            this.emptyDescriptionString('type');
-        }
-
-        this.showSelect = true;
+    private handleSave(data: Response) {
+        this.handleSuccess(data);
+        this.getPropertiesDefinitionsResourceApiData();
     }
 
     /**
-     * Sets loading to false and sets error notification.
+     * Deletes a property from the table and model.
+     * @param itemToDelete
+     */
+    private deleteItemFromPropertyDefinitionKvList(itemToDelete: any): void {
+        let list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].key === itemToDelete.key) {
+                list.splice(i, 1);
+            }
+        }
+    }
+
+    /**
+     * Sets loading to false and shows error notification.
      *
      * @param error
      */
     private handleError(error: any): void {
         console.log(error);
-    }
-
-    /**
-     * Adds behaviour for showing "Empty" on property change.
-     *
-     * @param type
-     */
-    private emptyDescriptionString(type = '') {
-        if (type.toLowerCase().includes('type')) {
-            this.xsdType = '';
-            this.xsdElement = EMPTY;
-        } else if (type.toLowerCase().includes('element')) {
-            this.xsdType = EMPTY;
-            this.xsdElement = '';
-        } else {
-            this.xsdElement = EMPTY;
-            this.xsdType = EMPTY;
-        }
     }
 
     // endregion

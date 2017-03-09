@@ -1,3 +1,4 @@
+
 <!--
 /**
  * Copyright (c) 2017 University of Stuttgart.
@@ -8,10 +9,13 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzentter - initial API and implementation
+ *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
 -->
-<div>
-    <span>XML editor here..</span>
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
 </div>
-<button class="btn btn-default" type="button">Save</button>
+<div id = {{id}}>
+    <pre  class="editor" [attr.data-editor-lang]="dataEditorLang" [style.height.px]="height"></pre>
+    <button class="btn btn-default" type="button" (click)="saveXmlData()">Save</button>
+</div>
