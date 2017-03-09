@@ -7,19 +7,119 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Huixin Liu, Nicole Keppler - initial API and implementation
+ *     Lukas Balzer - initial component visuals
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { InstanceStateService } from './instanceState.service';
+import { InstanceService } from '../instance.service';
+import { InstanceStateApiData } from './InstanceStateApiData';
+import { Response } from '@angular/http';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-instance-instanceStates',
-    templateUrl: 'instanceStates.component.html'
+    templateUrl: 'instanceStates.component.html',
+    providers: [InstanceStateService]
 })
 export class InstanceStatesComponent implements OnInit {
-    constructor() {
+    loading: boolean = true;
+    instanceStates: InstanceStateApiData[];
+    elementToRemove: InstanceStateApiData = null;
+    selectedCell: InstanceStateApiData = null;
+    newStateData: InstanceStateApiData = new InstanceStateApiData('');
+    @ViewChild('confirmDeleteModal') deleteStateModal: any;
+
+    @ViewChild('addModal') addStateModal: any;
+    columns: Array<any> = [
+        {title: 'Name', name: 'state', sort: false},
+    ];
+
+    constructor(
+        private sharedData: InstanceService,
+        private service: InstanceStateService,
+    ) {
     }
 
+
     ngOnInit() {
+        this.service.setPath(this.sharedData.path);
+        this.getInstanceStatesApiData();
     }
+    // region ######## table methods ########
+    onCellSelected(data: any) {
+        if (! isNullOrUndefined(data)) {
+            this.selectedCell = new InstanceStateApiData(data.row.state);
+        }
+    }
+
+    onRemoveClick(data: any) {
+        if (isNullOrUndefined(data)) {
+            return;
+        } else {
+            this.elementToRemove = new InstanceStateApiData(data.state);
+            this.deleteStateModal.show();
+        }
+    }
+    removeConfirmed() {
+        this.deleteStateModal.hide();
+        this.service.deleteState(this.elementToRemove)
+            .subscribe(
+                data => this.handleDeleteResponse(data),
+                error => this.handleError(error)
+            );
+        this.elementToRemove = null;
+    }
+    // endregion
+    // region ######## event handler ########
+    onAddClick() {
+        this.newStateData = new InstanceStateApiData('');
+        this.addStateModal.show();
+    }
+    addProperty(state: string) {
+        this.loading = true;
+        if (this.newStateData.state !== '') {
+            this.service.addPropertyData(this.newStateData)
+                .subscribe(
+                    data => this.handleAddResponse(data),
+                    error => this.handleError(error)
+                );
+        }
+    }
+    // endregion
+    // region ######## private methods ########
+    private getInstanceStatesApiData(): void {
+        this.service.getInstanceStates()
+            .subscribe(
+                data => this.handleInstanceStateData(data),
+                error => this.handleError(error)
+            );
+    }
+    private handleInstanceStateData(instanceStates: InstanceStateApiData[]) {
+        this.instanceStates = instanceStates;
+        this.loading = false;
+    }
+    private handleAddResponse(data: Response) {
+        this.loading = true;
+        if (data.status === 204) {
+            this.getInstanceStatesApiData();
+        } else if (data.status === 406) {
+            this.loading = false;
+            this.handleError('Post request not acceptable due to empty state');
+        }
+    }
+    private handleDeleteResponse(data: Response) {
+        this.loading = true;
+        if ( data.status === 204) {
+            this.getInstanceStatesApiData();
+        } else {
+            this.handleError(data);
+        }
+    }
+    private handleError(error: any): void {
+        this.loading = false;
+        console.log(error);
+    }
+    // endregion
 }
