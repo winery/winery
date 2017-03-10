@@ -12,9 +12,7 @@
  */
 
 import { Component, ViewContainerRef, OnInit } from '@angular/core';
-import { ToastsManager } from 'ng2-toastr/ng2-toastr';
-import { NotificationService } from "./notificationModule/notificationservice";
-
+import { NotificationService } from './notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-repository',

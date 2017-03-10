@@ -14,7 +14,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InstanceService } from './instance.service';
-import { NotificationService } from "../notificationModule/notificationservice";
+import { NotificationService } from '../notificationModule/notificationservice';
 
 
 @Component({
@@ -34,17 +34,16 @@ export class InstanceComponent implements OnInit, OnDestroy {
 
     constructor(private route: ActivatedRoute,
                 private service: InstanceService,
-                private notify: NotificationService
-                ) {
+                private notify: NotificationService) {
     }
 
     ngOnInit(): void {
         this.routeSub = this.route
             .data
             .subscribe(data => {
-                this.selectedResource = data['resolveData'].section;
-                this.selectedNamespace = data['resolveData'].namespace;
-                this.selectedComponentId = data['resolveData'].instanceId;
+                    this.selectedResource = data['resolveData'].section;
+                    this.selectedNamespace = data['resolveData'].namespace;
+                    this.selectedComponentId = data['resolveData'].instanceId;
 
                     this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId);
 

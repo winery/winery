@@ -15,8 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
-import { NotificationsService } from "angular2-notifications";
-import { NotificationService } from "../notificationModule/notificationservice";
+import { NotificationService } from '../notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-section-component',

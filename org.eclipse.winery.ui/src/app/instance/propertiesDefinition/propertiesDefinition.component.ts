@@ -22,7 +22,7 @@ import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
 import { Response } from '@angular/http';
 import { NgForm } from '@angular/forms';
-import { NotificationService } from "../../notificationModule/notificationservice";
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
@@ -313,7 +313,6 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @param error
      */
     private handleError(error: any): void {
-        // console.log(error);
         this.notify.error(error.toString(), 'Error');
     }
 
