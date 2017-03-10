@@ -49,16 +49,25 @@ public class InterfacesResource {
 			TRelationshipType relationshipType = (TRelationshipType) this.res.getElement();
 			switch (this.interfaceType) {
 				case "source":
-					relationshipType.setSourceInterfaces(new TRelationshipType.SourceInterfaces(interfaceApiData));
+					TRelationshipType.SourceInterfaces sourceInterfaces = new TRelationshipType.SourceInterfaces();
+					sourceInterfaces.getInterface().clear();
+					sourceInterfaces.getInterface().addAll(interfaceApiData);
+					relationshipType.setSourceInterfaces(sourceInterfaces);
 					break;
 				default:
 					// it will be target
-					relationshipType.setTargetInterfaces(new TRelationshipType.TargetInterfaces(interfaceApiData));
+					TRelationshipType.TargetInterfaces targetInterfaces = new TRelationshipType.TargetInterfaces(interfaceApiData);
+					targetInterfaces.getInterface().clear();
+					targetInterfaces.getInterface().addAll(interfaceApiData);
+					relationshipType.setTargetInterfaces(targetInterfaces);
 					break;
 			}
 		} else if (this.res instanceof NodeTypeResource) {
 			TNodeType nodeType = (TNodeType) this.res.getElement();
-			nodeType.setInterfaces(new TNodeType.Interfaces(interfaceApiData));
+			TNodeType.Interfaces interfaces = new TNodeType.Interfaces();
+			interfaces.getInterface().clear();
+			interfaces.getInterface().addAll(interfaceApiData);
+			nodeType.setInterfaces(interfaces);
 		} else {
 			throw new IllegalStateException("Interfaces are not supported for this element type!");
 		}
