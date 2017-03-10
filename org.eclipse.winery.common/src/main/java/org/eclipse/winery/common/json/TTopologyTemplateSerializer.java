@@ -9,7 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.json;
+package org.eclipse.winery.common.json;
 
 import java.io.IOException;
 import java.util.ArrayList;

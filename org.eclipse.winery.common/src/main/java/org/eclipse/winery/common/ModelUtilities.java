@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Oliver Kopp - initial API and implementation
+ *     Oliver Kopp - initial API, implementation, maintenance
  *******************************************************************************/
 package org.eclipse.winery.common;
 
@@ -25,6 +25,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.constants.QNames;
+import org.eclipse.winery.common.json.TopologyTemplateModule;
 import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
@@ -49,6 +50,9 @@ import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
@@ -656,4 +660,18 @@ public class ModelUtilities {
 
 		return relationshipTemplate;
 	}
+
+	public static String convertTopologyTempalteToJson(TTopologyTemplate topologyTemplate) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		mapper.registerModule(new TopologyTemplateModule());
+		String json = null;
+		try {
+			return mapper.writeValueAsString(topologyTemplate);
+		} catch (JsonProcessingException e) {
+			LOGGER.error("Could not convert to JSON", e);
+			return null;
+		}
+	}
+
 }
