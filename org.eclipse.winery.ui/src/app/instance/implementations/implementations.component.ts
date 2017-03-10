@@ -15,6 +15,7 @@ import { ImplementationService } from './implementation.service';
 import { ImplementationAPIData } from './implementationAPIData';
 import { InstanceService } from '../instance.service';
 import { TableComponent } from '../../tableModule/table.component';
+import {ImplementationWithTypeAPIData} from "./implementationWithTypeAPIData";
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -34,7 +35,7 @@ export class ImplementationsComponent implements OnInit {
     newImplementation: ImplementationAPIData = new ImplementationAPIData();
 
     @ViewChild('addModal') addImplModal: any;
-
+    value: any= {};
     constructor(
         private sharedData: InstanceService,
         private service: ImplementationService,
@@ -81,6 +82,20 @@ export class ImplementationsComponent implements OnInit {
         console.log(error);
     }
     private addNewImplementation(localname: string, selectedNamespace: string) {
+        let typeNamespace = this.sharedData.selectedNamespace;
+        let typeName = this.sharedData.selectedComponentId;
+        let type = '{' + typeNamespace + '}' + typeName;
+        console.log(type);
+        let resource = new ImplementationWithTypeAPIData(selectedNamespace,
+                                                        localname,
+                                                        type);
+        this.service.postImplementation(resource);
     }
-
+    private namespaceSelected(value: any) {
+        console.log(value);
+        this.selectedNamespace = value.toString();
+    }
+    private namespaceRefresh(value: any) {
+        this.value = value;
+    }
 }
