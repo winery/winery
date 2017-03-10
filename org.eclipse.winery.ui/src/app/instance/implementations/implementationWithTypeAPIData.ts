@@ -9,8 +9,9 @@
  * Contributors:
  *     Nicole Keppler - initial API and implementation
  */
-export class ImplementationAPIData {
-    namespace: string;
-    name: string;
-    type: string;
+export class ImplementationWithTypeAPIData {
+    public constructor(public namespace: string,
+                       public name: string,
+                       public type: string) {
+    }
 }

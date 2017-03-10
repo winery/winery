@@ -45,7 +45,8 @@ export class ImplementationService {
     postImplementation(resourceApiData: ImplementationWithTypeAPIData): Observable<Response> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-
-        return this.http.post(backendBaseUri + this.path + '/propertiesdefinition/', JSON.stringify(resourceApiData), options);
+        console.log(resourceApiData);
+        console.log(JSON.stringify(resourceApiData));
+        return this.http.post(backendBaseUri + '/nodetypeimplementations/', JSON.stringify(resourceApiData), options);
     }
 }
