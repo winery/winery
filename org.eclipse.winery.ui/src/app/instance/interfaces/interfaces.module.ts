@@ -7,41 +7,31 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Balzer - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
-
 import { NgModule } from '@angular/core';
-
-import { InstanceStatesComponent }   from './instanceStates.component';
-import { LoaderModule } from '../../loader/loader.module';
-import { FormsModule } from '@angular/forms';
+import { InterfacesComponent } from './interfaces.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { SelectModule } from 'ng2-select';
-import { TabsModule, TypeaheadModule, ModalModule } from 'ng2-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { LoaderModule } from '../../loader/loader.module';
 import { CommonModule } from '@angular/common';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
-
-
+import { SelectableListModule } from './selectableList/selectableList.module';
 
 @NgModule({
     imports: [
-        ModalModule.forRoot(),
-        WineryTableModule,
-        TabsModule.forRoot(),
-        SelectModule,
         BrowserModule,
         FormsModule,
         LoaderModule,
-        TypeaheadModule.forRoot(),
         CommonModule,
         WineryModalModule,
+        WineryTableModule,
+        SelectableListModule,
     ],
-    exports: [],
-    declarations: [
-        InstanceStatesComponent
-    ],
+    exports: [InterfacesComponent],
+    declarations: [InterfacesComponent],
     providers: [],
 })
-export class InstanceStatesModule {
+export class InterfacesModule {
 }

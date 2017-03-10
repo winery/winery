@@ -32,9 +32,8 @@ import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { LoaderModule } from '../loader/loader.module';
 import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
-import { SelectableListModule } from './interfaces/selectableList/selectableList.module';
-import { TableModule } from '../tableModule/table.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
+import { InterfacesModule } from './interfaces/interfaces.module';
 
 
 @NgModule({
@@ -43,11 +42,10 @@ import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
         BrowserModule,
         FormsModule,
         LoaderModule,
-        SelectableListModule,
         PropertiesDefinitionModule,
         InstanceRouterModule,
-        TableModule,
         WineryModalModule,
+        InterfacesModule,
     ],
     exports: [],
     declarations: [
@@ -58,7 +56,6 @@ import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,
-        InterfacesComponent,
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
         VisualAppearanceComponent,
