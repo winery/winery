@@ -10,6 +10,7 @@ export class WineryModalFooterComponent {
     @Input('close-button-label') closeButtonLabel: string = 'Cancel';
     @Input('ok-button-label') okButtonLabel: string = 'Add';
     @Input('modal-ref') modalRef: any;
+    @Input('ok-disabled') disableOk: boolean = false;
     @Output() onOk = new EventEmitter<any>();
     @Output() onCancel = new EventEmitter<any>();
 

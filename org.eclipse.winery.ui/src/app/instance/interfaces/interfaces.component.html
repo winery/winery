@@ -57,13 +57,34 @@
         <h4 class="modal-title">{{modalTitle}}</h4>
     </modal-header>
     <modal-body>
-        <label for="interfaceName" class="control-label">Name</label>
-        <input type="text" class="form-control" id="interfaceName"
-               #newName required>
+        <form #addForm="ngForm">
+            <div class="form-group">
+                <label for="interfaceName" class="control-label">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="interfaceName"
+                       name="interfaceName"
+                       #newName="ngModel"
+                       ngModel
+                       required
+                       [duplicateValidator]="validatorObject">
+                <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!newName.errors.duplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!newName.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+        </form>
     </modal-body>
-    <modal-footer (onOk)="modalTitle === 'Interface' ? onAddInterface(newName.value) : onAddOperation(newName.value);"
-                  [close-button-label]="'Cancel'"
-                  [ok-button-label]="'Add'">
+    <modal-footer
+        (onOk)="modalTitle === 'Interface' ? onAddInterface(newName.value) : onAddOperation(newName.value); addForm.reset();"
+        [close-button-label]="'Cancel'"
+        [ok-button-label]="'Add'"
+        [ok-disabled]="!addForm?.form.valid">
     </modal-footer>
 </winery-modal>
 
@@ -72,23 +93,55 @@
         <h4 class="modal-title">{{modalParamTitle}}</h4>
     </modal-header>
     <modal-body>
-        <label for="parameterName" class="control-label">Name</label>
-        <input type="text" class="form-control" id="parameterName"
-               #paramName required>
-        <label for="parameterType" class="control-label">Name</label>
-        <input type="text" class="form-control" id="parameterType"
-               #paramType required>
-        <span class="help-block">TOSCA v1.0 does not specify any type system here. The content of this field is a string.
+        <form #paramterForm="ngForm">
+            <div class="form-group">
+                <label for="parameterName" class="control-label">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="parameterName"
+                       name="parameterName"
+                       ngModel
+                       #paramName="ngModel"
+                       required
+                       [duplicateValidator]="validatorObject">
+                <div *ngIf="paramName.errors && (paramName.dirty || paramName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!paramName.errors.duplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!paramName.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+                <label for="parameterType" class="control-label">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="parameterType"
+                       name="parameterType"
+                       ngModel
+                       #paramType="ngModel"
+                       required>
+                <div *ngIf="paramType.errors && (paramType.dirty || paramType.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!paramType.errors.required">
+                        Type is required!
+                    </div>
+                </div>
+                <span class="help-block">TOSCA v1.0 does not specify any type system here. The content of this field is a string.
             The concrete semantics is left open. The convension is to use the xsd prefix for XML Schema basic types.</span>
-        <div class="form-group">
-            <label>
-                <input #required type="checkbox" name="required" autocomplete="off" required>
-                Required
-            </label>
-        </div>
+                <div class="form-group">
+                    <label>
+                        <input #required type="checkbox" name="required" autocomplete="off">
+                        Required
+                    </label>
+                </div>
+            </div>
+        </form>
     </modal-body>
-    <modal-footer (onOk)="modalParamTitle === 'Input Parameter' ? onAddInputParam(paramName.value, paramType.value, required.checked) : onAddOutputParam(paramName.value, paramType.value, required.checked);"
-                  [close-button-label]="'Cancel'"
-                  [ok-button-label]="'Add'">
+    <modal-footer
+        (onOk)="modalParamTitle === 'Input Parameter' ? onAddInputParam(paramName.value, paramType.value, required.checked) : onAddOutputParam(paramName.value, paramType.value, required.checked); paramterForm.reset()"
+        [close-button-label]="'Cancel'"
+        [ok-button-label]="'Add'"
+        [ok-disabled]="!paramterForm?.form.valid">
     </modal-footer>
 </winery-modal>

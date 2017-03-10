@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { SelectableListModule } from './selectableList/selectableList.module';
+import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
 
 @NgModule({
     imports: [
@@ -28,9 +29,12 @@ import { SelectableListModule } from './selectableList/selectableList.module';
         WineryModalModule,
         WineryTableModule,
         SelectableListModule,
+        DuplicateValidatorModule,
     ],
     exports: [InterfacesComponent],
-    declarations: [InterfacesComponent],
+    declarations: [
+        InterfacesComponent,
+    ],
     providers: [],
 })
 export class InterfacesModule {

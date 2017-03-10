@@ -9,19 +9,17 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
 import { NgModule } from '@angular/core';
-
-import { PropertiesDefinitionComponent }   from './propertiesDefinition.component';
+import { PropertiesDefinitionComponent } from './propertiesDefinition.component';
 import { LoaderModule } from '../../loader/loader.module';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { SelectModule } from 'ng2-select';
-import { TabsModule, TypeaheadModule, ModalModule } from 'ng2-bootstrap';
-import { DuplicateValidatorDirective } from './forbiddenNames.directive';
+import { TabsModule, TypeaheadModule } from 'ng2-bootstrap';
 import { CommonModule } from '@angular/common';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
+import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
 
 @NgModule({
     imports: [
@@ -34,11 +32,11 @@ import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
         CommonModule,
         WineryModalModule,
         WineryTableModule,
+        DuplicateValidatorModule,
     ],
     exports: [],
     declarations: [
         PropertiesDefinitionComponent,
-        DuplicateValidatorDirective
     ],
     providers: [],
 })

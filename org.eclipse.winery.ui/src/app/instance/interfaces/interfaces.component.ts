@@ -14,9 +14,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InterfacesService } from './interfaces.service';
 import { InstanceService } from '../instance.service';
-import { InterfacesApiData, InterfaceOperationApiData, InterfaceParameter } from './interfacesApiData';
+import {
+    InterfacesApiData, InterfaceOperationApiData, InterfaceParameter, InputParameters,
+    OutputParameters
+} from './interfacesApiData';
 import { isNullOrUndefined } from 'util';
 import { YesNoEnum } from "../../interfaces/enums";
+import { handleError } from 'typings/dist/support/cli';
+import { NotificationService } from '../../notificationModule/notificationservice';
+import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -35,19 +41,21 @@ export class InterfacesComponent implements OnInit {
     outputParameters: Array<any> = null;
     selectedInterface: InterfacesApiData = null;
     selectedOperation: InterfaceOperationApiData = null;
-    modalTitle: string;
-    modalParamTitle: string;
     columns: Array<any> = [
-        {title: 'Name', name: 'name', sort: true},
-        {title: 'Type', name: 'type', sort: true},
-        {title: 'Required', name: 'required', sort: false}
+        { title: 'Name', name: 'name', sort: true },
+        { title: 'Type', name: 'type', sort: true },
+        { title: 'Required', name: 'required', sort: false }
     ];
 
+    modalTitle: string;
+    modalParamTitle: string;
+    validatorObject: ValidatorObject;
     @ViewChild('addIntOpModal') addInterfaceOrPropertyModal: any;
     @ViewChild('addIntParametersModal') addParametersModal: any;
 
     constructor(private service: InterfacesService,
-                private sharedData: InstanceService) {
+                private sharedData: InstanceService,
+                private notify: NotificationService) {
     }
 
     ngOnInit() {
@@ -63,17 +71,31 @@ export class InterfacesComponent implements OnInit {
 
     addInterface() {
         this.modalTitle = 'Interface';
+        this.validatorObject = new ValidatorObject(this.interfacesData, 'name');
         this.addInterfaceOrPropertyModal.show();
     }
 
     addOperation() {
-        console.log('addOperation');
         this.modalTitle = 'Operation';
+        this.validatorObject = new ValidatorObject(this.operations, 'name');
         this.addInterfaceOrPropertyModal.show();
+    }
+
+    addInputParam() {
+        this.modalParamTitle = 'Input Parameter';
+        this.validatorObject = new ValidatorObject(this.inputParameters, 'name');
+        this.addParametersModal.show();
+    }
+
+    addOutputParam() {
+        this.modalParamTitle = 'Output Parameter';
+        this.validatorObject = new ValidatorObject(this.outputParameters, 'name');
+        this.addParametersModal.show();
     }
 
     onAddInterface(name: string) {
         this.interfacesData.push(new InterfacesApiData(name));
+        name = null;
     }
 
     onAddOperation(name: string) {
@@ -93,6 +115,14 @@ export class InterfacesComponent implements OnInit {
 
     onOperationSelected(selectedOperation: any) {
         this.selectedOperation = selectedOperation;
+
+        if (isNullOrUndefined(selectedOperation.inputParameters)) {
+            selectedOperation.inputParameters = new InputParameters();
+        }
+        if (isNullOrUndefined(selectedOperation.outputParameters)) {
+            selectedOperation.outputParameters = new OutputParameters();
+        }
+
         this.inputParameters = selectedOperation.inputParameters.inputParameter;
         this.outputParameters = selectedOperation.outputParameters.outputParameter;
     }
@@ -105,20 +135,14 @@ export class InterfacesComponent implements OnInit {
         this.selectedOperation.outputParameters.outputParameter.push(new InterfaceParameter(name, type, required ? YesNoEnum.YES : YesNoEnum.NO));
     }
 
-    addInputParam() {
-        this.modalParamTitle = 'Input Parameter';
-        this.addParametersModal.show();
-    }
-
-    addOutputParam() {
-        this.modalParamTitle = 'Output Parameter';
-        this.addParametersModal.show();
-    }
-
     save() {
-        this.service.save(this.interfacesData);
+        this.loading = true;
+        this.service.save(this.interfacesData)
+            .subscribe(
+                data => this.handleSave(),
+                error => this.handleError(error)
+            );
     }
-
     // endregion
 
     // region ########## Private Methods ##########
@@ -127,8 +151,13 @@ export class InterfacesComponent implements OnInit {
         this.loading = false;
     }
 
-    private handleError(error: any) {
+    private handleSave() {
+        this.loading = false;
+        this.notify.success('Changes saved!');
+    }
 
+    private handleError(error: any) {
+        this.notify.error(error.toString());
     }
 
     // endregion
