@@ -8,9 +8,11 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add notifications module
  */
 
-import { Component } from '@angular/core';
+import { Component, ViewContainerRef, OnInit } from '@angular/core';
+import { NotificationService } from './notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-repository',
@@ -23,4 +25,13 @@ export class WineryRepositoryComponent {
     // region variables
     name = 'Winery Repository';
     // endregion
+    options = {
+        position: ['top', 'right'],
+        timeOut: 3000,
+        lastOnBottom: true
+    };
+
+    constructor(vcr: ViewContainerRef, private notify: NotificationService) {
+        this.notify.init(vcr);
+    }
 }

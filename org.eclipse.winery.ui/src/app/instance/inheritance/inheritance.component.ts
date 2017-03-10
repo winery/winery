@@ -16,6 +16,7 @@ import { InheritanceApiData } from './inheritanceApiData';
 import { InstanceService } from '../instance.service';
 import { QNameList } from '../../qNameSelector/qNameApiData';
 import { isNullOrUndefined } from 'util';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 
 @Component({
@@ -29,10 +30,10 @@ export class InheritanceComponent implements OnInit {
     availableSuperClasses: QNameList;
     loading: boolean = true;
 
-    constructor(
-        private sharedData: InstanceService,
-        private service: InheritanceService
-    ) {}
+    constructor(private sharedData: InstanceService,
+                private service: InheritanceService,
+                private notify: NotificationService) {
+    }
 
     ngOnInit() {
         this.service.setPath(this.sharedData.path);
@@ -79,12 +80,12 @@ export class InheritanceComponent implements OnInit {
 
     private handlePutResponse(response: any) {
         this.loading = false;
-        console.log(response);
+        this.notify.success('Saved changes', 'Success');
     }
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log(error);
+        this.notify.error(error.toString(), 'Error');
     }
 
 }
