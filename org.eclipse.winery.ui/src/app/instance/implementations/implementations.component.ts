@@ -17,6 +17,7 @@ import { InstanceService } from '../instance.service';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 import { Response } from '@angular/http';
 import { NotificationService } from '../../notificationModule/notificationservice';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -28,14 +29,16 @@ export class ImplementationsComponent implements OnInit {
     implementationData: ImplementationAPIData[];
     loading: boolean = true;
     selectedCell: any;
+    elementToRemove: ImplementationAPIData;
     allNamespaces: string[] = [];
     selectedNamespace: string;
     columns: Array<any> = [
         {title: 'Namespace', name: 'namespace', sort: true},
         {title: 'Name', name: 'localname', sort: true},
     ];
-    newImplementation: ImplementationAPIData = new ImplementationAPIData();
+    newImplementation: ImplementationAPIData = new ImplementationAPIData('', '');
 
+    @ViewChild('confirmDeleteModal') deleteStateModal: any;
     @ViewChild('addModal') addImplModal: any;
     value: any = {};
 
@@ -52,12 +55,32 @@ export class ImplementationsComponent implements OnInit {
 
     // region ######## table methods ########
     onCellSelected(data: any) {
-        console.log('selected');
+        if (!isNullOrUndefined(data)) {
+            this.selectedCell = data.row;
+        }
     }
 
     onRemoveClick(data: any) {
-        console.log('remove');
+        if (isNullOrUndefined(data)) {
+            return;
+        } else {
+            this.elementToRemove = new ImplementationAPIData(data.namespace, data.localname);
+            this.deleteStateModal.show();
+        }
     }
+
+    removeConfirmed() {
+        this.deleteStateModal.hide();
+        this.loading = true;
+        this.service.deleteImplementations(this.elementToRemove)
+            .subscribe(
+                data => this.handleDeleteResponse(data),
+                error => this.handleError(error)
+            );
+        this.elementToRemove = null;
+    }
+
+    //
 
     onAddClick() {
         console.log('add');
@@ -66,7 +89,7 @@ export class ImplementationsComponent implements OnInit {
                 data => this.allNamespaces = data,
                 error => this.handleError(error)
             );
-        this.newImplementation = new ImplementationAPIData();
+        this.newImplementation = new ImplementationAPIData('', '');
         this.addImplModal.show();
         console.log(this.allNamespaces);
     }
@@ -105,6 +128,18 @@ export class ImplementationsComponent implements OnInit {
             this.notificationService.success('Created new NodeType Implementation', 'Success');
         } else {
             this.notificationService.error('Failed to create NodeType Implementation', 'Creation Failed');
+        }
+    }
+
+    private handleDeleteResponse(data: Response) {
+        this.loading = false;
+        console.log('deleted');
+        if (data.ok) {
+            this.getImplementationData();
+            this.notificationService.success('Deletion of NodeType Implementationb Successful', 'Success');
+        } else {
+            this.handleError(data);
+            this.notificationService.error('Failed to delete NodeType Implementation failed', 'Deletion Failed');
         }
     }
 
