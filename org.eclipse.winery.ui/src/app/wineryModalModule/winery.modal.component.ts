@@ -3,6 +3,36 @@ import { WineryModalHeaderComponent } from './winery.modal.header.component';
 import { WineryModalFooterComponent } from './winery.modal.footer.component';
 import { isNullOrUndefined } from 'util';
 
+/**
+ * This component provides a generic modal component for any kind of pop-ups.
+ * To use it, the {@link WineryModalModule} must be imported in the corresponding module.
+ *
+ * In order to use this component, see the following example, note that the <code>modalRef</code> must be set.
+ * For further information, see the sub-components {@link WineryModalHeaderComponent}, {@link WineryModalBodyComponent},
+ * and {@link WineryModalFooterComponent}.
+ *
+ * @example <caption>Short Example</caption>
+ * ```html
+ * <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+ *     <modal-header>
+ *         <h4 class="modal-title">Delete Property</h4>
+ *     </modal-header>
+ *     <modal-body>
+ *         <p *ngIf="elementToRemove != null">
+ *             Do you want to delete the Element
+ *                 <span style="font-weight:bold;">
+ *                     {{ elementToRemove.key }}
+ *                 </span>
+ *             ?
+ *         </p>
+ *     </modal-body>
+ *     <modal-footer (onOk)="removeConfirmed();"
+ *                   [close-button-label]="'No'"
+ *                   [ok-button-label]="'Yes'">
+ *     </modal-footer>
+ * </winery-modal>
+ * ```
+ */
 @Component({
     selector: 'winery-modal',
     templateUrl: 'winery.modal.component.html',
@@ -14,10 +44,27 @@ import { isNullOrUndefined } from 'util';
 })
 export class WineryModalComponent implements AfterViewInit, AfterContentInit {
 
+    /**
+     * The modalRef must be set, otherwise the component will not work!
+     *
+     * @Input
+     */
     @Input() modalRef: any;
+    /**
+     * @Input
+     */
     @Input() size: any;
+    /**
+     * @Input
+     * @type {boolean}
+     */
     @Input() keyboard: boolean = true;
+    /**
+     * @Input
+     * @type {boolean}
+     */
     @Input() backdrop: string | boolean = true;
+
     @ContentChild(WineryModalHeaderComponent) headerContent: WineryModalHeaderComponent;
     @ContentChild(WineryModalFooterComponent) footerContent: WineryModalFooterComponent;
 
@@ -76,6 +123,9 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
     }
 }
 
+/**
+ * This class is used to determine the modal's size
+ */
 export class ModalSize {
     static SMALL = 'sm';
     static LARGE = 'lg';
