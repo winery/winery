@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2015-2017 University of Stuttgart.
+ * Copyright (c) 2017 ZTE Corporation.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
+ *     ZTE - support of more gateways
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel;
 
@@ -46,5 +48,14 @@ public class BPMN4Tosca2BpelTest {
 		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
 		transformer.transform(srcUri, targetUri);
 	}
+	
+	@Test
+    public void testTransformGateway() throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+        URI srcUri = Paths.get(RESOURCES_DIR, "bppmn4tosca.exclusivegateway.json").toUri();
+        URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.exclusivegateway.zip").toUri();
+        BPMN4Tosca2BpelTest.class.getResource(".");
+        Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+        transformer.transform(srcUri, targetUri);
+    }
 
 }
