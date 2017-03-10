@@ -16,44 +16,78 @@
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading && interfacesData">
-    <span>&nbsp;</span>
-    <div style="display: flex;">
+    <div class="right">
+        <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+    </div>
+    <div style="display: inline-flex;">
         <winery-selectableList [title]="'Interfaces'"
                                [rows]="interfacesData"
-                               (addButtonClicked)="console.log('pimmel')">
+                               (addButtonClicked)="addInterface()"
+                               (selectionChanged)="onInterfaceSelect($event)">
         </winery-selectableList>
         <winery-selectableList *ngIf="operations"
                                [title]="'Operations'"
-                               [rows]="operations">
+                               [rows]="operations"
+                               (addButtonClicked)="addOperation()"
+                               (selectionChanged)="onOperationSelected($event)">
         </winery-selectableList>
     </div>
+
     <div>
         <winery-table *ngIf="inputParameters"
                       [title]="'Input Parameters'"
                       [data]="inputParameters"
                       [columns]="columns"
-                      [disableFiltering]="true">
+                      [disableFiltering]="true"
+                      (addBtnClicked)="addInputParam()">
         </winery-table>
 
         <winery-table *ngIf="outputParameters"
                       [title]="'Output Parameters'"
                       [data]="outputParameters"
                       [columns]="columns"
-                      [disableFiltering]="true">
+                      [disableFiltering]="true"
+                      (addBtnClicked)="addOutputParam()">
         </winery-table>
     </div>
 </div>
 
-<winery-modal bsModal #addInterface="bs-modal" [modalRef]="addInterface">
+<winery-modal bsModal #addIntOpModal="bs-modal" [modalRef]="addIntOpModal">
     <modal-header>
-        <h4 class="modal-title">Add Interface</h4>
+        <h4 class="modal-title">{{modalTitle}}</h4>
     </modal-header>
     <modal-body>
         <label for="interfaceName" class="control-label">Name</label>
         <input type="text" class="form-control" id="interfaceName"
-               #newInterface required>
+               #newName required>
     </modal-body>
-    <modal-footer (onOk)="onAddInterface(newInterface.value);"
+    <modal-footer (onOk)="modalTitle === 'Interface' ? onAddInterface(newName.value) : onAddOperation(newName.value);"
+                  [close-button-label]="'Cancel'"
+                  [ok-button-label]="'Add'">
+    </modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #addIntParametersModal="bs-modal" [modalRef]="addIntParametersModal">
+    <modal-header>
+        <h4 class="modal-title">{{modalParamTitle}}</h4>
+    </modal-header>
+    <modal-body>
+        <label for="parameterName" class="control-label">Name</label>
+        <input type="text" class="form-control" id="parameterName"
+               #paramName required>
+        <label for="parameterType" class="control-label">Name</label>
+        <input type="text" class="form-control" id="parameterType"
+               #paramType required>
+        <span class="help-block">TOSCA v1.0 does not specify any type system here. The content of this field is a string.
+            The concrete semantics is left open. The convension is to use the xsd prefix for XML Schema basic types.</span>
+        <div class="form-group">
+            <label>
+                <input #required type="checkbox" name="required" autocomplete="off" required>
+                Required
+            </label>
+        </div>
+    </modal-body>
+    <modal-footer (onOk)="modalParamTitle === 'Input Parameter' ? onAddInputParam(paramName.value, paramType.value, required.checked) : onAddOutputParam(paramName.value, paramType.value, required.checked);"
                   [close-button-label]="'Cancel'"
                   [ok-button-label]="'Add'">
     </modal-footer>

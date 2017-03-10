@@ -27,7 +27,7 @@ export class SelectableListComponent implements OnInit {
 
     @Output() removeButtonClicked = new EventEmitter <any>();
     @Output() addButtonClicked = new EventEmitter <any>();
-
+    @Output() selectionChanged = new EventEmitter <any>();
     currentSelected: any;
 
     constructor() {
@@ -47,5 +47,11 @@ export class SelectableListComponent implements OnInit {
     onRemove($event: Event) {
         $event.stopPropagation();
         this.removeButtonClicked.emit(this.currentSelected);
+    }
+
+    onChange(value: any) {
+        console.log('onChange:', value);
+        this.currentSelected = value;
+        this.selectionChanged.emit(value);
     }
 }

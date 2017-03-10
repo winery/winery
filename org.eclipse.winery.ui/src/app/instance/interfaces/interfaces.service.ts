@@ -29,10 +29,17 @@ export class InterfacesService {
     }
 
     getInterfaces(): Observable<InterfacesApiData[]> {
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        let headers = new Headers({'Accept': 'application/json'});
+        let options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseUri + this.path + '/interfaces/', options)
             .map(res => res.json());
+    }
+
+    save(interfacesData: InterfacesApiData[]) {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+
+        return this.http.post(backendBaseUri + this.path + '/interfaces/', JSON.stringify(interfacesData), options);
     }
 }

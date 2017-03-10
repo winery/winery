@@ -25,12 +25,32 @@ export class InterfaceOperationApiData {
     documentation: Array<any> = null;
     any: Array<any> = null;
     otherAttributes: Object = null;
-    inputParameters: InterfaceParameter[] = [];
-    outputParameters: InterfaceParameter[] = [];
+    inputParameters: InputParameters = new InputParameters();
+    outputParameters: OutputParameters = new OutputParameters();
+    name: String = '';
+
+    constructor(name: string = '') {
+        this.name = name;
+    }
+}
+
+export class InputParameters {
+    inputParameter: InterfaceParameter[] = [];
+}
+
+export class OutputParameters {
+    outputParameter: InterfaceParameter[] = [];
 }
 
 export class InterfaceParameter {
+
     name: string;
     type: string;
     required: YesNoEnum;
+
+    constructor(name: string, type: string, required: YesNoEnum) {
+        this.name = name;
+        this.type = type;
+        this.required = required;
+    }
 }

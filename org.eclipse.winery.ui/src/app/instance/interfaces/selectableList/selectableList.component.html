@@ -26,8 +26,8 @@
         </button>
     </div>
     <div class="list-content">
-        <select name="Interfaces" size="8" id="interfaces" class="listcontent">
-            <option *ngFor="let item of rows" value="{{ item.name }}">{{ item.name }}</option>
+        <select #select [ngModel]="currentSelected" (ngModelChange)="onChange($event)" name="Interfaces" size="8" id="interfaces" class="listcontent">
+            <option *ngFor="let item of rows" [ngValue]="item">{{ item.name }}</option>
         </select>
     </div>
 </div>
