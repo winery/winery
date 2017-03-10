@@ -12,9 +12,10 @@
  */
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Headers, RequestOptions, Http } from '@angular/http';
+import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
-import {ImplementationAPIData} from "./implementationAPIData";
+import { ImplementationAPIData } from './implementationAPIData';
+import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 
 @Injectable()
 export class ImplementationService {
@@ -41,10 +42,10 @@ export class ImplementationService {
         return this.http.get(backendBaseUri + '/admin/namespaces', options)
             .map(res => res.json());
     }
+    postImplementation(resourceApiData: ImplementationWithTypeAPIData): Observable<Response> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-    /*saveDocumentationData(documentationData: string): Observable<any> {
-        let headers = new Headers({'Content-Type': 'text/plain', 'Accept': 'text/plain'});
-        let options = new RequestOptions({headers: headers});
-        return this.http.put(backendBaseUri + decodeURIComponent(this.path), documentationData, options);
-    }*/
+        return this.http.post(backendBaseUri + this.path + '/propertiesdefinition/', JSON.stringify(resourceApiData), options);
+    }
 }

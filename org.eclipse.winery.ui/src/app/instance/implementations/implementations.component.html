@@ -44,14 +44,13 @@
                        [(ngModel)]="newImplementation.localname"/>
             </div>
             <div class="form-group">
-                <label class="control-label" for="newNamespace">Namespace</label>
-                <select #selectNamespace name="namespace"
-                        class="form-control"
-                        id="newNamespace"
-                        [(ngModel)] = "selectedNamespace"
-                        [typeahead]="allNamespaces">
-                    <option *ngFor="let n of allNamespaces">{{n}}</option>
-                </select>
+                <label class="control-label" >Namespace</label>
+                <ng-select #selectNamespace name="namespace"
+                           placeholder = "no namespace selected"
+                           (selected) = "namespaceSelected($event)"
+                           (data)="namespaceRefresh($event)"
+                        [items]="allNamespaces">
+                </ng-select>
             </div>
         </form>
     </modal-body>
