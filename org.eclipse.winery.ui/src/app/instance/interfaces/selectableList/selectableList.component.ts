@@ -25,8 +25,8 @@ export class SelectableListComponent implements OnInit {
     @Input() rows: Array<any>;
     @Input() title: string;
 
-    @Output() removeButtonClicked: EventEmitter<any>;
-    @Output() addButtonClicked: EventEmitter<any>;
+    @Output() removeButtonClicked = new EventEmitter <any>();
+    @Output() addButtonClicked = new EventEmitter <any>();
 
     currentSelected: any;
 
