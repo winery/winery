@@ -22,6 +22,8 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
+import org.eclipse.winery.repository.resources.apiData.QNameWithTypeApiData;
+
 import org.restdoc.annotations.RestDocParam;
 
 /**
@@ -68,4 +70,27 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 		return creationResult.getResponse();
 	}
 
+	/* ToDo in AbstractcomponentsResource is a onPost method which was overwritten here. By changig post method to consume JSON
+	*  it dont need to overwrite. do we need the overwrite method or can it be deleted. or do we need to abstract our JSON method
+	* */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response onJsonPost(QNameWithTypeApiData jsonData) {
+		// only check for type parameter as namespace and name are checked in super.onPost
+		if (StringUtils.isEmpty(jsonData.type)) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.name);
+		if (!creationResult.isSuccess()) {
+			return creationResult.getResponse();
+		}
+		if (creationResult.getStatus().equals(Status.CREATED)) {
+			IHasTypeReference resource = (IHasTypeReference) AbstractComponentsResource.getComponentInstaceResource((TOSCAComponentId) creationResult.getId());
+			resource.setType(jsonData.type);
+			// we assume that setType succeeded and just return the result of the
+			// creation of the artifact template resource
+			// Thus, we do NOT change res
+		}
+		return creationResult.getResponse();
+	}
 }
