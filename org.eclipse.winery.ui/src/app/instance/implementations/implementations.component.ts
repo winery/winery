@@ -14,9 +14,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ImplementationService } from './implementation.service';
 import { ImplementationAPIData } from './implementationAPIData';
 import { InstanceService } from '../instance.service';
-import { TableComponent } from '../../tableModule/table.component';
+import { WineryTableComponent } from '../../wineryTableModule/wineryTable.component';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
-import { Response } from "@angular/http";
+import { Response } from '@angular/http';
 
 @Component({
     selector: 'winery-instance-implementations',

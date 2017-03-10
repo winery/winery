@@ -14,7 +14,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { Ng2TableModule } from 'ng2-table';
-import { TableComponent } from './table.component';
+import { WineryTableComponent } from './wineryTable.component';
 import { PaginationModule } from 'ng2-bootstrap';
 
 @NgModule({
@@ -24,9 +24,9 @@ import { PaginationModule } from 'ng2-bootstrap';
         BrowserModule,
         FormsModule,
     ],
-    exports: [TableComponent],
-    declarations: [TableComponent],
+    exports: [WineryTableComponent],
+    declarations: [WineryTableComponent],
     providers: [],
 })
-export class TableModule {
+export class WineryTableModule {
 }

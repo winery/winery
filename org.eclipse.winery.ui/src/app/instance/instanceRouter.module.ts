@@ -27,6 +27,8 @@ import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabili
 import { PropertiesDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
 import { InstanceResolver } from './instance.resolver';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
+import { InstanceStatesModule } from './instanceStates/instanceStates.module';
+
 const instanceRoutes: Routes = [
     {
         path: ':section/:namespace/:instanceId',
@@ -52,6 +54,7 @@ const instanceRoutes: Routes = [
         BrowserModule,
         PropertiesDefinitionModule,
         ImplementationsModule,
+        InstanceStatesModule,
         RouterModule.forChild(instanceRoutes)
     ],
     exports: [

@@ -1,3 +1,0 @@
-#the properties are ignored since they are different from deployment to deployment
-#A template is provided at conf/
-winery.properties

@@ -13,12 +13,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-
-    selector: 'table-component',
-    templateUrl: 'table.component.html',
-    styleUrls: ['table.component.css']
+    selector: 'winery-table',
+    templateUrl: 'wineryTable.component.html',
+    styleUrls: ['wineryTable.component.css']
 })
-export class TableComponent implements OnInit {
+export class WineryTableComponent implements OnInit {
 
     public page: number = 1;
     @Input() itemsPerPage: number = 10;

@@ -32,6 +32,7 @@ import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates.InstanceState;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.resources.apiData.InstanceStateApiData;
 
 import com.sun.jersey.api.view.Viewable;
 
@@ -58,16 +59,12 @@ public class InstanceStatesResource {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/instancestates.jsp", this);
-	}
-
-	public List<String> getInstanceStates() {
+	@Produces(MediaType.APPLICATION_JSON)
+		public List<InstanceStateApiData> getInstanceStates() {
 		List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
-		ArrayList<String> states = new ArrayList<>(instanceStates.size());
+		ArrayList<InstanceStateApiData> states = new ArrayList<>(instanceStates.size());
 		for (InstanceState instanceState : instanceStates) {
-			states.add(instanceState.getState());
+			states.add(new InstanceStateApiData(instanceState.getState()));
 		}
 		return states;
 	}
@@ -101,8 +98,10 @@ public class InstanceStatesResource {
 	}
 
 	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addInstanceState(@FormParam("state") String state) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addInstanceState(InstanceStateApiData json) {
+		String state = json.state;
+
 		if (StringUtils.isEmpty(state)) {
 			return Response.notAcceptable(null).build();
 		}

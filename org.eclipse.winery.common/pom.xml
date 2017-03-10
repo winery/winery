@@ -32,6 +32,18 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.2.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.2.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.winery</groupId>
 			<artifactId>org.eclipse.winery.model.tosca</artifactId>
 			<version>0.1.21-SNAPSHOT</version>

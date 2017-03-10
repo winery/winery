@@ -18,14 +18,14 @@
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading">
-    <table-component
+    <winery-table
             [data]="implementationData"
             [columns]="columns"
             (cellSelected)="onCellSelected($event)"
             [itemsPerPage]="10"
             (removeBtnClicked)="onRemoveClick($event)"
             (addBtnClicked)="onAddClick();">
-    </table-component>
+    </winery-table>
 </div>
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
     <modal-header>

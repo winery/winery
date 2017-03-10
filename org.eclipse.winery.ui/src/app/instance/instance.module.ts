@@ -49,7 +49,6 @@ import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDef
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,
-        InstanceStatesComponent,
         InterfacesComponent,
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
