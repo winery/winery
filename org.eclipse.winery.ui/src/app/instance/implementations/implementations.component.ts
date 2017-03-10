@@ -14,12 +14,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ImplementationService } from './implementation.service';
 import { ImplementationAPIData } from './implementationAPIData';
 import { InstanceService } from '../instance.service';
-import {ImplementationWithTypeAPIData} from './implementationWithTypeAPIData';
+import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
+import { Response } from '@angular/http';
 
 @Component({
     selector: 'winery-instance-implementations',
     templateUrl: 'implementations.component.html',
-    providers: [ ImplementationService ],
+    providers: [ImplementationService],
 })
 export class ImplementationsComponent implements OnInit {
     implementationData: ImplementationAPIData[];
@@ -34,31 +35,27 @@ export class ImplementationsComponent implements OnInit {
     newImplementation: ImplementationAPIData = new ImplementationAPIData();
 
     @ViewChild('addModal') addImplModal: any;
-    value: any= {};
-    constructor(
-        private sharedData: InstanceService,
-        private service: ImplementationService,
-    ) {
+    value: any = {};
+
+    constructor(private sharedData: InstanceService,
+                private service: ImplementationService,) {
         this.implementationData = [];
     }
 
     ngOnInit() {
         this.service.setPath(this.sharedData.path);
-        console.log('ngOnInit');
-        this.service.getImplementationData()
-            .subscribe(
-                data => this.handleData(data),
-                error => this.handleError(error)
-            );
+        this.getImplementationData();
     }
 
     // region ######## table methods ########
     onCellSelected(data: any) {
         console.log('selected');
     }
+
     onRemoveClick(data: any) {
         console.log('remove');
     }
+
     onAddClick() {
         console.log('add');
         this.service.getAllNamespaces()
@@ -70,30 +67,53 @@ export class ImplementationsComponent implements OnInit {
         this.addImplModal.show();
         console.log(this.allNamespaces);
     }
+
     // endregion
-    private handleData( impl: ImplementationAPIData[]) {
+    private handleData(impl: ImplementationAPIData[]) {
         this.implementationData = impl;
         this.loading = false;
         console.log(this.implementationData);
     }
+
     private handleError(error: any): void {
         this.loading = false;
         console.log(error);
     }
-    private addNewImplementation(localname: string, selectedNamespace: string) {
+
+    private addNewImplementation(localname: string) {
         let typeNamespace = this.sharedData.selectedNamespace;
         let typeName = this.sharedData.selectedComponentId;
         let type = '{' + typeNamespace + '}' + typeName;
         console.log(type);
-        let resource = new ImplementationWithTypeAPIData(selectedNamespace,
-                                                        localname,
-                                                        type);
-        this.service.postImplementation(resource);
+        let resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
+            localname,
+            type);
+        this.service.postImplementation(resource).subscribe(
+            data => this.handleResponse(data),
+            error => console.log(error)
+        );
     }
+
+    private handleResponse(data: Response) {
+        if (data.ok) {
+            this.getImplementationData();
+        }
+    }
+
+    private getImplementationData(): void {
+        console.log('loaded');
+        this.service.getImplementationData()
+            .subscribe(
+                data => this.handleData(data),
+                error => this.handleError(error)
+            );
+    }
+
     private namespaceSelected(value: any) {
         console.log(value);
-        this.selectedNamespace = value.toString();
+        this.selectedNamespace = value.text;
     }
+
     private namespaceRefresh(value: any) {
         this.value = value;
     }
