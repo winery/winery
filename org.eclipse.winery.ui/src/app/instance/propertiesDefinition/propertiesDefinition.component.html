@@ -92,7 +92,7 @@
                        name="key"
                        required
                        [(ngModel)]="newProperty.key"
-                       [duplicateValidator]="resourceApiData?.winerysPropertiesDefinition?.propertyDefinitionKVList"/>
+                       [duplicateValidator]="{'list': resourceApiData?.winerysPropertiesDefinition?.propertyDefinitionKVList, 'prop': 'key'}"/>
 
                 <div *ngIf="propName.errors && (propName.touched)"
                      class="alert alert-danger">

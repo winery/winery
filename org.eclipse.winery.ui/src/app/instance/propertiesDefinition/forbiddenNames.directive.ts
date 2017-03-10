@@ -15,13 +15,13 @@ import { AbstractControl, NG_VALIDATORS, Validator, ValidatorFn, Validators } fr
 import { isNullOrUndefined } from 'util';
 
 
-export function duplicateValidator(namesArray: Array<any>): ValidatorFn {
+export function duplicateValidator(compObj: {list: Array<any>, prop: string}): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} => {
-        if (isNullOrUndefined(namesArray)) {
+        if (isNullOrUndefined(compObj)) {
             return null;
         }
         const name = control.value;
-        const no = namesArray.find(item => item.key === name);
+        const no = compObj.list.find(item => item[compObj.prop] === name);
         return no ? {'duplicateValidator': {name}} : null;
     };
 }
@@ -31,13 +31,13 @@ export function duplicateValidator(namesArray: Array<any>): ValidatorFn {
     providers: [{provide: NG_VALIDATORS, useExisting: DuplicateValidatorDirective, multi: true}]
 })
 export class DuplicateValidatorDirective implements Validator, OnChanges {
-    @Input() duplicateValidator: Array<any>;
+    @Input() duplicateValidator: {list: Array<any>, prop: string};
     private valFn = Validators.nullValidator;
 
     ngOnChanges(changes: SimpleChanges): void {
         const change = changes['duplicateValidator'];
         if (change) {
-            const val: Array<any> = change.currentValue;
+            const val: {list: Array<any>, prop: string} = change.currentValue;
             this.valFn = duplicateValidator(val);
         } else {
             this.valFn = Validators.nullValidator;
