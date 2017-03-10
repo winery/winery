@@ -390,7 +390,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			// required for IA Generation
 			nodeType = ntRes.getNodeType();
 
-			List<TInterface> interfaces = nodeType.getInterfaces().getInterface();
+			List<TInterface> interfaces = nodeType.getInterfaces().getInterfacesList();
 			Iterator<TInterface> it = interfaces.iterator();
 			do {
 				iface = it.next();
