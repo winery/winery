@@ -24,6 +24,7 @@ import { Response } from '@angular/http';
 import { NgForm } from '@angular/forms';
 import { NotificationService } from '../../notificationModule/notificationservice';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
+import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
@@ -46,7 +47,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     allNamespaces: string[];
     selectedCell: any;
     elementToRemove: any = null;
-    columns: Array<any> = [
+    columns: Array<WineryTableColumn> = [
         { title: 'Name', name: 'key', sort: true },
         { title: 'Type', name: 'type', sort: true },
     ];

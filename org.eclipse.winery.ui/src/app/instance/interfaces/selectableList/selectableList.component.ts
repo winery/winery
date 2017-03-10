@@ -50,7 +50,6 @@ export class SelectableListComponent implements OnInit {
     }
 
     onChange(value: any) {
-        console.log('onChange:', value);
         this.currentSelected = value;
         this.selectionChanged.emit(value);
     }

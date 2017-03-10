@@ -27,7 +27,7 @@ export class InterfaceOperationApiData {
     otherAttributes: Object = null;
     inputParameters: InputParameters = new InputParameters();
     outputParameters: OutputParameters = new OutputParameters();
-    name: String = '';
+    name: string = '';
 
     constructor(name: string = '') {
         this.name = name;

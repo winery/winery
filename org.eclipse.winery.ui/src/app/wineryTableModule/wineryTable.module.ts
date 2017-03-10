@@ -17,6 +17,10 @@ import { Ng2TableModule } from 'ng2-table';
 import { WineryTableComponent } from './wineryTable.component';
 import { PaginationModule } from 'ng2-bootstrap';
 
+/**
+ * This module must be imported in order to use the {@link WineryTableComponent}.
+ * Documentation on how to use this component can also be found at the {@link WineryTableComponent}.
+ */
 @NgModule({
     imports: [
         PaginationModule.forRoot(),

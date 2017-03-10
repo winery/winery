@@ -1,12 +1,11 @@
-import {NgModule} from '@angular/core';
-import {ModalModule} from 'ng2-bootstrap';
-import {WineryModalComponent}   from './winery.modal.component';
-import {WineryModalBodyComponent} from './winery.modal.body.component';
-import {WineryModalHeaderComponent} from './winery.modal.header.component';
-import {WineryModalFooterComponent} from './winery.modal.footer.component';
-import {CommonModule} from '@angular/common';
-import {BrowserModule} from '@angular/platform-browser';
-
+import { NgModule } from '@angular/core';
+import { ModalModule } from 'ng2-bootstrap';
+import { WineryModalComponent }   from './winery.modal.component';
+import { WineryModalBodyComponent } from './winery.modal.body.component';
+import { WineryModalHeaderComponent } from './winery.modal.header.component';
+import { WineryModalFooterComponent } from './winery.modal.footer.component';
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
     imports: [

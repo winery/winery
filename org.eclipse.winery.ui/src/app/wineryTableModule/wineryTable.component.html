@@ -25,7 +25,7 @@
         <div class="table-component-header-btn-wrap">
             <button class="rightbutton btn btn-danger btn-xs"
                     (click)="onRemoveClick($event);"
-                    [disabled]="rows.length === 0">
+                    [disabled]="rows.length === 0 || !currentSelected">
                 Remove
             </button>
             <button class="rightbutton btn btn-primary btn-xs" (click)="onAddClick($event);">Add</button>
@@ -38,7 +38,7 @@
               (cellClicked)="onCellClick($event)"
               [rows]="rows" [columns]="columns">
     </ng-table>
-    <div *ngIf="rows.length > 10">
+    <div *ngIf="rows.length > 10 || rows.length > itemsPerPage">
         <pagination *ngIf="config.paging"
                     class="pagination-sm"
                     [(ngModel)]="page"

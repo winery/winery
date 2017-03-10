@@ -23,13 +23,15 @@
         <winery-selectableList [title]="'Interfaces'"
                                [rows]="interfacesData"
                                (addButtonClicked)="addInterface()"
-                               (selectionChanged)="onInterfaceSelect($event)">
+                               (selectionChanged)="onInterfaceSelect($event)"
+                               (removeButtonClicked)="removeInterface($event)">
         </winery-selectableList>
         <winery-selectableList *ngIf="operations"
                                [title]="'Operations'"
                                [rows]="operations"
                                (addButtonClicked)="addOperation()"
-                               (selectionChanged)="onOperationSelected($event)">
+                               (selectionChanged)="onOperationSelected($event)"
+                               (removeButtonClicked)="removeOperation()">
         </winery-selectableList>
     </div>
 
@@ -39,7 +41,9 @@
                       [data]="inputParameters"
                       [columns]="columns"
                       [disableFiltering]="true"
-                      (addBtnClicked)="addInputParam()">
+                      (addBtnClicked)="addInputParam()"
+                      (cellSelected)="onInputParameterSelected($event.row)"
+                      (removeBtnClicked)="removeInputParameter()">
         </winery-table>
 
         <winery-table *ngIf="outputParameters"
@@ -47,17 +51,17 @@
                       [data]="outputParameters"
                       [columns]="columns"
                       [disableFiltering]="true"
-                      (addBtnClicked)="addOutputParam()">
+                      (addBtnClicked)="addOutputParam()"
+                      (cellSelected)="onOutputParameterSelected($event.row)"
+                      (removeBtnClicked)="removeOutputParameter()">
         </winery-table>
     </div>
 </div>
 
 <winery-modal bsModal #addIntOpModal="bs-modal" [modalRef]="addIntOpModal">
-    <modal-header>
-        <h4 class="modal-title">{{modalTitle}}</h4>
-    </modal-header>
+    <modal-header [title]="modalTitle"></modal-header>
     <modal-body>
-        <form #addForm="ngForm">
+        <form #addElementForm="ngForm">
             <div class="form-group">
                 <label for="interfaceName" class="control-label">Name</label>
                 <input type="text"
@@ -81,19 +85,17 @@
         </form>
     </modal-body>
     <modal-footer
-        (onOk)="modalTitle === 'Interface' ? onAddInterface(newName.value) : onAddOperation(newName.value); addForm.reset();"
+        (onOk)="modalTitle === 'Interface' ? onAddInterface(newName.value) : onAddOperation(newName.value);"
         [close-button-label]="'Cancel'"
         [ok-button-label]="'Add'"
-        [ok-disabled]="!addForm?.form.valid">
+        [ok-disabled]="!addElementForm?.form.valid">
     </modal-footer>
 </winery-modal>
 
 <winery-modal bsModal #addIntParametersModal="bs-modal" [modalRef]="addIntParametersModal">
-    <modal-header>
-        <h4 class="modal-title">{{modalParamTitle}}</h4>
-    </modal-header>
+    <modal-header [title]="modalTitle"></modal-header>
     <modal-body>
-        <form #paramterForm="ngForm">
+        <form #parameterForm="ngForm">
             <div class="form-group">
                 <label for="parameterName" class="control-label">Name</label>
                 <input type="text"
@@ -139,9 +141,19 @@
         </form>
     </modal-body>
     <modal-footer
-        (onOk)="modalParamTitle === 'Input Parameter' ? onAddInputParam(paramName.value, paramType.value, required.checked) : onAddOutputParam(paramName.value, paramType.value, required.checked); paramterForm.reset()"
+        (onOk)="modalTitle === 'Input Parameter' ? onAddInputParam(paramName.value, paramType.value, required.checked) : onAddOutputParam(paramName.value, paramType.value, required.checked);"
         [close-button-label]="'Cancel'"
         [ok-button-label]="'Add'"
-        [ok-disabled]="!paramterForm?.form.valid">
+        [ok-disabled]="!parameterForm?.form.valid">
     </modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
+    <modal-header [title]="modalTitle"></modal-header>
+    <modal-body>
+        <p>
+            Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
+        </p>
+    </modal-body>
+    <modal-footer [close-button-label]="'No'" [ok-button-label]="'Yes'" (onOk)="onRemoveElement()"></modal-footer>
 </winery-modal>
