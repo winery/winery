@@ -12,4 +12,10 @@
 export class ImplementationAPIData {
     namespace: string = '';
     localname: string = '';
+
+    public constructor(namespace: string,
+                       name: string) {
+        this.namespace = namespace;
+        this.localname = name;
+    }
 }

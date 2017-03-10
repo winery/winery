@@ -16,6 +16,7 @@ import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { ImplementationAPIData } from './implementationAPIData';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
+import { UrlEncodePipe } from "../../pipes/urlEncode.pipe";
 
 @Injectable()
 export class ImplementationService {
@@ -26,27 +27,36 @@ export class ImplementationService {
 
     getImplementationData(): Observable<ImplementationAPIData[]> {
         console.log('get implementation request');
-        let headers = new Headers({ 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        let headers = new Headers({'Accept': 'application/json'});
+        let options = new RequestOptions({headers: headers});
         console.log(backendBaseUri + this.path + '/implementations/');
         return this.http.get(backendBaseUri + this.path + '/implementations/', options)
             .map(res => res.json());
     }
+
     setPath(path: string): void {
         this.path = path;
     }
+
     getAllNamespaces(): Observable<string[]> {
-        let headers = new Headers({ 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        let headers = new Headers({'Accept': 'application/json'});
+        let options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseUri + '/admin/namespaces', options)
             .map(res => res.json());
     }
-    postImplementation(resourceApiData: ImplementationWithTypeAPIData): Observable<Response> {
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-        console.log(resourceApiData);
-        console.log(JSON.stringify(resourceApiData));
-        return this.http.post(backendBaseUri + '/nodetypeimplementations/', JSON.stringify(resourceApiData), options);
+
+    postImplementation(implApiData: ImplementationWithTypeAPIData): Observable<Response> {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        return this.http.post(backendBaseUri + '/nodetypeimplementations/', JSON.stringify(implApiData), options);
+    }
+
+    deleteImplementations(resource: ImplementationAPIData) {
+        let headers = new Headers({'Accept': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        let pathaddition = '/nodetypeimplementations/';
+        pathaddition += encodeURIComponent(encodeURIComponent(resource.namespace)) + '/' + resource.localname + '/';
+        return this.http.delete(backendBaseUri + pathaddition, options);
     }
 }
