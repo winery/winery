@@ -10,6 +10,6 @@
  *     Nicole Keppler - initial API and implementation
  */
 export class ImplementationAPIData {
-    namespace: string;
-    localname: string;
+    namespace: string = '';
+    localname: string = '';
 }

@@ -27,6 +27,37 @@
             (addBtnClicked)="onAddClick();">
     </table-component>
 </div>
-
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <modal-header>
+        <h4 class="modal-title">Add Node Type Implementation</h4>
+    </modal-header>
+    <modal-body>
+        <form #add From="ngForm" id="addPropertyForm">
+            <div class="form-group">
+                <label class="control-label" for="localname">Name</label>
+                <input #localNameInput="ngModel"
+                       id="localname"
+                       class="form-control"
+                       type="text"
+                       name="localname"
+                       required
+                       [(ngModel)]="newImplementation.localname"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="newNamespace">Namespace</label>
+                <select #selectNamespace name="namespace"
+                        class="form-control"
+                        id="newNamespace"
+                        [(ngModel)] = "selectedNamespace"
+                        [typeahead]="allNamespaces">
+                    <option *ngFor="let n of allNamespaces">{{n}}</option>
+                </select>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer (onOk)="addNewImplementation(localNameInput.value, selectedNamespace.value)"
+                  [close-button-label]="'Cancel'"
+                  [ok-button-label]="'Add'">
+    </modal-footer>
 
 

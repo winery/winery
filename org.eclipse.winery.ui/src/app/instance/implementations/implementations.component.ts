@@ -25,13 +25,14 @@ export class ImplementationsComponent implements OnInit {
     implementationData: ImplementationAPIData[];
     loading: boolean = true;
     selectedCell: any;
-    allNamespaces: string[];
+    allNamespaces: string[] = [];
     selectedNamespace: string;
     columns: Array<any> = [
         {title: 'Namespace', name: 'namespace', sort: true},
         {title: 'Name', name: 'localname', sort: true},
     ];
-    newImplementation: ImplementationAPIData;
+    newImplementation: ImplementationAPIData = new ImplementationAPIData();
+
     @ViewChild('addModal') addImplModal: any;
 
     constructor(
@@ -60,9 +61,14 @@ export class ImplementationsComponent implements OnInit {
     }
     onAddClick() {
         console.log('add');
+        this.service.getAllNamespaces()
+            .subscribe(
+                data => this.allNamespaces = data,
+                error => this.handleError(error)
+            );
         this.newImplementation = new ImplementationAPIData();
-        this.newImplementation.localname="";
         this.addImplModal.show();
+        console.log(this.allNamespaces);
     }
     // endregion
     private handleData( impl: ImplementationAPIData[]) {

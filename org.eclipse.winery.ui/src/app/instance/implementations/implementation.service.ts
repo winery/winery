@@ -34,6 +34,13 @@ export class ImplementationService {
     setPath(path: string): void {
         this.path = path;
     }
+    getAllNamespaces(): Observable<string[]> {
+        let headers = new Headers({ 'Accept': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.get(backendBaseUri + '/admin/namespaces', options)
+            .map(res => res.json());
+    }
 
     /*saveDocumentationData(documentationData: string): Observable<any> {
         let headers = new Headers({'Content-Type': 'text/plain', 'Accept': 'text/plain'});
