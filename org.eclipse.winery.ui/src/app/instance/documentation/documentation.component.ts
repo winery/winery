@@ -9,34 +9,27 @@
  * Contributors:
  *     Lukas Balzer, Nicole Keppler - initial API and implementation
  */
-
 import { Component, OnInit } from '@angular/core';
 import { DocumentationService } from './documentation.service';
-import { InstanceService } from '../instance.service';
 
 @Component({
     selector: 'winery-instance-documentation',
     templateUrl: 'documentation.component.html',
-    providers: [ DocumentationService ],
+    providers: [DocumentationService],
     styleUrls: [
         'documentation.component.css'
     ]
 })
-
 export class DocumentationComponent implements OnInit {
+
     documentationData: string;
     loading: boolean = true;
-    constructor(
-        private sharedData: InstanceService,
-        private service: DocumentationService,
 
-    ) {
+    constructor(private service: DocumentationService) {
         this.documentationData = 'default documentation value';
-
     }
 
     ngOnInit() {
-        this.service.setPath(this.sharedData.path);
         this.service.getDocumentationData()
             .subscribe(
                 data => this.handleData(data),
@@ -48,8 +41,6 @@ export class DocumentationComponent implements OnInit {
         this.documentationData = docu;
         this.loading = false;
     }
-
-
 
     private saveToServer() {
         this.loading = true;

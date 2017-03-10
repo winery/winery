@@ -15,6 +15,7 @@ import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { isNullOrUndefined } from 'util';
 import { EditXMLService } from './editXML.service';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 declare var requirejs: any;
 
@@ -24,22 +25,19 @@ declare var requirejs: any;
     providers: [EditXMLService]
 })
 export class EditXMLComponent implements OnInit {
+
     id: string = 'XML';
-    dataEditorLang: any;
+    dataEditorLang: string = 'application/xml';
 
     // Set height to 500 px
     height = 500;
 
     loading: boolean = true;
     xmlData: string;
-    orioneditor: any = undefined;
+    orionEditor: any = undefined;
 
 
-    constructor(
-        private sharedData: InstanceService,
-        private service: EditXMLService,
-    ) {
-        this.dataEditorLang = 'application/xml';
+    constructor(private service: EditXMLService, private notify: NotificationService) {
     }
 
 
@@ -49,16 +47,14 @@ export class EditXMLComponent implements OnInit {
             require('http://eclipse.org/orion/editor/releases/current/built-editor.css')
         ]).then(function() {
             requirejs(['orion/editor/edit'], function(edit: any) {
-                this.orioneditor = edit({className: 'editor', parent: 'xml'})[0];
+                this.orionEditor = edit({className: 'editor', parent: 'xml'})[0];
                 this.receiveXmlData();
             }.bind(this));
         }.bind(this));
-
-        this.service.setPath(this.sharedData.path);
     }
 
     saveXmlData(): void {
-        this.service.saveXmlData(this.orioneditor.getText())
+        this.service.saveXmlData(this.orionEditor.getText())
             .subscribe (
                 data => this.handlePutResponse(data),
                 error => this.handleError(error)
@@ -72,21 +68,20 @@ export class EditXMLComponent implements OnInit {
                 data => this.handleXmlData(data),
                 error => this.handleError(error)
             );
-
     }
 
     private handleXmlData(xml: string) {
         this.loading = false;
-        this.orioneditor.setText(xml);
+        this.orionEditor.setText(xml);
     }
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log(error);
+        this.notify.error(error.toString());
     }
 
     private handlePutResponse(response: any) {
         this.loading = false;
-        console.log(response);
+        this.notify.success('Successfully saved data!');
     }
 }

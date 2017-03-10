@@ -43,8 +43,10 @@ const instanceRoutes: Routes = [
             { path: 'interfaces', component: InterfacesComponent },
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'requirementdefinitions', component: RequirementDefinitionsComponent },
+            { path: 'sourceinterfaces', component: InterfacesComponent },
+            { path: 'targetinterfaces', component: InterfacesComponent },
             { path: 'visualappearance', component: VisualAppearanceComponent},
-            { path: 'xml', component: EditXMLComponent }
+            { path: 'xml', component: EditXMLComponent },
         ]
     }
 ];

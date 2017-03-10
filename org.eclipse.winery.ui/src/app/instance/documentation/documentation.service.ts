@@ -14,16 +14,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class DocumentationService {
     private path: string;
 
-    constructor(private http: Http) {
-    }
-
-    setPath(path: string): void {
-        this.path = path + '/documentation';
+    constructor(private http: Http,
+                private route: Router) {
+        this.path = decodeURIComponent(this.route.url);
     }
 
     getDocumentationData(): Observable<string> {

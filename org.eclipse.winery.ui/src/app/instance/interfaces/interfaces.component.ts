@@ -61,12 +61,10 @@ export class InterfacesComponent implements OnInit {
     @ViewChild('parameterForm') parameterForm: any;
 
     constructor(private service: InterfacesService,
-                private sharedData: InstanceService,
                 private notify: NotificationService) {
     }
 
     ngOnInit() {
-        this.service.setPath(this.sharedData.path);
         this.service.getInterfaces()
             .subscribe(
                 data => this.handleInterfacesApiData(data),

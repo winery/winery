@@ -57,8 +57,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     @ViewChild('confirmDeleteModal') deletePropModal: any;
     @ViewChild('addModal') addPropModal: any;
 
-    constructor(private sharedData: InstanceService,
-                private service: PropertiesDefinitionService,
+    constructor(private service: PropertiesDefinitionService,
                 private notify: NotificationService) {
     }
 
@@ -67,7 +66,6 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @override
      */
     ngOnInit() {
-        this.service.setPath(this.sharedData.path);
         this.getPropertiesDefinitionsResourceApiData();
     }
 
@@ -161,7 +159,7 @@ export class PropertiesDefinitionComponent implements OnInit {
                     error => this.handleError(error)
                 );
         } else {
-            this.service.postProperteisDefinitions(this.resourceApiData)
+            this.service.postPropertiesDefinitions(this.resourceApiData)
                 .subscribe(
                     data => this.handleSave(data),
                     error => this.handleError(error)

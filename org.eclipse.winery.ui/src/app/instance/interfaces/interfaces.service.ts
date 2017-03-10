@@ -9,37 +9,36 @@
  * Contributors:
  *     Niko Stadelmaier - initial API and implementation
  */
-
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseUri } from '../../configuration';
 import { InterfacesApiData } from './InterfacesApiData';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class InterfacesService {
 
     private path: string;
+    private interfaceType: string;
 
-    constructor(private http: Http) {
-    }
-
-    setPath(path: string): void {
-        this.path = path;
+    constructor(private http: Http,
+                private route: Router) {
+        this.path = decodeURIComponent(this.route.url);
     }
 
     getInterfaces(): Observable<InterfacesApiData[]> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        let headers = new Headers({ 'Accept': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + this.path + '/interfaces/', options)
+        return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
 
     save(interfacesData: InterfacesApiData[]) {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        return this.http.post(backendBaseUri + this.path + '/interfaces/', JSON.stringify(interfacesData), options);
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(interfacesData), options);
     }
 }

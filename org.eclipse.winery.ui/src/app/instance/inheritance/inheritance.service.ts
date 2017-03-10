@@ -16,13 +16,16 @@ import { Observable } from 'rxjs';
 import { Headers, RequestOptions, Http } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { QNameList } from '../../qNameSelector/qNameApiData';
+import { InstanceService } from '../instance.service';
 
 @Injectable()
 export class InheritanceService {
 
     private path: string;
 
-    constructor(private http: Http) {
+    constructor(private http: Http,
+                private sharedData: InstanceService) {
+        this.path = this.sharedData.path;
     }
 
     getInheritanceData(): Observable<InheritanceApiData> {
@@ -39,10 +42,6 @@ export class InheritanceService {
 
         return this.http.get(backendBaseUri + this.path + '/getAvailableSuperClasses', options)
             .map(res => res.json());
-    }
-
-    setPath(path: string): void {
-        this.path = path;
     }
 
     saveInheritanceData(inheritanceData: InheritanceApiData): Observable<any> {

@@ -25,12 +25,12 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
  * </p>
  *
  * @example <caption>Minimalistic example:</caption>
- *     ```html
- *     <winery-table
- *         [data]="dataArray"
- *         [columns]="columnsArray">
- *     </winery-table>
- *     ```
+ * ```html
+ * <winery-table
+ *     [data]="dataArray"
+ *     [columns]="columnsArray">
+ * </winery-table>
+ * ```
  */
 @Component({
     selector: 'winery-table',
