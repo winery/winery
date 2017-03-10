@@ -16,11 +16,13 @@ import { ImplementationAPIData } from './implementationAPIData';
 import { InstanceService } from '../instance.service';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 import { Response } from '@angular/http';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-instance-implementations',
     templateUrl: 'implementations.component.html',
-    providers: [ImplementationService],
+    providers: [ImplementationService,
+        NotificationService],
 })
 export class ImplementationsComponent implements OnInit {
     implementationData: ImplementationAPIData[];
@@ -38,7 +40,8 @@ export class ImplementationsComponent implements OnInit {
     value: any = {};
 
     constructor(private sharedData: InstanceService,
-                private service: ImplementationService,) {
+                private service: ImplementationService,
+                private notificationService: NotificationService) {
         this.implementationData = [];
     }
 
@@ -88,6 +91,7 @@ export class ImplementationsComponent implements OnInit {
         let resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
             localname,
             type);
+        this.loading = true;
         this.service.postImplementation(resource).subscribe(
             data => this.handleResponse(data),
             error => console.log(error)
@@ -95,8 +99,12 @@ export class ImplementationsComponent implements OnInit {
     }
 
     private handleResponse(data: Response) {
+        this.loading = false;
         if (data.ok) {
             this.getImplementationData();
+            this.notificationService.success('Created new NodeType Implementation', 'Success');
+        } else {
+            this.notificationService.error('Failed to create NodeType Implementation', 'Creation Failed');
         }
     }
 
