@@ -13,6 +13,7 @@ package org.eclipse.winery.repository;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +22,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -31,6 +35,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -38,19 +44,26 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
@@ -58,11 +71,14 @@ import org.eclipse.winery.repository.export.CSARExporter;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
+import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypesResource;
 import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
 import org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportResource;
+import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,6 +87,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
 import org.apache.taglibs.standard.functions.Functions;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
@@ -197,7 +215,7 @@ public class Utils {
 		sb.append(resource.getXmlId().getEncoded());
 		sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
 		sb.append("\"");
-		return Response.ok().header("Content-Disposition", sb.toString()).type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
+		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
 	}
 
 	/**
@@ -773,5 +791,158 @@ public class Utils {
 			res = false;
 		}
 		return res;
+	}
+
+	public static Set<String> clean(Set<String> set) {
+		Set<String> newSet = new HashSet<String>();
+
+		for (String setItem : set) {
+			if (setItem != null && !setItem.trim().isEmpty() && !setItem.equals("null")) {
+				newSet.add(setItem);
+			}
+		}
+
+		return newSet;
+	}
+
+	public static Set<QName> cleanQNameSet(Set<QName> set) {
+		Set<QName> newSet = new HashSet<QName>();
+
+		for (QName setItem : set) {
+			if (setItem != null && !setItem.getLocalPart().equals("null")) {
+				newSet.add(setItem);
+			}
+		}
+		return newSet;
+	}
+
+	public static ServiceTemplateId cloneServiceTemplate(ServiceTemplateId serviceTemplate, String newName, String artifactName) throws JAXBException, IllegalArgumentException, IOException {
+
+		ServiceTemplateId newServiceTemplateId = new ServiceTemplateId(serviceTemplate.getNamespace().getDecoded(), newName, false);
+
+		RepositoryFileReference fileRef = new RepositoryFileReference(newServiceTemplateId, "ServiceTemplate.tosca");
+
+		Definitions defs = new ServiceTemplateResource(serviceTemplate).getDefinitions();
+
+		defs.setId(newName + "Definitions");
+		defs.setName(newName + "Definitions generated from Artifact " + artifactName);
+
+		TServiceTemplate oldSTModel = null;
+
+		for (TExtensibleElements el : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
+			if (el instanceof TServiceTemplate) {
+				oldSTModel = (TServiceTemplate) el;
+			}
+		}
+
+		oldSTModel.setId(newName);
+		oldSTModel.setName(newName + " generated from Artifact " + artifactName);
+
+		// remove xaaspackager tags
+		Collection<TTag> toRemove = new ArrayList<TTag>();
+
+		for (TTag tag : oldSTModel.getTags().getTag()) {
+			switch (tag.getName()) {
+			case "xaasPackageNode":
+			case "xaasPackageArtifactType":
+			case "xaasPackageDeploymentArtifact":
+				toRemove.add(tag);
+				break;
+			default:
+				break;
+			}
+		}
+
+		oldSTModel.getTags().getTag().removeAll(toRemove);
+
+		JAXBContext context = JAXBContext.newInstance(Definitions.class);
+		Marshaller m = context.createMarshaller();
+		StringWriter sw = new StringWriter();
+		m.marshal(defs, sw);
+
+		String xmlString = sw.toString();
+
+		Repository.INSTANCE.putContentToFile(fileRef, xmlString, MediaType.valueOf(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS));
+
+		return newServiceTemplateId;
+	}
+
+	public static boolean containsNodeType(TServiceTemplate serviceTemplate, QName nodeType) {
+		List<TEntityTemplate> templates = serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate();
+
+		return templates.stream().filter(template -> template instanceof TNodeTemplate).anyMatch(template -> template.getType().equals(nodeType));
+	}
+
+	public static boolean containsNodeTypes(TServiceTemplate serviceTemplate, Collection<QName> nodeTypes) {
+		return nodeTypes.stream().allMatch(nodeType -> Utils.containsNodeType(serviceTemplate, nodeType));
+	}
+
+	public static boolean containsTag(TServiceTemplate serviceTemplate, String tagKey) {
+		return Utils.getTagValue(serviceTemplate, tagKey) != null;
+	}
+
+	public static boolean containsTag(TServiceTemplate serviceTemplate, String tagKey, String tagValue) {
+		String value = Utils.getTagValue(serviceTemplate, tagKey);
+		return value != null && value.equals(tagValue);
+	}
+
+	public static boolean containsTags(TServiceTemplate serviceTemplate, Collection<String> tags) {
+		for (String tag : tags) {
+			if (tag.contains(":")) {
+				String key = tag.split(":")[0];
+				String value = tag.split(":")[1];
+				if (!Utils.containsTag(serviceTemplate, key, value)) {
+					return false;
+				}
+			} else {
+				if (!Utils.containsTag(serviceTemplate, tag)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	public static ArtifactTemplateId createArtifactTemplate(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body, QName artifactType, UriInfo uriInfo) {
+
+		ArtifactTemplatesResource templateResource = new ArtifactTemplatesResource();
+		templateResource.onPost("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), artifactType.toString());
+
+		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), false);
+
+		ArtifactTemplateResource atRes = new ArtifactTemplateResource(artifactTemplateId);
+		atRes.getFilesResource().onPost(uploadedInputStream, fileDetail, body, uriInfo);
+
+		return artifactTemplateId;
+	}
+
+	public static String getTagValue(TServiceTemplate serviceTemplate, String tagKey) {
+		if (serviceTemplate.getTags() != null) {
+			for (TTag tag : serviceTemplate.getTags().getTag()) {
+				if (tag.getName().equals(tagKey)) {
+					return tag.getValue();
+				}
+			}
+		}
+		return null;
+	}
+
+	public static boolean hasDA(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId) {
+		ServiceTemplateResource stRes = new ServiceTemplateResource(serviceTemplate);
+		try {
+			stRes.getTopologyTemplateResource().getNodeTemplatesResource().getEntityResource(nodeTemplateId).getDeploymentArtifacts().getEntityResource(deploymentArtifactId);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) {
+
+		ServiceTemplateResource stRes = new ServiceTemplateResource(serviceTemplate);
+		stRes.getTopologyTemplateResource().getNodeTemplatesResource().getEntityResource(nodeTemplateId).getDeploymentArtifacts().getEntityResource(deploymentArtifactId).setArtifactTemplate(artifactTemplate);
+
+		return true;
 	}
 }
