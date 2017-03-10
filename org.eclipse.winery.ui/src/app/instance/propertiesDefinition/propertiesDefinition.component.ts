@@ -22,6 +22,7 @@ import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
 import { Response } from '@angular/http';
 import { NgForm } from '@angular/forms';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
@@ -54,7 +55,8 @@ export class PropertiesDefinitionComponent implements OnInit {
     @ViewChild('addModal') addPropModal: any;
 
     constructor(private sharedData: InstanceService,
-                private service: PropertiesDefinitionService) {
+                private service: PropertiesDefinitionService,
+                private notify: NotificationService) {
     }
 
     // region ########## Angular Callbacks ##########
@@ -143,6 +145,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.activeElement = new SelectData();
         this.activeElement.text = this.resourceApiData.winerysPropertiesDefinition.namespace;
     }
+
     // endregion
 
     // region ########## Button Callbacks ##########
@@ -183,6 +186,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.newProperty = new PropertiesDefinitionKVList();
         this.addPropModal.show();
     }
+
     // endregion
 
     /**
@@ -202,6 +206,7 @@ export class PropertiesDefinitionComponent implements OnInit {
             this.selectedCell = data;
         }
     }
+
     // endregion
 
     // region ########## Modal Callbacks ##########
@@ -220,6 +225,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
         this.elementToRemove = null;
     }
+
     // endregion
 
     // region ########## Private Methods ##########
@@ -236,9 +242,20 @@ export class PropertiesDefinitionComponent implements OnInit {
      * Set loading to false and show success notification.
      *
      * @param data
+     * @param actionType
      */
-    private handleSuccess(data: any): void {
+    private handleSuccess(data: any, actionType?: string): void {
         this.loading = false;
+        switch (actionType) {
+            case 'delete':
+                this.notify.success('Deleted PropertiesDefinition', 'Success');
+                break;
+            case 'change':
+                this.notify.success('Saved changes on server', 'Success');
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -247,7 +264,7 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @param data
      */
     private handleDelete(data: any): void {
-        this.handleSuccess(data);
+        this.handleSuccess(data, 'delete');
         this.getPropertiesDefinitionsResourceApiData();
     }
 
@@ -273,7 +290,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     };
 
     private handleSave(data: Response) {
-        this.handleSuccess(data);
+        this.handleSuccess(data, 'change');
         this.getPropertiesDefinitionsResourceApiData();
     }
 
@@ -296,7 +313,7 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @param error
      */
     private handleError(error: any): void {
-        console.log(error);
+        this.notify.error(error.toString(), 'Error');
     }
 
     // endregion

@@ -8,7 +8,61 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Huixin Liu, Nicole Keppler - initial API and implementation
+ *     Lukas Balzer - initial component visuals
  */
 -->
-instanceStates component
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <table-component
+        [data]="instanceStates"
+        [columns]="columns"
+        (cellSelected)="onCellSelected($event)"
+        [itemsPerPage]="10"
+        (removeBtnClicked)="onRemoveClick($event)"
+        (addBtnClicked)="onAddClick();">
+    </table-component>
+</div>
+
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <modal-header>
+        <h4 class="modal-title">Add State</h4>
+    </modal-header>
+    <modal-body>
+        <form #add From="ngForm" id="addPropertyForm">
+            <div class="form-group">
+                <label class="control-label" for="state">State</label>
+                <input #propName="ngModel"
+                       id="state"
+                       class="form-control"
+                       type="text"
+                       required
+                       [(ngModel)]="newStateData.state"
+                        name="state"/>
+            </div>
+
+        </form>
+    </modal-body>
+    <modal-footer (onOk)="addProperty(propName.value)"
+                  [close-button-label]="'Cancel'" [ok-button-label]="'Add'">
+    </modal-footer>
+</winery-modal>
+
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <modal-header>
+        <h4 class="modal-title">Delete State</h4>
+    </modal-header>
+    <modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.state }}</span>?
+        </p>
+    </modal-body>
+    <modal-footer (onOk)="removeConfirmed();"
+                  [close-button-label]="'No'"
+                  [ok-button-label]="'Yes'">
+    </modal-footer>
+</winery-modal>
+

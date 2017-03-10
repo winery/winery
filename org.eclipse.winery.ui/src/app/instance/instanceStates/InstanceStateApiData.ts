@@ -1,4 +1,3 @@
-<!--
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -8,13 +7,11 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Lukas Balzer, Nicole Keppler, Huixin Liu - initial API and implementation
  */
--->
-
-<div id="mainContainer" class="notoverflown">
-    <winery-header (selectedSite)="changeSelectionSite($event)"></winery-header>
-    <div id="mainContent">
-        <router-outlet></router-outlet>
-    </div>
-</div>
+export class InstanceStateApiData {
+    state: string;
+    constructor(state: string) {
+        this.state = state;
+    }
+}

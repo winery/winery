@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add font-awesome, add ng2-toastr css
  */
 
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -18,7 +19,9 @@ import { WineryRepositoryModule } from './app/wineryRepository.module';
 import './css/wineryCommon.css';
 import './css/wineryRepository.css';
 import './css/bootstrap.min.css';
+import 'ng2-toastr/ng2-toastr.css';
 require('font-awesome/css/font-awesome.css');
+
 if (process.env.ENV === 'production') {
     enableProdMode();
 }

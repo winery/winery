@@ -58,7 +58,6 @@ import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,
-        InstanceStatesComponent,
         InterfacesComponent,
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,

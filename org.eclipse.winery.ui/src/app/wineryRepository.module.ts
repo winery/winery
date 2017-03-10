@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add notifications module
  */
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -23,12 +24,17 @@ import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module'
 import { InstanceModule } from './instance/instance.module';
 import { NotFoundComponent } from './404/notFound.component';
 import { LoaderModule } from './loader/loader.module';
+import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
+import { CustomOption } from './notificationModule/notificationOptions';
+import { NotificationModule } from './notificationModule/notification.module';
 
 @NgModule({
     imports: [
         BrowserModule,
         InstanceModule,
         LoaderModule,
+        ToastModule.forRoot(),
+        NotificationModule.forRoot(),
         WineryRepositoryRoutingModule,
     ],
     declarations: [
@@ -40,6 +46,9 @@ import { LoaderModule } from './loader/loader.module';
         WineryRepositoryComponent,
         UrlDecodePipe,
         UrlEncodePipe,
+    ],
+    providers: [
+        {provide: ToastOptions, useClass: CustomOption}
     ],
     bootstrap: [WineryRepositoryComponent]
 })
