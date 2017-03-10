@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - cleanup for angular
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.interfaces;
 
@@ -16,9 +17,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TInterface;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
-
+import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
+import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,24 +34,37 @@ public class InterfacesResource {
 
 	private TopologyGraphElementEntityTypeResource res;
 	private List<TInterface> interfaces;
+	private String interfaceType;
 
-	public InterfacesResource(TopologyGraphElementEntityTypeResource res, List<TInterface> interfaces) {
+	public InterfacesResource(TopologyGraphElementEntityTypeResource res, List<TInterface> interfaces, String interfaceType) {
 		this.res = res;
 		this.interfaces = interfaces;
+		this.interfaceType = interfaceType;
 	}
 
-	/**
-	 * Implementation base: <br />
-	 * {@link AbstractComponentsResource#onPost(java.lang.String, java.lang.String)}
-	 *
-	 * @return entity: id of the stored interface
-	 */
-//	@POST
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.TEXT_PLAIN)
-//	public Response onPost(InterfaceApiData interfaceApiData) {
-//		return BackendUtils.persist(this.res);
-//	}
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response onPost(List<TInterface> interfaceApiData) {
+		if (this.res instanceof RelationshipTypeResource) {
+			TRelationshipType relationshipType = (TRelationshipType) this.res.getElement();
+			switch (this.interfaceType) {
+				case "source":
+					relationshipType.setSourceInterfaces(new TRelationshipType.SourceInterfaces(interfaceApiData));
+					break;
+				default:
+					// it will be target
+					relationshipType.setTargetInterfaces(new TRelationshipType.TargetInterfaces(interfaceApiData));
+					break;
+			}
+		} else if (this.res instanceof NodeTypeResource) {
+			TNodeType nodeType = (TNodeType) this.res.getElement();
+			nodeType.setInterfaces(new TNodeType.Interfaces(interfaceApiData));
+		} else {
+			throw new IllegalStateException("Interfaces are not supported for this element type!");
+		}
+
+		return BackendUtils.persist(this.res);
+	}
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

@@ -12,7 +12,6 @@
 package org.eclipse.winery.repository.resources.entitytypes.relationshiptypes;
 
 import java.util.Collection;
-import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -79,7 +78,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 			interfaces = new SourceInterfaces();
 			this.getRelationshipType().setSourceInterfaces(interfaces);
 		}
-		return new InterfacesResource(this, interfaces.getInterface());
+		return new InterfacesResource(this, interfaces.getInterface(), "source");
 	}
 
 	@Path("targetinterfaces/")
@@ -89,7 +88,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 			interfaces = new TargetInterfaces();
 			this.getRelationshipType().setTargetInterfaces(interfaces);
 		}
-		return new InterfacesResource(this, interfaces.getInterface());
+		return new InterfacesResource(this, interfaces.getInterface(), "target");
 	}
 
 	@Path("validendings/")
