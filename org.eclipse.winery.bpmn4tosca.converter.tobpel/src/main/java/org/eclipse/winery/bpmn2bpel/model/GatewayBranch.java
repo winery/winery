@@ -24,12 +24,12 @@ import java.util.List;
 public class GatewayBranch {
 	
 	private String id;
-    private List<Node> nodeList = new ArrayList<Node>();
+	private List<Node> nodeList = new ArrayList<Node>();
 
-    public GatewayBranch(String id) {
-        super();
-        this.id = id;
-    }
+	public GatewayBranch(String id) {
+	    super();
+	    this.id = id;
+	}
 
 
 	public List<Node> getNodeList() {
