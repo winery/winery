@@ -68,24 +68,6 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
 		return res;
 	}
 
-	/** required by artifacts.jsp **/
-	public List<InterfaceResource> getInterfacesOfAssociatedType() {
-		boolean isNodeTypeImplementation = this.res instanceof NodeTypeImplementationResource;
-		QName type;
-		List<InterfaceResource> interfaces = new ArrayList<>();
-		if (isNodeTypeImplementation) {
-			type = this.getNTI().getType();
-			NodeTypeResource typeResource = (NodeTypeResource) new NodeTypesResource().getComponentInstaceResource(type);
-			interfaces.addAll(typeResource.getInterfaces().getAllEntityResources());
-		} else {
-			type = this.getRTI().getType();
-			RelationshipTypeResource typeResource = (RelationshipTypeResource) new RelationshipTypesResource().getComponentInstaceResource(type);
-			interfaces.addAll(typeResource.getSourceInterfaces().getAllEntityResources());
-			interfaces.addAll(typeResource.getTargetInterfaces().getAllEntityResources());
-		}
-		return interfaces;
-	}
-
 	@Override
 	public String getId(ImplementationArtifact entity) {
 		return entity.getName();

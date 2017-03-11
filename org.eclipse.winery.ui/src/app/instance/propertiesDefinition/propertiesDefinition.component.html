@@ -53,7 +53,6 @@
                         [data]="resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList"
                         [columns]="columns"
                         (cellSelected)="onCellSelected($event)"
-                        [itemsPerPage]="10"
                         (removeBtnClicked)="onRemoveClick($event)"
                         (addBtnClicked)="onAddClick();">
                     </winery-table>
@@ -93,9 +92,9 @@
                        name="key"
                        required
                        [(ngModel)]="newProperty.key"
-                       [duplicateValidator]="resourceApiData?.winerysPropertiesDefinition?.propertyDefinitionKVList"/>
+                       [duplicateValidator]="validatorObject"/>
 
-                <div *ngIf="propName.errors && (propName.touched)"
+                <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
                      class="alert alert-danger">
                     <div [hidden]="!propName.errors.duplicateValidator">
                         No duplicates allowed!
@@ -118,10 +117,10 @@
             </div>
         </form>
     </modal-body>
-    <modal-footer [show-default-buttons]="false">
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addModal.hide()">Cancel</button>
-        <button type="button" [disabled]="!addPropertyFrom?.form.valid" class="btn btn-primary"
-                (click)="addProperty(selectProperty.value, propName.value); addModal.hide()">Add</button>
+    <modal-footer (onOk)="addProperty(selectProperty.value, propName.value); addPropertyFrom.reset();"
+                  [close-button-label]="'Cancel'"
+                  [ok-button-label]="'Add'"
+                  [ok-disabled]="!addPropertyFrom?.form.valid">
     </modal-footer>
 </winery-modal>
 

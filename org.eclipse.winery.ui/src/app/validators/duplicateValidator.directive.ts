@@ -14,37 +14,51 @@ import { Directive, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { isNullOrUndefined } from 'util';
 
+export class ValidatorObject {
+    list: Array<any>;
+    property?: string;
 
-export function duplicateValidator(namesArray: Array<any>): ValidatorFn {
-    return (control: AbstractControl): {[key: string]: any} => {
-        if (isNullOrUndefined(namesArray)) {
+    constructor(list: Array<any>, property?: string) {
+        this.list = list;
+        this.property = property;
+    }
+}
+
+export function duplicateValidator(compareObject: ValidatorObject): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+        if (isNullOrUndefined(compareObject) || isNullOrUndefined(compareObject.list)) {
             return null;
         }
         const name = control.value;
-        const no = namesArray.find(item => item.key === name);
-        return no ? {'duplicateValidator': {name}} : null;
+        let no = false;
+        if (isNullOrUndefined(compareObject.property)) {
+            no = compareObject.list.find(item => item === name);
+        } else {
+            no = compareObject.list.find(item => item[compareObject.property] === name);
+        }
+        return no ? { 'duplicateValidator': { name } } : null;
     };
 }
 
 @Directive({
     selector: '[duplicateValidator]',
-    providers: [{provide: NG_VALIDATORS, useExisting: DuplicateValidator, multi: true}]
+    providers: [{ provide: NG_VALIDATORS, useExisting: DuplicateValidatorDirective, multi: true }]
 })
-export class DuplicateValidator implements Validator, OnChanges {
-    @Input() duplicateValidator: Array<any>;
+export class DuplicateValidatorDirective implements Validator, OnChanges {
+    @Input() duplicateValidator: { list: Array<any>, prop: string };
     private valFn = Validators.nullValidator;
 
     ngOnChanges(changes: SimpleChanges): void {
         const change = changes['duplicateValidator'];
         if (change) {
-            const val: Array<any> = change.currentValue;
+            const val: ValidatorObject = change.currentValue;
             this.valFn = duplicateValidator(val);
         } else {
             this.valFn = Validators.nullValidator;
         }
     }
 
-    validate(control: AbstractControl): {[key: string]: any} {
+    validate(control: AbstractControl): { [key: string]: any } {
         return this.valFn(control);
     }
 }

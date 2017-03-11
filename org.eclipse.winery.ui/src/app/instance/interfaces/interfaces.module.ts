@@ -10,35 +10,32 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { NgModule } from '@angular/core';
-import { PropertiesDefinitionComponent } from './propertiesDefinition.component';
-import { LoaderModule } from '../../loader/loader.module';
-import { FormsModule } from '@angular/forms';
+import { InterfacesComponent } from './interfaces.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { SelectModule } from 'ng2-select';
-import { TabsModule, TypeaheadModule } from 'ng2-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { LoaderModule } from '../../loader/loader.module';
 import { CommonModule } from '@angular/common';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
+import { SelectableListModule } from './selectableList/selectableList.module';
 import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
 
 @NgModule({
     imports: [
-        TabsModule.forRoot(),
-        SelectModule,
         BrowserModule,
         FormsModule,
         LoaderModule,
-        TypeaheadModule.forRoot(),
         CommonModule,
         WineryModalModule,
         WineryTableModule,
+        SelectableListModule,
         DuplicateValidatorModule,
     ],
-    exports: [],
+    exports: [InterfacesComponent],
     declarations: [
-        PropertiesDefinitionComponent,
+        InterfacesComponent,
     ],
     providers: [],
 })
-export class PropertiesDefinitionModule {
+export class InterfacesModule {
 }
