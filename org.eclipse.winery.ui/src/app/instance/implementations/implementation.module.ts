@@ -19,9 +19,11 @@ import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { TypeaheadModule, TabsModule, ModalModule } from 'ng2-bootstrap';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { ImplementationsComponent } from './implementations.component';
+import { RouterModule } from "@angular/router";
 
 @NgModule({
     imports: [
+        RouterModule,
         ModalModule.forRoot(),
         WineryTableModule,
         TabsModule.forRoot(),

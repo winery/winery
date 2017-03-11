@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Nicole Keppler - initial API and implementation
+ *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
 export class ImplementationWithTypeAPIData {
     public constructor(public namespace: string,
