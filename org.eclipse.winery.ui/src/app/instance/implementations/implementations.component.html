@@ -59,4 +59,19 @@
                   [ok-button-label]="'Add'">
     </modal-footer>
 
+</winery-modal>
 
+    <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+        <modal-header>
+            <h4 class="modal-title">Delete State</h4>
+        </modal-header>
+        <modal-body>
+            <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.localname }}</span>?
+            </p>
+        </modal-body>
+        <modal-footer (onOk)="removeConfirmed();"
+                      [close-button-label]="'No'"
+                      [ok-button-label]="'Yes'">
+        </modal-footer>
+    </winery-modal>
