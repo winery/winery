@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Nicole Keppler - initial API and implementation
+ *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -15,9 +15,10 @@ import { ImplementationService } from './implementation.service';
 import { ImplementationAPIData } from './implementationAPIData';
 import { InstanceService } from '../instance.service';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
-import { Response } from '@angular/http';
-import { NotificationService } from '../../notificationModule/notificationservice';
 import { isNullOrUndefined } from 'util';
+import { NotificationService } from '../../notificationModule/notificationservice';
+import { Router } from '@angular/router';
+import { Response } from '@angular/http';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -29,22 +30,22 @@ export class ImplementationsComponent implements OnInit {
     implementationData: ImplementationAPIData[];
     loading: boolean = true;
     selectedCell: any;
+    newImplementation: ImplementationAPIData = new ImplementationAPIData('', '');
     elementToRemove: ImplementationAPIData;
-    allNamespaces: string[] = [];
+    allNamespaces: Array<string> = [];
+    refreshedNamespace: any = {};
     selectedNamespace: string;
     columns: Array<any> = [
         {title: 'Namespace', name: 'namespace', sort: true},
         {title: 'Name', name: 'localname', sort: true},
     ];
-    newImplementation: ImplementationAPIData = new ImplementationAPIData('', '');
-
-    @ViewChild('confirmDeleteModal') deleteStateModal: any;
+    @ViewChild('confirmDeleteModal') deleteImplModal: any;
     @ViewChild('addModal') addImplModal: any;
-    value: any = {};
 
     constructor(private sharedData: InstanceService,
                 private service: ImplementationService,
-                private notificationService: NotificationService) {
+                private notificationService: NotificationService,
+                private router: Router) {
         this.implementationData = [];
     }
 
@@ -60,17 +61,27 @@ export class ImplementationsComponent implements OnInit {
         }
     }
 
+    onAddClick() {
+        this.service.getAllNamespaces()
+            .subscribe(
+                data => this.allNamespaces = data,
+                error => this.handleError(error)
+            );
+        this.newImplementation = new ImplementationAPIData('', '');
+        this.addImplModal.show();
+    }
+
     onRemoveClick(data: any) {
         if (isNullOrUndefined(data)) {
             return;
         } else {
             this.elementToRemove = new ImplementationAPIData(data.namespace, data.localname);
-            this.deleteStateModal.show();
+            this.deleteImplModal.show();
         }
     }
 
     removeConfirmed() {
-        this.deleteStateModal.hide();
+        this.deleteImplModal.hide();
         this.loading = true;
         this.service.deleteImplementations(this.elementToRemove)
             .subscribe(
@@ -80,48 +91,49 @@ export class ImplementationsComponent implements OnInit {
         this.elementToRemove = null;
     }
 
-    //
+    private namespaceSelected(selectedNamespace: any) {
+        this.selectedNamespace = selectedNamespace.text;
+    }
 
-    onAddClick() {
-        console.log('add');
-        this.service.getAllNamespaces()
-            .subscribe(
-                data => this.allNamespaces = data,
-                error => this.handleError(error)
-            );
-        this.newImplementation = new ImplementationAPIData('', '');
-        this.addImplModal.show();
-        console.log(this.allNamespaces);
+    private namespaceRefresh(refreshedNamespace: any) {
+        this.refreshedNamespace = refreshedNamespace;
     }
 
     // endregion
+    // region ######## call service methods and subscription handlers ########
+    private getImplementationData(): void {
+        this.service.getImplementationData()
+            .subscribe(
+                data => this.handleData(data),
+                error => this.handleError(error)
+            );
+    }
+
     private handleData(impl: ImplementationAPIData[]) {
         this.implementationData = impl;
         this.loading = false;
-        console.log(this.implementationData);
     }
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log(error);
+        this.notificationService.error('Action caused an error:', error);
     }
 
     private addNewImplementation(localname: string) {
+        this.loading = true;
         let typeNamespace = this.sharedData.selectedNamespace;
         let typeName = this.sharedData.selectedComponentId;
         let type = '{' + typeNamespace + '}' + typeName;
-        console.log(type);
         let resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
             localname,
             type);
-        this.loading = true;
         this.service.postImplementation(resource).subscribe(
-            data => this.handleResponse(data),
-            error => console.log(error)
+            data => this.handlePostResponse(data),
+            error => this.handleError(error)
         );
     }
 
-    private handleResponse(data: Response) {
+    private handlePostResponse(data: Response) {
         this.loading = false;
         if (data.ok) {
             this.getImplementationData();
@@ -133,31 +145,13 @@ export class ImplementationsComponent implements OnInit {
 
     private handleDeleteResponse(data: Response) {
         this.loading = false;
-        console.log('deleted');
         if (data.ok) {
             this.getImplementationData();
             this.notificationService.success('Deletion of NodeType Implementationb Successful', 'Success');
         } else {
-            this.handleError(data);
             this.notificationService.error('Failed to delete NodeType Implementation failed', 'Deletion Failed');
         }
     }
 
-    private getImplementationData(): void {
-        console.log('loaded');
-        this.service.getImplementationData()
-            .subscribe(
-                data => this.handleData(data),
-                error => this.handleError(error)
-            );
-    }
-
-    private namespaceSelected(value: any) {
-        console.log(value);
-        this.selectedNamespace = value.text;
-    }
-
-    private namespaceRefresh(value: any) {
-        this.value = value;
-    }
+    // endregion
 }

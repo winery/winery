@@ -7,9 +7,10 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Nicole Keppler - initial API and Implementation
+ *     Nicole Keppler, Lukas Balzer - initial API and Implementation
  *
  */
+
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Headers, RequestOptions, Http, Response } from '@angular/http';
@@ -25,17 +26,15 @@ export class ImplementationService {
     constructor(private http: Http) {
     }
 
-    getImplementationData(): Observable<ImplementationAPIData[]> {
-        console.log('get implementation request');
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
-        console.log(backendBaseUri + this.path + '/implementations/');
-        return this.http.get(backendBaseUri + this.path + '/implementations/', options)
-            .map(res => res.json());
-    }
-
     setPath(path: string): void {
         this.path = path;
+    }
+
+    getImplementationData(): Observable<ImplementationAPIData[]> {
+        let headers = new Headers({'Accept': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+        return this.http.get(backendBaseUri + this.path + '/implementations/', options)
+            .map(res => res.json());
     }
 
     getAllNamespaces(): Observable<string[]> {
@@ -52,11 +51,12 @@ export class ImplementationService {
         return this.http.post(backendBaseUri + '/nodetypeimplementations/', JSON.stringify(implApiData), options);
     }
 
-    deleteImplementations(resource: ImplementationAPIData) {
+    deleteImplementations(implToDelete: ImplementationAPIData) {
         let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        let pathaddition = '/nodetypeimplementations/';
-        pathaddition += encodeURIComponent(encodeURIComponent(resource.namespace)) + '/' + resource.localname + '/';
-        return this.http.delete(backendBaseUri + pathaddition, options);
+        let pathAddition = '/nodetypeimplementations/'
+            + encodeURIComponent(encodeURIComponent(implToDelete.namespace)) + '/'
+            + implToDelete.localname + '/';
+        return this.http.delete(backendBaseUri + pathAddition, options);
     }
 }

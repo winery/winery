@@ -8,12 +8,15 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Nicole Keppler - initial API and implementation
+ *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
 -->
-<p>This page shows implementations available for this type. Go to "Other Elements" to get an overview on all implementations stored in this repository. </p>
-
-
+<p>This page shows implementations available for this type. Go to</p>
+<a [routerLink]="['/other']">
+    Other Elements
+</a>
+<p>to get an overview on all
+    implementations stored in this repository. </p>
 <div class="localLoader" [class.hidden]="!loading">
     <winery-loader></winery-loader>
 </div>
@@ -41,15 +44,16 @@
                        type="text"
                        name="localname"
                        required
-                       [(ngModel)]="newImplementation.localname"/>
+                       [(ngModel)]="newImplementation.localname"
+                        />
             </div>
             <div class="form-group">
-                <label class="control-label" >Namespace</label>
+                <label class="control-label">Namespace</label>
                 <ng-select #selectNamespace name="namespace"
-                           placeholder = "no namespace selected"
-                           (selected) = "namespaceSelected($event)"
+                           placeholder="no namespace selected"
+                           (selected)="namespaceSelected($event)"
                            (data)="namespaceRefresh($event)"
-                        [items]="allNamespaces">
+                           [items]="allNamespaces">
                 </ng-select>
             </div>
         </form>
@@ -61,17 +65,17 @@
 
 </winery-modal>
 
-    <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-        <modal-header>
-            <h4 class="modal-title">Delete State</h4>
-        </modal-header>
-        <modal-body>
-            <p *ngIf="elementToRemove != null" id="diagyesnomsg">
-                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.localname }}</span>?
-            </p>
-        </modal-body>
-        <modal-footer (onOk)="removeConfirmed();"
-                      [close-button-label]="'No'"
-                      [ok-button-label]="'Yes'">
-        </modal-footer>
-    </winery-modal>
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <modal-header>
+        <h4 class="modal-title">Delete State</h4>
+    </modal-header>
+    <modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.localname }}</span>?
+        </p>
+    </modal-body>
+    <modal-footer (onOk)="removeConfirmed();"
+                  [close-button-label]="'No'"
+                  [ok-button-label]="'Yes'">
+    </modal-footer>
+</winery-modal>

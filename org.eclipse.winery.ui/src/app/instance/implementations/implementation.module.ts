@@ -19,9 +19,11 @@ import { TableModule } from '../../tableModule/table.module';
 import { TypeaheadModule, TabsModule, ModalModule } from 'ng2-bootstrap';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { ImplementationsComponent } from './implementations.component';
+import { RouterModule } from "@angular/router";
 
 @NgModule({
     imports: [
+        RouterModule,
         ModalModule.forRoot(),
         TableModule,
         TabsModule.forRoot(),
