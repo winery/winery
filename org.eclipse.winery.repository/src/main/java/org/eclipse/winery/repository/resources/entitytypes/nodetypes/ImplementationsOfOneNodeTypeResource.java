@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.nodetypes;
 
-import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,19 +21,15 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.resources.apiData.converter.QNameConverter;
 import org.eclipse.winery.repository.resources.entitytypes.ImplementationsOfOneType;
 
-import com.sun.deploy.net.HttpResponse;
-import com.sun.jersey.core.spi.factory.ResponseImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneType {
 
