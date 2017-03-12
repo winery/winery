@@ -13,22 +13,78 @@
 -->
 <div id="contentContainer">
     <div id="searchBoxContainer">
-        <input type="text" id="searchBox">
+        <input type="text" id="searchBox" [(ngModel)]="filterString" (input)="filter()">
     </div>
     <div id="componentContainer">
         <div [class.hidden]="!loading">
             <winery-loader></winery-loader>
         </div>
         <winery-entity-container
-            *ngFor="let item of componentData"
-            componentId="{{item.id}}"
-            namespace={{item.namespace}}
-            resourceType="{{selectedResource}}">
+            *ngFor="let item of filteredComponents | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
+            [resourceType]="selectedResource"
+            [componentId]="item.id"
+            [namespace]="item.namespace">
         </winery-entity-container>
     </div>
+    <div id="sidebar">
+        <button class="btn btn-default sidebar-btn" (click)="onAdd()">Add new</button>
+        <button class="btn btn-default sidebar-btn">Import CSAR</button>
+        <button class="btn btn-default sidebar-btn">Show all items</button>
+    </div>
 </div>
-<div id="sidebar">
-    <button class="btn btn-default">Add new</button>
-    <button class="btn btn-default">Import CSAR</button>
-    <button class="btn btn-default">Show all items</button>
+<div class="footerContainer">
+    <label for="selectItemsPerPage">Items per Page:</label>
+    <select id="selectItemsPerPage" [(ngModel)]="itemsPerPage">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
 </div>
+
+
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <modal-header [title]="modalTitle"></modal-header>
+    <modal-body>
+        <form #addComponentForm="ngForm">
+            <div class="form-group">
+                <label for="componentName" class="control-label">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="componentName"
+                       name="componentName"
+                       #newName="ngModel"
+                       ngModel="newComponentName"
+                       required
+                       [duplicateValidator]="validatorObject">
+                <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!newName.errors.duplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!newName.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+            <winery-namespaceSelector name="namespace" [(ngModel)]="newComponentNamespace" [isRequired]="true"></winery-namespaceSelector>
+        </form>
+    </modal-body>
+    <modal-footer
+        (onOk)="addComponent(newName.value, namespace.value)"
+        [close-button-label]="'Cancel'"
+        [ok-button-label]="'Add'"
+        [ok-disabled]="!addComponentForm?.form.valid">
+    </modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
+    <modal-header [title]="modalTitle"></modal-header>
+    <modal-body>
+        <p>
+            Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
+        </p>
+    </modal-body>
+    <modal-footer [close-button-label]="'No'" [ok-button-label]="'Yes'" (onOk)="onRemoveElement()"></modal-footer>
+</winery-modal>

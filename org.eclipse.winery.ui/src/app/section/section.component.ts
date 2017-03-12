@@ -10,12 +10,13 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { NotificationService } from '../notificationModule/notificationservice';
+import { ValidatorObject } from '../validators/duplicateValidator.directive';
 
 @Component({
     selector: 'winery-section-component',
@@ -26,10 +27,22 @@ import { NotificationService } from '../notificationModule/notificationservice';
 })
 export class SectionComponent implements OnInit, OnDestroy {
 
-    componentData: SectionData[];
     loading: boolean = true;
     selectedResource: string;
     routeSub: Subscription;
+    filterString: string = '';
+    filteredComponents: SectionData[];
+    itemsPerPage: number = 10;
+
+    newComponentName: string;
+    newComponentNamespace: string;
+
+    validatorObject: ValidatorObject;
+
+    @ViewChild('addModal') addModal: any;
+    @ViewChild('addComponentForm') addComponentForm: any;
+
+    private componentData: SectionData[];
 
     constructor(private route: ActivatedRoute,
                 private service: SectionService,
@@ -54,6 +67,28 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.routeSub.unsubscribe();
     }
 
+    filter() {
+        this.filteredComponents = this.componentData.filter((value: SectionData, index: number, array: SectionData[]) => {
+            const containsId = value.id.toLowerCase().includes(this.filterString.toLowerCase());
+            const containsNamespace = value.namespace.toLowerCase().includes(this.filterString.toLowerCase());
+            return containsId || containsNamespace;
+        });
+    }
+
+    onAdd() {
+        this.validatorObject = new ValidatorObject(this.componentData, 'id');
+        this.addComponentForm.reset();
+        this.addModal.show();
+    }
+
+    addComponent() {
+        this.service.createComponent(this.newComponentName, this.newComponentNamespace)
+            .subscribe(
+                data => this.handleSaveSuccess(),
+                error => this.handleError(error)
+            );
+    }
+
     private getComponentData(data: any) {
         let resolved = data['resolveData'];
         this.selectedResource = resolved.section;
@@ -65,8 +100,13 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     private handleData(resources: SectionData[]) {
-        this.componentData = resources;
+        this.componentData = this.filteredComponents = resources;
         this.loading = false;
+    }
+
+    private handleSaveSuccess() {
+        this.notify.success('Successfully saved component ' + this.newComponentName);
+        // redirect to this new component
     }
 
     private handleError(error: any): void {

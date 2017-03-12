@@ -10,7 +10,6 @@
  *     Lukas Harzenetter - initial API and implementation
  *     Niko Stadelmaier - add notifications module
  */
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { EntityContainerComponent } from './entityContainer/entityContainer.component';
@@ -27,15 +26,27 @@ import { LoaderModule } from './loader/loader.module';
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { CustomOption } from './notificationModule/notificationOptions';
 import { NotificationModule } from './notificationModule/notification.module';
+import { FormsModule } from '@angular/forms';
+import { Ng2PaginationModule } from 'ng2-pagination';
+import { CommonModule } from '@angular/common';
+import { WineryModalModule } from './wineryModalModule/winery.modal.module';
+import { DuplicateValidatorModule } from './validators/duplicateValidator.module';
+import { NamespaceSelectorModule } from './namespaceSelector/namespaceSelector.module';
 
 @NgModule({
     imports: [
         BrowserModule,
+        FormsModule,
+        CommonModule,
         InstanceModule,
         LoaderModule,
+        WineryModalModule,
         ToastModule.forRoot(),
         NotificationModule.forRoot(),
         WineryRepositoryRoutingModule,
+        Ng2PaginationModule,
+        DuplicateValidatorModule,
+        NamespaceSelectorModule
     ],
     declarations: [
         EntityContainerComponent,
@@ -48,7 +59,7 @@ import { NotificationModule } from './notificationModule/notification.module';
         UrlEncodePipe,
     ],
     providers: [
-        {provide: ToastOptions, useClass: CustomOption}
+        { provide: ToastOptions, useClass: CustomOption }
     ],
     bootstrap: [WineryRepositoryComponent]
 })

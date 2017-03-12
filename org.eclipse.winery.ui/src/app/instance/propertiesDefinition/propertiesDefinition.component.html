@@ -65,11 +65,7 @@
                                [(ngModel)]="resourceApiData.winerysPropertiesDefinition.elementName">
                     </div>
                     <div class="wrapperTabButtom">
-                        <label for="wrapperNamespace">Namespace</label>
-                        <input id="wrapperNamespace"
-                               class="form-control"
-                               [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"
-                               [typeahead]="allNamespaces">
+                        <winery-namespaceSelector [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"></winery-namespaceSelector>
                     </div>
                 </tab>
             </tabset>

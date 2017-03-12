@@ -20,14 +20,26 @@ import { backendBaseUri } from '../configuration';
 @Injectable()
 export class SectionService {
 
+    private type: string;
+
     constructor(private http: Http) {
     }
 
     getSectionData(type: string): Observable<SectionData[]> {
+        this.type = type.toLowerCase();
+
         let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
 
-        return this.http.get(backendBaseUri + '/' + type.toLowerCase() + '/', options)
+        return this.http.get(backendBaseUri + '/' + this.type + '/', options)
+            .map(res => res.json());
+    }
+
+    createComponent(newComponentName: string, newComponentNamespace: string) {
+        let headers = new Headers({'Accept': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+
+        return this.http.post(backendBaseUri + '/' + this.type + '/', JSON.stringify({ name: newComponentName, namespace: newComponentNamespace }), options)
             .map(res => res.json());
     }
 }

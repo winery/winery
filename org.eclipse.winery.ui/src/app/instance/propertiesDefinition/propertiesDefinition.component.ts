@@ -44,7 +44,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     resourceApiData: PropertiesDefinitionsResourceApiData;
     selectItems: SelectData[];
     activeElement: SelectData;
-    allNamespaces: string[];
     selectedCell: any;
     elementToRemove: any = null;
     columns: Array<WineryTableColumn> = [
@@ -129,11 +128,6 @@ export class PropertiesDefinitionComponent implements OnInit {
      */
     onCustomKeyValuePairSelected(): void {
         this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Custom;
-        this.service.getAllNamespaces()
-            .subscribe(
-                data => this.allNamespaces = data,
-                error => this.handleError(error)
-            );
 
         if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition)) {
             this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
