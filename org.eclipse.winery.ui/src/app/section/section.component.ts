@@ -17,9 +17,10 @@ import { SectionData } from './sectionData';
 import { NotificationService } from '../notificationModule/notificationservice';
 import { ValidatorObject } from '../validators/duplicateValidator.directive';
 import { isNullOrUndefined } from 'util';
+import { SectionResolverData } from '../interfaces/resolverData';
 
-const showAll: string = 'Show all items';
-const showGrouped: string = 'Group by namespace';
+const showAll: string = 'Show all Items';
+const showGrouped: string = 'Group by Namespace';
 
 @Component({
     selector: 'winery-section-component',
@@ -64,6 +65,7 @@ export class SectionComponent implements OnInit, OnDestroy {
      * Subscribe to the url on initialisation in order to get the corresponding resource type.
      */
     ngOnInit(): void {
+        this.loading = true;
         this.routeSub = this.route
             .data
             .subscribe(
@@ -124,9 +126,16 @@ export class SectionComponent implements OnInit, OnDestroy {
         }
     }
 
+    showSpecificNamespaceOnly(): boolean {
+        return !(this.showNamespace === 'group' || this.showNamespace === 'all');
+    }
+
     private getComponentData(data: any) {
-        let resolved = data['resolveData'];
+        let resolved: SectionResolverData = data['resolveData'];
+
         this.selectedResource = resolved.section;
+        this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : this.showNamespace;
+
         this.service.setPath(resolved.path);
         this.service.getSectionData()
             .subscribe(
@@ -138,9 +147,13 @@ export class SectionComponent implements OnInit, OnDestroy {
     private handleData(resources: SectionData[]) {
         this.loading = false;
         this.componentData = resources;
-        if (this.componentData.length > 50) {
+
+        if (!this.showSpecificNamespaceOnly() && (this.componentData.length > 50)) {
             this.showNamespace = 'group';
             this.changeViewButtonTitle = showAll;
+        } else if (!this.showSpecificNamespaceOnly()) {
+            this.showNamespace = 'all';
+            this.changeViewButtonTitle = showGrouped;
         }
     }
 

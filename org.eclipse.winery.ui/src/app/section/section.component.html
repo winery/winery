@@ -24,14 +24,15 @@
                 | filterSections: { showNamespaces: showNamespace, filterString: filterString }
                 | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
             [resourceType]="selectedResource"
-            [componentId]="item?.id"
-            [namespace]="item.namespace">
+            [data]="item">
         </winery-entity-container>
     </div>
     <div id="sidebar">
         <button class="btn btn-default sidebar-btn" (click)="onAdd();">Add new</button>
         <button class="btn btn-default sidebar-btn" (click)="addCsarModal.show();">Import CSAR</button>
-        <button class="btn btn-default sidebar-btn" (click)="onChangeView()">{{ changeViewButtonTitle }}</button>
+        <button class="btn btn-default sidebar-btn" (click)="onChangeView()" [disabled]="showSpecificNamespaceOnly()">
+            {{ changeViewButtonTitle }}
+        </button>
     </div>
 </div>
 <div class="footerContainer">

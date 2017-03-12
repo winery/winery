@@ -11,14 +11,14 @@
  */
 
 import { Component, Input } from '@angular/core';
+import { SectionData } from '../section/sectionData';
 
 @Component({
     selector: 'winery-entity-container',
     templateUrl: 'entityContainer.component.html',
+    styleUrls: ['entitiyContainer.component.css']
 })
 export class EntityContainerComponent {
-    @Input() componentId: string;
-    @Input() namespace: string;
+    @Input() data: SectionData;
     @Input() resourceType: string;
-    @Input() count: number;
 }
