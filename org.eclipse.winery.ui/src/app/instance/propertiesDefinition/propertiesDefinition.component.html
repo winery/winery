@@ -62,6 +62,7 @@
                         <label for="wrapperName">Name of Wrapper Element</label><br>
                         <input id="wrapperName"
                                class="form-control"
+                               autocomplete=off
                                [(ngModel)]="resourceApiData.winerysPropertiesDefinition.elementName">
                     </div>
                     <div class="wrapperTabButtom">
@@ -86,6 +87,7 @@
                        class="form-control"
                        type="text"
                        name="key"
+                       autocomplete=off
                        required
                        [(ngModel)]="newProperty.key"
                        [duplicateValidator]="validatorObject"/>

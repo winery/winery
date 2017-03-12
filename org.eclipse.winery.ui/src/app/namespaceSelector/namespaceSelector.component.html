@@ -19,7 +19,9 @@
     <input id="namespace"
            class="form-control"
            name="namespace"
+           autocomplete=off
            [typeahead]="allNamespaces"
+           [typeaheadOptionsLimit]="typeAheadListLimit"
            [(ngModel)]="selectedNamespace"
            #namespace="ngModel"
            [required]="isRequired">

@@ -16,30 +16,41 @@ import { Headers, RequestOptions, Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs';
 import { backendBaseUri } from '../configuration';
+import { FileUploader } from 'ng2-file-upload';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class SectionService {
 
-    private type: string;
+    private path: string;
+    private fileUploader: FileUploader;
 
-    constructor(private http: Http) {
+    constructor(private http: Http,
+                private route: Router) {
+        this.path = '/' + decodeURIComponent(this.route.url);
+        this.fileUploader = new FileUploader({ url: backendBaseUri + '/' });
     }
 
-    getSectionData(type: string): Observable<SectionData[]> {
-        this.type = type.toLowerCase();
+    get uploader(): FileUploader {
+        return this.fileUploader;
+    }
 
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+    getSectionData(): Observable<SectionData[]> {
+        let headers = new Headers({ 'Accept': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + '/' + this.type + '/', options)
+        return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
 
     createComponent(newComponentName: string, newComponentNamespace: string) {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        let headers = new Headers({ 'Accept': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
 
-        return this.http.post(backendBaseUri + '/' + this.type + '/', JSON.stringify({ name: newComponentName, namespace: newComponentNamespace }), options)
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify({
+            name: newComponentName,
+            namespace: newComponentNamespace
+        }), options)
             .map(res => res.json());
     }
 }

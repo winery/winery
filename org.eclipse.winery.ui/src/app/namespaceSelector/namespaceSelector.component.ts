@@ -27,16 +27,22 @@ const customInputControl: any = {
 /**
  * This component only wraps the namespace chooser. It gets the whole list from the backend and
  * provides typeahead for selecting a namespace. This component can be used with the <code>ngModel</code> directive.
- * <p>
- *     It also provides a way for setting the namespace required using the <code>isRequired</code> input. By default,
- *     required is set to false.
- * </p>
  *
+ * <label>Inputs</label>
+ * <ul>
+ *     <li><code>ngModel</code> required for getting the value from this input.
+ *     </li>
+ *     <li><code>isRequired</code> provides a way for setting the namespace input as required. By default,
+ *         required is set to false.
+ *     </li>
+ *     <li><code>typeAheadListLimit</code> sets the length of the options which are shown by typeahead. By default,
+ *         the limit is set to 50
+ *     </li>
+ * </ul>
+ * <br>
  * @example <caption>Basic usage</caption>
  * ```html
- * <winery-namespaceSelector
- *     [(ngModel)]="mySelectedNamespace"
- *     [isRequired]="false">
+ * <winery-namespaceSelector [(ngModel)]="mySelectedNamespace">
  * </winery-namespaceSelector>
  * ```
  *
@@ -46,7 +52,8 @@ const customInputControl: any = {
  *     <winery-namespaceSelector
  *         name="namespaceSelector"
  *         [(ngModel)]="mySelectedNamespace"
- *         [isRequired]="true">
+ *         [isRequired]="true"
+ *         [typeAheadListLimit]="20">
  *     </winery-namespaceSelector>
  *     <button type="button" [disabled]="!myForm?.form.valid" (click)="onSave();">Save</button>
  * </form>
@@ -63,6 +70,7 @@ const customInputControl: any = {
 export class NamespaceSelectorComponent implements OnInit, ControlValueAccessor {
 
     @Input() isRequired: boolean = false;
+    @Input() typeAheadListLimit: number = 50;
 
     loading: boolean = true;
     allNamespaces: string[] = [];

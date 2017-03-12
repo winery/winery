@@ -9,18 +9,21 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { NotificationService } from '../notificationModule/notificationservice';
 import { ValidatorObject } from '../validators/duplicateValidator.directive';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-section-component',
     templateUrl: 'section.component.html',
+    styleUrls: [
+        'section.component.css'
+    ],
     providers: [
         SectionService,
     ]
@@ -36,15 +39,18 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     newComponentName: string;
     newComponentNamespace: string;
-
     validatorObject: ValidatorObject;
+
+    fileOver: boolean = false;
 
     @ViewChild('addModal') addModal: any;
     @ViewChild('addComponentForm') addComponentForm: any;
+    @ViewChild('addCsarModal') addCsarModal: any;
 
     private componentData: SectionData[];
 
     constructor(private route: ActivatedRoute,
+                private router: Router,
                 private service: SectionService,
                 private notify: NotificationService) {
     }
@@ -58,7 +64,12 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.routeSub = this.route
             .data
             .subscribe(
-                data => this.getComponentData(data),
+                data => this.selectedResource = data['resolveData'].section,
+                error => this.handleError(error)
+            );
+        this.service.getSectionData()
+            .subscribe(
+                res => this.handleData(res),
                 error => this.handleError(error)
             );
     }
@@ -90,14 +101,27 @@ export class SectionComponent implements OnInit, OnDestroy {
             );
     }
 
-    private getComponentData(data: any) {
-        let resolved = data['resolveData'];
-        this.selectedResource = resolved.section;
-        this.service.getSectionData(resolved.path)
-            .subscribe(
-                res => this.handleData(res),
-                error => this.handleError(error)
-            );
+    uploadFile(event?: any) {
+        if (!isNullOrUndefined(event) && isNullOrUndefined(this.service.uploader.queue[0])) {
+            this.fileOver = event;
+        } else {
+            this.fileOver = false;
+            this.loading = true;
+            this.addCsarModal.hide();
+            this.service.uploader.queue[0].upload();
+            this.service.uploader.onCompleteItem = (item: any, response: string, status: number, headers: any) => {
+                this.loading = false;
+                this.service.uploader.clearQueue();
+
+                if (status === 204) {
+                    this.notify.success('Successfully saved component');
+                } else {
+                    this.notify.error('Error while uploading CSAR file');
+                }
+
+                return { item, response, status, headers };
+            };
+        }
     }
 
     private handleData(resources: SectionData[]) {
@@ -108,6 +132,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     private handleSaveSuccess() {
         this.notify.success('Successfully saved component ' + this.newComponentName);
         // redirect to this new component
+        this.router.navigateByUrl('./' + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/' + this.newComponentName);
     }
 
     private handleError(error: any): void {

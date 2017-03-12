@@ -27,8 +27,8 @@
         </winery-entity-container>
     </div>
     <div id="sidebar">
-        <button class="btn btn-default sidebar-btn" (click)="onAdd()">Add new</button>
-        <button class="btn btn-default sidebar-btn">Import CSAR</button>
+        <button class="btn btn-default sidebar-btn" (click)="onAdd();">Add new</button>
+        <button class="btn btn-default sidebar-btn" (click)="addCsarModal.show();">Import CSAR</button>
         <button class="btn btn-default sidebar-btn">Show all items</button>
     </div>
 </div>
@@ -38,7 +38,6 @@
         <option value="10">10</option>
         <option value="25">25</option>
         <option value="50">50</option>
-        <option value="100">100</option>
     </select>
     <pagination-controls (pageChange)="page = $event"></pagination-controls>
 </div>
@@ -72,10 +71,29 @@
         </form>
     </modal-body>
     <modal-footer
-        (onOk)="addComponent(newName.value, namespace.value)"
+        (onOk)="addComponent()"
         [close-button-label]="'Cancel'"
         [ok-button-label]="'Add'"
-        [ok-disabled]="!addComponentForm?.form.valid">
+        [ok-disabled]="!(addComponentForm?.form.valid && newComponentNamespace?.length > 0)">
+    </modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #addCsarModal="bs-modal" [modalRef]="addCsarModal">
+    <modal-header [title]="'Add CSAR'"></modal-header>
+    <modal-body>
+        <input type="file" ng2FileSelect [uploader]="service.uploader" (change)="uploadFile()"/>
+        <br>
+        <div ng2FileDrop
+           class="dropZone noFile"
+           [ngClass]="{'fileOver': fileOver}"
+           (fileOver)="uploadFile($event)"
+           [uploader]="service.uploader">
+            You may <span style="font-weight:bold;">drop the file</span> here.
+        </div>
+        <p>The file is <span style="font-weight:bold;">immediately</span> uploaded without any confirmation.</p>
+    </modal-body>
+    <modal-footer [show-default-buttons]="false">
+        <button type="button" class="btn btn-default" (click)="addCsarModal.hide()">Cancel</button>
     </modal-footer>
 </winery-modal>
 
