@@ -24,3 +24,14 @@
 .fileOver {
     border: dotted 3px lightcoral;
 }
+
+.sidebar {
+    display: table-caption;
+    padding-bottom: 30px;
+    padding-left: 100px;
+}
+
+.sidebar-btn {
+    width: 100%;
+    margin-bottom: 3px;
+}
