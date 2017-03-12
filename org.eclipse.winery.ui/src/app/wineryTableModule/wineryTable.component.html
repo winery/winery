@@ -38,7 +38,7 @@
               (cellClicked)="onCellClick($event)"
               [rows]="rows" [columns]="columns">
     </ng-table>
-    <div *ngIf="rows.length > 10 || rows.length > itemsPerPage">
+    <div *ngIf="data.length > 10 || data.length > itemsPerPage">
         <pagination *ngIf="config.paging"
                     class="pagination-sm"
                     [(ngModel)]="page"
