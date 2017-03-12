@@ -124,6 +124,7 @@ public class CSARImporter {
 
 	private static final ExecutorService entityTypeAdjestmentService = Executors.newFixedThreadPool(10);
 
+	private static final Pattern GENERATED_PREFIX_PATTERN = Pattern.compile("^ns\\d+$");
 
 	/**
 	 * Reads the CSAR from the given inputstream
@@ -228,10 +229,6 @@ public class CSARImporter {
 
 		this.importNamespacePrefixes(path);
 	}
-
-
-	private static final Pattern GENERATED_PREFIX_PATTERN = Pattern.compile("^ns\\d+$");
-
 
 	/**
 	 * Import namespace prefixes. This is kind of a quick hack. TODO: during the

@@ -29,7 +29,6 @@ public class WinerysPropertiesDefinition {
 	private PropertyDefinitionKVList propertyDefinitionKVList;
 	private Boolean isDerivedFromXSD = Boolean.FALSE;
 
-
 	@XmlAttribute(name = "namespace")
 	public String getNamespace() {
 		return this.namespace;

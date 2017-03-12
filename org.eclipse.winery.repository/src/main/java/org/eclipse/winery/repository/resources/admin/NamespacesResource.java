@@ -57,9 +57,9 @@ import org.slf4j.LoggerFactory;
  */
 public class NamespacesResource extends AbstractAdminResource {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NamespacesResource.class);
-
 	public final static NamespacesResource INSTANCE = new NamespacesResource();
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(NamespacesResource.class);
 
 	private Integer nsCount = 0;
 

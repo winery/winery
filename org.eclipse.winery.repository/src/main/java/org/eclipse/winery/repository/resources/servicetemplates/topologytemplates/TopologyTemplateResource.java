@@ -74,7 +74,6 @@ public class TopologyTemplateResource {
 		this.serviceTemplateRes = parent;
 	}
 
-
 	public static class DataForJSP {
 
 		private String location;
@@ -124,7 +123,6 @@ public class TopologyTemplateResource {
 		}
 
 	}
-
 
 	@GET
 	@RestDoc(methodDescription = "?edit is used in the URL to get the jsPlumb-based editor")

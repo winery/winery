@@ -13,18 +13,19 @@ package org.eclipse.winery.repository.resources.entitytypes.nodetypes;
 
 import javax.ws.rs.Path;
 
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeType.CapabilityDefinitions;
 import org.eclipse.winery.model.tosca.TNodeType.Interfaces;
 import org.eclipse.winery.model.tosca.TNodeType.RequirementDefinitions;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.repository.resources.entitytypes.InstanceStatesResource;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.reqandcapdefs.CapabilityDefinitionsResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.reqandcapdefs.RequirementDefinitionsResource;
 import org.eclipse.winery.repository.resources.interfaces.InterfacesResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

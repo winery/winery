@@ -16,12 +16,11 @@ package org.eclipse.winery.repository.resources;
  */
 public class SubMenuData {
 
-	private final String href;
-	private final String text;
-
 	public static final SubMenuData SUBMENU_DOCUMENTATION = new SubMenuData("#documentation", "Documentation");
 	public static final SubMenuData SUBMENU_XML = new SubMenuData("#xml", "XML");
 
+	private final String href;
+	private final String text;
 
 	public SubMenuData(String href, String text) {
 		this.href = href;

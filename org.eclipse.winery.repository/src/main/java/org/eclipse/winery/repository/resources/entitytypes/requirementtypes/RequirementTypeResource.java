@@ -13,9 +13,9 @@ package org.eclipse.winery.repository.resources.entitytypes.requirementtypes;
 
 import javax.ws.rs.Path;
 
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TRequirementType;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 
 public class RequirementTypeResource extends EntityTypeResource {
@@ -40,5 +40,4 @@ public class RequirementTypeResource extends EntityTypeResource {
 	public RequiredCapabilityTypeResource getRequiredCapabilityTypeResource() {
 		return new RequiredCapabilityTypeResource(this);
 	}
-
 }

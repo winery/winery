@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
@@ -24,10 +28,6 @@ import org.eclipse.winery.repository.resources.INodeTypeImplementationResourceOr
 import org.eclipse.winery.repository.resources.artifacts.DeploymentArtifactsResource;
 import org.eclipse.winery.repository.resources.artifacts.ImplementationArtifactsResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.EntityTypeImplementationResource;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
 
 public class NodeTypeImplementationResource extends EntityTypeImplementationResource implements INodeTemplateResourceOrNodeTypeImplementationResource, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 

@@ -13,6 +13,7 @@
 package org.eclipse.winery.repository;
 
 import org.eclipse.winery.repository.resources.MainResource;
+
 import org.restdoc.jersey.server.RestDocFeature;
 
 public class RestDocFilter extends RestDocFeature {
@@ -21,5 +22,4 @@ public class RestDocFilter extends RestDocFeature {
 	protected Class<?>[] getClasses() {
 		return new Class<?>[]{MainResource.class};
 	}
-
 }

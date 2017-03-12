@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -28,6 +27,7 @@ import org.eclipse.winery.repository.resources._support.collections.withid.Entit
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This superclass has only a few methods as we cannot easily abstract from the
@@ -37,7 +37,7 @@ import com.sun.jersey.api.view.Viewable;
  *
  * We try to abstract from the problems by using generics and reflections
  *
- * @param <ReqDefOrCapDef> TRequirementDefinition or TCapabilityDefinition
+ * @param <ReqDefOrCapDef>         TRequirementDefinition or TCapabilityDefinition
  * @param <ReqDefOrCapDefResource> the resource managing ReqDefOrCapDef
  */
 public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefResource extends AbstractReqOrCapDefResource<ReqDefOrCapDef>, ReqDefOrCapDef> extends EntityWithIdCollectionResource<ReqDefOrCapDefResource, ReqDefOrCapDef> {

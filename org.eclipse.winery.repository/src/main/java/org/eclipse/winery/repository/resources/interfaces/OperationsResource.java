@@ -21,15 +21,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
-import org.restdoc.annotations.RestDocParam;
 
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
+import org.restdoc.annotations.RestDocParam;
 
 public class OperationsResource extends EntityWithIdCollectionResource<OperationResource, TOperation> {
 

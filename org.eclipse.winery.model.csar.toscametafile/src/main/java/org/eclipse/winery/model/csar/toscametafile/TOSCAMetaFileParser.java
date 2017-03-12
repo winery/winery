@@ -18,13 +18,12 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.springsource.util.parser.manifest.ManifestContents;
 import com.springsource.util.parser.manifest.ManifestParser;
 import com.springsource.util.parser.manifest.ManifestProblem;
 import com.springsource.util.parser.manifest.RecoveringManifestParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses and validates a TOSCA meta file.<br />
