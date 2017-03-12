@@ -13,23 +13,25 @@
 -->
 <div id="contentContainer">
     <div id="searchBoxContainer">
-        <input type="text" id="searchBox" [(ngModel)]="filterString" (input)="filter()">
+        <input type="text" id="searchBox" [(ngModel)]="filterString">
     </div>
     <div id="componentContainer">
         <div [class.hidden]="!loading">
             <winery-loader></winery-loader>
         </div>
         <winery-entity-container
-            *ngFor="let item of filteredComponents | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
+            *ngFor="let item of componentData
+                | filterSections: { showNamespaces: showNamespace, filterString: filterString }
+                | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
             [resourceType]="selectedResource"
-            [componentId]="item.id"
+            [componentId]="item?.id"
             [namespace]="item.namespace">
         </winery-entity-container>
     </div>
     <div id="sidebar">
         <button class="btn btn-default sidebar-btn" (click)="onAdd();">Add new</button>
         <button class="btn btn-default sidebar-btn" (click)="addCsarModal.show();">Import CSAR</button>
-        <button class="btn btn-default sidebar-btn">Show all items</button>
+        <button class="btn btn-default sidebar-btn" (click)="onChangeView()">{{ changeViewButtonTitle }}</button>
     </div>
 </div>
 <div class="footerContainer">
@@ -67,7 +69,8 @@
                     </div>
                 </div>
             </div>
-            <winery-namespaceSelector name="namespace" [(ngModel)]="newComponentNamespace" [isRequired]="true"></winery-namespaceSelector>
+            <winery-namespaceSelector name="namespace" [(ngModel)]="newComponentNamespace"
+                                      [isRequired]="true"></winery-namespaceSelector>
         </form>
     </modal-body>
     <modal-footer
@@ -84,10 +87,10 @@
         <input type="file" ng2FileSelect [uploader]="service.uploader" (change)="uploadFile()"/>
         <br>
         <div ng2FileDrop
-           class="dropZone noFile"
-           [ngClass]="{'fileOver': fileOver}"
-           (fileOver)="uploadFile($event)"
-           [uploader]="service.uploader">
+             class="dropZone noFile"
+             [ngClass]="{'fileOver': fileOver}"
+             (fileOver)="uploadFile($event)"
+             [uploader]="service.uploader">
             You may <span style="font-weight:bold;">drop the file</span> here.
         </div>
         <p>The file is <span style="font-weight:bold;">immediately</span> uploaded without any confirmation.</p>

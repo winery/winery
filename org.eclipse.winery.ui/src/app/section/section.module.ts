@@ -25,6 +25,7 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { UrlEncodePipe } from '../pipes/urlEncode.pipe';
 import { UrlDecodePipe } from '../pipes/urlDecode.pipe';
 import { RouterModule } from '@angular/router';
+import { SectionPipe } from './section.pipe';
 
 @NgModule({
     imports: [
@@ -46,6 +47,7 @@ import { RouterModule } from '@angular/router';
         EntityContainerComponent,
         UrlDecodePipe,
         UrlEncodePipe,
+        SectionPipe
     ],
     providers: [],
 })

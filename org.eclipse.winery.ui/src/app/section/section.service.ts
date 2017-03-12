@@ -25,9 +25,7 @@ export class SectionService {
     private path: string;
     private fileUploader: FileUploader;
 
-    constructor(private http: Http,
-                private route: Router) {
-        this.path = '/' + decodeURIComponent(this.route.url);
+    constructor(private http: Http) {
         this.fileUploader = new FileUploader({ url: backendBaseUri + '/' });
     }
 
@@ -52,5 +50,9 @@ export class SectionService {
             namespace: newComponentNamespace
         }), options)
             .map(res => res.json());
+    }
+
+    setPath(path: string) {
+        this.path = '/' + path;
     }
 }

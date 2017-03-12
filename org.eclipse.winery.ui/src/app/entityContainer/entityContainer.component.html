@@ -22,7 +22,7 @@
             <div class="name">{{ componentId }}</div>
             <div class="namespace">{{ namespace }}</div>
         </div>
-        <div class="buttonContainer">
+        <div *ngIf="componentId" class="buttonContainer">
             <a href="" class="exportButton"></a>
             <a href="" class="editButton"></a>
             <a href="" class="deleteButton"></a>

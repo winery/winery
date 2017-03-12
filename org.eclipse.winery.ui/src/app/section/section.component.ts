@@ -18,6 +18,9 @@ import { NotificationService } from '../notificationModule/notificationservice';
 import { ValidatorObject } from '../validators/duplicateValidator.directive';
 import { isNullOrUndefined } from 'util';
 
+const showAll: string = 'Show all items';
+const showGrouped: string = 'Group by namespace';
+
 @Component({
     selector: 'winery-section-component',
     templateUrl: 'section.component.html',
@@ -34,8 +37,10 @@ export class SectionComponent implements OnInit, OnDestroy {
     selectedResource: string;
     routeSub: Subscription;
     filterString: string = '';
-    filteredComponents: SectionData[];
     itemsPerPage: number = 10;
+    showNamespace: string = 'all';
+    changeViewButtonTitle: string = showGrouped;
+    componentData: SectionData[];
 
     newComponentName: string;
     newComponentNamespace: string;
@@ -46,8 +51,6 @@ export class SectionComponent implements OnInit, OnDestroy {
     @ViewChild('addModal') addModal: any;
     @ViewChild('addComponentForm') addComponentForm: any;
     @ViewChild('addCsarModal') addCsarModal: any;
-
-    private componentData: SectionData[];
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -64,12 +67,7 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.routeSub = this.route
             .data
             .subscribe(
-                data => this.selectedResource = data['resolveData'].section,
-                error => this.handleError(error)
-            );
-        this.service.getSectionData()
-            .subscribe(
-                res => this.handleData(res),
+                data => this.getComponentData(data),
                 error => this.handleError(error)
             );
     }
@@ -78,12 +76,14 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.routeSub.unsubscribe();
     }
 
-    filter() {
-        this.filteredComponents = this.componentData.filter((value: SectionData, index: number, array: SectionData[]) => {
-            const containsId = value.id.toLowerCase().includes(this.filterString.toLowerCase());
-            const containsNamespace = value.namespace.toLowerCase().includes(this.filterString.toLowerCase());
-            return containsId || containsNamespace;
-        });
+    onChangeView() {
+        if (this.showNamespace === 'group') {
+            this.changeViewButtonTitle = showGrouped;
+            this.showNamespace = 'all';
+        } else {
+            this.changeViewButtonTitle = showAll;
+            this.showNamespace = 'group';
+        }
     }
 
     onAdd() {
@@ -124,15 +124,33 @@ export class SectionComponent implements OnInit, OnDestroy {
         }
     }
 
+    private getComponentData(data: any) {
+        let resolved = data['resolveData'];
+        this.selectedResource = resolved.section;
+        this.service.setPath(resolved.path);
+        this.service.getSectionData()
+            .subscribe(
+                res => this.handleData(res),
+                error => this.handleError(error)
+            );
+    }
+
     private handleData(resources: SectionData[]) {
-        this.componentData = this.filteredComponents = resources;
         this.loading = false;
+        this.componentData = resources;
+        if (this.componentData.length > 50) {
+            this.showNamespace = 'group';
+            this.changeViewButtonTitle = showAll;
+        }
     }
 
     private handleSaveSuccess() {
         this.notify.success('Successfully saved component ' + this.newComponentName);
         // redirect to this new component
-        this.router.navigateByUrl('./' + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/' + this.newComponentName);
+        this.router.navigateByUrl('/'
+            + this.selectedResource.toLowerCase() + 's/'
+            + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
+            + this.newComponentName);
     }
 
     private handleError(error: any): void {
