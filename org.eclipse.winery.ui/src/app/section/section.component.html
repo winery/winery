@@ -45,7 +45,7 @@
 
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <modal-header [title]="modalTitle"></modal-header>
+    <modal-header [title]="'Add component'"></modal-header>
     <modal-body>
         <form #addComponentForm="ngForm">
             <div class="form-group">
@@ -80,7 +80,7 @@
 </winery-modal>
 
 <winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
-    <modal-header [title]="modalTitle"></modal-header>
+    <modal-header [title]="'Remove component'"></modal-header>
     <modal-body>
         <p>
             Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?

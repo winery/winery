@@ -39,6 +39,18 @@ const customInputControl: any = {
  *     [isRequired]="false">
  * </winery-namespaceSelector>
  * ```
+ *
+ * @example <caption>Example with using the required validation</caption>
+ * ```html
+ * <form #myForm="ngForm">
+ *     <winery-namespaceSelector
+ *         name="namespaceSelector"
+ *         [(ngModel)]="mySelectedNamespace"
+ *         [isRequired]="true">
+ *     </winery-namespaceSelector>
+ *     <button type="button" [disabled]="!myForm?.form.valid" (click)="onSave();">Save</button>
+ * </form>
+ * ```
  */
 @Component({
     selector: 'winery-namespaceSelector',
@@ -48,7 +60,7 @@ const customInputControl: any = {
         customInputControl
     ]
 })
-export class NamespaceSelectorComponent implements OnInit {
+export class NamespaceSelectorComponent implements OnInit, ControlValueAccessor {
 
     @Input() isRequired: boolean = false;
 
