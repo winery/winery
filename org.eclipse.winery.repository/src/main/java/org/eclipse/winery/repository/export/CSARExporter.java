@@ -9,13 +9,15 @@
  * Contributors:
  *     Kálmán Képes - initial API and implementation and/or initial documentation
  *     Oliver Kopp - adapted to new storage model and to TOSCA v1.0, maintenance
+ *     Armin Hüneburg - added support for Git in ArtifactTemplates
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,18 +32,25 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
+import org.eclipse.winery.model.tosca.TArtifactReference;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.Prefs;
+import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
@@ -74,6 +83,7 @@ public class CSARExporter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CSARExporter.class);
 
 	private static final String DEFINITONS_PATH_PREFIX = "Definitions/";
+	private static final String WINERY_TEMP_DIR_PREFIX = "winerytmp";
 
 
 	/**
@@ -162,32 +172,203 @@ public class CSARExporter {
 		for (RepositoryFileReference ref : refMap.keySet()) {
 			String archivePath = refMap.get(ref);
 			CSARExporter.LOGGER.trace("Creating {}", archivePath);
-			ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
-			zos.putArchiveEntry(archiveEntry);
 			if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
-				CSARExporter.LOGGER.trace("Special treatment for generated XSDs");
-				Document document = ((DummyRepositoryFileReferenceForGeneratedXSD) ref).getDocument();
-				DOMSource source = new DOMSource(document);
-				StreamResult result = new StreamResult(zos);
-				try {
-					transformer.transform(source, result);
-				} catch (TransformerException e) {
-					CSARExporter.LOGGER.debug("Could not serialize generated xsd", e);
-				}
+				addDummyRepositoryFileReferenceForGeneratedXSD(zos, transformer, (DummyRepositoryFileReferenceForGeneratedXSD) ref, archivePath);
 			} else {
-				try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
-					IOUtils.copy(is, zos);
-				} catch (Exception e) {
-					CSARExporter.LOGGER.error("Could not copy file content to ZIP outputstream", e);
+				if (ref.getParent() instanceof ArtifactTemplateDirectoryId) {
+					addArtifactTemplateToZipFile(zos, ref, archivePath);
+				} else {
+					addFileToZipArchive(zos, ref, archivePath);
+					zos.closeArchiveEntry();
 				}
 			}
-			zos.closeArchiveEntry();
 		}
 
 		this.addNamespacePrefixes(zos);
 
 		zos.finish();
 		zos.close();
+	}
+
+	/**
+	 *
+	 * @param zos Output stream for the archive that should contain the file
+	 * @param ref Reference to the file that should be added to the archive
+	 * @param archivePath Path to the file inside the archive
+	 * @throws IOException thrown when the temporary directory can not be created
+	 */
+	private void addArtifactTemplateToZipFile(ArchiveOutputStream zos, RepositoryFileReference ref, String archivePath) throws IOException {
+		Utils.GitInfo gitInfo = Utils.getGitInformation((ArtifactTemplateDirectoryId)ref.getParent());
+
+		if (gitInfo == null) {
+            try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+                if (is != null) {
+                    ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
+                    zos.putArchiveEntry(archiveEntry);
+                    IOUtils.copy(is, zos);
+					zos.closeArchiveEntry();
+                }
+            } catch (Exception e) {
+                CSARExporter.LOGGER.error("Could not copy file to ZIP outputstream", e);
+            }
+			return;
+        }
+
+		Path tempDir = Files.createTempDirectory(WINERY_TEMP_DIR_PREFIX);
+		try {
+            Git git = Git
+                    .cloneRepository()
+                    .setURI(gitInfo.URL)
+                    .setDirectory(tempDir.toFile())
+                    .call();
+            git.checkout().setName(gitInfo.BRANCH).call();
+            String path = "artifacttemplates/"
+                    + Util.URLencode(((ArtifactTemplateId)ref.getParent().getParent()).getQName().getNamespaceURI())
+                    + "/"
+                    + ((ArtifactTemplateId)ref.getParent().getParent()).getQName().getLocalPart()
+                    + "/files/";
+			TArtifactTemplate template = Utils.getTArtifactTemplate((ArtifactTemplateDirectoryId) ref.getParent());
+			addWorkingTreeToArchive(zos, template, tempDir, path);
+        } catch (GitAPIException e) {
+            CSARExporter.LOGGER.error(String.format("Error while cloning repo: %s / %s", gitInfo.URL, gitInfo.BRANCH), e);
+        } finally {
+            deleteDirectory(tempDir);
+        }
+	}
+
+	/**
+	 * Adds a file to an archive
+	 * @param zos Output stream of the archive
+	 * @param ref Reference to the file that should be added to the archive
+	 * @param archivePath Path inside the archive to the file
+	 */
+	private void addFileToZipArchive(ArchiveOutputStream zos, RepositoryFileReference ref, String archivePath) {
+		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+            ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
+            zos.putArchiveEntry(archiveEntry);
+            IOUtils.copy(is, zos);
+        } catch (Exception e) {
+            CSARExporter.LOGGER.error("Could not copy file content to ZIP outputstream", e);
+        }
+	}
+
+	/**
+	 * Adds a dummy file to the archive
+	 * @param zos
+	 * @param transformer
+	 * @param ref
+	 * @param archivePath
+	 * @throws IOException
+	 */
+	private void addDummyRepositoryFileReferenceForGeneratedXSD(ArchiveOutputStream zos, Transformer transformer, DummyRepositoryFileReferenceForGeneratedXSD ref, String archivePath) throws IOException {
+		ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
+		zos.putArchiveEntry(archiveEntry);
+		CSARExporter.LOGGER.trace("Special treatment for generated XSDs");
+		Document document = ref.getDocument();
+		DOMSource source = new DOMSource(document);
+		StreamResult result = new StreamResult(zos);
+		try {
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            CSARExporter.LOGGER.debug("Could not serialize generated xsd", e);
+        }
+	}
+
+	/**
+	 * Deletes a directory recursively
+	 * @param path Path to the directory that should be deleted
+	 */
+	private void deleteDirectory(Path path) {
+		if (Files.isDirectory(path)) {
+			try (DirectoryStream<Path> s = Files.newDirectoryStream(path)) {
+				for (Path p : s) {
+					deleteDirectory(p);
+				}
+				Files.delete(path);
+			} catch (IOException e) {
+				CSARExporter.LOGGER.error("Error iterating directory " + path.toAbsolutePath(), e);
+			}
+		} else {
+			try {
+				Files.delete(path);
+			} catch (IOException e) {
+				CSARExporter.LOGGER.error("Error deleting file " + path.toAbsolutePath(), e);
+			}
+		}
+	}
+
+	/**
+	 * Adds a working tree to an archive
+	 * @param zos Output stream of the archive
+	 * @param template Template of the artifact
+	 * @param rootDir The root of the working tree
+	 * @param archivePath The path inside the archive to the working tree
+	 */
+	private void addWorkingTreeToArchive(ArchiveOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
+		addWorkingTreeToArchive(rootDir.toFile(), zos, template, rootDir, archivePath);
+	}
+
+	/**
+	 * Adds a working tree to an archive
+	 * @param file The current directory to add
+	 * @param zos Output stream of the archive
+	 * @param template Template of the artifact
+	 * @param rootDir The root of the working tree
+	 * @param archivePath The path inside the archive to the working tree
+	 */
+	private void addWorkingTreeToArchive(File file, ArchiveOutputStream zos, TArtifactTemplate template, Path rootDir, String archivePath) {
+		if (file.isDirectory()) {
+			if (file.getName().equals(".git")) {
+				return;
+			}
+			File[] files = file.listFiles();
+			if (files != null) {
+				for (File f : files) {
+					addWorkingTreeToArchive(f, zos, template, rootDir, archivePath);
+				}
+			}
+		} else {
+			boolean foundInclude = false;
+			boolean included = false;
+			boolean excluded = false;
+			for (TArtifactReference artifactReference : template.getArtifactReferences().getArtifactReference()) {
+				for (Object includeOrExclude : artifactReference.getIncludeOrExclude()) {
+					if (includeOrExclude instanceof TArtifactReference.Include) {
+						foundInclude = true;
+						TArtifactReference.Include include = (TArtifactReference.Include)includeOrExclude;
+						String reference = artifactReference.getReference();
+						if (reference.endsWith("/")) {
+							reference += include.getPattern();
+						} else {
+							reference += "/" + include.getPattern();
+						}
+						reference = reference.substring(1);
+						included |= Utils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
+					} else if (includeOrExclude instanceof TArtifactReference.Exclude) {
+						TArtifactReference.Exclude exclude = (TArtifactReference.Exclude)includeOrExclude;
+						String reference = artifactReference.getReference();
+						if (reference.endsWith("/")) {
+							reference += exclude.getPattern();
+						} else {
+							reference += "/" + exclude.getPattern();
+						}
+						reference = reference.substring(1);
+						excluded |= Utils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
+					}
+				}
+			}
+
+			if ((!foundInclude || included) && !excluded) {
+				try (InputStream is = new FileInputStream(file)) {
+					ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath + rootDir.relativize(Paths.get(file.getAbsolutePath())));
+					zos.putArchiveEntry(archiveEntry);
+					IOUtils.copy(is, zos);
+					zos.closeArchiveEntry();
+				} catch (Exception e) {
+					CSARExporter.LOGGER.error("Could not copy file to ZIP outputstream", e);
+				}
+			}
+		}
 	}
 
 	/**

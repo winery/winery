@@ -11,75 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.Response.Status.Family;
-import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
-
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.TArtifactType;
-import org.eclipse.winery.model.tosca.TConstraint;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.model.tosca.TRelationshipType;
-import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
-import org.eclipse.winery.repository.export.CSARExporter;
-import org.eclipse.winery.repository.export.TOSCAExportUtil;
-import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
-import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
-import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
-import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypesResource;
-import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
-import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
-import org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportResource;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -94,9 +25,83 @@ import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.xerces.xs.XSConstants;
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.constants.Namespaces;
+import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TArtifactType;
+import org.eclipse.winery.model.tosca.TConstraint;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TPolicyType;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.export.CSARExporter;
+import org.eclipse.winery.repository.export.TOSCAExportUtil;
+import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
+import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
+import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
+import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypesResource;
+import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
+import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
+import org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportResource;
+import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Element;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
+import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Contains utility functionality concerning with everything that is
@@ -787,6 +792,38 @@ public class Utils {
 		return res;
 	}
 
+	/**
+	 *
+	 * @param directoryId ArtifactTemplateDirectoryId of the ArtifactTemplate that should contain a reference to a git repository.
+	 * @return The URL and the branch/tag that contains the files for the ArtifactTemplate. null if no git information is given.
+	 */
+	public static GitInfo getGitInformation(ArtifactTemplateDirectoryId directoryId) {
+		if (!(directoryId.getParent() instanceof ArtifactTemplateId)) {
+			return null;
+		}
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
+		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+			Unmarshaller u = JAXBSupport.createUnmarshaller();
+			Definitions defs = ((Definitions) u.unmarshal(is));
+			Map<QName, String> atts = defs.getOtherAttributes();
+			String src = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitsrc"));
+			String branch = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitbranch"));
+			// ^ is the XOR operator
+			if (src == null ^ branch == null) {
+				Utils.LOGGER.error("Git information not complete, URL or branch missing");
+				return null;
+			} else if (src == null && branch == null) {
+				return null;
+			}
+			return new GitInfo(src, branch);
+		} catch (IOException e) {
+			Utils.LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
+		} catch (JAXBException e) {
+			Utils.LOGGER.error("Error in XML in " + ref.getFileName(), e);
+		}
+		return null;
+	}
+
 	public static Set<String> clean(Set<String> set) {
 		Set<String> newSet = new HashSet<String>();
 
@@ -930,6 +967,62 @@ public class Utils {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 *
+	 * @param directoryId DirectoryID of the TArtifactTemplate that should be returned.
+	 * @return The TArtifactTemplate corresponding to the directoryId.
+	 */
+	public static TArtifactTemplate getTArtifactTemplate(ArtifactTemplateDirectoryId directoryId) {
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
+		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+			Unmarshaller u = JAXBSupport.createUnmarshaller();
+			Definitions defs = ((Definitions) u.unmarshal(is));
+			for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
+				if (!(elem instanceof TArtifactTemplate)) {
+					continue;
+				}
+				return (TArtifactTemplate) elem;
+			}
+		} catch (IOException e) {
+			Utils.LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
+		} catch (JAXBException e) {
+			Utils.LOGGER.error("Error in XML in " + ref.getFileName(), e);
+		}
+		return null;
+	}
+
+	/**
+	 * Tests if a path matches a glob pattern. {@see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>}
+	 * @param glob Glob pattern to test the path against.
+	 * @param path Path that should match the glob pattern.
+	 * @return Whether the glob and the path result in a match.
+	 */
+	public static boolean isGlobMatch(String glob, Path path) {
+		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + glob);
+		return matcher.matches(path);
+	}
+
+	public static class GitInfo {
+		/**
+		 * The URL of the git repository
+		 */
+		public final String URL;
+		/**
+		 * The branch or tag that should be pulled from the repository
+		 */
+		public final String BRANCH;
+
+		/**
+		 * Constructs a new pair of values.
+		 * @param url The URL of the git repository
+		 * @param branch The branch or tag that should be pulled from the repository
+		 */
+		GitInfo(String url, String branch) {
+			this.URL = url;
+			this.BRANCH = branch;
+		}
 	}
 
 	public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) {
