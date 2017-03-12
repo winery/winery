@@ -62,14 +62,11 @@
                         <label for="wrapperName">Name of Wrapper Element</label><br>
                         <input id="wrapperName"
                                class="form-control"
+                               autocomplete=off
                                [(ngModel)]="resourceApiData.winerysPropertiesDefinition.elementName">
                     </div>
                     <div class="wrapperTabButtom">
-                        <label for="wrapperNamespace">Namespace</label>
-                        <input id="wrapperNamespace"
-                               class="form-control"
-                               [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"
-                               [typeahead]="allNamespaces">
+                        <winery-namespaceSelector [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"></winery-namespaceSelector>
                     </div>
                 </tab>
             </tabset>
@@ -90,6 +87,7 @@
                        class="form-control"
                        type="text"
                        name="key"
+                       autocomplete=off
                        required
                        [(ngModel)]="newProperty.key"
                        [duplicateValidator]="validatorObject"/>
