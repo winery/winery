@@ -42,7 +42,7 @@ module.exports = webpackMerge(common, {
             index: '/',
             // rewrite rule in order to support dots in the url
             rewrites: [
-                { from: /[\/]+.*[.].*[\/]/, to: '/' }
+                { from: /[\/]+.*.\%.*.[.].*/, to: '/' }
             ]
         },
         watchOptions: {aggregateTimeout: 300, poll: 1000},

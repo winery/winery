@@ -11,40 +11,41 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 -->
-<div id="contentContainer">
-    <div id="searchBoxContainer">
-        <input type="text" id="searchBox" [(ngModel)]="filterString">
-    </div>
-    <div id="componentContainer">
-        <div [class.hidden]="!loading">
-            <winery-loader></winery-loader>
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <div id="contentContainer">
+        <div id="searchBoxContainer">
+            <input type="text" id="searchBox" [(ngModel)]="filterString">
         </div>
-        <winery-entity-container
-            *ngFor="let item of componentData
+        <div id="componentContainer">
+            <winery-entity-container
+                *ngFor="let item of componentData
                 | filterSections: { showNamespaces: showNamespace, filterString: filterString }
                 | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
-            [resourceType]="selectedResource"
-            [data]="item">
-        </winery-entity-container>
+                [resourceType]="selectedResource"
+                [data]="item">
+            </winery-entity-container>
+        </div>
+        <div class="sidebar">
+            <button class="btn btn-default sidebar-btn" (click)="onAdd();">Add new</button>
+            <button class="btn btn-default sidebar-btn" (click)="addCsarModal.show();">Import CSAR</button>
+            <button class="btn btn-default sidebar-btn" (click)="onChangeView()" [disabled]="showSpecificNamespaceOnly()">
+                {{ changeViewButtonTitle }}
+            </button>
+        </div>
     </div>
-    <div class="sidebar">
-        <button class="btn btn-default sidebar-btn" (click)="onAdd();">Add new</button>
-        <button class="btn btn-default sidebar-btn" (click)="addCsarModal.show();">Import CSAR</button>
-        <button class="btn btn-default sidebar-btn" (click)="onChangeView()" [disabled]="showSpecificNamespaceOnly()">
-            {{ changeViewButtonTitle }}
-        </button>
+    <div class="footerContainer">
+        <label for="selectItemsPerPage">Items per Page:</label>
+        <select id="selectItemsPerPage" [(ngModel)]="itemsPerPage">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+        </select>
+        <pagination-controls (pageChange)="page = $event"></pagination-controls>
     </div>
 </div>
-<div class="footerContainer">
-    <label for="selectItemsPerPage">Items per Page:</label>
-    <select id="selectItemsPerPage" [(ngModel)]="itemsPerPage">
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-    </select>
-    <pagination-controls (pageChange)="page = $event"></pagination-controls>
-</div>
-
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
     <modal-header [title]="'Add component'"></modal-header>
