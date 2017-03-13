@@ -99,9 +99,22 @@ export class WineryTableComponent implements OnInit {
      * @type {{paging: boolean; sorting: {columns: (Array<WineryTableColumn>|boolean)}; filtering: {filterString: string}; className: [string,string]}}
      */
     @Input() config: any = {
+        /**
+         * switch on the paging plugin
+         */
         paging: true,
-        sorting: { columns: this.columns || true },
-        filtering: { filterString: '' },
+        /**
+         * switch on the sorting plugin
+         */
+        sorting: {columns: this.columns || true},
+        /**
+         * switch on the filtering plugin
+         * {@link ColumnFilter}
+         */
+        filtering: {filterString: ''},
+        /**
+         * additional CSS classes that should be added to a table
+         */
         className: ['table-striped', 'table-bordered']
     };
 
@@ -295,4 +308,30 @@ export interface WineryTableColumn {
      * Is optional and defines whether the column should be sortable.
      */
     sort?: boolean;
+    /**
+     * @member className
+     * Optional parameter to add classes to a column header
+     *
+     */
+    className?: string | Array<string>;
+    /**
+     * switch on the filter plugin for this column
+     * @member  filtering
+     */
+    filtering?: ColumnFilter;
+
+}
+
+/**
+ * Interface for the filtering property of the WineryTableColumn
+ */
+export interface ColumnFilter {
+    /**
+     * the default value for filter
+     */
+    filterString: string;
+    /**
+     * the property name in raw data
+     */
+    columnName: string;
 }
