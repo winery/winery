@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add admin component
  */
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -29,6 +30,12 @@ import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { InterfacesModule } from './interfaces/interfaces.module';
+import { RepositoryComponent } from "./repository/repository.component";
+import { LoggerComponent } from "./logger/logger.component";
+import { PlanTypesComponent } from "./planTypes/planTypes.component";
+import { ConstraintTypesComponent } from "./contraintTypes/constraintTypes.component";
+import { PlanLanguagesComponent } from "./planLanguages/planLanguages.component";
+import { NamespacesComponent } from "./namespaces/namespaces.component";
 
 @NgModule({
     imports: [
@@ -54,6 +61,12 @@ import { InterfacesModule } from './interfaces/interfaces.module';
         RequirementDefinitionsComponent,
         VisualAppearanceComponent,
         QNameSelectorComponent,
+        RepositoryComponent,
+        LoggerComponent,
+        PlanTypesComponent,
+        ConstraintTypesComponent,
+        PlanLanguagesComponent,
+        NamespacesComponent
     ],
     providers: [],
 })

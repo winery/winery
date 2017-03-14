@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add admin component
  */
 
 import { Injectable } from '@angular/core';
@@ -82,6 +83,9 @@ export class InstanceService {
                 break;
             case 'wsdlimport':
                 subMenu = [''];
+                break;
+            case 'admin':
+                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Contraint Types', 'Log'];
                 break;
             default:
                 subMenu = [''];

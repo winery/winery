@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add admin component
  */
 
 import { Injectable }             from '@angular/core';
@@ -22,13 +23,16 @@ import { InstanceResolverData } from '../interfaces/resolverData';
 
 @Injectable()
 export class InstanceResolver implements Resolve<InstanceResolverData> {
-    constructor(private router: Router) { }
+    constructor(private router: Router) {
+    }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): InstanceResolverData {
         // TODO: get the instance from the server, only return it, when it's valid
         let section = sections[route.params['section']];
         let namespace = route.params['namespace'];
         let instanceId = route.params['instanceId'];
+
+        console.log('instanceResolver:', section, namespace, instanceId, route, state);
 
         if (!isNullOrUndefined(instanceId) && !isNullOrUndefined(namespace) && !isNullOrUndefined(section)) {
             return {
@@ -37,9 +41,20 @@ export class InstanceResolver implements Resolve<InstanceResolverData> {
                 instanceId: instanceId,
                 path: state.url,
             };
-        } else { // id not found
-            this.router.navigate(['/notfound']);
-            return null;
+        } else { // id not found, no section ,check if admin
+            if (isNullOrUndefined(section) && state.url === '/admin') {
+
+                return {
+                    section: 'admin',
+                    namespace: '',
+                    instanceId: '',
+                    path: state.url
+                };
+                // no id and not admin
+            } else {
+                this.router.navigate(['/notfound']);
+                return null;
+            }
         }
     }
 }
