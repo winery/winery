@@ -23,8 +23,9 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
-public class ArtifactTypesResource extends AbstractComponentsResource<ArtifactTypeResource> {
+public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenceResource<ArtifactTypeResource> {
 
 	// This cannot be used as the INSTANCE is per startup of the whole
 	// application

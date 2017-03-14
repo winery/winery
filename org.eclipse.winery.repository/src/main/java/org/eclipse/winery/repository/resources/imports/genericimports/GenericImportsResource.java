@@ -13,11 +13,12 @@ package org.eclipse.winery.repository.resources.imports.genericimports;
 
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 /**
  * Manages a certain kind of imports without special treatments
  */
-public class GenericImportsResource extends AbstractComponentsResource<GenericImportResource> {
+public class GenericImportsResource extends AbstractComponentsWithoutTypeReferenceResource<GenericImportResource> {
 
 	private String type;
 

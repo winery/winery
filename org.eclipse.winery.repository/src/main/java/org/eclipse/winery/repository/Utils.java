@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013, 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Nicole Keppler, Lukas Balzer - changes for angular frontend
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
@@ -71,6 +72,8 @@ import org.eclipse.winery.repository.export.CSARExporter;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.apiData.QNameApiData;
+import org.eclipse.winery.repository.resources.apiData.QNameWithTypeApiData;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
@@ -907,7 +910,11 @@ public class Utils {
 	public static ArtifactTemplateId createArtifactTemplate(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body, QName artifactType, UriInfo uriInfo) {
 
 		ArtifactTemplatesResource templateResource = new ArtifactTemplatesResource();
-		templateResource.onPost("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), artifactType.toString());
+		QNameWithTypeApiData qNameApiData = new QNameWithTypeApiData();
+		qNameApiData.name = "xaasPackager_" + fileDetail.getFileName();
+		qNameApiData.namespace = "http://opentosca.org/xaaspackager";
+		qNameApiData.type = artifactType.toString();
+		templateResource.onJsonPost(qNameApiData);
 
 		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), false);
 

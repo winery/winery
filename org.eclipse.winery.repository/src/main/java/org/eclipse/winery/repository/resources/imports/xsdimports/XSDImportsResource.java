@@ -31,6 +31,8 @@ import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
+
 import org.restdoc.annotations.RestDoc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,7 +43,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  *
  * FIXME: This class should be generalized to handle ImportId
  */
-public class XSDImportsResource extends AbstractComponentsResource<XSDImportResource> {
+public class XSDImportsResource extends AbstractComponentsWithoutTypeReferenceResource<XSDImportResource> {
 
 	@Path("{namespace}/")
 	@GET

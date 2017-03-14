@@ -12,11 +12,12 @@
 package org.eclipse.winery.repository.resources.entitytypes.capabilitytypes;
 
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 /**
  * Manages all capability types in all available namespaces <br />
  * The actual implementation is done in the AbstractComponentsResource
  */
-public class CapabilityTypesResource extends AbstractComponentsResource<CapabilityTypeResource> {
+public class CapabilityTypesResource extends AbstractComponentsWithoutTypeReferenceResource<CapabilityTypeResource> {
 
 }

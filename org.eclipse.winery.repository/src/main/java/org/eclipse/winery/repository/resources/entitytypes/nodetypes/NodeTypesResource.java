@@ -12,11 +12,12 @@
 package org.eclipse.winery.repository.resources.entitytypes.nodetypes;
 
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 /**
  * Manages all nodetypes in all available namespaces <br />
  * The actual implementation is done in the AbstractComponentsResource
  */
-public class NodeTypesResource extends AbstractComponentsResource<NodeTypeResource> {
+public class NodeTypesResource extends AbstractComponentsWithoutTypeReferenceResource<NodeTypeResource> {
 
 }
