@@ -9,40 +9,41 @@
  * Contributors:
  *     Huixin Liu, Nicole Keppler - initial API and implementation
  */
-
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
-import List = _.List;
 import { InstanceStateApiData } from './InstanceStateApiData';
+import { Router } from '@angular/router';
+import List = _.List;
 
 @Injectable()
 export class InstanceStateService {
 
     private path: string;
 
-    constructor(private http: Http) {
+    constructor(private http: Http,
+                private route: Router) {
+        this.path = decodeURIComponent(this.route.url);
     }
 
     getInstanceStates(): Observable<InstanceStateApiData[]> {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
-        return this.http.get(backendBaseUri + this.path + '/instancestates/' , options)
+        return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
-    addPropertyData(newStateData: InstanceStateApiData): Observable<Response> {
-        let headers = new Headers({ 'Content-Type': 'application/json'});
-        let options = new RequestOptions({ headers: headers });
-        return this.http.post(backendBaseUri + this.path + '/instancestates/', JSON.stringify(newStateData) , options);
-    }
-    deleteState(stateToRemove: InstanceStateApiData): Observable<Response> {
-        let headers = new Headers({ 'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
 
-        return this.http.delete(backendBaseUri + this.path + '/instancestates/' + stateToRemove.state , options);
+    addPropertyData(newStateData: InstanceStateApiData): Observable<Response> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(newStateData), options);
     }
-    setPath(path: string): void {
-        this.path = path;
+
+    deleteState(stateToRemove: InstanceStateApiData): Observable<Response> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.delete(backendBaseUri + this.path + '/' + stateToRemove.state, options);
     }
 }

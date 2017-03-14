@@ -12,6 +12,26 @@
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
+/**
+ * This component provides an easy and fast way to use the ng2-table with further modifications
+ * for the winery. It already enables the search, pagination and adding items to the table.
+ * However, most of the configuration can be passed to this object.
+ * <p>
+ *     In order to use this component, the {@link WineryTableModule} must be imported in the corresponding
+ *     module. Afterwards, it can be included in the template by inserting the `<winery-table></winery-table>` tag.
+ *     Inputs, which must be passed to the component in order for the table to work, are <code>columns</code> and <code>data</code>.
+ *     The <code>columns</code> array must contain objects of type {@link WineryTableColumn}.
+ *     The <code>data</code> can be an array of any kind of objects.
+ * </p>
+ *
+ * @example <caption>Minimalistic example:</caption>
+ * ```html
+ * <winery-table
+ *     [data]="dataArray"
+ *     [columns]="columnsArray">
+ * </winery-table>
+ * ```
+ */
 @Component({
     selector: 'winery-table',
     templateUrl: 'wineryTable.component.html',
@@ -19,37 +39,117 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class WineryTableComponent implements OnInit {
 
-    public page: number = 1;
+    /**
+     * Sets the title for this table.
+     *
+     * @Input
+     * @type {string}
+     */
+    @Input() title: string;
+    /**
+     * Sets how many items per page should be displayed.
+     *
+     * @Input
+     * @type {number}
+     */
     @Input() itemsPerPage: number = 10;
+    /**
+     * @Input
+     * @type {number}
+     */
     @Input() maxSize: number = 5;
+    /**
+     * @Input
+     * @type {number}
+     */
     @Input() numPages: number = 1;
+    /**
+     * @Input
+     * @type {number}
+     */
     @Input() length: number = 0;
-
-    public rows: Array<any> = [];
-
-    @Input() columns: Array<any>;
+    /**
+     * If this value is set to true, the search bar will not be included.
+     *
+     * @Input
+     * @type {boolean}
+     */
+    @Input() disableFiltering: boolean = false;
+    /**
+     * The actual data which should be displayed in the table.
+     *
+     * @Input
+     * @type {Array}
+     */
+    @Input() data: Array<any> = [];
+    /**
+     * Specifies the column names and their corresponding objects' property in the <code>data</code> array.
+     *
+     * @Input
+     * @type {Array}
+     */
+    @Input() columns: Array<WineryTableColumn>;
+    /**
+     * @Input
+     * @type {string}
+     */
     @Input() filterString: string;
-
+    /**
+     * @Input
+     * @type {{paging: boolean; sorting: {columns: (Array<WineryTableColumn>|boolean)}; filtering: {filterString: string}; className: [string,string]}}
+     */
     @Input() config: any = {
+        /**
+         * switch on the paging plugin
+         */
         paging: true,
+        /**
+         * switch on the sorting plugin
+         */
         sorting: {columns: this.columns || true},
+        /**
+         * switch on the filtering plugin
+         * {@link ColumnFilter}
+         */
         filtering: {filterString: ''},
+        /**
+         * additional CSS classes that should be added to a table
+         */
         className: ['table-striped', 'table-bordered']
     };
 
-    @Input() data: Array<any> = [];
-    currentSelected: any = null;
-
+    /**
+     * Event which gets fired, if a cell/row is selected.
+     *
+     * @Output contains the data of the whole selected row.
+     * @type {EventEmitter<any>}
+     */
     @Output() cellSelected = new EventEmitter <any>();
+    /**
+     * Event which gets fired after the remove button has been clicked.
+     *
+     * @Output
+     * @type {EventEmitter<any>}
+     */
     @Output() removeBtnClicked = new EventEmitter <any>();
+    /**
+     * Event which gets fired after the add button has been clicked.
+     *
+     * @Output
+     * @type {EventEmitter<any>}
+     */
     @Output() addBtnClicked = new EventEmitter <any>();
+
+    public rows: Array<any> = [];
+    public page: number = 1;
+    public currentSelected: any = null;
 
     private oldData: Array<any> = this.data;
     private oldLength = this.oldData.length;
 
     // region #######Table events and functions######
 
-    public onChangeTable(config: any, page: any = {page: this.page, itemsPerPage: this.itemsPerPage}): any {
+    public onChangeTable(config: any, page: any = { page: this.page, itemsPerPage: this.itemsPerPage }): any {
         if (config.filtering) {
             Object.assign(this.config.filtering, config.filtering);
         }
@@ -187,4 +287,51 @@ export class WineryTableComponent implements OnInit {
         }
     }
 
+}
+
+/**
+ * Interface to set the columns array.
+ */
+export interface WineryTableColumn {
+    /**
+     * @member title
+     * Is required and used to name the column.
+     */
+    title: string;
+    /**
+     * @member name
+     * Is required and used to identify the corresponding objects' property in the data array.
+     */
+    name: string;
+    /**
+     * @member sort
+     * Is optional and defines whether the column should be sortable.
+     */
+    sort?: boolean;
+    /**
+     * @member className
+     * Optional parameter to add classes to a column header
+     *
+     */
+    className?: string | Array<string>;
+    /**
+     * switch on the filter plugin for this column
+     * @member  filtering
+     */
+    filtering?: ColumnFilter;
+
+}
+
+/**
+ * Interface for the filtering property of the WineryTableColumn
+ */
+export interface ColumnFilter {
+    /**
+     * the default value for filter
+     */
+    filterString: string;
+    /**
+     * the property name in raw data
+     */
+    columnName: string;
 }

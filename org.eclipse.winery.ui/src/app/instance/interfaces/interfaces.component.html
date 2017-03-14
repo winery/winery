@@ -8,7 +8,152 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
  */
 -->
-interfaces component
+
+<div *ngIf="loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading && interfacesData">
+    <div class="right">
+        <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+    </div>
+    <div style="display: inline-flex;">
+        <winery-selectableList [title]="'Interfaces'"
+                               [rows]="interfacesData"
+                               (addButtonClicked)="addInterface()"
+                               (selectionChanged)="onInterfaceSelect($event)"
+                               (removeButtonClicked)="removeInterface($event)">
+        </winery-selectableList>
+        <winery-selectableList *ngIf="operations"
+                               [title]="'Operations'"
+                               [rows]="operations"
+                               (addButtonClicked)="addOperation()"
+                               (selectionChanged)="onOperationSelected($event)"
+                               (removeButtonClicked)="removeOperation()">
+        </winery-selectableList>
+    </div>
+
+    <div>
+        <winery-table *ngIf="inputParameters"
+                      [title]="'Input Parameters'"
+                      [data]="inputParameters"
+                      [columns]="columns"
+                      [disableFiltering]="true"
+                      (addBtnClicked)="addInputParam()"
+                      (cellSelected)="onInputParameterSelected($event.row)"
+                      (removeBtnClicked)="removeInputParameter()">
+        </winery-table>
+
+        <winery-table *ngIf="outputParameters"
+                      [title]="'Output Parameters'"
+                      [data]="outputParameters"
+                      [columns]="columns"
+                      [disableFiltering]="true"
+                      (addBtnClicked)="addOutputParam()"
+                      (cellSelected)="onOutputParameterSelected($event.row)"
+                      (removeBtnClicked)="removeOutputParameter()">
+        </winery-table>
+    </div>
+</div>
+
+<winery-modal bsModal #addIntOpModal="bs-modal" [modalRef]="addIntOpModal">
+    <modal-header [title]="modalTitle"></modal-header>
+    <modal-body>
+        <form #addElementForm="ngForm">
+            <div class="form-group">
+                <label for="interfaceName" class="control-label">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="interfaceName"
+                       name="interfaceName"
+                       #newName="ngModel"
+                       ngModel
+                       required
+                       [duplicateValidator]="validatorObject">
+                <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!newName.errors.duplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!newName.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer
+        (onOk)="modalTitle === 'Interface' ? onAddInterface(newName.value) : onAddOperation(newName.value);"
+        [close-button-label]="'Cancel'"
+        [ok-button-label]="'Add'"
+        [ok-disabled]="!addElementForm?.form.valid">
+    </modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #addIntParametersModal="bs-modal" [modalRef]="addIntParametersModal">
+    <modal-header [title]="modalTitle"></modal-header>
+    <modal-body>
+        <form #parameterForm="ngForm">
+            <div class="form-group">
+                <label for="parameterName" class="control-label">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="parameterName"
+                       name="parameterName"
+                       ngModel
+                       #paramName="ngModel"
+                       required
+                       [duplicateValidator]="validatorObject">
+                <div *ngIf="paramName.errors && (paramName.dirty || paramName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!paramName.errors.duplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!paramName.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+                <label for="parameterType" class="control-label">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="parameterType"
+                       name="parameterType"
+                       ngModel
+                       #paramType="ngModel"
+                       required>
+                <div *ngIf="paramType.errors && (paramType.dirty || paramType.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!paramType.errors.required">
+                        Type is required!
+                    </div>
+                </div>
+                <span class="help-block">TOSCA v1.0 does not specify any type system here. The content of this field is a string.
+            The concrete semantics is left open. The convension is to use the xsd prefix for XML Schema basic types.</span>
+                <div class="form-group">
+                    <label>
+                        <input #required type="checkbox" name="required" autocomplete="off">
+                        Required
+                    </label>
+                </div>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer
+        (onOk)="modalTitle === 'Input Parameter' ? onAddInputParam(paramName.value, paramType.value, required.checked) : onAddOutputParam(paramName.value, paramType.value, required.checked);"
+        [close-button-label]="'Cancel'"
+        [ok-button-label]="'Add'"
+        [ok-disabled]="!parameterForm?.form.valid">
+    </modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
+    <modal-header [title]="modalTitle"></modal-header>
+    <modal-body>
+        <p>
+            Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
+        </p>
+    </modal-body>
+    <modal-footer [close-button-label]="'No'" [ok-button-label]="'Yes'" (onOk)="onRemoveElement()"></modal-footer>
+</winery-modal>

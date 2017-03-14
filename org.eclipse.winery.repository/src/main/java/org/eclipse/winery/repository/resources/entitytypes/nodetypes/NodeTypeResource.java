@@ -69,7 +69,7 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 			interfaces = new Interfaces();
 			this.getNodeType().setInterfaces(interfaces);
 		}
-		return new InterfacesResource(null, interfaces.getInterface(), this);
+		return new InterfacesResource(this, interfaces.getInterface(), "nodeType");
 	}
 
 	@Path("requirementdefinitions/")

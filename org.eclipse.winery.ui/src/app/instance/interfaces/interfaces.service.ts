@@ -7,38 +7,38 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Philipp Meyer & Tino Stadelmaier - initial API and implementation
+ *     Niko Stadelmaier - initial API and implementation
  */
-
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseUri } from '../../configuration';
+import { InterfacesApiData } from './InterfacesApiData';
 import { Router } from '@angular/router';
-import { InstanceService } from '../instance.service';
 
 @Injectable()
-export class EditXMLService {
+export class InterfacesService {
 
     private path: string;
+    private interfaceType: string;
 
     constructor(private http: Http,
-                private sharedData: InstanceService) {
-        this.path = this.sharedData.path;
+                private route: Router) {
+        this.path = decodeURIComponent(this.route.url);
     }
 
-    getXmlData(): Observable<string> {
-        let headers = new Headers({ 'Accept': 'application/xml' });
+    getInterfaces(): Observable<InterfacesApiData[]> {
+        let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + this.path + '/xml/', options)
-            .map(res => res.text());
+        return this.http.get(backendBaseUri + this.path + '/', options)
+            .map(res => res.json());
     }
 
-    saveXmlData(xmlData: String): Observable<any> {
-        let headers = new Headers({ 'Content-Type': 'text/xml' });
+    save(interfacesData: InterfacesApiData[]) {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.put(backendBaseUri + this.path + '/', xmlData, options);
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(interfacesData), options);
     }
 }

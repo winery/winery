@@ -9,7 +9,6 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
 import { Component, OnInit } from '@angular/core';
 import { InheritanceService } from './inheritance.service';
 import { InheritanceApiData } from './inheritanceApiData';
@@ -17,7 +16,6 @@ import { InstanceService } from '../instance.service';
 import { QNameList } from '../../qNameSelector/qNameApiData';
 import { isNullOrUndefined } from 'util';
 import { NotificationService } from '../../notificationModule/notificationservice';
-
 
 @Component({
     selector: 'winery-instance-inheritance',
@@ -36,7 +34,6 @@ export class InheritanceComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.service.setPath(this.sharedData.path);
         this.service.getInheritanceData()
             .subscribe(
                 data => this.handleInheritanceData(data),

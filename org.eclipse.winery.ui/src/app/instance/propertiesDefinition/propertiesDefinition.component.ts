@@ -23,6 +23,8 @@ import { isNullOrUndefined } from 'util';
 import { Response } from '@angular/http';
 import { NgForm } from '@angular/forms';
 import { NotificationService } from '../../notificationModule/notificationservice';
+import { ValidatorObject } from '../../validators/duplicateValidator.directive';
+import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',
@@ -45,17 +47,17 @@ export class PropertiesDefinitionComponent implements OnInit {
     allNamespaces: string[];
     selectedCell: any;
     elementToRemove: any = null;
-    columns: Array<any> = [
-        {title: 'Name', name: 'key', sort: true},
-        {title: 'Type', name: 'type', sort: true},
+    columns: Array<WineryTableColumn> = [
+        { title: 'Name', name: 'key', sort: true },
+        { title: 'Type', name: 'type', sort: true },
     ];
     newProperty: PropertiesDefinitionKVList = new PropertiesDefinitionKVList();
-    @ViewChild('confirmDeleteModal') deletePropModal: any;
 
+    validatorObject: ValidatorObject;
+    @ViewChild('confirmDeleteModal') deletePropModal: any;
     @ViewChild('addModal') addPropModal: any;
 
-    constructor(private sharedData: InstanceService,
-                private service: PropertiesDefinitionService,
+    constructor(private service: PropertiesDefinitionService,
                 private notify: NotificationService) {
     }
 
@@ -64,7 +66,6 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @override
      */
     ngOnInit() {
-        this.service.setPath(this.sharedData.path);
         this.getPropertiesDefinitionsResourceApiData();
     }
 
@@ -158,7 +159,7 @@ export class PropertiesDefinitionComponent implements OnInit {
                     error => this.handleError(error)
                 );
         } else {
-            this.service.postProperteisDefinitions(this.resourceApiData)
+            this.service.postPropertiesDefinitions(this.resourceApiData)
                 .subscribe(
                     data => this.handleSave(data),
                     error => this.handleError(error)
@@ -184,6 +185,7 @@ export class PropertiesDefinitionComponent implements OnInit {
      */
     onAddClick() {
         this.newProperty = new PropertiesDefinitionKVList();
+        this.validatorObject = new ValidatorObject(this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList, 'key');
         this.addPropModal.show();
     }
 
@@ -216,7 +218,10 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @param propName
      */
     addProperty(propType: string, propName: string) {
-        this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push({key: propName, type: propType});
+        this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList.push({
+            key: propName,
+            type: propType
+        });
         this.addPropModal.hide();
     }
 

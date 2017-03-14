@@ -7,30 +7,25 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Niko Stadelmaier - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
-
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { Ng2TableModule } from 'ng2-table';
-import { WineryTableComponent } from './wineryTable.component';
-import { PaginationModule } from 'ng2-bootstrap';
+import { SelectableListComponent } from './selectableList.component';
 
-/**
- * This module must be imported in order to use the {@link WineryTableComponent}.
- * Documentation on how to use this component can also be found at the {@link WineryTableComponent}.
- */
 @NgModule({
     imports: [
-        PaginationModule.forRoot(),
-        Ng2TableModule,
-        BrowserModule,
         FormsModule,
+        BrowserModule,
     ],
-    exports: [WineryTableComponent],
-    declarations: [WineryTableComponent],
+    exports: [
+        SelectableListComponent
+    ],
+    declarations: [
+        SelectableListComponent
+    ],
     providers: [],
 })
-export class WineryTableModule {
+export class SelectableListModule {
 }

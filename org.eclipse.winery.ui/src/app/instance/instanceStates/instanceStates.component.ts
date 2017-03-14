@@ -29,27 +29,23 @@ export class InstanceStatesComponent implements OnInit {
     elementToRemove: InstanceStateApiData = null;
     selectedCell: InstanceStateApiData = null;
     newStateData: InstanceStateApiData = new InstanceStateApiData('');
-    @ViewChild('confirmDeleteModal') deleteStateModal: any;
-
-    @ViewChild('addModal') addStateModal: any;
     columns: Array<any> = [
-        {title: 'Name', name: 'state', sort: false},
+        { title: 'Name', name: 'state', sort: false },
     ];
 
-    constructor(
-        private sharedData: InstanceService,
-        private service: InstanceStateService,
-    ) {
-    }
+    @ViewChild('confirmDeleteModal') deleteStateModal: any;
+    @ViewChild('addModal') addStateModal: any;
 
+    constructor(private service: InstanceStateService) {
+    }
 
     ngOnInit() {
-        this.service.setPath(this.sharedData.path);
         this.getInstanceStatesApiData();
     }
+
     // region ######## table methods ########
     onCellSelected(data: any) {
-        if (! isNullOrUndefined(data)) {
+        if (!isNullOrUndefined(data)) {
             this.selectedCell = new InstanceStateApiData(data.row.state);
         }
     }
@@ -62,6 +58,7 @@ export class InstanceStatesComponent implements OnInit {
             this.deleteStateModal.show();
         }
     }
+
     removeConfirmed() {
         this.deleteStateModal.hide();
         this.service.deleteState(this.elementToRemove)
@@ -71,12 +68,14 @@ export class InstanceStatesComponent implements OnInit {
             );
         this.elementToRemove = null;
     }
+
     // endregion
     // region ######## event handler ########
     onAddClick() {
         this.newStateData = new InstanceStateApiData('');
         this.addStateModal.show();
     }
+
     addProperty(state: string) {
         this.loading = true;
         if (this.newStateData.state !== '') {
@@ -87,6 +86,7 @@ export class InstanceStatesComponent implements OnInit {
                 );
         }
     }
+
     // endregion
     // region ######## private methods ########
     private getInstanceStatesApiData(): void {
@@ -96,10 +96,12 @@ export class InstanceStatesComponent implements OnInit {
                 error => this.handleError(error)
             );
     }
+
     private handleInstanceStateData(instanceStates: InstanceStateApiData[]) {
         this.instanceStates = instanceStates;
         this.loading = false;
     }
+
     private handleAddResponse(data: Response) {
         this.loading = true;
         if (data.status === 204) {
@@ -109,17 +111,20 @@ export class InstanceStatesComponent implements OnInit {
             this.handleError('Post request not acceptable due to empty state');
         }
     }
+
     private handleDeleteResponse(data: Response) {
         this.loading = true;
-        if ( data.status === 204) {
+        if (data.status === 204) {
             this.getInstanceStatesApiData();
         } else {
             this.handleError(data);
         }
     }
+
     private handleError(error: any): void {
         this.loading = false;
         console.log(error);
     }
+
     // endregion
 }

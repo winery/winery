@@ -16,13 +16,16 @@ import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
 import { XsdDefinitionsApiData } from './XsdDefinitionsApiData';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class PropertiesDefinitionService {
 
     private path: string;
 
-    constructor(private http: Http) {
+    constructor(private http: Http,
+                private route: Router) {
+        this.path = decodeURIComponent(this.route.url);
     }
 
     /**
@@ -34,7 +37,7 @@ export class PropertiesDefinitionService {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.delete(backendBaseUri + this.path + '/propertiesdefinition/', options);
+        return this.http.delete(backendBaseUri + this.path + '/', options);
     }
 
     /**
@@ -43,7 +46,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<PropertiesDefinitionsResourceApiData>}
      */
     getPropertiesDefinitionsData(): Observable<PropertiesDefinitionsResourceApiData> {
-        return this.sendJsonRequest(this.path + '/propertiesdefinition/');
+        return this.sendJsonRequest(this.path + '/');
     }
 
     /**
@@ -52,7 +55,7 @@ export class PropertiesDefinitionService {
      * @returns {Observable<XsdDefinitionsApiData>}
      */
     getXsdElementDefinitions(): Observable<XsdDefinitionsApiData> {
-        return this.sendJsonRequest(this.path + '/propertiesdefinition/element');
+        return this.sendJsonRequest(this.path + '/element');
     }
 
     /**
@@ -61,27 +64,18 @@ export class PropertiesDefinitionService {
      * @returns {Observable<XsdDefinitionsApiData>}
      */
     getXsdTypeDefinitions(): Observable<XsdDefinitionsApiData> {
-        return this.sendJsonRequest(this.path + '/propertiesdefinition/type');
+        return this.sendJsonRequest(this.path + '/type');
     }
 
     getAllNamespaces(): Observable<string[]> {
         return this.sendJsonRequest('/admin/namespaces');
     }
 
-    /**
-     * Sets the path this service should use as base path.
-     *
-     * @param path string
-     */
-    setPath(path: string): void {
-        this.path = path;
-    }
-
-    postProperteisDefinitions(resourceApiData: PropertiesDefinitionsResourceApiData): Observable<Response> {
+    postPropertiesDefinitions(resourceApiData: PropertiesDefinitionsResourceApiData): Observable<Response> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.post(backendBaseUri + this.path + '/propertiesdefinition/', JSON.stringify(resourceApiData), options);
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(resourceApiData), options);
     }
 
     /**
