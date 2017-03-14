@@ -36,38 +36,13 @@ import org.slf4j.LoggerFactory;
 public class FileMeta {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileMeta.class);
+	private static final String deleteType = "DELETE";
 
 	private String name;
 	private long size;
 	private String url;
 	private String deleteUrl;
-	private static final String deleteType = "DELETE";
 	private String thumbnailUrl;
-
-
-	public String getName() {
-		return this.name;
-	}
-
-	public long getSize() {
-		return this.size;
-	}
-
-	public String getUrl() {
-		return this.url;
-	}
-
-	public String getDeleteUrl() {
-		return this.deleteUrl;
-	}
-
-	public String getDeleteType() {
-		return deleteType;
-	}
-
-	public String getThumbnailUrl() {
-		return this.thumbnailUrl;
-	}
 
 	public FileMeta(String filename, long size, String url, String thumbnailUrl) {
 		this.name = filename;
@@ -106,6 +81,30 @@ public class FileMeta {
 	 */
 	@SuppressWarnings("unused")
 	private FileMeta() {
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public long getSize() {
+		return this.size;
+	}
+
+	public String getUrl() {
+		return this.url;
+	}
+
+	public String getDeleteUrl() {
+		return this.deleteUrl;
+	}
+
+	public String getDeleteType() {
+		return deleteType;
+	}
+
+	public String getThumbnailUrl() {
+		return this.thumbnailUrl;
 	}
 
 }

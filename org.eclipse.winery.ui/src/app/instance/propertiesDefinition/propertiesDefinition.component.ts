@@ -129,10 +129,17 @@ export class PropertiesDefinitionComponent implements OnInit {
     onCustomKeyValuePairSelected(): void {
         this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Custom;
 
+        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        }
+        this.resourceApiData.propertiesDefinition.element = null;
+        this.resourceApiData.propertiesDefinition.type = null;
+
+
         if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition)) {
             this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         }
-        // The key/value pair list my be null
+        // The key/value pair list may be null
         if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList)) {
             this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList = [];
         }

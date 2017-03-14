@@ -19,6 +19,7 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.repository.resources.INodeTemplateResourceOrNodeTypeImplementationResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,10 @@ public class DeploymentArtifactsResource extends GenericArtifactsResource<Deploy
 
 	private List<TDeploymentArtifact> deploymentArtifacts;
 
+
+	public DeploymentArtifactsResource(TNodeTemplate nodeTemplate, INodeTemplateResourceOrNodeTypeImplementationResource res) {
+		this(DeploymentArtifactsResource.getDeploymentArtifacts(nodeTemplate), res);
+	}
 
 	public DeploymentArtifactsResource(List<TDeploymentArtifact> deploymentArtifact, INodeTemplateResourceOrNodeTypeImplementationResource res) {
 		super(DeploymentArtifactResource.class, TDeploymentArtifact.class, deploymentArtifact, res);
@@ -49,10 +54,6 @@ public class DeploymentArtifactsResource extends GenericArtifactsResource<Deploy
 		}
 		res = deploymentArtifacts.getDeploymentArtifact();
 		return res;
-	}
-
-	public DeploymentArtifactsResource(TNodeTemplate nodeTemplate, INodeTemplateResourceOrNodeTypeImplementationResource res) {
-		this(DeploymentArtifactsResource.getDeploymentArtifacts(nodeTemplate), res);
 	}
 
 	@Override

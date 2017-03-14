@@ -39,11 +39,11 @@ import org.eclipse.winery.repository.resources.servicetemplates.boundarydefiniti
 import org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.policies.PoliciesResource;
 import org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps.CapabilitiesResource;
 import org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps.RequirementsResource;
+
+import com.sun.jersey.api.view.Viewable;
 import org.restdoc.annotations.RestDoc;
 import org.restdoc.annotations.RestDocParam;
 import org.w3c.dom.Document;
-
-import com.sun.jersey.api.view.Viewable;
 
 public class BoundaryDefinitionsResource {
 

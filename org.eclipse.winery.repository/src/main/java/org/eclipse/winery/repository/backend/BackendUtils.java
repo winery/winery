@@ -46,21 +46,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.xerces.impl.dv.XSSimpleType;
-import org.apache.xerces.impl.xs.XSImplementationImpl;
-import org.apache.xerces.xs.XSComplexTypeDefinition;
-import org.apache.xerces.xs.XSElementDeclaration;
-import org.apache.xerces.xs.XSImplementation;
-import org.apache.xerces.xs.XSLoader;
-import org.apache.xerces.xs.XSModel;
-import org.apache.xerces.xs.XSModelGroup;
-import org.apache.xerces.xs.XSObjectList;
-import org.apache.xerces.xs.XSParticle;
-import org.apache.xerces.xs.XSTerm;
-import org.apache.xerces.xs.XSTypeDefinition;
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
@@ -102,11 +87,26 @@ import org.eclipse.winery.repository.resources.admin.NamespacesResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportsResource;
+
+import com.sun.jersey.core.header.ContentDisposition;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.xerces.impl.dv.XSSimpleType;
+import org.apache.xerces.impl.xs.XSImplementationImpl;
+import org.apache.xerces.xs.XSComplexTypeDefinition;
+import org.apache.xerces.xs.XSElementDeclaration;
+import org.apache.xerces.xs.XSImplementation;
+import org.apache.xerces.xs.XSLoader;
+import org.apache.xerces.xs.XSModel;
+import org.apache.xerces.xs.XSModelGroup;
+import org.apache.xerces.xs.XSObjectList;
+import org.apache.xerces.xs.XSParticle;
+import org.apache.xerces.xs.XSTerm;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.ls.LSInput;
-
-import com.sun.jersey.core.header.ContentDisposition;
 
 /**
  * Contains generic utility functions for the Backend
@@ -226,7 +226,6 @@ public class BackendUtils {
 	}
 
 	/**
-	 *
 	 * Sends the file if modified and "not modified" if not modified future work
 	 * may put each file with a unique id in a separate folder in tomcat * use
 	 * that static URL for each file * if file is modified, URL of file changes
@@ -238,8 +237,7 @@ public class BackendUtils {
 	 * method header for calling method public <br />
 	 * <code>Response getXY(@HeaderParam("If-Modified-Since") String modified) {...}</code>
 	 *
-	 *
-	 * @param ref references the file to be send
+	 * @param ref      references the file to be send
 	 * @param modified - HeaderField "If-Modified-Since" - may be "null"
 	 * @return Response to be sent to the client
 	 */
@@ -248,8 +246,7 @@ public class BackendUtils {
 	}
 
 	/**
-	 * @return true if given fileDate is newer then the modified date (or
-	 *         modified is null)
+	 * @return true if given fileDate is newer then the modified date (or modified is null)
 	 */
 	private static boolean isFileNewerThanModifiedDate(long millis, String modified) {
 		if (modified == null) {
@@ -374,10 +371,9 @@ public class BackendUtils {
 	 * Writes data to file. Replaces the file's content with the given content.
 	 * The file does not need to exist
 	 *
-	 * @param ref Reference to the File to write to (overwrite)
+	 * @param ref     Reference to the File to write to (overwrite)
 	 * @param content the data to write
-	 * @return a JAX-RS Response containing the result. NOCONTENT if successful,
-	 *         InternalSeverError otherwise
+	 * @return a JAX-RS Response containing the result. NOCONTENT if successful, InternalSeverError otherwise
 	 */
 	public static Response putContentToFile(RepositoryFileReference ref, String content, @SuppressWarnings("SameParameterValue") MediaType mediaType) {
 		try {
@@ -434,8 +430,7 @@ public class BackendUtils {
 
 	/**
 	 * @param id the id to determine the namespace of the parent for
-	 * @return the namespace of the first TOSCAcomponentId found in the ID
-	 *         hierarchy
+	 * @return the namespace of the first TOSCAcomponentId found in the ID hierarchy
 	 */
 	public static Namespace getNamespace(TOSCAElementId id) {
 		GenericId parent = id.getParent();
@@ -452,13 +447,12 @@ public class BackendUtils {
 		return ModelUtilities.getNameWithIdFallBack(instanceElement);
 	}
 
-    /**
+	/**
 	 * Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
 	 * or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
-	 * @return the path starting from the root element to the current element.
-	 *         Separated by "/", URLencoded, but <b>not</b> double encoded. With
-	 *         trailing slash if sub-resources can exist
+	 * @return the path starting from the root element to the current element. Separated by "/", URLencoded, but
+	 * <b>not</b> double encoded. With trailing slash if sub-resources can exist
 	 * @throws IllegalStateException if id is of an unknown subclass of id
 	 */
 	public static String getPathInsideRepo(GenericId id) {
@@ -487,11 +481,11 @@ public class BackendUtils {
 	}
 
 	/**
- 	* Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
- 	* or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
+	 * Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
+	 * or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
-	 * @return the path starting from the root element to the current element.
-	 *         Separated by "/", parent URLencoded. Without trailing slash.
+	 * @return the path starting from the root element to the current element. Separated by "/", parent URLencoded.
+	 * Without trailing slash.
 	 */
 	public static String getPathInsideRepo(RepositoryFileReference ref) {
 		return BackendUtils.getPathInsideRepo(ref.getParent()) + ref.getFileName();
@@ -543,9 +537,9 @@ public class BackendUtils {
 	}
 
 	/**
-	 * @param qNameOfTheType the QName of the type, where all TOSCAComponentIds,
-	 *            where the associated element points to the type
-	 * @param clazz the Id class of the entities to discover
+	 * @param qNameOfTheType the QName of the type, where all TOSCAComponentIds, where the associated element points to
+	 *                       the type
+	 * @param clazz          the Id class of the entities to discover
 	 */
 	public static <X extends TOSCAComponentId> Collection<X> getAllElementsRelatedWithATypeAttribute(Class<X> clazz, QName qNameOfTheType) {
 		// we do not use any database system,
@@ -665,11 +659,10 @@ public class BackendUtils {
 	 * The namespace of the tosca component is used as namespace and
 	 * {@code winery-defs-for-} concatenated with the (unique) ns prefix and
 	 * idOfContainedElement is used as id
-     *
+	 *
 	 * @param tcId the id of the element the wrapper is used for
 	 * @param defs the definitions to update
-	 * @return a definitions element prepared for wrapping a TOSCA component
-	 *         instance
+	 * @return a definitions element prepared for wrapping a TOSCA component instance
 	 */
 	public static Definitions updateWrapperDefinitions(TOSCAComponentId tcId, Definitions defs) {
 		// set target namespace
@@ -694,8 +687,7 @@ public class BackendUtils {
 	 * idOfContainedElement is used as id
 	 *
 	 * @param tcId the id of the element the wrapper is used for
-	 * @return a definitions element prepared for wrapping a TOSCA component
-	 *         instance
+	 * @return a definitions element prepared for wrapping a TOSCA component instance
 	 */
 	public static Definitions createWrapperDefinitions(TOSCAComponentId tcId) {
 		ObjectFactory of = new ObjectFactory();
@@ -704,9 +696,8 @@ public class BackendUtils {
 	}
 
 	/**
-	 * @throws IOException if content could not be updated in the repository
-	 * @throws IllegalStateException if an JAXBException occurred. This should
-	 *             never happen.
+	 * @throws IOException           if content could not be updated in the repository
+	 * @throws IllegalStateException if an JAXBException occurred. This should never happen.
 	 */
 	public static void persist(Object o, RepositoryFileReference ref, MediaType mediaType) throws IOException {
 		// We assume that the object is not too large
@@ -729,9 +720,8 @@ public class BackendUtils {
 	/**
 	 * Updates the color if the color is not yet existent
 	 *
-	 * @param name the name of the component. Used as basis for a generated
-	 *            color
-	 * @param qname the QName of the color attribute
+	 * @param name            the name of the component. Used as basis for a generated color
+	 * @param qname           the QName of the color attribute
 	 * @param otherAttributes the plain "XML" attributes. They are used to check
 	 */
 	public static String getColorAndSetDefaultIfNotExisting(String name, QName qname, Map<QName, String> otherAttributes, TopologyGraphElementEntityTypeResource res) {
@@ -745,9 +735,8 @@ public class BackendUtils {
 	}
 
 	/**
-	 *
-	 * @param tcId The element type id to get the location for
-	 * @param uri uri to use if in XML export mode, null if in CSAR export mode
+	 * @param tcId                    The element type id to get the location for
+	 * @param uri                     uri to use if in XML export mode, null if in CSAR export mode
 	 * @param wrapperElementLocalName the local name of the wrapper element
 	 */
 	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
@@ -871,7 +860,7 @@ public class BackendUtils {
 	 * Derives Winery's Properties Definition from an existing properties
 	 * definition
 	 *
-	 * @param ci the entity type to try to modify the WPDs
+	 * @param ci     the entity type to try to modify the WPDs
 	 * @param errors the list to add errors to
 	 */
 	public static void deriveWPD(TEntityType ci, List<String> errors) {
@@ -1011,5 +1000,4 @@ public class BackendUtils {
 		}
 		return res;
 	}
-
 }

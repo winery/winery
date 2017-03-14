@@ -25,6 +25,7 @@ import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
+
 import org.restdoc.annotations.RestDoc;
 
 /**

@@ -104,14 +104,13 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 	protected final TOSCAComponentId id;
 
+	// shortcut for this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
+	protected TExtensibleElements element = null;
+
 	private final RepositoryFileReference ref;
 
 	// the object representing the data of this resource
 	private Definitions definitions = null;
-
-	// shortcut for this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
-	protected TExtensibleElements element = null;
-
 
 	/**
 	 * Instantiates the resource. Assumes that the resource should exist

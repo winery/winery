@@ -27,14 +27,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates.InstanceState;
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.apiData.InstanceStateApiData;
 
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Resource for instance states <br />

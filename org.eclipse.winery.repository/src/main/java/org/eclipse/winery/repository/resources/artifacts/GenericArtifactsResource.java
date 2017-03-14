@@ -456,7 +456,6 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		return Response.created(url).build();
 	}
 
-
 	private void storeProperties(ArtifactTemplateResource artifactTemplateResource, TOSCAComponentId typeId, String name) {
 		// We generate the properties by hand instead of using JAX-B as using JAX-B causes issues at org.eclipse.winery.common.ModelUtilities.getPropertiesKV(TEntityTemplate):
 		// getAny() does not always return "w3c.dom.element" anymore

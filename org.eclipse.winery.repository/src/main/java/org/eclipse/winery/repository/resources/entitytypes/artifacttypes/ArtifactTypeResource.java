@@ -30,13 +30,11 @@ import org.eclipse.winery.repository.resources.EntityTypeResource;
 
 public class ArtifactTypeResource extends EntityTypeResource {
 
+	private final QName qnameFileExtension = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "fileExtension");
+
 	public ArtifactTypeResource(ArtifactTypeId id) {
 		super(id);
 	}
-
-
-	private final QName qnameFileExtension = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "fileExtension");
-
 
 	/**
 	 * @return the file extension associated with this artifact type. May be

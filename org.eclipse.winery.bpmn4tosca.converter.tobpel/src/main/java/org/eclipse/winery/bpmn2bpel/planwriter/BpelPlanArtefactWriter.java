@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2015-2017 University of Stuttgart.
+ * Copyright (c) 2017 ZTE Corporation.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +10,7 @@
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
  *     Armin Hüneburg - fixed path handling
+ *     ZTE - support of more gateways
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.planwriter;
 
@@ -26,7 +28,7 @@ import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.traverse.GraphIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.eclipse.winery.bpmn2bpel.model.Gateway;
 import org.eclipse.winery.bpmn2bpel.model.Link;
 import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
 
@@ -47,16 +49,18 @@ public class BpelPlanArtefactWriter {
 	public String completePlanTemplate() {
 		log.debug("Completing BPEL process template...");
 
-		/* Traverse  the management flow and add the management tasks in the order of their execution to a list */
-		List<ManagementTask> managementTaskSeq = new ArrayList<ManagementTask>();
+		/* Traverse  the management flow and add the nodes in the order of their execution to a list */
+		List<Node> managementTaskSeq = new ArrayList<Node>();
 		GraphIterator<Node, Link> iterator = new DepthFirstIterator<Node, Link>(mangagementFlow);
 		while (iterator.hasNext()) {
 			Node node = iterator.next();
-			/* In this version the templates do only support management tasks */
+			/* In this version the templates do only support management tasks and exclusive gateway */
 			if (node instanceof ManagementTask) {
 				/* Wrapper adds convenience functions that can be accessed from the Velocity template */
 				ManagementTaskTemplateWrapper taskWrapper = new ManagementTaskTemplateWrapper((ManagementTask) node); //TODO move to factory and remove setters from constructor
 				managementTaskSeq.add(taskWrapper);
+			} else if (node instanceof Gateway) {
+				managementTaskSeq.add(node);
 			}
 		}
 

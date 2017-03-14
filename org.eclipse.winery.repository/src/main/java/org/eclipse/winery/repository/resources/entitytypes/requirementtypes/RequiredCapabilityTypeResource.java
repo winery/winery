@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -32,6 +31,7 @@ import org.eclipse.winery.repository.backend.Repository;
 
 import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
 
 public class RequiredCapabilityTypeResource {
 
@@ -75,7 +75,9 @@ public class RequiredCapabilityTypeResource {
 		return BackendUtils.persist(this.requirementTypeResource);
 	}
 
-	/** required for jsp **/
+	/**
+	 * required for jsp
+	 **/
 	public Collection<QName> getAllCapabilityTypes() {
 		SortedSet<CapabilityTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(CapabilityTypeId.class);
 		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);

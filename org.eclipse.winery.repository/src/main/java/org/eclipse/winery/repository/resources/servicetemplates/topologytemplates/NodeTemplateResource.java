@@ -32,9 +32,13 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
 import org.eclipse.winery.repository.resources.artifacts.DeploymentArtifactsResource;
 import org.eclipse.winery.repository.resources.entitytemplates.TEntityTemplateResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
 import org.restdoc.annotations.RestDoc;
 
 public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate> implements INodeTemplateResourceOrNodeTypeImplementationResource {
+
+	private final QName qnameX = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x");
+	private final QName qnameY = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y");
 
 	public NodeTemplateResource(IIdDetermination<TNodeTemplate> idDetermination, TNodeTemplate o, int idx, List<TNodeTemplate> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
@@ -80,10 +84,6 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 	 *
 	 * We do not use a subresource "visualappearance" here to avoid generation of more objects
 	 * * */
-
-	private final QName qnameX = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x");
-	private final QName qnameY = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y");
-
 
 	@Path("x")
 	@GET
