@@ -21,12 +21,12 @@ import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.repository.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.resources.admin.types.PlanLanguagesManager;
 import org.eclipse.winery.repository.resources.admin.types.PlanTypesManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PlansResourceData {
 

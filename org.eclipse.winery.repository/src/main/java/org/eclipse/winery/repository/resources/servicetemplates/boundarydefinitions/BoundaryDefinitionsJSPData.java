@@ -8,8 +8,6 @@ import java.util.SortedSet;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.taglibs.standard.functions.Functions;
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
@@ -23,6 +21,9 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.resources.admin.types.ConstraintTypesManager;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.taglibs.standard.functions.Functions;
 
 public class BoundaryDefinitionsJSPData {
 

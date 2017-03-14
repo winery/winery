@@ -25,6 +25,7 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TEntityType.DerivedFrom;
 import org.eclipse.winery.repository.backend.BackendUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

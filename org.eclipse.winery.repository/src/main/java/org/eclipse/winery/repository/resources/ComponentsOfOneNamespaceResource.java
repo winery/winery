@@ -12,17 +12,18 @@
 
 package org.eclipse.winery.repository.resources;
 
-import com.sun.jersey.api.view.Viewable;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.Utils;
-import org.eclipse.winery.repository.backend.BackendUtils;
-
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.backend.BackendUtils;
+
+import com.sun.jersey.api.view.Viewable;
 
 public class ComponentsOfOneNamespaceResource {
 

@@ -31,6 +31,7 @@ import org.eclipse.winery.repository.resources.ConstraintsResource;
 import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

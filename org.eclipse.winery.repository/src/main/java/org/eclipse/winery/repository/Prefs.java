@@ -44,7 +44,20 @@ public class Prefs implements ServletContextListener {
 	// on its own and we want to have a *single* instance of this class.
 	public static Prefs INSTANCE;
 
+	// package visibility to ease testing
+	static final String PROP_JCLOUDS_CONTEXT_PROVIDER = "jclouds.context.provider";
+	static final String PROP_JCLOUDS_CONTEXT_IDENTITY = "jclouds.context.identity";
+	static final String PROP_JCLOUDS_CONTEXT_CREDENTIAL = "jclouds.context.credential";
+	static final String PROP_JCLOUDS_BLOBSTORE_LOCATION = "jclouds.blobstore.location";
+	static final String PROP_JCLOUDS_CONTAINERNAME = "jclouds.blobstore.container";
+	static final String PROP_JCLOUDS_END_POINT = "jclouds.blobstore.endpoint";
+
+	static final String PROP_BPMN4TOSCA_MODELER_URI = "bpmn4toscamodelerBaseURI";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(Prefs.class);
+
+	// the properties from winery.properties
+	protected Properties properties = null;
 
 	protected IRepository repository = null;
 
@@ -58,20 +71,6 @@ public class Prefs implements ServletContextListener {
 
 	// location of the winery topology modeler
 	private String wineryTopologyModelerPath = null;
-
-	// the properties from winery.properties
-	protected Properties properties = null;
-
-	// package visibility to ease testing
-	static final String PROP_JCLOUDS_CONTEXT_PROVIDER = "jclouds.context.provider";
-	static final String PROP_JCLOUDS_CONTEXT_IDENTITY = "jclouds.context.identity";
-	static final String PROP_JCLOUDS_CONTEXT_CREDENTIAL = "jclouds.context.credential";
-	static final String PROP_JCLOUDS_BLOBSTORE_LOCATION = "jclouds.blobstore.location";
-	static final String PROP_JCLOUDS_CONTAINERNAME = "jclouds.blobstore.container";
-	static final String PROP_JCLOUDS_END_POINT = "jclouds.blobstore.endpoint";
-
-	static final String PROP_BPMN4TOSCA_MODELER_URI = "bpmn4toscamodelerBaseURI";
-
 
 	/**
 	 * This constructor is called at handling at servlets, too. Therefore, we

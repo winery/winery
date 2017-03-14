@@ -52,6 +52,16 @@ public abstract class GenericVisualAppearanceResource {
 	protected final TOSCAElementId id;
 
 
+	/**
+	 * @param otherAttributes the other attributes of the node/relationship type
+	 * @param id the id of this subresource required for storing the images
+	 */
+	public GenericVisualAppearanceResource(TopologyGraphElementEntityTypeResource res, Map<QName, String> otherAttributes, VisualAppearanceId id) {
+		this.id = id;
+		this.res = res;
+		this.otherAttributes = otherAttributes;
+	}
+
 	@DELETE
 	public Response onDelete() {
 		return BackendUtils.delete(this.id);
@@ -71,16 +81,6 @@ public abstract class GenericVisualAppearanceResource {
 	//@JsonIgnore
 	public TOSCAElementId getId() {
 		return this.id;
-	}
-
-	/**
-	 * @param otherAttributes the other attributes of the node/relationship type
-	 * @param id the id of this subresource required for storing the images
-	 */
-	public GenericVisualAppearanceResource(TopologyGraphElementEntityTypeResource res, Map<QName, String> otherAttributes, VisualAppearanceId id) {
-		this.id = id;
-		this.res = res;
-		this.otherAttributes = otherAttributes;
 	}
 
 	/**

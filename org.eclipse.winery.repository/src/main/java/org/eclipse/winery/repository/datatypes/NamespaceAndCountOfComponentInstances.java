@@ -26,6 +26,7 @@ public class NamespaceAndCountOfComponentInstances {
 	public Namespace getNamespace() {
 		return namespace;
 	}
+
 	public Integer getCount() {
 		return count;
 	}

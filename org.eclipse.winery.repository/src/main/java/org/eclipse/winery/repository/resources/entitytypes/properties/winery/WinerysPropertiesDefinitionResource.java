@@ -21,15 +21,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
-import org.restdoc.annotations.RestDoc;
 
 import com.sun.jersey.api.NotFoundException;
+import org.restdoc.annotations.RestDoc;
 
 public class WinerysPropertiesDefinitionResource {
 

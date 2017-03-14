@@ -29,11 +29,11 @@ import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-import org.restdoc.annotations.RestDoc;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import org.restdoc.annotations.RestDoc;
 
 public class PlanFileResource {
 

@@ -27,8 +27,9 @@ import org.apache.commons.configuration.Configuration;
  */
 public abstract class AbstractAdminResource {
 
-	private final AdminId id;
 	protected final Configuration configuration;
+
+	private final AdminId id;
 
 	/**
 	 * @param id the id of the element rendered by this resource

@@ -26,7 +26,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.importing.CSARImporter;
 import org.eclipse.winery.repository.resources.API.APIResource;
@@ -43,13 +42,14 @@ import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.Rel
 import org.eclipse.winery.repository.resources.entitytypes.requirementtypes.RequirementTypesResource;
 import org.eclipse.winery.repository.resources.imports.ImportsResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplatesResource;
-import org.restdoc.annotations.RestDoc;
-import org.restdoc.annotations.RestDocParam;
-import org.restdoc.annotations.RestDocReturnCode;
 
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+import org.apache.commons.io.FileUtils;
+import org.restdoc.annotations.RestDoc;
+import org.restdoc.annotations.RestDocParam;
+import org.restdoc.annotations.RestDocReturnCode;
 
 /**
  * All paths listed here have to be listed in Jersey's filter configuration

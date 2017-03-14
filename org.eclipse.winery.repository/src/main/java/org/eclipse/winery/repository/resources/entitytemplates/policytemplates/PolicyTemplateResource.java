@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.policytemplates;
 
+import javax.ws.rs.core.Response;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -21,11 +24,9 @@ import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource
 import org.eclipse.winery.repository.resources.IHasName;
 import org.eclipse.winery.repository.resources.entitytemplates.IEntityTemplateResource;
 import org.eclipse.winery.repository.resources.entitytemplates.PropertiesResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
 
 public final class PolicyTemplateResource extends AbstractComponentInstanceResource implements IEntityTemplateResource<TPolicyTemplate>, IHasName {
 

@@ -106,18 +106,14 @@ import org.w3c.dom.Element;
  */
 public class Utils {
 
+	/**
+	 * Shared object to map JSONs
+	 */
+	public static final ObjectMapper mapper = new ObjectMapper();
+
 	private static final XLogger LOGGER = XLoggerFactory.getXLogger(Utils.class);
 
-
-	public static URI createURI(String uri) {
-		try {
-			return new URI(uri);
-		} catch (URISyntaxException e) {
-			LOGGER.error("uri " + uri + " caused an exception", e);
-			throw new IllegalStateException();
-		}
-	}
-
+	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.valueOf("application/octet-stream");
 
 	// RegExp inspired by http://stackoverflow.com/a/5396246/873282
 	// NameStartChar without ":"
@@ -128,6 +124,16 @@ public class Utils {
 	private static final String RANGE_NCNAMECHAR = Utils.RANGE_NCNAMESTARTCHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
 	private static final String REGEX_INVALIDNCNAMESCHAR = "[^" + Utils.RANGE_NCNAMECHAR + "]";
 
+	private static final String slashEncoded = Util.URLencode("/");
+
+	public static URI createURI(String uri) {
+		try {
+			return new URI(uri);
+		} catch (URISyntaxException e) {
+			LOGGER.error("uri " + uri + " caused an exception", e);
+			throw new IllegalStateException();
+		}
+	}
 
 	/**
 	 * Creates a (valid) XML ID (NCName) based on the passed name
@@ -295,10 +301,6 @@ public class Utils {
 		return Utils.getComponentIdClass(idClassName);
 	}
 
-
-	private static final String slashEncoded = Util.URLencode("/");
-
-
 	public static String getURLforPathInsideRepo(String pathInsideRepo) {
 		// first encode the whole string
 		String res = Util.URLencode(pathInsideRepo);
@@ -306,13 +308,6 @@ public class Utils {
 		res = res.replaceAll(Utils.slashEncoded, "/");
 		return res;
 	}
-
-
-	/**
-	 * Shared object to map JSONs
-	 */
-	public static final ObjectMapper mapper = new ObjectMapper();
-
 
 	public static String Object2JSON(Object o) {
 		String res;
@@ -479,10 +474,6 @@ public class Utils {
 		org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md);
 		return mediaType.toString();
 	}
-
-
-	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.valueOf("application/octet-stream");
-
 
 	/**
 	 * Fixes the mediaType if it is too vague (such as application/octet-stream)

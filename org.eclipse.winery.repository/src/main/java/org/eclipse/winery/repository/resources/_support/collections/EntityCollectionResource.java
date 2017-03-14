@@ -29,12 +29,12 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.resources._support.IPersistable;
-import org.restdoc.annotations.RestDoc;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
+import org.restdoc.annotations.RestDoc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class managing a list of entities. It is intended to manage subresources,

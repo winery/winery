@@ -53,11 +53,11 @@ public class SelfServicePortalResource implements IPersistable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SelfServicePortalResource.class);
 
-	private final ServiceTemplateResource serviceTemplateResource;
-
 	public final RepositoryFileReference data_xml_ref;
 	public final RepositoryFileReference icon_jpg_ref;
 	public final RepositoryFileReference image_jpg_ref;
+
+	private final ServiceTemplateResource serviceTemplateResource;
 
 	private final Application application;
 
@@ -72,10 +72,6 @@ public class SelfServicePortalResource implements IPersistable {
 		this(serviceTemplateResource, (ServiceTemplateId) serviceTemplateResource.getId());
 	}
 
-	SelfServiceMetaDataId getId() {
-		return this.id;
-	}
-
 	/**
 	 * @param serviceTemplateResource may be null
 	 * @param serviceTemplateId the id, must not be null
@@ -87,6 +83,10 @@ public class SelfServicePortalResource implements IPersistable {
 		this.icon_jpg_ref = new RepositoryFileReference(this.id, "icon.jpg");
 		this.image_jpg_ref = new RepositoryFileReference(this.id, "image.jpg");
 		this.application = this.getData();
+	}
+
+	SelfServiceMetaDataId getId() {
+		return this.id;
 	}
 
 	public void ensureDataXmlExists() {

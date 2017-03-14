@@ -23,10 +23,10 @@ import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.CollectionsHelper;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DocumentationsResource extends EntityWithoutIdCollectionResource<DocumentationResource, TDocumentation> {
 

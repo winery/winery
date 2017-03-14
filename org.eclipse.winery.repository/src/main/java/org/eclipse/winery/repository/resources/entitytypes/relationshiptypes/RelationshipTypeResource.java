@@ -12,7 +12,6 @@
 package org.eclipse.winery.repository.resources.entitytypes.relationshiptypes;
 
 import java.util.Collection;
-import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -23,6 +22,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipType.SourceInterfaces;
@@ -30,17 +31,15 @@ import org.eclipse.winery.model.tosca.TRelationshipType.TargetInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.entitytypes.InstanceStatesResource;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.resources.interfaces.InterfacesResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.view.Viewable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RelationshipTypeResource extends TopologyGraphElementEntityTypeResource {
 
@@ -160,5 +159,4 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 	protected TExtensibleElements createNewElement() {
 		return new TRelationshipType();
 	}
-
 }
