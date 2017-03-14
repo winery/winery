@@ -25,7 +25,7 @@ to get an overview on all
             [data]="implementationData"
             [columns]="columns"
             (cellSelected)="onCellSelected($event)"
-            [itemsPerPage]="1"
+            [itemsPerPage]="10"
             (removeBtnClicked)="onRemoveClick($event)"
             (addBtnClicked)="onAddClick();">
     </winery-table>
@@ -35,7 +35,7 @@ to get an overview on all
         <h4 class="modal-title">Add Node Type Implementation</h4>
     </modal-header>
     <modal-body>
-        <form #add From="ngForm" id="addPropertyForm">
+        <form #addImplForm="ngForm" id="addImplForm">
             <div class="form-group">
                 <label class="control-label" for="localname">Name</label>
                 <input #localNameInput="ngModel"
@@ -60,7 +60,7 @@ to get an overview on all
             <div class="form-group">
                 <label class="control-label">Namespace</label>
                 <ng-select #selectNamespace name="namespace"
-                           placeholder="no namespace selected"
+                           [active]="defaultNamespace"
                            (selected)="namespaceSelected($event)"
                            (data)="namespaceRefresh($event)"
                            [items]="allNamespaces">
@@ -71,7 +71,7 @@ to get an overview on all
     <modal-footer (onOk)="addNewImplementation(localNameInput.value)"
                   [close-button-label]="'Cancel'"
                   [ok-button-label]="'Add'"
-                  [ok-disabled]="!addPropertyFrom?.form.valid">
+                  [ok-disabled]="!addImplForm?.form.valid">
     </modal-footer>
 
 </winery-modal>

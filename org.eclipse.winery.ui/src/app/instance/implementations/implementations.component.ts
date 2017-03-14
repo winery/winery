@@ -34,6 +34,7 @@ export class ImplementationsComponent implements OnInit {
     newImplementation: ImplementationAPIData = new ImplementationAPIData('', '');
     elementToRemove: ImplementationAPIData;
     allNamespaces: Array<string> = [];
+    defaultNamespace: Array<string> = [];
     refreshedNamespace: any = {};
     selectedNamespace: string;
     validatorObject: ValidatorObject;
@@ -66,7 +67,7 @@ export class ImplementationsComponent implements OnInit {
     onAddClick() {
         this.service.getAllNamespaces()
             .subscribe(
-                data => this.allNamespaces = data,
+                data => this.handleNamespaces(data),
                 error => this.handleError(error)
             );
         this.validatorObject = new ValidatorObject(this.implementationData, 'localname');
@@ -95,6 +96,12 @@ export class ImplementationsComponent implements OnInit {
         this.elementToRemove = null;
     }
 
+    private handleNamespaces(data: any) {
+        this.allNamespaces = data;
+        this.defaultNamespace = [];
+        this.defaultNamespace.push(this.allNamespaces[0]);
+        this.defaultNamespace.push(this.allNamespaces[0]);
+    }
     private namespaceSelected(selectedNamespace: any) {
         this.selectedNamespace = selectedNamespace.text;
     }
