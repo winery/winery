@@ -12,11 +12,8 @@
  */
 -->
 <p>This page shows implementations available for this type. Go to
-<a [routerLink]="['/other']">
-    Other Elements
-</a>
-to get an overview on all
-    implementations stored in this repository. </p>
+<a [routerLink]="['/other']">Other Elements</a>
+to get an overview on all implementations stored in this repository. </p>
 <div class="localLoader" [class.hidden]="!loading">
     <winery-loader></winery-loader>
 </div>
@@ -53,7 +50,7 @@ to get an overview on all
                         No duplicates allowed!
                     </div>
                     <div [hidden]="!localNameInput.errors.required">
-                        Name is required
+                        Name is required!
                     </div>
                 </div>
             </div>
@@ -78,7 +75,7 @@ to get an overview on all
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
     <modal-header>
-        <h4 class="modal-title">Delete State</h4>
+        <h4 class="modal-title">Delete Implementation</h4>
     </modal-header>
     <modal-body>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">

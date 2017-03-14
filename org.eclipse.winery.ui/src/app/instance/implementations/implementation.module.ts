@@ -7,8 +7,9 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Nicole Keppler - initial API and implementation
+ *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
+
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -36,7 +37,7 @@ import { DuplicateValidatorModule } from '../../validators/duplicateValidator.mo
         CommonModule,
         WineryModalModule,
         DuplicateValidatorModule,
-        ],
+    ],
     exports: [],
     declarations: [
         ImplementationsComponent

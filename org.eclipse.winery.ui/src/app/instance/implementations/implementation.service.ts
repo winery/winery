@@ -17,7 +17,6 @@ import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { ImplementationAPIData } from './implementationAPIData';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
-import { UrlEncodePipe } from "../../pipes/urlEncode.pipe";
 
 @Injectable()
 export class ImplementationService {
@@ -40,7 +39,6 @@ export class ImplementationService {
     getAllNamespaces(): Observable<string[]> {
         let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
-
         return this.http.get(backendBaseUri + '/admin/namespaces', options)
             .map(res => res.json());
     }

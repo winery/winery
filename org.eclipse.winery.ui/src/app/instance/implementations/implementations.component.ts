@@ -71,7 +71,6 @@ export class ImplementationsComponent implements OnInit {
                 error => this.handleError(error)
             );
         this.validatorObject = new ValidatorObject(this.implementationData, 'localname');
-
         this.newImplementation = new ImplementationAPIData('', '');
         this.addImplModal.show();
     }
@@ -98,10 +97,10 @@ export class ImplementationsComponent implements OnInit {
 
     private handleNamespaces(data: any) {
         this.allNamespaces = data;
-        this.defaultNamespace = [];
-        this.defaultNamespace.push(this.allNamespaces[0]);
-        this.defaultNamespace.push(this.allNamespaces[0]);
+        this.defaultNamespace = [this.allNamespaces[0], this.allNamespaces[0]];
+        this.selectedNamespace = this.allNamespaces[0];
     }
+
     private namespaceSelected(selectedNamespace: any) {
         this.selectedNamespace = selectedNamespace.text;
     }
@@ -111,6 +110,7 @@ export class ImplementationsComponent implements OnInit {
     }
 
     // endregion
+
     // region ######## call service methods and subscription handlers ########
     private getImplementationData(): void {
         this.service.getImplementationData()
@@ -127,7 +127,7 @@ export class ImplementationsComponent implements OnInit {
 
     private handleError(error: any): void {
         this.loading = false;
-        this.notificationService.error('Action caused an error:', error);
+        this.notificationService.error('Action caused an error:\n', error);
     }
 
     private addNewImplementation(localname: string) {
