@@ -18,24 +18,24 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class Gateway extends Node {
-    private List<GatewayBranch> branchList = new ArrayList<GatewayBranch>();
+	private List<GatewayBranch> branchList = new ArrayList<GatewayBranch>();
 
-    public List<GatewayBranch> getBranchList() {
-        return branchList;
-    }
+	public List<GatewayBranch> getBranchList() {
+		return branchList;
+	}
 
-    public void setBranchList(List<GatewayBranch> branches) {
-        this.branchList = branches;
-    }
+	public void setBranchList(List<GatewayBranch> branches) {
+		this.branchList = branches;
+	}
 
-    public Optional<GatewayBranch> getBranch(String id) {
-        for (GatewayBranch branch : branchList) {
-            if (id.equals(branch.getId())) {
-                return Optional.of(branch);
-            }
-        }
+	public Optional<GatewayBranch> getBranch(String id) {
+		for (GatewayBranch branch : branchList) {
+			if (id.equals(branch.getId())) {
+				return Optional.of(branch);
+			}
+		}
 
-        return Optional.empty();
-    }
+		return Optional.empty();
+	}
 
 }
