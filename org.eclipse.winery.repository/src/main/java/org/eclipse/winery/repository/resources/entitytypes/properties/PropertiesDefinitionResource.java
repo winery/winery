@@ -119,12 +119,12 @@ public class PropertiesDefinitionResource {
 
 	// @formatter:off
 	@POST
-	@RestDoc(methodDescription="Updates/creates a property based on XSD element or XML schema.")
+	@RestDoc(methodDescription = "Updates/creates a property based on XSD element or XML schema.")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response onPost(
-		@FormParam("name") @RestDocParam(description="Either xsdelement or xsdtype. 'name' comes from x-editable, which uses that as field name") String name,
-		@FormParam("value") @RestDocParam(description="The qname") String value) {
+		@FormParam("name") @RestDocParam(description = "Either xsdelement or xsdtype. 'name' comes from x-editable, which uses that as field name") String name,
+		@FormParam("value") @RestDocParam(description = "The qname") String value) {
 	// @formatter:on
 		if (StringUtils.isEmpty(name)) {
 			return Response.status(Status.BAD_REQUEST).entity("You have to provide a key/type or a name/value pair").build();

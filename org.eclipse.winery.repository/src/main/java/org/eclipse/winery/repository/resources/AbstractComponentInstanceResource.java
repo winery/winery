@@ -543,25 +543,25 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	public final TagsResource getTags() {
 		TTags tags = null;
 
-		if (this.element instanceof TServiceTemplate){
+		if (this.element instanceof TServiceTemplate) {
 			tags = ((TServiceTemplate) this.element).getTags();
 			if (tags == null) {
 				tags = new TTags();
 				((ServiceTemplateResource) this).getServiceTemplate().setTags(tags);
 			}
-		} else if(this.element instanceof TEntityType){
+		} else if (this.element instanceof TEntityType) {
 			tags = ((TEntityType)this.element).getTags();
 			if (tags == null) {
 				tags = new TTags();
 				((EntityTypeResource) this).getEntityType().setTags(tags);
 			}
-		} else if(this.element instanceof TNodeTypeImplementation){
+		} else if (this.element instanceof TNodeTypeImplementation) {
 			tags = ((TNodeTypeImplementation) this.element).getTags();
 			if (tags == null) {
 				tags = new TTags();
 				((NodeTypeImplementationResource) this).getNTI().setTags(tags);
 			}
-		} else if(this.element instanceof TRelationshipTypeImplementation){
+		} else if (this.element instanceof TRelationshipTypeImplementation) {
 			tags = ((TRelationshipTypeImplementation)this.element).getTags();
 			if (tags == null) {
 				tags = new TTags();

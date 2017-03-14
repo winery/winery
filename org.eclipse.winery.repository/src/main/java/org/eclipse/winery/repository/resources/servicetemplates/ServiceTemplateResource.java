@@ -120,7 +120,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 
 	// @formatter:off
 	@GET
-	@RestDoc(methodDescription="Returns the associated node type, which can be substituted by this service template.<br />" +
+	@RestDoc(methodDescription = "Returns the associated node type, which can be substituted by this service template.<br />" +
 	"@return a QName of the form {namespace}localName is returned.")
 	@Path("substitutableNodeType")
 	@Produces(MediaType.TEXT_PLAIN)
