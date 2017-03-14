@@ -15,17 +15,17 @@ import { FormsModule } from '@angular/forms';
 import { LoaderModule } from '../../loader/loader.module';
 import { NgModule } from '@angular/core';
 import { SelectModule } from 'ng2-select';
-import { TableModule } from '../../tableModule/table.module';
+import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { TypeaheadModule, TabsModule, ModalModule } from 'ng2-bootstrap';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { ImplementationsComponent } from './implementations.component';
-import { RouterModule } from "@angular/router";
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
         RouterModule,
         ModalModule.forRoot(),
-        TableModule,
+        WineryTableModule,
         TabsModule.forRoot(),
         SelectModule,
         BrowserModule,
