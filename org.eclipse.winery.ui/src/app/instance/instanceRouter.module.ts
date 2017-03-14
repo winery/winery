@@ -55,6 +55,7 @@ const instanceRoutes: Routes = [
     imports: [
         BrowserModule,
         PropertiesDefinitionModule,
+        ImplementationsModule,
         InstanceStatesModule,
         ImplementationsModule,
 
