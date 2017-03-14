@@ -19,7 +19,8 @@ import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { TypeaheadModule, TabsModule, ModalModule } from 'ng2-bootstrap';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { ImplementationsComponent } from './implementations.component';
-import { RouterModule } from "@angular/router";
+import { RouterModule } from '@angular/router';
+import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
 
 @NgModule({
     imports: [
@@ -34,6 +35,7 @@ import { RouterModule } from "@angular/router";
         TypeaheadModule.forRoot(),
         CommonModule,
         WineryModalModule,
+        DuplicateValidatorModule,
         ],
     exports: [],
     declarations: [

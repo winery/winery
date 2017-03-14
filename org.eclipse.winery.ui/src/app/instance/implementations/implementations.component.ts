@@ -19,6 +19,7 @@ import { isNullOrUndefined } from 'util';
 import { NotificationService } from '../../notificationModule/notificationservice';
 import { Router } from '@angular/router';
 import { Response } from '@angular/http';
+import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -35,6 +36,7 @@ export class ImplementationsComponent implements OnInit {
     allNamespaces: Array<string> = [];
     refreshedNamespace: any = {};
     selectedNamespace: string;
+    validatorObject: ValidatorObject;
     columns: Array<any> = [
         {title: 'Namespace', name: 'namespace', sort: true},
         {title: 'Name', name: 'localname', sort: true},
@@ -67,6 +69,8 @@ export class ImplementationsComponent implements OnInit {
                 data => this.allNamespaces = data,
                 error => this.handleError(error)
             );
+        this.validatorObject = new ValidatorObject(this.implementationData, 'localname');
+
         this.newImplementation = new ImplementationAPIData('', '');
         this.addImplModal.show();
     }
