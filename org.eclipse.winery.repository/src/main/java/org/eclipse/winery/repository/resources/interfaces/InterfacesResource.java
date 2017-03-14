@@ -56,7 +56,7 @@ public class InterfacesResource {
 					break;
 				default:
 					// it will be target
-					TRelationshipType.TargetInterfaces targetInterfaces = new TRelationshipType.TargetInterfaces(interfaceApiData);
+					TRelationshipType.TargetInterfaces targetInterfaces = new TRelationshipType.TargetInterfaces();
 					targetInterfaces.getInterface().clear();
 					targetInterfaces.getInterface().addAll(interfaceApiData);
 					relationshipType.setTargetInterfaces(targetInterfaces);
