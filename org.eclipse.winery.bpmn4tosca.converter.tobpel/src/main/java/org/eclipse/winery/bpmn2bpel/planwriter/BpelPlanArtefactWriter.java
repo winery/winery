@@ -49,12 +49,12 @@ public class BpelPlanArtefactWriter {
 	public String completePlanTemplate() {
 		log.debug("Completing BPEL process template...");
 
-		/* Traverse  the management flow and add the management tasks in the order of their execution to a list */
+		/* Traverse  the management flow and add the nodes in the order of their execution to a list */
 		List<Node> managementTaskSeq = new ArrayList<Node>();
 		GraphIterator<Node, Link> iterator = new DepthFirstIterator<Node, Link>(mangagementFlow);
 		while (iterator.hasNext()) {
 			Node node = iterator.next();
-			/* In this version the templates do only support management tasks */
+			/* In this version the templates do only support management tasks and exclusive gateway */
 			if (node instanceof ManagementTask) {
 				/* Wrapper adds convenience functions that can be accessed from the Velocity template */
 				ManagementTaskTemplateWrapper taskWrapper = new ManagementTaskTemplateWrapper((ManagementTask) node); //TODO move to factory and remove setters from constructor

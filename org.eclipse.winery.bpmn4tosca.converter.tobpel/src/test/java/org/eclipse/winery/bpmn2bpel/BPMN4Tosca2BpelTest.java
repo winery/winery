@@ -50,12 +50,13 @@ public class BPMN4Tosca2BpelTest {
 	}
 	
 	@Test
-	public void testTransformGateway() throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
-	    URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.exclusivegateway.json").toUri();
-	    URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.exclusivegateway.zip").toUri();
-	    BPMN4Tosca2BpelTest.class.getResource(".");
-	    Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
-	    transformer.transform(srcUri, targetUri);
+	public void testTransformGateway()
+			throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.exclusivegateway.json").toUri();
+		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.exclusivegateway.zip").toUri();
+		BPMN4Tosca2BpelTest.class.getResource(".");
+		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+		transformer.transform(srcUri, targetUri);
 	}
 
 }

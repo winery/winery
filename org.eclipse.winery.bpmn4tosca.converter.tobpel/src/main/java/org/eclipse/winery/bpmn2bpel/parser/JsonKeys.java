@@ -50,18 +50,18 @@ public interface JsonKeys {
 
 
 	/*
-	 * Event, Management-Task Types
+	 * Exclusive-Gateway, Event, Management-Task Types
 	 *
 	 */
-	public static final String TASK_TYPE_MGMT_TASK = "ToscaNodeManagementTask";
+	public static final String NODE_TYPE_MGMT_TASK = "ToscaNodeManagementTask";
 
-	public static final String TASK_TYPE_START_EVENT = "StartEvent";
+	public static final String NODE_TYPE_START_EVENT = "StartEvent";
 
-	public static final String TASK_TYPE_END_EVENT = "EndEvent";
+	public static final String NODE_TYPE_END_EVENT = "EndEvent";
 	
-	public static final String TASK_TYPE_GATEWAY_EXCLUSIVE = "ExclusiveGateway";
+	public static final String NODE_TYPE_GATEWAY_EXCLUSIVE = "ExclusiveGateway";
 	
-	public static final String TASK_TYPE_GATEWAY_EXCLUSIVE_END = "ExclusiveGatewayEnd";
+	public static final String NODE_TYPE_GATEWAY_EXCLUSIVE_END = "ExclusiveGatewayEnd";
 
 
 	/*

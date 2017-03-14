@@ -14,24 +14,26 @@ package org.eclipse.winery.bpmn2bpel.model;
 public class ConditionBranch extends GatewayBranch {
 	private boolean isDefault;
 	private String condition;
-	
+
 	public ConditionBranch(String id, String condition, boolean isDefault) {
 		super(id);
-		
+
 		this.condition = condition;
 		this.isDefault = isDefault;
 	}
-	
-	
+
 	public boolean isDefault() {
 		return isDefault;
 	}
+
 	public void setDefault(boolean isDefault) {
 		this.isDefault = isDefault;
 	}
+
 	public String getCondition() {
 		return condition;
 	}
+
 	public void setCondition(String condition) {
 		this.condition = condition;
 	}

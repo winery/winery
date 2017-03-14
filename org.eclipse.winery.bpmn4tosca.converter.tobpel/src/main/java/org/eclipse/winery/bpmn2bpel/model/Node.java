@@ -42,7 +42,5 @@ public abstract class Node {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	
 
 }
