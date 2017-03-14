@@ -57,6 +57,8 @@ const instanceRoutes: Routes = [
         PropertiesDefinitionModule,
         ImplementationsModule,
         InstanceStatesModule,
+        ImplementationsModule,
+
         RouterModule.forChild(instanceRoutes)
     ],
     exports: [
