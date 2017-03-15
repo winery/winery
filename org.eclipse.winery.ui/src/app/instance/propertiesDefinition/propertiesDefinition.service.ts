@@ -67,10 +67,6 @@ export class PropertiesDefinitionService {
         return this.sendJsonRequest(this.path + '/type');
     }
 
-    getAllNamespaces(): Observable<string[]> {
-        return this.sendJsonRequest('/admin/namespaces');
-    }
-
     postPropertiesDefinitions(resourceApiData: PropertiesDefinitionsResourceApiData): Observable<Response> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
