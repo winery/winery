@@ -49,7 +49,7 @@ public class ParametersResource extends EntityWithIdCollectionResource<Parameter
 	public Response createParamter(
 			@FormParam("name") String name,
 			@FormParam("type") String type,
-			@FormParam("required") @RestDocParam(description="type tYesNo, not Boolean. For convenience, on/off is also supported. In case this parameter is not provided, 'off' is assumed. This is in contrast to the specification, but it eases implementing the UI") String required) {
+			@FormParam("required") @RestDocParam(description = "type tYesNo, not Boolean. For convenience, on/off is also supported. In case this parameter is not provided, 'off' is assumed. This is in contrast to the specification, but it eases implementing the UI") String required) {
 		// @formatter:on
 		if (StringUtils.isEmpty(name)) {
 			return Response.status(Status.BAD_REQUEST).entity("name must not be null").build();

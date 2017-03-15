@@ -166,7 +166,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			String javapackage,
 
 			@Context UriInfo uriInfo
-	){
+	) {
 		// we assume that the parent ComponentInstance container exists
 
 		// @formatter:on
