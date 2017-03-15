@@ -17,22 +17,21 @@ import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { ImplementationAPIData } from './implementationAPIData';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ImplementationService {
     private path: string;
 
-    constructor(private http: Http) {
-    }
-
-    setPath(path: string): void {
-        this.path = path;
+    constructor(private http: Http,
+                private route: Router) {
+        this.path = decodeURIComponent(this.route.url);
     }
 
     getImplementationData(): Observable<ImplementationAPIData[]> {
         let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseUri + this.path + '/implementations/', options)
+        return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
 

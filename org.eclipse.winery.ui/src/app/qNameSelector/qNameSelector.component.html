@@ -20,7 +20,7 @@
         <div>
             <select class="form-control" style="width:600px; display:inline; margin-right: 10px;" (change)="onChange($event.target.value)">
                 <option>(none)</option>
-                <option *ngFor="let item of displayList?.list"
+                <option *ngFor="let item of displayList?.classes"
                         [selected]="selectedValue === item.qName"
                         [value]="item.qName">
                     {{ item.name }}

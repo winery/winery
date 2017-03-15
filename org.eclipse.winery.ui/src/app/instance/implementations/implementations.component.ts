@@ -17,7 +17,6 @@ import { InstanceService } from '../instance.service';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 import { isNullOrUndefined } from 'util';
 import { NotificationService } from '../../notificationModule/notificationservice';
-import { Router } from '@angular/router';
 import { Response } from '@angular/http';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 
@@ -33,10 +32,7 @@ export class ImplementationsComponent implements OnInit {
     selectedCell: any;
     newImplementation: ImplementationAPIData = new ImplementationAPIData('', '');
     elementToRemove: ImplementationAPIData;
-    allNamespaces: Array<string> = [];
-    defaultNamespace: Array<string> = [];
-    refreshedNamespace: any = {};
-    selectedNamespace: string;
+    selectedNamespace: string = '';
     validatorObject: ValidatorObject;
     columns: Array<any> = [
         {title: 'Namespace', name: 'namespace', sort: true},
@@ -47,13 +43,11 @@ export class ImplementationsComponent implements OnInit {
 
     constructor(private sharedData: InstanceService,
                 private service: ImplementationService,
-                private notificationService: NotificationService,
-                private router: Router) {
+                private notificationService: NotificationService) {
         this.implementationData = [];
     }
 
     ngOnInit() {
-        this.service.setPath(this.sharedData.path);
         this.getImplementationData();
     }
 
@@ -65,11 +59,6 @@ export class ImplementationsComponent implements OnInit {
     }
 
     onAddClick() {
-        this.service.getAllNamespaces()
-            .subscribe(
-                data => this.handleNamespaces(data),
-                error => this.handleError(error)
-            );
         this.validatorObject = new ValidatorObject(this.implementationData, 'localname');
         this.newImplementation = new ImplementationAPIData('', '');
         this.addImplModal.show();
@@ -93,20 +82,6 @@ export class ImplementationsComponent implements OnInit {
                 error => this.handleError(error)
             );
         this.elementToRemove = null;
-    }
-
-    private handleNamespaces(data: any) {
-        this.allNamespaces = data;
-        this.defaultNamespace = [this.allNamespaces[0], this.allNamespaces[0]];
-        this.selectedNamespace = this.allNamespaces[0];
-    }
-
-    private namespaceSelected(selectedNamespace: any) {
-        this.selectedNamespace = selectedNamespace.text;
-    }
-
-    private namespaceRefresh(refreshedNamespace: any) {
-        this.refreshedNamespace = refreshedNamespace;
     }
 
     // endregion
@@ -135,6 +110,7 @@ export class ImplementationsComponent implements OnInit {
         let typeNamespace = this.sharedData.selectedNamespace;
         let typeName = this.sharedData.selectedComponentId;
         let type = '{' + typeNamespace + '}' + typeName;
+        console.log(type);
         let resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
             localname,
             type);
@@ -148,9 +124,9 @@ export class ImplementationsComponent implements OnInit {
         this.loading = false;
         if (data.ok) {
             this.getImplementationData();
-            this.notificationService.success('Created new NodeType Implementation', 'Success');
+            this.notificationService.success('Created new NodeType Implementation');
         } else {
-            this.notificationService.error('Failed to create NodeType Implementation', 'Creation Failed');
+            this.notificationService.error('Failed to create NodeType Implementation');
         }
     }
 
@@ -158,9 +134,9 @@ export class ImplementationsComponent implements OnInit {
         this.loading = false;
         if (data.ok) {
             this.getImplementationData();
-            this.notificationService.success('Deletion of NodeType Implementationb Successful', 'Success');
+            this.notificationService.success('Deletion of NodeType Implementation Successful');
         } else {
-            this.notificationService.error('Failed to delete NodeType Implementation failed', 'Deletion Failed');
+            this.notificationService.error('Failed to delete NodeType Implementation failed');
         }
     }
 

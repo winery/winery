@@ -22,6 +22,7 @@ import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { ImplementationsComponent } from './implementations.component';
 import { RouterModule } from '@angular/router';
 import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
+import { NamespaceSelectorModule } from '../../namespaceSelector/namespaceSelector.module';
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import { DuplicateValidatorModule } from '../../validators/duplicateValidator.mo
         TypeaheadModule.forRoot(),
         CommonModule,
         WineryModalModule,
+        NamespaceSelectorModule,
         DuplicateValidatorModule,
     ],
     exports: [],

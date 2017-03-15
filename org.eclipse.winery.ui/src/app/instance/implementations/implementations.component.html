@@ -55,13 +55,11 @@ to get an overview on all implementations stored in this repository. </p>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label">Namespace</label>
-                <ng-select #selectNamespace name="namespace"
-                           [active]="defaultNamespace"
-                           (selected)="namespaceSelected($event)"
-                           (data)="namespaceRefresh($event)"
-                           [items]="allNamespaces">
-                </ng-select>
+                <winery-namespaceSelector
+                    name="namespaceSelector"
+                    [isRequired]="true"
+                    [typeAheadListLimit]="20"
+                    [(ngModel)]="selectedNamespace"></winery-namespaceSelector>
             </div>
         </form>
     </modal-body>
