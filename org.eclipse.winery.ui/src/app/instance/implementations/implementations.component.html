@@ -8,7 +8,80 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
 -->
-implementations component
+<p>This page shows implementations available for this type. Go to
+<a [routerLink]="['/other']">Other Elements</a>
+to get an overview on all implementations stored in this repository. </p>
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table
+            [data]="implementationData"
+            [columns]="columns"
+            (cellSelected)="onCellSelected($event)"
+            [itemsPerPage]="10"
+            (removeBtnClicked)="onRemoveClick($event)"
+            (addBtnClicked)="onAddClick();">
+    </winery-table>
+</div>
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <modal-header>
+        <h4 class="modal-title">Add Node Type Implementation</h4>
+    </modal-header>
+    <modal-body>
+        <form #addImplForm="ngForm" id="addImplForm">
+            <div class="form-group">
+                <label class="control-label" for="localname">Name</label>
+                <input #localNameInput="ngModel"
+                       id="localname"
+                       class="form-control"
+                       type="text"
+                       name="localname"
+                       required
+                       [(ngModel)]="newImplementation.localname"
+                       [duplicateValidator]="validatorObject"
+                        />
+                <div *ngIf="localNameInput.errors && (localNameInput.dirty || localNameInput.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!localNameInput.errors.duplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!localNameInput.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <winery-namespaceSelector
+                    name="namespaceSelector"
+                    [isRequired]="true"
+                    [typeAheadListLimit]="20"
+                    [(ngModel)]="selectedNamespace"></winery-namespaceSelector>
+            </div>
+        </form>
+    </modal-body>
+    <modal-footer (onOk)="addNewImplementation(localNameInput.value)"
+                  [close-button-label]="'Cancel'"
+                  [ok-button-label]="'Add'"
+                  [ok-disabled]="!addImplForm?.form.valid">
+    </modal-footer>
+
+</winery-modal>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <modal-header>
+        <h4 class="modal-title">Delete Implementation</h4>
+    </modal-header>
+    <modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.localname }}</span>?
+        </p>
+    </modal-body>
+    <modal-footer (onOk)="removeConfirmed();"
+                  [close-button-label]="'No'"
+                  [ok-button-label]="'Yes'">
+    </modal-footer>
+</winery-modal>

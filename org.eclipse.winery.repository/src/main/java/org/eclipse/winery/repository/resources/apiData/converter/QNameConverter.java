@@ -9,11 +9,26 @@
  * Contributors:
  *     Nicole Keppler - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.resources.apiData;
+package org.eclipse.winery.repository.resources.apiData.converter;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
-public class QNameApiData {
-    public String localname;
-    public String namespace;
+import org.eclipse.winery.repository.resources.apiData.QNameApiData;
+
+public class QNameConverter implements Converter<QNameApiData, QName> {
+
+    @Override
+    public QName unmarshal(QNameApiData v) {
+        return new QName(v.namespace, v.localname);
+    }
+
+    @Override
+    public QNameApiData marshal(QName v) {
+        QNameApiData result = new QNameApiData();
+        result.localname = v.getLocalPart();
+        result.namespace = v.getNamespaceURI();
+        return result;
+    }
+
 }
