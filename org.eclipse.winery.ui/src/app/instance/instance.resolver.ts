@@ -42,11 +42,11 @@ export class InstanceResolver implements Resolve<InstanceResolverData> {
                 path: state.url,
             };
         } else { // id not found, no section ,check if admin
-            if (isNullOrUndefined(section) && state.url === '/admin') {
+            if (isNullOrUndefined(section) && state.url.match('/admin')) {
 
                 return {
                     section: 'admin',
-                    namespace: '',
+                    namespace: isNullOrUndefined(state.url.split('/')[2]) ? state.url.split('/')[2] : '',
                     instanceId: '',
                     path: state.url
                 };

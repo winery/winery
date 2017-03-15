@@ -36,6 +36,7 @@ import { PlanTypesComponent } from "./planTypes/planTypes.component";
 import { ConstraintTypesComponent } from "./contraintTypes/constraintTypes.component";
 import { PlanLanguagesComponent } from "./planLanguages/planLanguages.component";
 import { NamespacesComponent } from "./namespaces/namespaces.component";
+import { WineryTableModule } from "../wineryTableModule/wineryTable.module";
 
 @NgModule({
     imports: [
@@ -47,6 +48,7 @@ import { NamespacesComponent } from "./namespaces/namespaces.component";
         InstanceRouterModule,
         WineryModalModule,
         InterfacesModule,
+        WineryTableModule
     ],
     exports: [],
     declarations: [

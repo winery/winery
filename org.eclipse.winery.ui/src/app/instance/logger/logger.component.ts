@@ -11,13 +11,24 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-instance-logger-component',
     templateUrl: 'logger.component.html'
 })
 export class LoggerComponent implements OnInit {
-    constructor() { }
 
-    ngOnInit() { }
+    logData: Array<any> = [];
+    columns = [
+        {title: 'Type', name: 'type'},
+        {title: 'Title', name: 'title'},
+        {title: 'Message', name: 'message'},
+        {title: 'Date', name: 'createdOn'}
+        ];
+    constructor(private notify: NotificationService) { }
+
+    ngOnInit() {
+        this.logData = this.notify.getHistory();
+    }
 }
