@@ -31,6 +31,7 @@ import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSC
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.Constants;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.JAXBHelper;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.RESTHelper;
+
 import org.slf4j.LoggerFactory;
 
 /**

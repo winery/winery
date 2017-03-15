@@ -25,25 +25,6 @@ public class DeploymentArtifactResource extends GenericArtifactResource<TDeploym
 	private final TDeploymentArtifact a;
 
 
-	/**
-	 * Converts the given artifactId to an DeploymentArtifact.
-	 *
-	 * <em>SIDE EFFECT</em> Adds it to the DeploymentArtifacts list if it does
-	 * not yet exist.
-	 */
-	private static TDeploymentArtifact getDeploymentArtifact(String artifactId, List<TDeploymentArtifact> deploymentArtifacts) {
-		for (TDeploymentArtifact ia : deploymentArtifacts) {
-			if (ia.getName().equals(artifactId)) {
-				return ia;
-			}
-		}
-		// DA does not exist in list
-		TDeploymentArtifact ia = new TDeploymentArtifact();
-		ia.setName(artifactId);
-		deploymentArtifacts.add(ia);
-		return ia;
-	}
-
 	public DeploymentArtifactResource(String artifactId, List<TDeploymentArtifact> deploymentArtifacts, IPersistable res) {
 		this(DeploymentArtifactResource.getDeploymentArtifact(artifactId, deploymentArtifacts), deploymentArtifacts, res);
 	}
@@ -61,6 +42,25 @@ public class DeploymentArtifactResource extends GenericArtifactResource<TDeploym
 				return e.getName();
 			}
 		}, deploymentArtifact, deploymentArtifacts.indexOf(deploymentArtifact), deploymentArtifacts, res);
+	}
+
+	/**
+	 * Converts the given artifactId to an DeploymentArtifact.
+	 *
+	 * <em>SIDE EFFECT</em> Adds it to the DeploymentArtifacts list if it does
+	 * not yet exist.
+	 */
+	private static TDeploymentArtifact getDeploymentArtifact(String artifactId, List<TDeploymentArtifact> deploymentArtifacts) {
+		for (TDeploymentArtifact ia : deploymentArtifacts) {
+			if (ia.getName().equals(artifactId)) {
+				return ia;
+			}
+		}
+		// DA does not exist in list
+		TDeploymentArtifact ia = new TDeploymentArtifact();
+		ia.setName(artifactId);
+		deploymentArtifacts.add(ia);
+		return ia;
 	}
 
 	public TDeploymentArtifact getDeploymentArtifact() {

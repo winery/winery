@@ -123,7 +123,6 @@ public class TOSCAExportUtil {
 	 */
 	private Map<String, Object> exportConfiguration;
 
-
 	public enum ExportProperties {
 		INCLUDEXYCOORDINATES, REPOSITORY_URI
 	}

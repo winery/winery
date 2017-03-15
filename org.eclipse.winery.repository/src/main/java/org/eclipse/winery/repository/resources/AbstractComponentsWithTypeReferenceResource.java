@@ -19,9 +19,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
+
+import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDocParam;
 
 /**

@@ -18,7 +18,6 @@ public class IdDeterminationWithHashCode implements IIdDetermination<Object> {
 
 	public static final IdDeterminationWithHashCode INSTANCE = new IdDeterminationWithHashCode();
 
-
 	@Override
 	public String getId(Object entity) {
 		// We assume that different Object serializations *always* have different hashCodes
