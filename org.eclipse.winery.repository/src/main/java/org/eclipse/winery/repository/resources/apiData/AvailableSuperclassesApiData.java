@@ -22,15 +22,15 @@ import java.util.SortedSet;
 
 public class AvailableSuperclassesApiData {
 
-	public List<QNameApiData> list;
+	public List<QNameWithIdApiData> classes;
 
 	public AvailableSuperclassesApiData(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
 		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(res.getId().getClass());
 		allTOSCAcomponentIds.remove(res.getId());
-		this.list = new ArrayList<>();
+		this.classes = new ArrayList<>();
 		for (TOSCAComponentId id : allTOSCAcomponentIds) {
-			QNameApiData q = new QNameApiData(id);
-			this.list.add(q);
+			QNameWithIdApiData q = new QNameWithIdApiData(id);
+			this.classes.add(q);
 		}
 	}
 }

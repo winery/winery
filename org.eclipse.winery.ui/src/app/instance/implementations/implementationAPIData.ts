@@ -1,4 +1,4 @@
-/**
+/*******************************************************************************
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -7,16 +7,15 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
+export class ImplementationAPIData {
+    namespace: string = '';
+    localname: string = '';
 
-
-export interface QNameApiData {
-    name: string;
-    qName: string;
+    public constructor(namespace: string,
+                       name: string) {
+        this.namespace = namespace;
+        this.localname = name;
+    }
 }
-
-export interface QNameList {
-    classes: QNameApiData[];
-}
-

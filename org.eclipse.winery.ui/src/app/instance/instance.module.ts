@@ -46,7 +46,6 @@ import { InterfacesModule } from './interfaces/interfaces.module';
         CapabilityDefinitionsComponent,
         DocumentationComponent,
         EditXMLComponent,
-        ImplementationsComponent,
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,
