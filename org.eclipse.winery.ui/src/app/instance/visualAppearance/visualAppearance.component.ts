@@ -8,18 +8,56 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Lukas Balzer -
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { VisualAppearanceService } from './visualAppearance.service';
+import { FileUploader } from 'ng2-file-upload';
 
 @Component({
     selector: 'winery-instance-visualAppearance',
-    templateUrl: 'visualAppearance.component.html'
+    templateUrl: 'visualAppearance.component.html',
+    styleUrls: [
+        'visualAppearance.component.css'
+    ],
+    providers: [VisualAppearanceService]
 })
 export class VisualAppearanceComponent implements OnInit {
-    constructor() {
+    color: string = '#127bdc';
+    img16Path: string;
+    img50Path: string;
+    img16uploader: FileUploader;
+    img50uploader: FileUploader;
+    hasImg16DropZoneOver: boolean = false;
+    hasImg50DropZoneOver: boolean = false;
+    @ViewChild('uploadModal') uploadModal: any;
+
+    constructor(private service: VisualAppearanceService) {
+        this.img16Path = service.getImg16x16Path();
+        this.img50Path = service.getImg50x50Path();
+        this.img16uploader = new FileUploader({url: this.service.getImg16x16Path()});
+        this.img16uploader.autoUpload = true;
+        this.img50uploader = new FileUploader({url: this.service.getImg50x50Path()});
     }
 
     ngOnInit() {
+    }
+
+    onImg16Hover(e: any) {
+        this.hasImg16DropZoneOver = e;
+    }
+
+    onImg50Hover(e: any) {
+        this.hasImg50DropZoneOver = e;
+    }
+    onUpload() {
+        this.uploadModal.show();
+    }
+
+    getColor() {
+    }
+
+    saveColor() {
     }
 }

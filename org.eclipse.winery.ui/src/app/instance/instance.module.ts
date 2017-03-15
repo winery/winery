@@ -17,7 +17,6 @@ import { EditXMLComponent } from './editXML/editXML.component';
 import { InstanceComponent } from './instance.component';
 import { InstanceHeaderComponent } from './instanceHeader/instanceHeader.component';
 import { InstanceRouterModule } from './instanceRouter.module';
-import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { InheritanceComponent } from './inheritance/inheritance.component';
 import { ImplementationsComponent } from './implementations/implementations.component';
@@ -29,6 +28,7 @@ import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { InterfacesModule } from './interfaces/interfaces.module';
+import { VisualAppearanceModule } from './visualAppearance/visualAppearance.module';
 
 @NgModule({
     imports: [
@@ -40,6 +40,7 @@ import { InterfacesModule } from './interfaces/interfaces.module';
         InstanceRouterModule,
         WineryModalModule,
         InterfacesModule,
+        VisualAppearanceModule,
     ],
     exports: [],
     declarations: [
@@ -52,7 +53,6 @@ import { InterfacesModule } from './interfaces/interfaces.module';
         InstanceHeaderComponent,
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
-        VisualAppearanceComponent,
         QNameSelectorComponent,
     ],
     providers: [],
