@@ -21,7 +21,7 @@ export const sections = {
     nodetypeimplementations : 'nodeTypeImplementation',
     relationshiptypeimplementations : 'relationshipTypeImplementation',
     policytypes: 'policyType',
-    policytemplate: 'policyTemplate',
+    policytemplates: 'policyTemplate',
     imports: 'xSDImport',
 };
 
