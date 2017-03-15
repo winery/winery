@@ -223,7 +223,7 @@ public class TopologyTemplateResource {
 
 	// @formatter:off
 	@GET
-	@RestDoc(methodDescription="Returns a JSON representation of the topology template. <br />" +
+	@RestDoc(methodDescription = "Returns a JSON representation of the topology template. <br />" +
 	"X and Y coordinates are embedded as attributes. QName string with Namespace: <br />" +
 	"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} <br />" +
 	"@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
@@ -337,7 +337,7 @@ public class TopologyTemplateResource {
 
 	// @formatter:off
 	@GET
-	@RestDoc(methodDescription="<p>Returns an XML representation of the topology template." +
+	@RestDoc(methodDescription = "<p>Returns an XML representation of the topology template." +
 	" X and Y coordinates are embedded as attributes. Namespace:" +
 	"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} </p>" +
 	"<p>{@link org.eclipse.winery.repository.client.WineryRepositoryClient." +

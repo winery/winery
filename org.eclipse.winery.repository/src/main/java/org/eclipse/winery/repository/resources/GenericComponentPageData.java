@@ -68,7 +68,7 @@ public final class GenericComponentPageData {
 		return Utils.getTypeForComponentContainer(this.resourceClass);
 	}
 
-	public Class<? extends TOSCAComponentId> getTOSCAComponentId(){
+	public Class<? extends TOSCAComponentId> getTOSCAComponentId() {
 		return Utils.getComponentIdClassForComponentContainer(this.resourceClass);
 	}
 
