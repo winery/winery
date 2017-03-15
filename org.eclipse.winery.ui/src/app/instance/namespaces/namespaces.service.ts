@@ -7,25 +7,26 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - initial API and implementation
  */
 
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { NamespaceSelectorService } from '../../namespaceSelector/namespaceSelector.service';
+import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
-import { backendBaseUri } from '../configuration';
 
 @Injectable()
-export class NamespaceSelectorService {
+export class NamespacesService {
 
-    constructor(private http: Http) {
+    constructor(private http: Http, private namespaceService: NamespaceSelectorService) {
     }
 
     getAllNamespaces(): Observable<any[]> {
-        let headers = new Headers({ 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        return this.namespaceService.getAllNamespaces();
+    };
 
-        return this.http.get(backendBaseUri + '/admin/namespaces', options)
-            .map(res => res.json());
+    saveNamespaces() {
+
     }
+
 }

@@ -10,6 +10,7 @@
  *     Oliver Kopp - initial API and implementation
  *     Lukas Harzenetter - return namespaces sorted
  *     Nicole Keppler - return filtered namespace with number of containing components
+ *     Niko Stadelmaier - return namespaces with prefix
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.admin;
 
@@ -49,6 +50,7 @@ import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.winery.repository.resources.apiData.NamespaceWithPrefix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -287,25 +289,18 @@ public class NamespacesResource extends AbstractAdminResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getNamespacesAsJSONlist() {
+	public ArrayList<NamespaceWithPrefix> getNamespacesAsJSONlist() {
 		Collection<Namespace> namespaces = NamespacesResource.getNamespaces();
 
 		// We now have all namespaces
 		// We need to convert from Namespace to String
 
-		TreeSet<String> stringNamespaces = new TreeSet<>();
+		ArrayList<NamespaceWithPrefix> namespacesList = new ArrayList<>();
 		for (Namespace ns : namespaces) {
-			stringNamespaces.add(ns.getDecoded());
+			namespacesList.add(new NamespaceWithPrefix(ns));
 		}
-
-		String res;
-		try {
-			res = Utils.mapper.writeValueAsString(stringNamespaces);
-		} catch (JsonProcessingException e) {
-			NamespacesResource.LOGGER.error(e.getMessage(), e);
-			res = "[]";
-		}
-		return res;
+		Collections.sort(namespacesList);
+		return namespacesList;
 	}
 
 	/**

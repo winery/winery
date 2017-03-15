@@ -11,13 +11,35 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { NamespaceSelectorService } from '../../namespaceSelector/namespaceSelector.service';
+import { NamespacesService } from './namespaces.service';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-instance-namespaces',
-    templateUrl: 'namespaces.component.html'
+    templateUrl: 'namespaces.component.html',
+    providers: [NamespaceSelectorService, NamespacesService]
 })
 export class NamespacesComponent implements OnInit {
-    constructor() { }
 
-    ngOnInit() { }
+    adminNamespaces: Array<any> = [];
+    columns = [
+        {title: 'Prefix', name: 'prefix'},
+        {title: 'Namespace', name: 'namespace'}
+        ];
+
+    constructor(private service: NamespacesService,
+                private notify: NotificationService) {
+    }
+
+    ngOnInit() {
+        this.service.getAllNamespaces().subscribe(
+            data => {
+                this.adminNamespaces = data;
+                console.log(data);
+                // this.loading = false;
+            },
+            error => this.notify.error(error.toString())
+        );
+    }
 }
