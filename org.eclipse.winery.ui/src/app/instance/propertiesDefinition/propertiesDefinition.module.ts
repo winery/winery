@@ -20,6 +20,7 @@ import { CommonModule } from '@angular/common';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
+import { NamespaceSelectorModule } from '../../namespaceSelector/namespaceSelector.module';
 
 @NgModule({
     imports: [
@@ -28,8 +29,8 @@ import { DuplicateValidatorModule } from '../../validators/duplicateValidator.mo
         BrowserModule,
         FormsModule,
         LoaderModule,
-        TypeaheadModule.forRoot(),
         CommonModule,
+        NamespaceSelectorModule,
         WineryModalModule,
         WineryTableModule,
         DuplicateValidatorModule,

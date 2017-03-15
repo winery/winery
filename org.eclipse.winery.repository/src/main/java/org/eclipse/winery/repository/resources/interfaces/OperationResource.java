@@ -22,6 +22,7 @@ import org.eclipse.winery.model.tosca.TOperation.OutputParameters;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

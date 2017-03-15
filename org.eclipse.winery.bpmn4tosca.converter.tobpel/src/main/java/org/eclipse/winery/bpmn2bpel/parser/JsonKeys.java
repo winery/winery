@@ -1,6 +1,7 @@
 /**
 /*******************************************************************************
  * Copyright (c) 2015-2017 University of Stuttgart.
+ * Copyright (c) 2017 ZTE Corporation.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -10,6 +11,7 @@
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
  *     Armin Hüneburg - rename interface to fit modeler
+ *     ZTE - support of more gateways
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.parser;
 
@@ -39,17 +41,27 @@ public interface JsonKeys {
 	public static final String NODE_INTERFACE_NAME = "interface";
 
 	public static final String CONNECTIONS = "connections";
+	
+	public static final String CONDITIONS = "conditions";
+	
+	public static final String CONDITION = "condition";
+	
+	public static final String DEFAULT = "default";
 
 
 	/*
-	 * Event, Management-Task Types
+	 * Exclusive-Gateway, Event, Management-Task Types
 	 *
 	 */
-	public static final String TASK_TYPE_MGMT_TASK = "ToscaNodeManagementTask";
+	public static final String NODE_TYPE_MGMT_TASK = "ToscaNodeManagementTask";
 
-	public static final String TASK_TYPE_START_EVENT = "StartEvent";
+	public static final String NODE_TYPE_START_EVENT = "StartEvent";
 
-	public static final String TASK_TYPE_END_EVENT = "EndEvent";
+	public static final String NODE_TYPE_END_EVENT = "EndEvent";
+	
+	public static final String NODE_TYPE_GATEWAY_EXCLUSIVE = "ExclusiveGateway";
+	
+	public static final String NODE_TYPE_GATEWAY_EXCLUSIVE_END = "ExclusiveGatewayEnd";
 
 
 	/*

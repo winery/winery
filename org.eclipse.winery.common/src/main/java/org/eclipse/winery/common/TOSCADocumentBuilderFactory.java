@@ -31,9 +31,9 @@ import org.xml.sax.SAXException;
  */
 public class TOSCADocumentBuilderFactory {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
-
 	public static final TOSCADocumentBuilderFactory INSTANCE = new TOSCADocumentBuilderFactory();
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
 	private final DocumentBuilderFactory factory;
 
 

@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.EntityCollectionResource;
 import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

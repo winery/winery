@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2015-2017 University of Stuttgart.
+ * Copyright (c) 2017 ZTE Corporation.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *     Sebastian Wagner - initial API and implementation
+ *     ZTE - support of more gateways
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.parser;
 
@@ -22,10 +24,13 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.bpmn2bpel.model.ConditionBranch;
 import org.eclipse.winery.bpmn2bpel.model.EndTask;
 import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
 import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
 import org.eclipse.winery.bpmn2bpel.model.Node;
+import org.eclipse.winery.bpmn2bpel.model.OrGatewayMerge;
+import org.eclipse.winery.bpmn2bpel.model.OrGatewaySplit;
 import org.eclipse.winery.bpmn2bpel.model.StartTask;
 import org.eclipse.winery.bpmn2bpel.model.Task;
 import org.eclipse.winery.bpmn2bpel.model.param.ConcatParameter;
@@ -63,11 +68,12 @@ public class Bpmn4JsonParser extends Parser {
 			String prettyPrintedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
 			log.debug("Creating management flow from following Json model:" + prettyPrintedJson);
 
-			ManagementFlow managementFlow = new ManagementFlow();
+			Map<String, Node> nodeMap = new HashMap<String, Node>();
 			/* Contains the ids (values) of the target nodes of a certain node
 			 * (key is node id of this node) */
 			Map<String, Set<String>> nodeWithTargetsMap = new HashMap<String, Set<String>>();
-
+			
+			
 			/* Create model objects from Json nodes */
 			log.debug("Creating node models...");
 			Iterator<JsonNode> iter = rootNode.iterator();
@@ -75,26 +81,18 @@ public class Bpmn4JsonParser extends Parser {
 				JsonNode jsonNode = (JsonNode) iter.next();
 
 				/*
-				 * As top level elements just start events, end events and
+				 * As top level elements just start events, end events, gateway and
 				 * management tasks expected which are transformed to tasks in
 				 * our management model
 				 */
-				Task task = createTaskFromJson(jsonNode);
+				Node node = createNodeFromJson(jsonNode);
 				/*
-				 * Task may be null if it could not be created due to missing or
+				 * Node may be null if it could not be created due to missing or
 				 * incorrect fields/values in the Json node
 				 */
-				if (task != null) {
-					managementFlow.addVertex(task);
-
-					// TODO GATEWAAAAYYYYSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
-					// !!!!!!!!!!!!!!!!!!
-
-					/*
-					 * To create the links later, relate the id of the created
-					 * node with its direct successor nodes
-					 */
-					nodeWithTargetsMap.put(task.getId(), extractNodeTargetIds(jsonNode));
+				if (node != null) {
+					nodeMap.put(node.getId(), node);
+					nodeWithTargetsMap.put(node.getId(), extractNodeTargetIds(jsonNode));
 				} else {
 					String ignoredJsonNode = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode);
 					log.warn("No model element could be created from following node due to missing or invalid keys/values :" + ignoredJsonNode);
@@ -104,32 +102,8 @@ public class Bpmn4JsonParser extends Parser {
 			/*
 			 * Now since all node models are created they can be linked with each other in the management flow
 			 */
-			log.debug("Building management flow by relating node models...");
-			Iterator<Map.Entry<String, Set<String>>> nodeWithTargetsMapIter = nodeWithTargetsMap.entrySet().iterator();
-			while (nodeWithTargetsMapIter.hasNext()) {
-				Map.Entry<String, Set<String>> inputParamEntry = (Map.Entry<String, Set<String>>) nodeWithTargetsMapIter
-						.next();
-				String srcNodeId = inputParamEntry.getKey();
-				Node srcNode = managementFlow.getNode(srcNodeId);
-				if (srcNode == null) {
-					throw new Exception("Node with id '" + srcNodeId + "' could not be found in the management flow.");
-				}
-
-				/* Relate the source node with its link targets */
-				Iterator<String> nodeTargetIdsIter = inputParamEntry.getValue().iterator();
-				while (nodeTargetIdsIter.hasNext()) {
-					String targetNodeId = (String) nodeTargetIdsIter.next();
-					Node targetNode = managementFlow.getNode(targetNodeId);
-					if (targetNode == null) {
-						throw new Exception("Node with id '" + targetNodeId + "' could not be found in the management flow.");
-					}
-
-					log.debug("Creating link between node with id '" + srcNodeId + "' and target node with id '"
-							+ targetNodeId + "'");
-					managementFlow.addEdge(srcNode, targetNode);
-				}
-			}
-
+			ManagementFlow managementFlow =
+			          new SortParser(nodeMap, nodeWithTargetsMap).buildManagementFlow();
 			return managementFlow;
 
 		} catch (Exception e) {
@@ -139,44 +113,59 @@ public class Bpmn4JsonParser extends Parser {
 
 	}
 
-	protected Task createTaskFromJson(JsonNode jsonNode) {
+	protected Node createNodeFromJson(JsonNode jsonNode) {
 		// TODO check if type attributes are set and are correct
 
 		if (!hasRequiredFields(jsonNode, Arrays.asList(JsonKeys.TYPE, JsonKeys.NAME, JsonKeys.ID))) {
-			log.warn("Ignoring task/event node: One of the fields '" + JsonKeys.TYPE + "', '" + JsonKeys.NAME + "' or '"
+			log.warn("Ignoring gateway/task/event node: One of the fields '" + JsonKeys.TYPE + "', '" + JsonKeys.NAME + "' or '"
 					+ JsonKeys.ID + "' is missing");
 			return null;
 		}
 
-		Task task = null;
-		String taskType = jsonNode.get(JsonKeys.TYPE).asText();
-		String taskName = jsonNode.get(JsonKeys.NAME).asText();
-		String taskId = jsonNode.get(JsonKeys.ID).asText();
+		Node node = null;
+		String nodeType = jsonNode.get(JsonKeys.TYPE).asText();
+		String nodeName = jsonNode.get(JsonKeys.NAME).asText();
+		String nodeId = jsonNode.get(JsonKeys.ID).asText();
 
-		log.debug("Parsing JSON task or event node with id '" + taskId + "', name '" + taskName + "', type '" + taskType
+		log.debug("Parsing JSON task or event node with id '" + nodeId + "', name '" + nodeName + "', type '" + nodeType
 				+ "'");
 
-		switch (taskType) {
-		case JsonKeys.TASK_TYPE_START_EVENT:
-			task = createStartTaskFromJson(jsonNode);
+		switch (nodeType) {
+		case JsonKeys.NODE_TYPE_START_EVENT:
+			node = createStartTaskFromJson(jsonNode);
 			break;
-		case JsonKeys.TASK_TYPE_MGMT_TASK:
-			task = createManagementTaskFromJson(jsonNode);
+		case JsonKeys.NODE_TYPE_MGMT_TASK:
+			node = createManagementTaskFromJson(jsonNode);
 			break;
-		case JsonKeys.TASK_TYPE_END_EVENT:
-			task = createEndTaskFromJson(jsonNode);
+		case JsonKeys.NODE_TYPE_END_EVENT:
+			node = createEndTaskFromJson(jsonNode);
+			break;
+		case JsonKeys.NODE_TYPE_GATEWAY_EXCLUSIVE:
+			node = createOrGatewaySplitFromJson(jsonNode);
+			break;
+		case JsonKeys.NODE_TYPE_GATEWAY_EXCLUSIVE_END:
+			node = createOrGatewayMergeFromJson(jsonNode);
 			break;
 		default:
-			log.warn("Ignoring node: type '" + taskType + "' is unkown");
+			log.warn("Ignoring node: type '" + nodeType + "' is unkown");
 			return null;
 		}
 
-		/* Set generic task attributes */
-		task.setId(taskId);
-		task.setName(taskName);
+		/* Set generic node attributes */
+		node.setId(nodeId);
+		node.setName(nodeName);
+		node.setType(nodeType);
+		if(node instanceof Task) {
+			loadParameter4Task((Task)node, jsonNode);
+		}
 
+		return node;
+	}
+	
+	private void loadParameter4Task(Task task, JsonNode jsonNode) {
 		/* Add input parameters to task */
 		JsonNode inputParams = jsonNode.get(JsonKeys.INPUT);
+		String taskId = jsonNode.get(JsonKeys.ID).asText();
 
 		if (inputParams != null) {
 			/*
@@ -209,8 +198,6 @@ public class Bpmn4JsonParser extends Parser {
 		} else {
 			log.debug("No output parameters found for node with id '" + taskId + "'");
 		}
-
-		return task;
 	}
 
 	protected StartTask createStartTaskFromJson(JsonNode startTaskNode) {
@@ -220,6 +207,55 @@ public class Bpmn4JsonParser extends Parser {
 	protected EndTask createEndTaskFromJson(JsonNode endTaskNode) {
 		return new EndTask();
 	}
+	
+	protected OrGatewaySplit createOrGatewaySplitFromJson(JsonNode jsonNode) {
+		OrGatewaySplit gatewaySplit = new OrGatewaySplit();
+		JsonNode conditionsNode = jsonNode.findValue(JsonKeys.CONDITIONS);
+		
+		ConditionBranch defaultBranch = null;
+		
+		if (conditionsNode != null && conditionsNode.isArray()) {
+			Iterator<JsonNode> iter = conditionsNode.iterator();
+			while (iter.hasNext()) {
+				JsonNode entry = (JsonNode) iter.next();
+				if (hasRequiredFields(entry, Arrays.asList(JsonKeys.ID))) {
+					
+					String id = entry.get(JsonKeys.ID).asText();
+					
+					String condition = "";
+					if (entry.has(JsonKeys.CONDITION)) {
+						condition = entry.get(JsonKeys.CONDITION).asText();
+					}
+
+					boolean isDefault = false;
+					if (entry.has(JsonKeys.DEFAULT)) {
+						isDefault = entry.get(JsonKeys.DEFAULT).asBoolean();
+					}
+
+					ConditionBranch branch = new ConditionBranch(id, condition, isDefault);
+
+					if (isDefault) { // default branch
+						defaultBranch = branch;
+					} else {
+						gatewaySplit.getBranchList().add(branch);
+					}
+				}
+			}
+		}
+		
+
+		if (defaultBranch != null) {
+			gatewaySplit.getBranchList().add(defaultBranch);
+		}
+		return gatewaySplit;
+	}
+	
+	
+	protected OrGatewayMerge createOrGatewayMergeFromJson(JsonNode jsonNode) {
+		OrGatewayMerge gatewaySplit = new OrGatewayMerge();
+		return gatewaySplit;
+	}
+
 
 	protected ManagementTask createManagementTaskFromJson(JsonNode managementTaskNode) {
 

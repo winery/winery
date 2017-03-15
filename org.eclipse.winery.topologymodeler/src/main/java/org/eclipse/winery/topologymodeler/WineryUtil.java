@@ -66,7 +66,6 @@ public class WineryUtil {
 		}
 	}
 
-
 	public static SortedMap<String, SortedSet<LocalNameNamePair>> convertQNameWithNameListToNamespaceToLocalNameNamePairList(List<QNameWithName> list) {
 		if (list == null) {
 			throw new IllegalArgumentException("list may not be null");

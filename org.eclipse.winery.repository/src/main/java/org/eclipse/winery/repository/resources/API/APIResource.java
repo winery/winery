@@ -24,13 +24,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataWithOptGroups;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class APIResource {
 

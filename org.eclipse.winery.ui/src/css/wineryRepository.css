@@ -301,13 +301,13 @@ div.mainContentContainer.nodeType  div.bottom {
 	background: url('../assets/img/containers/nt/FrameBottom.jpg');
 }
 
-div.mainContentContainer.admin > div.top {
+div.mainContentContainer.admin  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.admin > div.middle {
+div.mainContentContainer.admin  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.admin > div.bottom {
+div.mainContentContainer.admin  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
@@ -328,93 +328,93 @@ div.managementButtons {
 
 /* quick hack for new types: just use the administration */
 
-div.mainContentContainer.artifactTemplate > div.top {
+div.mainContentContainer.artifactTemplate  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.artifactTemplate > div.middle {
+div.mainContentContainer.artifactTemplate  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.artifactTemplate > div.bottom {
+div.mainContentContainer.artifactTemplate  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
-div.mainContentContainer.artifactType > div.top {
+div.mainContentContainer.artifactType  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.artifactType > div.middle {
+div.mainContentContainer.artifactType  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.artifactType > div.bottom {
+div.mainContentContainer.artifactType  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
-div.mainContentContainer.nodeTypeImplementation > div.top {
+div.mainContentContainer.nodeTypeImplementation  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.nodeTypeImplementation > div.middle {
+div.mainContentContainer.nodeTypeImplementation  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.nodeTypeImplementation > div.bottom {
+div.mainContentContainer.nodeTypeImplementation  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
-div.mainContentContainer.relationshipTypeImplementation > div.top {
+div.mainContentContainer.relationshipTypeImplementation  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.relationshipTypeImplementation > div.middle {
+div.mainContentContainer.relationshipTypeImplementation  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.relationshipTypeImplementation > div.bottom {
+div.mainContentContainer.relationshipTypeImplementation  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
-div.mainContentContainer.requirementType > div.top {
+div.mainContentContainer.requirementType  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.requirementType > div.middle {
+div.mainContentContainer.requirementType  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.requirementType > div.bottom {
+div.mainContentContainer.requirementType  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
-div.mainContentContainer.capabilityType > div.top {
+div.mainContentContainer.capabilityType  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.capabilityType > div.middle {
+div.mainContentContainer.capabilityType  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.capabilityType > div.bottom {
+div.mainContentContainer.capabilityType  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
-div.mainContentContainer.policyTemplate > div.top {
+div.mainContentContainer.policyTemplate  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.policyTemplate > div.middle {
+div.mainContentContainer.policyTemplate  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.policyTemplate > div.bottom {
+div.mainContentContainer.policyTemplate  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
-div.mainContentContainer.policyType > div.top {
+div.mainContentContainer.policyType  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.policyType > div.middle {
+div.mainContentContainer.policyType  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.policyType > div.bottom {
+div.mainContentContainer.policyType  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
-div.mainContentContainer.xsdimport > div.top {
+div.mainContentContainer.xsdimport  div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.xsdimport > div.middle {
+div.mainContentContainer.xsdimport  div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.xsdimport > div.bottom {
+div.mainContentContainer.xsdimport  div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 

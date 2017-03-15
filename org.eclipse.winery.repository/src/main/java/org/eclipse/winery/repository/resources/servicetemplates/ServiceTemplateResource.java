@@ -12,6 +12,22 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
@@ -34,24 +50,10 @@ import org.eclipse.winery.repository.resources.servicetemplates.boundarydefiniti
 import org.eclipse.winery.repository.resources.servicetemplates.plans.PlansResource;
 import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 import org.eclipse.winery.repository.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
+
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
 
@@ -118,7 +120,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 
 	// @formatter:off
 	@GET
-	@RestDoc(methodDescription="Returns the associated node type, which can be substituted by this service template.<br />" +
+	@RestDoc(methodDescription = "Returns the associated node type, which can be substituted by this service template.<br />" +
 	"@return a QName of the form {namespace}localName is returned.")
 	@Path("substitutableNodeType")
 	@Produces(MediaType.TEXT_PLAIN)

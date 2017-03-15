@@ -33,9 +33,8 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
-import org.restdoc.annotations.RestDoc;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.restdoc.annotations.RestDoc;
 
 /**
  * Manages all imports of type XML Schema Definition <br />

@@ -18,10 +18,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
 import org.eclipse.winery.repository.resources.apiData.QNameWithTypeApiData;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate>

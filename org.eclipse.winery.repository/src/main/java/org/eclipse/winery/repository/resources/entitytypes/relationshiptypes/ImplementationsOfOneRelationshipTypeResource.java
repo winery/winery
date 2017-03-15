@@ -25,20 +25,20 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.resources.apiData.converter.QNameConverter;
 import org.eclipse.winery.repository.resources.entitytypes.ImplementationsOfOneType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImplementationsOfOneRelationshipTypeResource extends ImplementationsOfOneType {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationsOfOneRelationshipTypeResource.class);
+
 
 	public ImplementationsOfOneRelationshipTypeResource(RelationshipTypeId typeId) {
 		super(typeId);
 	}
-
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationsOfOneRelationshipTypeResource.class);
 
 
 	/**

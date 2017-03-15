@@ -166,7 +166,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			String javapackage,
 
 			@Context UriInfo uriInfo
-	){
+	) {
 		// we assume that the parent ComponentInstance container exists
 
 		// @formatter:on
@@ -455,7 +455,6 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(fref));
 		return Response.created(url).build();
 	}
-
 
 	private void storeProperties(ArtifactTemplateResource artifactTemplateResource, TOSCAComponentId typeId, String name) {
 		// We generate the properties by hand instead of using JAX-B as using JAX-B causes issues at org.eclipse.winery.common.ModelUtilities.getPropertiesKV(TEntityTemplate):

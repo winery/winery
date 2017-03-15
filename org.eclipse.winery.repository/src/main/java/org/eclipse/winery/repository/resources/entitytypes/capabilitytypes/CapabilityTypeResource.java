@@ -11,10 +11,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.capabilitytypes;
 
+import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
