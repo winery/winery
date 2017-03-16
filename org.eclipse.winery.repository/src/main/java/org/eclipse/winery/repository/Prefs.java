@@ -31,7 +31,6 @@ import javax.servlet.ServletContextListener;
 import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.runtimeintegration.OpenTOSCAContainerConnection;
 
 import org.slf4j.Logger;
@@ -136,15 +135,15 @@ public class Prefs implements ServletContextListener {
 		if (provider == null) {
 			String repositoryLocation = this.properties.getProperty("repositoryPath");
 			Prefs.LOGGER.debug("Repository location: {}", repositoryLocation);
-			Prefs.LOGGER.debug("Trying git-based backend");
-			try {
-				this.repository = new GitBasedRepository(repositoryLocation);
-				Prefs.LOGGER.debug("git-based backend is used");
-			} catch (Throwable e) {
-				Prefs.LOGGER.trace(e.getMessage());
-				Prefs.LOGGER.debug("There seems to be no git repository at the specified location. We fall back to the file-based repository");
+//			Prefs.LOGGER.debug("Trying git-based backend");
+//			try {
+//				this.repository = new GitBasedRepository(repositoryLocation);
+//				Prefs.LOGGER.debug("git-based backend is used");
+//			} catch (Throwable e) {
+//				Prefs.LOGGER.trace(e.getMessage());
+//				Prefs.LOGGER.debug("There seems to be no git repository at the specified location. We fall back to the file-based repository");
 				this.repository = new FilebasedRepository(repositoryLocation);
-			}
+//			}
 		}
 	}
 
