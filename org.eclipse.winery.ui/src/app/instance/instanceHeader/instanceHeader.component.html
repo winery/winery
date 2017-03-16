@@ -12,7 +12,7 @@
  */
 -->
 <div class="top" [class.twolines]="needTwoLines">
-    <!--<img *ngIf="imageUri" src="{{ imageUri }}" style="z-index: 2; position: absolute; margin-top: 32px; margin-left: 27px; height: 40px; width: 40px;">-->
+    <img *ngIf="imageUri" src="{{ imageUri }}" class="nodeTypeImageIcon">
     <div class="informationContainer">
         <div id="component_name" class="name editable editable-click">
             {{ selectedComponentId }}
