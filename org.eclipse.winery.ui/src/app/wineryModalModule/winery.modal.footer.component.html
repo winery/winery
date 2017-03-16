@@ -1,5 +1,5 @@
 <div class="modal-footer">
     <ng-content></ng-content>
     <button *ngIf="showDefaultButtons" type="button" class="btn btn-default" (click)="cancel()">{{ closeButtonLabel }}</button>
-    <button *ngIf="showDefaultButtons" type="button" class="btn btn-primary" (click)="ok()" [disabled]="disableOk">{{ okButtonLabel }}</button>
+    <button *ngIf="showDefaultButtons" type="button" class="btn btn-primary" (click)="ok()" [disabled]="disableOkButton">{{ okButtonLabel }}</button>
 </div>

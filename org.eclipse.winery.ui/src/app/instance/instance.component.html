@@ -13,11 +13,13 @@
 -->
 <div class="mainContentContainer {{ selectedResource }}">
     <winery-instance-header
+        [imageUri]="imageUri"
         [selectedResource]="selectedResource"
         [selectedComponentId]="selectedComponentId"
         [selectedNamespace]="selectedNamespace"
         [subMenu]="availableTabs"
-    ></winery-instance-header>
+        (deleteConfirmed)="delete();">
+    </winery-instance-header>
     <div class="middle" id="ccontainer">
         <router-outlet></router-outlet>
     </div>

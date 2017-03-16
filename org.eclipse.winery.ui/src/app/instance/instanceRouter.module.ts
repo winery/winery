@@ -10,6 +10,7 @@
  *     Lukas Harzenetter - initial API and implementation
  *     Niko Stadelmaier - add admin component
  */
+
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
@@ -20,6 +21,7 @@ import { DocumentationComponent } from './documentation/documentation.component'
 import { InheritanceComponent } from './inheritance/inheritance.component';
 import { InterfacesComponent } from './interfaces/interfaces.component';
 import { ImplementationsComponent } from './implementations/implementations.component';
+import { ImplementationsModule } from './implementations/implementation.module';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
@@ -27,6 +29,8 @@ import { PropertiesDefinitionComponent } from './propertiesDefinition/properties
 import { InstanceResolver } from './instance.resolver';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { InstanceStatesModule } from './instanceStates/instanceStates.module';
+import { AppliesToComponent } from './appliesTo/appliesTo.component';
+import { LanguageComponent } from './language/language.component';
 import { LoggerComponent } from './logger/logger.component';
 import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
 import { NamespacesComponent } from './namespaces/namespaces.component';
@@ -55,12 +59,14 @@ const instanceRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
+            { path: 'appliesto', component: AppliesToComponent },
             { path: 'capabilitydefinitions', component: CapabilityDefinitionsComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'implementations', component: ImplementationsComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'instancestates', component: InstanceStatesComponent },
             { path: 'interfaces', component: InterfacesComponent },
+            { path: 'language', component: LanguageComponent },
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'requirementdefinitions', component: RequirementDefinitionsComponent },
             { path: 'sourceinterfaces', component: InterfacesComponent },
@@ -75,6 +81,7 @@ const instanceRoutes: Routes = [
     imports: [
         BrowserModule,
         PropertiesDefinitionModule,
+        ImplementationsModule,
         InstanceStatesModule,
         RouterModule.forChild(instanceRoutes)
     ],

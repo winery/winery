@@ -12,14 +12,11 @@
 
 export interface SectionResolverData {
     section: string;
+    namespace: string;
     path: string;
 }
 
-export interface NamespaceResolverData extends SectionResolverData {
-    namespace: string;
-}
-
-export interface InstanceResolverData extends NamespaceResolverData {
+export interface InstanceResolverData extends SectionResolverData {
     instanceId: string;
 }
 

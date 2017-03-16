@@ -12,6 +12,7 @@
  */
 -->
 <div class="top" [class.twolines]="needTwoLines">
+    <!--<img *ngIf="imageUri" src="{{ imageUri }}" style="z-index: 2; position: absolute; margin-top: 32px; margin-left: 27px; height: 40px; width: 40px;">-->
     <div class="informationContainer">
         <div id="component_name" class="name editable editable-click">
             {{ selectedComponentId }}
@@ -21,12 +22,11 @@
         </div>
     </div>
     <div class="managementButtons">
-        <button class="btn btn-danger">Delete</button>
-        <button class="btn btn-info">XML</button>
-        <button class="btn btn-info">CSAR</button>
+        <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
+        <a class="btn btn-info" target="_blank" href="{{ backendLink }}?definitions">XML</a>
+        <a class="btn btn-info" href="{{ backendLink }}?csar">CSAR</a>
     </div>
     <div class="subMenu">
-
         <a *ngFor="let item of subMenu"
            class="styledTabMenuButton styledTabMenuButton2ndlevel"
            [class.selected]="item === selectedTab"
@@ -38,3 +38,17 @@
         </a>
     </div>
 </div>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modalHeader [title]="'Delete Property'">
+    </winery-modalHeader>
+    <winery-modalBody>
+        <p>
+            Do you want to delete <span style="font-weight:bold;">{{ selectedComponentId }}</span>?
+        </p>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="deleteConfirmed.emit();"
+                        [closeButtonLabel]="'Cancel'"
+                        [okButtonLabel]="'Delete'">
+    </winery-modalFooter>
+</winery-modal>

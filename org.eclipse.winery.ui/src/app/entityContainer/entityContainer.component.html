@@ -11,18 +11,18 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 -->
-<div id="{{ namespace | urlEncode | urlEncode }}/{{ componentId }}"
+<div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
      class="entityContainer {{ resourceType }}"
-     routerLink="{{ namespace | urlEncode | urlEncode }}/{{ componentId }}">
+     routerLink="/{{ resourceType.toLowerCase() }}s/{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}">
     <div class="left">
-
     </div>
     <div class="center">
         <div class="informationContainer">
-            <div class="name">{{ componentId }}</div>
-            <div class="namespace">{{ namespace }}</div>
+            <div *ngIf="data.id" class="name">{{ data.id }}</div>
+            <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
         </div>
-        <div class="buttonContainer">
+        <div *ngIf="!data.id" class="badge numberOfComponentInstances">{{ data.count }}</div>
+        <div *ngIf="data.id" class="buttonContainer">
             <a href="" class="exportButton"></a>
             <a href="" class="editButton"></a>
             <a href="" class="deleteButton"></a>

@@ -10,7 +10,6 @@
  *     Lukas Harzenetter - initial API and implementation
  *     Niko Stadelmaier - add admin component, move routing to instance module
  */
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -18,15 +17,14 @@ import { OtherComponent } from './other/other.component';
 import { SectionComponent } from './section/section.component';
 import { SectionResolver } from './section/section.resolver';
 import { NotFoundComponent } from './404/notFound.component';
-import { NamespaceResolver } from './namespace/namespace.resolver';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
     { path: 'other', component: OtherComponent },
     { path: 'notfound', component: NotFoundComponent },
+    { path: ':section/:namespace', component: SectionComponent, resolve: { resolveData: SectionResolver } },
     { path: ':section', component: SectionComponent, resolve: { resolveData: SectionResolver } },
-    { path: ':section/:namespace', component: SectionComponent, resolve: { resolveData: NamespaceResolver } },
     { path: '', redirectTo: '/servicetemplates', pathMatch: 'full' },
     { path: '**', component: NotFoundComponent },
     // TODO: add namespaces, other routes available in other, etc...

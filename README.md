@@ -118,7 +118,7 @@ The initial code contribution has been supported by the [Federal Ministry for Ec
 Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the [SmartOrchestra] project (01MD16001F).
 
 ## License
-Copyright (c) 2012-2016 University of Stuttgart.
+Copyright (c) 2012-2017 University of Stuttgart.
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the [Eclipse Public License v1.0]
@@ -128,6 +128,7 @@ and http://www.apache.org/licenses/LICENSE-2.0
 
 Contributors:
 * Oliver Kopp - initial API and implementation
+* Lukas Harzenetter, Niko Stadelmaier, Tino Stadelmaier, Nicole Keppler, Philipp Meyer, Lukas Balzer, Huixin Lui - Angular 2 frontend & JSON backend
 
 ## Literature
 

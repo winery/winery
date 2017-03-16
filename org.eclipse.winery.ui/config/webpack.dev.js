@@ -1,3 +1,14 @@
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzenetter - initial API and implementation
+ */
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 
@@ -42,7 +53,7 @@ module.exports = webpackMerge(common, {
             index: '/',
             // rewrite rule in order to support dots in the url
             rewrites: [
-                { from: /[\/]+.*[.].*[\/]/, to: '/' }
+                { from: /[\/]+.*.\%.*.[.].*/, to: '/' }
             ]
         },
         watchOptions: {aggregateTimeout: 300, poll: 1000},

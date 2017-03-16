@@ -24,6 +24,7 @@ import { isNullOrUndefined } from 'util';
     providers: [InstanceStateService]
 })
 export class InstanceStatesComponent implements OnInit {
+
     loading: boolean = true;
     instanceStates: InstanceStateApiData[];
     elementToRemove: InstanceStateApiData = null;

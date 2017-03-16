@@ -30,6 +30,8 @@ import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { InterfacesModule } from './interfaces/interfaces.module';
+import { AppliesToComponent } from './appliesTo/appliesTo.component';
+import { LanguageComponent } from './language/language.component';
 import { RepositoryComponent } from './repository/repository.component';
 import { LoggerComponent } from './logger/logger.component';
 import { PlanTypesComponent } from './planTypes/planTypes.component';
@@ -56,13 +58,14 @@ import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.
     ],
     exports: [],
     declarations: [
+        AppliesToComponent,
         CapabilityDefinitionsComponent,
         DocumentationComponent,
         EditXMLComponent,
-        ImplementationsComponent,
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,
+        LanguageComponent,
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
         VisualAppearanceComponent,
