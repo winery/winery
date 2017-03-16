@@ -10,7 +10,6 @@
  *     Lukas Harzenetter - initial API and implementation
  *     Niko Stadelmaier - add admin component
  */
-
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
@@ -28,12 +27,12 @@ import { PropertiesDefinitionComponent } from './propertiesDefinition/properties
 import { InstanceResolver } from './instance.resolver';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { InstanceStatesModule } from './instanceStates/instanceStates.module';
-import { LoggerComponent } from "./logger/logger.component";
-import { PlanLanguagesComponent } from "./planLanguages/planLanguages.component";
-import { NamespacesComponent } from "./namespaces/namespaces.component";
-import { RepositoryComponent } from "./repository/repository.component";
-import { ConstraintTypesComponent } from "./contraintTypes/constraintTypes.component";
-import { PlanTypesComponent } from "./planTypes/planTypes.component";
+import { LoggerComponent } from './logger/logger.component';
+import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
+import { NamespacesComponent } from './namespaces/namespaces.component';
+import { RepositoryComponent } from './repository/repository.component';
+import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
+import { PlanTypesComponent } from './planTypes/planTypes.component';
 
 
 const instanceRoutes: Routes = [

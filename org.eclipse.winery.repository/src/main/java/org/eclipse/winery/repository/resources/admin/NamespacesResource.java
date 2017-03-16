@@ -132,6 +132,41 @@ public class NamespacesResource extends AbstractAdminResource {
 	}
 
 	/**
+	 * Sets / overwrites prefix/namespace mapping
+	 *
+	 * In case the prefix is already bound to another namespace, BAD_REQUEST is
+	 * returned.
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addNamespace(ArrayList<NamespaceWithPrefix> namespacesList) {
+		if (namespacesList == null) {
+			return Response.status(Status.BAD_REQUEST).entity("namespace list must be given.").build();
+		}
+
+		Collection<Namespace> namespaces = NamespacesResource.getNamespaces();
+
+		//delete all namespaces
+		for (Namespace ns : namespaces) {
+			this.onDelete(Util.URLencode(ns.getDecoded()));
+		}
+
+		//set all namespaces
+		for (NamespaceWithPrefix nsp : namespacesList) {
+			String namespace;
+			String prefix;
+
+			namespace = nsp.namespace;
+			prefix = nsp.prefix;
+
+			this.addNamespace(namespace, prefix);
+		}
+
+		return Response.noContent().build();
+	}
+
+
+	/**
 	 * Deletes given namespace from the repository
 	 *
 	 * @param URI to delete. The namespace is URLencoded.

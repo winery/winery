@@ -8,12 +8,14 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add types
  */
 
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseUri } from '../configuration';
+import { NamespaceWithPrefix } from '../interfaces/namespaceWithPrefix';
 
 @Injectable()
 export class NamespaceSelectorService {
@@ -21,7 +23,7 @@ export class NamespaceSelectorService {
     constructor(private http: Http) {
     }
 
-    getAllNamespaces(): Observable<any[]> {
+    getAllNamespaces(): Observable<NamespaceWithPrefix[]> {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 

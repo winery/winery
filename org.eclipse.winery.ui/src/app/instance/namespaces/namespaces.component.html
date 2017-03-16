@@ -11,6 +11,77 @@
  *     Niko Stadelmaier - initial API and implementation
  */
 -->
+<div *ngIf="!loading">
+    <div class="right">
+        <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+    </div>
+    <winery-table title="Defined Prefixes for Namespaces"
+                  [columns]="columns"
+                  [data]="adminNamespaces"
+                  (addBtnClicked)="onAddClick()"
+                  (removeBtnClicked)="onRemoveClick($event)">
+    </winery-table>
 
-<winery-table title="Defined Prefixes for Namespaces" [columns]="columns" [data]="adminNamespaces">
-</winery-table>
+    <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+        <modal-header>
+            <h4 class="modal-title">Delete Property</h4>
+        </modal-header>
+        <modal-body>
+            <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.namespace }}</span>?
+            </p>
+        </modal-body>
+        <modal-footer (onOk)="deleteNamespace();"
+                      [close-button-label]="'No'"
+                      [ok-button-label]="'Yes'">
+        </modal-footer>
+    </winery-modal>
+
+    <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+        <modal-header>
+            <h4 class="modal-title">Add Property</h4>
+        </modal-header>
+        <modal-body>
+            <form #addNamespaceForm="ngForm" id="addPropertyForm">
+                <div class="form-group">
+                    <label class="control-label" for="prefixName">Prefix</label>
+                    <input #prefixName="ngModel"
+                           id="prefixName"
+                           class="form-control"
+                           type="text"
+                           name="prefix"
+                           autocomplete=off
+                           required
+                           [(ngModel)]="newNamespace.prefix"
+                           [duplicateValidator]="validatorObjectPrefix"/>
+
+                    <div *ngIf="prefixName.errors && (prefixName.dirty || prefixName.touched)"
+                         class="alert alert-danger">
+                        <div [hidden]="!prefixName.errors.duplicateValidator">
+                            No duplicates allowed!
+                        </div>
+                        <div [hidden]="!prefixName.errors.required">
+                            Name is required
+                        </div>
+                    </div>
+                </div>
+
+                <winery-namespaceSelector
+                    #namespace
+                    name="namespaceSelector"
+                    [(ngModel)]="newNamespace.namespace"
+                    [isRequired]="true"
+                    [typeAheadListLimit]="20"
+                    required>
+                </winery-namespaceSelector>
+
+            </form>
+        </modal-body>
+        <modal-footer (onOk)="addNamespace(namespace.selectedNamespace, prefixName.value); addNamespaceForm.reset();"
+                      [close-button-label]="'Cancel'"
+                      [ok-button-label]="'Add'"
+                      [ok-disabled]="!addNamespaceForm?.form.valid">
+        </modal-footer>
+    </winery-modal>
+</div>
+

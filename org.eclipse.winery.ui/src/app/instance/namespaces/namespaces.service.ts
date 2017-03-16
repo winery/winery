@@ -12,21 +12,32 @@
 
 import { Injectable } from '@angular/core';
 import { NamespaceSelectorService } from '../../namespaceSelector/namespaceSelector.service';
-import { Http } from '@angular/http';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
+import { backendBaseUri } from '../../configuration';
+import { Router } from '@angular/router';
+import { NamespaceWithPrefix } from '../../interfaces/namespaceWithPrefix';
 
 @Injectable()
 export class NamespacesService {
 
-    constructor(private http: Http, private namespaceService: NamespaceSelectorService) {
+    private path: string;
+
+    constructor(private http: Http,
+                private namespaceService: NamespaceSelectorService,
+                private route: Router) {
+        this.path = decodeURIComponent(this.route.url);
     }
 
     getAllNamespaces(): Observable<any[]> {
         return this.namespaceService.getAllNamespaces();
     };
 
-    saveNamespaces() {
+    postNamespaces(namespaces: NamespaceWithPrefix[]): Observable<Response> {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
 
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(namespaces), options);
     }
 
 }

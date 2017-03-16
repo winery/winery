@@ -30,13 +30,15 @@ import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { InterfacesModule } from './interfaces/interfaces.module';
-import { RepositoryComponent } from "./repository/repository.component";
-import { LoggerComponent } from "./logger/logger.component";
-import { PlanTypesComponent } from "./planTypes/planTypes.component";
-import { ConstraintTypesComponent } from "./contraintTypes/constraintTypes.component";
-import { PlanLanguagesComponent } from "./planLanguages/planLanguages.component";
-import { NamespacesComponent } from "./namespaces/namespaces.component";
-import { WineryTableModule } from "../wineryTableModule/wineryTable.module";
+import { RepositoryComponent } from './repository/repository.component';
+import { LoggerComponent } from './logger/logger.component';
+import { PlanTypesComponent } from './planTypes/planTypes.component';
+import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
+import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
+import { NamespacesComponent } from './namespaces/namespaces.component';
+import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
+import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
+import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
 
 @NgModule({
     imports: [
@@ -48,7 +50,9 @@ import { WineryTableModule } from "../wineryTableModule/wineryTable.module";
         InstanceRouterModule,
         WineryModalModule,
         InterfacesModule,
-        WineryTableModule
+        WineryTableModule,
+        DuplicateValidatorModule,
+        NamespaceSelectorModule
     ],
     exports: [],
     declarations: [
