@@ -22,9 +22,9 @@
         </div>
     </div>
     <div class="managementButtons">
-        <button class="btn btn-danger">Delete</button>
-        <button class="btn btn-info">XML</button>
-        <button class="btn btn-info">CSAR</button>
+        <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
+        <a class="btn btn-info" href="{{ backendLink }} + '?xml'">XML</a>
+        <a class="btn btn-info" href="{{ backendLink }} + '?csar'">CSAR</a>
     </div>
     <div class="subMenu">
         <a *ngFor="let item of subMenu"
@@ -38,3 +38,17 @@
         </a>
     </div>
 </div>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modalHeader [title]="'Delete Property'">
+    </winery-modalHeader>
+    <winery-modalBody>
+        <p>
+            Do you want to delete <span style="font-weight:bold;">{{ selectedComponentId }}</span>?
+        </p>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="deleteConfirmed.emit();"
+                        [closeButtonLabel]="'Cancel'"
+                        [okButtonLabel]="'Delete'">
+    </winery-modalFooter>
+</winery-modal>

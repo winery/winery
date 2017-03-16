@@ -9,11 +9,11 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
 import { Injectable } from '@angular/core';
-
-import { InstanceData } from './instanceData';
 import { isNullOrUndefined } from 'util';
+import { Observable } from 'rxjs';
+import { Http } from '@angular/http';
+import { backendBaseUri } from '../configuration';
 
 @Injectable()
 export class InstanceService {
@@ -23,7 +23,8 @@ export class InstanceService {
     selectedNamespace: string;
     path: string;
 
-    constructor() {}
+    constructor(private http: Http) {
+    }
 
     /**
      * Get the submenu for the given resource type for displaying a component instance.
@@ -41,7 +42,7 @@ export class InstanceService {
         switch (type.toLowerCase()) {
             case 'nodetype':
                 subMenu = ['Visual Appearance', 'Instance States', 'Interfaces', 'Implementations',
-                    'Requirement Definitions' , 'Capability Definitions', 'Properties Definition',
+                    'Requirement Definitions', 'Capability Definitions', 'Properties Definition',
                     'Inheritance', 'Documentation', 'XML'];
                 break;
             case 'servicetemplate':
@@ -106,5 +107,9 @@ export class InstanceService {
         this.path = '/' + this.selectedResource.toLowerCase() + 's/'
             + encodeURIComponent(encodeURIComponent(this.selectedNamespace)) + '/'
             + this.selectedComponentId;
+    }
+
+    public deleteComponent(): Observable<any> {
+        return this.http.delete(backendBaseUri + this.path);
     }
 }

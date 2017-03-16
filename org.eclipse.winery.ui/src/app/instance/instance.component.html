@@ -18,7 +18,8 @@
         [selectedComponentId]="selectedComponentId"
         [selectedNamespace]="selectedNamespace"
         [subMenu]="availableTabs"
-    ></winery-instance-header>
+        (deleteConfirmed)="service.deleteComponent();">
+    </winery-instance-header>
     <div class="middle" id="ccontainer">
         <router-outlet></router-outlet>
     </div>

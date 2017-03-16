@@ -124,8 +124,7 @@
 </winery-modal>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <winery-modalHeader>
-        <h4 class="modal-title">Delete Property</h4>
+    <winery-modalHeader [title]="'Delete Property'">
     </winery-modalHeader>
     <winery-modalBody>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">
