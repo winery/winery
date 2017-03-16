@@ -17,6 +17,7 @@ import { InstanceService } from '../instance.service';
 import { InstanceStateApiData } from './InstanceStateApiData';
 import { Response } from '@angular/http';
 import { isNullOrUndefined } from 'util';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-instance-instanceStates',
@@ -37,7 +38,7 @@ export class InstanceStatesComponent implements OnInit {
     @ViewChild('confirmDeleteModal') deleteStateModal: any;
     @ViewChild('addModal') addStateModal: any;
 
-    constructor(private service: InstanceStateService) {
+    constructor(private service: InstanceStateService, private notify: NotificationService) {
     }
 
     ngOnInit() {
@@ -107,8 +108,8 @@ export class InstanceStatesComponent implements OnInit {
         this.loading = true;
         if (data.status === 204) {
             this.getInstanceStatesApiData();
+            this.notify.success('Successfully saved Instance State');
         } else if (data.status === 406) {
-            this.loading = false;
             this.handleError('Post request not acceptable due to empty state');
         }
     }
@@ -124,7 +125,7 @@ export class InstanceStatesComponent implements OnInit {
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log(error);
+        this.notify.error(error);
     }
 
     // endregion
