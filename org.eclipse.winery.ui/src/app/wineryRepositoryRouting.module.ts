@@ -9,7 +9,6 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -18,7 +17,6 @@ import { OtherComponent } from './other/other.component';
 import { SectionComponent } from './section/section.component';
 import { SectionResolver } from './section/section.resolver';
 import { NotFoundComponent } from './404/notFound.component';
-import { NamespaceResolver } from './namespace/namespace.resolver';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 
