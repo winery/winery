@@ -23,25 +23,25 @@
     </winery-table>
 
     <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-        <modal-header>
+        <winery-modalHeader>
             <h4 class="modal-title">Delete Property</h4>
-        </modal-header>
-        <modal-body>
+        </winery-modalHeader>
+        <winery-modalBody>
             <p *ngIf="elementToRemove != null" id="diagyesnomsg">
                 Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.namespace }}</span>?
             </p>
-        </modal-body>
-        <modal-footer (onOk)="deleteNamespace();"
-                      [close-button-label]="'No'"
-                      [ok-button-label]="'Yes'">
-        </modal-footer>
+        </winery-modalBody>
+        <winery-modalFooter (onOk)="deleteNamespace();"
+                            [closeButtonLabel]="'No'"
+                            [okButtonLabel]="'Yes'">
+        </winery-modalFooter>
     </winery-modal>
 
     <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-        <modal-header>
+        <winery-modalHeader>
             <h4 class="modal-title">Add Property</h4>
-        </modal-header>
-        <modal-body>
+        </winery-modalHeader>
+        <winery-modalBody>
             <form #addNamespaceForm="ngForm" id="addPropertyForm">
                 <div class="form-group">
                     <label class="control-label" for="prefixName">Prefix</label>
@@ -76,12 +76,12 @@
                 </winery-namespaceSelector>
 
             </form>
-        </modal-body>
-        <modal-footer (onOk)="addNamespace(namespace.selectedNamespace, prefixName.value); addNamespaceForm.reset();"
-                      [close-button-label]="'Cancel'"
-                      [ok-button-label]="'Add'"
-                      [ok-disabled]="!addNamespaceForm?.form.valid">
-        </modal-footer>
+        </winery-modalBody>
+        <winery-modalFooter (onOk)="addNamespace(namespace.selectedNamespace, prefixName.value); addNamespaceForm.reset();"
+                            [closeButtonLabel]="'Cancel'"
+                            [okButtonLabel]="'Add'"
+                            [disableOkButton]="!addNamespaceForm?.form.valid">
+        </winery-modalFooter>
     </winery-modal>
 </div>
 

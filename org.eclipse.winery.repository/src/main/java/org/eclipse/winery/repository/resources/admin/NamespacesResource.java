@@ -146,9 +146,7 @@ public class NamespacesResource extends AbstractAdminResource {
 
 		Collection<Namespace> namespaces = NamespacesResource.getNamespaces();
 		//delete all namespaces
-		for (Namespace ns : namespaces) {
-			this.onDelete(Util.URLencode(ns.getDecoded()));
-		}
+		this.configuration.clear();
 
 		//set all namespaces
 		for (NamespaceWithPrefix nsp : namespacesList) {
