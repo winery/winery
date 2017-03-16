@@ -15,6 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InstanceService } from './instance.service';
 import { NotificationService } from '../notificationModule/notificationservice';
+import { backendBaseUri } from '../configuration';
 
 
 @Component({
@@ -29,6 +30,7 @@ export class InstanceComponent implements OnInit, OnDestroy {
     selectedResource: string;
     selectedComponentId: string;
     selectedNamespace: string;
+    imageUri: string = '';
 
     routeSub: Subscription;
 
@@ -46,6 +48,7 @@ export class InstanceComponent implements OnInit, OnDestroy {
                     this.selectedComponentId = data['resolveData'].instanceId;
 
                     this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId);
+                    this.imageUri = backendBaseUri + this.service.path + '/visualappearance/50x50';
 
                     this.availableTabs = this.service.getSubMenuByResource();
                 },

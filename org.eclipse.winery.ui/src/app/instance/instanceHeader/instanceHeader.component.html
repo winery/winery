@@ -12,6 +12,7 @@
  */
 -->
 <div class="top" [class.twolines]="needTwoLines">
+    <img src="{{ imageUri }}">
     <div class="informationContainer">
         <div id="component_name" class="name editable editable-click">
             {{ selectedComponentId }}
@@ -26,7 +27,6 @@
         <button class="btn btn-info">CSAR</button>
     </div>
     <div class="subMenu">
-
         <a *ngFor="let item of subMenu"
            class="styledTabMenuButton styledTabMenuButton2ndlevel"
            [class.selected]="item === selectedTab"
