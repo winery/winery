@@ -27,6 +27,7 @@ import { LoaderModule } from './loader/loader.module';
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { CustomOption } from './notificationModule/notificationOptions';
 import { NotificationModule } from './notificationModule/notification.module';
+import { WineryModalModule } from './wineryModalModule/winery.modal.module';
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import { NotificationModule } from './notificationModule/notification.module';
         ToastModule.forRoot(),
         NotificationModule.forRoot(),
         WineryRepositoryRoutingModule,
+        WineryModalModule,
     ],
     declarations: [
         EntityContainerComponent,

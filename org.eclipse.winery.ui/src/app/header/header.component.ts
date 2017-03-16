@@ -9,21 +9,47 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { sections } from '../configuration';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.style.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+
+    selectedOtherComponent: string = '';
 
     constructor(private router: Router) {
     }
 
-    showAbout(): void {
-        console.log('showing about...');
+    ngOnInit(): void {
+        this.router.events.subscribe(data => {
+            let others: string = data.url.slice(1);
+
+            if (others.includes('/')) {
+                others = others.split('/')[0];
+            }
+
+            if (!isNullOrUndefined(others) && !(
+                    others.includes('servicetemplates') ||
+                    others.includes('nodetypes') ||
+                    others.includes('relationshiptypes') ||
+                    others.includes('other') ||
+                    others.includes('admin')
+                )
+            ) {
+                this.selectedOtherComponent = ': '
+                    + sections[others]
+                        .replace(/([A-Z])/g, ' $1')
+                        .replace(/^./, (str: string) => str.toUpperCase())
+                    + 's';
+            } else {
+                this.selectedOtherComponent = '';
+            }
+        });
     }
 }

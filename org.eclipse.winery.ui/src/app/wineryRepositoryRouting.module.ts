@@ -27,7 +27,7 @@ const appRoutes: Routes = [
     { path: 'other', component: OtherComponent },
     { path: 'notfound', component: NotFoundComponent },
     { path: ':section', component: SectionComponent, resolve: { resolveData: SectionResolver } },
-    { path: ':section/:namespace', component: SectionComponent, resolve: { resolveData: NamespaceResolver } },
+    { path: ':section/:namespace', component: SectionComponent},
     { path: '', redirectTo: '/servicetemplates', pathMatch: 'full' },
     { path: '**', component: NotFoundComponent },
     // TODO: add namespaces, other routes available in other, etc...
