@@ -11,6 +11,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { DocumentationService } from './documentation.service';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-instance-documentation',
@@ -25,7 +26,7 @@ export class DocumentationComponent implements OnInit {
     documentationData: string;
     loading: boolean = true;
 
-    constructor(private service: DocumentationService) {
+    constructor(private service: DocumentationService, private notify: NotificationService) {
         this.documentationData = 'default documentation value';
     }
 
@@ -53,10 +54,11 @@ export class DocumentationComponent implements OnInit {
 
     private handleResponse(response: any) {
         this.loading = false;
+        this.notify.success('Successfully saved Documentation!');
     }
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log(error);
+        this.notify.error(error);
     }
 }

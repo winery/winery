@@ -14,10 +14,10 @@ import { isNullOrUndefined } from 'util';
  * @example <caption>Short Example</caption>
  * ```html
  * <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
- *     <modal-header>
+ *     <winery-modalHeader>
  *         <h4 class="modal-title">Delete Property</h4>
- *     </modal-header>
- *     <modal-body>
+ *     </winery-modalHeader>
+ *     <winery-modalBody>
  *         <p *ngIf="elementToRemove != null">
  *             Do you want to delete the Element
  *                 <span style="font-weight:bold;">
@@ -25,11 +25,11 @@ import { isNullOrUndefined } from 'util';
  *                 </span>
  *             ?
  *         </p>
- *     </modal-body>
- *     <modal-footer (onOk)="removeConfirmed();"
+ *     </winery-modalBody>
+ *     <winery-modalFooter (onOk)="removeConfirmed();"
  *                   [close-button-label]="'No'"
  *                   [ok-button-label]="'Yes'">
- *     </modal-footer>
+ *     </winery-modalFooter>
  * </winery-modal>
  * ```
  */

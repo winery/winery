@@ -12,12 +12,14 @@
  */
 -->
 <div class="mainContentContainer {{ selectedResource }}">
+    <img src="{{ imageUri }}" style="z-index: 2; position: absolute; margin-top: 32px; margin-left: 27px; height: 40px; width: 40px;">
     <winery-instance-header
         [selectedResource]="selectedResource"
         [selectedComponentId]="selectedComponentId"
         [selectedNamespace]="selectedNamespace"
         [subMenu]="availableTabs"
-    ></winery-instance-header>
+        (deleteConfirmed)="service.deleteComponent();">
+    </winery-instance-header>
     <div class="middle" id="ccontainer">
         <router-outlet></router-outlet>
     </div>

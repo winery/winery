@@ -76,10 +76,10 @@
 </div>
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <modal-header>
+    <winery-modalHeader>
         <h4 class="modal-title">Add Property</h4>
-    </modal-header>
-    <modal-body>
+    </winery-modalHeader>
+    <winery-modalBody>
         <form #addPropertyFrom="ngForm" id="addPropertyForm">
             <div class="form-group">
                 <label class="control-label" for="key">Name</label>
@@ -115,25 +115,24 @@
                 </select>
             </div>
         </form>
-    </modal-body>
-    <modal-footer (onOk)="addProperty(selectProperty.value, propName.value); addPropertyFrom.reset();"
-                  [close-button-label]="'Cancel'"
-                  [ok-button-label]="'Add'"
-                  [ok-disabled]="!addPropertyFrom?.form.valid">
-    </modal-footer>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="addProperty(selectProperty.value, propName.value); addPropertyFrom.reset();"
+                        [closeButtonLabel]="'Cancel'"
+                        [okButtonLabel]="'Add'"
+                        [disableOkButton]="!addPropertyFrom?.form.valid">
+    </winery-modalFooter>
 </winery-modal>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <modal-header>
-        <h4 class="modal-title">Delete Property</h4>
-    </modal-header>
-    <modal-body>
+    <winery-modalHeader [title]="'Delete Property'">
+    </winery-modalHeader>
+    <winery-modalBody>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">
             Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.key }}</span>?
         </p>
-    </modal-body>
-    <modal-footer (onOk)="removeConfirmed();"
-                  [close-button-label]="'No'"
-                  [ok-button-label]="'Yes'">
-    </modal-footer>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="removeConfirmed();"
+                        [closeButtonLabel]="'Cancel'"
+                        [okButtonLabel]="'Delete'">
+    </winery-modalFooter>
 </winery-modal>

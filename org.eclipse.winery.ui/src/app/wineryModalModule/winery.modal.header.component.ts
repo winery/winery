@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'modal-header',
+    selector: 'winery-modalHeader',
     templateUrl: 'winery.modal.header.component.html'
 })
 export class WineryModalHeaderComponent {
-    @Input('modal-ref') modalRef: any;
+    @Input() modalRef: any;
     @Input() title: string = '';
 }

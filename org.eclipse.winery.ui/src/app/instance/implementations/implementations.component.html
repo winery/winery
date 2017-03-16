@@ -28,10 +28,9 @@ to get an overview on all implementations stored in this repository. </p>
     </winery-table>
 </div>
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <modal-header>
-        <h4 class="modal-title">Add Node Type Implementation</h4>
-    </modal-header>
-    <modal-body>
+    <winery-modalHeader [title]="'Add Node Type Implementation'">
+    </winery-modalHeader>
+    <winery-modalBody>
         <form #addImplForm="ngForm" id="addImplForm">
             <div class="form-group">
                 <label class="control-label" for="localname">Name</label>
@@ -62,26 +61,25 @@ to get an overview on all implementations stored in this repository. </p>
                     [(ngModel)]="selectedNamespace"></winery-namespaceSelector>
             </div>
         </form>
-    </modal-body>
-    <modal-footer (onOk)="addNewImplementation(localNameInput.value)"
-                  [close-button-label]="'Cancel'"
-                  [ok-button-label]="'Add'"
-                  [ok-disabled]="!addImplForm?.form.valid">
-    </modal-footer>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="addNewImplementation(localNameInput.value)"
+                        [closeButtonLabel]="'Cancel'"
+                        [okButtonLabel]="'Add'"
+                        [disableOkButton]="!addImplForm?.form.valid">
+    </winery-modalFooter>
 
 </winery-modal>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <modal-header>
-        <h4 class="modal-title">Delete Implementation</h4>
-    </modal-header>
-    <modal-body>
+    <winery-modalHeader [title]="'Delete Implementation'">
+    </winery-modalHeader>
+    <winery-modalBody>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">
             Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.localname }}</span>?
         </p>
-    </modal-body>
-    <modal-footer (onOk)="removeConfirmed();"
-                  [close-button-label]="'No'"
-                  [ok-button-label]="'Yes'">
-    </modal-footer>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="removeConfirmed();"
+                        [closeButtonLabel]="'Cancel'"
+                        [okButtonLabel]="'Delete'">
+    </winery-modalFooter>
 </winery-modal>

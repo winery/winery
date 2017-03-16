@@ -27,10 +27,10 @@
 </div>
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <modal-header>
+    <winery-modalHeader>
         <h4 class="modal-title">Add State</h4>
-    </modal-header>
-    <modal-body>
+    </winery-modalHeader>
+    <winery-modalBody>
         <form #add From="ngForm" id="addPropertyForm">
             <div class="form-group">
                 <label class="control-label" for="state">State</label>
@@ -44,25 +44,25 @@
             </div>
 
         </form>
-    </modal-body>
-    <modal-footer (onOk)="addProperty(propName.value)"
-                  [close-button-label]="'Cancel'" [ok-button-label]="'Add'">
-    </modal-footer>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="addProperty(propName.value)"
+                        [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Add'">
+    </winery-modalFooter>
 </winery-modal>
 
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <modal-header>
+    <winery-modalHeader>
         <h4 class="modal-title">Delete State</h4>
-    </modal-header>
-    <modal-body>
+    </winery-modalHeader>
+    <winery-modalBody>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">
             Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.state }}</span>?
         </p>
-    </modal-body>
-    <modal-footer (onOk)="removeConfirmed();"
-                  [close-button-label]="'No'"
-                  [ok-button-label]="'Yes'">
-    </modal-footer>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="removeConfirmed();"
+                        [closeButtonLabel]="'Cancel'"
+                        [okButtonLabel]="'Delete'">
+    </winery-modalFooter>
 </winery-modal>
 

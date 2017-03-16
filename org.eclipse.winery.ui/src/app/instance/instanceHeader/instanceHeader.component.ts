@@ -10,9 +10,11 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { RemoveWhiteSpacesPipe } from '../../pipes/removeWhiteSpaces.pipe';
+import { InstanceService } from '../instance.service';
+import { backendBaseUri } from '../../configuration';
 
 @Component({
     selector: 'winery-instance-header',
@@ -37,15 +39,22 @@ export class InstanceHeaderComponent implements OnInit {
     @Input() selectedComponentId: string;
     @Input() selectedResource: string;
     @Input() subMenu: string[];
+    @Output() deleteConfirmed: EventEmitter<any> = new EventEmitter();
 
     needTwoLines: boolean = false;
     selectedTab: string;
+    backendLink: string;
 
-    constructor(private router: Router) {}
+    constructor(private router: Router, private sharedData: InstanceService) {}
 
     ngOnInit(): void {
         if (this.subMenu.length > 7) {
             this.needTwoLines = true;
         }
+        this.backendLink = backendBaseUri + this.sharedData.path;
+    }
+
+    removeConfirmed() {
+        this.deleteConfirmed.emit();
     }
 }
