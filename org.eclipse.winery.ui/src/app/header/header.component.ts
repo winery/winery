@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
                 others = others.split('/')[0];
             }
 
-            if (!isNullOrUndefined(others) && !(
+            if (!isNullOrUndefined(sections[others]) && !(
                     others.includes('servicetemplates') ||
                     others.includes('nodetypes') ||
                     others.includes('relationshiptypes') ||
