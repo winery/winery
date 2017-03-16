@@ -110,6 +110,6 @@ export class InstanceService {
     }
 
     public deleteComponent(): Observable<any> {
-        return this.http.delete(backendBaseUri + this.path);
+        return this.http.delete(backendBaseUri + this.path + '/');
     }
 }
