@@ -23,8 +23,8 @@
     </div>
     <div class="managementButtons">
         <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
-        <a class="btn btn-info" href="{{ backendLink }} + '?xml'">XML</a>
-        <a class="btn btn-info" href="{{ backendLink }} + '?csar'">CSAR</a>
+        <a class="btn btn-info" target="_blank" href="{{ backendLink }}?definitions">XML</a>
+        <a class="btn btn-info" href="{{ backendLink }}?csar">CSAR</a>
     </div>
     <div class="subMenu">
         <a *ngFor="let item of subMenu"
