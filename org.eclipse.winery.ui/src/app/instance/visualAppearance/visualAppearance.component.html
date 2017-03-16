@@ -8,7 +8,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Lukas Balzer - initial API and implementation
  */
 -->
 <div class="localLoader" [class.hidden]="!loading">
@@ -22,42 +22,63 @@
                  [ngClass]="{'nv-file-over': hasImg16DropZoneOver}"
                  (fileOver)="onImg16Hover($event)"
                  [uploader]="img16uploader"
-                 class="imgDropZone img-uploader">
+                 class="imgDropZone">
                 <img src="{{img16Path}}">
-                <button class="btn btn-default btn-xs" type="button" (click)="onUpload();"> upload..</button>
+                <button class="btn btn-default btn-xs" type="button" (click)="onUpload16();"> upload..</button>
             </div><br/>
             <b>Icon (50x50) used in the node template shapes</b><br/>
             <div ng2FileDrop
                  [ngClass]="{'nv-file-over': hasImg50DropZoneOver}"
                  (fileOver)="onImg50Hover($event)"
                  [uploader]="img50uploader"
-                 class="imgDropZone img-uploader">
+                 class="imgDropZone">
                 <img src="{{img50Path}}">
-                <button class="btn btn-default btn-xs" type="button">upload..</button>
+                <button class="btn btn-default btn-xs" type="button" (click)="onUpload50();">upload..</button>
             </div>
             <br/>
         </tab>
         <tab heading="Color">
             <br/>
-            <input [(colorPicker)]="color"
+            <input [colorPicker]="color"
                    [style.background]="color"
                    [value]="color"
                    [cpOKButton]="true"
                    [cpSaveClickOutside]="false"
-                   [cpOKButtonClass]= "'btn btn-primary btn-xs'"/>
+                   [cpOKButtonClass]= "'btn btn-primary btn-sm'"
+                   (colorPickerChange)="color=$event"/>
             <br/>Click the box above to choose or enter the hex value<br/>
+            <div class="floatButton">
+                <button (click)="saveToServer()" class="btn btn-info btn-sm">save</button>
+                <button (click)="test()" class="btn btn-info btn-sm">test</button>
+            </div>
         </tab>
     </tabset>
 </div>
 
-<winery-modal bsModal #uploadModal="bs-modal" [modalRef]="uploadModal">
-    <modal-header [title]="'Upload Icon (16x16) used in palette'">
-    </modal-header>
-    <modal-body>
+<winery-modal bsModal #upload16Modal="bs-modal" [modalRef]="upload16Modal">
+    <winery-modalHeader [title]="'Upload Icon (16x16) used in palette'">
+    </winery-modalHeader>
+    <winery-modalBody>
         <div class="modal-upload">
             <input type="file" ng2FileSelect [uploader]="img16uploader" />
         </div>
-    </modal-body>
-    <modal-footer [close-button-label]="'Cancel'">
-    </modal-footer>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="img16uploader.uploadAll();"
+                  [closeButtonLabel]="'Cancel'"
+                  [okButtonLabel]="'Upload'">
+    </winery-modalFooter>
+</winery-modal>
+
+<winery-modal bsModal #upload50Modal="bs-modal" [modalRef]="upload50Modal">
+    <winery-modalHeader [title]="'Upload Icon (50x50) used in palette'">
+    </winery-modalHeader>
+    <winery-modalBody>
+        <div class="modal-upload">
+            <input type="file" ng2FileSelect [uploader]="img50uploader" />
+        </div>
+    </winery-modalBody>
+    <winery-modalFooter (onOk)="img50uploader.uploadAll();"
+                  [closeButtonLabel]="'Cancel'"
+                  [okButtonLabel]="'Upload'">
+    </winery-modalFooter>
 </winery-modal>

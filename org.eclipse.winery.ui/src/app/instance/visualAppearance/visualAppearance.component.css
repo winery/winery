@@ -27,3 +27,8 @@ img {
 .nv-file-over {
     border: dotted 3px red;
 }
+
+div.floatButton {
+    float:right;
+    margin-top: 10px;;
+}

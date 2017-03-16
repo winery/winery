@@ -13,7 +13,8 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { VisualAppearanceService } from './visualAppearance.service';
-import { FileUploader } from 'ng2-file-upload';
+import { FileUploader, FileItem } from 'ng2-file-upload';
+import { NotificationService } from '../../notificationModule/notificationservice';
 
 @Component({
     selector: 'winery-instance-visualAppearance',
@@ -24,24 +25,38 @@ import { FileUploader } from 'ng2-file-upload';
     providers: [VisualAppearanceService]
 })
 export class VisualAppearanceComponent implements OnInit {
-    color: string = '#127bdc';
-    img16Path: string;
-    img50Path: string;
+    color: string = '#fff';
+    testColor: string;
     img16uploader: FileUploader;
     img50uploader: FileUploader;
+    img16Path: string;
+    img50Path: string;
     hasImg16DropZoneOver: boolean = false;
     hasImg50DropZoneOver: boolean = false;
-    @ViewChild('uploadModal') uploadModal: any;
+    @ViewChild('upload16Modal') upload16Modal: any;
+    @ViewChild('upload50Modal') upload50Modal: any;
 
-    constructor(private service: VisualAppearanceService) {
-        this.img16Path = service.getImg16x16Path();
-        this.img50Path = service.getImg50x50Path();
-        this.img16uploader = new FileUploader({url: this.service.getImg16x16Path()});
-        this.img16uploader.autoUpload = true;
-        this.img50uploader = new FileUploader({url: this.service.getImg50x50Path()});
+    fileItem: FileItem;
+
+    constructor(private service: VisualAppearanceService,
+                private notify: NotificationService) {
     }
 
     ngOnInit() {
+        this.img16Path = this.service.getImg16x16Path();
+        this.img50Path = this.service.getImg50x50Path();
+        this.img16uploader = this.service.getUploader(this.img16Path);
+        this.img50uploader = this.service.getUploader(this.img50Path);
+        this.service.getColor().subscribe(
+            data => this.handleColorData(data),
+            error => this.handleError(error)
+        );
+    }
+
+    handleColorData(data: any) {
+        this.color = data;
+        this.testColor = data;
+        console.log('Get ' + data + ' ' + this.color);
     }
 
     onImg16Hover(e: any) {
@@ -51,13 +66,44 @@ export class VisualAppearanceComponent implements OnInit {
     onImg50Hover(e: any) {
         this.hasImg50DropZoneOver = e;
     }
-    onUpload() {
-        this.uploadModal.show();
+
+    onUpload16() {
+        this.img16uploader.clearQueue();
+        this.upload16Modal.show();
     }
 
-    getColor() {
+    onUpload50() {
+        this.upload50Modal.clearQueue();
+        this.upload50Modal.show();
     }
 
-    saveColor() {
+    test() {
+        this.color = this.testColor;
     }
+
+    saveToServer() {
+        this.service.saveColor(this.color)
+            .subscribe(
+                data => this.handleResponse(data),
+                error => this.handleError(error)
+            );
+        this.service.getColor().subscribe(
+            data => this.handleColorData(data),
+            error => this.handleError(error)
+        );
+    }
+
+    colorChange(event: any) {
+        this.color = event;
+        console.log(event + '-' + this.color);
+    }
+
+    private handleResponse(response: any) {
+        this.notify.success('Successfully saved bordercolor!');
+    }
+
+    private handleError(error: any): void {
+        this.notify.error(error);
+    }
+
 }

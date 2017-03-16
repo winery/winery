@@ -15,6 +15,7 @@ import { Observable } from 'rxjs';
 import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { Router } from '@angular/router';
+import { FileUploader } from 'ng2-file-upload';
 
 @Injectable()
 export class VisualAppearanceService {
@@ -29,7 +30,34 @@ export class VisualAppearanceService {
     getImg16x16Path(): string {
         return backendBaseUri + this.path + '/16x16';
     }
+
     getImg50x50Path(): string {
         return backendBaseUri + this.path + '/50x50';
+    }
+
+    getUploader(path: string): FileUploader {
+        let fileUploader: FileUploader = new FileUploader({url: path});
+        fileUploader.onAfterAddingFile = (item) => {
+            item.method = 'PUT';
+        };
+        fileUploader.onSuccessItem = (item) => {
+            location.reload();
+        };
+        return fileUploader;
+    }
+
+    getColor(): Observable<any> {
+        let headers = new Headers({'Accept': 'text/plain'});
+        let options = new RequestOptions({headers: headers});
+        return this.http.get(backendBaseUri + this.path + '/bordercolor', options)
+            .map(res => res.text());
+    }
+
+    saveColor(color: string): Observable<Response> {
+        let headers = new Headers({'Content-Type': 'text/plain'});
+        let options = new RequestOptions({headers: headers});
+        let sendString: string = 'color=' + encodeURIComponent(color);
+        console.log('put ' + sendString);
+        return this.http.put(backendBaseUri + this.path + '/bordercolor', sendString, options);
     }
 }
