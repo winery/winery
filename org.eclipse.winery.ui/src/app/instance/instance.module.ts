@@ -47,7 +47,6 @@ import { VisualAppearanceModule } from './visualAppearance/visualAppearance.modu
         CapabilityDefinitionsComponent,
         DocumentationComponent,
         EditXMLComponent,
-        ImplementationsComponent,
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,
