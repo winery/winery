@@ -11,10 +11,11 @@
  */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InstanceService } from './instance.service';
 import { NotificationService } from '../notificationModule/notificationservice';
+import { backendBaseUri } from '../configuration';
 
 
 @Component({
@@ -29,10 +30,12 @@ export class InstanceComponent implements OnInit, OnDestroy {
     selectedResource: string;
     selectedComponentId: string;
     selectedNamespace: string;
+    imageUri: string;
 
     routeSub: Subscription;
 
     constructor(private route: ActivatedRoute,
+                private router: Router,
                 private service: InstanceService,
                 private notify: NotificationService) {
     }
@@ -46,15 +49,26 @@ export class InstanceComponent implements OnInit, OnDestroy {
                     this.selectedComponentId = data['resolveData'].instanceId;
 
                     this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId);
+                    if (this.selectedResource === 'nodeType') {
+                        this.imageUri = backendBaseUri + this.service.path + '/visualappearance/50x50';
+                    }
 
                     this.availableTabs = this.service.getSubMenuByResource();
                 },
                 error => this.handleError(error));
     }
 
+    delete() {
+        this.service.deleteComponent().subscribe(data => this.handleDelete(), error => this.handleError(error));
+    }
+
+    handleDelete() {
+        this.notify.success('Successfully deleted ' + this.selectedComponentId);
+        this.router.navigate(['/' + this.selectedResource.toLowerCase() + 's']);
+    }
+
     handleError(error: any) {
         this.notify.error(error.toString(), 'Error');
-
     }
 
     ngOnDestroy(): void {

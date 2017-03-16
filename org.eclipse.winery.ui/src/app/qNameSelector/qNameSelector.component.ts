@@ -40,6 +40,7 @@ export class QNameSelectorComponent {
     }
 
     private handleData(availableSuperClasses: QNameList): void {
+
         this.qNameList = availableSuperClasses;
         this.setButtonLink();
     }

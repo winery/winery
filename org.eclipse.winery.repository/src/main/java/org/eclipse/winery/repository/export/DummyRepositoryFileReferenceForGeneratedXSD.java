@@ -12,6 +12,7 @@
 package org.eclipse.winery.repository.export;
 
 import org.eclipse.winery.common.RepositoryFileReference;
+
 import org.w3c.dom.Document;
 
 /**

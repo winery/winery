@@ -12,6 +12,14 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.imports.genericimports;
 
+import java.util.SortedSet;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
@@ -21,13 +29,6 @@ import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.util.SortedSet;
 
 public class GenericImportResource extends AbstractComponentInstanceResource {
 

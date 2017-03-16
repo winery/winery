@@ -16,9 +16,7 @@ package org.eclipse.winery.common.interfaces;
 import java.io.IOException;
 
 import org.eclipse.winery.common.ids.GenericId;
-
 import org.eclipse.winery.common.ids.Namespace;
-
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 
 /**

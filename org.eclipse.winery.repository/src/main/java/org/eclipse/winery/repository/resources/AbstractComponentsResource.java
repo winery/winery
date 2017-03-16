@@ -115,23 +115,6 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	}
 
 	/**
-	 * Creates a new component instance in the given namespace
-	 *
-	 * @param namespace plain namespace
-	 * @param name plain id
-	 * @param ignored this parameter is ignored, but necessary for
-	 *            {@link ArtifactTemplatesResource} to be able to accept the
-	 *            artifact type at a post
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response onPost(@FormParam("namespace") String namespace, @FormParam("name") String name, String ignored) {
-		ResourceCreationResult res = this.onPost(namespace, name);
-		return res.getResponse();
-	}
-
-	/**
 	 * Creates a TOSCAcomponentId for the given namespace / id combination
 	 *
 	 * Uses reflection to create a new instance

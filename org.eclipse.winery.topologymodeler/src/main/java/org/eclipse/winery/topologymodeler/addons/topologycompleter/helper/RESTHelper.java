@@ -17,9 +17,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+
 import org.slf4j.LoggerFactory;
 
 /**

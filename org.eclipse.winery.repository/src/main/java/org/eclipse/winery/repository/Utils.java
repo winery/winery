@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Nicole Keppler, Lukas Balzer - changes for angular frontend
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
@@ -71,6 +72,8 @@ import org.eclipse.winery.repository.export.CSARExporter;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.apiData.QNameApiData;
+import org.eclipse.winery.repository.resources.apiData.QNameWithTypeApiData;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
@@ -106,18 +109,14 @@ import org.w3c.dom.Element;
  */
 public class Utils {
 
+	/**
+	 * Shared object to map JSONs
+	 */
+	public static final ObjectMapper mapper = new ObjectMapper();
+
 	private static final XLogger LOGGER = XLoggerFactory.getXLogger(Utils.class);
 
-
-	public static URI createURI(String uri) {
-		try {
-			return new URI(uri);
-		} catch (URISyntaxException e) {
-			LOGGER.error("uri " + uri + " caused an exception", e);
-			throw new IllegalStateException();
-		}
-	}
-
+	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.valueOf("application/octet-stream");
 
 	// RegExp inspired by http://stackoverflow.com/a/5396246/873282
 	// NameStartChar without ":"
@@ -128,6 +127,16 @@ public class Utils {
 	private static final String RANGE_NCNAMECHAR = Utils.RANGE_NCNAMESTARTCHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
 	private static final String REGEX_INVALIDNCNAMESCHAR = "[^" + Utils.RANGE_NCNAMECHAR + "]";
 
+	private static final String slashEncoded = Util.URLencode("/");
+
+	public static URI createURI(String uri) {
+		try {
+			return new URI(uri);
+		} catch (URISyntaxException e) {
+			LOGGER.error("uri " + uri + " caused an exception", e);
+			throw new IllegalStateException();
+		}
+	}
 
 	/**
 	 * Creates a (valid) XML ID (NCName) based on the passed name
@@ -295,10 +304,6 @@ public class Utils {
 		return Utils.getComponentIdClass(idClassName);
 	}
 
-
-	private static final String slashEncoded = Util.URLencode("/");
-
-
 	public static String getURLforPathInsideRepo(String pathInsideRepo) {
 		// first encode the whole string
 		String res = Util.URLencode(pathInsideRepo);
@@ -306,13 +311,6 @@ public class Utils {
 		res = res.replaceAll(Utils.slashEncoded, "/");
 		return res;
 	}
-
-
-	/**
-	 * Shared object to map JSONs
-	 */
-	public static final ObjectMapper mapper = new ObjectMapper();
-
 
 	public static String Object2JSON(Object o) {
 		String res;
@@ -479,10 +477,6 @@ public class Utils {
 		org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md);
 		return mediaType.toString();
 	}
-
-
-	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.valueOf("application/octet-stream");
-
 
 	/**
 	 * Fixes the mediaType if it is too vague (such as application/octet-stream)
@@ -907,7 +901,11 @@ public class Utils {
 	public static ArtifactTemplateId createArtifactTemplate(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body, QName artifactType, UriInfo uriInfo) {
 
 		ArtifactTemplatesResource templateResource = new ArtifactTemplatesResource();
-		templateResource.onPost("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), artifactType.toString());
+		QNameWithTypeApiData qNameApiData = new QNameWithTypeApiData();
+		qNameApiData.name = "xaasPackager_" + fileDetail.getFileName();
+		qNameApiData.namespace = "http://opentosca.org/xaaspackager";
+		qNameApiData.type = artifactType.toString();
+		templateResource.onJsonPost(qNameApiData);
 
 		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), false);
 

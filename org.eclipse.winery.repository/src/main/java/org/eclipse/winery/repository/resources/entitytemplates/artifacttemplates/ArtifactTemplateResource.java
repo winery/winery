@@ -12,6 +12,20 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.SortedSet;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
@@ -44,19 +58,6 @@ import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetyp
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypes.artifacttypes.ArtifactTypeResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.xml.namespace.QName;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.SortedSet;
 
 /**
  * Models an Artifact Template with its artifact references

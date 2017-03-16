@@ -31,7 +31,6 @@ import javax.servlet.ServletContextListener;
 import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.runtimeintegration.OpenTOSCAContainerConnection;
 
 import org.slf4j.Logger;
@@ -44,7 +43,20 @@ public class Prefs implements ServletContextListener {
 	// on its own and we want to have a *single* instance of this class.
 	public static Prefs INSTANCE;
 
+	// package visibility to ease testing
+	static final String PROP_JCLOUDS_CONTEXT_PROVIDER = "jclouds.context.provider";
+	static final String PROP_JCLOUDS_CONTEXT_IDENTITY = "jclouds.context.identity";
+	static final String PROP_JCLOUDS_CONTEXT_CREDENTIAL = "jclouds.context.credential";
+	static final String PROP_JCLOUDS_BLOBSTORE_LOCATION = "jclouds.blobstore.location";
+	static final String PROP_JCLOUDS_CONTAINERNAME = "jclouds.blobstore.container";
+	static final String PROP_JCLOUDS_END_POINT = "jclouds.blobstore.endpoint";
+
+	static final String PROP_BPMN4TOSCA_MODELER_URI = "bpmn4toscamodelerBaseURI";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(Prefs.class);
+
+	// the properties from winery.properties
+	protected Properties properties = null;
 
 	protected IRepository repository = null;
 
@@ -58,20 +70,6 @@ public class Prefs implements ServletContextListener {
 
 	// location of the winery topology modeler
 	private String wineryTopologyModelerPath = null;
-
-	// the properties from winery.properties
-	protected Properties properties = null;
-
-	// package visibility to ease testing
-	static final String PROP_JCLOUDS_CONTEXT_PROVIDER = "jclouds.context.provider";
-	static final String PROP_JCLOUDS_CONTEXT_IDENTITY = "jclouds.context.identity";
-	static final String PROP_JCLOUDS_CONTEXT_CREDENTIAL = "jclouds.context.credential";
-	static final String PROP_JCLOUDS_BLOBSTORE_LOCATION = "jclouds.blobstore.location";
-	static final String PROP_JCLOUDS_CONTAINERNAME = "jclouds.blobstore.container";
-	static final String PROP_JCLOUDS_END_POINT = "jclouds.blobstore.endpoint";
-
-	static final String PROP_BPMN4TOSCA_MODELER_URI = "bpmn4toscamodelerBaseURI";
-
 
 	/**
 	 * This constructor is called at handling at servlets, too. Therefore, we
@@ -137,15 +135,15 @@ public class Prefs implements ServletContextListener {
 		if (provider == null) {
 			String repositoryLocation = this.properties.getProperty("repositoryPath");
 			Prefs.LOGGER.debug("Repository location: {}", repositoryLocation);
-			Prefs.LOGGER.debug("Trying git-based backend");
-			try {
-				this.repository = new GitBasedRepository(repositoryLocation);
-				Prefs.LOGGER.debug("git-based backend is used");
-			} catch (Throwable e) {
-				Prefs.LOGGER.trace(e.getMessage());
-				Prefs.LOGGER.debug("There seems to be no git repository at the specified location. We fall back to the file-based repository");
+//			Prefs.LOGGER.debug("Trying git-based backend");
+//			try {
+//				this.repository = new GitBasedRepository(repositoryLocation);
+//				Prefs.LOGGER.debug("git-based backend is used");
+//			} catch (Throwable e) {
+//				Prefs.LOGGER.trace(e.getMessage());
+//				Prefs.LOGGER.debug("There seems to be no git repository at the specified location. We fall back to the file-based repository");
 				this.repository = new FilebasedRepository(repositoryLocation);
-			}
+//			}
 		}
 	}
 

@@ -26,6 +26,7 @@ export class InheritanceComponent implements OnInit {
 
     inheritanceApiData: InheritanceApiData;
     availableSuperClasses: QNameList;
+    selectedResource: string;
     loading: boolean = true;
 
     constructor(private sharedData: InstanceService,
@@ -44,6 +45,7 @@ export class InheritanceComponent implements OnInit {
                 data => this.handleSuperClassData(data),
                 error => this.handleError(error)
             );
+        this.selectedResource = this.sharedData.selectedResource.toLowerCase() + 's';
     }
 
     onSelectedValueChanged(value: string) {

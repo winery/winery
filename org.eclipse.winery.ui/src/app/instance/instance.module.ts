@@ -49,7 +49,6 @@ import { LanguageComponent } from './language/language.component';
         CapabilityDefinitionsComponent,
         DocumentationComponent,
         EditXMLComponent,
-        ImplementationsComponent,
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,

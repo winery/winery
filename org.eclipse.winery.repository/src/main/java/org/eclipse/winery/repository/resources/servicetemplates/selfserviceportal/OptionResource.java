@@ -20,22 +20,24 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OptionResource extends EntityWithIdResource<ApplicationOption> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(OptionResource.class);
-
 	static final String ICON_JPG = "icon.jpg";
 	static final String PLAN_INPUT_XML = "plan.input.xml";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(OptionResource.class);
+
 	private SelfServiceMetaDataId ssmdId;
 
 

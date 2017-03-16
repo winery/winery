@@ -17,14 +17,14 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
-import org.eclipse.winery.model.selfservice.Application;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // if com.sun.xml.bind.marshaller.NamespacePrefixMapper cannot be resolved,
 // possibly
@@ -38,15 +38,14 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
  */
 public class JAXBSupport {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(JAXBSupport.class);
-
 	// thread-safe JAXB as inspired by https://jaxb.java.net/guide/Performance_and_thread_safety.html
 	// The other possibility: Each subclass sets JAXBContext.newInstance(theSubClass.class); in its static {} part.
 	// This seems to be more complicated than listing all subclasses in initContext
 	public final static JAXBContext context = JAXBSupport.initContext();
 
-	private final static PrefixMapper prefixMapper = new PrefixMapper();
+	private static final Logger LOGGER = LoggerFactory.getLogger(JAXBSupport.class);
 
+	private final static PrefixMapper prefixMapper = new PrefixMapper();
 
 	/**
 	 * Follows
@@ -74,7 +73,6 @@ public class JAXBSupport {
 			return NamespacesResource.getPrefix(namespaceUri);
 		}
 	}
-
 
 	private static JAXBContext initContext() {
 		JAXBContext context;

@@ -51,10 +51,10 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractTypesManager extends AbstractAdminResource {
 
+	protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractTypesManager.class);
+
 	@Context
 	private UriInfo uriInfo;
-
-	protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractTypesManager.class);
 
 	// hashes from a long type string to the type object holding complete type data
 	private final HashMap<String, TypeWithShortName> hashTypeStringToType;

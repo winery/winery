@@ -43,8 +43,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.taglibs.standard.functions.Functions;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
@@ -58,16 +56,31 @@ import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.taglibs.standard.functions.Functions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 public class Util {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
-
 	public static final String FORBIDDEN_CHARACTER_REPLACEMENT = "_";
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
+
+	/*
+	* Valid chars: See
+	* <ul>
+	* <li>http://www.w3.org/TR/REC-xml-names/#NT-NCName</li>
+	* <li>http://www.w3.org/TR/REC-xml/#NT-Name</li>
+	* </ul>
+	*/
+	// NameCharRange \u10000-\ueffff is not supported by Java
+	private static final String NCNameStartChar_RegExp = "[A-Z_a-z\u00c0-\u00d6\u00d8\u00f6\u00f8\u02ff\u0370\u037d\u037f-\u1fff\u200c-\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]";
+	private static final String NCNameChar_RegExp = Util.NCNameStartChar_RegExp + "|[-\\.0-9\u00B7\u0300-\u036F\u203F-\u2040]";
+	private static final Pattern NCNameStartChar_Pattern = Pattern.compile(Util.NCNameStartChar_RegExp);
+	private static final Pattern NCNameChar_RegExp_Pattern = Pattern.compile(Util.NCNameChar_RegExp);
 
 	public static String URLdecode(String s) {
 		try {
@@ -495,20 +508,6 @@ public class Util {
 				.replace("-", Util.FORBIDDEN_CHARACTER_REPLACEMENT);
 		// @formatter:on
 	}
-
-
-	/*
-	* Valid chars: See
-	* <ul>
-	* <li>http://www.w3.org/TR/REC-xml-names/#NT-NCName</li>
-	* <li>http://www.w3.org/TR/REC-xml/#NT-Name</li>
-	* </ul>
-	*/
-	// NameCharRange \u10000-\ueffff is not supported by Java
-	private static final String NCNameStartChar_RegExp = "[A-Z_a-z\u00c0-\u00d6\u00d8\u00f6\u00f8\u02ff\u0370\u037d\u037f-\u1fff\u200c-\u200d\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]";
-	private static final String NCNameChar_RegExp = Util.NCNameStartChar_RegExp + "|[-\\.0-9\u00B7\u0300-\u036F\u203F-\u2040]";
-	private static final Pattern NCNameStartChar_Pattern = Pattern.compile(Util.NCNameStartChar_RegExp);
-	private static final Pattern NCNameChar_RegExp_Pattern = Pattern.compile(Util.NCNameChar_RegExp);
 
 
 	/**

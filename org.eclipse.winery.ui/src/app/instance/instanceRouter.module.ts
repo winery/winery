@@ -19,6 +19,7 @@ import { DocumentationComponent } from './documentation/documentation.component'
 import { InheritanceComponent } from './inheritance/inheritance.component';
 import { InterfacesComponent } from './interfaces/interfaces.component';
 import { ImplementationsComponent } from './implementations/implementations.component';
+import { ImplementationsModule } from './implementations/implementation.module';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
@@ -57,6 +58,7 @@ const instanceRoutes: Routes = [
     imports: [
         BrowserModule,
         PropertiesDefinitionModule,
+        ImplementationsModule,
         InstanceStatesModule,
         RouterModule.forChild(instanceRoutes)
     ],

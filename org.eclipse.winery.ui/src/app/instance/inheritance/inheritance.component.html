@@ -32,6 +32,7 @@
     <winery-qNameSelector
         [title]="'Derived from'"
         [displayList]="availableSuperClasses"
+        [selectedResource]="selectedResource"
         [selectedValue]="inheritanceApiData.derivedFrom"
         (selectedValueChanged)="onSelectedValueChanged($event.value)"
     ></winery-qNameSelector>

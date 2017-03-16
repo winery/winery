@@ -26,6 +26,25 @@ public class ImplementationArtifactResource extends GenericArtifactResource<Impl
 	private ImplementationArtifact a;
 
 
+	public ImplementationArtifactResource(String artifactId, List<ImplementationArtifact> implementationArtifacts, IPersistable res) {
+		this(ImplementationArtifactResource.getImplementationArtifact(artifactId, implementationArtifacts), implementationArtifacts, res);
+	}
+
+	public ImplementationArtifactResource(IIdDetermination<ImplementationArtifact> idDetermination, ImplementationArtifact o, int idx, List<ImplementationArtifact> list, IPersistable res) {
+		super(idDetermination, o, idx, list, res);
+		this.a = o;
+	}
+
+	public ImplementationArtifactResource(ImplementationArtifact a, List<ImplementationArtifact> implementationArtifacts, IPersistable res) {
+		this(new IIdDetermination<ImplementationArtifact>() {
+
+			@Override
+			public String getId(ImplementationArtifact e) {
+				return e.getName();
+			}
+		}, a, implementationArtifacts.indexOf(a), implementationArtifacts, res);
+	}
+
 	/**
 	 * Converts the given artifactId to an ImplementArtifact.
 	 *
@@ -47,25 +66,6 @@ public class ImplementationArtifactResource extends GenericArtifactResource<Impl
 		ia.setName(artifactId);
 		implementationArtifacts.add(ia);
 		return ia;
-	}
-
-	public ImplementationArtifactResource(String artifactId, List<ImplementationArtifact> implementationArtifacts, IPersistable res) {
-		this(ImplementationArtifactResource.getImplementationArtifact(artifactId, implementationArtifacts), implementationArtifacts, res);
-	}
-
-	public ImplementationArtifactResource(IIdDetermination<ImplementationArtifact> idDetermination, ImplementationArtifact o, int idx, List<ImplementationArtifact> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-		this.a = o;
-	}
-
-	public ImplementationArtifactResource(ImplementationArtifact a, List<ImplementationArtifact> implementationArtifacts, IPersistable res) {
-		this(new IIdDetermination<ImplementationArtifact>() {
-
-			@Override
-			public String getId(ImplementationArtifact e) {
-				return e.getName();
-			}
-		}, a, implementationArtifacts.indexOf(a), implementationArtifacts, res);
 	}
 
 	public ImplementationArtifact getImplementationArtifact() {

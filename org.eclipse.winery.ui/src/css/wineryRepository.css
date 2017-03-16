@@ -261,7 +261,7 @@ div.mainContentContainer > winery-instance-header >  div.top.twolines {
 div.mainContentContainer > div.middle {
 	width: auto;
 	min-height: 350px;
-	padding: 0 35px 0 35px;
+	padding: 0 35px 1px 35px;
 	font-family: arial, verdana, sans-serif;
 	font-size: 12px;
 	line-height: 19px;
@@ -301,13 +301,13 @@ div.mainContentContainer.nodeType div.bottom {
 	background: url('../assets/img/containers/nt/FrameBottom.jpg');
 }
 
-div.mainContentContainer.admin > div.top {
+div.mainContentContainer.admin div.top {
 	background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
-div.mainContentContainer.admin > div.middle {
+div.mainContentContainer.admin div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.admin > div.bottom {
+div.mainContentContainer.admin div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
@@ -404,7 +404,7 @@ div.mainContentContainer.policyType div.top {
 div.mainContentContainer.policyType div.middle {
 	background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
-div.mainContentContainer.policyType > div.bottom {
+div.mainContentContainer.policyType div.bottom {
 	background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 

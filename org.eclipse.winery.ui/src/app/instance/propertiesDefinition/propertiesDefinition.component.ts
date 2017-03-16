@@ -9,19 +9,19 @@
  * Contributors:
  *     Lukas Harzenetter, Niko Stadelmaier- initial API and implementation
  */
-import { Component, OnInit, NgZone, ViewChild, ElementRef, KeyValueChangeRecord } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
     PropertiesDefinition,
     PropertiesDefinitionEnum,
     PropertiesDefinitionsResourceApiData,
-    WinerysPropertiesDefinition, PropertiesDefinitionKVList,
+    WinerysPropertiesDefinition,
+    PropertiesDefinitionKVList
 } from './propertiesDefinitionsResourceApiData';
 import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
 import { Response } from '@angular/http';
-import { NgForm } from '@angular/forms';
 import { NotificationService } from '../../notificationModule/notificationservice';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
@@ -44,7 +44,6 @@ export class PropertiesDefinitionComponent implements OnInit {
     resourceApiData: PropertiesDefinitionsResourceApiData;
     selectItems: SelectData[];
     activeElement: SelectData;
-    allNamespaces: string[];
     selectedCell: any;
     elementToRemove: any = null;
     columns: Array<WineryTableColumn> = [
@@ -57,7 +56,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     @ViewChild('confirmDeleteModal') deletePropModal: any;
     @ViewChild('addModal') addPropModal: any;
 
-    constructor(private service: PropertiesDefinitionService,
+    constructor(private sharedData: InstanceService, private service: PropertiesDefinitionService,
                 private notify: NotificationService) {
     }
 
@@ -129,18 +128,32 @@ export class PropertiesDefinitionComponent implements OnInit {
      */
     onCustomKeyValuePairSelected(): void {
         this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Custom;
-        this.service.getAllNamespaces()
-            .subscribe(
-                data => this.allNamespaces = data,
-                error => this.handleError(error)
-            );
+
+        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        }
+        this.resourceApiData.propertiesDefinition.element = null;
+        this.resourceApiData.propertiesDefinition.type = null;
+
+        if (isNullOrUndefined(this.resourceApiData.propertiesDefinition)) {
+            this.resourceApiData.propertiesDefinition = new PropertiesDefinition();
+        }
+        this.resourceApiData.propertiesDefinition.element = null;
+        this.resourceApiData.propertiesDefinition.type = null;
 
         if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition)) {
             this.resourceApiData.winerysPropertiesDefinition = new WinerysPropertiesDefinition();
         }
-        // The key/value pair list my be null
+        // The key/value pair list may be null
         if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList)) {
             this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList = [];
+        }
+
+        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.namespace)) {
+            this.resourceApiData.winerysPropertiesDefinition.namespace = this.sharedData.selectedNamespace + '/properties';
+        }
+        if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.elementName)) {
+            this.resourceApiData.winerysPropertiesDefinition.elementName = 'properties';
         }
 
         this.activeElement = new SelectData();

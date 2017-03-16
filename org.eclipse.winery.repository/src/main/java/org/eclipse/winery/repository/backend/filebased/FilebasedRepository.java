@@ -97,6 +97,16 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	private final FileSystem fileSystem;
 	private final FileSystemProvider provider;
 
+	/**
+	 *
+	 * @param repositoryLocation a string pointing to a location on the file
+	 *            system. May be null.
+	 */
+	public FilebasedRepository(String repositoryLocation) {
+		this.repositoryRoot = this.determineRepositoryPath(repositoryLocation);
+		this.fileSystem = this.repositoryRoot.getFileSystem();
+		this.provider = this.fileSystem.provider();
+	}
 
 	private Path makeAbsolute(Path relativePath) {
 		return this.repositoryRoot.resolve(relativePath);
@@ -125,17 +135,6 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	 */
 	public Path ref2AbsolutePath(RepositoryFileReference ref) {
 		return this.id2AbsolutePath(ref.getParent()).resolve(ref.getFileName());
-	}
-
-	/**
-	 *
-	 * @param repositoryLocation a string pointing to a location on the file
-	 *            system. May be null.
-	 */
-	public FilebasedRepository(String repositoryLocation) {
-		this.repositoryRoot = this.determineRepositoryPath(repositoryLocation);
-		this.fileSystem = this.repositoryRoot.getFileSystem();
-		this.provider = this.fileSystem.provider();
 	}
 
 	protected Path determineRepositoryPath(String repositoryLocation) {

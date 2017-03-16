@@ -79,7 +79,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		@FormDataParam("planName") String name,
 		@FormDataParam("planType") String type,
 		@FormDataParam("planLanguage") @RestDocParam(description = "the plan language (e..g, BPMN or BPEL). Full URL.") String language,
-		@FormDataParam("file") @RestDocParam(description="(optional in the case of BPMN4TOSCA) file containing the plan.") InputStream uploadedInputStream,
+		@FormDataParam("file") @RestDocParam(description = "(optional in the case of BPMN4TOSCA) file containing the plan.") InputStream uploadedInputStream,
 		@FormDataParam("file") FormDataContentDisposition fileDetail,
 		@FormDataParam("file") FormDataBodyPart body
 	) {

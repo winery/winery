@@ -20,3 +20,6 @@
 ## Further Remarks
 
 * Please let `.editorconfig` override the settings of IntelliJ
+* Install the [IntelliJ Checkstyle Plugin](https://plugins.jetbrains.com/plugin/1065-checkstyle-idea).
+  Open Settings > Other Settings > CheckStyle.
+  Click on the green plus and add `checkstyle.xml` from the root of the Winery code repository.

@@ -76,28 +76,30 @@ import org.xml.sax.SAXException;
 
 public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
+	// thread-safe JAXB as inspired by https://jaxb.java.net/guide/Performance_and_thread_safety.html
+	// The other possibility: Each subclass sets JAXBContext.newInstance(theSubClass.class); in its static {} part.
+	// This seems to be more complicated than listing all subclasses in initContext
+	public final static JAXBContext context = WineryRepositoryClient.initContext();
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(WineryRepositoryClient.class);
 
 	// switch off validation, currently causes more trouble than it brings
 	private static final boolean VALIDATING = false;
 
-	private final Collection<String> knownURIs = new HashSet<String>();
-	private final Collection<WebResource> repositoryResources = new HashSet<WebResource>();
-	private final Client client;
-	private final ObjectMapper mapper = new ObjectMapper();
+	private static final int MAX_NAME_CACHE_SIZE = 1000;
 
+	private final Collection<WebResource> repositoryResources = new HashSet<WebResource>();
+	private final Collection<String> knownURIs = new HashSet<String>();
+
+	private final Client client;
+
+	private final ObjectMapper mapper = new ObjectMapper();
 	private final Map<Class<? extends TEntityType>, Map<QName, TEntityType>> entityTypeDataCache;
 
 	private final Map<GenericId, String> nameCache;
-	private static final int MAX_NAME_CACHE_SIZE = 1000;
-
 	private String primaryRepository = null;
-	private WebResource primaryWebResource = null;
 
-	// thread-safe JAXB as inspired by https://jaxb.java.net/guide/Performance_and_thread_safety.html
-	// The other possibility: Each subclass sets JAXBContext.newInstance(theSubClass.class); in its static {} part.
-	// This seems to be more complicated than listing all subclasses in initContext
-	public final static JAXBContext context = WineryRepositoryClient.initContext();
+	private WebResource primaryWebResource = null;
 
 	// schema aware document builder
 	private final DocumentBuilder toscaDocumentBuilder;
@@ -107,7 +109,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	private static class ConnectionFactory implements HttpURLConnectionFactory {
 
 		Proxy proxy;
-
 
 		private void initializeProxy() {
 			this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888));
@@ -764,7 +765,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException {
 		throw new IllegalStateException("not yet implemented");
 	}
-
 
 	@Override
 	public boolean primaryRepositoryAvailable() {
