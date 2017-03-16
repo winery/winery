@@ -9,29 +9,52 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { NotificationService } from '../notificationModule/notificationservice';
+import { ValidatorObject } from '../validators/duplicateValidator.directive';
+import { isNullOrUndefined } from 'util';
+import { SectionResolverData } from '../interfaces/resolverData';
+
+const showAll: string = 'Show all Items';
+const showGrouped: string = 'Group by Namespace';
 
 @Component({
     selector: 'winery-section-component',
     templateUrl: 'section.component.html',
+    styleUrls: [
+        'section.component.css'
+    ],
     providers: [
         SectionService,
     ]
 })
 export class SectionComponent implements OnInit, OnDestroy {
 
-    componentData: SectionData[];
     loading: boolean = true;
     selectedResource: string;
     routeSub: Subscription;
+    filterString: string = '';
+    itemsPerPage: number = 10;
+    showNamespace: string = 'all';
+    changeViewButtonTitle: string = showGrouped;
+    componentData: SectionData[];
+
+    newComponentName: string;
+    newComponentNamespace: string;
+    validatorObject: ValidatorObject;
+
+    fileOver: boolean = false;
+
+    @ViewChild('addModal') addModal: any;
+    @ViewChild('addComponentForm') addComponentForm: any;
+    @ViewChild('addCsarModal') addCsarModal: any;
 
     constructor(private route: ActivatedRoute,
+                private router: Router,
                 private service: SectionService,
                 private notify: NotificationService) {
     }
@@ -42,6 +65,7 @@ export class SectionComponent implements OnInit, OnDestroy {
      * Subscribe to the url on initialisation in order to get the corresponding resource type.
      */
     ngOnInit(): void {
+        this.loading = true;
         this.routeSub = this.route
             .data
             .subscribe(
@@ -54,10 +78,66 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.routeSub.unsubscribe();
     }
 
+    onChangeView() {
+        if (this.showNamespace === 'group') {
+            this.changeViewButtonTitle = showGrouped;
+            this.showNamespace = 'all';
+        } else {
+            this.changeViewButtonTitle = showAll;
+            this.showNamespace = 'group';
+        }
+    }
+
+    onAdd() {
+        this.validatorObject = new ValidatorObject(this.componentData, 'id');
+        this.addComponentForm.reset();
+        this.newComponentNamespace = '';
+        this.addModal.show();
+    }
+
+    addComponent() {
+        this.service.createComponent(this.newComponentName, this.newComponentNamespace)
+            .subscribe(
+                data => this.handleSaveSuccess(),
+                error => this.handleError(error)
+            );
+    }
+
+    uploadFile(event?: any) {
+        if (!isNullOrUndefined(event) && isNullOrUndefined(this.service.uploader.queue[0])) {
+            this.fileOver = event;
+        } else {
+            this.fileOver = false;
+            this.loading = true;
+            this.addCsarModal.hide();
+            this.service.uploader.queue[0].upload();
+            this.service.uploader.onCompleteItem = (item: any, response: string, status: number, headers: any) => {
+                this.loading = false;
+                this.service.uploader.clearQueue();
+
+                if (status === 204) {
+                    this.notify.success('Successfully saved component');
+                } else {
+                    this.notify.error('Error while uploading CSAR file');
+                }
+
+                return { item, response, status, headers };
+            };
+        }
+    }
+
+    showSpecificNamespaceOnly(): boolean {
+        return !(this.showNamespace === 'group' || this.showNamespace === 'all');
+    }
+
     private getComponentData(data: any) {
-        let resolved = data['resolveData'];
+        let resolved: SectionResolverData = data['resolveData'];
+
         this.selectedResource = resolved.section;
-        this.service.getSectionData(resolved.path)
+        this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : this.showNamespace;
+
+        this.service.setPath(resolved.path);
+        this.service.getSectionData()
             .subscribe(
                 res => this.handleData(res),
                 error => this.handleError(error)
@@ -65,8 +145,25 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     private handleData(resources: SectionData[]) {
-        this.componentData = resources;
         this.loading = false;
+        this.componentData = resources;
+
+        if (!this.showSpecificNamespaceOnly() && (this.componentData.length > 50)) {
+            this.showNamespace = 'group';
+            this.changeViewButtonTitle = showAll;
+        } else if (!this.showSpecificNamespaceOnly()) {
+            this.showNamespace = 'all';
+            this.changeViewButtonTitle = showGrouped;
+        }
+    }
+
+    private handleSaveSuccess() {
+        this.notify.success('Successfully saved component ' + this.newComponentName);
+        // redirect to this new component
+        this.router.navigateByUrl('/'
+            + this.selectedResource.toLowerCase() + 's/'
+            + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
+            + this.newComponentName);
     }
 
     private handleError(error: any): void {

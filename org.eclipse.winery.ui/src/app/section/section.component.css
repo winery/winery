@@ -10,17 +10,28 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-export interface SectionResolverData {
-    section: string;
-    namespace: string;
-    path: string;
+.dropZone {
+    min-height: 50px;
+    padding: 30px;
+    margin-bottom: 20px;
+    background-color: ghostwhite;
 }
 
-export interface InstanceResolverData extends SectionResolverData {
-    instanceId: string;
+.noFile {
+    border: dotted 3px lightgray;
 }
 
-export interface PropertiesDefinitionResolverData {
-    propertiesSelected: boolean;
-    wrappingSelected: boolean;
+.fileOver {
+    border: dotted 3px lightcoral;
+}
+
+.sidebar {
+    display: table-caption;
+    padding-bottom: 30px;
+    padding-left: 100px;
+}
+
+.sidebar-btn {
+    width: 100%;
+    margin-bottom: 3px;
 }

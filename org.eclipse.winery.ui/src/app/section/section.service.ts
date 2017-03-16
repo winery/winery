@@ -16,18 +16,43 @@ import { Headers, RequestOptions, Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs';
 import { backendBaseUri } from '../configuration';
+import { FileUploader } from 'ng2-file-upload';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class SectionService {
 
+    private path: string;
+    private fileUploader: FileUploader;
+
     constructor(private http: Http) {
+        this.fileUploader = new FileUploader({ url: backendBaseUri + '/' });
     }
 
-    getSectionData(type: string): Observable<SectionData[]> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+    get uploader(): FileUploader {
+        return this.fileUploader;
+    }
 
-        return this.http.get(backendBaseUri + '/' + type.toLowerCase() + '/', options)
+    getSectionData(): Observable<SectionData[]> {
+        let headers = new Headers({ 'Accept': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
+    }
+
+    createComponent(newComponentName: string, newComponentNamespace: string) {
+        let headers = new Headers({ 'Accept': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify({
+            name: newComponentName,
+            namespace: newComponentNamespace
+        }), options)
+            .map(res => res.json());
+    }
+
+    setPath(path: string) {
+        this.path = '/' + path;
     }
 }
