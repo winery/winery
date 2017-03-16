@@ -48,8 +48,8 @@
 </div>
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <modal-header [title]="'Add component'"></modal-header>
-    <modal-body>
+    <winery-modalHeader [title]="'Add component'"></winery-modalHeader>
+    <winery-modalBody>
         <form #addComponentForm="ngForm">
             <div class="form-group">
                 <label for="componentName" class="control-label">Name</label>
@@ -74,18 +74,18 @@
             <winery-namespaceSelector name="namespace" [(ngModel)]="newComponentNamespace"
                                       [isRequired]="true"></winery-namespaceSelector>
         </form>
-    </modal-body>
-    <modal-footer
+    </winery-modalBody>
+    <winery-modalFooter
         (onOk)="addComponent()"
-        [close-button-label]="'Cancel'"
-        [ok-button-label]="'Add'"
-        [ok-disabled]="!(addComponentForm?.form.valid && newComponentNamespace?.length > 0)">
-    </modal-footer>
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Add'"
+        [disableOkButton]="!(addComponentForm?.form.valid && newComponentNamespace?.length > 0)">
+    </winery-modalFooter>
 </winery-modal>
 
 <winery-modal bsModal #addCsarModal="bs-modal" [modalRef]="addCsarModal">
-    <modal-header [title]="'Add CSAR'"></modal-header>
-    <modal-body>
+    <winery-modalHeader [title]="'Add CSAR'"></winery-modalHeader>
+    <winery-modalBody>
         <input type="file" ng2FileSelect [uploader]="service.uploader" (change)="uploadFile()"/>
         <br>
         <div ng2FileDrop
@@ -96,18 +96,18 @@
             You may <span style="font-weight:bold;">drop the file</span> here.
         </div>
         <p>The file is <span style="font-weight:bold;">immediately</span> uploaded without any confirmation.</p>
-    </modal-body>
-    <modal-footer [show-default-buttons]="false">
+    </winery-modalBody>
+    <winery-modalFooter [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="addCsarModal.hide()">Cancel</button>
-    </modal-footer>
+    </winery-modalFooter>
 </winery-modal>
 
 <winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
-    <modal-header [title]="'Remove component'"></modal-header>
-    <modal-body>
+    <winery-modalHeader [title]="'Remove component'"></winery-modalHeader>
+    <winery-modalBody>
         <p>
             Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
         </p>
-    </modal-body>
-    <modal-footer [close-button-label]="'No'" [ok-button-label]="'Yes'" (onOk)="onRemoveElement()"></modal-footer>
+    </winery-modalBody>
+    <winery-modalFooter [closeButtonLabel]="'No'" [okButtonLabel]="'Yes'" (onOk)="onRemoveElement()"></winery-modalFooter>
 </winery-modal>
