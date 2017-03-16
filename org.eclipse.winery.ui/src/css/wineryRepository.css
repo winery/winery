@@ -261,7 +261,7 @@ div.mainContentContainer > winery-instance-header >  div.top.twolines {
 div.mainContentContainer > div.middle {
 	width: auto;
 	min-height: 350px;
-	padding: 0 35px 0 35px;
+	padding: 0 35px 1px 35px;
 	font-family: arial, verdana, sans-serif;
 	font-size: 12px;
 	line-height: 19px;
