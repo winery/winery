@@ -29,26 +29,48 @@ import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDef
 import { InstanceStatesModule } from './instanceStates/instanceStates.module';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { LanguageComponent } from './language/language.component';
+import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
+import { PlansComponent } from './plans/plans.component';
+import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
+import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
+import { TagsComponent } from './tags/tags.component';
+import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
+import { FilesComponent } from './files/files.component';
+import { PropertiesComponent } from './properties/properties.component';
+import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
+import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
+import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
 
-const instanceRoutes: Routes = [
+const instanceRoutes = [
     {
         path: ':section/:namespace/:instanceId',
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
             { path: 'appliesto', component: AppliesToComponent },
+            { path: 'boundarydefinitions', component: BoundaryDefinitionsComponent },
             { path: 'capabilitydefinitions', component: CapabilityDefinitionsComponent },
+            { path: 'deploymentartifacts', component: DeploymentArtifactsComponent },
             { path: 'documentation', component: DocumentationComponent },
+            { path: 'files', component: FilesComponent },
+            { path: 'implementationartifacts', component: ImplementationArtifactsComponent },
             { path: 'implementations', component: ImplementationsComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'instancestates', component: InstanceStatesComponent },
             { path: 'interfaces', component: InterfacesComponent },
             { path: 'language', component: LanguageComponent },
+            { path: 'plans', component: PlansComponent },
+            { path: 'properties', component: PropertiesComponent },
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
+            { path: 'requiredcapabilitytype', component: RequiredCapabilityTypeComponent },
             { path: 'requirementdefinitions', component: RequirementDefinitionsComponent },
+            { path: 'selfserviceportal', component: SelfservicePortalComponent },
             { path: 'sourceinterfaces', component: InterfacesComponent },
+            { path: 'tags', component: TagsComponent },
             { path: 'targetinterfaces', component: InterfacesComponent },
-            { path: 'visualappearance', component: VisualAppearanceComponent},
+            { path: 'topologytemplate', component: TopologyTemplateComponent },
+            { path: 'validsourcesandtargets', component: ValidSourcesAndTargetsComponent },
+            { path: 'visualappearance', component: VisualAppearanceComponent },
             { path: 'xml', component: EditXMLComponent },
         ]
     }

@@ -31,6 +31,17 @@ import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { InterfacesModule } from './interfaces/interfaces.module';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { LanguageComponent } from './language/language.component';
+import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
+import { PlansComponent } from './plans/plans.component';
+import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
+import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
+import { TagsComponent } from './tags/tags.component';
+import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
+import { FilesComponent } from './files/files.component';
+import { PropertiesComponent } from './properties/properties.component';
+import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
+import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
+import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
 
 @NgModule({
     imports: [
@@ -57,6 +68,17 @@ import { LanguageComponent } from './language/language.component';
         RequirementDefinitionsComponent,
         VisualAppearanceComponent,
         QNameSelectorComponent,
+        TopologyTemplateComponent,
+        PlansComponent,
+        SelfservicePortalComponent,
+        BoundaryDefinitionsComponent,
+        TagsComponent,
+        ValidSourcesAndTargetsComponent,
+        FilesComponent,
+        PropertiesComponent,
+        RequiredCapabilityTypeComponent,
+        ImplementationArtifactsComponent,
+        DeploymentArtifactsComponent,
     ],
     providers: [],
 })
