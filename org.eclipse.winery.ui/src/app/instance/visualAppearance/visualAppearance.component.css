@@ -19,10 +19,12 @@
 .img {
     float: left;
 }
+
 button.upload {
     float: right;
     margin-right: 700px;
 }
+
 .imgDropZone {
     min-height: 50px;
     margin-bottom: 20px;
@@ -49,7 +51,6 @@ button.upload {
     height: 350px;
     padding-top: 10px;
 }
-
 
 .floatContent {
     margin-left: 250px;

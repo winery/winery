@@ -8,13 +8,13 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
- *     Lukas Balzer -
+ *     Lukas Balzer - added fileUploader and color picker component
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { VisualAppearanceService } from './visualAppearance.service';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import { ColorPickerDirective, ColorPickerService } from 'angular2-color-picker';
+import { ColorPickerService } from 'angular2-color-picker';
 import { NotificationService } from '../../notificationModule/notificationservice';
 import { isNullOrUndefined } from 'util';
 
@@ -28,7 +28,7 @@ import { isNullOrUndefined } from 'util';
 })
 export class VisualAppearanceComponent implements OnInit {
     color: string = '#f00';
-    isColorLoaded: boolean= false;
+    isColorLoaded: boolean = false;
     loading: boolean = true;
     img16uploader: FileUploader;
     img50uploader: FileUploader;
@@ -66,7 +66,7 @@ export class VisualAppearanceComponent implements OnInit {
         this.color = data;
     }
 
-    onUpload(uploader: FileUploader, modal?: any) {
+    onUpload(uploader: FileUploader, event: any, modal?: any): boolean {
         if (!isNullOrUndefined(uploader.queue[0])) {
             this.loading = true;
             this.fileItem = uploader.queue[0];
@@ -92,6 +92,7 @@ export class VisualAppearanceComponent implements OnInit {
                 };
             }
         }
+        return event;
     }
 
     saveToServer() {
