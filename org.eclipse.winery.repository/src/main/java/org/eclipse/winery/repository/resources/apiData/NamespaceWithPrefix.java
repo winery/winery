@@ -22,11 +22,12 @@ import org.eclipse.winery.repository.resources.admin.NamespacesResource;
 public class NamespaceWithPrefix implements Comparable<NamespaceWithPrefix> {
 
 	public String prefix = "";
-	public  String namespace = "";
+	public String namespace = "";
 
-	public NamespaceWithPrefix() {}
+	public NamespaceWithPrefix() {
+	}
 
-	public NamespaceWithPrefix(Namespace ns){
+	public NamespaceWithPrefix(Namespace ns) {
 		this.namespace = ns.getDecoded();
 		this.prefix = NamespacesResource.getPrefix(ns);
 	}
@@ -37,31 +38,25 @@ public class NamespaceWithPrefix implements Comparable<NamespaceWithPrefix> {
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj == null)
-		{
+	public boolean equals(Object obj) {
+		if (obj == null) {
 			return false;
 		}
-		if (getClass() != obj.getClass())
-		{
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		final NamespaceWithPrefix other = (NamespaceWithPrefix) obj;
-		if (this.prefix == null ? other.prefix != null : !this.prefix.equals(other.prefix))
-		{
+		if (this.prefix == null ? other.prefix != null : !this.prefix.equals(other.prefix)) {
 			return false;
 		}
-		if (this.namespace == null ? other.namespace != null : !this.namespace.equals(other.namespace))
-		{
+		if (this.namespace == null ? other.namespace != null : !this.namespace.equals(other.namespace)) {
 			return false;
 		}
 		return true;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int hash = 5;
 		hash = 59 * hash + (this.namespace != null ? this.namespace.hashCode() : 0);
 		hash = 59 * hash + (this.prefix != null ? this.prefix.hashCode() : 0);
