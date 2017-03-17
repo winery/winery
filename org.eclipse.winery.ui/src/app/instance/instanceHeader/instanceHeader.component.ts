@@ -39,6 +39,7 @@ export class InstanceHeaderComponent implements OnInit {
     @Input() selectedComponentId: string;
     @Input() selectedResource: string;
     @Input() subMenu: string[];
+    @Input() imageUri: string;
     @Output() deleteConfirmed: EventEmitter<any> = new EventEmitter();
 
     needTwoLines: boolean = false;

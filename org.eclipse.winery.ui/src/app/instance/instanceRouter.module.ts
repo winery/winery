@@ -9,7 +9,6 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
@@ -28,6 +27,8 @@ import { PropertiesDefinitionComponent } from './propertiesDefinition/properties
 import { InstanceResolver } from './instance.resolver';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { InstanceStatesModule } from './instanceStates/instanceStates.module';
+import { AppliesToComponent } from './appliesTo/appliesTo.component';
+import { LanguageComponent } from './language/language.component';
 
 const instanceRoutes: Routes = [
     {
@@ -35,12 +36,14 @@ const instanceRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
+            { path: 'appliesto', component: AppliesToComponent },
             { path: 'capabilitydefinitions', component: CapabilityDefinitionsComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'implementations', component: ImplementationsComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'instancestates', component: InstanceStatesComponent },
             { path: 'interfaces', component: InterfacesComponent },
+            { path: 'language', component: LanguageComponent },
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'requirementdefinitions', component: RequirementDefinitionsComponent },
             { path: 'sourceinterfaces', component: InterfacesComponent },
@@ -57,8 +60,6 @@ const instanceRoutes: Routes = [
         PropertiesDefinitionModule,
         ImplementationsModule,
         InstanceStatesModule,
-        ImplementationsModule,
-
         RouterModule.forChild(instanceRoutes)
     ],
     exports: [

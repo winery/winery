@@ -9,17 +9,17 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
+import { Component } from '@angular/core';
 
-import { Component, OnInit } from '@angular/core';
-
+/**
+ * Displays links for all other components.
+ */
 @Component({
     selector: 'winery-other',
-    templateUrl: './other.component.html'
+    templateUrl: './other.component.html',
+    styleUrls: ['other.component.css']
 })
-export class OtherComponent implements OnInit {
+export class OtherComponent {
     constructor() {
-    }
-
-    ngOnInit() {
     }
 }

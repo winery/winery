@@ -73,10 +73,10 @@ export class InstanceService {
                 subMenu = ['Implementation Artifacts', 'Inheritance', 'Documentation', 'XML'];
                 break;
             case 'policytype':
-                subMenu = [''];
+                subMenu = ['Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
                 break;
             case 'policytemplate':
-                subMenu = [''];
+                subMenu = ['Properties', 'Documentation', 'XML'];
                 break;
             case 'xsdimport':
                 subMenu = [''];
@@ -110,6 +110,6 @@ export class InstanceService {
     }
 
     public deleteComponent(): Observable<any> {
-        return this.http.delete(backendBaseUri + this.path);
+        return this.http.delete(backendBaseUri + this.path + '/');
     }
 }

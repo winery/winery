@@ -29,6 +29,8 @@ import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDef
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { InterfacesModule } from './interfaces/interfaces.module';
 import { VisualAppearanceModule } from './visualAppearance/visualAppearance.module';
+import { AppliesToComponent } from './appliesTo/appliesTo.component';
+import { LanguageComponent } from './language/language.component';
 
 @NgModule({
     imports: [
@@ -44,12 +46,14 @@ import { VisualAppearanceModule } from './visualAppearance/visualAppearance.modu
     ],
     exports: [],
     declarations: [
+        AppliesToComponent,
         CapabilityDefinitionsComponent,
         DocumentationComponent,
         EditXMLComponent,
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,
+        LanguageComponent,
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
         QNameSelectorComponent,

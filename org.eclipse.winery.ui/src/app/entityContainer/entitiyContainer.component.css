@@ -9,18 +9,8 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
-export interface SectionResolverData {
-    section: string;
-    namespace: string;
-    path: string;
-}
-
-export interface InstanceResolverData extends SectionResolverData {
-    instanceId: string;
-}
-
-export interface PropertiesDefinitionResolverData {
-    propertiesSelected: boolean;
-    wrappingSelected: boolean;
+.numberOfComponentInstances {
+    float: right;
+    margin-top: 33px;
+    text-shadow: none;
 }

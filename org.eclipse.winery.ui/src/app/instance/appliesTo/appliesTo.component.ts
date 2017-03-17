@@ -9,18 +9,16 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
+import { Component, OnInit } from '@angular/core';
 
-export interface SectionResolverData {
-    section: string;
-    namespace: string;
-    path: string;
-}
+@Component({
+    selector: 'winery-appliesTo',
+    templateUrl: 'appliesTo.component.html'
+})
+export class AppliesToComponent implements OnInit {
+    constructor() {
+    }
 
-export interface InstanceResolverData extends SectionResolverData {
-    instanceId: string;
-}
-
-export interface PropertiesDefinitionResolverData {
-    propertiesSelected: boolean;
-    wrappingSelected: boolean;
+    ngOnInit() {
+    }
 }

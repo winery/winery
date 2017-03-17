@@ -27,33 +27,38 @@
 </div>
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <winery-modalHeader>
-        <h4 class="modal-title">Add State</h4>
+    <winery-modalHeader [title]="'Add State'">
     </winery-modalHeader>
     <winery-modalBody>
-        <form #add From="ngForm" id="addPropertyForm">
+        <form #addForm="ngForm" id="addPropertyForm">
             <div class="form-group">
                 <label class="control-label" for="state">State</label>
                 <input #propName="ngModel"
                        id="state"
+                       name="state"
                        class="form-control"
                        type="text"
                        required
                        [(ngModel)]="newStateData.state"
-                        name="state"/>
+                />
+                <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!propName.errors.required">
+                        Name is required
+                    </div>
+                </div>
             </div>
-
         </form>
     </winery-modalBody>
     <winery-modalFooter (onOk)="addProperty(propName.value)"
-                        [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Add'">
+                        [closeButtonLabel]="'Cancel'"
+                        [okButtonLabel]="'Add'"
+                        [disableOkButton]="!addForm?.form.valid">
     </winery-modalFooter>
 </winery-modal>
 
-
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <winery-modalHeader>
-        <h4 class="modal-title">Delete State</h4>
+    <winery-modalHeader [title]="'Delete State'">
     </winery-modalHeader>
     <winery-modalBody>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">

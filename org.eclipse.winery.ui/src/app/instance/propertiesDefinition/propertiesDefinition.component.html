@@ -76,8 +76,7 @@
 </div>
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <winery-modalHeader>
-        <h4 class="modal-title">Add Property</h4>
+    <winery-modalHeader [title]="'Add Property'">
     </winery-modalHeader>
     <winery-modalBody>
         <form #addPropertyFrom="ngForm" id="addPropertyForm">

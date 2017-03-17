@@ -23,6 +23,7 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
+import org.eclipse.winery.repository.resources.apiData.PropertiesDefinitionEnum;
 import org.eclipse.winery.repository.resources.apiData.PropertiesDefinitionResourceApiData;
 import org.eclipse.winery.repository.resources.apiData.XsdDefinitionsApiData;
 import org.slf4j.Logger;
@@ -62,14 +63,6 @@ public class PropertiesDefinitionResource {
 		this.parentRes = res;
 		this.wpd = ModelUtilities.getWinerysPropertiesDefinition(res.getEntityType());
 	}
-
-	// TODO: delete this because it's not needed for angular
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/properties/propertiesDefinition.jsp", new JSPData(this, this.wpd));
-	}
-	// end TODO
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -119,9 +112,7 @@ public class PropertiesDefinitionResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onJsonPost(PropertiesDefinitionResourceApiData data) {
-		// only iff there is some data set
-		if (data.propertiesDefinition != null &&
-				(data.propertiesDefinition.getElement() != null || data.propertiesDefinition.getType() != null)) {
+		if (data.selectedValue == PropertiesDefinitionEnum.Element || data.selectedValue == PropertiesDefinitionEnum.Type) {
 			// first of all, remove Winery's Properties definition (if it exists)
 			ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
 			// replace old properties definition by new one
@@ -129,8 +120,10 @@ public class PropertiesDefinitionResource {
 
 			if (data.propertiesDefinition.getElement() != null) {
 				def.setElement(data.propertiesDefinition.getElement());
-			} else {
+			} else if (data.propertiesDefinition.getType() != null){
 				def.setType(data.propertiesDefinition.getType());
+			} else {
+				return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();
 			}
 
 			this.getEntityType().setPropertiesDefinition(def);
@@ -142,7 +135,7 @@ public class PropertiesDefinitionResource {
 			}
 			return BackendUtils.persist(this.parentRes);
 
-		} else if (data.winerysPropertiesDefinition != null) {
+		} else if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
 			TEntityType et = this.parentRes.getEntityType();
 
 			// clear current properties definition
