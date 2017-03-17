@@ -11,20 +11,20 @@
  *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { InterfacesService } from './interfaces.service';
-import { InstanceService } from '../instance.service';
-import {
-    InterfacesApiData,
-    InterfaceOperationApiData,
-    InterfaceParameter,
-    InputParameters,
-    OutputParameters
-} from './interfacesApiData';
 import { isNullOrUndefined } from 'util';
 import { YesNoEnum } from '../../interfaces/enums';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
+import { InstanceService } from '../instance.service';
+import { InterfacesService } from './interfaces.service';
+import {
+    InputParameters,
+    InterfaceOperationApiData,
+    InterfaceParameter,
+    InterfacesApiData,
+    OutputParameters
+} from './interfacesApiData';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -35,7 +35,7 @@ import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component
 })
 export class InterfacesComponent implements OnInit {
 
-    loading: boolean = true;
+    loading = true;
     interfacesData: InterfacesApiData[];
 
     operations: any[] = null;

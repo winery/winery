@@ -10,22 +10,22 @@
  *     Lukas Harzenetter - initial API and implementation
  *     Niko Stadelmaier - add notifications module
  */
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
+import { NotFoundComponent } from './404/notFound.component';
 import { HeaderComponent } from './header/header.component';
+import { InstanceModule } from './instance/instance.module';
+import { LoaderModule } from './loader/loader.module';
+import { NotificationModule } from './notificationModule/notification.module';
+import { CustomOption } from './notificationModule/notificationOptions';
 import { OtherComponent } from './other/other.component';
+import { SectionModule } from './section/section.module';
+import { WineryModalModule } from './wineryModalModule/winery.modal.module';
 import { WineryRepositoryComponent } from './wineryRepository.component';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
-import { InstanceModule } from './instance/instance.module';
-import { NotFoundComponent } from './404/notFound.component';
-import { LoaderModule } from './loader/loader.module';
-import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
-import { CustomOption } from './notificationModule/notificationOptions';
-import { NotificationModule } from './notificationModule/notification.module';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { WineryModalModule } from './wineryModalModule/winery.modal.module';
-import { SectionModule } from './section/section.module';
 
 @NgModule({
     imports: [
@@ -48,7 +48,7 @@ import { SectionModule } from './section/section.module';
         WineryRepositoryComponent,
     ],
     providers: [
-        { provide: ToastOptions, useClass: CustomOption }
+        {provide: ToastOptions, useClass: CustomOption}
     ],
     bootstrap: [WineryRepositoryComponent]
 })

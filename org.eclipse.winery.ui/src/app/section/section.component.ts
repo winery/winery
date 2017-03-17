@@ -14,7 +14,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { isNullOrUndefined } from 'util';
 import { SectionResolverData } from '../interfaces/resolverData';
-import { NotificationService } from '../notificationModule/notificationservice';
+import { SelectData } from '../interfaces/selectData';
+import { NotificationService } from '../notificationModule/notification.service';
 import { ValidatorObject } from '../validators/duplicateValidator.directive';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
@@ -42,9 +43,11 @@ export class SectionComponent implements OnInit, OnDestroy {
     showNamespace = 'all';
     changeViewButtonTitle: string = showGrouped;
     componentData: SectionData[];
+    types: SelectData;
 
     newComponentName: string;
     newComponentNamespace: string;
+    newComponentSelectedType: SelectData = new SelectData();
     validatorObject: ValidatorObject;
 
     fileOver = false;
@@ -92,11 +95,16 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.validatorObject = new ValidatorObject(this.componentData, 'id');
         this.addComponentForm.reset();
         this.newComponentNamespace = '';
+        this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
         this.addModal.show();
     }
 
+    typeSelected(event: SelectData) {
+        this.newComponentSelectedType = event;
+    }
+
     addComponent() {
-        this.service.createComponent(this.newComponentName, this.newComponentNamespace)
+        this.service.createComponent(this.newComponentName, this.newComponentNamespace, this.newComponentSelectedType.id)
             .subscribe(
                 data => this.handleSaveSuccess(),
                 error => this.handleError(error)
@@ -135,6 +143,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
         this.selectedResource = resolved.section;
         this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : this.showNamespace;
+        this.types = null;
 
         this.service.setPath(resolved.path);
         this.service.getSectionData()
@@ -145,7 +154,6 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     private handleData(resources: SectionData[]) {
-        this.loading = false;
         this.componentData = resources;
 
         if (!this.showSpecificNamespaceOnly() && (this.componentData.length > 50)) {
@@ -155,6 +163,44 @@ export class SectionComponent implements OnInit, OnDestroy {
             this.showNamespace = 'all';
             this.changeViewButtonTitle = showGrouped;
         }
+
+        switch (this.selectedResource) {
+            case 'nodeTypeImplementation':
+                this.service.getSectionData('/nodetypes?grouped=angularSelect')
+                    .subscribe(
+                        data => this.handleTypes(data),
+                        error => this.handleError(error)
+                    );
+                break;
+            case 'relationshipTypeImplementation':
+                this.service.getSectionData('/relationshiptypes?grouped=angularSelect')
+                    .subscribe(
+                        data => this.handleTypes(data),
+                        error => this.handleError(error)
+                    );
+                break;
+            case 'policyType':
+                this.service.getSectionData('/policytypes?grouped=angularSelect')
+                    .subscribe(
+                        data => this.handleTypes(data),
+                        error => this.handleError(error)
+                    );
+                break;
+            case 'policyTemplate':
+                this.service.getSectionData('/policytemplates?grouped=angularSelect')
+                    .subscribe(
+                        data => this.handleTypes(data),
+                        error => this.handleError(error)
+                    );
+                break;
+            default:
+                this.loading = false;
+        }
+    }
+
+    private handleTypes(types: SelectData): void {
+        this.loading = false;
+        this.types = types;
     }
 
     private handleSaveSuccess() {

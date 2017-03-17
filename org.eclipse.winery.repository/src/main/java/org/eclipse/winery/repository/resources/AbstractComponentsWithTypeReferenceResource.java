@@ -29,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class AbstractComponentsWithTypeReferenceResource<T extends AbstractComponentInstanceResource> extends AbstractComponentsResource<T> {
 
-
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onJsonPost(QNameWithTypeApiData jsonData) {
@@ -37,7 +36,7 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 		if (StringUtils.isEmpty(jsonData.type)) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.name);
+		ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
 		if (!creationResult.isSuccess()) {
 			return creationResult.getResponse();
 		}

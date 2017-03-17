@@ -9,16 +9,16 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
+import { NotFoundComponent } from './404/notFound.component';
 import { InstanceComponent } from './instance/instance.component';
 import { OtherComponent } from './other/other.component';
 import { SectionComponent } from './section/section.component';
 import { SectionResolver } from './section/section.resolver';
-import { NotFoundComponent } from './404/notFound.component';
-import { HttpModule } from '@angular/http';
-import { FormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
     { path: 'admin', component: InstanceComponent },
@@ -33,9 +33,6 @@ const appRoutes: Routes = [
 
 @NgModule({
     imports: [
-        BrowserModule,
-        FormsModule,
-        HttpModule,
         RouterModule.forRoot(appRoutes),
     ],
     exports: [

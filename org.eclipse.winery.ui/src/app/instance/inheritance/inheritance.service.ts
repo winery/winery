@@ -11,12 +11,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import { InheritanceApiData } from './inheritanceApiData';
+import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
-import { Headers, RequestOptions, Http } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { QNameList } from '../../qNameSelector/qNameApiData';
 import { InstanceService } from '../instance.service';
+import { InheritanceApiData } from './inheritanceApiData';
 
 @Injectable()
 export class InheritanceService {

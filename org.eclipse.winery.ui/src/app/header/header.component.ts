@@ -10,9 +10,9 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { sections } from '../configuration';
+import { ActivatedRoute, Router } from '@angular/router';
 import { isNullOrUndefined } from 'util';
+import { sections } from '../configuration';
 
 @Component({
     selector: 'winery-header',
@@ -21,7 +21,7 @@ import { isNullOrUndefined } from 'util';
 })
 export class HeaderComponent implements OnInit {
 
-    selectedOtherComponent: string = '';
+    selectedOtherComponent = '';
 
     constructor(private router: Router) {
     }

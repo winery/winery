@@ -11,40 +11,44 @@
  */
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { SelectModule } from 'ng2-select';
+import { LoaderModule } from '../loader/loader.module';
+import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
+import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
+import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
+import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
+import { AppliesToComponent } from './appliesTo/appliesTo.component';
+import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
+import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
+import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
+import { DocumentationComponent } from './documentation/documentation.component';
 import { EditXMLComponent } from './editXML/editXML.component';
+import { FilesComponent } from './files/files.component';
+import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
+import { ImplementationsModule } from './implementations/implementations.module';
+import { InheritanceComponent } from './inheritance/inheritance.component';
 import { InstanceComponent } from './instance.component';
 import { InstanceHeaderComponent } from './instanceHeader/instanceHeader.component';
 import { InstanceRouterModule } from './instanceRouter.module';
-import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
-import { DocumentationComponent } from './documentation/documentation.component';
-import { InheritanceComponent } from './inheritance/inheritance.component';
-import { ImplementationsComponent } from './implementations/implementations.component';
-import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
-import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
-import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
-import { LoaderModule } from '../loader/loader.module';
-import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
-import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
-import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
+import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
 import { InterfacesModule } from './interfaces/interfaces.module';
-import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { LanguageComponent } from './language/language.component';
-import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
 import { PlansComponent } from './plans/plans.component';
-import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
-import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
-import { TagsComponent } from './tags/tags.component';
-import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
-import { FilesComponent } from './files/files.component';
 import { PropertiesComponent } from './properties/properties.component';
+import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
-import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
-import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
+import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
+import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
+import { TagsComponent } from './tags/tags.component';
+import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
+import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
+import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
 
 @NgModule({
     imports: [
+        HttpModule,
         SelectModule,
         BrowserModule,
         FormsModule,
@@ -53,6 +57,8 @@ import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentAr
         InstanceRouterModule,
         WineryModalModule,
         InterfacesModule,
+        ImplementationsModule,
+        WineryTableModule,
     ],
     exports: [],
     declarations: [
@@ -79,6 +85,7 @@ import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentAr
         RequiredCapabilityTypeComponent,
         ImplementationArtifactsComponent,
         DeploymentArtifactsComponent,
+        InstanceStatesComponent,
     ],
     providers: [],
 })

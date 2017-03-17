@@ -11,11 +11,11 @@
  *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
 
-import { Component, OnInit, Input, ElementRef } from '@angular/core';
-import { InstanceService } from '../instance.service';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { isNullOrUndefined } from 'util';
+import { NotificationService } from '../../notificationModule/notification.service';
+import { InstanceService } from '../instance.service';
 import { EditXMLService } from './editXML.service';
-import { NotificationService } from '../../notificationModule/notificationservice';
 
 declare var requirejs: any;
 
@@ -26,13 +26,13 @@ declare var requirejs: any;
 })
 export class EditXMLComponent implements OnInit {
 
-    id: string = 'XML';
-    dataEditorLang: string = 'application/xml';
+    id = 'XML';
+    dataEditorLang = 'application/xml';
 
     // Set height to 500 px
     height = 500;
 
-    loading: boolean = true;
+    loading = true;
     xmlData: string;
     orionEditor: any = undefined;
 

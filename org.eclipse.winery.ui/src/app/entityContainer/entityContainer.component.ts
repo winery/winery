@@ -10,13 +10,13 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, Input, OnInit } from '@angular/core';
-import { SectionData } from '../section/sectionData';
 import { backendBaseUri } from '../configuration';
+import { SectionData } from '../section/sectionData';
 
 @Component({
     selector: 'winery-entity-container',
     templateUrl: 'entityContainer.component.html',
-    styleUrls: ['entitiyContainer.component.css']
+    styleUrls: ['entityContainer.component.css']
 })
 export class EntityContainerComponent implements OnInit {
     @Input() data: SectionData;

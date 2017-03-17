@@ -10,36 +10,32 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { BrowserModule } from '@angular/platform-browser';
-import { InstanceComponent } from './instance.component';
-import { EditXMLComponent } from './editXML/editXML.component';
-import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
-import { DocumentationComponent } from './documentation/documentation.component';
-import { InheritanceComponent } from './inheritance/inheritance.component';
-import { InterfacesComponent } from './interfaces/interfaces.component';
-import { ImplementationsComponent } from './implementations/implementations.component';
-import { ImplementationsModule } from './implementations/implementation.module';
-import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
-import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
-import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
-import { PropertiesDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
-import { InstanceResolver } from './instance.resolver';
-import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
-import { InstanceStatesModule } from './instanceStates/instanceStates.module';
+import { RouterModule } from '@angular/router';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
-import { LanguageComponent } from './language/language.component';
-import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
-import { PlansComponent } from './plans/plans.component';
-import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
 import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
-import { TagsComponent } from './tags/tags.component';
-import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
-import { FilesComponent } from './files/files.component';
-import { PropertiesComponent } from './properties/properties.component';
-import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
-import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
+import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
 import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
+import { DocumentationComponent } from './documentation/documentation.component';
+import { EditXMLComponent } from './editXML/editXML.component';
+import { FilesComponent } from './files/files.component';
+import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
+import { ImplementationsComponent } from './implementations/implementations.component';
+import { InheritanceComponent } from './inheritance/inheritance.component';
+import { InstanceComponent } from './instance.component';
+import { InstanceResolver } from './instance.resolver';
+import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
+import { InterfacesComponent } from './interfaces/interfaces.component';
+import { LanguageComponent } from './language/language.component';
+import { PlansComponent } from './plans/plans.component';
+import { PropertiesComponent } from './properties/properties.component';
+import { PropertiesDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
+import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
+import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
+import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
+import { TagsComponent } from './tags/tags.component';
+import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
+import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
+import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
 
 const instanceRoutes = [
     {
@@ -78,10 +74,6 @@ const instanceRoutes = [
 
 @NgModule({
     imports: [
-        BrowserModule,
-        PropertiesDefinitionModule,
-        ImplementationsModule,
-        InstanceStatesModule,
         RouterModule.forChild(instanceRoutes)
     ],
     exports: [

@@ -72,7 +72,6 @@ import org.eclipse.winery.repository.export.CSARExporter;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.resources.apiData.QNameWithTypeApiData;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
@@ -902,7 +901,7 @@ public class Utils {
 
 		ArtifactTemplatesResource templateResource = new ArtifactTemplatesResource();
 		QNameWithTypeApiData qNameApiData = new QNameWithTypeApiData();
-		qNameApiData.name = "xaasPackager_" + fileDetail.getFileName();
+		qNameApiData.localname = "xaasPackager_" + fileDetail.getFileName();
 		qNameApiData.namespace = "http://opentosca.org/xaaspackager";
 		qNameApiData.type = artifactType.toString();
 		templateResource.onJsonPost(qNameApiData);

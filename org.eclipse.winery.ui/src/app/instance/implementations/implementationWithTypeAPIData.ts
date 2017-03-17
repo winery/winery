@@ -11,7 +11,7 @@
  */
 export class ImplementationWithTypeAPIData {
     public constructor(public namespace: string,
-                       public name: string,
+                       public localname: string,
                        public type: string) {
     }
 }

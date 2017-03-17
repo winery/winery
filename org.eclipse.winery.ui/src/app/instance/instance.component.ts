@@ -9,13 +9,13 @@
  * Contributors:
  *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { InstanceService } from './instance.service';
-import { NotificationService } from '../notificationModule/notificationservice';
 import { backendBaseUri } from '../configuration';
+import { NotificationService } from '../notificationModule/notification.service';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
+import { InstanceService } from './instance.service';
 
 @Component({
     templateUrl: 'instance.component.html',

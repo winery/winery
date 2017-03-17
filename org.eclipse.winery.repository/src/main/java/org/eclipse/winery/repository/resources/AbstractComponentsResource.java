@@ -24,11 +24,8 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -48,7 +45,6 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
-import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -267,32 +263,32 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 				}
 				jg.writeEndArray();
 			} else {
-				jg.writeStartObject();
+				jg.writeStartArray();
 				Map<Namespace, ? extends List<? extends TOSCAComponentId>> groupedIds = allTOSCAcomponentIds.stream().collect(Collectors.groupingBy(id -> id.getNamespace()));
 				groupedIds.keySet().stream().sorted().forEach(namespace -> {
 					try {
-						jg.writeFieldName(namespace.getDecoded());
+						jg.writeStartObject();
+						jg.writeStringField("id", namespace.getEncoded());
+						jg.writeStringField("text", namespace.getDecoded());
+						jg.writeFieldName("children");
 						jg.writeStartArray();
 						groupedIds.get(namespace).forEach(id -> {
 							try {
 								jg.writeStartObject();
-								jg.writeStringField("id", id.getXmlId().getDecoded());
-								if (supportsNameAttribute) {
-									AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
-									String name = ((IHasName) componentInstaceResource).getName();
-									jg.writeStringField("name", name);
-								}
+								jg.writeStringField("text", id.getXmlId().getDecoded());
+								jg.writeStringField("id", id.getQName().toString());
 								jg.writeEndObject();
 							} catch (IOException e) {
 								AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
 							}
 						});
 						jg.writeEndArray();
+						jg.writeEndObject();
 					} catch (IOException e) {
 						AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
 					}
 				});
-				jg.writeEndObject();
+				jg.writeEndArray();
 			}
 			jg.close();
 		} catch (Exception e) {

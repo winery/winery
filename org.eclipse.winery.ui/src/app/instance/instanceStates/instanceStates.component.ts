@@ -12,12 +12,12 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { InstanceStateService } from './instanceState.service';
-import { InstanceService } from '../instance.service';
-import { InstanceStateApiData } from './InstanceStateApiData';
 import { Response } from '@angular/http';
 import { isNullOrUndefined } from 'util';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
+import { InstanceService } from '../instance.service';
+import { InstanceStateApiData } from './InstanceStateApiData';
+import { InstanceStateService } from './instanceStates.service';
 
 @Component({
     selector: 'winery-instance-instanceStates',
@@ -26,7 +26,7 @@ import { NotificationService } from '../../notificationModule/notificationservic
 })
 export class InstanceStatesComponent implements OnInit {
 
-    loading: boolean = true;
+    loading = true;
     instanceStates: InstanceStateApiData[];
     elementToRemove: InstanceStateApiData = null;
     selectedCell: InstanceStateApiData = null;

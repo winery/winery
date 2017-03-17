@@ -10,10 +10,10 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NotificationService } from '../notificationModule/notification.service';
 import { NamespaceSelectorService } from './namespaceSelector.service';
-import { NotificationService } from '../notificationModule/notificationservice';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
 const noop = () => {
 };
@@ -69,13 +69,13 @@ const customInputControl: any = {
 })
 export class NamespaceSelectorComponent implements OnInit, ControlValueAccessor {
 
-    @Input() isRequired: boolean = false;
-    @Input() typeAheadListLimit: number = 50;
+    @Input() isRequired = false;
+    @Input() typeAheadListLimit = 50;
 
-    loading: boolean = true;
+    loading = true;
     allNamespaces: string[] = [];
 
-    private innerValue: string = '';
+    private innerValue = '';
     private onTouchedCallback: () => void = noop;
     private onChangeCallback: (_: any) => void = noop;
 
