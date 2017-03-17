@@ -29,8 +29,10 @@
     <div class="subMenu">
         <a *ngFor="let item of subMenu"
            class="styledTabMenuButton styledTabMenuButton2ndlevel"
-           [class.selected]="item === selectedTab"
            [routerLink]="['./' + item | lowercase | removeWhiteSpaces ]"
+           [class.selected]="this.router.isActive(''+ item | lowercase | removeWhiteSpaces) || item === selectedTab"
+           routerLinkActive="selected"
+           [routerLinkActiveOptions]="{exact: true}"
            (click)="selectedTab = item">
             <div class="left"></div>
             <div class="center">{{ item }}</div>
