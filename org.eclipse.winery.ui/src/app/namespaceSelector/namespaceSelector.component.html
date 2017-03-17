@@ -9,6 +9,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add namespace filed option
  */
 -->
 <div [class.hidden]="!loading">
@@ -21,6 +22,7 @@
            name="namespace"
            autocomplete=off
            [typeahead]="allNamespaces"
+           typeaheadOptionField="namespace"
            [typeaheadOptionsLimit]="typeAheadListLimit"
            [(ngModel)]="selectedNamespace"
            #namespace="ngModel"

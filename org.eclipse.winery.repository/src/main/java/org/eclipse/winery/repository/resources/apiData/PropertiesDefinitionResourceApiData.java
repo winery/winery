@@ -21,7 +21,7 @@ public class PropertiesDefinitionResourceApiData {
 	public WinerysPropertiesDefinition winerysPropertiesDefinition;
 	public PropertiesDefinitionEnum selectedValue;
 
-	public PropertiesDefinitionResourceApiData() {}
+	public PropertiesDefinitionResourceApiData() { }
 
 	public PropertiesDefinitionResourceApiData(
 			TEntityType.PropertiesDefinition propertiesDefinition,
@@ -36,7 +36,7 @@ public class PropertiesDefinitionResourceApiData {
 			this.selectedValue = PropertiesDefinitionEnum.Element;
 		} else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getType() != null)) {
 			this.selectedValue = PropertiesDefinitionEnum.Type;
-		} else{
+		} else {
 			this.selectedValue = PropertiesDefinitionEnum.None;
 		}
 

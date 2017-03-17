@@ -6,7 +6,7 @@ public class XsdDefinitionsApiData {
 
 	public ArrayNode xsdDefinitions;
 
-	public XsdDefinitionsApiData() {}
+	public XsdDefinitionsApiData() { }
 
 	public XsdDefinitionsApiData(ArrayNode xsdDefinitions) {
 		this.xsdDefinitions = xsdDefinitions;

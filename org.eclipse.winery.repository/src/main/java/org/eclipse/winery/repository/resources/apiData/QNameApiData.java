@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.apiData;
 
-import javax.xml.namespace.QName;
-
 public class QNameApiData {
     public String localname;
     public String namespace;

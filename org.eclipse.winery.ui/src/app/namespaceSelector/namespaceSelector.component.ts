@@ -8,12 +8,14 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add types and documentation
  */
 
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { NamespaceSelectorService } from './namespaceSelector.service';
 import { NotificationService } from '../notificationModule/notificationservice';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { NamespaceWithPrefix } from '../interfaces/namespaceWithPrefix';
 
 const noop = () => {
 };
@@ -53,7 +55,8 @@ const customInputControl: any = {
  *         name="namespaceSelector"
  *         [(ngModel)]="mySelectedNamespace"
  *         [isRequired]="true"
- *         [typeAheadListLimit]="20">
+ *         [typeAheadListLimit]="20"
+ *         required>
  *     </winery-namespaceSelector>
  *     <button type="button" [disabled]="!myForm?.form.valid" (click)="onSave();">Save</button>
  * </form>
@@ -73,7 +76,7 @@ export class NamespaceSelectorComponent implements OnInit, ControlValueAccessor 
     @Input() typeAheadListLimit: number = 50;
 
     loading: boolean = true;
-    allNamespaces: string[] = [];
+    allNamespaces: NamespaceWithPrefix[] = [];
 
     private innerValue: string = '';
     private onTouchedCallback: () => void = noop;

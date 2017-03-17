@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add admin component
  */
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +20,6 @@ import { InstanceHeaderComponent } from './instanceHeader/instanceHeader.compone
 import { InstanceRouterModule } from './instanceRouter.module';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { InheritanceComponent } from './inheritance/inheritance.component';
-import { ImplementationsComponent } from './implementations/implementations.component';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
@@ -31,6 +31,15 @@ import { InterfacesModule } from './interfaces/interfaces.module';
 import { VisualAppearanceModule } from './visualAppearance/visualAppearance.module';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { LanguageComponent } from './language/language.component';
+import { LoggerComponent } from './logger/logger.component';
+import { PlanTypesComponent } from './planTypes/planTypes.component';
+import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
+import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
+import { NamespacesComponent } from './namespaces/namespaces.component';
+import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
+import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
+import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
+import { RepositoryModule } from './repository/repository.module';
 
 @NgModule({
     imports: [
@@ -43,6 +52,10 @@ import { LanguageComponent } from './language/language.component';
         WineryModalModule,
         InterfacesModule,
         VisualAppearanceModule,
+        WineryTableModule,
+        DuplicateValidatorModule,
+        NamespaceSelectorModule,
+        RepositoryModule
     ],
     exports: [],
     declarations: [
@@ -57,6 +70,11 @@ import { LanguageComponent } from './language/language.component';
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
         QNameSelectorComponent,
+        LoggerComponent,
+        PlanTypesComponent,
+        ConstraintTypesComponent,
+        PlanLanguagesComponent,
+        NamespacesComponent
     ],
     providers: [],
 })
