@@ -80,16 +80,6 @@ This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 ** An Implementation Artifact may carry a `name` attribute
 ** The contents of properties of Boundary Definitions are processed in `lax` mode
 
-## IDE Setup
-
-### IntelliJ Ultimate setup
-
-See [config/IntelliJ IDEA/README.md](config/IntelliJ IDEA/README.md).
-
-### Eclipse setup
-
-See [config/Eclipse/README.md](config/Eclipse/README.md).
-
 ### Configure Winery (optional)
 The repository location can be changed:
 Copy `winery.properties` to `path-to-workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\winery`.
