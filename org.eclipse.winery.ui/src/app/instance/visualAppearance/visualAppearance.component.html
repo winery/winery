@@ -17,39 +17,46 @@
 <div *ngIf="!loading">
     <tabset>
         <tab heading="Icons">
-            <b>Icon (16x16) used in palette</b><br>
-            <div ng2FileDrop
-                 [ngClass]="{'nv-file-over': hasImg16DropZoneOver}"
-                 (fileOver)="onImg16Hover($event)"
-                 [uploader]="img16uploader"
-                 class="imgDropZone">
-                <img src="{{img16Path}}">
-                <button class="btn btn-default btn-xs" type="button" (click)="onUpload16();"> upload..</button>
-            </div><br/>
-            <b>Icon (50x50) used in the node template shapes</b><br/>
-            <div ng2FileDrop
-                 [ngClass]="{'nv-file-over': hasImg50DropZoneOver}"
-                 (fileOver)="onImg50Hover($event)"
-                 [uploader]="img50uploader"
-                 class="imgDropZone">
-                <img src="{{img50Path}}">
-                <button class="btn btn-default btn-xs" type="button" (click)="onUpload50();">upload..</button>
+            <div [class.hidden]="!loading">
+                <winery-loader></winery-loader>
             </div>
-            <br/>
+            <div *ngIf="!loading">
+                <b>Icon (16x16) used in palette</b><br>
+                <div ng2FileDrop
+                     [ngClass]="{'nv-file-over': hasImg16DropZoneOver}"
+                     (fileOver)="hasImg16DropZoneOver=$event; onUpload(img16uploader);"
+                     [uploader]="img16uploader"
+                     class="imgDropZone">
+                    <img src="{{img16Path}}" height="16" width="16">
+                    <button class="btn btn-default btn-xs upload" type="button" (click)="upload16Modal.show();"> upload..</button>
+                </div><br/>
+                <b>Icon (50x50) used in the node template shapes</b><br/>
+                <div ng2FileDrop
+                     [ngClass]="{'nv-file-over': hasImg50DropZoneOver}"
+                     (fileOver)="hasImg50DropZoneOver=$event; onUpload(img50uploader);"
+                     [uploader]="img50uploader"
+                     class="imgDropZone">
+                    <img src="{{img50Path}}" height="50" width="50">
+                    <button class="btn btn-default btn-xs upload" type="button" (click)="upload50Modal.show();">upload..</button>
+                </div>
+                <br/>
+            </div>
         </tab>
-        <tab heading="Color">
+        <tab class="colorTab" heading="Color">
             <br/>
-            <input [colorPicker]="color"
-                   [style.background]="color"
-                   [value]="color"
-                   [cpOKButton]="true"
-                   [cpSaveClickOutside]="false"
-                   [cpOKButtonClass]= "'btn btn-primary btn-sm'"
-                   (colorPickerChange)="color=$event"/>
-            <br/>Click the box above to choose or enter the hex value<br/>
-            <div class="floatButton">
+
+            <div class="colorPicker">
+                <span [(colorPicker)]="color"
+                      [cpDialogDisplay]="'inline'"
+                      [style.background]="color"
+                      [cpToggle]="true"
+                      (colorPickerChange)="colorChange($event)"
+                      [cpOutputFormat]="'hex'"
+                      [cpAlphaChannel]="'disabled'"></span>
+            </div>
+            <div class="floatContent">
+                choose or enter the hex value in the area on the left<br/>
                 <button (click)="saveToServer()" class="btn btn-info btn-sm">save</button>
-                <button (click)="test()" class="btn btn-info btn-sm">test</button>
             </div>
         </tab>
     </tabset>
@@ -60,12 +67,22 @@
     </winery-modalHeader>
     <winery-modalBody>
         <div class="modal-upload">
-            <input type="file" ng2FileSelect [uploader]="img16uploader" />
+            <b>File</b>
+            <div class="fileZone">
+                <input type="file" ng2FileSelect [uploader]="img16uploader" (change)="onUpload(img16uploader, upload16Modal);"/>
+            </div>
+            <div ng2FileDrop
+                 [ngClass]="{'nv-file-over': hasImg16DropZoneOver}"
+                 (fileOver)="hasImg16DropZoneOver=$event; onUpload(img16uploader, upload16Modal);"
+                 [uploader]="img16uploader"
+                 class="imgDropZone">
+                You may also <b>drop the file</b> here.
+            </div><br/>
+            The file is <b>immediately</b> uploaded without any confirmation.
         </div>
     </winery-modalBody>
-    <winery-modalFooter (onOk)="img16uploader.uploadAll();"
-                  [closeButtonLabel]="'Cancel'"
-                  [okButtonLabel]="'Upload'">
+    <winery-modalFooter [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" (click)="upload16Modal.hide()">Cancel</button>
     </winery-modalFooter>
 </winery-modal>
 
@@ -74,11 +91,18 @@
     </winery-modalHeader>
     <winery-modalBody>
         <div class="modal-upload">
-            <input type="file" ng2FileSelect [uploader]="img50uploader" />
+            <input type="file" ng2FileSelect [uploader]="img50uploader" (change)="onUpload(img50uploader, upload50Modal);"/>
+            <div ng2FileDrop
+                 [ngClass]="{'nv-file-over': hasImg50DropZoneOver}"
+                 (fileOver)="hasImg50DropZoneOver=$event; onUpload(img50uploader, upload50Modal);"
+                 [uploader]="img50uploader"
+                 class="imgDropZone">
+                You may also <b>drop the file</b> here.
+            </div><br/>
+            The file is <b>immediately</b> uploaded without any confirmation.
         </div>
     </winery-modalBody>
-    <winery-modalFooter (onOk)="img50uploader.uploadAll();"
-                  [closeButtonLabel]="'Cancel'"
-                  [okButtonLabel]="'Upload'">
+    <winery-modalFooter [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" (click)="upload50Modal.hide()">Cancel</button>
     </winery-modalFooter>
 </winery-modal>

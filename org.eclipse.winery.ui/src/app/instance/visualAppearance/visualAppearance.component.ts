@@ -14,7 +14,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { VisualAppearanceService } from './visualAppearance.service';
 import { FileUploader, FileItem } from 'ng2-file-upload';
+import { ColorPickerDirective, ColorPickerService } from 'angular2-color-picker';
 import { NotificationService } from '../../notificationModule/notificationservice';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-instance-visualAppearance',
@@ -25,8 +27,9 @@ import { NotificationService } from '../../notificationModule/notificationservic
     providers: [VisualAppearanceService]
 })
 export class VisualAppearanceComponent implements OnInit {
-    color: string = '#fff';
-    testColor: string;
+    color: string = '#f00';
+    isColorLoaded: boolean= false;
+    loading: boolean = true;
     img16uploader: FileUploader;
     img50uploader: FileUploader;
     img16Path: string;
@@ -39,7 +42,8 @@ export class VisualAppearanceComponent implements OnInit {
     fileItem: FileItem;
 
     constructor(private service: VisualAppearanceService,
-                private notify: NotificationService) {
+                private notify: NotificationService,
+                private cpService: ColorPickerService) {
     }
 
     ngOnInit() {
@@ -47,6 +51,10 @@ export class VisualAppearanceComponent implements OnInit {
         this.img50Path = this.service.getImg50x50Path();
         this.img16uploader = this.service.getUploader(this.img16Path);
         this.img50uploader = this.service.getUploader(this.img50Path);
+        this.getColorFromServer();
+    }
+
+    getColorFromServer() {
         this.service.getColor().subscribe(
             data => this.handleColorData(data),
             error => this.handleError(error)
@@ -54,31 +62,29 @@ export class VisualAppearanceComponent implements OnInit {
     }
 
     handleColorData(data: any) {
+        this.loading = false;
         this.color = data;
-        this.testColor = data;
-        console.log('Get ' + data + ' ' + this.color);
     }
 
-    onImg16Hover(e: any) {
-        this.hasImg16DropZoneOver = e;
-    }
+    onUpload(uploader: FileUploader, modal?: any) {
+        if (!isNullOrUndefined(uploader.queue[0])) {
+            this.loading = true;
+            uploader.queue[0].upload();
+            uploader.onCompleteItem = (item: any, response: string, status: number, headers: any) => {
+                uploader.clearQueue();
+                this.loading = false;
 
-    onImg50Hover(e: any) {
-        this.hasImg50DropZoneOver = e;
-    }
-
-    onUpload16() {
-        this.img16uploader.clearQueue();
-        this.upload16Modal.show();
-    }
-
-    onUpload50() {
-        this.upload50Modal.clearQueue();
-        this.upload50Modal.show();
-    }
-
-    test() {
-        this.color = this.testColor;
+                if (!isNullOrUndefined(modal)) {
+                    modal.hide();
+                }
+                if (status === 204) {
+                    this.notify.success('Successfully saved Icon');
+                } else {
+                    this.notify.error('Error while uploading Icon');
+                }
+                return {item, response, status, headers};
+            };
+        }
     }
 
     saveToServer() {
@@ -87,22 +93,25 @@ export class VisualAppearanceComponent implements OnInit {
                 data => this.handleResponse(data),
                 error => this.handleError(error)
             );
-        this.service.getColor().subscribe(
-            data => this.handleColorData(data),
-            error => this.handleError(error)
-        );
     }
 
     colorChange(event: any) {
-        this.color = event;
-        console.log(event + '-' + this.color);
+        if (this.isColorLoaded) {
+            this.color = event;
+        } else {
+            console.log('load');
+            this.isColorLoaded = true;
+            this.getColorFromServer();
+        }
     }
 
     private handleResponse(response: any) {
+        this.loading = false;
         this.notify.success('Successfully saved bordercolor!');
     }
 
     private handleError(error: any): void {
+        this.loading = false;
         this.notify.error(error);
     }
 

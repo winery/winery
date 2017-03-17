@@ -10,25 +10,45 @@
  *     Lukas Balzer- initial API and implementation
  */
 
-img {
-    width: 20px;
-    height: 20px;
-    margin-right: 50px;
+.img {
+    float: left;
+}
+button.upload {
+    float: right;
+    margin-right: 700px;
+}
+.imgDropZone {
+    min-height: 50px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    padding-left: 20px;
+    padding-top: 5px;
+    vertical-align: middle;
+    align-content: center;
+    border: dotted 3px lightgray;
+    background-color: ghostwhite;
 }
 
-.imgDropZone {
-    padding-left: 20px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    padding-top: 5px;
-    border: dotted 3px lightgray;
-    height: 40px;
+.fileZone {
+    border: solid 3px lightgray;
+    border-radius: 3px;
+    padding: 5px;
 }
+
 .nv-file-over {
     border: dotted 3px red;
 }
 
-div.floatButton {
-    float:right;
-    margin-top: 10px;;
+.colorTab {
+    height: 350px;
+    padding-top: 10px;
+}
+.colorPicker {
+    float: left;
+    position: relative;
+    height: 300px;
+}
+
+.floatContent {
+    margin-left: 250px;
 }

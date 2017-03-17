@@ -40,9 +40,6 @@ export class VisualAppearanceService {
         fileUploader.onAfterAddingFile = (item) => {
             item.method = 'PUT';
         };
-        fileUploader.onSuccessItem = (item) => {
-            location.reload();
-        };
         return fileUploader;
     }
 
@@ -57,7 +54,6 @@ export class VisualAppearanceService {
         let headers = new Headers({'Content-Type': 'text/plain'});
         let options = new RequestOptions({headers: headers});
         let sendString: string = 'color=' + encodeURIComponent(color);
-        console.log('put ' + sendString);
         return this.http.put(backendBaseUri + this.path + '/bordercolor', sendString, options);
     }
 }
