@@ -9,6 +9,12 @@
  * Contributors:
  *     Lukas Balzer- initial API and implementation
  */
+.colorPicker {
+    float: left;
+    position: relative;
+    height: 300px;
+    cursor: pointer;
+}
 
 .img {
     float: left;
@@ -43,11 +49,7 @@ button.upload {
     height: 350px;
     padding-top: 10px;
 }
-.colorPicker {
-    float: left;
-    position: relative;
-    height: 300px;
-}
+
 
 .floatContent {
     margin-left: 250px;

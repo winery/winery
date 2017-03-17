@@ -69,21 +69,28 @@ export class VisualAppearanceComponent implements OnInit {
     onUpload(uploader: FileUploader, modal?: any) {
         if (!isNullOrUndefined(uploader.queue[0])) {
             this.loading = true;
-            uploader.queue[0].upload();
-            uploader.onCompleteItem = (item: any, response: string, status: number, headers: any) => {
+            this.fileItem = uploader.queue[0];
+            if (!this.fileItem._file.type.includes('image')) {
                 uploader.clearQueue();
                 this.loading = false;
+                this.notify.error('Please upload an image file');
+            } else {
+                this.fileItem.upload();
+                uploader.onCompleteItem = (item: any, response: string, status: number, headers: any) => {
+                    uploader.clearQueue();
+                    this.loading = false;
 
-                if (!isNullOrUndefined(modal)) {
-                    modal.hide();
-                }
-                if (status === 204) {
-                    this.notify.success('Successfully saved Icon');
-                } else {
-                    this.notify.error('Error while uploading Icon');
-                }
-                return {item, response, status, headers};
-            };
+                    if (!isNullOrUndefined(modal)) {
+                        modal.hide();
+                    }
+                    if (status === 204) {
+                        this.notify.success('Successfully saved Icon');
+                    } else {
+                        this.notify.error('Error while uploading Icon');
+                    }
+                    return {item, response, status, headers};
+                };
+            }
         }
     }
 
@@ -99,7 +106,6 @@ export class VisualAppearanceComponent implements OnInit {
         if (this.isColorLoaded) {
             this.color = event;
         } else {
-            console.log('load');
             this.isColorLoaded = true;
             this.getColorFromServer();
         }
