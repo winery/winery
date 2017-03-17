@@ -1,3 +1,5 @@
+---
+---
 # IntelliJ Configuration
 
 1. First of all, generate a war to have all dependencies fetched by maven.
