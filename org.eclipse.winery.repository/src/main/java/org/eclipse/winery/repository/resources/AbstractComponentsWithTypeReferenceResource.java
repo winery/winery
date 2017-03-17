@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
 import org.eclipse.winery.repository.resources.apiData.QNameWithTypeApiData;
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -28,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
  * as these templates are directly nested in a TDefinitionsElement
  */
 public abstract class AbstractComponentsWithTypeReferenceResource<T extends AbstractComponentInstanceResource> extends AbstractComponentsResource<T> {
-
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

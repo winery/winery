@@ -12,7 +12,6 @@
 package org.eclipse.winery.repository.resources.imports.genericimports;
 
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 /**
