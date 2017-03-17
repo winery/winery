@@ -85,7 +85,6 @@ export class NamespacesComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
-
         this.addNamespaceModal.show();
     }
 

@@ -44,22 +44,12 @@ import { NotificationService } from '../notificationModule/notificationservice';
  * <br>
  * @example <caption>Basic usage with url in template</caption>
  * ```html
- * <winery-namespaceSelector
+ * <winery-uploader
  *      #uploader
  *      [title]="Upload Files"
  *      [uploadUrl]="'http://upload.to.server'"
  *      [showProgress]="true">
- * </winery-namespaceSelector>
- * ```
- *
- * @example <caption>Usage with url parameter</caption>
- * ```html
- * <winery-namespaceSelector
- *      #uploader
- *      [title]="Upload Files"
- *      [uploadUrl]="serverUrl"
- *      [showProgress]="true">
- * </winery-namespaceSelector>
+ * </winery-uploader>
  * ```
  */
 @Component({

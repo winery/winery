@@ -53,7 +53,6 @@ const instanceRoutes: Routes = [
             { path: 'contrainttypes', component: ConstraintTypesComponent },
             { path: 'log', component: LoggerComponent },
             { path: '', redirectTo: 'namespaces', pathMatch: 'full'}
-
         ]
     },
     {

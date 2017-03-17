@@ -32,8 +32,6 @@ export class InstanceResolver implements Resolve<InstanceResolverData> {
         let namespace = route.params['namespace'];
         let instanceId = route.params['instanceId'];
 
-        console.log('instanceResolver:', section, namespace, instanceId, route, state);
-
         if (!isNullOrUndefined(instanceId) && !isNullOrUndefined(namespace) && !isNullOrUndefined(section)) {
             return {
                 section: section,

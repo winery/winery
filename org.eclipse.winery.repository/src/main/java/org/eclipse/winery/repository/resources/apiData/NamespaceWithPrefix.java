@@ -62,6 +62,4 @@ public class NamespaceWithPrefix implements Comparable<NamespaceWithPrefix> {
 		hash = 59 * hash + (this.prefix != null ? this.prefix.hashCode() : 0);
 		return hash;
 	}
-
-
 }

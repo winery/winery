@@ -8,7 +8,7 @@ export class NotificationService {
     toastr: ToastsManager;
     notifications: Array<any> = [];
 
-    constructor(pToastr: ToastsManager,
+    constructor(private pToastr: ToastsManager,
                 private datePipe: DatePipe) {
         this.toastr = pToastr;
     }

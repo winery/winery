@@ -237,17 +237,12 @@ public class NamespacesResource extends AbstractAdminResource {
 		if (namespacesList == null) {
 			return Response.status(Status.BAD_REQUEST).entity("namespace list must be given.").build();
 		}
-
-		Collection<Namespace> namespaces = NamespacesResource.getNamespaces();
 		//delete all namespaces
 		this.configuration.clear();
-
 		//set all namespaces
 		for (NamespaceWithPrefix nsp : namespacesList) {
-
 			this.addNamespace(nsp.namespace, nsp.prefix);
 		}
-
 		return Response.noContent().build();
 	}
 
