@@ -12,4 +12,11 @@
  */
 -->
 
-repository
+<h4>General Repository Commands</h4>
+<div>
+    <a [attr.href]=" path + '/?dump'" class="btn btn-primary">Dump Repository</a>
+    <button class="btn btn-danger" (click)="clearRepository();" id="btnclearrepository" data-loading-text="Deleting...">Clear Repository</button>
+    <button class="btn btn-default" (click)="uploader.show()">Import Repository</button>
+</div>
+
+<winery-uploader #uploader [title]="'Upload Repository Content'" [uploadUrl]="path"></winery-uploader>

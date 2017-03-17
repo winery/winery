@@ -21,7 +21,6 @@ import { InstanceRouterModule } from './instanceRouter.module';
 import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { InheritanceComponent } from './inheritance/inheritance.component';
-import { ImplementationsComponent } from './implementations/implementations.component';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
@@ -32,7 +31,6 @@ import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { InterfacesModule } from './interfaces/interfaces.module';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { LanguageComponent } from './language/language.component';
-import { RepositoryComponent } from './repository/repository.component';
 import { LoggerComponent } from './logger/logger.component';
 import { PlanTypesComponent } from './planTypes/planTypes.component';
 import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
@@ -41,6 +39,7 @@ import { NamespacesComponent } from './namespaces/namespaces.component';
 import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
 import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
 import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
+import { RepositoryModule } from './repository/repository.module';
 
 @NgModule({
     imports: [
@@ -54,7 +53,8 @@ import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.
         InterfacesModule,
         WineryTableModule,
         DuplicateValidatorModule,
-        NamespaceSelectorModule
+        NamespaceSelectorModule,
+        RepositoryModule
     ],
     exports: [],
     declarations: [
@@ -70,7 +70,6 @@ import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.
         RequirementDefinitionsComponent,
         VisualAppearanceComponent,
         QNameSelectorComponent,
-        RepositoryComponent,
         LoggerComponent,
         PlanTypesComponent,
         ConstraintTypesComponent,

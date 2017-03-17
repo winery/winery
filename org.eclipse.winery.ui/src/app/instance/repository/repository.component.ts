@@ -9,15 +9,40 @@
  * Contributors:
  *     Niko Stadelmaier - initial API and implementation
  */
-
 import { Component, OnInit } from '@angular/core';
+import { RepositoryService } from './repository.service';
+import { NotificationService } from '../../notificationModule/notificationservice';
+import { backendBaseUri } from '../../configuration';
 
 @Component({
     selector: 'winery-instance-repository',
     templateUrl: 'repository.component.html'
 })
 export class RepositoryComponent implements OnInit {
-    constructor() { }
 
-    ngOnInit() { }
+    path: string;
+
+    constructor(private service: RepositoryService,
+                private notify: NotificationService) {
+    }
+
+    ngOnInit() {
+        this.path = backendBaseUri + this.service.path + '/';
+    }
+
+    clearRepository() {
+        this.service.clearRepository().subscribe(
+            data => this.handleSuccess('Repository cleared'),
+            error => this.handleError(error)
+        );
+    }
+
+    handleSuccess(message: string) {
+        this.notify.success(message);
+    }
+
+    handleError(error: Error) {
+        this.notify.error(error.toString());
+    }
+
 }
