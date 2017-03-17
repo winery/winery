@@ -275,7 +275,14 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 						groupedIds.get(namespace).forEach(id -> {
 							try {
 								jg.writeStartObject();
-								jg.writeStringField("text", id.getXmlId().getDecoded());
+								String text;
+								if (supportsNameAttribute) {
+									AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
+									text = ((IHasName) componentInstaceResource).getName();
+								} else {
+									text = id.getXmlId().getDecoded();
+								}
+								jg.writeStringField("text", text);
 								jg.writeStringField("id", id.getQName().toString());
 								jg.writeEndObject();
 							} catch (IOException e) {
