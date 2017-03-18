@@ -18,7 +18,6 @@ import { EditXMLComponent } from './editXML/editXML.component';
 import { InstanceComponent } from './instance.component';
 import { InstanceHeaderComponent } from './instanceHeader/instanceHeader.component';
 import { InstanceRouterModule } from './instanceRouter.module';
-import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { InheritanceComponent } from './inheritance/inheritance.component';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
@@ -29,6 +28,7 @@ import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { InterfacesModule } from './interfaces/interfaces.module';
+import { VisualAppearanceModule } from './visualAppearance/visualAppearance.module';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { LanguageComponent } from './language/language.component';
 import { LoggerComponent } from './logger/logger.component';
@@ -51,6 +51,7 @@ import { RepositoryModule } from './repository/repository.module';
         InstanceRouterModule,
         WineryModalModule,
         InterfacesModule,
+        VisualAppearanceModule,
         WineryTableModule,
         DuplicateValidatorModule,
         NamespaceSelectorModule,
@@ -68,7 +69,6 @@ import { RepositoryModule } from './repository/repository.module';
         LanguageComponent,
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
-        VisualAppearanceComponent,
         QNameSelectorComponent,
         LoggerComponent,
         PlanTypesComponent,
