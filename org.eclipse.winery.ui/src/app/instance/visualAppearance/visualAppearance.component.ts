@@ -27,8 +27,8 @@ import { isNullOrUndefined } from 'util';
     providers: [VisualAppearanceService]
 })
 export class VisualAppearanceComponent implements OnInit {
-    color: string = '#f00';
-    isColorLoaded: boolean = false;
+    colorMap: Map<string, {loaded: boolean, color: string}> = new Map<string, {loaded: boolean, color: string}>();
+    arrowMap: Map<string, {selected: boolean}> = new Map<string, {selected: boolean}>();
     loading: boolean = true;
     img16uploader: FileUploader;
     img50uploader: FileUploader;
@@ -51,19 +51,50 @@ export class VisualAppearanceComponent implements OnInit {
         this.img50Path = this.service.getImg50x50Path();
         this.img16uploader = this.service.getUploader(this.img16Path);
         this.img50uploader = this.service.getUploader(this.img50Path);
-        this.getColorFromServer();
+        this.colorMap.set('/bordercolor', {loaded: false, color: '#f00'});
+        this.colorMap.set('/color', {loaded: false, color: '#f00'});
+        this.colorMap.set('/hovercolor', {loaded: false, color: '#f00'});
+        if (this.service.isNodeType) {
+            this.getColorFromServer('/bordercolor');
+        } else {
+            this.getColorFromServer('/color');
+            this.getColorFromServer('/hovercolor');
+        }
     }
 
-    getColorFromServer() {
-        this.service.getColor().subscribe(
-            data => this.handleColorData(data),
-            error => this.handleError(error)
-        );
+    getColorFromServer(type: string) {
+        if (this.colorMap.has(type)) {
+            this.service.getColor(type).subscribe(
+                data => this.handleColorData(data, type),
+                error => this.handleError(error)
+            );
+        }
     }
 
-    handleColorData(data: any) {
+    selectArrowItem(type?: string, value?: any) {
+        let isOpen = true;
+        if (isNullOrUndefined(type)) {
+            this.arrowMap.forEach(function (value, index, map) {
+                value.selected = false;
+            });
+        } else {
+            if (!this.arrowMap.has(type)) {
+                this.arrowMap.set(type, {selected: true});
+            } else if (this.arrowMap.get(type).selected) {
+                isOpen = false;
+            }
+            this.arrowMap.forEach(function (value, index, map) {
+                value.selected = false;
+            });
+            if (isOpen) {
+                this.arrowMap.get(type).selected = true;
+            }
+        }
+    }
+
+    handleColorData(data: any, type: string) {
         this.loading = false;
-        this.color = data;
+        this.colorMap.get(type).color = data;
     }
 
     onUpload(uploader: FileUploader, event: any, modal?: any): boolean {
@@ -95,20 +126,26 @@ export class VisualAppearanceComponent implements OnInit {
         return event;
     }
 
-    saveToServer() {
-        this.service.saveColor(this.color)
-            .subscribe(
-                data => this.handleResponse(data),
-                error => this.handleError(error)
-            );
+    saveToServer(type: string) {
+        if (this.colorMap.has(type)) {
+            this.service.saveColor(this.colorMap.get(type).color, type)
+                .subscribe(
+                    data => this.handleResponse(data),
+                    error => this.handleError(error)
+                );
+        }
     }
 
-    colorChange(event: any) {
-        if (this.isColorLoaded) {
-            this.color = event;
-        } else {
-            this.isColorLoaded = true;
-            this.getColorFromServer();
+    colorChange(event: any, type: string) {
+        if (this.colorMap.has(type)) {
+            console.log('has ' + type);
+            if (this.colorMap.get(type).loaded) {
+                this.colorMap.get(type).color = event;
+            } else {
+                this.colorMap.get(type).loaded = true;
+                this.getColorFromServer(type);
+            }
+            console.log(this.colorMap);
         }
     }
 

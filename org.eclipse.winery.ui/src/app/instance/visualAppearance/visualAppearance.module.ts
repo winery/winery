@@ -19,6 +19,7 @@ import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { VisualAppearanceComponent } from './visualAppearance.component';
 import { ColorPickerModule, ColorPickerService } from 'angular2-color-picker';
 import { FileUploadModule } from 'ng2-file-upload';
+import { WineryUploaderModule } from '../../fileUploaderModal/wineryUploader.module';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { FileUploadModule } from 'ng2-file-upload';
         CommonModule,
         ColorPickerModule,
         WineryModalModule,
-        FileUploadModule
+        FileUploadModule,
+        WineryUploaderModule
     ],
     exports: [],
     declarations: [

@@ -12,22 +12,48 @@
  */
 -->
 <tabset>
-    <tab class="colorTab" heading="Bordercolor" tabindex="2">
+    <tab heading="Color">
         <br/>
-        <div class="colorPicker">
-            <div [colorPicker]="color"
+        <div class="picker" *ngIf="service.isNodeType">
+            <div class="colorPicker" [colorPicker]="this.colorMap.get('/bordercolor').color"
                  [cpDialogDisplay]="'inline'"
-                 [style.background]="color"
-                 (colorPickerChange)="colorChange($event)"
+                 [style.background]="this.colorMap.get('/bordercolor').color"
+                 (colorPickerChange)="colorChange($event, '/bordercolor')"
                  [cpToggle]="true"
                  [cpAlphaChannel]="'disabled'"></div>
+            <div class="floatContent">
+                choose or enter the hex value in the area on the left<br/>
+                <button (click)="saveToServer('/bordercolor')" class="btn btn-info btn-sm">save</button>
+            </div>
         </div>
-        <div class="floatContent">
-            choose or enter the hex value in the area on the left<br/>
-            <button (click)="saveToServer()" class="btn btn-info btn-sm">save</button>
+        <div class="picker line_colorPicker" *ngIf="!service.isNodeType">
+            <div class="colorPicker" [colorPicker]="colorMap.get('/color').color"
+                 [colorPicker]="this.colorMap.get('/color').color"
+                 [cpDialogDisplay]="'inline'"
+                 [style.background]="this.colorMap.get('/color').color"
+                 (colorPickerChange)="colorChange($event, '/color')"
+                 [cpToggle]="true"
+                 [cpAlphaChannel]="'disabled'"></div>
+            <div class="floatContent">
+                choose or enter the hex value in the area on the left<br/>
+                <button (click)="saveToServer('/color')" class="btn btn-info btn-sm">save</button>
+            </div>
+        </div>
+        <div class="picker hc_colorPicker" *ngIf="!service.isNodeType">
+            <div class="colorPicker" [colorPicker]="this.colorMap.get('/hovercolor').color"
+                 [colorPicker]="this.colorMap.get('/hovercolor').color"
+                 [cpDialogDisplay]="'inline'"
+                 [style.background]="this.colorMap.get('/hovercolor').color"
+                 (colorPickerChange)="colorChange($event, '/hovercolor')"
+                 [cpToggle]="true"
+                 [cpAlphaChannel]="'disabled'"></div>
+            <div class="floatContent">
+                choose or enter the hex value in the area on the left<br/>
+                <button (click)="saveToServer('/hovercolor')" class="btn btn-info btn-sm">save</button>
+            </div>
         </div>
     </tab>
-    <tab heading="Icons" tabindex="1">
+    <tab heading="Icons">
         <div [class.hidden]="!loading">
             <winery-loader></winery-loader>
         </div>
@@ -43,6 +69,8 @@
                 </button>
             </div>
             <br/>
+        </div>
+        <div *ngIf="!loading && service.isNodeType">
             <b>Icon (50x50) used in the node template shapes</b><br/>
             <div ng2FileDrop
                  [ngClass]="{'nv-file-over': hasImg50DropZoneOver}"
@@ -54,6 +82,62 @@
                 </button>
             </div>
             <br/>
+        </div>
+    </tab>
+    <tab heading="Color" *ngIf="!service.isNodeType">
+        <div class="slot" (click)="selectArrowItem('source');">
+            <div>
+                <span class="header item">
+                    source
+                </span>
+            </div>
+            <div class="list" *ngIf="arrowMap.get('source')?.selected;">
+                <span class="list item" >
+                    <img src="../../../assets/img/relationshiptype/noneSource.png">
+                </span>
+                <span class="list item">
+                    <img src="../../../assets/img/relationshiptype/PlainArrowSource.png">
+                </span>
+                <span class="list item">
+                    <img src="../../../assets/img/relationshiptype/DiamondSource.png">
+                </span>
+            </div>
+        </div>
+        <div class="slot" (click)="selectArrowItem('line');">
+            <div>
+                <span class="header item">
+                    source
+                </span>
+            </div>
+            <div class="list" *ngIf="arrowMap.get('line')?.selected;">
+                <span class="list item" >
+                    <img src="../../../assets/img/relationshiptype/plainLine.png">
+                </span>
+                <span class="list item">
+                    <img src="../../../assets/img/relationshiptype/dottedLine.png">
+                </span>
+                <span class="list item" >
+                    <img src="../../../assets/img/relationshiptype/dotted2Line.png">
+                </span>
+            </div>
+        </div>
+        <div class="slot" (click)="selectArrowItem('target');">
+            <div>
+                <span class="header item">
+                    source
+                </span>
+            </div>
+            <div class="list" *ngIf="arrowMap.get('target')?.selected;">
+                <span class="list item">
+                    <img src="../../../assets/img/relationshiptype/noneTarget.png">
+                </span>
+                <span class="list item">
+                    <img src="../../../assets/img/relationshiptype/PlainArrowTarget.png">
+                </span>
+                <span class="list item">
+                    <img src="../../../assets/img/relationshiptype/DiamondTarget.png">
+                </span>
+            </div>
         </div>
     </tab>
 </tabset>

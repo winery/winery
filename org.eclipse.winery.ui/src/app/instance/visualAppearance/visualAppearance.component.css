@@ -9,12 +9,6 @@
  * Contributors:
  *     Lukas Balzer- initial API and implementation
  */
-.colorPicker {
-    float: left;
-    position: relative;
-    height: 300px;
-    cursor: pointer;
-}
 
 .img {
     float: left;
@@ -46,12 +40,52 @@ button.upload {
 .nv-file-over {
     border: dotted 3px red;
 }
-
-.colorTab {
+tab {
     height: 350px;
     padding-top: 10px;
+    position: relative;
+}
+.colorTab {
+}
+.line_colorPicker {
+    width: 50%;
+}
+.picker {
+    float: left;
+}
+.hc_colorPicker {
+    width: 50%;
+}
+.colorPicker {
+    float: left;
+    cursor: pointer;
 }
 
 .floatContent {
+    float: left;
     margin-left: 250px;
+}
+
+.slot {
+    float : left;
+}
+.header {
+    border: groove 1px;
+    margin-bottom: 5px;
+}
+.item {
+    float: left;
+    background: lightgray;
+    cursor: pointer;
+    margin-right:5px;
+    clear:both;
+    width: 70px;
+    height: 30px;
+}
+
+.item:nth-child(2n-1) {
+    background: lightsteelblue;
+}
+.item:hover {
+    background: lightblue;
 }
