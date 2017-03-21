@@ -980,10 +980,9 @@ public class Utils {
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
 			Definitions defs = ((Definitions) u.unmarshal(is));
 			for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
-				if (!(elem instanceof TArtifactTemplate)) {
-					continue;
+				if (elem instanceof TArtifactTemplate) {
+					return (TArtifactTemplate) elem;
 				}
-				return (TArtifactTemplate) elem;
 			}
 		} catch (IOException e) {
 			Utils.LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
