@@ -28,7 +28,7 @@ import { isNullOrUndefined } from 'util';
 })
 export class VisualAppearanceComponent implements OnInit {
     colorMap: Map<string, {loaded: boolean, color: string}> = new Map<string, {loaded: boolean, color: string}>();
-    arrowMap: Map<string, {selected: boolean}> = new Map<string, {selected: boolean}>();
+    arrowMap: Map<string, {selected: boolean, style: string}> = new Map<string, {selected: boolean, style: string}>();
     loading: boolean = true;
     img16uploader: FileUploader;
     img50uploader: FileUploader;
@@ -71,24 +71,24 @@ export class VisualAppearanceComponent implements OnInit {
         }
     }
 
-    selectArrowItem(type?: string, value?: any) {
-        let isOpen = true;
-        if (isNullOrUndefined(type)) {
-            this.arrowMap.forEach(function (value, index, map) {
-                value.selected = false;
-            });
-        } else {
+    selectArrowItem(type?: string, style?: string) {
+        let shouldOpen = false;
+        if (!isNullOrUndefined(type)) {
             if (!this.arrowMap.has(type)) {
-                this.arrowMap.set(type, {selected: true});
-            } else if (this.arrowMap.get(type).selected) {
-                isOpen = false;
+                this.arrowMap.set(type, {selected: true, style: ''});
+                shouldOpen = true;
+            } else if (!this.arrowMap.get(type).selected) {
+                shouldOpen = true;
             }
-            this.arrowMap.forEach(function (value, index, map) {
-                value.selected = false;
-            });
-            if (isOpen) {
-                this.arrowMap.get(type).selected = true;
+            if (!isNullOrUndefined(style)) {
+                this.arrowMap.get(type).style = style;
             }
+        }
+        this.arrowMap.forEach(function (value, index, map) {
+            value.selected = false;
+        });
+        if (shouldOpen) {
+            this.arrowMap.get(type).selected = true;
         }
     }
 

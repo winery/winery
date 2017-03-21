@@ -40,22 +40,28 @@ button.upload {
 .nv-file-over {
     border: dotted 3px red;
 }
+
 tab {
     height: 350px;
     padding-top: 10px;
     position: relative;
 }
+
 .colorTab {
 }
+
 .line_colorPicker {
     width: 50%;
 }
+
 .picker {
     float: left;
 }
+
 .hc_colorPicker {
     width: 50%;
 }
+
 .colorPicker {
     float: left;
     cursor: pointer;
@@ -67,25 +73,68 @@ tab {
 }
 
 .slot {
-    float : left;
+    float: left;
 }
+
 .header {
     border: groove 1px;
     margin-bottom: 5px;
 }
+
 .item {
     float: left;
-    background: lightgray;
+    background-color: lightgray;
     cursor: pointer;
-    margin-right:5px;
-    clear:both;
+    margin-right: 5px;
+    clear: both;
     width: 70px;
     height: 30px;
 }
 
-.item:nth-child(2n-1) {
-    background: lightsteelblue;
+.middle {
+    width: 100px;
 }
+
+.item:nth-child(2n-1) {
+    background-color: lightsteelblue;
+}
+
 .item:hover {
-    background: lightblue;
+    background-color: lightblue;
+}
+
+.dottedLine {
+    background-image: url('/src/assets/img/relationshiptype/dottedLine100.png');
+}
+
+.plainLine {
+    background-image: url('/src/assets/img/relationshiptype/plainLine100.png');
+}
+
+.dotted2Line {
+    background-image: url('/src/assets/img/relationshiptype/dotted2Line100.png');
+}
+
+.noneTarget {
+    background-image: url('/src/assets/img/relationshiptype/noneTarget70.png');
+}
+
+.DiamondTarget {
+    background-image: url('/src/assets/img/relationshiptype/DiamondTarget70.png');
+}
+
+.PlainArrowTarget {
+    background-image: url('/src/assets/img/relationshiptype/PlainArrowTarget70.png');
+}
+
+.noneSource {
+    background-image: url('/src/assets/img/relationshiptype/noneSource70.png');
+}
+
+.DiamondSource {
+    background-image: url('/src/assets/img/relationshiptype/DiamondSource70.png');
+}
+
+.PlainArrowSource {
+    background-image: url('/src/assets/img/relationshiptype/PlainArrowSource70.png');
 }

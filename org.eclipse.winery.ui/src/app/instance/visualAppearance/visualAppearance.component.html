@@ -84,59 +84,52 @@
             <br/>
         </div>
     </tab>
-    <tab heading="Color" *ngIf="!service.isNodeType">
-        <div class="slot" (click)="selectArrowItem('source');">
+    <tab heading="Arrows" *ngIf="!service.isNodeType">
+        choose the style used for the connection line between the node and the relationship in the topologymodeler<br/>
+        by <b>clicking on the different parts of the connection</b> shown below<p>
+        <div class="slot">
+            <b>Source:</b><br/>
             <div>
-                <span class="header item">
-                    source
-                </span>
+                <span class="header item"
+                      [ngClass]="{noneSource: arrowMap.get('source')?.style === 'noneSource',
+                                  PlainArrowSource: arrowMap.get('source')?.style === 'PlainArrowSource',
+                                  DiamondSource: arrowMap.get('source')?.style === 'DiamondSource'}"
+                      (click)="selectArrowItem('source');"></span>
             </div>
             <div class="list" *ngIf="arrowMap.get('source')?.selected;">
-                <span class="list item" >
-                    <img src="../../../assets/img/relationshiptype/noneSource.png">
-                </span>
-                <span class="list item">
-                    <img src="../../../assets/img/relationshiptype/PlainArrowSource.png">
-                </span>
-                <span class="list item">
-                    <img src="../../../assets/img/relationshiptype/DiamondSource.png">
-                </span>
+                <span class="list item noneSource" (click)="selectArrowItem('source','noneSource');"></span>
+                <span class="list item PlainArrowSource" (click)="selectArrowItem('source','PlainArrowSource');"></span>
+                <span class="list item DiamondSource" (click)="selectArrowItem('source','DiamondSource');"></span>
             </div>
         </div>
-        <div class="slot" (click)="selectArrowItem('line');">
+        <div class="slot">
+            <b>Line style:</b><br/>
             <div>
-                <span class="header item">
-                    source
-                </span>
+                <span class="header item middle"
+                      [ngClass]="{plainLine: arrowMap.get('line')?.style === 'plainLine',
+                                  dottedLine: arrowMap.get('line')?.style === 'dottedLine',
+                                  dotted2Line: arrowMap.get('line')?.style === 'dotted2Line'}"
+                      (click)="selectArrowItem('line');"></span>
             </div>
             <div class="list" *ngIf="arrowMap.get('line')?.selected;">
-                <span class="list item" >
-                    <img src="../../../assets/img/relationshiptype/plainLine.png">
-                </span>
-                <span class="list item">
-                    <img src="../../../assets/img/relationshiptype/dottedLine.png">
-                </span>
-                <span class="list item" >
-                    <img src="../../../assets/img/relationshiptype/dotted2Line.png">
-                </span>
+                <span class="list item middle plainLine" (click)="selectArrowItem('line', 'plainLine');"></span>
+                <span class="list item middle dottedLine" (click)="selectArrowItem('line', 'dottedLine');"></span>
+                <span class="list item middle dotted2Line" (click)="selectArrowItem('line', 'dotted2Line');"></span>
             </div>
         </div>
-        <div class="slot" (click)="selectArrowItem('target');">
+        <div class="slot">
+            <b>Target:</b><br/>
             <div>
-                <span class="header item">
-                    source
-                </span>
+                <span class="header item"
+                      [ngClass]="{noneTarget: arrowMap.get('target')?.style === 'noneTarget',
+                                  PlainArrowTarget: arrowMap.get('target')?.style === 'PlainArrowTarget',
+                                  DiamondTarget: arrowMap.get('target')?.style === 'DiamondTarget'}"
+                      (click)="selectArrowItem('target');"></span>
             </div>
             <div class="list" *ngIf="arrowMap.get('target')?.selected;">
-                <span class="list item">
-                    <img src="../../../assets/img/relationshiptype/noneTarget.png">
-                </span>
-                <span class="list item">
-                    <img src="../../../assets/img/relationshiptype/PlainArrowTarget.png">
-                </span>
-                <span class="list item">
-                    <img src="../../../assets/img/relationshiptype/DiamondTarget.png">
-                </span>
+                <span class="list item noneTarget" (click)="selectArrowItem('target','noneTarget');"></span>
+                <span class="list item PlainArrowTarget" (click)="selectArrowItem('target','PlainArrowTarget');"></span>
+                <span class="list item DiamondTarget" (click)="selectArrowItem('target','DiamondTarget');"></span>
             </div>
         </div>
     </tab>
