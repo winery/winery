@@ -10,7 +10,8 @@
     2. Go to "Editor > Code Style"
     3. Click "Manage..." (right of "Scheme:")
     4. Click "Import..."
-    5. Choose `IntelliJ Code Style.xml`
+    4. IntelliJ Code Style XML
+    5. Navigate to  `IntelliJ Code Style.xml`. It is located inside the winery git repository under `docs/config/IntelliJ IDEA`.
     6. Press "OK"
     7. Press "OK"
     8. Press "Close"
