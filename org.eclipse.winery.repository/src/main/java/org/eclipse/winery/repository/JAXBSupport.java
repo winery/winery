@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Karoline Saatkamp - support for injection
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
@@ -20,6 +21,7 @@ import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinitio
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.MockXMLElement;
+import org.eclipse.winery.repository.resources._support.dataadapter.InjectorReplaceData;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
@@ -80,6 +82,7 @@ public class JAXBSupport {
 			// For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
 			// @formatter:off
 			context = JAXBContext.newInstance(
+					InjectorReplaceData.class,
 					TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
 					WinerysPropertiesDefinition.class,
 					// for the self-service portal

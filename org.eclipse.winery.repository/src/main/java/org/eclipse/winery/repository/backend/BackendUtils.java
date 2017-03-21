@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -10,6 +10,7 @@
  *     Oliver Kopp - initial API and implementation
  *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *     Lukas Harzenetter, Nicole Keppler - forceDelete for Namespaces
+ *     Karoline Saatkamp - clone of TTopologyTemplates, TNodeTemplate, and TRelationshipTemplates
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
@@ -72,6 +73,7 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.Constants;
@@ -681,6 +683,70 @@ public class BackendUtils {
 	}
 
 	/**
+	 *
+	 * @param topologyTemplate which should be cloned
+	 * @return Copy od topologyTemplate
+	 */
+	public static TTopologyTemplate clone(TTopologyTemplate topologyTemplate) {
+		TTopologyTemplate topologyTemplateClone = new TTopologyTemplate();
+		List<TEntityTemplate> entityTemplate = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
+		topologyTemplateClone.getNodeTemplateOrRelationshipTemplate().addAll(entityTemplate);
+		return topologyTemplateClone;
+
+		//Copy based on http://stackoverflow.com/a/3899882
+		/*try {
+			JAXBContext sourceJAXBContext = JAXBSupport.context.newInstance(element.getClass());
+			JAXBContext targetJAXBContext = JAXBSupport.context.newInstance(element.getClass());
+			return (T) targetJAXBContext.createUnmarshaller().unmarshal(new JAXBSource(sourceJAXBContext, element));
+		} catch (JAXBException e) {
+			logger.error("Cannot clone object", e);
+			return null;
+		}*/
+	}
+
+	/**
+	 *
+	 * @param nodeTemplate which should be cloned
+	 * @return copy of nodeTemplate
+	 */
+	public static TNodeTemplate clone(TNodeTemplate nodeTemplate) {
+		TNodeTemplate nodeTemplateClone = new TNodeTemplate();
+
+		nodeTemplateClone.setType(nodeTemplate.getType());
+		nodeTemplateClone.setId(nodeTemplate.getId());
+		nodeTemplateClone.setDeploymentArtifacts(nodeTemplate.getDeploymentArtifacts());
+		nodeTemplateClone.setMaxInstances(nodeTemplate.getMaxInstances());
+		nodeTemplateClone.setMinInstances(nodeTemplate.getMinInstances());
+		nodeTemplateClone.setName(nodeTemplate.getName());
+		nodeTemplateClone.setPolicies(nodeTemplate.getPolicies());
+		nodeTemplateClone.setRequirements(nodeTemplate.getRequirements());
+		nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
+		nodeTemplateClone.setProperties(nodeTemplate.getProperties());
+		nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
+
+		return nodeTemplateClone;
+	}
+
+	/**
+	 *
+	 * @param relationshipTemplate which should be cloned
+	 * @return copy of relationshipTemplate
+	 */
+	public static TRelationshipTemplate clone(TRelationshipTemplate relationshipTemplate) {
+		TRelationshipTemplate relationshipTemplateClone = new TRelationshipTemplate();
+		relationshipTemplateClone.setSourceElement(relationshipTemplate.getSourceElement());
+		relationshipTemplateClone.setType(relationshipTemplate.getType());
+		relationshipTemplateClone.setPropertyConstraints(relationshipTemplate.getPropertyConstraints());
+		relationshipTemplateClone.setTargetElement(relationshipTemplate.getTargetElement());
+		relationshipTemplateClone.setId(relationshipTemplate.getId());
+		relationshipTemplateClone.setProperties(relationshipTemplate.getProperties());
+		relationshipTemplateClone.setName(relationshipTemplate.getName());
+		relationshipTemplateClone.setRelationshipConstraints(relationshipTemplate.getRelationshipConstraints());
+
+		return relationshipTemplateClone;
+	}
+
+	/*
 	 * Creates a new TDefintions element wrapping a TOSCA Component instance.
 	 * The namespace of the tosca component is used as namespace and
 	 * {@code winery-defs-for-} concatenated with the (unique) ns prefix and

@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Karoline Saatkamp - maintenance
  *******************************************************************************/
 --%>
 <%@tag description="Rendering for properties. A separate CSS has to be provided to style the content. Thus, this tag is reusable both in the topology modeler and in the management UI. Requires global javaScript function editPropertiesXML(visualElementId)" pageEncoding="UTF-8"%>
@@ -20,7 +21,6 @@
 <%@attribute name="pathToImages" required="true" description="The path (URI path) to the image/ url, where xml.png is available. Has to end with '/'"%>
 
 <%@tag import="org.eclipse.winery.common.ModelUtilities"%>
-<%@tag import="org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition"%>
 <%@tag import="org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV"%>
 <%@tag import="org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList"%>
 

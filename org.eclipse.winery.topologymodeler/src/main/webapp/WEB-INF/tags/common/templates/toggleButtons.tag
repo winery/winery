@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Karoline Saatkamp - adapted for TargetLocation
  *******************************************************************************/
 --%>
 <%@tag description="Toggle buttons for visual appearance" pageEncoding="UTF-8"%>
@@ -118,6 +119,16 @@ function showOrHidePolicies(showThem) {
 	}
 	doShowOrHide(elements, showThem);
 }
+
+function showOrHideTargetLocations(showThem) {
+	var elements;
+	if ($("div.NodeTemplateShape.selected").size() > 0) {
+		elements = $("div.NodeTemplateShape:visible.selected > div.targetLocationContainer");
+	} else {
+		elements = $("div.NodeTemplateShape:visible > div.targetLocationContainer");
+	}
+	doShowOrHide(elements, showThem);
+}
 </script>
 
 <div class="btn-group" data-toggle="buttons-checkbox" id="toggleButtons">
@@ -127,5 +138,6 @@ function showOrHidePolicies(showThem) {
 	<button class="btn btn-default" id="toggleDeploymentArtifactsVisibility" onclick="showOrHideDeploymentArtifacts(!$(this).hasClass('active'));">Deployment Artifacts</button>
 	<button class="btn btn-default" id="toggleReqCapsVisibility" onclick="showOrHideReqCaps(!$(this).hasClass('active'));">Requirements &amp; Capabilities</button>
 	<button class="btn btn-default" id="PoliciesVisibility" onclick="showOrHidePolicies(!$(this).hasClass('active'));">Policies</button>
+	<button class="btn btn-default" id="TargetLocationsVisibility" onclick="showOrHideTargetLocations(!$(this).hasClass('active'));">Target Locations</button>
 </div>
 

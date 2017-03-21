@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013,2015 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,13 +8,12 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Karoline Saatkamp - maintenance
  *******************************************************************************/
 package org.eclipse.winery.repository.importing;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.winery.repository.PrefsTestEnabledUsingConfiguredRepository;
 import org.junit.BeforeClass;
@@ -42,7 +41,7 @@ public class TestCSARImporter {
 	public void testMoodleImport() throws Exception {
 		CSARImporter i = new CSARImporter();
 		Path p = FileSystems.getDefault().getPath("C:\\Users\\Oliver\\BTSync\\Projects\\OpenTOSCA\\MoodleInteropCSAR\\trunk");
-		List<String> errors = new ArrayList<>();
-		i.importFromDir(p, errors, true, false);
+		i.importFromDir(p, true, false);
 	}
+
 }
