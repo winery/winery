@@ -32,6 +32,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.resources.GenericVisualAppearanceResource;
+import org.eclipse.winery.repository.resources.apiData.NodeTypesVisualsApiData;
 
 import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.multipart.FormDataBodyPart;
@@ -81,4 +82,18 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		return BackendUtils.persist(this.res);
 	}
 
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("data")
+	public NodeTypesVisualsApiData getJsonData() {
+		return new NodeTypesVisualsApiData(this);
+	}
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("data")
+	public Response putJsonData(NodeTypesVisualsApiData data) {
+		this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, data.color);
+		return BackendUtils.persist(this.res);
+	}
 }

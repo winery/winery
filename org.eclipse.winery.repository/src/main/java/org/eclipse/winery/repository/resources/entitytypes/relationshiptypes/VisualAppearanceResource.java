@@ -33,6 +33,7 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.resources.GenericVisualAppearanceResource;
+import org.eclipse.winery.repository.resources.apiData.RelationshipTypesVisualsApiData;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -87,16 +88,16 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			if (!StringUtils.isEmpty(dash)) {
 				String dashStyle = null;
 				switch (dash) {
-				case "dotted":
-					dashStyle = "1 5";
-					break;
-				case "dotted2":
-					dashStyle = "3 4";
-					break;
-				case "plain":
-					// default works
-					// otherwise, "1 0" can be used
-					break;
+					case "dotted":
+						dashStyle = "1 5";
+						break;
+					case "dotted2":
+						dashStyle = "3 4";
+						break;
+					case "plain":
+						// default works
+						// otherwise, "1 0" can be used
+						break;
 				}
 				if (dashStyle != null) {
 					jg.writeStringField("dashstyle", dashStyle);
@@ -180,6 +181,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
 		}
 		String res = sw.toString();
+		System.out.println(res);
 		return Response.ok(res).build();
 	}
 
@@ -190,6 +192,29 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		} else {
 			return res;
 		}
+	}
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("data")
+	public Response putJsonData(RelationshipTypesVisualsApiData data) {
+		if (data == null) {
+			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
+		}
+
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, data.targetarrowhead);
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, data.sourcearrowhead);
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_DASH, data.dash);
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_HOVER_COLOR, data.hovercolor);
+		this.otherAttributes.put(QNames.QNAME_COLOR, data.color);
+		return BackendUtils.persist(this.res);
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("data")
+	public RelationshipTypesVisualsApiData getVisualsJson() {
+		return new RelationshipTypesVisualsApiData(this);
 	}
 
 	/* * * source arrow head * * */
@@ -237,7 +262,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	 * "The dashstyle attribute is specified as an array of strokes and spaces, where each value is some multiple of the width of the Connector"
 	 *
 	 * * * */
-
 	public String getDash() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_DASH, Defaults.DEFAULT_RT_DASH);
 	}

@@ -20,6 +20,7 @@ import { FileUploader } from 'ng2-file-upload';
 @Injectable()
 export class VisualAppearanceService {
 
+
     isNodeType = true;
     private path: string;
 
@@ -47,17 +48,16 @@ export class VisualAppearanceService {
         return fileUploader;
     }
 
-    getColor(type: string): Observable<any> {
-        let headers = new Headers({'Accept': 'text/plain'});
+    getData() {
+        let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseUri + this.path + type, options)
-            .map(res => res.text());
+        return this.http.get(backendBaseUri + this.path + '/data', options)
+            .map(res => res.json());
     }
 
-    saveColor(color: string, type: string): Observable<Response> {
-        let headers = new Headers({'Content-Type': 'text/plain'});
+    saveVisuals(data: any): Observable<Response> {
+        let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        let sendString: string = 'color=' + encodeURIComponent(color);
-        return this.http.put(backendBaseUri + this.path + type, sendString, options);
+        return this.http.put(backendBaseUri + this.path + '/data', JSON.stringify(data), options);
     }
 }
