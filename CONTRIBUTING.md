@@ -62,6 +62,11 @@ Using the commit signing mechanism indicates that your commit is under the auspi
 Pull requests are very much a GitHub process so best [explained by GitHub](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
 See also <https://help.github.com/articles/configuring-a-remote-for-a-fork/>.
 
+## Background Information
+
+See the [Eclipse Legal Process Poster](http://eclipse.org/legal/EclipseLegalProcessPoster.pdf) and
+[Project Code Contributions](https://www.eclipse.org/projects/handbook/#ip-project-code) in the [Eclipse Project Handbook](https://www.eclipse.org/projects/handbook/).
+
  [Eclipse ECA FAQ]: http://www.eclipse.org/legal/ecafaq.php
  [Contributor Agreement]: http://www.eclipse.org/legal/ECA.php
  [contributing via Git]: http://wiki.eclipse.org/Development_Resources/Contributing_via_Git
