@@ -94,45 +94,11 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<!-- Annotations only. We will switch to Swagger soon -->
 			<groupId>org.restdoc</groupId>
-			<artifactId>restdoc-server-jersey</artifactId>
-			<version>1.0.1</version>
+			<artifactId>restdoc-api</artifactId>
+			<version>1.3.0</version>
 			<scope>compile</scope>
-			<!-- we have to stick with Orbit's versions of the libraries -->
-			<exclusions>
-				<exclusion>
-					<groupId>com.sun.jersey</groupId>
-					<artifactId>jersey-server</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jersey</groupId>
-					<artifactId>jersey-servlet</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<!-- provided by jersey -->
-					<groupId>javax.ws.rs</groupId>
-					<artifactId>jsr311-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<!-- version 2.2.2 explicitly included above -->
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<!-- version 2.2.2 explicitly included above -->
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-databind</artifactId>
-				</exclusion>
-				<exclusion>
-					<!-- other version included via logback -->
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
