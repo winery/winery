@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
-import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.repository.TestWithRepositoryConnection;
 
-public abstract class TestResource extends TestWithRepositoryConnection {
-
-	protected static final String TESTNS = "http://www.example.org/winery/test/resources";
-	protected static final Namespace NS = new Namespace(TestResource.TESTNS, false);
+/**
+ * @deprecated Switch to AbstractResourceTest
+ */
+@Deprecated
+public abstract class ResourceTest extends TestWithRepositoryConnection {
 
 }

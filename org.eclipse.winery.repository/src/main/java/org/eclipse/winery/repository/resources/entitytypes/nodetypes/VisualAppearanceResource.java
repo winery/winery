@@ -74,7 +74,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	}
 
 	@PUT
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Path("bordercolor")
 	public Response putBorderColor(@FormParam("color") String color) {
 		this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, color);

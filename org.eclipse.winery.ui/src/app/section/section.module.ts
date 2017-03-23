@@ -9,24 +9,24 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { SectionComponent } from './section.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
-import { FileUploadModule } from 'ng2-file-upload';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { Ng2PaginationModule } from 'ng2-pagination';
-import { SelectModule } from 'ng2-select';
-import { EntityContainerComponent } from '../entityContainer/entityContainer.component';
+import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
 import { LoaderModule } from '../loader/loader.module';
+import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
+import { EntityContainerComponent } from '../entityContainer/entityContainer.component';
+import { FileUploadModule } from 'ng2-file-upload';
+import { UrlEncodePipe } from '../pipes/urlEncode.pipe';
 import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
 import { NotificationModule } from '../notificationModule/notification.module';
 import { UrlDecodePipe } from '../pipes/urlDecode.pipe';
-import { UrlEncodePipe } from '../pipes/urlEncode.pipe';
-import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
-import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
-import { SectionComponent } from './section.component';
+import { RouterModule } from '@angular/router';
 import { SectionPipe } from './section.pipe';
+import { SelectModule } from 'ng2-select';
 
 @NgModule({
     imports: [
@@ -38,7 +38,6 @@ import { SectionPipe } from './section.pipe';
         NamespaceSelectorModule,
         LoaderModule,
         WineryModalModule,
-        NotificationModule.forRoot(),
         FileUploadModule,
         RouterModule,
         SelectModule,

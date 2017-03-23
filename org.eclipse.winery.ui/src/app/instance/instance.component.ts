@@ -12,10 +12,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { backendBaseUri } from '../configuration';
-import { NotificationService } from '../notificationModule/notification.service';
-import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { InstanceService } from './instance.service';
+import { NotificationService } from '../notificationModule/notification.service';
+import { backendBaseUri } from '../configuration';
+import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -56,8 +56,8 @@ export class InstanceComponent implements OnInit, OnDestroy {
                     this.availableTabs = this.service.getSubMenuByResource();
 
                     // redirect to first element in the menu
-                    if (this.router.url.split('/').length < 5) {
-                        this.router.navigate([this.service.path + '/' + this.availableTabs[0].toLowerCase().replace(/ /g, '')]);
+                    if (!this.router.url.includes('/admin') && this.router.url.split('/').length < 5) {
+                            this.router.navigate([this.service.path + '/' + this.availableTabs[0].toLowerCase().replace(/ /g, '')]);
                     }
                 },
                 error => this.handleError(error)

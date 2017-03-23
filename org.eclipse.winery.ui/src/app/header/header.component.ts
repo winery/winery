@@ -10,9 +10,9 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { isNullOrUndefined } from 'util';
+import { Router, NavigationEnd } from '@angular/router';
 import { sections } from '../configuration';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-header',
@@ -28,6 +28,10 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit(): void {
         this.router.events.subscribe(data => {
+            if (!(data instanceof NavigationEnd)) {
+                return;
+            }
+
             let others: string = data.url.slice(1);
 
             if (others.includes('/')) {

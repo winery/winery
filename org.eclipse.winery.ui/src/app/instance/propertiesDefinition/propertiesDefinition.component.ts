@@ -10,21 +10,21 @@
  *     Lukas Harzenetter, Niko Stadelmaier- initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Response } from '@angular/http';
-import { isNullOrUndefined } from 'util';
-import { SelectData } from '../../interfaces/selectData';
-import { NotificationService } from '../../notificationModule/notification.service';
-import { ValidatorObject } from '../../validators/duplicateValidator.directive';
-import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 import { InstanceService } from '../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
     PropertiesDefinition,
     PropertiesDefinitionEnum,
-    PropertiesDefinitionKVList,
     PropertiesDefinitionsResourceApiData,
-    WinerysPropertiesDefinition
+    WinerysPropertiesDefinition,
+    PropertiesDefinitionKVList
 } from './propertiesDefinitionsResourceApiData';
+import { SelectData } from '../../interfaces/selectData';
+import { isNullOrUndefined } from 'util';
+import { Response } from '@angular/http';
+import { NotificationService } from '../../notificationModule/notification.service';
+import { ValidatorObject } from '../../validators/duplicateValidator.directive';
+import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 
 @Component({
     selector: 'winery-instance-propertyDefinition',

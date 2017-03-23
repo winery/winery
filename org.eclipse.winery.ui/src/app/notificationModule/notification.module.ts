@@ -1,7 +1,7 @@
-import { DatePipe } from '@angular/common';
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 
 import { NotificationService } from './notification.service';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
     imports: [],

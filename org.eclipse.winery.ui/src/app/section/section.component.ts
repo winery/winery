@@ -9,16 +9,16 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { SectionService } from './section.service';
+import { SectionData } from './sectionData';
+import { NotificationService } from '../notificationModule/notification.service';
+import { ValidatorObject } from '../validators/duplicateValidator.directive';
 import { isNullOrUndefined } from 'util';
 import { SectionResolverData } from '../interfaces/resolverData';
 import { SelectData } from '../interfaces/selectData';
-import { NotificationService } from '../notificationModule/notification.service';
-import { ValidatorObject } from '../validators/duplicateValidator.directive';
-import { SectionService } from './section.service';
-import { SectionData } from './sectionData';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';

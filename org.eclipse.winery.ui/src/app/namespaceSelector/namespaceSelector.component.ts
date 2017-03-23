@@ -11,11 +11,11 @@
  *     Niko Stadelmaier - add types and documentation
  */
 
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { NamespaceWithPrefix } from '../interfaces/namespaceWithPrefix';
-import { NotificationService } from '../notificationModule/notification.service';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { NamespaceSelectorService } from './namespaceSelector.service';
+import { NotificationService } from '../notificationModule/notification.service';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { NamespaceWithPrefix } from '../interfaces/namespaceWithPrefix';
 
 const noop = () => {
 };

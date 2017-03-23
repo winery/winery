@@ -86,7 +86,7 @@ export class InstanceService {
                 subMenu = [''];
                 break;
             case 'admin':
-                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Contraint Types', 'Log'];
+                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Log'];
                 break;
             default:
                 subMenu = [''];

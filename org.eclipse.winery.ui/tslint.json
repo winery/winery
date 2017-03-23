@@ -60,7 +60,6 @@
             "check-operator",
             "check-separator",
             "check-type"
-        ],
-        "ordered-imports": true
+        ]
     }
 }

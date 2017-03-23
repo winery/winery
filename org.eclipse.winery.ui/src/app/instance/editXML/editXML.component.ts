@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -10,12 +9,9 @@
  * Contributors:
  *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
-
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { NotificationService } from '../../notificationModule/notification.service';
-import { InstanceService } from '../instance.service';
+import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { EditXMLService } from './editXML.service';
+import { NotificationService } from '../../notificationModule/notification.service';
 
 declare var requirejs: any;
 

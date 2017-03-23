@@ -1,0 +1,28 @@
+<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="empty" targetNamespace="http://www.example.org/empty">
+	<tosca:Import namespace="http://winery.opentosca.org/test/nodetypes/fruits" location="../nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/propertiesdefinition/BaobabProperties.xsd" importType="http://www.w3.org/2001/XMLSchema" winery:wpd="true"/>
+	<tosca:NodeType name="baobab" abstract="no" final="no" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01">
+		<winery:PropertiesDefinition elementname="BaobabProperties" namespace="http://winery.opentosca.org/test/nodetypes/fruits">
+			<winery:properties>
+				<winery:key>Antioxidants</winery:key>
+				<winery:type>xsd:string</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>VitaminC</winery:key>
+				<winery:type>xsd:float</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>Calcium</winery:key>
+				<winery:type>xsd:decimal</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>Superfood</winery:key>
+				<winery:type>xsd:boolean</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>HarvestedAt</winery:key>
+				<winery:type>xsd:anyURI</winery:type>
+			</winery:properties>
+		</winery:PropertiesDefinition>
+		<tosca:PropertiesDefinition xmlns:ns0="http://winery.opentosca.org/test/nodetypes/fruits" type="ns0:BaobabProperties"/>
+	</tosca:NodeType>
+</tosca:Definitions>

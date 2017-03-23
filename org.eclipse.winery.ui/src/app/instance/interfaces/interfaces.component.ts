@@ -11,12 +11,6 @@
  *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { YesNoEnum } from '../../interfaces/enums';
-import { NotificationService } from '../../notificationModule/notification.service';
-import { ValidatorObject } from '../../validators/duplicateValidator.directive';
-import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
-import { InstanceService } from '../instance.service';
 import { InterfacesService } from './interfaces.service';
 import {
     InputParameters,
@@ -25,6 +19,11 @@ import {
     InterfacesApiData,
     OutputParameters
 } from './interfacesApiData';
+import { isNullOrUndefined } from 'util';
+import { YesNoEnum } from '../../interfaces/enums';
+import { NotificationService } from '../../notificationModule/notification.service';
+import { ValidatorObject } from '../../validators/duplicateValidator.directive';
+import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 
 @Component({
     selector: 'winery-instance-interfaces',

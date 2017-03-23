@@ -11,40 +11,42 @@
  *     Niko Stadelmaier - add admin component
  */
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { AppliesToComponent } from './appliesTo/appliesTo.component';
-import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
-import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
-import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
-import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
-import { DocumentationComponent } from './documentation/documentation.component';
-import { EditXMLComponent } from './editXML/editXML.component';
-import { FilesComponent } from './files/files.component';
-import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
-import { ImplementationsComponent } from './implementations/implementations.component';
-import { InheritanceComponent } from './inheritance/inheritance.component';
 import { InstanceComponent } from './instance.component';
-import { InstanceResolver } from './instance.resolver';
-import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
-import { InterfacesComponent } from './interfaces/interfaces.component';
-import { LanguageComponent } from './language/language.component';
-import { LoggerComponent } from './logger/logger.component';
-import { NamespacesComponent } from './namespaces/namespaces.component';
-import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
-import { PlansComponent } from './plans/plans.component';
-import { PlanTypesComponent } from './planTypes/planTypes.component';
-import { PropertiesComponent } from './properties/properties.component';
-import { PropertiesDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
-import { RepositoryComponent } from './repository/repository.component';
-import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
-import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
-import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
-import { TagsComponent } from './tags/tags.component';
-import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
-import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
+import { EditXMLComponent } from './editXML/editXML.component';
 import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
+import { DocumentationComponent } from './documentation/documentation.component';
+import { InheritanceComponent } from './inheritance/inheritance.component';
+import { InterfacesComponent } from './interfaces/interfaces.component';
+import { ImplementationsComponent } from './implementations/implementations.component';
+import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
+import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
+import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
+import { PropertiesDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
+import { InstanceResolver } from './instance.resolver';
+import { AppliesToComponent } from './appliesTo/appliesTo.component';
+import { LanguageComponent } from './language/language.component';
+import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
+import { PlansComponent } from './plans/plans.component';
+import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
+import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
+import { TagsComponent } from './tags/tags.component';
+import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
+import { FilesComponent } from './filesTag/files.component';
+import { PropertiesComponent } from './properties/properties.component';
+import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
+import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
+import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
+import { LoggerComponent } from './logger/logger.component';
+import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
+import { NamespacesComponent } from './namespaces/namespaces.component';
+import { RepositoryComponent } from './repository/repository.component';
+import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
+import { PlanTypesComponent } from './planTypes/planTypes.component';
+import { RouterModule } from '@angular/router';
+
 
 const instanceRoutes = [
+
     {
         path: 'admin',
         component: InstanceComponent,
@@ -54,7 +56,7 @@ const instanceRoutes = [
             { path: 'repository', component: RepositoryComponent },
             { path: 'planlanguages', component: PlanLanguagesComponent },
             { path: 'plantypes', component: PlanTypesComponent },
-            { path: 'contrainttypes', component: ConstraintTypesComponent },
+            { path: 'constrainttypes', component: ConstraintTypesComponent },
             { path: 'log', component: LoggerComponent },
             { path: '', redirectTo: 'namespaces', pathMatch: 'full'}
         ]

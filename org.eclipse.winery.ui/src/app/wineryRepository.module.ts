@@ -23,6 +23,7 @@ import { NotificationModule } from './notificationModule/notification.module';
 import { CustomOption } from './notificationModule/notificationOptions';
 import { OtherComponent } from './other/other.component';
 import { SectionModule } from './section/section.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WineryModalModule } from './wineryModalModule/winery.modal.module';
 import { WineryRepositoryComponent } from './wineryRepository.component';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
@@ -32,6 +33,7 @@ import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module'
         BrowserModule,
         FormsModule,
         CommonModule,
+        BrowserAnimationsModule,
         InstanceModule,
         LoaderModule,
         WineryModalModule,

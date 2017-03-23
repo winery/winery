@@ -12,12 +12,11 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { InstanceStateService } from './instanceStates.service';
+import { InstanceStateApiData } from './InstanceStateApiData';
 import { Response } from '@angular/http';
 import { isNullOrUndefined } from 'util';
 import { NotificationService } from '../../notificationModule/notification.service';
-import { InstanceService } from '../instance.service';
-import { InstanceStateApiData } from './InstanceStateApiData';
-import { InstanceStateService } from './instanceStates.service';
 
 @Component({
     selector: 'winery-instance-instanceStates',
