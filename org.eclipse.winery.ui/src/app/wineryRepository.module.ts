@@ -37,9 +37,9 @@ import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module'
         WineryModalModule,
         ToastModule.forRoot(),
         NotificationModule.forRoot(),
-        WineryRepositoryRoutingModule,
         SectionModule,
         WineryModalModule,
+        WineryRepositoryRoutingModule,
     ],
     declarations: [
         HeaderComponent,

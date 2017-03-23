@@ -1,5 +1,6 @@
 import { Injectable, ViewContainerRef } from '@angular/core';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { DatePipe } from '@angular/common';
 
 @Injectable()
 export class NotificationService {
@@ -7,7 +8,8 @@ export class NotificationService {
     toastr: ToastsManager;
     notifications: Array<any> = [];
 
-    constructor(pToastr: ToastsManager) {
+    constructor(private pToastr: ToastsManager,
+                private datePipe: DatePipe) {
         this.toastr = pToastr;
     }
 
@@ -37,7 +39,7 @@ export class NotificationService {
      */
     success(message: string, title = 'success') {
         this.toastr.success(message, title);
-        this.notifications.push({title: title, message: message, type: 'success', createdOn: Date.now()});
+        this.notifications.push({title: title, message: message, type: 'success', createdOn: this.getCurrentDate()});
     }
 
     /**
@@ -47,7 +49,7 @@ export class NotificationService {
      */
     error(message: string, title = 'error') {
         this.toastr.error(message, title);
-        this.notifications.push({title: title, message: message, type: 'error', createdOn: Date.now()});
+        this.notifications.push({title: title, message: message, type: 'error', createdOn: this.getCurrentDate()});
     }
 
     /**
@@ -57,6 +59,14 @@ export class NotificationService {
      */
     warning(message: string, title = 'warning') {
         this.toastr.warning(message, title);
-        this.notifications.push({title: title, messages: message, type: 'warning', createdOn: Date.now()});
+        this.notifications.push({title: title, messages: message, type: 'warning', createdOn: this.getCurrentDate()});
+    }
+
+    /**
+     * returns the current date
+     * @returns {string}
+     */
+    getCurrentDate() {
+        return this.datePipe.transform(Date.now(), 'short');
     }
 }

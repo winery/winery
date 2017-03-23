@@ -12,9 +12,21 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.properties;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.sun.jersey.api.view.Viewable;
-import org.apache.xerces.xs.XSConstants;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -26,16 +38,11 @@ import org.eclipse.winery.repository.resources.admin.NamespacesResource;
 import org.eclipse.winery.repository.resources.apiData.PropertiesDefinitionEnum;
 import org.eclipse.winery.repository.resources.apiData.PropertiesDefinitionResourceApiData;
 import org.eclipse.winery.repository.resources.apiData.XsdDefinitionsApiData;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.apache.xerces.xs.XSConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Models
@@ -120,7 +127,7 @@ public class PropertiesDefinitionResource {
 
 			if (data.propertiesDefinition.getElement() != null) {
 				def.setElement(data.propertiesDefinition.getElement());
-			} else if (data.propertiesDefinition.getType() != null){
+			} else if (data.propertiesDefinition.getType() != null) {
 				def.setType(data.propertiesDefinition.getType());
 			} else {
 				return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();

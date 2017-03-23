@@ -11,16 +11,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.apiData;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-
 import javax.xml.namespace.QName;
+
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 
 public class QNameWithIdApiData {
 
 	public String name;
 	public QName qName;
 
-	public QNameWithIdApiData() {}
+	public QNameWithIdApiData() { }
 
 	public QNameWithIdApiData(TOSCAComponentId id) {
 		this.name = id.getXmlId().getDecoded();

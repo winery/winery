@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { NotificationService } from './notification.service';
@@ -6,7 +7,7 @@ import { NotificationService } from './notification.service';
     imports: [],
     exports: [],
     declarations: [],
-    providers: [],
+    providers: [DatePipe],
 })
 export class NotificationModule {
     static forRoot(): ModuleWithProviders {

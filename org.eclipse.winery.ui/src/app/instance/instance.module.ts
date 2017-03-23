@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add admin component
  */
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -15,13 +16,16 @@ import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { SelectModule } from 'ng2-select';
 import { LoaderModule } from '../loader/loader.module';
+import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
+import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
+import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
 import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
 import { DocumentationComponent } from './documentation/documentation.component';
 import { EditXMLComponent } from './editXML/editXML.component';
@@ -35,9 +39,14 @@ import { InstanceRouterModule } from './instanceRouter.module';
 import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
 import { InterfacesModule } from './interfaces/interfaces.module';
 import { LanguageComponent } from './language/language.component';
+import { LoggerComponent } from './logger/logger.component';
+import { NamespacesComponent } from './namespaces/namespaces.component';
+import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
 import { PlansComponent } from './plans/plans.component';
+import { PlanTypesComponent } from './planTypes/planTypes.component';
 import { PropertiesComponent } from './properties/properties.component';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
+import { RepositoryModule } from './repository/repository.module';
 import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
@@ -59,6 +68,10 @@ import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.c
         InterfacesModule,
         ImplementationsModule,
         WineryTableModule,
+        WineryTableModule,
+        DuplicateValidatorModule,
+        NamespaceSelectorModule,
+        RepositoryModule
     ],
     exports: [],
     declarations: [
@@ -86,6 +99,11 @@ import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.c
         ImplementationArtifactsComponent,
         DeploymentArtifactsComponent,
         InstanceStatesComponent,
+        LoggerComponent,
+        PlanTypesComponent,
+        ConstraintTypesComponent,
+        PlanLanguagesComponent,
+        NamespacesComponent
     ],
     providers: [],
 })
