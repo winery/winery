@@ -38,8 +38,8 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 	 * additionally need the parameter "type" to set the type of the artifact
 	 * template.
 	 *
-	 * @param namespace Namespace of the template
-	 * @param name name attribute of the template
+	 * @param namespace Namespace of the component
+	 * @param name name attribute of the component
 	 * @param type: QName of the type, format: {namespace}localname is retrieved
 	 *            from namespace manager
 	 *
