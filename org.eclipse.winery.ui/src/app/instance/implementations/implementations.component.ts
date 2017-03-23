@@ -16,7 +16,7 @@ import { ImplementationAPIData } from './implementationAPIData';
 import { InstanceService } from '../instance.service';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 import { isNullOrUndefined } from 'util';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 import { Response } from '@angular/http';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 
@@ -28,11 +28,11 @@ import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 })
 export class ImplementationsComponent implements OnInit {
     implementationData: ImplementationAPIData[];
-    loading: boolean = true;
+    loading = true;
     selectedCell: any;
     newImplementation: ImplementationAPIData = new ImplementationAPIData('', '');
     elementToRemove: ImplementationAPIData;
-    selectedNamespace: string = '';
+    selectedNamespace = '';
     validatorObject: ValidatorObject;
     columns: Array<any> = [
         {title: 'Namespace', name: 'namespace', sort: true},

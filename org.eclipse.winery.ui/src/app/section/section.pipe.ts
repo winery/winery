@@ -76,8 +76,8 @@ export class SectionPipe implements PipeTransform {
     }
 
     private filter(item: SectionData, filter: string): boolean {
-        let containsId: boolean = false;
-        let containsNamespace: boolean = false;
+        let containsId = false;
+        let containsNamespace = false;
 
         if (item.id) {
             containsId = item.id.toLowerCase().includes(filter.toLowerCase());

@@ -11,7 +11,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { DocumentationService } from './documentation.service';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 
 @Component({
     selector: 'winery-instance-documentation',
@@ -24,7 +24,7 @@ import { NotificationService } from '../../notificationModule/notificationservic
 export class DocumentationComponent implements OnInit {
 
     documentationData: string;
-    loading: boolean = true;
+    loading = true;
 
     constructor(private service: DocumentationService, private notify: NotificationService) {
         this.documentationData = 'default documentation value';

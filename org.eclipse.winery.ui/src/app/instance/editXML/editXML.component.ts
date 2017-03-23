@@ -11,7 +11,7 @@
  */
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import { EditXMLService } from './editXML.service';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 
 declare var requirejs: any;
 

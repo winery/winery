@@ -14,13 +14,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
-import { NotificationService } from '../notificationModule/notificationservice';
+import { NotificationService } from '../notificationModule/notification.service';
 import { ValidatorObject } from '../validators/duplicateValidator.directive';
 import { isNullOrUndefined } from 'util';
 import { SectionResolverData } from '../interfaces/resolverData';
 
-const showAll: string = 'Show all Items';
-const showGrouped: string = 'Group by Namespace';
+const showAll = 'Show all Items';
+const showGrouped = 'Group by Namespace';
 
 @Component({
     selector: 'winery-section-component',
@@ -34,12 +34,12 @@ const showGrouped: string = 'Group by Namespace';
 })
 export class SectionComponent implements OnInit, OnDestroy {
 
-    loading: boolean = true;
+    loading = true;
     selectedResource: string;
     routeSub: Subscription;
-    filterString: string = '';
-    itemsPerPage: number = 10;
-    showNamespace: string = 'all';
+    filterString = '';
+    itemsPerPage = 10;
+    showNamespace = 'all';
     changeViewButtonTitle: string = showGrouped;
     componentData: SectionData[];
 
@@ -47,7 +47,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     newComponentNamespace: string;
     validatorObject: ValidatorObject;
 
-    fileOver: boolean = false;
+    fileOver = false;
 
     @ViewChild('addModal') addModal: any;
     @ViewChild('addComponentForm') addComponentForm: any;

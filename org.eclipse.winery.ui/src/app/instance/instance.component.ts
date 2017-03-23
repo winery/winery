@@ -13,7 +13,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InstanceService } from './instance.service';
-import { NotificationService } from '../notificationModule/notificationservice';
+import { NotificationService } from '../notificationModule/notification.service';
 import { backendBaseUri } from '../configuration';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 

@@ -1,6 +1,6 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
-import { NotificationService } from './notificationservice';
+import { NotificationService } from './notification.service';
 
 @NgModule({
     imports: [],
