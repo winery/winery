@@ -15,14 +15,6 @@ body {
   background: #eaeaea;
 }
 
-#header {
-  width: 100%;
-  height: 87px;
-  background-repeat: no-repeat;
-  background-image: url('/src/assets/img/header_background.png');
-  postion: relative;
-}
-
 div#mainMenuContainer {
   height: 28px;
   position: absolute;
@@ -65,18 +57,3 @@ a.styledTabMenuButton > div.center {
 a.styledTabMenuButton > div.right {
   width: 29px;
 }
-
-a.styledTabMenuButton.selected > div.left, a.styledTabMenuButton:hover > div.left {
-  background: url('/src/assets/img/styledTabMenuButtonLeft.jpg');
-  width: 19px;
-}
-
-a.styledTabMenuButton.selected > div.center, a.styledTabMenuButton:hover > div.center {
-  background: url('/src/assets/img/styledTabMenuButtonCenter.jpg');
-}
-
-a.styledTabMenuButton.selected > div.right, a.styledTabMenuButton:hover > div.right {
-  background: url('/src/assets/img/styledTabMenuButtonRight.jpg');
-  width: 29px;
-}
-

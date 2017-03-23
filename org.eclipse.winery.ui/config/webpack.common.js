@@ -35,9 +35,10 @@ module.exports = {
     resolve: {
         // http://webpack.github.io/docs/configuration.html#resolve-extensions
         extensions: ['.ts', '.js', '.json', '.css', '.html'],
-        alias: {
-            "orion/editor/edit": path.resolve("http://www.eclipse.org/orion/editor/releases/current/built-editor.min.js")
-        }
+        modules: [
+            path.join(__dirname, "src"),
+            "node_modules",
+        ]
     },
 
     module: {
@@ -52,7 +53,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 exclude: helpers.root('src', 'app'),
-                loader: ExtractTextPlugin.extract(['css-loader?sourceMap'])
+                loader: ExtractTextPlugin.extract({ fallback: 'style-loader', loader: 'css-loader?sourceMap' })
             },
             {
                 test: /\.css$/,

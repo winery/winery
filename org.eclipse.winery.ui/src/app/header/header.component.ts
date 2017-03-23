@@ -10,7 +10,7 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { sections } from '../configuration';
 import { isNullOrUndefined } from 'util';
 
@@ -21,13 +21,17 @@ import { isNullOrUndefined } from 'util';
 })
 export class HeaderComponent implements OnInit {
 
-    selectedOtherComponent: string = '';
+    selectedOtherComponent = '';
 
     constructor(private router: Router) {
     }
 
     ngOnInit(): void {
         this.router.events.subscribe(data => {
+            if (!(data instanceof NavigationEnd)) {
+                return;
+            }
+
             let others: string = data.url.slice(1);
 
             if (others.includes('/')) {

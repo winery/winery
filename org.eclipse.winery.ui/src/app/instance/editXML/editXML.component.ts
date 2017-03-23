@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -10,10 +9,7 @@
  * Contributors:
  *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
-
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
-import { InstanceService } from '../instance.service';
-import { isNullOrUndefined } from 'util';
 import { EditXMLService } from './editXML.service';
 import { NotificationService } from '../../notificationModule/notificationservice';
 
@@ -26,13 +22,13 @@ declare var requirejs: any;
 })
 export class EditXMLComponent implements OnInit {
 
-    id: string = 'XML';
-    dataEditorLang: string = 'application/xml';
+    id = 'XML';
+    dataEditorLang = 'application/xml';
 
     // Set height to 500 px
     height = 500;
 
-    loading: boolean = true;
+    loading = true;
     xmlData: string;
     orionEditor: any = undefined;
 
@@ -43,8 +39,8 @@ export class EditXMLComponent implements OnInit {
 
     ngOnInit() {
         Promise.all([
-            require('http://www.eclipse.org/orion/editor/releases/current/built-editor.min.js'),
-            require('http://eclipse.org/orion/editor/releases/current/built-editor.css')
+            require('../../../static/orion-editor.min.js'),
+            require('../../../css/orion-editor.css')
         ]).then(function() {
             requirejs(['orion/editor/edit'], function(edit: any) {
                 this.orionEditor = edit({className: 'editor', parent: 'xml'})[0];
