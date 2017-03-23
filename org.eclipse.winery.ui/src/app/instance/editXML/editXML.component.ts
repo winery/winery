@@ -39,8 +39,8 @@ export class EditXMLComponent implements OnInit {
 
     ngOnInit() {
         Promise.all([
-            require('../../../static/orion-editor.min.js'),
-            require('../../../css/orion-editor.css')
+            require('http://www.eclipse.org/orion/editor/releases/current/built-editor.min.js'),
+            require('http://eclipse.org/orion/editor/releases/current/built-editor.css')
         ]).then(function() {
             requirejs(['orion/editor/edit'], function(edit: any) {
                 this.orionEditor = edit({className: 'editor', parent: 'xml'})[0];

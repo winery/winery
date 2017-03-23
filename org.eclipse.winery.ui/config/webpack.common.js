@@ -109,4 +109,8 @@ module.exports = {
         }),
 
     ],
+
+    externals: [
+        require("webpack-require-http"),
+    ]
 };
