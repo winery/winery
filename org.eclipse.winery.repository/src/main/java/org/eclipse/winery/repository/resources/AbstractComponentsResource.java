@@ -230,11 +230,11 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 *
 	 * @param grouped if given, the JSON output is grouped by namespace
 	 *
-	 * @return A list of all ids of all instances of this component type. If the
-	 *         "name" attribute is required, that name is used as id <br />
+	 * @return A list of all ids of all instances of this component type. <br />
 	 *         Format:
-	 *         <code>[({"namespace": "<namespace>", "id": "<id>"},)* ]</code>. A
-	 *         <code>name<code> field is added if the model allows an additional name attribute
+	 *         <code>[({"namespace": "[namespace]", "id": "[id]"},)* ]</code>. <br /><br />
+	 *         If grouped is set, the list will be grouped by namespace. <br />
+	 *         <code>[{"id": "[namsepace encoded]", "test": "[namespace decoded]", "children":[{"id": "[qName]", "text": "[id]"}]}]</code>
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -282,8 +282,8 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 								} else {
 									text = id.getXmlId().getDecoded();
 								}
-								jg.writeStringField("text", text);
 								jg.writeStringField("id", id.getQName().toString());
+								jg.writeStringField("text", text);
 								jg.writeEndObject();
 							} catch (IOException e) {
 								AbstractComponentsResource.LOGGER.error("Could not create JSON", e);

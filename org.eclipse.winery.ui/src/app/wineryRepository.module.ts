@@ -48,7 +48,7 @@ import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module'
         WineryRepositoryComponent,
     ],
     providers: [
-        {provide: ToastOptions, useClass: CustomOption}
+        {provide: ToastOptions, useClass: CustomOption},
     ],
     bootstrap: [WineryRepositoryComponent]
 })

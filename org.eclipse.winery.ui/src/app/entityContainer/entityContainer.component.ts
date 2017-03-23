@@ -22,11 +22,11 @@ export class EntityContainerComponent implements OnInit {
     @Input() data: SectionData;
     @Input() resourceType: string;
 
-    imageUri: string;
+    imageUrl: string;
 
     ngOnInit(): void {
         if (this.resourceType === 'nodeType' && this.data.id) {
-            this.imageUri = backendBaseUri + '/'
+            this.imageUrl = backendBaseUri + '/'
                 + this.resourceType.toLowerCase() + 's/'
                 + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/'
                 + this.data.id
