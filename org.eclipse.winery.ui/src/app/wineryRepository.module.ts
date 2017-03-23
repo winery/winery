@@ -27,6 +27,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WineryModalModule } from './wineryModalModule/winery.modal.module';
 import { WineryRepositoryComponent } from './wineryRepository.component';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
+import { ExistService } from './util/existService';
 
 @NgModule({
     imports: [
@@ -51,6 +52,7 @@ import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module'
     ],
     providers: [
         {provide: ToastOptions, useClass: CustomOption},
+        ExistService
     ],
     bootstrap: [WineryRepositoryComponent]
 })
