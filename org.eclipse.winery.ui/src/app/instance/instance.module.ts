@@ -37,7 +37,7 @@ import { SelfservicePortalComponent } from './selfservicePortal/selfservicePorta
 import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
 import { TagsComponent } from './tags/tags.component';
 import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
-import { FilesComponent } from './files/files.component';
+import { FilesComponent } from './filesTag/files.component';
 import { PropertiesComponent } from './properties/properties.component';
 import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
 import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';

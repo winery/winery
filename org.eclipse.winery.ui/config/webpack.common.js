@@ -53,7 +53,8 @@ module.exports = {
             {
                 test: /\.css$/,
                 exclude: helpers.root('src', 'app'),
-                loader: ExtractTextPlugin.extract({ fallback: 'style-loader', loader: 'css-loader?sourceMap' })
+                // workaround for the css loader: https://github.com/webpack-contrib/css-loader/issues/296
+                loader: ExtractTextPlugin.extract({ fallback: 'style-loader', loader: 'css-loader' })
             },
             {
                 test: /\.css$/,
