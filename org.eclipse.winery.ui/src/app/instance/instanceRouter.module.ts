@@ -37,6 +37,7 @@ import { NamespacesComponent } from './namespaces/namespaces.component';
 import { RepositoryComponent } from './repository/repository.component';
 import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
 import { PlanTypesComponent } from './planTypes/planTypes.component';
+import { TagComponent } from "./tag/tag.component";
 
 
 const instanceRoutes: Routes = [
@@ -73,6 +74,7 @@ const instanceRoutes: Routes = [
             { path: 'sourceinterfaces', component: InterfacesComponent },
             { path: 'targetinterfaces', component: InterfacesComponent },
             { path: 'visualappearance', component: VisualAppearanceComponent},
+            { path: 'tags', component: TagComponent},
             { path: 'xml', component: EditXMLComponent },
         ]
     }
