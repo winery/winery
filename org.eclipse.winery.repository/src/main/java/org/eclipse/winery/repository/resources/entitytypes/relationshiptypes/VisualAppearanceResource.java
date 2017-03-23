@@ -9,6 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Jerome Tagliaferri - support for setting the color
+ *     Lukas Balzer - added PUT and GET for supporting json
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.relationshiptypes;
 
@@ -218,15 +219,10 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	}
 
 	/* * * source arrow head * * */
-	@GET
-	@Path("sourcearrowhead")
 	public String getSourceArrowHead() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, Defaults.DEFAULT_RT_ARROWHEAD_SOURCE);
 	}
 
-	@PUT
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Path("sourcearrowhead")
 	public Response onPutSourceHead(String config) {
 		if (StringUtils.isEmpty(config)) {
 			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
@@ -236,15 +232,10 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	}
 
 	/* * * target arrow head * * */
-	@GET
-	@Path("targetarrowhead")
 	public String getTargetArrowHead() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, Defaults.DEFAULT_RT_ARROWHEAD_TARGET);
 	}
 
-	@PUT
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Path("targetarrowhead")
 	public Response onPutTargetHead(String config) {
 		if (StringUtils.isEmpty(config)) {
 			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
@@ -266,9 +257,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_DASH, Defaults.DEFAULT_RT_DASH);
 	}
 
-	@PUT
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Path("dash")
 	public Response onPutDash(String config) {
 		if (StringUtils.isEmpty(config)) {
 			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
@@ -288,30 +276,17 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	/**
 	 * read by topologytemplateeditor.jsp via ${it.color}
 	 */
-	@GET
-	@Path("color")
 	public String getColor() {
 		return BackendUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_COLOR, this.otherAttributes, this.res);
-	}
-
-	@PUT
-	@Path("color")
-	public Response onPutColor(@FormParam("color") String color) {
-		this.otherAttributes.put(QNames.QNAME_COLOR, color);
-		return BackendUtils.persist(this.res);
 	}
 
 	/**
 	 * read by topologytemplateeditor.jsp via ${it.hoverColor}
 	 */
-	@GET
-	@Path("hovercolor")
 	public String getHoverColor() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_HOVER_COLOR, Defaults.DEFAULT_RT_HOVER_COLOR);
 	}
 
-	@PUT
-	@Path("hovercolor")
 	public Response onPutHoverColor(@FormParam("color") String color) {
 		this.otherAttributes.put(VisualAppearanceResource.QNAME_HOVER_COLOR, color);
 		return BackendUtils.persist(this.res);

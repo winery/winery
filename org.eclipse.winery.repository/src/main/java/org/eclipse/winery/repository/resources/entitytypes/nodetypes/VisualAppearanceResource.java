@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Balzer - added changes for angular2 frontend
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.nodetypes;
 

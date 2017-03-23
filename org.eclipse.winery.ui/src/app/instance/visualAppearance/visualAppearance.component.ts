@@ -19,6 +19,7 @@ import { NotificationService } from '../../notificationModule/notificationservic
 import { isNullOrUndefined } from 'util';
 import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
+import { HexBase64BinaryEncoding } from "crypto";
 
 @Component({
     selector: 'winery-instance-visualAppearance',
@@ -176,10 +177,19 @@ export class VisualAppearanceComponent implements OnInit {
     }
 
     handleRelationshipData(data: any) {
+        data.hovercolor = this.checkColor(data.hovercolor);
+        data.color = this.checkColor(data.color);
+        console.log(data);
         this.relationshipData = new RelationshipTypesVisualsApiData(data, true);
         this.loading = false;
     }
 
+    private checkColor(color: string): string {
+        if (!color.includes('#')) {
+            return '#fff';
+        }
+        return color;
+    }
     private handleResponse(response: any) {
         this.loading = false;
         this.notify.success('Successfully saved visual data!');

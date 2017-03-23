@@ -15,9 +15,9 @@
     <tab heading="Color">
         <br/>
         <div *ngIf="!loading && (nodeTypeData != null|| relationshipData!= null)">
-            <div class="picker" *ngIf="service.isNodeType">
+            <div class="picker" *ngIf="nodeTypeData != null">
                 <b>Bordercolor:</b><br>
-                <div class="colorPicker" [colorPicker]="!loading && nodeTypeData?.color"
+                <div class="colorPicker" [colorPicker]="nodeTypeData?.color"
                      [cpDialogDisplay]="'inline'"
                      [style.background]="nodeTypeData?.color"
                      (colorPickerChange)="colorBorderChange($event)"
@@ -28,7 +28,7 @@
                     <button (click)="saveToServer('/bordercolor')" class="btn btn-info btn-sm">save</button>
                 </div>
             </div>
-            <div class="picker line_colorPicker" *ngIf="!service.isNodeType">
+            <div class="picker line_colorPicker" *ngIf="relationshipData!= null">
                 <b>Line color:</b><br>
                 <div class="colorPicker" [colorPicker]="relationshipData.color"
                      [cpDialogDisplay]="'inline'"
@@ -41,11 +41,11 @@
                     <button (click)="saveToServer('/color')" class="btn btn-info btn-sm">save</button>
                 </div>
             </div>
-            <div class="picker hc_colorPicker" *ngIf="!service.isNodeType">
+            <div class="picker hc_colorPicker" *ngIf="relationshipData!= null">
                 <b>Color when hovered:</b><br>
-                <div class="colorPicker" [colorPicker]="relationshipData?.hovercolor"
+                <div class="colorPicker" [colorPicker]="relationshipData.hovercolor"
                      [cpDialogDisplay]="'inline'"
-                     [style.background]="relationshipData?.hovercolor"
+                     [style.background]="relationshipData.hovercolor"
                      (colorPickerChange)="changeHoverColor($event)"
                      [cpToggle]="true"
                      [cpAlphaChannel]="'disabled'"></div>
