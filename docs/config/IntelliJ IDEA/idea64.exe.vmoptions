@@ -1,0 +1,11 @@
+-server
+-Xms256m
+-Xmx2222m
+-XX:ReservedCodeCacheSize=240m
+-XX:+UseG1GC
+-XX:SoftRefLRUPolicyMSPerMB=50
+-ea
+-Dsun.io.useCanonCaches=false
+-Djava.net.preferIPv4Stack=true
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:-OmitStackTraceInFastThrow

@@ -8,9 +8,99 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Lukas Balzer - initial API and implementation
  */
 -->
-<div>
-    visual appearance
-</div>
+<tabset>
+    <tab class="colorTab" heading="Bordercolor" tabindex="2">
+        <br/>
+        <div class="colorPicker">
+            <!--<div [colorPicker]="color"-->
+                 <!--[cpDialogDisplay]="'inline'"-->
+                 <!--[style.background]="color"-->
+                 <!--(colorPickerChange)="colorChange($event)"-->
+                 <!--[cpToggle]="true"-->
+                 <!--[cpAlphaChannel]="'disabled'"></div>-->
+        </div>
+        <div class="floatContent">
+            choose or enter the hex value in the area on the left<br/>
+            <button (click)="saveToServer()" class="btn btn-info btn-sm">save</button>
+        </div>
+    </tab>
+    <tab heading="Icons" tabindex="1">
+        <div [class.hidden]="!loading">
+            <winery-loader></winery-loader>
+        </div>
+        <div *ngIf="!loading">
+            <b>Icon (16x16) used in palette</b><br>
+            <div ng2FileDrop
+                 [ngClass]="{'nv-file-over': hasImg16DropZoneOver}"
+                 (fileOver)="hasImg16DropZoneOver=onUpload(img16uploader,$event);"
+                 [uploader]="img16uploader"
+                 class="imgDropZone">
+                <img src="{{img16Path}}" height="16" width="16">
+                <button class="btn btn-default btn-xs upload" type="button" (click)="upload16Modal.show();"> upload..
+                </button>
+            </div>
+            <br/>
+            <b>Icon (50x50) used in the node template shapes</b><br/>
+            <div ng2FileDrop
+                 [ngClass]="{'nv-file-over': hasImg50DropZoneOver}"
+                 (fileOver)="hasImg50DropZoneOver=onUpload(img50uploader,$event);"
+                 [uploader]="img50uploader"
+                 class="imgDropZone">
+                <img src="{{img50Path}}" height="50" width="50">
+                <button class="btn btn-default btn-xs upload" type="button" (click)="upload50Modal.show();">upload..
+                </button>
+            </div>
+            <br/>
+        </div>
+    </tab>
+</tabset>
+
+<winery-modal bsModal #upload16Modal="bs-modal" [modalRef]="upload16Modal">
+    <winery-modalHeader [title]="'Upload Icon (16x16) used in palette'">
+    </winery-modalHeader>
+    <winery-modalBody>
+        <div class="modal-upload">
+            <b>File</b>
+            <input type="file" ng2FileSelect [uploader]="img16uploader"
+                   (change)="onUpload(img16uploader,false, upload16Modal);"/>
+            <div ng2FileDrop
+                 [ngClass]="{'nv-file-over': hasImg16DropZoneOver}"
+                 (fileOver)="hasImg16DropZoneOver=onUpload(img16uploader,$event, upload16Modal);"
+                 [uploader]="img16uploader"
+                 class="imgDropZone">
+                You may also <b>drop the file</b> here.
+            </div>
+            <br/>
+            The file is <b>immediately</b> uploaded without any confirmation.
+        </div>
+    </winery-modalBody>
+    <winery-modalFooter [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" (click)="upload16Modal.hide()">Cancel</button>
+    </winery-modalFooter>
+</winery-modal>
+
+<winery-modal bsModal #upload50Modal="bs-modal" [modalRef]="upload50Modal">
+    <winery-modalHeader [title]="'Upload Icon (50x50) used in palette'">
+    </winery-modalHeader>
+    <winery-modalBody>
+        <div class="modal-upload">
+            <input type="file" ng2FileSelect [uploader]="img50uploader"
+                   (change)="onUpload(img50uploader,false, upload50Modal);"/>
+            <div ng2FileDrop
+                 [ngClass]="{'nv-file-over': hasImg50DropZoneOver}"
+                 (fileOver)="hasImg50DropZoneOver=onUpload(img50uploader,$event, upload50Modal);"
+                 [uploader]="img50uploader"
+                 class="imgDropZone">
+                You may also <b>drop the file</b> here.
+            </div>
+            <br/>
+            The file is <b>immediately</b> uploaded without any confirmation.
+        </div>
+    </winery-modalBody>
+    <winery-modalFooter [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" (click)="upload50Modal.hide()">Cancel</button>
+    </winery-modalFooter>
+</winery-modal>

@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.requirementtypes;
 
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 /**

@@ -34,7 +34,6 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;

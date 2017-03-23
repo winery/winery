@@ -12,13 +12,13 @@
 
 package org.eclipse.winery.repository.resources.apiData;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
+
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 
 public class AvailableSuperclassesApiData {
 

@@ -29,6 +29,7 @@ import org.eclipse.winery.model.tosca.TEntityType.DerivedFrom;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.apiData.AvailableSuperclassesApiData;
 import org.eclipse.winery.repository.resources.apiData.InheritanceResourceApiData;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

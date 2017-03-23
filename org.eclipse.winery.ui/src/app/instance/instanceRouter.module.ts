@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - add admin component
  */
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -40,8 +41,30 @@ import { PropertiesComponent } from './properties/properties.component';
 import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
 import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
 import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
+import { LoggerComponent } from './logger/logger.component';
+import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
+import { NamespacesComponent } from './namespaces/namespaces.component';
+import { RepositoryComponent } from './repository/repository.component';
+import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
+import { PlanTypesComponent } from './planTypes/planTypes.component';
+
 
 const instanceRoutes = [
+
+    {
+        path: 'admin',
+        component: InstanceComponent,
+        resolve: {resolveData: InstanceResolver},
+        children: [
+            { path: 'namespaces', component: NamespacesComponent },
+            { path: 'repository', component: RepositoryComponent },
+            { path: 'planlanguages', component: PlanLanguagesComponent },
+            { path: 'plantypes', component: PlanTypesComponent },
+            { path: 'contrainttypes', component: ConstraintTypesComponent },
+            { path: 'log', component: LoggerComponent },
+            { path: '', redirectTo: 'namespaces', pathMatch: 'full'}
+        ]
+    },
     {
         path: ':section/:namespace/:instanceId',
         component: InstanceComponent,

@@ -30,7 +30,6 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

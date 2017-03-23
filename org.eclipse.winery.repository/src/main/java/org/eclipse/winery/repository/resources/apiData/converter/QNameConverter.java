@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.apiData.converter;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.repository.resources.apiData.QNameApiData;

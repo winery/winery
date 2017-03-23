@@ -15,15 +15,10 @@ body {
   background: #eaeaea;
 }
 
-div#mainMenuContainer {
+nav#mainMenuContainer {
   height: 28px;
   position: absolute;
   top: 38px;
-}
-
-#showabout {
-  width: 100%;
-  height: 43px;
 }
 
 .orderRight {

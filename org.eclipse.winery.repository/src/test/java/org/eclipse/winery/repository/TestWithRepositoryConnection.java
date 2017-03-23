@@ -15,6 +15,10 @@ import java.io.IOException;
 
 import org.junit.BeforeClass;
 
+/**
+ * @deprecated Switch to AbstractResourceTest
+ */
+@Deprecated
 public abstract class TestWithRepositoryConnection {
 
 	@BeforeClass
