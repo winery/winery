@@ -39,14 +39,14 @@
             <h4 class="modal-title">Add Property</h4>
         </winery-modalHeader>
         <winery-modalBody>
-            <form #addTypeForm="ngForm" id="addPropertyForm">
+            <form #addTypeForm="ngForm" id="addTypeForm">
                 <div class="form-group">
                     <label class="control-label" for="shortName">Shortname</label>
                     <input #shortName="ngModel"
                            id="shortName"
                            class="form-control"
                            type="text"
-                           name="prefix"
+                           name="shortName"
                            autocomplete=off
                            required
                            [(ngModel)]="newTypeWithShortName.shortName"
@@ -68,7 +68,7 @@
                            id="type"
                            class="form-control"
                            type="text"
-                           name="prefix"
+                           name="type"
                            autocomplete=off
                            required
                            [(ngModel)]="newTypeWithShortName.type"
