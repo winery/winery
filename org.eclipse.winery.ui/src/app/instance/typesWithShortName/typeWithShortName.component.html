@@ -11,6 +11,9 @@
  *     Niko Stadelmaier - initial API and implementation
  */
 -->
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
 <div *ngIf="!loading">
         <winery-table [title]="title"
                   [columns]="columns"

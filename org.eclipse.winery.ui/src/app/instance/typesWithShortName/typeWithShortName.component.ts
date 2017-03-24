@@ -35,6 +35,10 @@ export class TypeWithShortNameComponent implements OnInit {
         {title: 'Long Name', name: 'type'}
     ];
     elementToRemove: TypeWithShortName = null;
+    /**
+     * sets the title of the component
+     * @type {string}
+     */
     @Input() title: string = '';
 
     @ViewChild('confirmDeleteModal') deleteNamespaceModal: any;
