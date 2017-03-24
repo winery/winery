@@ -19,7 +19,6 @@ import { DuplicateValidatorModule } from '../validators/duplicateValidator.modul
 import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
 import { LoaderModule } from '../loader/loader.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
-import { NotificationModule } from '../notificationModule/notification.module';
 import { EntityContainerComponent } from '../entityContainer/entityContainer.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { UrlEncodePipe } from '../pipes/urlEncode.pipe';
@@ -37,7 +36,6 @@ import { SectionPipe } from './section.pipe';
         NamespaceSelectorModule,
         LoaderModule,
         WineryModalModule,
-        NotificationModule.forRoot(),
         FileUploadModule,
         RouterModule,
     ],
