@@ -21,7 +21,7 @@ export class TypeWithShortName {
     type: string;
     shortName: string;
 
-    constructor(pType: string, pShortName: string) {
+    constructor(pType: string = '', pShortName: string = '') {
         this.type = pType;
         this.shortName = pShortName;
     }
@@ -51,6 +51,13 @@ export class TypeWithShortNameService {
         let options = new RequestOptions({headers: headers});
 
         return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(types), options);
+    }
+
+    postType(type: TypeWithShortName) {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
+
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(type), options);
     }
 
 }

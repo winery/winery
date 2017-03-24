@@ -9,7 +9,7 @@
  * Contributors:
  *     Niko Stadelmaier - initial API and implementation
  */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NamespaceSelectorService } from '../../namespaceSelector/namespaceSelector.service';
 import { NotificationService } from '../../notificationModule/notificationservice';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
@@ -27,16 +27,15 @@ export class TypeWithShortNameComponent implements OnInit {
 
     loading = true;
     types: Array<any> = [];
-    newTypeWithShortName: any = {type: '', shortName: ''};
+    newTypeWithShortName: TypeWithShortName = new TypeWithShortName();
     validatorObjectShortName: ValidatorObject;
     validatorObjectType: ValidatorObject;
-    itemToDelete: TypeWithShortName = null;
     columns = [
         {title: 'Short Name', name: 'shortName'},
         {title: 'Long Name', name: 'type'}
     ];
-    elementToRemove: TypeWithShortName;
-    title: '';
+    elementToRemove: TypeWithShortName = null;
+    @Input() title: string = '';
 
     @ViewChild('confirmDeleteModal') deleteNamespaceModal: any;
     @ViewChild('addModal') addNamespaceModal: any;
@@ -62,10 +61,8 @@ export class TypeWithShortNameComponent implements OnInit {
     }
 
     addType(type: string, shortName: string) {
-        this.types.push({
-            namespace: type,
-            prefix: shortName
-        });
+        this.types.push({type: type, shortName: shortName});
+        this.saveType();
     }
 
     /**
@@ -74,6 +71,7 @@ export class TypeWithShortNameComponent implements OnInit {
      */
     onRemoveClick(data: any) {
         this.notify.warning('Not yet implemented!');
+        // future functionality
         // return;
         // if (isNullOrUndefined(data)) {
         //     this.notify.warning('Nothing to remove. Please select a element');
@@ -88,8 +86,7 @@ export class TypeWithShortNameComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
-        // this.addNamespaceModal.show();
-        this.notify.warning('Not yet implemented!');
+        this.addNamespaceModal.show();
     }
 
     deleteType() {
@@ -98,8 +95,15 @@ export class TypeWithShortNameComponent implements OnInit {
         this.elementToRemove = null;
     }
 
-    save() {
+    saveAll() {
         this.service.postTypes(this.types).subscribe(
+            data => this.handleSave(data),
+            error => this.handleError(error)
+        );
+    }
+
+    saveType() {
+        this.service.postType(this.newTypeWithShortName).subscribe(
             data => this.handleSave(data),
             error => this.handleError(error)
         );

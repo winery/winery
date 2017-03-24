@@ -12,10 +12,7 @@
  */
 -->
 <div *ngIf="!loading">
-    <div class="right">
-        <button class="btn btn-primary" name="save" (click)="save()">Save</button>
-    </div>
-    <winery-table [title]="title"
+        <winery-table [title]="title"
                   [columns]="columns"
                   [data]="types"
                   (addBtnClicked)="onAddClick()"
@@ -28,7 +25,7 @@
         </winery-modalHeader>
         <winery-modalBody>
             <p *ngIf="elementToRemove != null" id="diagyesnomsg">
-                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.namespace }}</span>?
+                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove?.shortName }}</span>?
             </p>
         </winery-modalBody>
         <winery-modalFooter (onOk)="deleteType();"
@@ -42,45 +39,59 @@
             <h4 class="modal-title">Add Property</h4>
         </winery-modalHeader>
         <winery-modalBody>
-            <form #addNamespaceForm="ngForm" id="addPropertyForm">
+            <form #addTypeForm="ngForm" id="addPropertyForm">
                 <div class="form-group">
-                    <label class="control-label" for="prefixName">Prefix</label>
-                    <input #prefixName="ngModel"
-                           id="prefixName"
+                    <label class="control-label" for="shortName">Shortname</label>
+                    <input #shortName="ngModel"
+                           id="shortName"
                            class="form-control"
                            type="text"
                            name="prefix"
                            autocomplete=off
                            required
-                           [(ngModel)]="newTypeWithShortName.prefix"
+                           [(ngModel)]="newTypeWithShortName.shortName"
                            [duplicateValidator]="validatorObjectShortName"/>
 
-                    <div *ngIf="prefixName.errors && (prefixName.dirty || prefixName.touched)"
+                        <div *ngIf="shortName.errors && (shortName.dirty || shortName.touched)"
                          class="alert alert-danger">
-                        <div [hidden]="!prefixName.errors.duplicateValidator">
+                        <div [hidden]="!shortName.errors.duplicateValidator">
                             No duplicates allowed!
                         </div>
-                        <div [hidden]="!prefixName.errors.required">
-                            Name is required
+                        <div [hidden]="!shortName.errors.required">
+                            Shortname is required
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="type">Type</label>
+                    <input #type="ngModel"
+                           id="type"
+                           class="form-control"
+                           type="text"
+                           name="prefix"
+                           autocomplete=off
+                           required
+                           [(ngModel)]="newTypeWithShortName.type"
+                           [duplicateValidator]="validatorObjectType"/>
+
+                    <div *ngIf="type.errors && (type.dirty || type.touched)"
+                         class="alert alert-danger">
+                        <div [hidden]="!type.errors.duplicateValidator">
+                            No duplicates allowed!
+                        </div>
+                        <div [hidden]="!type.errors.required">
+                            Type is required
                         </div>
                     </div>
                 </div>
 
-                <winery-namespaceSelector
-                    #namespace
-                    name="namespaceSelector"
-                    [(ngModel)]="newTypeWithShortName.namespace"
-                    [isRequired]="true"
-                    [typeAheadListLimit]="20"
-                    required>
-                </winery-namespaceSelector>
 
             </form>
         </winery-modalBody>
-        <winery-modalFooter (onOk)="addType(namespace.selectedNamespace, prefixName.value); addNamespaceForm.reset();"
+        <winery-modalFooter (onOk)="addType(shortName.value, type.value); addTypeForm.reset();"
                             [closeButtonLabel]="'Cancel'"
                             [okButtonLabel]="'Add'"
-                            [disableOkButton]="!addNamespaceForm?.form.valid">
+                            [disableOkButton]="!addTypeForm?.form.valid">
         </winery-modalFooter>
     </winery-modal>
 </div>
