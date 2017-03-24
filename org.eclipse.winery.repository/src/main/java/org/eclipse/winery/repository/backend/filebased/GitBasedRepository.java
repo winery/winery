@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 import javax.ws.rs.core.MediaType;
 
@@ -56,7 +56,7 @@ public class GitBasedRepository extends FilebasedRepository {
 		super(repositoryLocation);
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
-		if (!new File(this.determineRepositoryPath(repositoryLocation) + File.separator + ".git").exists()) {
+		if (!Files.exists(this.repositoryRoot.resolve(".git"))) {
 		    gitRepo.create();
 		}
 		this.git = new Git(gitRepo);
