@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -49,6 +50,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
@@ -71,6 +73,7 @@ import org.eclipse.winery.repository.resources.imports.genericimports.GenericImp
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.resources.tags.TagsResource;
 
+import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -301,8 +304,31 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 				}
 			}
 		};
-		return Response.ok().type(MediaType.TEXT_XML).entity(so).build();
+		return Response.ok().entity(so).build();
 	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public TDefinitions getDefinitionsAsJson() {
+		if (!Repository.INSTANCE.exists(this.id)) {
+			throw new NotFoundException();
+		}
+
+		TOSCAExportUtil exporter = new TOSCAExportUtil();
+		// we include everything related
+		Map<String, Object> conf = new HashMap<>();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			exporter.exportTOSCA(AbstractComponentInstanceResource.this.id, bos, conf);
+		} catch (Exception e) {
+			throw new WebApplicationException(e);
+		}
+
+		// FIXME
+		return null;
+
+	}
+
 
 	/**
 	 * @throws IllegalStateException if an IOException occurred. We opted not to

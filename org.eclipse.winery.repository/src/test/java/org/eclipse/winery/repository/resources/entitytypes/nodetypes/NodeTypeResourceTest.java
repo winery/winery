@@ -36,6 +36,12 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
+	public void baboabCapabilitiesJSON() throws Exception {
+		this.setRevisionTo("8b125a426721f8a0eb17340dc08e9b571b0cd7f7");
+		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/", "entitytypes/nodetypes/boabab_capabilites.json");
+	}
+
+	@Test
 	public void baobabRoundTrip() throws Exception {
 		this.setRevisionTo("15cd64e30770ca7986660a34e1a4a7e0cf332f19"); // empty repository
 		this.assertNotFound("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/");
