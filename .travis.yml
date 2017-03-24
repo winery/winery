@@ -23,15 +23,8 @@ script:
 after_script:
   - bash <(curl -s https://codecov.io/bash)
 #  - ~/jpm/bin/codacy-coverage-reporter -l Java -r target/site/jacoco-agregate/jacoco.xml
-  # Adapted based on https://gist.github.com/lukewpatterson/4242707
   - echo -n $ID_RSA_TRAVIS_{1..23} >> ~/.ssh/id_rsa_base64
-  - base64 --decode --ignore-garbage ~/.ssh/id_rsa_base64 > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - eval "$(ssh-agent -s)"
-  - ssh-add ~/.ssh/id_rsa
-  # Prevent "Are you sure you want to continue connecting (yes/no)? " prompt
-  - echo -e "Host builds.opentosca.org\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-  - scripts/upload-to-builds.opentosca.org.sh
+  - if [ -n "$ID_RSA_TRAVIS_1" ]; then scripts/upload-to-builds.opentosca.org.sh; fi
 
 # We do not need special build commands, as we use the default maven configuration
 # For more information see https://docs.travis-ci.com/user/languages/java

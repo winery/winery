@@ -13,19 +13,22 @@ package org.eclipse.winery.repository.resources.entitytypes.capabilitytypes;
 
 import java.io.IOException;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.resources.TestResource;
+import org.eclipse.winery.repository.resources.ResourceTest;
 
-public class TestCapabilityTypeResource extends TestResource {
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+
+@Ignore("Working on old test repository")
+public class CapabilityTypeResourceTest extends ResourceTest {
 
 	private static final CapabilityTypeId id = new CapabilityTypeId(new Namespace("http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes", false), new XMLId("ContainerCapability", false));
 
@@ -44,9 +47,9 @@ public class TestCapabilityTypeResource extends TestResource {
 	@Test
 	public void getElementAsXMLString() throws IOException {
 		// ensure that no test object exists
-		Repository.INSTANCE.forceDelete(TestCapabilityTypeResource.id);
+		Repository.INSTANCE.forceDelete(CapabilityTypeResourceTest.id);
 
-		CapabilityTypeResource res = new CapabilityTypeResource(TestCapabilityTypeResource.id);
+		CapabilityTypeResource res = new CapabilityTypeResource(CapabilityTypeResourceTest.id);
 		String s = res.getDefinitionsAsXMLString();
 		Assert.assertNotNull(s);
 	}

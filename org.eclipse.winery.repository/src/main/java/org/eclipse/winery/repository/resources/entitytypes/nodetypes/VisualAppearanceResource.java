@@ -18,6 +18,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -74,7 +75,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	}
 
 	@PUT
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Path("bordercolor")
 	public Response putBorderColor(@FormParam("color") String color) {
 		this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, color);

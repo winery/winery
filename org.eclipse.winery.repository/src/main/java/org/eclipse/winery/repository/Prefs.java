@@ -71,12 +71,7 @@ public class Prefs implements ServletContextListener {
 	// location of the winery topology modeler
 	private String wineryTopologyModelerPath = null;
 
-	/**
-	 * This constructor is called at handling at servlets, too. Therefore, we
-	 * make it private. If testing is needed, an additional paramater has to be
-	 * passed
-	 */
-	public Prefs() {
+	private Prefs() {
 		Prefs.INSTANCE = this;
 		// globally use unix line endings - see http://stackoverflow.com/a/6128248/873282
 		System.setProperty("line.separator", "\n");

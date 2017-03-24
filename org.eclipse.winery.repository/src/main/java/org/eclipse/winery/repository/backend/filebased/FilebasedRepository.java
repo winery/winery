@@ -95,6 +95,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
 	// convenience variables to have a clean code
 	private final FileSystem fileSystem;
+
 	private final FileSystemProvider provider;
 
 	/**
@@ -106,6 +107,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		this.repositoryRoot = this.determineRepositoryPath(repositoryLocation);
 		this.fileSystem = this.repositoryRoot.getFileSystem();
 		this.provider = this.fileSystem.provider();
+		LOGGER.debug("Repository root: {}", this.repositoryRoot);
 	}
 
 	private Path makeAbsolute(Path relativePath) {
