@@ -541,7 +541,6 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@Path("tags/")
 	public final TagsResource getTags() {
 		TTags tags = null;
-
 		if (this.element instanceof TServiceTemplate) {
 			tags = ((TServiceTemplate) this.element).getTags();
 			if (tags == null) {

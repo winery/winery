@@ -9,21 +9,30 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Kálmán Képes - refined tag suport
+ *     Lukas Balzer - added support for angular frontend
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.tags;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.CollectionsHelper;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
+import org.eclipse.winery.repository.resources.apiData.TagsApiData;
 
 import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
@@ -69,4 +78,45 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 		return CollectionsHelper.persist(this.res, this, tag);
 	}
 
+	@GET
+	@Path("data")
+	@Produces(MediaType.APPLICATION_JSON)
+	public TagsApiData[] getTagJson() {
+		ArrayList<TagsApiData> responseList = new ArrayList<>();
+		TagsApiData apiData;
+		for (TTag entity: this.list) {
+			responseList.add(new TagsApiData(getId(entity), entity));
+		}
+		return responseList.toArray(new TagsApiData[0]);
+	}
+
+	@POST
+	@Path("data")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addNewElement(TagsApiData data) {
+
+		TTag tag = new TTag();
+
+		tag.setName(data.name);
+		tag.setValue(data.value);
+
+		this.list.add(tag);
+		return CollectionsHelper.persist(this.res, this, tag);
+	}
+
+	@DELETE
+	@Path("data/{id}")
+	public Response deleteTag(@PathParam("id") String id) {
+		TTag removeData = null;
+		for (TTag entity: this.list) {
+			if(getId(entity).equals(id)) {
+				removeData = entity;
+			}
+		}
+		if(removeData != null &&
+			this.list.remove(removeData)) {
+			return BackendUtils.persist(this.res);
+		}
+		return Response.status(404).build();
+	}
 }

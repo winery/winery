@@ -40,7 +40,7 @@ import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
 import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
 import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
 import { RepositoryModule } from './repository/repository.module';
-import { TagComponent } from './tag/tag.component';
+import { TagModule } from './tag/tag.module';
 
 @NgModule({
     imports: [
@@ -56,7 +56,8 @@ import { TagComponent } from './tag/tag.component';
         WineryTableModule,
         DuplicateValidatorModule,
         NamespaceSelectorModule,
-        RepositoryModule
+        RepositoryModule,
+        TagModule
     ],
     exports: [],
     declarations: [
@@ -76,7 +77,6 @@ import { TagComponent } from './tag/tag.component';
         ConstraintTypesComponent,
         PlanLanguagesComponent,
         NamespacesComponent,
-        TagComponent
     ],
     providers: [],
 })
