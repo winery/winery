@@ -40,6 +40,7 @@ import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
 import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
 import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
 import { RepositoryModule } from './repository/repository.module';
+import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortName.component';
 
 @NgModule({
     imports: [
@@ -74,7 +75,8 @@ import { RepositoryModule } from './repository/repository.module';
         PlanTypesComponent,
         ConstraintTypesComponent,
         PlanLanguagesComponent,
-        NamespacesComponent
+        NamespacesComponent,
+        TypeWithShortNameComponent
     ],
     providers: [],
 })

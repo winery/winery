@@ -1,0 +1,87 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Niko Stadelmaier - initial API and implementation
+ */
+-->
+<div *ngIf="!loading">
+    <div class="right">
+        <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+    </div>
+    <winery-table [title]="title"
+                  [columns]="columns"
+                  [data]="types"
+                  (addBtnClicked)="onAddClick()"
+                  (removeBtnClicked)="onRemoveClick($event)">
+    </winery-table>
+
+    <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+        <winery-modalHeader>
+            <h4 class="modal-title">Delete Property</h4>
+        </winery-modalHeader>
+        <winery-modalBody>
+            <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.namespace }}</span>?
+            </p>
+        </winery-modalBody>
+        <winery-modalFooter (onOk)="deleteType();"
+                            [closeButtonLabel]="'No'"
+                            [okButtonLabel]="'Yes'">
+        </winery-modalFooter>
+    </winery-modal>
+
+    <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+        <winery-modalHeader>
+            <h4 class="modal-title">Add Property</h4>
+        </winery-modalHeader>
+        <winery-modalBody>
+            <form #addNamespaceForm="ngForm" id="addPropertyForm">
+                <div class="form-group">
+                    <label class="control-label" for="prefixName">Prefix</label>
+                    <input #prefixName="ngModel"
+                           id="prefixName"
+                           class="form-control"
+                           type="text"
+                           name="prefix"
+                           autocomplete=off
+                           required
+                           [(ngModel)]="newTypeWithShortName.prefix"
+                           [duplicateValidator]="validatorObjectShortName"/>
+
+                    <div *ngIf="prefixName.errors && (prefixName.dirty || prefixName.touched)"
+                         class="alert alert-danger">
+                        <div [hidden]="!prefixName.errors.duplicateValidator">
+                            No duplicates allowed!
+                        </div>
+                        <div [hidden]="!prefixName.errors.required">
+                            Name is required
+                        </div>
+                    </div>
+                </div>
+
+                <winery-namespaceSelector
+                    #namespace
+                    name="namespaceSelector"
+                    [(ngModel)]="newTypeWithShortName.namespace"
+                    [isRequired]="true"
+                    [typeAheadListLimit]="20"
+                    required>
+                </winery-namespaceSelector>
+
+            </form>
+        </winery-modalBody>
+        <winery-modalFooter (onOk)="addType(namespace.selectedNamespace, prefixName.value); addNamespaceForm.reset();"
+                            [closeButtonLabel]="'Cancel'"
+                            [okButtonLabel]="'Add'"
+                            [disableOkButton]="!addNamespaceForm?.form.valid">
+        </winery-modalFooter>
+    </winery-modal>
+</div>
+

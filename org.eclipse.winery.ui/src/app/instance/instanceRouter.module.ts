@@ -50,7 +50,7 @@ const instanceRoutes: Routes = [
             { path: 'repository', component: RepositoryComponent },
             { path: 'planlanguages', component: PlanLanguagesComponent },
             { path: 'plantypes', component: PlanTypesComponent },
-            { path: 'contrainttypes', component: ConstraintTypesComponent },
+            { path: 'constrainttypes', component: ConstraintTypesComponent },
             { path: 'log', component: LoggerComponent },
             { path: '', redirectTo: 'namespaces', pathMatch: 'full'}
         ]
