@@ -36,14 +36,14 @@ export class TagService {
         let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
         let pathAddition = this.path
-            + '/data/' + data.id;
+            + '/' + data.id + '/';
         return this.http.delete(backendBaseUri + pathAddition, options);
     }
 
     postTag(tagsApiData: TagsAPIData): Observable<string> {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        return this.http.post(backendBaseUri + this.path + '/data', JSON.stringify(tagsApiData), options)
+        return this.http.post(backendBaseUri + this.path, JSON.stringify(tagsApiData), options)
             .map(res => res.text());
     }
 }

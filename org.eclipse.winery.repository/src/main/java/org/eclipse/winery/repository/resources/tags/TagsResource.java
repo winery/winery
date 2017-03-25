@@ -50,38 +50,9 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 		return new Viewable("/jsp/tags/tags.jsp", this);
 	}
 
-
-	/**
-	 * Adds an element using form-encoding
-	 *
-	 * FIXME: This is necessary as TRequirementRef contains an IDREF and the XML snippet itself does not contain the target id
-	 *
-	 * TODO: Why can't just addNewElement be used? Why do we need form-based updates?
-	 *
-	 * @param id ignored (TODO - see above - addNewElement?)
-	 * @param name the  name of the tag
-	 * @param value the value of the tag
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addNewElement(
-			@FormParam("id") String id,
-			@FormParam("name") String name,
-			@FormParam("value") String value) {
-
-		TTag tag = new TTag();
-
-		tag.setName(name);
-		tag.setValue(value);
-
-		this.list.add(tag);
-		return CollectionsHelper.persist(this.res, this, tag);
-	}
-
 	@GET
-	@Path("data")
 	@Produces(MediaType.APPLICATION_JSON)
-	public TagsApiData[] getTagJson() {
+	public TagsApiData[] getJSON() {
 		ArrayList<TagsApiData> responseList = new ArrayList<>();
 		TagsApiData apiData;
 		for (TTag entity: this.list) {
@@ -91,7 +62,6 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 	}
 
 	@POST
-	@Path("data")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addNewElement(TagsApiData data) {
 
@@ -104,19 +74,4 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 		return CollectionsHelper.persist(this.res, this, tag);
 	}
 
-	@DELETE
-	@Path("data/{id}")
-	public Response deleteTag(@PathParam("id") String id) {
-		TTag removeData = null;
-		for (TTag entity: this.list) {
-			if(getId(entity).equals(id)) {
-				removeData = entity;
-			}
-		}
-		if(removeData != null &&
-			this.list.remove(removeData)) {
-			return BackendUtils.persist(this.res);
-		}
-		return Response.status(404).build();
-	}
 }

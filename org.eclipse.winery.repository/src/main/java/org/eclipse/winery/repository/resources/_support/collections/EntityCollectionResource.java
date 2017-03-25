@@ -74,6 +74,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 		this.res = res;
 	}
 
+	// TODO: really neccesarry to get all ids from the server instead of direktly getting the entities
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getListOfAllEntityIds(@QueryParam("select2") String select2) {
