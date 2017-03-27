@@ -31,6 +31,17 @@ import { InterfacesModule } from './interfaces/interfaces.module';
 import { VisualAppearanceModule } from './visualAppearance/visualAppearance.module';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { LanguageComponent } from './language/language.component';
+import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
+import { PlansComponent } from './plans/plans.component';
+import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
+import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
+import { TagsComponent } from './tags/tags.component';
+import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
+import { FilesComponent } from './filesTag/files.component';
+import { PropertiesComponent } from './properties/properties.component';
+import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
+import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
+import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
 import { LoggerComponent } from './logger/logger.component';
 import { PlanTypesComponent } from './planTypes/planTypes.component';
 import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
@@ -71,6 +82,17 @@ import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortNa
         RemoveWhiteSpacesPipe,
         RequirementDefinitionsComponent,
         QNameSelectorComponent,
+        TopologyTemplateComponent,
+        PlansComponent,
+        SelfservicePortalComponent,
+        BoundaryDefinitionsComponent,
+        TagsComponent,
+        ValidSourcesAndTargetsComponent,
+        FilesComponent,
+        PropertiesComponent,
+        RequiredCapabilityTypeComponent,
+        ImplementationArtifactsComponent,
+        DeploymentArtifactsComponent,
         LoggerComponent,
         PlanTypesComponent,
         ConstraintTypesComponent,

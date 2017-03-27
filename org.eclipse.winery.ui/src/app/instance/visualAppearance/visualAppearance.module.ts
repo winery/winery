@@ -17,9 +17,9 @@ import { TabsModule, TypeaheadModule } from 'ng2-bootstrap';
 import { CommonModule } from '@angular/common';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { VisualAppearanceComponent } from './visualAppearance.component';
-import { ColorPickerModule, ColorPickerService } from 'angular2-color-picker';
+// Due to issues regarding the angular version, use anther color picker here https://github.com/Alberplz/angular2-color-picker/issues/66
+// import { ColorPickerModule, ColorPickerService } from 'angular2-color-picker';
 import { FileUploadModule } from 'ng2-file-upload';
-
 
 @NgModule({
     imports: [
@@ -28,7 +28,7 @@ import { FileUploadModule } from 'ng2-file-upload';
         FormsModule,
         LoaderModule,
         CommonModule,
-        ColorPickerModule,
+        // ColorPickerModule,
         WineryModalModule,
         FileUploadModule
     ],
@@ -36,7 +36,6 @@ import { FileUploadModule } from 'ng2-file-upload';
     declarations: [
         VisualAppearanceComponent,
     ],
-    providers: [ColorPickerService],
 })
 export class VisualAppearanceModule {
 }

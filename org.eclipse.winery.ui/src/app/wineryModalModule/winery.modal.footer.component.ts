@@ -6,11 +6,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class WineryModalFooterComponent {
 
-    @Input() showDefaultButtons: boolean = true;
-    @Input() closeButtonLabel: string = 'Cancel';
-    @Input() okButtonLabel: string = 'Add';
+    @Input() showDefaultButtons = true;
+    @Input() closeButtonLabel = 'Cancel';
+    @Input() okButtonLabel = 'Add';
     @Input() modalRef: any;
-    @Input() disableOkButton: boolean = false;
+    @Input() disableOkButton = false;
     @Output() onOk = new EventEmitter<any>();
     @Output() onCancel = new EventEmitter<any>();
 

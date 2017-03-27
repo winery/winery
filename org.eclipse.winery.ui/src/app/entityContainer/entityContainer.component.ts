@@ -9,16 +9,28 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { SectionData } from '../section/sectionData';
+import { backendBaseUri } from '../configuration';
 
 @Component({
     selector: 'winery-entity-container',
     templateUrl: 'entityContainer.component.html',
     styleUrls: ['entitiyContainer.component.css']
 })
-export class EntityContainerComponent {
+export class EntityContainerComponent implements OnInit {
     @Input() data: SectionData;
     @Input() resourceType: string;
+
+    imageUri: string;
+
+    ngOnInit(): void {
+        if (this.resourceType === 'nodeType' && this.data.id) {
+            this.imageUri = backendBaseUri + '/'
+                + this.resourceType.toLowerCase() + 's/'
+                + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/'
+                + this.data.id
+                + '/visualappearance/50x50';
+        }
+    }
 }

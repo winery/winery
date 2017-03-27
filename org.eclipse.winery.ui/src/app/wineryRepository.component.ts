@@ -12,7 +12,7 @@
  */
 
 import { Component, ViewContainerRef, OnInit } from '@angular/core';
-import { NotificationService } from './notificationModule/notificationservice';
+import { NotificationService } from './notificationModule/notification.service';
 
 @Component({
     selector: 'winery-repository',

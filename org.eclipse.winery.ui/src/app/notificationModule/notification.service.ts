@@ -37,7 +37,7 @@ export class NotificationService {
      * @param message
      * @param title
      */
-    success(message: string, title: string = 'success') {
+    success(message: string, title = 'success') {
         this.toastr.success(message, title);
         this.notifications.push({title: title, message: message, type: 'success', createdOn: this.getCurrentDate()});
     }
@@ -47,7 +47,7 @@ export class NotificationService {
      * @param message
      * @param title
      */
-    error(message: string, title: string = 'error') {
+    error(message: string, title = 'error') {
         this.toastr.error(message, title);
         this.notifications.push({title: title, message: message, type: 'error', createdOn: this.getCurrentDate()});
     }
@@ -57,7 +57,7 @@ export class NotificationService {
      * @param message
      * @param title
      */
-    warning(message: string, title: string = 'warning') {
+    warning(message: string, title = 'warning') {
         this.toastr.warning(message, title);
         this.notifications.push({title: title, messages: message, type: 'warning', createdOn: this.getCurrentDate()});
     }

@@ -28,7 +28,7 @@ export class QNameSelectorComponent {
     @Output() selectedValueChanged = new EventEmitter();
 
     qNameList: QNameList;
-    openSuperClassLink: string = '';
+    openSuperClassLink = '';
     queryPath: string;
 
     constructor() {}

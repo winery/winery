@@ -71,7 +71,7 @@ public class Prefs implements ServletContextListener {
 	// location of the winery topology modeler
 	private String wineryTopologyModelerPath = null;
 
-	private Prefs() {
+	public Prefs() {
 		Prefs.INSTANCE = this;
 		// globally use unix line endings - see http://stackoverflow.com/a/6128248/873282
 		System.setProperty("line.separator", "\n");

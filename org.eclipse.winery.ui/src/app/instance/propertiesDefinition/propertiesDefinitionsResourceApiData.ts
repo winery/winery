@@ -31,7 +31,7 @@ export class WinerysPropertiesDefinition {
     namespace: string = null;
     elementName: string = null;
     propertyDefinitionKVList: PropertiesDefinitionKVList[] = [];
-    isDerivedFromXSD: boolean = false;
+    isDerivedFromXSD = false;
 }
 
 export interface PropertiesDefinitionsResourceApiData {

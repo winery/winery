@@ -26,12 +26,14 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { WineryModalModule } from './wineryModalModule/winery.modal.module';
 import { SectionModule } from './section/section.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         CommonModule,
+        BrowserAnimationsModule,
         InstanceModule,
         LoaderModule,
         WineryModalModule,

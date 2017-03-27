@@ -13,7 +13,7 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { WineryUploaderService } from './wineryUploader.service';
-import { NotificationService } from '../notificationModule/notificationservice';
+import { NotificationService } from '../notificationModule/notification.service';
 
 
 /**

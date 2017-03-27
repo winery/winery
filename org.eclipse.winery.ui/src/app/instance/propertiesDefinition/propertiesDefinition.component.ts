@@ -22,7 +22,7 @@ import {
 import { SelectData } from '../../interfaces/selectData';
 import { isNullOrUndefined } from 'util';
 import { Response } from '@angular/http';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 
@@ -39,7 +39,7 @@ import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component
 export class PropertiesDefinitionComponent implements OnInit {
 
     propertiesEnum = PropertiesDefinitionEnum;
-    loading: boolean = true;
+    loading = true;
 
     resourceApiData: PropertiesDefinitionsResourceApiData;
     selectItems: SelectData[];

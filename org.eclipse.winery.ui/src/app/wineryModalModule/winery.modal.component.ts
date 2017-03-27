@@ -58,7 +58,7 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
      * @Input
      * @type {boolean}
      */
-    @Input() keyboard: boolean = true;
+    @Input() keyboard = true;
     /**
      * @Input
      * @type {boolean}
@@ -69,7 +69,7 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
     @ContentChild(WineryModalFooterComponent) footerContent: WineryModalFooterComponent;
 
     private overrideSize: string = null;
-    private cssClass: string = '';
+    private cssClass = '';
 
     ngAfterContentInit(): void {
         if (!isNullOrUndefined(this.headerContent)) {
