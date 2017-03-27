@@ -19,7 +19,6 @@ import { NotificationService } from '../../notificationModule/notificationservic
 import { isNullOrUndefined } from 'util';
 import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
-import { HexBase64BinaryEncoding } from "crypto";
 
 @Component({
     selector: 'winery-instance-visualAppearance',
@@ -35,14 +34,13 @@ export class VisualAppearanceComponent implements OnInit {
     loading = true;
     img16uploader: FileUploader;
     img50uploader: FileUploader;
+    fileItem: FileItem;
     img16Path: string;
     img50Path: string;
     hasImg16DropZoneOver: boolean = false;
     hasImg50DropZoneOver: boolean = false;
     @ViewChild('upload16Modal') upload16Modal: any;
     @ViewChild('upload50Modal') upload50Modal: any;
-
-    fileItem: FileItem;
 
     constructor(private service: VisualAppearanceService,
                 private notify: NotificationService,
@@ -136,7 +134,7 @@ export class VisualAppearanceComponent implements OnInit {
 
     saveToServer() {
         if (this.service.isNodeType) {
-            this.service.saveVisuals(new NodeTypesVisualsApiData(this.nodeTypeData, false)).subscribe(
+            this.service.saveVisuals(new NodeTypesVisualsApiData(this.nodeTypeData)).subscribe(
                 data => this.handleResponse(data),
                 error => this.handleError(error)
             );
@@ -145,36 +143,6 @@ export class VisualAppearanceComponent implements OnInit {
                 data => this.handleResponse(data),
                 error => this.handleError(error)
             );
-        }
-    }
-
-    colorBorderChange(event: any) {
-        if (this.nodeTypeData.colorLoaded) {
-            this.nodeTypeData.color = event;
-        } else {
-            this.loading = true;
-            this.nodeTypeData.colorLoaded = true;
-            this.loading = false;
-        }
-    }
-
-    changeHoverColor(event: any) {
-        if (this.relationshipData.boolData.hovercolorLoaded) {
-            this.relationshipData.hovercolor = event;
-        } else {
-            this.loading = true;
-            this.relationshipData.boolData.hovercolorLoaded = true;
-            this.loading = false;
-        }
-    }
-
-    changeLineColor(event: any) {
-        if (this.relationshipData.boolData.colorLoaded) {
-            this.relationshipData.color = event;
-        } else {
-            this.loading = true;
-            this.relationshipData.boolData.colorLoaded = true;
-            this.loading = false;
         }
     }
 
@@ -193,23 +161,42 @@ export class VisualAppearanceComponent implements OnInit {
     }
 
     handleColorData(data: any) {
-        this.nodeTypeData = new NodeTypesVisualsApiData(data, true);
+        this.nodeTypeData = new NodeTypesVisualsApiData(data);
         this.loading = false;
     }
 
     handleRelationshipData(data: any) {
-        data.hovercolor = this.checkColor(data.hovercolor);
-        data.color = this.checkColor(data.color);
         this.relationshipData = new RelationshipTypesVisualsApiData(data, true);
         this.loading = false;
     }
 
-    private checkColor(color: string): string {
-        if (!color.includes('#')) {
-            return '#fff';
-        }
-        return color;
+    public get colorLocal() {
+        return this.relationshipData.color;
     }
+
+    public set colorLocal(color: string) {
+        this.relationshipData.color = color;
+        this.saveToServer();
+    }
+
+    public get borderColorLocal() {
+        return this.nodeTypeData.color;
+    }
+
+    public set borderColorLocal(color: string) {
+        this.nodeTypeData.color = color;
+        this.saveToServer();
+    }
+
+    public get hoverColorLocal() {
+        return this.relationshipData.hovercolor;
+    }
+
+    public set hoverColorLocal(color: string) {
+        this.relationshipData.hovercolor = color;
+        this.saveToServer();
+    }
+
     private handleResponse(response: any) {
         this.loading = false;
         this.notify.success('Successfully saved visual data!');

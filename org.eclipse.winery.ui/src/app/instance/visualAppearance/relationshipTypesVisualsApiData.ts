@@ -31,8 +31,6 @@ export class RelationshipTypesVisualsApiData {
 }
 
 export class DataInfo {
-    hovercolorLoaded: boolean;
-    colorLoaded: boolean;
     dashSelected: boolean;
     targetarrowheadSelected: boolean;
     sourcearrowheadSelected: boolean;
@@ -41,8 +39,6 @@ export class DataInfo {
         this.sourcearrowheadSelected = false;
         this.targetarrowheadSelected = false;
         this.dashSelected = false;
-        this.colorLoaded = false;
-        this.hovercolorLoaded = false;
     }
 }
 

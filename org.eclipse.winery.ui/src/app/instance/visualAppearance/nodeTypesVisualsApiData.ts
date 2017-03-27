@@ -11,20 +11,8 @@
  */
 export class NodeTypesVisualsApiData {
     color: string;
-    colorLoaded: boolean;
 
-    public constructor(data: any, createBools: boolean) {
+    public constructor(data: any) {
         this.color = data.color;
-        if (createBools) {
-            this.colorLoaded = false;
-        }
-    }
-}
-
-export class DataInfo {
-    colorLoaded: boolean;
-
-    public constructor() {
-        this.colorLoaded = false;
     }
 }
