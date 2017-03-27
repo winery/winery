@@ -19,8 +19,6 @@ import { FileUploader } from 'ng2-file-upload';
 
 @Injectable()
 export class VisualAppearanceService {
-
-
     isNodeType = true;
     private path: string;
 

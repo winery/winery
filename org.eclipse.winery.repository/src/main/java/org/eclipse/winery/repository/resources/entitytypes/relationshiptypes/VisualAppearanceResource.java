@@ -60,13 +60,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/entitytypes/relationshiptypes/visualappearance.jsp", this);
-		return Response.ok().entity(viewable).build();
-	}
-
-	@GET
 	@RestDoc(methodDescription = "@return JSON object to be used at jsPlumb.registerConnectionType('NAME', <data>)")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getConnectionTypeForJsPlumbData() {
@@ -182,7 +175,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
 		}
 		String res = sw.toString();
-		System.out.println(res);
 		return Response.ok(res).build();
 	}
 
@@ -223,25 +215,9 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, Defaults.DEFAULT_RT_ARROWHEAD_SOURCE);
 	}
 
-	public Response onPutSourceHead(String config) {
-		if (StringUtils.isEmpty(config)) {
-			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
-		}
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, config);
-		return BackendUtils.persist(this.res);
-	}
-
 	/* * * target arrow head * * */
 	public String getTargetArrowHead() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, Defaults.DEFAULT_RT_ARROWHEAD_TARGET);
-	}
-
-	public Response onPutTargetHead(String config) {
-		if (StringUtils.isEmpty(config)) {
-			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
-		}
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, config);
-		return BackendUtils.persist(this.res);
 	}
 
 	/* * *
@@ -255,14 +231,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	 * * * */
 	public String getDash() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_DASH, Defaults.DEFAULT_RT_DASH);
-	}
-
-	public Response onPutDash(String config) {
-		if (StringUtils.isEmpty(config)) {
-			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
-		}
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_DASH, config);
-		return BackendUtils.persist(this.res);
 	}
 
 	/* * * stroke/line width * * */
@@ -285,10 +253,5 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	 */
 	public String getHoverColor() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_HOVER_COLOR, Defaults.DEFAULT_RT_HOVER_COLOR);
-	}
-
-	public Response onPutHoverColor(@FormParam("color") String color) {
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_HOVER_COLOR, color);
-		return BackendUtils.persist(this.res);
 	}
 }

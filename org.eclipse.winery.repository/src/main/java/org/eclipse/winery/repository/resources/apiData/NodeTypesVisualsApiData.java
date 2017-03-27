@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Nicole Keppler - initial API and implementation
+ *     Lukas Balzer - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.apiData;
 

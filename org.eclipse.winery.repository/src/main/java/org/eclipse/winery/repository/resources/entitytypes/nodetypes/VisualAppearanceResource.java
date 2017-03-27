@@ -51,13 +51,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/entitytypes/nodetypes/visualappearance.jsp", this);
-		return Response.ok().entity(viewable).build();
-	}
-
-	@GET
 	@Path("50x50")
 	public Response get50x50Image(@HeaderParam("If-Modified-Since") String modified) {
 		return this.getImage(Filename.FILENAME_BIG_ICON, modified);
