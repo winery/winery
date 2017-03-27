@@ -6,5 +6,5 @@ import { Component, Input } from '@angular/core';
 })
 export class WineryModalHeaderComponent {
     @Input() modalRef: any;
-    @Input() title: string = '';
+    @Input() title = '';
 }

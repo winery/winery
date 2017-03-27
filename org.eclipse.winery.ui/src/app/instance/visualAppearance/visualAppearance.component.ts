@@ -14,8 +14,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { VisualAppearanceService } from './visualAppearance.service';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import { ColorPickerService } from 'angular2-color-picker';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 import { isNullOrUndefined } from 'util';
 import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
@@ -37,14 +36,12 @@ export class VisualAppearanceComponent implements OnInit {
     fileItem: FileItem;
     img16Path: string;
     img50Path: string;
-    hasImg16DropZoneOver: boolean = false;
-    hasImg50DropZoneOver: boolean = false;
+    hasImg16DropZoneOver = false;
+    hasImg50DropZoneOver = false;
     @ViewChild('upload16Modal') upload16Modal: any;
     @ViewChild('upload50Modal') upload50Modal: any;
-
     constructor(private service: VisualAppearanceService,
-                private notify: NotificationService,
-                private cpService: ColorPickerService) {
+                private notify: NotificationService) {
     }
 
     ngOnInit() {

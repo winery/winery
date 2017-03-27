@@ -42,7 +42,7 @@ export class InstanceHeaderComponent implements OnInit {
     @Input() imageUri: string;
     @Output() deleteConfirmed: EventEmitter<any> = new EventEmitter();
 
-    needTwoLines: boolean = false;
+    needTwoLines = false;
     selectedTab: string;
     backendLink: string;
 

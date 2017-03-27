@@ -31,7 +31,8 @@
         <div class="sidebar">
             <button class="btn btn-default sidebar-btn" (click)="onAdd();">Add new</button>
             <button class="btn btn-default sidebar-btn" (click)="addCsarModal.show();">Import CSAR</button>
-            <button class="btn btn-default sidebar-btn" (click)="onChangeView()" [disabled]="showSpecificNamespaceOnly()">
+            <button class="btn btn-default sidebar-btn" (click)="onChangeView()"
+                    [disabled]="showSpecificNamespaceOnly()">
                 {{ changeViewButtonTitle }}
             </button>
         </div>
@@ -71,8 +72,11 @@
                     </div>
                 </div>
             </div>
-            <winery-namespaceSelector name="namespace" [(ngModel)]="newComponentNamespace"
-                                      [isRequired]="true"></winery-namespaceSelector>
+            <winery-namespaceSelector
+                name="namespace"
+                required
+                [(ngModel)]="newComponentNamespace"
+                [isRequired]="true"></winery-namespaceSelector>
         </form>
     </winery-modalBody>
     <winery-modalFooter
@@ -109,5 +113,6 @@
             Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
         </p>
     </winery-modalBody>
-    <winery-modalFooter [closeButtonLabel]="'No'" [okButtonLabel]="'Yes'" (onOk)="onRemoveElement()"></winery-modalFooter>
+    <winery-modalFooter [closeButtonLabel]="'No'" [okButtonLabel]="'Yes'"
+                        (onOk)="onRemoveElement()"></winery-modalFooter>
 </winery-modal>

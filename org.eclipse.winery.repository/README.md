@@ -4,9 +4,7 @@ Setup, usage, and implementation hints are given in the [Eclipse Wiki]
 
 ## REST API
 Winery offers a REST API to communicate with the backend.
-When issuing an `OPTIONS` request to `winery/`, a [RestDoc] description of the possible interactions is presented.
-The returned JSON can be views in a browsable html format using [restdoc-renderer].
-If you install restdoc-renderer as `restdoc.html` in the `ROOT` of the tomcat, Winery automatically displays a link to the renderer in the about dialog.
+A documentation is not yet available.
 
 ## About the code
 The code tries to make use of EL and JSP tags wherever possible. All data is accessible via a REST API.
@@ -59,5 +57,3 @@ Contributors:
  [Eclipse Wiki]: http://wiki.eclipse.org/winery
  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
  [RequireJS]: http://requirejs.org/
- [RestDoc]: http://www.restdoc.org
- [restdoc-renderer]: https://github.com/hoegertn/restdoc-renderer

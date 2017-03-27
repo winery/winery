@@ -13,20 +13,21 @@ package org.eclipse.winery.repository.resources.entitytypes.nodetypes.reqandcapd
 
 import javax.ws.rs.core.MediaType;
 
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.http.ContentType;
-import com.jayway.restassured.path.json.JsonPath;
-import com.jayway.restassured.response.Response;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 //@formatter:off
 
@@ -45,7 +46,8 @@ import com.jayway.restassured.response.Response;
  * with them in the next step
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TestRequirementDefinitions {
+@Ignore("Working on old test repository")
+public class RequirementDefinitionsTest {
 
 	@BeforeClass
 	public static void init() throws Exception {

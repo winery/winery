@@ -14,3 +14,11 @@
     margin-top: 33px;
     text-shadow: none;
 }
+
+.nodeTypeImageIconInList {
+    position: absolute;
+    margin-top: 22px;
+    margin-left: 28px;
+    height: 40px;
+    width: 40px;
+}

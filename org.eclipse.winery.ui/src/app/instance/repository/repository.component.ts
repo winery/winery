@@ -11,7 +11,7 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { RepositoryService } from './repository.service';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 import { backendBaseUri } from '../../configuration';
 
 @Component({

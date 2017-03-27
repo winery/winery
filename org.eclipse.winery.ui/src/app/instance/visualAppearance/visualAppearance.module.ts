@@ -17,7 +17,6 @@ import { TabsModule, TypeaheadModule } from 'ng2-bootstrap';
 import { CommonModule } from '@angular/common';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { VisualAppearanceComponent } from './visualAppearance.component';
-import { ColorPickerModule, ColorPickerService } from 'angular2-color-picker';
 import { FileUploadModule } from 'ng2-file-upload';
 import { WineryUploaderModule } from '../../fileUploaderModal/wineryUploader.module';
 
@@ -32,7 +31,6 @@ import { WineryUploaderModule } from '../../fileUploaderModal/wineryUploader.mod
         FormsModule,
         LoaderModule,
         CommonModule,
-        ColorPickerModule,
         WineryModalModule,
         FileUploadModule,
         WineryUploaderModule
@@ -41,7 +39,6 @@ import { WineryUploaderModule } from '../../fileUploaderModal/wineryUploader.mod
     declarations: [
         VisualAppearanceComponent,
     ],
-    providers: [ColorPickerService],
 })
 export class VisualAppearanceModule {
 }
