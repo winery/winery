@@ -8,21 +8,16 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+* 	   Lukas Balzer - added support for angular frontend
  *******************************************************************************/
 package org.eclipse.winery.repository.resources._support.collections;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -32,7 +27,6 @@ import org.eclipse.winery.repository.resources._support.IPersistable;
 
 import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
-import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,9 +68,6 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 		this.res = res;
 	}
 
-	// TODO: really neccesarry to get all ids from the server instead of direktly getting the entities
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
 	public Object getListOfAllEntityIds(@QueryParam("select2") String select2) {
 		if (select2 == null) {
 			return this.getListOfAllEntityIdsAsList();
@@ -147,14 +138,6 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	 */
 	protected abstract EntityResourceT getEntityResourceInstance(EntityT entity, int idx);
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	@RestDoc(methodDescription = "@return the HTML fragment (DIV-container) to be embedded in the 'Interface' part of nodetype.js ")
-	public Response getHTMLAsResponse() {
-		Viewable viewable = this.getHTML();
-		return Response.ok().header(HttpHeaders.VARY, HttpHeaders.ACCEPT).entity(viewable).build();
-	}
-
 	/**
 	 * called by getHTMLAsResponse
 	 */
@@ -165,8 +148,6 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	 *
 	 * In case the element already exists, we return "CONFLICT"
 	 */
-	@POST
-	@Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response addNewElement(EntityT entity) {
 		if (entity == null) {
 			return Response.status(Status.BAD_REQUEST).entity("a valid XML/JSON element has to be posted").build();

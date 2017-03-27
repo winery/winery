@@ -18,7 +18,6 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -55,7 +54,7 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 	public TagsApiData[] getJSON() {
 		ArrayList<TagsApiData> responseList = new ArrayList<>();
 		TagsApiData apiData;
-		for (TTag entity: this.list) {
+		for (TTag entity : this.list) {
 			responseList.add(new TagsApiData(getId(entity), entity));
 		}
 		return responseList.toArray(new TagsApiData[0]);
@@ -64,14 +63,26 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addNewElement(TagsApiData data) {
-
 		TTag tag = new TTag();
-
 		tag.setName(data.name);
 		tag.setValue(data.value);
-
 		this.list.add(tag);
 		return CollectionsHelper.persist(this.res, this, tag);
 	}
 
+	@DELETE
+	@Path("data/{id}")
+	public Response deleteTag(@PathParam("id") String id) {
+		TTag removeData = null;
+		for (TTag entity : this.list) {
+			if (getId(entity).equals(id)) {
+				removeData = entity;
+			}
+		}
+		if (removeData != null &&
+				this.list.remove(removeData)) {
+			return BackendUtils.persist(this.res);
+		}
+		return Response.status(404).build();
+	}
 }

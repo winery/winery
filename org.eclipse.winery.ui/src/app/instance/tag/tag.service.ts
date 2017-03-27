@@ -29,7 +29,7 @@ export class TagService {
     getTagsData(): Observable<TagsAPIData[]> {
         let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseUri + this.path + '/data', options)
+        return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
     removeTagData(data: TagsAPIData): Observable<Response> {
@@ -43,7 +43,7 @@ export class TagService {
     postTag(tagsApiData: TagsAPIData): Observable<string> {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        return this.http.post(backendBaseUri + this.path, JSON.stringify(tagsApiData), options)
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(tagsApiData), options)
             .map(res => res.text());
     }
 }
