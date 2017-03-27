@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -36,6 +37,7 @@ import org.eclipse.winery.repository.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.datatypes.ids.admin.TypesId;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.resources.admin.AbstractAdminResource;
+import org.eclipse.winery.repository.resources.apiData.TypeWithShortNameApiData;
 
 import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
@@ -179,6 +181,7 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 	}
 
 	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response updateTypeMapping(@FormParam("shortname") String shortName, @FormParam("type") String type) {
 		if (StringUtils.isEmpty(shortName)) {
 			return Response.status(Status.BAD_REQUEST).entity("shortName has to be given").build();
@@ -188,6 +191,22 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 		}
 		shortName = Util.URLdecode(shortName);
 		type = Util.URLdecode(type);
+		TypeWithShortName tws = new TypeWithShortName(type, shortName);
+		this.addTypeWithShortName(tws);
+		return Response.noContent().build();
+	}
+
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response updateTypeMapping(TypeWithShortNameApiData newType) {
+		if (StringUtils.isEmpty(newType.shortName)) {
+			return Response.status(Status.BAD_REQUEST).entity("shortName has to be given").build();
+		}
+		if (StringUtils.isEmpty(newType.type)) {
+			return Response.status(Status.BAD_REQUEST).entity("type has to be given").build();
+		}
+		String shortName = Util.URLdecode(newType.shortName);
+		String type = Util.URLdecode(newType.type);
 		TypeWithShortName tws = new TypeWithShortName(type, shortName);
 		this.addTypeWithShortName(tws);
 		return Response.noContent().build();
