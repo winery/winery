@@ -62,6 +62,27 @@ export class VisualAppearanceComponent implements OnInit {
         }
     }
 
+    /**
+     *
+     * @param type the part of the arrow that should be changed<p>
+     *             should be one of<ul>
+     *                 <li>dash
+     *                 <li>sourcearrowhead
+     *                 <li>targetarrowhead
+     *                 </ul>
+     * @param style the style of the line which should be one of the styles accepted by jsPlumb:<p>
+     *              <b>for source-/targetarrowhead</b>
+     *              <ul>
+     *                  <li>none
+     *                  <li>PlainArrow
+     *                  <li>Diamond
+     *              </ul><b>for dash</b>
+     *              <ul>
+     *                  <li>plain
+     *                  <li>dotted
+     *                  <li>dotted2
+     *              </ul>
+     */
     selectArrowItem(type?: string, style?: string) {
         let shouldOpen = false;
         let hasType = !isNullOrUndefined(type);
@@ -179,7 +200,6 @@ export class VisualAppearanceComponent implements OnInit {
     handleRelationshipData(data: any) {
         data.hovercolor = this.checkColor(data.hovercolor);
         data.color = this.checkColor(data.color);
-        console.log(data);
         this.relationshipData = new RelationshipTypesVisualsApiData(data, true);
         this.loading = false;
     }

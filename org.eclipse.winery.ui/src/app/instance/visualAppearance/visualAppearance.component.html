@@ -25,7 +25,6 @@
                      [cpAlphaChannel]="'disabled'"></div>
                 <div class="floatContent">
                     choose or enter the hex value in the area on the left<br/>
-                    <button (click)="saveToServer('/bordercolor')" class="btn btn-info btn-sm">save</button>
                 </div>
             </div>
             <div class="picker line_colorPicker" *ngIf="relationshipData!= null">
@@ -38,7 +37,6 @@
                      [cpAlphaChannel]="'disabled'"></div>
                 <div class="floatContent">
                     choose or enter the hex value in the area on the left<br/>
-                    <button (click)="saveToServer('/color')" class="btn btn-info btn-sm">save</button>
                 </div>
             </div>
             <div class="picker hc_colorPicker" *ngIf="relationshipData!= null">
@@ -51,7 +49,6 @@
                      [cpAlphaChannel]="'disabled'"></div>
                 <div class="floatContent">
                     choose or enter the hex value in the area on the left<br/>
-                    <button (click)="saveToServer('/hovercolor')" class="btn btn-info btn-sm">save</button>
                 </div>
             </div>
         </div>
@@ -135,11 +132,9 @@
                 <span class="list item DiamondTarget" (click)="selectArrowItem('targetarrowhead','Diamond');"></span>
             </div>
         </div>
-        <div class="floatContent">
-            <button (click)="saveToServer('/hovercolor')" class="btn btn-info btn-sm">save</button>
-        </div>
     </tab>
 </tabset>
+<button (click)="saveToServer()" class="btn btn-info btn-sm save">save</button>
 
 <winery-modal bsModal #upload16Modal="bs-modal" [modalRef]="upload16Modal">
     <winery-modalHeader [title]="'Upload Icon (16x16) used in palette'">

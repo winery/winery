@@ -21,7 +21,10 @@ import { ColorPickerModule, ColorPickerService } from 'angular2-color-picker';
 import { FileUploadModule } from 'ng2-file-upload';
 import { WineryUploaderModule } from '../../fileUploaderModal/wineryUploader.module';
 
-
+/**
+ * an angular module for displaying the visualApperances for both the nodeTypes and the relationshipTypes
+ * therefore an instance of <code>NodeTypesVisualsApiData</code> or <code>RelationshipTypesVisualsApiData</code> is loaded from the backend
+ */
 @NgModule({
     imports: [
         TabsModule.forRoot(),
