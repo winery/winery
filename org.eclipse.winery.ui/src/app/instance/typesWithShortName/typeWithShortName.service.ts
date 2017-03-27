@@ -14,14 +14,13 @@ import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseUri } from '../../configuration';
 import { Router } from '@angular/router';
-import { NamespaceWithPrefix } from '../../interfaces/namespaceWithPrefix';
 import { InstanceService } from '../instance.service';
 
 export class TypeWithShortName {
     type: string;
     shortName: string;
 
-    constructor(pType: string = '', pShortName: string = '') {
+    constructor(pType = '', pShortName = '') {
         this.type = pType;
         this.shortName = pShortName;
     }

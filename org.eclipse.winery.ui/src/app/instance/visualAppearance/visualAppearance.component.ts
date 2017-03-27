@@ -14,7 +14,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { VisualAppearanceService } from './visualAppearance.service';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import { ColorPickerService } from 'angular2-color-picker';
 import { NotificationService } from '../../notificationModule/notification.service';
 import { isNullOrUndefined } from 'util';
 

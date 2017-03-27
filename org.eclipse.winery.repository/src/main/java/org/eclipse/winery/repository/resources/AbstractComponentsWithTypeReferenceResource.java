@@ -37,7 +37,7 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 		if (StringUtils.isEmpty(jsonData.type)) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.name);
+		ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
 		if (!creationResult.isSuccess()) {
 			return creationResult.getResponse();
 		}

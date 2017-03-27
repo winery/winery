@@ -8,26 +8,18 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
- *     Niko Stadelmaier - add types
  */
-
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
+import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
-import { backendBaseUri } from '../configuration';
-import { NamespaceWithPrefix } from '../interfaces/namespaceWithPrefix';
 
 @Injectable()
-export class NamespaceSelectorService {
+export class ExistService {
 
     constructor(private http: Http) {
     }
 
-    getAllNamespaces(): Observable<NamespaceWithPrefix[]> {
-        let headers = new Headers({ 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-
-        return this.http.get(backendBaseUri + '/admin/namespaces', options)
-            .map(res => res.json());
+    check(url: string): Observable<any> {
+        return this.http.head(url);
     }
 }

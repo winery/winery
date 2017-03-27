@@ -9,7 +9,7 @@
  * Contributors:
  *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { InstanceService } from './instance.service';

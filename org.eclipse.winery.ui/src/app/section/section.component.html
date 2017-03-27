@@ -59,7 +59,7 @@
                        id="componentName"
                        name="componentName"
                        #newName="ngModel"
-                       ngModel="newComponentName"
+                       [(ngModel)]="newComponentName"
                        required
                        [duplicateValidator]="validatorObject">
                 <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
@@ -77,6 +77,10 @@
                 required
                 [(ngModel)]="newComponentNamespace"
                 [isRequired]="true"></winery-namespaceSelector>
+            <div class="form-group" *ngIf="types">
+                <label for="typeSelect" class="control-label">Type</label>
+                <ng-select id="typeSelect" [items]="types" (selected)="typeSelected($event)" [active]="[newComponentSelectedType]"></ng-select>
+            </div>
         </form>
     </winery-modalBody>
     <winery-modalFooter

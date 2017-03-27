@@ -10,15 +10,12 @@
  *     Lukas Harzenetter - initial API and implementation
  *     Niko Stadelmaier - add admin component, move routing to instance module
  */
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { NotFoundComponent } from './404/notFound.component';
 import { OtherComponent } from './other/other.component';
 import { SectionComponent } from './section/section.component';
 import { SectionResolver } from './section/section.resolver';
-import { NotFoundComponent } from './404/notFound.component';
-import { HttpModule } from '@angular/http';
-import { FormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
     { path: 'other', component: OtherComponent },
@@ -32,9 +29,6 @@ const appRoutes: Routes = [
 
 @NgModule({
     imports: [
-        BrowserModule,
-        FormsModule,
-        HttpModule,
         RouterModule.forRoot(appRoutes),
     ],
     exports: [

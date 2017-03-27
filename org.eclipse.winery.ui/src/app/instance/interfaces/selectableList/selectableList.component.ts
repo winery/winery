@@ -10,7 +10,7 @@
  *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 
 @Component({

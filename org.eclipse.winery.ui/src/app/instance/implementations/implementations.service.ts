@@ -12,12 +12,12 @@
  */
 
 import { Injectable } from '@angular/core';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { ImplementationAPIData } from './implementationAPIData';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class ImplementationService {

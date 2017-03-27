@@ -12,8 +12,7 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { InstanceStateService } from './instanceState.service';
-import { InstanceService } from '../instance.service';
+import { InstanceStateService } from './instanceStates.service';
 import { InstanceStateApiData } from './InstanceStateApiData';
 import { Response } from '@angular/http';
 import { isNullOrUndefined } from 'util';

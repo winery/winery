@@ -11,8 +11,6 @@
  *     Niko Stadelmaier - add admin component
  */
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { BrowserModule } from '@angular/platform-browser';
 import { InstanceComponent } from './instance.component';
 import { EditXMLComponent } from './editXML/editXML.component';
 import { VisualAppearanceComponent } from './visualAppearance/visualAppearance.component';
@@ -20,14 +18,11 @@ import { DocumentationComponent } from './documentation/documentation.component'
 import { InheritanceComponent } from './inheritance/inheritance.component';
 import { InterfacesComponent } from './interfaces/interfaces.component';
 import { ImplementationsComponent } from './implementations/implementations.component';
-import { ImplementationsModule } from './implementations/implementation.module';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
 import { PropertiesDefinitionComponent } from './propertiesDefinition/propertiesDefinition.component';
 import { InstanceResolver } from './instance.resolver';
-import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
-import { InstanceStatesModule } from './instanceStates/instanceStates.module';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { LanguageComponent } from './language/language.component';
 import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
@@ -47,6 +42,7 @@ import { NamespacesComponent } from './namespaces/namespaces.component';
 import { RepositoryComponent } from './repository/repository.component';
 import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
 import { PlanTypesComponent } from './planTypes/planTypes.component';
+import { RouterModule } from '@angular/router';
 
 
 const instanceRoutes = [
@@ -54,7 +50,7 @@ const instanceRoutes = [
     {
         path: 'admin',
         component: InstanceComponent,
-        resolve: {resolveData: InstanceResolver},
+        resolve: { resolveData: InstanceResolver },
         children: [
             { path: 'namespaces', component: NamespacesComponent },
             { path: 'repository', component: RepositoryComponent },
@@ -94,17 +90,13 @@ const instanceRoutes = [
             { path: 'topologytemplate', component: TopologyTemplateComponent },
             { path: 'validsourcesandtargets', component: ValidSourcesAndTargetsComponent },
             { path: 'visualappearance', component: VisualAppearanceComponent },
-            { path: 'xml', component: EditXMLComponent },
+            { path: 'xml', component: EditXMLComponent }
         ]
     }
 ];
 
 @NgModule({
     imports: [
-        BrowserModule,
-        PropertiesDefinitionModule,
-        ImplementationsModule,
-        InstanceStatesModule,
         RouterModule.forChild(instanceRoutes)
     ],
     exports: [

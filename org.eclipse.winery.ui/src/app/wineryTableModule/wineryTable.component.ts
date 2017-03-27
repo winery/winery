@@ -10,7 +10,7 @@
  *     Niko Stadelmaier - initial API and implementation
  */
 
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 /**
  * This component provides an easy and fast way to use the ng2-table with further modifications
