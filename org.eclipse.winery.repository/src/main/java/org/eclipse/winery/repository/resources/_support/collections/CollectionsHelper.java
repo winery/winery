@@ -28,15 +28,19 @@ public class CollectionsHelper {
 	 * @param idDetermination the object to use to determine the id of the
 	 *            entity
 	 * @param entity the entity that was persisted. Used to determine the id
+     * @param isPost true if post, false if put
 	 * @return the new id id of the resource
 	 */
-	public static <X> Response persist(IPersistable resource, IIdDetermination<X> idDetermination, X entity) {
-		Response res = BackendUtils.persist(resource);
-		if (res.getStatus() == 204) {
-			String id = idDetermination.getId(entity);
-			res = Response.ok(id).build();
+	public static <X> Response persist(IPersistable resource, IIdDetermination<X> idDetermination, X entity, boolean isPost) {
+		Response.ResponseBuilder res = BackendUtils.persistWithResponseBuilder(resource);
+		String id = idDetermination.getId(entity);
+		res = res.entity(id);
+		if (isPost) {
+			res = res.status(201);
+		} else {
+			res = res.status(204);
 		}
-		return res;
+		return res.build();
 	}
 
 }

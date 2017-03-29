@@ -114,7 +114,7 @@ public abstract class AbstractResourceTest {
 					.get(callURL(restURL))
 					.then()
 					.log()
-					.ifError()
+					.all()
 					.statusCode(200)
 					.extract()
 					.response()

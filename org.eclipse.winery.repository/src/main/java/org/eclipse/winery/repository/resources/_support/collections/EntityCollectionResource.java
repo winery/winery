@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.resources._support.collections;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -148,6 +149,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	 *
 	 * In case the element already exists, we return "CONFLICT"
 	 */
+	//@POST
 	public Response addNewElement(EntityT entity) {
 		if (entity == null) {
 			return Response.status(Status.BAD_REQUEST).entity("a valid XML/JSON element has to be posted").build();
@@ -157,7 +159,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 			return Response.status(Status.CONFLICT).build();
 		}
 		this.list.add(entity);
-		return CollectionsHelper.persist(this.res, this, entity);
+		return CollectionsHelper.persist(this.res, this, entity, true);
 	}
 
 	@Override
