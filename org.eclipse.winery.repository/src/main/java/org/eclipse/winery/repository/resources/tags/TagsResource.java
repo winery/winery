@@ -70,19 +70,4 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 		return CollectionsHelper.persist(this.res, this, tag, true);
 	}
 
-	@DELETE
-	@Path("data/{id}")
-	public Response deleteTag(@PathParam("id") String id) {
-		TTag removeData = null;
-		for (TTag entity : this.list) {
-			if (getId(entity).equals(id)) {
-				removeData = entity;
-			}
-		}
-		if (removeData != null &&
-				this.list.remove(removeData)) {
-			return BackendUtils.persist(this.res);
-		}
-		return Response.status(404).build();
-	}
 }
