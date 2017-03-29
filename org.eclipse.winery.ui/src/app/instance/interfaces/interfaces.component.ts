@@ -10,8 +10,16 @@
  * Contributors:
  *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
  */
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { isNullOrUndefined } from 'util';
+import { backendBaseUri } from '../../configuration';
+import { YesNoEnum } from '../../interfaces/enums';
+import { NotificationService } from '../../notificationModule/notification.service';
+import { ExistService } from '../../util/existService';
+import { ValidatorObject } from '../../validators/duplicateValidator.directive';
+import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
+import { InstanceService } from '../instance.service';
+import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesService } from './interfaces.service';
 import {
     InputParameters,
@@ -20,13 +28,6 @@ import {
     InterfacesApiData,
     OutputParameters
 } from './interfacesApiData';
-import { YesNoEnum } from '../../interfaces/enums';
-import { NotificationService } from '../../notificationModule/notification.service';
-import { ValidatorObject } from '../../validators/duplicateValidator.directive';
-import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
-import { InstanceService } from '../instance.service';
-import { ExistService } from '../../util/existService';
-import { backendBaseUri } from '../../configuration';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -41,6 +42,7 @@ import { backendBaseUri } from '../../configuration';
 export class InterfacesComponent implements OnInit {
 
     loading = true;
+    generating = false;
     interfacesData: InterfacesApiData[];
 
     operations: any[] = null;
@@ -66,19 +68,15 @@ export class InterfacesComponent implements OnInit {
     @ViewChild('parameterForm') parameterForm: any;
 
     @ViewChild('generateImplModal') generateImplModal: any;
-    javaPackageName: string = null;
+    generateArtifactApiData = new GenerateArtifactApiData();
     selectedResource: string;
-    resourceType: string;
-    implementationName: string = null;
-    implementationNamespace: string = null;
-    artifactName: string = null;
-    artifactNamespace: string = null;
     createImplementation = true;
     createArtifactTemplate = true;
+    implementationName: string = null;
+    implementationNamespace: string = null;
 
-    constructor(private service: InterfacesService,
-                private sharedData: InstanceService, private existService: ExistService,
-                private notify: NotificationService, private changeRef: ChangeDetectorRef) {
+    constructor(private service: InterfacesService, private notify: NotificationService,
+                private sharedData: InstanceService, private existService: ExistService) {
     }
 
     ngOnInit() {
@@ -88,7 +86,6 @@ export class InterfacesComponent implements OnInit {
                 error => this.handleError(error)
             );
         this.selectedResource = this.sharedData.selectedResource.charAt(0).toUpperCase() + this.sharedData.selectedResource.slice(1);
-        this.resourceType = this.sharedData.selectedResource.replace(' ', '').toLowerCase();
     }
 
     // region ########### Template Callbacks ##########
@@ -232,11 +229,16 @@ export class InterfacesComponent implements OnInit {
 
     // region ########## Generate Implementation ##########
     showGenerateImplementationModal(): void {
-        this.javaPackageName = this.getPackageNameFromNamespace();
+        this.generateArtifactApiData = new GenerateArtifactApiData();
+        this.generateArtifactApiData.javaPackage = this.getPackageNameFromNamespace();
+        this.generateArtifactApiData.artifactTemplateName =
+            this.sharedData.selectedComponentId + '_' + this.selectedInterface.name.replace(/\W/g, '_') + '_IA';
+        this.generateArtifactApiData.artifactTemplateNamespace = this.sharedData.selectedNamespace;
+        this.generateArtifactApiData.autoCreateArtifactTemplate = true;
+        this.generateArtifactApiData.interfaceName = this.selectedInterface.name;
+
         this.implementationName = this.sharedData.selectedComponentId + '_impl';
         this.implementationNamespace = this.sharedData.selectedNamespace;
-        this.artifactName = this.sharedData.selectedComponentId + '__IA';
-        this.artifactNamespace = this.sharedData.selectedNamespace;
 
         this.checkImplementationExists();
         this.checkArtifactTemplateExists();
@@ -245,8 +247,16 @@ export class InterfacesComponent implements OnInit {
     }
 
     generateImplementationArtifact(): void {
-        console.log('generate');
-        this.generateImplModal.hide();
+        this.generating = true;
+        if (this.createImplementation) {
+            this.service.createImplementation(this.selectedResource.replace(' ', '').toLowerCase(), this.implementationName, this.implementationNamespace)
+                .subscribe(
+                    data => this.handleGeneratedImplementation(data),
+                    error => this.handleError(error)
+                );
+        } else if (!this.createImplementation && this.createArtifactTemplate) {
+            this.handleGeneratedImplementation();
+        }
     }
 
     // endregion
@@ -293,6 +303,8 @@ export class InterfacesComponent implements OnInit {
     }
 
     private handleError(error: any) {
+        this.loading = false;
+        this.generating = false;
         this.notify.error(error.toString());
     }
 
@@ -316,25 +328,51 @@ export class InterfacesComponent implements OnInit {
     }
 
     private checkImplementationExists(): void {
-        console.log(this.createImplementation);
-        this.existService.check(backendBaseUri + '/'
-            + this.resourceType + 'implementations/'
-            + encodeURIComponent(encodeURIComponent(this.implementationNamespace)) + '/'
-            + this.implementationName + '/'
-        ).subscribe(
-            data => this.createImplementation = false,
-            error => this.createArtifactTemplate = true
-        );
+        if (!this.implementationNamespace.endsWith('/')) {
+            this.existService.check(backendBaseUri + '/'
+                + this.selectedResource.replace(' ', '').toLowerCase() + 'implementations/'
+                + encodeURIComponent(encodeURIComponent(this.implementationNamespace)) + '/'
+                + this.implementationName + '/'
+            ).subscribe(
+                data => this.createImplementation = false,
+                error => this.createImplementation = true
+            );
+        }
     }
 
     private checkArtifactTemplateExists(): void {
-        this.existService.check(backendBaseUri + '/artifacttemplates'
-            + encodeURIComponent(encodeURIComponent(this.artifactNamespace))
-            + this.artifactName + '/'
-        ).subscribe(
-            data => this.createArtifactTemplate = false,
-            error => this.createArtifactTemplate = true
-        );
+        if (!this.generateArtifactApiData.artifactTemplateNamespace.endsWith('/')) {
+            this.existService.check(backendBaseUri + '/artifacttemplates'
+                + encodeURIComponent(encodeURIComponent(this.generateArtifactApiData.artifactTemplateNamespace))
+                + this.generateArtifactApiData.artifactTemplateName + '/'
+            ).subscribe(
+                data => this.createArtifactTemplate = false,
+                error => this.createArtifactTemplate = true
+            );
+        }
+    }
+
+    private handleGeneratedImplementation(data?: any) {
+        if (this.createArtifactTemplate) {
+            this.service.createImplementationArtifact(this.selectedResource.replace(' ', '').toLowerCase(), this.implementationName,
+                this.implementationNamespace, this.generateArtifactApiData)
+                .subscribe(
+                    data => this.handleGeneratedArtifact(),
+                    error => this.handleError(error)
+                );
+        } else {
+            this.generating = false;
+            this.generateImplModal.hide();
+        }
+        if (!isNullOrUndefined(data)) {
+            this.notify.success('Successfully created Implementation!');
+        }
+    }
+
+    private handleGeneratedArtifact() {
+        this.generating = false;
+        this.generateImplModal.hide();
+        this.notify.success('Successfully created Artifact!');
     }
 
     // endregion

@@ -58,7 +58,7 @@ import { NotificationService } from '../notificationModule/notification.service'
 })
 export class WineryUploader implements OnInit {
 
-    fileOver: boolean = false;
+    fileOver = false;
     loading = false;
 
     @Input() uploadUrl: string;

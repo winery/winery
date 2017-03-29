@@ -34,7 +34,7 @@
         [displayList]="availableSuperClasses"
         [selectedResource]="selectedResource"
         [selectedValue]="inheritanceApiData.derivedFrom"
-        (selectedValueChanged)="onSelectedValueChanged($event.value)"
-    ></winery-qNameSelector>
+        (selectedValueChanged)="onSelectedValueChanged($event.value)">
+    </winery-qNameSelector>
     <button (click)="saveToServer()" class="btn btn-info btn-sm">save</button>
 </div>

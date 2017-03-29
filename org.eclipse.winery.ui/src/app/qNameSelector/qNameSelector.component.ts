@@ -10,10 +10,43 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { QNameList } from './qNameApiData';
 
+/**
+ * This component provides a selector for QNames in addition with a link to the currently
+ * selected QName.
+ *
+ * <label>Inputs</label>
+ * <ul>
+ *     <li><code>title</code> sets the title for the selector.
+ *     </li>
+ *     <li><code>displayList</code> the list of QNames in {@link QNameList} format. This field is
+ *         mandatory!
+ *     <li><code>selectedResource</code>
+ *     </li>
+ *     <li><code>selectedValue</code> sets the currently selected value in the dropdown
+ *     </li>
+ * </ul>
+ *
+ * <label>Outputs</label>
+ * <ul>
+ *     <li><code>selectedValueChanged</code> emits the selected value in the dropdown.
+ *     </li>
+ * </ul>
+ *
+ * @example <caption>Basic usage</caption>
+ * ```html
+ * <winery-qNameSelector
+ *     [title]="'Derived from'"
+ *     [displayList]="availableSuperClasses"
+ *     [selectedResource]="selectedResource"
+ *     [selectedValue]="inheritanceApiData.derivedFrom"
+ *     (selectedValueChanged)="onSelectedValueChanged($event.value)">
+ * </winery-qNameSelector>
+ * ```
+ */
 @Component({
     selector: 'winery-qNameSelector',
     templateUrl: 'qNameSelector.component.html',
@@ -31,12 +64,13 @@ export class QNameSelectorComponent {
     openSuperClassLink = '';
     queryPath: string;
 
-    constructor() {}
+    constructor() {
+    }
 
     onChange(value: string): void {
         this.selectedValue = value;
         this.setButtonLink();
-        this.selectedValueChanged.emit({ value: this.selectedValue});
+        this.selectedValueChanged.emit({value: this.selectedValue});
     }
 
     private handleData(availableSuperClasses: QNameList): void {

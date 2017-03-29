@@ -37,7 +37,7 @@ export class TypeWithShortNameComponent implements OnInit {
      * sets the title of the component
      * @type {string}
      */
-    @Input() title: string = '';
+    @Input() title = '';
 
     @ViewChild('confirmDeleteModal') deleteNamespaceModal: any;
     @ViewChild('addModal') addNamespaceModal: any;
