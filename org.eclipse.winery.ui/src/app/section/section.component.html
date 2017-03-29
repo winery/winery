@@ -31,7 +31,8 @@
         <div class="sidebar">
             <button class="btn btn-default sidebar-btn" (click)="onAdd();">Add new</button>
             <button class="btn btn-default sidebar-btn" (click)="addCsarModal.show();">Import CSAR</button>
-            <button class="btn btn-default sidebar-btn" (click)="onChangeView()" [disabled]="showSpecificNamespaceOnly()">
+            <button class="btn btn-default sidebar-btn" (click)="onChangeView()"
+                    [disabled]="showSpecificNamespaceOnly()">
                 {{ changeViewButtonTitle }}
             </button>
         </div>
@@ -58,7 +59,7 @@
                        id="componentName"
                        name="componentName"
                        #newName="ngModel"
-                       ngModel="newComponentName"
+                       [(ngModel)]="newComponentName"
                        required
                        [duplicateValidator]="validatorObject">
                 <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
@@ -71,8 +72,15 @@
                     </div>
                 </div>
             </div>
-            <winery-namespaceSelector name="namespace" [(ngModel)]="newComponentNamespace"
-                                      [isRequired]="true"></winery-namespaceSelector>
+            <winery-namespaceSelector
+                name="namespace"
+                required
+                [(ngModel)]="newComponentNamespace"
+                [isRequired]="true"></winery-namespaceSelector>
+            <div class="form-group" *ngIf="types">
+                <label for="typeSelect" class="control-label">Type</label>
+                <ng-select id="typeSelect" [items]="types" (selected)="typeSelected($event)" [active]="[newComponentSelectedType]"></ng-select>
+            </div>
         </form>
     </winery-modalBody>
     <winery-modalFooter
@@ -109,5 +117,6 @@
             Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
         </p>
     </winery-modalBody>
-    <winery-modalFooter [closeButtonLabel]="'No'" [okButtonLabel]="'Yes'" (onOk)="onRemoveElement()"></winery-modalFooter>
+    <winery-modalFooter [closeButtonLabel]="'No'" [okButtonLabel]="'Yes'"
+                        (onOk)="onRemoveElement()"></winery-modalFooter>
 </winery-modal>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,19 +7,22 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Oliver Kopp - initial API and implementation
+ *     Niko Stadelmaier - initial API and implementation
+ *
  *******************************************************************************/
 
-package org.eclipse.winery.repository;
+package org.eclipse.winery.repository.resources.apiData;
 
-import org.eclipse.winery.repository.resources.MainResource;
+public class TypeWithShortNameApiData {
 
-import org.restdoc.jersey.server.RestDocFeature;
+	public String shortName = "";
+	public String type = "";
 
-public class RestDocFilter extends RestDocFeature {
+	public TypeWithShortNameApiData() {
+	}
 
-	@Override
-	protected Class<?>[] getClasses() {
-		return new Class<?>[]{MainResource.class};
+	public TypeWithShortNameApiData(String type, String shortName) {
+		this.type = type;
+		this.shortName = shortName;
 	}
 }

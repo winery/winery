@@ -12,12 +12,12 @@
 
 import { NgModule } from '@angular/core';
 
-import { NamespaceSelectorComponent }   from './namespaceSelector.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { TypeaheadModule } from 'ng2-bootstrap';
-import { LoaderModule } from '../loader/loader.module';
 import { ToastModule } from 'ng2-toastr';
+import { LoaderModule } from '../loader/loader.module';
+import { NamespaceSelectorComponent }   from './namespaceSelector.component';
 
 @NgModule({
     imports: [

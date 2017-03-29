@@ -14,13 +14,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
-import { NotificationService } from '../notificationModule/notificationservice';
+import { NotificationService } from '../notificationModule/notification.service';
 import { ValidatorObject } from '../validators/duplicateValidator.directive';
 import { isNullOrUndefined } from 'util';
 import { SectionResolverData } from '../interfaces/resolverData';
+import { SelectData } from '../interfaces/selectData';
 
-const showAll: string = 'Show all Items';
-const showGrouped: string = 'Group by Namespace';
+const showAll = 'Show all Items';
+const showGrouped = 'Group by Namespace';
 
 @Component({
     selector: 'winery-section-component',
@@ -34,20 +35,22 @@ const showGrouped: string = 'Group by Namespace';
 })
 export class SectionComponent implements OnInit, OnDestroy {
 
-    loading: boolean = true;
+    loading = true;
     selectedResource: string;
     routeSub: Subscription;
-    filterString: string = '';
-    itemsPerPage: number = 10;
-    showNamespace: string = 'all';
+    filterString = '';
+    itemsPerPage = 10;
+    showNamespace = 'all';
     changeViewButtonTitle: string = showGrouped;
     componentData: SectionData[];
+    types: SelectData;
 
     newComponentName: string;
     newComponentNamespace: string;
+    newComponentSelectedType: SelectData = new SelectData();
     validatorObject: ValidatorObject;
 
-    fileOver: boolean = false;
+    fileOver = false;
 
     @ViewChild('addModal') addModal: any;
     @ViewChild('addComponentForm') addComponentForm: any;
@@ -92,11 +95,17 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.validatorObject = new ValidatorObject(this.componentData, 'id');
         this.addComponentForm.reset();
         this.newComponentNamespace = '';
+        this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
         this.addModal.show();
     }
 
+    typeSelected(event: SelectData) {
+        this.newComponentSelectedType = event;
+    }
+
     addComponent() {
-        this.service.createComponent(this.newComponentName, this.newComponentNamespace)
+        let compType = this.newComponentSelectedType ? this.newComponentSelectedType.id : null;
+        this.service.createComponent(this.newComponentName, this.newComponentNamespace, compType)
             .subscribe(
                 data => this.handleSaveSuccess(),
                 error => this.handleError(error)
@@ -121,7 +130,7 @@ export class SectionComponent implements OnInit, OnDestroy {
                     this.notify.error('Error while uploading CSAR file');
                 }
 
-                return { item, response, status, headers };
+                return {item, response, status, headers};
             };
         }
     }
@@ -135,6 +144,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
         this.selectedResource = resolved.section;
         this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : this.showNamespace;
+        this.types = null;
 
         this.service.setPath(resolved.path);
         this.service.getSectionData()
@@ -145,7 +155,6 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     private handleData(resources: SectionData[]) {
-        this.loading = false;
         this.componentData = resources;
 
         if (!this.showSpecificNamespaceOnly() && (this.componentData.length > 50)) {
@@ -155,6 +164,44 @@ export class SectionComponent implements OnInit, OnDestroy {
             this.showNamespace = 'all';
             this.changeViewButtonTitle = showGrouped;
         }
+
+        switch (this.selectedResource) {
+            case 'nodeTypeImplementation':
+                this.service.getSectionData('/nodetypes?grouped=angularSelect')
+                    .subscribe(
+                        data => this.handleTypes(data),
+                        error => this.handleError(error)
+                    );
+                break;
+            case 'relationshipTypeImplementation':
+                this.service.getSectionData('/relationshiptypes?grouped=angularSelect')
+                    .subscribe(
+                        data => this.handleTypes(data),
+                        error => this.handleError(error)
+                    );
+                break;
+            case 'policyType':
+                this.service.getSectionData('/policytypes?grouped=angularSelect')
+                    .subscribe(
+                        data => this.handleTypes(data),
+                        error => this.handleError(error)
+                    );
+                break;
+            case 'policyTemplate':
+                this.service.getSectionData('/policytemplates?grouped=angularSelect')
+                    .subscribe(
+                        data => this.handleTypes(data),
+                        error => this.handleError(error)
+                    );
+                break;
+            default:
+                this.loading = false;
+        }
+    }
+
+    private handleTypes(types: SelectData): void {
+        this.loading = false;
+        this.types = types;
     }
 
     private handleSaveSuccess() {

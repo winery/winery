@@ -11,10 +11,10 @@
  *     Nicole Keppler - fixes for path routing, saveData
  */
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Headers, RequestOptions, Http } from '@angular/http';
-import { backendBaseUri } from '../../configuration';
+import { Headers, Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { backendBaseUri } from '../../configuration';
 
 @Injectable()
 export class DocumentationService {

@@ -36,11 +36,6 @@
 		<filter-name>WineryResources</filter-name>
 		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
 		<init-param>
-			<param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
-			<!-- RestDocFilter is required for RESTDoc. -->
-			<param-value>org.eclipse.winery.repository.RestDocFilter</param-value>
-		</init-param>
-		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
 			<param-value>org.eclipse.winery.repository.resources</param-value>
 		</init-param>
