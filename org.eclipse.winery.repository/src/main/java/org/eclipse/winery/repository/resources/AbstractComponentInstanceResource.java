@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013,2015 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,13 +9,17 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Tino Stadelmaier, Philipp Meyer - rename for id and namespace
+ *     Nicole Keppler - support for JSON response
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +53,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
@@ -71,6 +76,7 @@ import org.eclipse.winery.repository.resources.imports.genericimports.GenericImp
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.resources.tags.TagsResource;
 
+import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -287,6 +293,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			return Utils.getCSARofSelectedResource(this);
 		}
 
+		// we cannot use this.definitions as that definitions is Winery's interal representation of the data and not the full blown definitions (including imports to referenced elements)
+
 		StreamingOutput so = new StreamingOutput() {
 
 			@Override
@@ -302,6 +310,31 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			}
 		};
 		return Response.ok().type(MediaType.TEXT_XML).entity(so).build();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public TDefinitions getDefinitionsAsJson() {
+		if (!Repository.INSTANCE.exists(this.id)) {
+			throw new NotFoundException();
+		}
+
+		// idea: get the XML, parse it, return it
+		// the conversion to JSON is made by Jersey automatically
+		// future work: force TOSCAExportUtil to return TDefinitions directly
+
+		TOSCAExportUtil exporter = new TOSCAExportUtil();
+		// we include everything related
+		Map<String, Object> conf = new HashMap<>();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		try {
+			exporter.exportTOSCA(AbstractComponentInstanceResource.this.id, bos, conf);
+			String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
+			Unmarshaller u = JAXBSupport.createUnmarshaller();
+			return (Definitions) u.unmarshal(new StringReader(xmlRepresentation));
+		} catch (Exception e) {
+			throw new WebApplicationException(e);
+		}
 	}
 
 	/**
