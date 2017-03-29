@@ -12,11 +12,11 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { InstanceStateService } from './instanceState.service';
-import { InstanceService } from '../instance.service';
+import { InstanceStateService } from './instanceStates.service';
 import { InstanceStateApiData } from './InstanceStateApiData';
 import { Response } from '@angular/http';
 import { isNullOrUndefined } from 'util';
+import { NotificationService } from '../../notificationModule/notification.service';
 
 @Component({
     selector: 'winery-instance-instanceStates',
@@ -25,7 +25,7 @@ import { isNullOrUndefined } from 'util';
 })
 export class InstanceStatesComponent implements OnInit {
 
-    loading: boolean = true;
+    loading = true;
     instanceStates: InstanceStateApiData[];
     elementToRemove: InstanceStateApiData = null;
     selectedCell: InstanceStateApiData = null;
@@ -37,7 +37,7 @@ export class InstanceStatesComponent implements OnInit {
     @ViewChild('confirmDeleteModal') deleteStateModal: any;
     @ViewChild('addModal') addStateModal: any;
 
-    constructor(private service: InstanceStateService) {
+    constructor(private service: InstanceStateService, private notify: NotificationService) {
     }
 
     ngOnInit() {
@@ -107,8 +107,8 @@ export class InstanceStatesComponent implements OnInit {
         this.loading = true;
         if (data.status === 204) {
             this.getInstanceStatesApiData();
+            this.notify.success('Successfully saved Instance State');
         } else if (data.status === 406) {
-            this.loading = false;
             this.handleError('Post request not acceptable due to empty state');
         }
     }
@@ -124,7 +124,7 @@ export class InstanceStatesComponent implements OnInit {
 
     private handleError(error: any): void {
         this.loading = false;
-        console.log(error);
+        this.notify.error(error);
     }
 
     // endregion

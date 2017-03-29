@@ -72,9 +72,8 @@ public class Prefs implements ServletContextListener {
 	private String wineryTopologyModelerPath = null;
 
 	/**
-	 * This constructor is called at handling at servlets, too. Therefore, we
-	 * make it private. If testing is needed, an additional paramater has to be
-	 * passed
+	 * This constructor is called at handling at servlets, too. Therefore, the visibility stays public
+	 * If testing is needed, an additional Boolean paramater has to be passed (see below)
 	 */
 	public Prefs() {
 		Prefs.INSTANCE = this;

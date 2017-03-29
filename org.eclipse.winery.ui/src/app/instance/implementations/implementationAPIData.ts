@@ -10,8 +10,8 @@
  *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
 export class ImplementationAPIData {
-    namespace: string = '';
-    localname: string = '';
+    namespace = '';
+    localname = '';
 
     public constructor(namespace: string,
                        name: string) {

@@ -9,16 +9,16 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-import { NgModule } from '@angular/core';
-import { InterfacesComponent } from './interfaces.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { LoaderModule } from '../../loader/loader.module';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { LoaderModule } from '../../loader/loader.module';
+import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
+import { InterfacesComponent } from './interfaces.component';
 import { SelectableListModule } from './selectableList/selectableList.module';
-import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
 
 @NgModule({
     imports: [

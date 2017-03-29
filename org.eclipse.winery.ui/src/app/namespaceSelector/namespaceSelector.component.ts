@@ -13,7 +13,7 @@
 
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { NamespaceSelectorService } from './namespaceSelector.service';
-import { NotificationService } from '../notificationModule/notificationservice';
+import { NotificationService } from '../notificationModule/notification.service';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { NamespaceWithPrefix } from '../interfaces/namespaceWithPrefix';
 
@@ -72,13 +72,13 @@ const customInputControl: any = {
 })
 export class NamespaceSelectorComponent implements OnInit, ControlValueAccessor {
 
-    @Input() isRequired: boolean = false;
-    @Input() typeAheadListLimit: number = 50;
+    @Input() isRequired = false;
+    @Input() typeAheadListLimit = 50;
 
-    loading: boolean = true;
+    loading = true;
     allNamespaces: NamespaceWithPrefix[] = [];
 
-    private innerValue: string = '';
+    private innerValue = '';
     private onTouchedCallback: () => void = noop;
     private onChangeCallback: (_: any) => void = noop;
 

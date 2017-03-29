@@ -11,22 +11,43 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 public class PrefsTestEnabledGitBackedRepository extends PrefsTestEnabled {
 
-	public PrefsTestEnabledGitBackedRepository() throws IOException, NoWorkTreeException, GitAPIException {
-		super(false);
-		// TODO: we should to a new clone of the repository
-		// currently, we rely on the right configuration of the preferences to use a file-based repository
+	public final Git git;
 
-		// code similar to org.eclipse.winery.repository.Prefs.doRepositoryInitialization()
-		String repositoryLocation = this.properties.getProperty("repositoryPath");
-		this.repository = new GitBasedRepository(repositoryLocation);
+	public PrefsTestEnabledGitBackedRepository() throws Exception {
+		super(false);
+
+		Path repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
+		if (!Files.exists(repositoryPath)) {
+			Files.createDirectory(repositoryPath);
+		}
+
+		FileRepositoryBuilder builder = new FileRepositoryBuilder();
+		if (!Files.exists(repositoryPath.resolve(".git"))) {
+			this.git = Git.cloneRepository()
+					.setURI("https://github.com/winery/test-repository.git")
+					.setBare(false)
+					.setCloneAllBranches(true)
+					.setDirectory(repositoryPath.toFile())
+					.call();
+		} else {
+			Repository gitRepo = builder.setWorkTree(repositoryPath.toFile()).setMustExist(false).build();
+			this.git = new Git(gitRepo);
+			this.git.fetch().call();
+		}
+
+		this.repository = new GitBasedRepository(repositoryPath.toString());
 	}
 
 }

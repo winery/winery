@@ -1,7 +1,7 @@
-import { Component, Input, AfterViewInit, ContentChild, AfterContentInit } from '@angular/core';
-import { WineryModalHeaderComponent } from './winery.modal.header.component';
-import { WineryModalFooterComponent } from './winery.modal.footer.component';
+import { AfterContentInit, AfterViewInit, Component, ContentChild, Input } from '@angular/core';
 import { isNullOrUndefined } from 'util';
+import { WineryModalFooterComponent } from './winery.modal.footer.component';
+import { WineryModalHeaderComponent } from './winery.modal.header.component';
 
 /**
  * This component provides a generic modal component for any kind of pop-ups.
@@ -58,7 +58,7 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
      * @Input
      * @type {boolean}
      */
-    @Input() keyboard: boolean = true;
+    @Input() keyboard = true;
     /**
      * @Input
      * @type {boolean}
@@ -69,7 +69,7 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
     @ContentChild(WineryModalFooterComponent) footerContent: WineryModalFooterComponent;
 
     private overrideSize: string = null;
-    private cssClass: string = '';
+    private cssClass = '';
 
     ngAfterContentInit(): void {
         if (!isNullOrUndefined(this.headerContent)) {

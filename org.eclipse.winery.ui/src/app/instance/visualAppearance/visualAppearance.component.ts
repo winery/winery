@@ -14,7 +14,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { VisualAppearanceService } from './visualAppearance.service';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 import { isNullOrUndefined } from 'util';
 import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
@@ -30,14 +30,16 @@ import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
 export class VisualAppearanceComponent implements OnInit {
     relationshipData: RelationshipTypesVisualsApiData;
     nodeTypeData: NodeTypesVisualsApiData;
+    color = '#f00';
+    isColorLoaded = false;
     loading = true;
     img16uploader: FileUploader;
     img50uploader: FileUploader;
     fileItem: FileItem;
     img16Path: string;
     img50Path: string;
-    hasImg16DropZoneOver: boolean = false;
-    hasImg50DropZoneOver: boolean = false;
+    hasImg16DropZoneOver = false;
+    hasImg50DropZoneOver = false;
     @ViewChild('upload16Modal') upload16Modal: any;
     @ViewChild('upload50Modal') upload50Modal: any;
 

@@ -9,15 +9,15 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
 import { Injectable } from '@angular/core';
-import { SectionData } from './sectionData';
-import { Headers, RequestOptions, Http } from '@angular/http';
-import 'rxjs/add/operator/map';
-import { Observable } from 'rxjs';
-import { backendBaseUri } from '../configuration';
+import { Headers, Http, RequestOptions } from '@angular/http';
 import { FileUploader } from 'ng2-file-upload';
-import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import 'rxjs/add/operator/map';
+import { isNullOrUndefined } from 'util';
+import { backendBaseUri } from '../configuration';
+import { SelectData } from '../interfaces/selectData';
+import { SectionData } from './sectionData';
 
 @Injectable()
 export class SectionService {
@@ -26,30 +26,37 @@ export class SectionService {
     private fileUploader: FileUploader;
 
     constructor(private http: Http) {
-        this.fileUploader = new FileUploader({ url: backendBaseUri + '/' });
+        this.fileUploader = new FileUploader({url: backendBaseUri + '/'});
     }
 
     get uploader(): FileUploader {
         return this.fileUploader;
     }
 
-    getSectionData(): Observable<SectionData[]> {
-        let headers = new Headers({ 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+    getSectionData(resourceType?: string): Observable<any> {
+        let headers = new Headers({'Accept': 'application/json'});
+        let options = new RequestOptions({headers: headers});
 
-        return this.http.get(backendBaseUri + this.path + '/', options)
+        if (isNullOrUndefined(resourceType)) {
+            resourceType = this.path;
+        }
+
+        return this.http.get(backendBaseUri + resourceType + '/', options)
             .map(res => res.json());
     }
 
-    createComponent(newComponentName: string, newComponentNamespace: string) {
-        let headers = new Headers({ 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+    createComponent(newComponentName: string, newComponentNamespace: string, newComponentSelectedType?: string) {
+        let headers = new Headers({'Content-Type': 'application/json'});
+        let options = new RequestOptions({headers: headers});
 
-        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify({
-            name: newComponentName,
-            namespace: newComponentNamespace
-        }), options)
-            .map(res => res.json());
+        let saveObject: any;
+        if (!isNullOrUndefined(newComponentSelectedType)) {
+            saveObject = { localname: newComponentName, namespace: newComponentNamespace, type: newComponentSelectedType };
+        } else {
+            saveObject = { localname: newComponentName, namespace: newComponentNamespace };
+        }
+
+        return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(saveObject), options);
     }
 
     setPath(path: string) {

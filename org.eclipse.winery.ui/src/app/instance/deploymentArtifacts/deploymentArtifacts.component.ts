@@ -9,8 +9,16 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-.numberOfComponentInstances {
-    float: right;
-    margin-top: 33px;
-    text-shadow: none;
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+    selector: 'winery-deploymentArtifacts',
+    templateUrl: 'deploymentArtifacts.component.html'
+})
+export class DeploymentArtifactsComponent implements OnInit {
+    constructor() {
+    }
+
+    ngOnInit() {
+    }
 }

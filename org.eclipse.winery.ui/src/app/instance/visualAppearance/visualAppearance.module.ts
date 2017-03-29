@@ -38,7 +38,7 @@ import { WineryUploaderModule } from '../../fileUploaderModal/wineryUploader.mod
     exports: [],
     declarations: [
         VisualAppearanceComponent,
-    ],
+    ]
 })
 export class VisualAppearanceModule {
 }
