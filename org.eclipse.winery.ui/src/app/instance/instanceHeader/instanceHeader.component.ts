@@ -10,11 +10,11 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { backendBaseUri } from '../../configuration';
 import { RemoveWhiteSpacesPipe } from '../../pipes/removeWhiteSpaces.pipe';
 import { InstanceService } from '../instance.service';
-import { backendBaseUri } from '../../configuration';
 
 @Component({
     selector: 'winery-instance-header',

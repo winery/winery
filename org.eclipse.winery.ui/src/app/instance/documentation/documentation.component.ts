@@ -10,8 +10,8 @@
  *     Lukas Balzer, Nicole Keppler - initial API and implementation
  */
 import { Component, OnInit } from '@angular/core';
-import { DocumentationService } from './documentation.service';
 import { NotificationService } from '../../notificationModule/notification.service';
+import { DocumentationService } from './documentation.service';
 
 @Component({
     selector: 'winery-instance-documentation',

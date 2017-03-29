@@ -11,12 +11,12 @@
  */
 
 import { Injectable } from '@angular/core';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
 import { XsdDefinitionsApiData } from './XsdDefinitionsApiData';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class PropertiesDefinitionService {

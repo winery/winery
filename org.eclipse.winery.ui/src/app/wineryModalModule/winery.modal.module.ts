@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { ModalModule } from 'ng2-bootstrap';
-import { WineryModalComponent }   from './winery.modal.component';
-import { WineryModalBodyComponent } from './winery.modal.body.component';
-import { WineryModalHeaderComponent } from './winery.modal.header.component';
-import { WineryModalFooterComponent } from './winery.modal.footer.component';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ModalModule } from 'ng2-bootstrap';
+import { WineryModalBodyComponent } from './winery.modal.body.component';
+import { WineryModalComponent }   from './winery.modal.component';
+import { WineryModalFooterComponent } from './winery.modal.footer.component';
+import { WineryModalHeaderComponent } from './winery.modal.header.component';
 
 /**
  * This module must be imported in order to use the {@link WineryModalComponent}. Documentation on how to use

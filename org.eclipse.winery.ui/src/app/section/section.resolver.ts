@@ -12,12 +12,11 @@
 
 import { Injectable }             from '@angular/core';
 import {
-    Router, Resolve, RouterStateSnapshot,
-    ActivatedRouteSnapshot, ResolveData
+    ActivatedRouteSnapshot, Resolve, ResolveData,
+    Router, RouterStateSnapshot
 } from '@angular/router';
-
-import { sections } from '../configuration';
 import { isNullOrUndefined } from 'util';
+import { sections } from '../configuration';
 import { SectionResolverData } from '../interfaces/resolverData';
 
 @Injectable()

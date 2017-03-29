@@ -12,15 +12,15 @@
 
 import { NgModule } from '@angular/core';
 
-import { InstanceStatesComponent }   from './instanceStates.component';
-import { LoaderModule } from '../../loader/loader.module';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { ModalModule, TabsModule, TypeaheadModule } from 'ng2-bootstrap';
 import { SelectModule } from 'ng2-select';
-import { TabsModule, TypeaheadModule, ModalModule } from 'ng2-bootstrap';
-import { CommonModule } from '@angular/common';
+import { LoaderModule } from '../../loader/loader.module';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
+import { InstanceStatesComponent }   from './instanceStates.component';
 
 
 

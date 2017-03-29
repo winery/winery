@@ -11,10 +11,10 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Headers, Http, RequestOptions } from '@angular/http';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseUri } from '../../configuration';
-import { Router } from '@angular/router';
 import { InstanceService } from '../instance.service';
 
 @Injectable()

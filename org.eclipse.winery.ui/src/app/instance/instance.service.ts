@@ -11,9 +11,9 @@
  *     Niko Stadelmaier - add admin component
  */
 import { Injectable } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { Observable } from 'rxjs';
 import { Http } from '@angular/http';
+import { Observable } from 'rxjs';
+import { isNullOrUndefined } from 'util';
 import { backendBaseUri } from '../configuration';
 
 @Injectable()

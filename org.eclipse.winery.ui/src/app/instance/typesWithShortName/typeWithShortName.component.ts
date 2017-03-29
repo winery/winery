@@ -13,8 +13,6 @@ import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { NamespaceSelectorService } from '../../namespaceSelector/namespaceSelector.service';
 import { NotificationService } from '../../notificationModule/notification.service';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
-import { isNullOrUndefined } from 'util';
-import { NamespaceWithPrefix } from '../../interfaces/namespaceWithPrefix';
 import { Response } from '@angular/http';
 import { TypeWithShortNameService, TypeWithShortName } from './typeWithShortName.service';
 

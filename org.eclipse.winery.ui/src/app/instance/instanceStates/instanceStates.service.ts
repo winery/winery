@@ -10,11 +10,11 @@
  *     Huixin Liu, Nicole Keppler - initial API and implementation
  */
 import { Injectable } from '@angular/core';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Headers, RequestOptions, Http, Response } from '@angular/http';
 import { backendBaseUri } from '../../configuration';
 import { InstanceStateApiData } from './InstanceStateApiData';
-import { Router } from '@angular/router';
 import List = _.List;
 
 @Injectable()

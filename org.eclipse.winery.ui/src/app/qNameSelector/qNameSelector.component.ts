@@ -10,9 +10,9 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { QNameList } from './qNameApiData';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { isNullOrUndefined } from 'util';
+import { QNameList } from './qNameApiData';
 
 @Component({
     selector: 'winery-qNameSelector',

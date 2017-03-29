@@ -9,16 +9,15 @@
  * Contributors:
  *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
-
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ImplementationService } from './implementation.service';
-import { ImplementationAPIData } from './implementationAPIData';
-import { InstanceService } from '../instance.service';
-import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
+import { Response } from '@angular/http';
 import { isNullOrUndefined } from 'util';
 import { NotificationService } from '../../notificationModule/notification.service';
-import { Response } from '@angular/http';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
+import { InstanceService } from '../instance.service';
+import { ImplementationAPIData } from './implementationAPIData';
+import { ImplementationService } from './implementations.service';
+import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -110,7 +109,6 @@ export class ImplementationsComponent implements OnInit {
         let typeNamespace = this.sharedData.selectedNamespace;
         let typeName = this.sharedData.selectedComponentId;
         let type = '{' + typeNamespace + '}' + typeName;
-        console.log(type);
         let resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
             localname,
             type);

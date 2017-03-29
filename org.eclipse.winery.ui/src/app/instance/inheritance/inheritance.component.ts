@@ -10,12 +10,12 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit } from '@angular/core';
-import { InheritanceService } from './inheritance.service';
-import { InheritanceApiData } from './inheritanceApiData';
-import { InstanceService } from '../instance.service';
-import { QNameList } from '../../qNameSelector/qNameApiData';
 import { isNullOrUndefined } from 'util';
 import { NotificationService } from '../../notificationModule/notification.service';
+import { QNameList } from '../../qNameSelector/qNameApiData';
+import { InstanceService } from '../instance.service';
+import { InheritanceService } from './inheritance.service';
+import { InheritanceApiData } from './inheritanceApiData';
 
 @Component({
     selector: 'winery-instance-inheritance',

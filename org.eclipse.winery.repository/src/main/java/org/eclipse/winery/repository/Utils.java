@@ -901,7 +901,7 @@ public class Utils {
 
 		ArtifactTemplatesResource templateResource = new ArtifactTemplatesResource();
 		QNameWithTypeApiData qNameApiData = new QNameWithTypeApiData();
-		qNameApiData.name = "xaasPackager_" + fileDetail.getFileName();
+		qNameApiData.localname = "xaasPackager_" + fileDetail.getFileName();
 		qNameApiData.namespace = "http://opentosca.org/xaaspackager";
 		qNameApiData.type = artifactType.toString();
 		templateResource.onJsonPost(qNameApiData);

@@ -12,6 +12,7 @@
  */
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { SelectModule } from 'ng2-select';
 import { EditXMLComponent } from './editXML/editXML.component';
@@ -22,13 +23,15 @@ import { DocumentationComponent } from './documentation/documentation.component'
 import { InheritanceComponent } from './inheritance/inheritance.component';
 import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
 import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
-import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { LoaderModule } from '../loader/loader.module';
+import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
+import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { QNameSelectorComponent } from '../qNameSelector/qNameSelector.component';
-import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
+import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { InterfacesModule } from './interfaces/interfaces.module';
 import { VisualAppearanceModule } from './visualAppearance/visualAppearance.module';
+import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
 import { AppliesToComponent } from './appliesTo/appliesTo.component';
 import { LanguageComponent } from './language/language.component';
 import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
@@ -38,23 +41,24 @@ import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefi
 import { TagsComponent } from './tags/tags.component';
 import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
 import { FilesComponent } from './filesTag/files.component';
-import { PropertiesComponent } from './properties/properties.component';
 import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
+import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
 import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
 import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
+import { ImplementationsModule } from './implementations/implementations.module';
+import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
 import { LoggerComponent } from './logger/logger.component';
-import { PlanTypesComponent } from './planTypes/planTypes.component';
-import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
-import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
 import { NamespacesComponent } from './namespaces/namespaces.component';
-import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
-import { DuplicateValidatorModule } from '../validators/duplicateValidator.module';
-import { NamespaceSelectorModule } from '../namespaceSelector/namespaceSelector.module';
+import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
+import { PlanTypesComponent } from './planTypes/planTypes.component';
+import { PropertiesComponent } from './properties/properties.component';
+import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { RepositoryModule } from './repository/repository.module';
 import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortName.component';
 
 @NgModule({
     imports: [
+        HttpModule,
         SelectModule,
         BrowserModule,
         FormsModule,
@@ -64,6 +68,7 @@ import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortNa
         WineryModalModule,
         InterfacesModule,
         VisualAppearanceModule,
+        ImplementationsModule,
         WineryTableModule,
         DuplicateValidatorModule,
         NamespaceSelectorModule,
@@ -93,6 +98,7 @@ import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortNa
         RequiredCapabilityTypeComponent,
         ImplementationArtifactsComponent,
         DeploymentArtifactsComponent,
+        InstanceStatesComponent,
         LoggerComponent,
         PlanTypesComponent,
         ConstraintTypesComponent,

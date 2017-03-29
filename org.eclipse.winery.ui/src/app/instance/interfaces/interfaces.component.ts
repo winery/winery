@@ -12,12 +12,11 @@
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InterfacesService } from './interfaces.service';
-import { InstanceService } from '../instance.service';
 import {
-    InterfacesApiData,
+    InputParameters,
     InterfaceOperationApiData,
     InterfaceParameter,
-    InputParameters,
+    InterfacesApiData,
     OutputParameters
 } from './interfacesApiData';
 import { isNullOrUndefined } from 'util';
