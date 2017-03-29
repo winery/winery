@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
-* 	   Lukas Balzer - added support for angular frontend
+ *     Lukas Balzer - added support for angular frontend
  *******************************************************************************/
 package org.eclipse.winery.repository.resources._support.collections;
 
@@ -77,21 +77,6 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 		this.entityTClazz = entityTClazz;
 		this.list = list;
 		this.res = res;
-	}
-
-	public Object getListOfAllEntityIds(@QueryParam("select2") String select2) {
-		if (select2 == null) {
-			return this.getListOfAllEntityIdsAsList();
-		} else {
-			// return data ready for consumption by select2
-			List<Select2DataItem> res = new ArrayList<>(this.list.size());
-			for (EntityT o : this.list) {
-				String id = this.getId(o);
-				Select2DataItem di = new Select2DataItem(id, id);
-				res.add(di);
-			}
-			return res;
-		}
 	}
 
 	public List<String> getListOfAllEntityIdsAsList() {
