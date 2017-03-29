@@ -14,7 +14,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { VisualAppearanceService } from './visualAppearance.service';
 import { FileUploader, FileItem } from 'ng2-file-upload';
-import { ColorPickerService } from 'angular2-color-picker';
 import { NotificationService } from '../../notificationModule/notificationservice';
 import { isNullOrUndefined } from 'util';
 import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
@@ -43,8 +42,7 @@ export class VisualAppearanceComponent implements OnInit {
     @ViewChild('upload50Modal') upload50Modal: any;
 
     constructor(private service: VisualAppearanceService,
-                private notify: NotificationService,
-                private cpService: ColorPickerService) {
+                private notify: NotificationService) {
     }
 
     ngOnInit() {
