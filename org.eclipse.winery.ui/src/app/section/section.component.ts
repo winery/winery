@@ -104,7 +104,8 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     addComponent() {
-        this.service.createComponent(this.newComponentName, this.newComponentNamespace, this.newComponentSelectedType.id)
+        let compType = this.newComponentSelectedType ? this.newComponentSelectedType.id : null;
+        this.service.createComponent(this.newComponentName, this.newComponentNamespace, compType)
             .subscribe(
                 data => this.handleSaveSuccess(),
                 error => this.handleError(error)
