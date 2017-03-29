@@ -8,7 +8,7 @@ ssh-add ~/.ssh/id_rsa
 # Prevent "Are you sure you want to continue connecting (yes/no)? " prompt
 printf "Host builds.opentosca.org\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
-command="cd www/winery/\n"
+command="cd www/winery-eclipse/\n"
 
 # change into dir and delete old snapshots
 command="${command}mkdir $TRAVIS_BRANCH\ncd $TRAVIS_BRANCH\nrm *.war\n"
