@@ -9,18 +9,18 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { PropertiesDefinitionComponent } from './propertiesDefinition.component';
-import { LoaderModule } from '../../loader/loader.module';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { SelectModule } from 'ng2-select';
 import { TabsModule, TypeaheadModule } from 'ng2-bootstrap';
-import { CommonModule } from '@angular/common';
+import { SelectModule } from 'ng2-select';
+import { LoaderModule } from '../../loader/loader.module';
+import { NamespaceSelectorModule } from '../../namespaceSelector/namespaceSelector.module';
+import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
-import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
-import { NamespaceSelectorModule } from '../../namespaceSelector/namespaceSelector.module';
+import { PropertiesDefinitionComponent } from './propertiesDefinition.component';
 
 @NgModule({
     imports: [

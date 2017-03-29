@@ -10,7 +10,7 @@
  *     Niko Stadelmaier - initial API and implementation
  */
 
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 /**
  * This component provides an easy and fast way to use the ng2-table with further modifications
@@ -52,29 +52,29 @@ export class WineryTableComponent implements OnInit {
      * @Input
      * @type {number}
      */
-    @Input() itemsPerPage: number = 10;
+    @Input() itemsPerPage = 10;
     /**
      * @Input
      * @type {number}
      */
-    @Input() maxSize: number = 5;
+    @Input() maxSize = 5;
     /**
      * @Input
      * @type {number}
      */
-    @Input() numPages: number = 1;
+    @Input() numPages = 1;
     /**
      * @Input
      * @type {number}
      */
-    @Input() length: number = 0;
+    @Input() length = 0;
     /**
      * If this value is set to true, the search bar will not be included.
      *
      * @Input
      * @type {boolean}
      */
-    @Input() disableFiltering: boolean = false;
+    @Input() disableFiltering = false;
     /**
      * The actual data which should be displayed in the table.
      *
@@ -141,7 +141,7 @@ export class WineryTableComponent implements OnInit {
     @Output() addBtnClicked = new EventEmitter <any>();
 
     public rows: Array<any> = [];
-    public page: number = 1;
+    public page = 1;
     public currentSelected: any = null;
 
     private oldData: Array<any> = this.data;

@@ -11,9 +11,9 @@
  *     Niko Stadelmaier - add admin component
  */
 import { Injectable } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { Observable } from 'rxjs';
 import { Http } from '@angular/http';
+import { Observable } from 'rxjs';
+import { isNullOrUndefined } from 'util';
 import { backendBaseUri } from '../configuration';
 
 @Injectable()
@@ -86,7 +86,7 @@ export class InstanceService {
                 subMenu = [''];
                 break;
             case 'admin':
-                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Contraint Types', 'Log'];
+                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Log'];
                 break;
             default:
                 subMenu = [''];

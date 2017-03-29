@@ -16,7 +16,7 @@ export class InterfacesApiData {
     operation: InterfaceOperationApiData[] = [];
     name: string;
 
-    constructor(name: string = '') {
+    constructor(name = '') {
         this.name = name;
     }
 }
@@ -27,9 +27,9 @@ export class InterfaceOperationApiData {
     otherAttributes: Object = null;
     inputParameters: InputParameters = new InputParameters();
     outputParameters: OutputParameters = new OutputParameters();
-    name: string = '';
+    name = '';
 
-    constructor(name: string = '') {
+    constructor(name = '') {
         this.name = name;
     }
 }

@@ -9,16 +9,38 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { backendBaseUri } from '../configuration';
 import { SectionData } from '../section/sectionData';
+import { ExistService } from '../util/existService';
 
 @Component({
     selector: 'winery-entity-container',
     templateUrl: 'entityContainer.component.html',
-    styleUrls: ['entitiyContainer.component.css']
+    styleUrls: ['entityContainer.component.css']
 })
-export class EntityContainerComponent {
+export class EntityContainerComponent implements OnInit {
     @Input() data: SectionData;
     @Input() resourceType: string;
+
+    imageUrl: string;
+
+    constructor(private existService: ExistService) {
+    }
+
+    ngOnInit(): void {
+        if (this.resourceType === 'nodeType' && this.data.id) {
+            const img = backendBaseUri + '/'
+                + this.resourceType.toLowerCase() + 's/'
+                + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/'
+                + this.data.id
+                + '/visualappearance/50x50';
+
+            this.existService.check(img)
+                .subscribe(
+                    data => this.imageUrl = img,
+                    error => this.imageUrl = null,
+                );
+        }
+    }
 }

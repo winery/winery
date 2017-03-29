@@ -14,6 +14,7 @@
 <div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
      class="entityContainer {{ resourceType }}"
      routerLink="/{{ resourceType.toLowerCase() }}s/{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}">
+    <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     <div class="left">
     </div>
     <div class="center">

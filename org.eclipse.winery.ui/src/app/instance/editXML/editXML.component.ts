@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -10,12 +9,9 @@
  * Contributors:
  *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
-
 import { Component, OnInit, Input, ElementRef } from '@angular/core';
-import { InstanceService } from '../instance.service';
-import { isNullOrUndefined } from 'util';
 import { EditXMLService } from './editXML.service';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 
 declare var requirejs: any;
 
@@ -26,13 +22,13 @@ declare var requirejs: any;
 })
 export class EditXMLComponent implements OnInit {
 
-    id: string = 'XML';
-    dataEditorLang: string = 'application/xml';
+    id = 'XML';
+    dataEditorLang = 'application/xml';
 
     // Set height to 500 px
     height = 500;
 
-    loading: boolean = true;
+    loading = true;
     xmlData: string;
     orionEditor: any = undefined;
 

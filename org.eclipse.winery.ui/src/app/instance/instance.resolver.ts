@@ -13,8 +13,8 @@
 
 import { Injectable }             from '@angular/core';
 import {
-    Router, Resolve, RouterStateSnapshot,
-    ActivatedRouteSnapshot, ResolveData
+    ActivatedRouteSnapshot, Resolve, ResolveData,
+    Router, RouterStateSnapshot
 } from '@angular/router';
 
 import { isNullOrUndefined } from 'util';

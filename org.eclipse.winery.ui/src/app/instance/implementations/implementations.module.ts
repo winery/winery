@@ -10,19 +10,19 @@
  *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
 
-import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { LoaderModule } from '../../loader/loader.module';
 import { NgModule } from '@angular/core';
-import { SelectModule } from 'ng2-select';
-import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
-import { TypeaheadModule, TabsModule, ModalModule } from 'ng2-bootstrap';
-import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
-import { ImplementationsComponent } from './implementations.component';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
+import { ModalModule, TabsModule, TypeaheadModule } from 'ng2-bootstrap';
+import { SelectModule } from 'ng2-select';
+import { LoaderModule } from '../../loader/loader.module';
 import { NamespaceSelectorModule } from '../../namespaceSelector/namespaceSelector.module';
+import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
+import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
+import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
+import { ImplementationsComponent } from './implementations.component';
 
 @NgModule({
     imports: [
