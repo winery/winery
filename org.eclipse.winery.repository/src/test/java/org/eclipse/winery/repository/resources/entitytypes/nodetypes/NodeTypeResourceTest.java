@@ -61,4 +61,13 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 		this.assertGetSize("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/implementations", 0);
 	}
 
+	@Test
+	public void baboabHasNoImage() throws Exception {
+		this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779");
+		start()
+				.get(callURL("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/visualappearance/50x50"))
+				.then()
+				.statusCode(404);
+	}
+
 }

@@ -79,7 +79,7 @@ public abstract class AbstractResourceTest {
 				.ifValidationFails();
 	}
 
-	private String callURL(String restURL) {
+	protected String callURL(String restURL) {
 		return PREFIX + Util.URLdecode(restURL);
 	}
 
