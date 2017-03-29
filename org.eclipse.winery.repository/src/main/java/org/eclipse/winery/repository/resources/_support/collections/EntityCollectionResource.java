@@ -149,7 +149,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	 *
 	 * In case the element already exists, we return "CONFLICT"
 	 */
-	//@POST
+	@POST
 	public Response addNewElement(EntityT entity) {
 		if (entity == null) {
 			return Response.status(Status.BAD_REQUEST).entity("a valid XML/JSON element has to be posted").build();

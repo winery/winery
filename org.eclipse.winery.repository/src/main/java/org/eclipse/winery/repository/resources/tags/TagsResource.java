@@ -60,14 +60,4 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 		return responseList.toArray(new TagsApiData[0]);
 	}
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addNewElement(TagsApiData data) {
-		TTag tag = new TTag();
-		tag.setName(data.name);
-		tag.setValue(data.value);
-		this.list.add(tag);
-		return CollectionsHelper.persist(this.res, this, tag, true);
-	}
-
 }
