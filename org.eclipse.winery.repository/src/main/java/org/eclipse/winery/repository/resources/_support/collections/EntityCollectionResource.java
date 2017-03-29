@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -29,12 +28,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.resources._support.IPersistable;
-import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
