@@ -39,25 +39,12 @@ import org.slf4j.LoggerFactory;
 
 public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TagsResource.class);
-
 	public TagsResource(IPersistable res, List<TTag> list) {
 		super(TagResource.class, TTag.class, list, res);
 	}
 
 	public Viewable getHTML() {
 		return new Viewable("/jsp/tags/tags.jsp", this);
-	}
-
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public TagsApiData[] getJSON() {
-		ArrayList<TagsApiData> responseList = new ArrayList<>();
-		TagsApiData apiData;
-		for (TTag entity : this.list) {
-			responseList.add(new TagsApiData(getId(entity), entity));
-		}
-		return responseList.toArray(new TagsApiData[0]);
 	}
 
 }

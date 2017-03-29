@@ -14,18 +14,32 @@ package org.eclipse.winery.repository.resources._support.collections;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.print.attribute.standard.Media;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.resources._support.IPersistable;
+import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
@@ -94,15 +108,35 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	}
 
 	/**
-	 * Required by reqandcapdefs.jsp
+	 * XML is currently not possible. One has to use Utils.getXMLAsString((Class<EntityT>) this.o.getClass(), this.o, false);
 	 */
-	public List<EntityResourceT> getAllEntityResources() {
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getAllEntityResources() {
 		List<String> listOfAllSubResources = this.getListOfAllEntityIdsAsList();
-		List<EntityResourceT> res = new ArrayList<>(listOfAllSubResources.size());
+		List<EntityResourceT> ressources = new ArrayList<>(listOfAllSubResources.size());
 		for (String id : listOfAllSubResources) {
-			res.add(this.getEntityResourceFromDecodedId(id));
+			ressources.add(this.getEntityResourceFromDecodedId(id));
 		}
-		return res;
+		return ressources.stream().map(res -> {
+			String id = this.getId(res.o);
+			// some objects already have an id field
+			// we set it nevertheless, because it might happen that the name of the id field is not "id", but something else (such as "name")
+
+			this.getEntityResourceFromDecodedId(id);
+			// general method, same as with data binding
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.enable(SerializationFeature.INDENT_OUTPUT);
+			// (note: can also use more specific type, like ArrayNode or
+			// ObjectNode!)
+			JsonNode jsonNode = mapper.valueToTree(res.o);
+			((ObjectNode)jsonNode).put("id", id);
+			try {
+				return mapper.writeValueAsString(jsonNode);
+			} catch (JsonProcessingException e) {
+				throw new WebApplicationException(e);
+			}
+		}).collect(Collectors.joining(",", "[", "]"));
 	}
 
 	public EntityResourceT getEntityResourceFromDecodedId(String id) {
