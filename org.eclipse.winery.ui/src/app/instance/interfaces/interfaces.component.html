@@ -11,10 +11,10 @@
  *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
  */
 -->
-
 <div *ngIf="loading">
     <winery-loader></winery-loader>
 </div>
+
 <div *ngIf="!loading && interfacesData">
     <div class="right">
         <button class="btn btn-primary" name="save" (click)="save()">Save</button>
@@ -34,7 +34,6 @@
                                (removeButtonClicked)="removeOperation()">
         </winery-selectableList>
     </div>
-
     <div>
         <winery-table *ngIf="inputParameters"
                       [title]="'Input Parameters'"
@@ -45,7 +44,6 @@
                       (cellSelected)="onInputParameterSelected($event.row)"
                       (removeBtnClicked)="removeInputParameter()">
         </winery-table>
-
         <winery-table *ngIf="outputParameters"
                       [title]="'Output Parameters'"
                       [data]="outputParameters"
@@ -55,6 +53,10 @@
                       (cellSelected)="onOutputParameterSelected($event.row)"
                       (removeBtnClicked)="removeOutputParameter()">
         </winery-table>
+    </div>
+    <div class="generateButtons">
+        <button class="btn btn-default btn-sm" (click)="showGenerateImplementationModal();">Generate Implementation Artifact</button>
+        <button class="btn btn-default btn-sm">Generate lifecycle interface</button>
     </div>
 </div>
 
@@ -156,4 +158,76 @@
         </p>
     </winery-modalBody>
     <winery-modalFooter [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'" (onOk)="onRemoveElement()"></winery-modalFooter>
+</winery-modal>
+
+<winery-modal bsModal #generateImplModal="bs-modal" [modalRef]="generateImplModal">
+    <winery-modalHeader [title]="'Generate Implementation Artifact'"></winery-modalHeader>
+    <winery-modalBody>
+        <form #generateForm="ngForm">
+            <div class="form-group">
+                <label for="javaPackage" class="control-label">Java Package</label>
+                <input type="text" name="javaPackage" [(ngModel)]="javaPackageName"
+                       (change)="checkImplementationExists();"
+                       required id="javaPackage"
+                       class="form-control">
+            </div>
+            <div class="form-group-grouping typeimplementation">
+                <div class="form-group">
+                    <label for="implName" class="control-label">
+                        {{ selectedResource }} Implementation Name
+                    </label>
+                    <input type="text" name="implementationName" [(ngModel)]="implementationName"
+                           class="form-control"
+                           id="implName">
+                    <div [ngSwitch]="createImplementation">
+                        <div *ngSwitchCase="true" class="alert alert-success">Will be created.</div>
+                        <div *ngSwitchDefault class="alert alert-info">Will be reused.</div>
+                    </div>
+                    <winery-namespaceSelector
+                        name="implementationNamespace"
+                        [(ngModel)]="implementationNamespace"
+                        (onChange)="checkImplementationExists();">
+                    </winery-namespaceSelector>
+                </div>
+            </div>
+            <p>
+                There is no check for the name of the implementation artifact. The artifact template name will be reused as implementation artifact name without any further check.
+            </p>
+            <div class="form-group-grouping typeimplementation">
+                <div class="form-group">
+                    <label for="artName" class="control-label">
+                        Artifact Template Name
+                    </label>
+                    <input type="text" name="artName" [(ngModel)]="artifactName"
+                           class="form-control" (change)="checkArtifactTemplateExists();"
+                           id="artName">
+                    <div [ngSwitch]="createArtifactTemplate">
+                        <div *ngSwitchCase="true" class="alert alert-success">
+                            Will be created.
+                        </div>
+                        <div *ngSwitchDefault="" class="alert alert-danger">
+                            Artifact Template already exists!
+                        </div>
+                    </div>
+                    <winery-namespaceSelector
+                        name="artifactNamespace"
+                        [(ngModel)]="artifactNamespace"
+                        (onChange)="checkArtifactTemplateExists();">
+                    </winery-namespaceSelector>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="artifactType" class="control-label">Artifact Type</label>
+                <input type="text" name="artifactType" [(ngModel)]="artifactType"
+                       required id="artifactType"
+                       class="form-control">
+            </div>
+        </form>
+    </winery-modalBody>
+    <winery-modalFooter
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Generate'"
+        (onOk)="generateImplementationArtifact()"
+        (onCancel)="show = false">
+    </winery-modalFooter>
 </winery-modal>

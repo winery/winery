@@ -11,7 +11,7 @@
  *     Niko Stadelmaier - add types and documentation
  */
 
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, Output, EventEmitter } from '@angular/core';
 import { NamespaceSelectorService } from './namespaceSelector.service';
 import { NotificationService } from '../notificationModule/notification.service';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
@@ -44,7 +44,7 @@ const customInputControl: any = {
  * <br>
  * @example <caption>Basic usage</caption>
  * ```html
- * <winery-namespaceSelector [(ngModel)]="mySelectedNamespace">
+ * <winery-namespaceSelector name="namespaceSelector" [(ngModel)]="mySelectedNamespace">
  * </winery-namespaceSelector>
  * ```
  *
@@ -74,6 +74,7 @@ export class NamespaceSelectorComponent implements OnInit, ControlValueAccessor 
 
     @Input() isRequired = false;
     @Input() typeAheadListLimit = 50;
+    @Output() onChange = new EventEmitter<any>();
 
     loading = true;
     allNamespaces: NamespaceWithPrefix[] = [];
@@ -104,6 +105,7 @@ export class NamespaceSelectorComponent implements OnInit, ControlValueAccessor 
         if (v !== this.innerValue) {
             this.innerValue = v;
             this.onChangeCallback(v);
+            this.onChange.emit();
         }
     }
 

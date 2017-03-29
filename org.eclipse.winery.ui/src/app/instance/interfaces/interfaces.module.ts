@@ -14,11 +14,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { LoaderModule } from '../../loader/loader.module';
+import { NamespaceSelectorModule } from '../../namespaceSelector/namespaceSelector.module';
 import { DuplicateValidatorModule } from '../../validators/duplicateValidator.module';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { InterfacesComponent } from './interfaces.component';
 import { SelectableListModule } from './selectableList/selectableList.module';
+import { ExistService } from '../../util/existService';
 
 @NgModule({
     imports: [
@@ -30,12 +32,15 @@ import { SelectableListModule } from './selectableList/selectableList.module';
         WineryTableModule,
         SelectableListModule,
         DuplicateValidatorModule,
+        NamespaceSelectorModule,
     ],
     exports: [InterfacesComponent],
     declarations: [
         InterfacesComponent,
     ],
-    providers: [],
+    providers: [
+        ExistService
+    ],
 })
 export class InterfacesModule {
 }

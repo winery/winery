@@ -35,7 +35,10 @@
             "single",
             "avoid-escape"
         ],
-        "semicolon": [true, "always"],
+        "semicolon": [
+            true,
+            "always"
+        ],
         "typedef-whitespace": [
             true,
             {
@@ -60,6 +63,8 @@
             "check-operator",
             "check-separator",
             "check-type"
-        ]
+        ],
+        "ordered-imports": true
     }
 }
+

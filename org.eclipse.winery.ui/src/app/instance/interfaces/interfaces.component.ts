@@ -10,7 +10,8 @@
  * Contributors:
  *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
  */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { isNullOrUndefined } from 'util';
 import { InterfacesService } from './interfaces.service';
 import {
     InputParameters,
@@ -19,15 +20,20 @@ import {
     InterfacesApiData,
     OutputParameters
 } from './interfacesApiData';
-import { isNullOrUndefined } from 'util';
 import { YesNoEnum } from '../../interfaces/enums';
 import { NotificationService } from '../../notificationModule/notification.service';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
+import { InstanceService } from '../instance.service';
+import { ExistService } from '../../util/existService';
+import { backendBaseUri } from '../../configuration';
 
 @Component({
     selector: 'winery-instance-interfaces',
     templateUrl: 'interfaces.component.html',
+    styleUrls: [
+        'interfaces.component.css'
+    ],
     providers: [
         InterfacesService
     ],
@@ -45,9 +51,9 @@ export class InterfacesComponent implements OnInit {
     selectedInputParameter: InterfaceParameter;
     selectedOutputParameter: InterfaceParameter;
     columns: Array<WineryTableColumn> = [
-        { title: 'Name', name: 'name', sort: true },
-        { title: 'Type', name: 'type', sort: true },
-        { title: 'Required', name: 'required', sort: false }
+        {title: 'Name', name: 'name', sort: true},
+        {title: 'Type', name: 'type', sort: true},
+        {title: 'Required', name: 'required', sort: false}
     ];
 
     modalTitle: string;
@@ -59,8 +65,20 @@ export class InterfacesComponent implements OnInit {
     @ViewChild('addElementForm') addElementForm: any;
     @ViewChild('parameterForm') parameterForm: any;
 
+    @ViewChild('generateImplModal') generateImplModal: any;
+    javaPackageName: string = null;
+    selectedResource: string;
+    resourceType: string;
+    implementationName: string = null;
+    implementationNamespace: string = null;
+    artifactName: string = null;
+    artifactNamespace: string = null;
+    createImplementation = true;
+    createArtifactTemplate = true;
+
     constructor(private service: InterfacesService,
-                private notify: NotificationService) {
+                private sharedData: InstanceService, private existService: ExistService,
+                private notify: NotificationService, private changeRef: ChangeDetectorRef) {
     }
 
     ngOnInit() {
@@ -69,6 +87,8 @@ export class InterfacesComponent implements OnInit {
                 data => this.handleInterfacesApiData(data),
                 error => this.handleError(error)
             );
+        this.selectedResource = this.sharedData.selectedResource.charAt(0).toUpperCase() + this.sharedData.selectedResource.slice(1);
+        this.resourceType = this.sharedData.selectedResource.replace(' ', '').toLowerCase();
     }
 
     // region ########### Template Callbacks ##########
@@ -210,6 +230,27 @@ export class InterfacesComponent implements OnInit {
 
     // endregion
 
+    // region ########## Generate Implementation ##########
+    showGenerateImplementationModal(): void {
+        this.javaPackageName = this.getPackageNameFromNamespace();
+        this.implementationName = this.sharedData.selectedComponentId + '_impl';
+        this.implementationNamespace = this.sharedData.selectedNamespace;
+        this.artifactName = this.sharedData.selectedComponentId + '__IA';
+        this.artifactNamespace = this.sharedData.selectedNamespace;
+
+        this.checkImplementationExists();
+        this.checkArtifactTemplateExists();
+
+        this.generateImplModal.show();
+    }
+
+    generateImplementationArtifact(): void {
+        console.log('generate');
+        this.generateImplModal.hide();
+    }
+
+    // endregion
+
     onRemoveElement() {
         switch (this.modalTitle) {
             case 'Remove Operation':
@@ -253,6 +294,47 @@ export class InterfacesComponent implements OnInit {
 
     private handleError(error: any) {
         this.notify.error(error.toString());
+    }
+
+    private getPackageNameFromNamespace(): string {
+        // to only get the relevant information, without the 'http://'
+        const namespaceArray = this.sharedData.selectedNamespace.split('/').slice(2);
+        const domainArray = namespaceArray[0].split('.');
+
+        let javaPackage = '';
+        for (let i = domainArray.length - 1; i >= 0; i--) {
+            if (javaPackage.length > 0) {
+                javaPackage += '.';
+            }
+            javaPackage += domainArray[i];
+        }
+        for (let i = 1; i < namespaceArray.length; i++) {
+            javaPackage += '.' + namespaceArray[i];
+        }
+
+        return javaPackage;
+    }
+
+    private checkImplementationExists(): void {
+        console.log(this.createImplementation);
+        this.existService.check(backendBaseUri + '/'
+            + this.resourceType + 'implementations/'
+            + encodeURIComponent(encodeURIComponent(this.implementationNamespace)) + '/'
+            + this.implementationName + '/'
+        ).subscribe(
+            data => this.createImplementation = false,
+            error => this.createArtifactTemplate = true
+        );
+    }
+
+    private checkArtifactTemplateExists(): void {
+        this.existService.check(backendBaseUri + '/artifacttemplates'
+            + encodeURIComponent(encodeURIComponent(this.artifactNamespace))
+            + this.artifactName + '/'
+        ).subscribe(
+            data => this.createArtifactTemplate = false,
+            error => this.createArtifactTemplate = true
+        );
     }
 
     // endregion

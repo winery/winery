@@ -100,6 +100,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     typeSelected(event: SelectData) {
+        console.log(event);
         this.newComponentSelectedType = event;
     }
 
