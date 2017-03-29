@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Nicole Keppler - JSON test
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.nodetypes;
 
@@ -38,9 +39,9 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
-	public void baboabCapabilitiesJSON() throws Exception {
+	public void baobabCapabilitiesJSON() throws Exception {
 		this.setRevisionTo("8b125a426721f8a0eb17340dc08e9b571b0cd7f7");
-		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/", "entitytypes/nodetypes/boabab_capabilites.json");
+		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/", "entitytypes/nodetypes/baobab_capabilites.json");
 	}
 
 	@Test
