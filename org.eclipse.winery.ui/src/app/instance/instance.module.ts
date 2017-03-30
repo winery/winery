@@ -38,7 +38,6 @@ import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.c
 import { PlansComponent } from './plans/plans.component';
 import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
 import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
-import { TagsComponent } from './tags/tags.component';
 import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
 import { FilesComponent } from './filesTag/files.component';
 import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
@@ -94,7 +93,6 @@ import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortNa
         PlansComponent,
         SelfservicePortalComponent,
         BoundaryDefinitionsComponent,
-        TagsComponent,
         ValidSourcesAndTargetsComponent,
         FilesComponent,
         PropertiesComponent,

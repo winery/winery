@@ -29,7 +29,6 @@ import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.c
 import { PlansComponent } from './plans/plans.component';
 import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
 import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
-import { TagsComponent } from './tags/tags.component';
 import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
 import { FilesComponent } from './filesTag/files.component';
 import { PropertiesComponent } from './properties/properties.component';
@@ -42,7 +41,7 @@ import { NamespacesComponent } from './namespaces/namespaces.component';
 import { RepositoryComponent } from './repository/repository.component';
 import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
 import { PlanTypesComponent } from './planTypes/planTypes.component';
-import { TagComponent } from "./tag/tag.component";
+import { TagComponent } from './tag/tag.component';
 import { RouterModule } from '@angular/router';
 
 
@@ -86,7 +85,6 @@ const instanceRoutes = [
             { path: 'requirementdefinitions', component: RequirementDefinitionsComponent },
             { path: 'selfserviceportal', component: SelfservicePortalComponent },
             { path: 'sourceinterfaces', component: InterfacesComponent },
-            { path: 'tags', component: TagsComponent },
             { path: 'targetinterfaces', component: InterfacesComponent },
             { path: 'tags', component: TagComponent},
             { path: 'topologytemplate', component: TopologyTemplateComponent },

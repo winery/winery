@@ -12,7 +12,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TagService } from './tag.service';
 import { TagsAPIData } from './tagsAPIData';
-import { NotificationService } from '../../notificationModule/notificationservice';
+import { NotificationService } from '../../notificationModule/notification.service';
 import { isNullOrUndefined } from 'util';
 import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 
@@ -22,7 +22,7 @@ import { ValidatorObject } from '../../validators/duplicateValidator.directive';
     providers: [TagService, NotificationService]
 })
 export class TagComponent implements OnInit {
-    loading: boolean = false;
+    loading = false;
     tagsData: TagsAPIData[] = [];
     newTag: TagsAPIData = new TagsAPIData();
     selectedCell: any;

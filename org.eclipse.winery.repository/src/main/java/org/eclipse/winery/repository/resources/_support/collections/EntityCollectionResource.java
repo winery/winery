@@ -8,7 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Lukas Balzer - added support for angular frontend
+ *     Lukas Balzer, Nicole Keppler - added support for angular frontend
  *******************************************************************************/
 package org.eclipse.winery.repository.resources._support.collections;
 
