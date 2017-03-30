@@ -38,7 +38,6 @@ import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.c
 import { PlansComponent } from './plans/plans.component';
 import { SelfservicePortalComponent } from './selfservicePortal/selfservicePortal.component';
 import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefinitions.component';
-import { TagsComponent } from './tags/tags.component';
 import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
 import { FilesComponent } from './filesTag/files.component';
 import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
@@ -54,7 +53,9 @@ import { PlanTypesComponent } from './planTypes/planTypes.component';
 import { PropertiesComponent } from './properties/properties.component';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
 import { RepositoryModule } from './repository/repository.module';
+import { TagModule } from './tag/tag.module';
 import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortName.component';
+
 
 @NgModule({
     imports: [
@@ -72,7 +73,8 @@ import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortNa
         WineryTableModule,
         DuplicateValidatorModule,
         NamespaceSelectorModule,
-        RepositoryModule
+        RepositoryModule,
+        TagModule
     ],
     exports: [],
     declarations: [
@@ -91,7 +93,6 @@ import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortNa
         PlansComponent,
         SelfservicePortalComponent,
         BoundaryDefinitionsComponent,
-        TagsComponent,
         ValidSourcesAndTargetsComponent,
         FilesComponent,
         PropertiesComponent,

@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -339,20 +340,22 @@ public class BackendUtils {
 		return Response.noContent().build();
 	}
 
-	/**
-	 * Persists the resource and returns appropriate response
-	 */
-	public static Response persist(IPersistable res) {
+	public static ResponseBuilder persistWithResponseBuilder(IPersistable res) {
 		Response r;
 		try {
 			res.persist();
 		} catch (IOException e) {
 			BackendUtils.LOGGER.debug("Could not persist resource", e);
-			r = Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
-			return r;
+			throw new WebApplicationException(e);
 		}
-		r = Response.noContent().build();
-		return r;
+		return Response.noContent();
+	}
+
+	/**
+	 * Persists the resource and returns appropriate response
+	 */
+	public static Response persist(IPersistable res) {
+		return persistWithResponseBuilder(res).build();
 	}
 
 	public static Response rename(TOSCAComponentId oldId, TOSCAComponentId newId) {
