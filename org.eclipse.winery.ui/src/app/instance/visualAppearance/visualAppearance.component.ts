@@ -40,6 +40,7 @@ export class VisualAppearanceComponent implements OnInit {
     hasImg50DropZoneOver = false;
     @ViewChild('upload16Modal') upload16Modal: any;
     @ViewChild('upload50Modal') upload50Modal: any;
+
     constructor(private service: VisualAppearanceService,
                 private notify: NotificationService) {
     }
