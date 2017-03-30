@@ -251,7 +251,7 @@ public class CSARImporter {
 			while (namespaces.hasNext()) {
 				boolean addToStorage = false;
 				String namespace = namespaces.next();
-				if (NamespacesResource.INSTANCE.getIsPrefixKnownForNamespace(namespace)) {
+				if (NamespacesResource.getInstance().getIsPrefixKnownForNamespace(namespace)) {
 					String storedPrefix = NamespacesResource.getPrefix(namespace);
 					// QUICK HACK to check whether the prefix is a generated one
 					// We assume we know the internal generation routine
@@ -266,7 +266,7 @@ public class CSARImporter {
 				}
 				if (addToStorage) {
 					String prefix = pconf.getString(namespace);
-					NamespacesResource.INSTANCE.addNamespace(namespace, prefix);
+					NamespacesResource.getInstance().addNamespace(namespace, prefix);
 				}
 			}
 		}
