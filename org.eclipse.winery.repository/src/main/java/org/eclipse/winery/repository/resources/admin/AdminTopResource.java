@@ -32,7 +32,7 @@ public class AdminTopResource {
 
 	@Path("namespaces/")
 	public NamespacesResource getNamespacesResource() {
-		return NamespacesResource.INSTANCE;
+		return NamespacesResource.getInstance();
 	}
 
 	@Path("repository/")

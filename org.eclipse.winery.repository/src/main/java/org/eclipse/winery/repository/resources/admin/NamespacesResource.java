@@ -56,12 +56,9 @@ import org.slf4j.LoggerFactory;
  */
 public class NamespacesResource extends AbstractAdminResource {
 
-	public final static NamespacesResource INSTANCE = new NamespacesResource();
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(NamespacesResource.class);
 
 	private Integer nsCount = 0;
-
 
 	private NamespacesResource() {
 		super(new NamespacesId());
@@ -91,22 +88,22 @@ public class NamespacesResource extends AbstractAdminResource {
 		if (namespace == null) {
 			throw new IllegalArgumentException("Namespace must not be null");
 		}
-		String prefix = NamespacesResource.INSTANCE.configuration.getString(namespace);
+		String prefix = NamespacesResource.getInstance().configuration.getString(namespace);
 		if (prefix == null) {
 			prefix = NamespacesResource.generatePrefix(namespace);
-			NamespacesResource.INSTANCE.configuration.setProperty(namespace, prefix);
+			NamespacesResource.getInstance().configuration.setProperty(namespace, prefix);
 		}
 		return prefix;
 	}
 
 	private static String generatePrefix(String namespace) {
 		String prefix;
-		Collection<String> allPrefixes = NamespacesResource.INSTANCE.getAllPrefixes();
+		Collection<String> allPrefixes = NamespacesResource.getInstance().getAllPrefixes();
 
 		// TODO: generate prefix using URI (and not "arbitrary" prefix)
 		do {
-			prefix = String.format("ns%d", NamespacesResource.INSTANCE.nsCount);
-			NamespacesResource.INSTANCE.nsCount++;
+			prefix = String.format("ns%d", NamespacesResource.getInstance().nsCount);
+			NamespacesResource.getInstance().nsCount++;
 		} while (allPrefixes.contains(prefix));
 		return prefix;
 	}
@@ -116,7 +113,7 @@ public class NamespacesResource extends AbstractAdminResource {
 	 * at component instances.
 	 */
 	public static Collection<Namespace> getNamespaces() {
-		HashSet<Namespace> res = NamespacesResource.INSTANCE.getRegisteredNamespaces();
+		HashSet<Namespace> res = NamespacesResource.getInstance().getRegisteredNamespaces();
 		res.addAll(Repository.INSTANCE.getUsedNamespaces());
 		ArrayList<Namespace> list = new ArrayList<>(res);
 		Collections.sort(list);
@@ -164,11 +161,15 @@ public class NamespacesResource extends AbstractAdminResource {
 	 * @param clazz the TOSCA component class which namespaces' should be returned.
 	 */
 	public static Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz) {
-		HashSet<Namespace> res = NamespacesResource.INSTANCE.getRegisteredNamespaces();
+		HashSet<Namespace> res = NamespacesResource.getInstance().getRegisteredNamespaces();
 		res.addAll(Repository.INSTANCE.getComponentsNamespaces(clazz));
 		ArrayList<Namespace> list = new ArrayList<>(res);
 		Collections.sort(list);
 		return list;
+	}
+
+	public static NamespacesResource getInstance() {
+		return new NamespacesResource();
 	}
 
 	private Collection<String> getAllPrefixes() {

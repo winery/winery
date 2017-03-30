@@ -151,8 +151,8 @@ public class PropertiesDefinitionResource {
 			// create winery properties definition and persist it
 			ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
 			String namespace = data.winerysPropertiesDefinition.getNamespace();
-			if (!NamespacesResource.INSTANCE.getIsPrefixKnownForNamespace(namespace)) {
-				NamespacesResource.INSTANCE.addNamespace(namespace);
+			if (!NamespacesResource.getInstance().getIsPrefixKnownForNamespace(namespace)) {
+				NamespacesResource.getInstance().addNamespace(namespace);
 			}
 			return BackendUtils.persist(this.parentRes);
 		}
