@@ -48,6 +48,7 @@ import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,12 +58,9 @@ import org.slf4j.LoggerFactory;
  */
 public class NamespacesResource extends AbstractAdminResource {
 
-	public final static NamespacesResource INSTANCE = new NamespacesResource();
-
 	private static final Logger LOGGER = LoggerFactory.getLogger(NamespacesResource.class);
 
 	private Integer nsCount = 0;
-
 
 	private NamespacesResource() {
 		super(new NamespacesId());
@@ -73,6 +71,10 @@ public class NamespacesResource extends AbstractAdminResource {
 		this.configuration.setProperty("http://www.w3.org/XML/1998/namespace", "xmlns");
 		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE, "tosca");
 		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery");
+	}
+
+	public static NamespacesResource getInstance() {
+		return new NamespacesResource();
 	}
 
 	private Collection<String> getAllPrefixes() {
@@ -167,22 +169,24 @@ public class NamespacesResource extends AbstractAdminResource {
 		if (namespace == null) {
 			throw new IllegalArgumentException("Namespace must not be null");
 		}
-		String prefix = NamespacesResource.INSTANCE.configuration.getString(namespace);
+		final Configuration configuration = NamespacesResource.getInstance().configuration;
+		String prefix = configuration.getString(namespace);
 		if (prefix == null) {
 			prefix = NamespacesResource.generatePrefix(namespace);
-			NamespacesResource.INSTANCE.configuration.setProperty(namespace, prefix);
+			configuration.setProperty(namespace, prefix);
 		}
 		return prefix;
 	}
 
 	private static String generatePrefix(String namespace) {
 		String prefix;
-		Collection<String> allPrefixes = NamespacesResource.INSTANCE.getAllPrefixes();
+		final NamespacesResource resource = NamespacesResource.getInstance();
+		Collection<String> allPrefixes = resource.getAllPrefixes();
 
 		// TODO: generate prefix using URI (and not "arbitrary" prefix)
 		do {
-			prefix = String.format("ns%d", NamespacesResource.INSTANCE.nsCount);
-			NamespacesResource.INSTANCE.nsCount++;
+			prefix = String.format("ns%d", resource.nsCount);
+			resource.nsCount++;
 		} while (allPrefixes.contains(prefix));
 		return prefix;
 	}
@@ -209,7 +213,7 @@ public class NamespacesResource extends AbstractAdminResource {
 	 * at component instances.
 	 */
 	public static Collection<Namespace> getNamespaces() {
-		HashSet<Namespace> res = NamespacesResource.INSTANCE.getRegisteredNamespaces();
+		HashSet<Namespace> res = NamespacesResource.getInstance().getRegisteredNamespaces();
 		res.addAll(Repository.INSTANCE.getUsedNamespaces());
 		ArrayList<Namespace> list = new ArrayList<>(res);
 		Collections.sort(list);
@@ -256,7 +260,7 @@ public class NamespacesResource extends AbstractAdminResource {
 	 * @param clazz the TOSCA component class which namespaces' should be returned.
 	 */
 	public static Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz) {
-		HashSet<Namespace> res = NamespacesResource.INSTANCE.getRegisteredNamespaces();
+		HashSet<Namespace> res = NamespacesResource.getInstance().getRegisteredNamespaces();
 		res.addAll(Repository.INSTANCE.getComponentsNamespaces(clazz));
 		ArrayList<Namespace> list = new ArrayList<>(res);
 		Collections.sort(list);
