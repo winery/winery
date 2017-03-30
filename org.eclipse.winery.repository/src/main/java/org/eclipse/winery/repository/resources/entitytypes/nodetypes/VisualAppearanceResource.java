@@ -77,14 +77,12 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("data")
 	public NodeTypesVisualsApiData getJsonData() {
 		return new NodeTypesVisualsApiData(this);
 	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("data")
 	public Response putJsonData(NodeTypesVisualsApiData data) {
 		this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, data.color);
 		return BackendUtils.persist(this.res);

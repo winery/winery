@@ -96,6 +96,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 				if (dashStyle != null) {
 					jg.writeStringField("dashstyle", dashStyle);
 				}
+				jg.writeStringField("dash", getDash());
 			}
 			jg.writeEndObject();
 
@@ -112,6 +113,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
 			// source arrow head
 			String head = this.getSourceArrowHead();
+			jg.writeStringField("sourcearrowhead", head);
 			if (!head.equals("none")) {
 				jg.writeStartArray();
 				jg.writeString(head);
@@ -137,6 +139,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
 			// target arrow head
 			head = this.getTargetArrowHead();
+			jg.writeStringField("targetarrowhead", head);
 			if (!head.equals("none")) {
 				jg.writeStartArray();
 				jg.writeString(head);
