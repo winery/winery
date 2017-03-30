@@ -361,8 +361,8 @@ export class InterfacesComponent implements OnInit {
 
     private checkArtifactTemplateExists(): void {
         if (!this.generateArtifactApiData.artifactTemplateNamespace.endsWith('/')) {
-            this.existService.check(backendBaseUri + '/artifacttemplates'
-                + encodeURIComponent(encodeURIComponent(this.generateArtifactApiData.artifactTemplateNamespace))
+            this.existService.check(backendBaseUri + '/artifacttemplates/'
+                + encodeURIComponent(encodeURIComponent(this.generateArtifactApiData.artifactTemplateNamespace)) + '/'
                 + this.generateArtifactApiData.artifactTemplateName + '/'
             ).subscribe(
                 data => this.createArtifactTemplate = false,
