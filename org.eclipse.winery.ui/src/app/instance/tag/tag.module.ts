@@ -40,11 +40,9 @@ import { NamespaceSelectorModule } from '../../namespaceSelector/namespaceSelect
         NamespaceSelectorModule,
         DuplicateValidatorModule,
     ],
-    exports: [],
     declarations: [
         TagComponent
     ],
-    providers: [],
 })
 export class TagModule {
 }
