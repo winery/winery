@@ -10,6 +10,12 @@
  *     Lukas Balzer- initial API and implementation
  */
 
+/**
+* background-images: url(..) links are not correctly resolved by webpack
+* when the .css file is not located in sry/css
+* Bsp.: the url(../assets/sth.png) in comp/comp.css is resolved to localhost:3000/assets/sth.png
+* while it should be localhost:3000/assets/sth.[hash].png
+ */
 .img {
     float: left;
 }
@@ -110,7 +116,7 @@ tab {
 }
 
 .dottedLine {
-    background-image: url("../assets/img/relationshiptype/dottedLine100.png");
+    background-image: url('../assets/img/relationshiptype/dottedLine100.png');
 }
 
 .plainLine {

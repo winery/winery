@@ -7,8 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
- *     Lukas Balzer - added fileUploader and color picker component
+ *     Lukas Balzer - initial API and implementation
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -18,13 +17,11 @@ import { NotificationService } from '../../notificationModule/notification.servi
 import { isNullOrUndefined } from 'util';
 import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
+import '../../../css/visualAppearance.component.css';
 
 @Component({
     selector: 'winery-instance-visualAppearance',
     templateUrl: 'visualAppearance.component.html',
-    styleUrls: [
-        'visualAppearance.component.css'
-    ],
     providers: [VisualAppearanceService]
 })
 export class VisualAppearanceComponent implements OnInit {
@@ -54,7 +51,7 @@ export class VisualAppearanceComponent implements OnInit {
         if (this.service.isNodeType) {
             this.getNodeTypeData();
         } else {
-            this.getRelationshipdata();
+            this.getRelationshipData();
         }
     }
 
@@ -144,7 +141,7 @@ export class VisualAppearanceComponent implements OnInit {
         }
     }
 
-    getRelationshipdata() {
+    getRelationshipData() {
         this.service.getData().subscribe(
             data => this.handleRelationshipData(data),
             error => this.handleError(error)

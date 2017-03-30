@@ -14,7 +14,7 @@
 <tabset>
     <tab heading="Color">
         <br/>
-        <div *ngIf="!loading && (nodeTypeData != null|| relationshipData!= null)">
+        <div *ngIf="!loading && (nodeTypeData != null || relationshipData != null)">
             <div class="picker" *ngIf="nodeTypeData != null">
                 <b>Bordercolor:</b><br>
                 <input class="colorInput" name="eventColor" type="color" [(ngModel)]="borderColorLocal">
@@ -22,16 +22,16 @@
                     click on the area above to change border color<br/>
                 </div>
             </div>
-            <div class="picker line_colorPicker" *ngIf="relationshipData!= null">
+            <div class="picker line_colorPicker" *ngIf="relationshipData != null">
                 <b>Line color:</b><br>
-                <input class="colorInput"  name="eventColor" type="color" [(ngModel)]="colorLocal">
+                <input class="colorInput" name="eventColor" type="color" [(ngModel)]="colorLocal">
                 <div class="floatContent">
                     click on the area above to change line color<br/>
                 </div>
             </div>
-            <div class="picker hc_colorPicker" *ngIf="relationshipData!= null">
+            <div class="picker hc_colorPicker" *ngIf="relationshipData != null">
                 <b>Color when hovered:</b><br>
-                <input class="colorInput"  name="eventColor" type="color" [(ngModel)]="hoverColorLocal">
+                <input class="colorInput" name="eventColor" type="color" [(ngModel)]="hoverColorLocal">
                 <div class="floatContent">
                     click on the area above to change hover color<br/>
                 </div>
@@ -84,8 +84,10 @@
                 </div>
                 <div class="list" *ngIf="relationshipData?.boolData.sourcearrowheadSelected">
                     <span class="list item noneSource" (click)="selectArrowItem('sourcearrowhead','none');"></span>
-                    <span class="list item PlainArrowSource" (click)="selectArrowItem('sourcearrowhead','PlainArrow');"></span>
-                    <span class="list item DiamondSource" (click)="selectArrowItem('sourcearrowhead','Diamond');"></span>
+                    <span class="list item PlainArrowSource"
+                          (click)="selectArrowItem('sourcearrowhead','PlainArrow');"></span>
+                    <span class="list item DiamondSource"
+                          (click)="selectArrowItem('sourcearrowhead','Diamond');"></span>
                 </div>
             </div>
             <div class="slot">
@@ -114,8 +116,10 @@
                 </div>
                 <div class="list" *ngIf="relationshipData?.boolData.targetarrowheadSelected">
                     <span class="list item noneTarget" (click)="selectArrowItem('targetarrowhead','none');"></span>
-                    <span class="list item PlainArrowTarget" (click)="selectArrowItem('targetarrowhead','PlainArrow');"></span>
-                    <span class="list item DiamondTarget" (click)="selectArrowItem('targetarrowhead','Diamond');"></span>
+                    <span class="list item PlainArrowTarget"
+                          (click)="selectArrowItem('targetarrowhead','PlainArrow');"></span>
+                    <span class="list item DiamondTarget"
+                          (click)="selectArrowItem('targetarrowhead','Diamond');"></span>
                 </div>
             </div>
         </div>
