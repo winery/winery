@@ -46,7 +46,6 @@ import org.eclipse.winery.repository.datatypes.NamespaceAndCountOfComponentInsta
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.resources.apiData.NamespaceWithPrefix;
 
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,12 +97,13 @@ public class NamespacesResource extends AbstractAdminResource {
 
 	private static String generatePrefix(String namespace) {
 		String prefix;
-		Collection<String> allPrefixes = NamespacesResource.getInstance().getAllPrefixes();
+		final NamespacesResource resource = NamespacesResource.getInstance();
+		Collection<String> allPrefixes = resource.getAllPrefixes();
 
 		// TODO: generate prefix using URI (and not "arbitrary" prefix)
 		do {
-			prefix = String.format("ns%d", NamespacesResource.getInstance().nsCount);
-			NamespacesResource.getInstance().nsCount++;
+			prefix = String.format("ns%d", resource.nsCount);
+			resource.nsCount++;
 		} while (allPrefixes.contains(prefix));
 		return prefix;
 	}
@@ -181,13 +181,6 @@ public class NamespacesResource extends AbstractAdminResource {
 			res.add(prefix);
 		}
 		return res;
-	}
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/admin/namespaces.jsp", this);
-		return Response.ok().entity(viewable).build();
 	}
 
 	/**

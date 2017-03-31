@@ -27,7 +27,7 @@ export class NamespaceSelectorService {
         let headers = new Headers({ 'Accept': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseUri + '/admin/namespaces', options)
+        return this.http.get(backendBaseUri + '/admin/namespaces/', options)
             .map(res => res.json());
     }
 }
