@@ -282,25 +282,6 @@ export class InterfacesComponent implements OnInit {
 
     save() {
         this.loading = true;
-
-        // Ensure that empty items are null, otherwise the backend will save the interfaces in a wrong format
-        // TODO: Move functionality to backend
-        for (let item of this.interfacesData) {
-            if (item.operation.length > 0) {
-                for (let operation of item.operation) {
-                    if (isNullOrUndefined(operation.inputParameters) || operation.inputParameters.inputParameter.length === 0) {
-                        operation.inputParameters = null;
-                    }
-
-                    if (isNullOrUndefined(operation.outputParameters) || operation.outputParameters.outputParameter.length === 0) {
-                        operation.outputParameters = null;
-                    }
-                }
-            } else {
-                item.operation = null;
-            }
-        }
-
         this.service.save(this.interfacesData)
             .subscribe(
                 data => this.handleSave(),
