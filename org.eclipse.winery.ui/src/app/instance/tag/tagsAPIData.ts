@@ -7,18 +7,11 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Lukas Balzer - initial API and implementation
  */
-import { Component, OnInit } from '@angular/core';
 
-@Component({
-    selector: 'winery-tags',
-    templateUrl: 'tags.component.html'
-})
-export class TagsComponent implements OnInit {
-    constructor() {
-    }
-
-    ngOnInit() {
-    }
+export class TagsAPIData {
+    id: string;
+    name: string;
+    value: string;
 }

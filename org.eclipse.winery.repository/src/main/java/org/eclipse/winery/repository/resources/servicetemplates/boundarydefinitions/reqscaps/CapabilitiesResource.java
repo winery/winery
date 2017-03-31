@@ -70,7 +70,7 @@ public class CapabilitiesResource extends EntityWithoutIdCollectionResource<Capa
 		// "this.alreadyContains(ref)" cannot be called as this leads to a mappable exception: The data does not contain an id where the given ref attribute may point to
 
 		this.list.add(ref);
-		return CollectionsHelper.persist(this.res, this, ref);
+		return CollectionsHelper.persist(this.res, this, ref, true);
 	}
 
 }
