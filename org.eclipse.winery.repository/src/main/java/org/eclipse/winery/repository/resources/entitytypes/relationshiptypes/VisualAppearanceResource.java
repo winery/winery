@@ -96,7 +96,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 				if (dashStyle != null) {
 					jg.writeStringField("dashstyle", dashStyle);
 				}
-				jg.writeStringField("dash", getDash());
 			}
 			jg.writeEndObject();
 
@@ -106,6 +105,11 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			jg.writeObject(this.getHoverColor());
 			jg.writeEndObject();
 
+			jg.writeStringField("dash", getDash());
+			jg.writeStringField("sourcearrowhead", this.getSourceArrowHead());
+			jg.writeStringField("targetarrowhead", this.getTargetArrowHead());
+			jg.writeStringField("color", this.getColor());
+			jg.writeStringField("hovercolor", this.getHoverColor());
 			// BEGIN: Overlays
 
 			jg.writeFieldName("overlays");
@@ -113,7 +117,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
 			// source arrow head
 			String head = this.getSourceArrowHead();
-			jg.writeStringField("sourcearrowhead", head);
 			if (!head.equals("none")) {
 				jg.writeStartArray();
 				jg.writeString(head);
@@ -139,7 +142,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
 			// target arrow head
 			head = this.getTargetArrowHead();
-			jg.writeStringField("targetarrowhead", head);
 			if (!head.equals("none")) {
 				jg.writeStartArray();
 				jg.writeString(head);
@@ -192,7 +194,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("data")
 	public Response putJsonData(RelationshipTypesVisualsApiData data) {
 		if (data == null) {
 			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
@@ -204,13 +205,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		this.otherAttributes.put(VisualAppearanceResource.QNAME_HOVER_COLOR, data.hovercolor);
 		this.otherAttributes.put(QNames.QNAME_COLOR, data.color);
 		return BackendUtils.persist(this.res);
-	}
-
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("data")
-	public RelationshipTypesVisualsApiData getVisualsJson() {
-		return new RelationshipTypesVisualsApiData(this);
 	}
 
 	/* * * source arrow head * * */

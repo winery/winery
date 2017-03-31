@@ -49,13 +49,13 @@ export class VisualAppearanceService {
     getData() {
         let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseUri + this.path + '/data', options)
+        return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
 
     saveVisuals(data: any): Observable<Response> {
         let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        return this.http.put(backendBaseUri + this.path + '/data', JSON.stringify(data), options);
+        return this.http.put(backendBaseUri + this.path + '/', JSON.stringify(data), options);
     }
 }

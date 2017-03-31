@@ -16,17 +16,38 @@
 * Bsp.: the url(../assets/sth.png) in comp/comp.css is resolved to localhost:3000/assets/sth.png
 * while it should be localhost:3000/assets/sth.[hash].png
  */
-.img {
+img {
     float: left;
+    margin-left: 10px;
 }
 
 button.upload {
     float: right;
-    margin-right: 700px;
+    margin-right: 70px;
+}
+
+.uploadImgArea {
+    float: right;
+    width: 45%;
+}
+
+.colorPickerArea {
+    float: left;
+    width: 45%;
+}
+
+.arrowSelectArea {
+    margin-top: 320px;
+    width: 45%;
+    height: 230px;
+}
+
+.floatContent {
+    height: 70px;
 }
 
 .imgDropZone {
-    min-height: 50px;
+    height: 60px;
     margin-bottom: 20px;
     margin-top: 10px;
     padding-left: 20px;
@@ -37,36 +58,8 @@ button.upload {
     background-color: ghostwhite;
 }
 
-.fileZone {
-    border: solid 3px lightgray;
-    border-radius: 3px;
-    padding: 5px;
-}
-
 .nv-file-over {
     border: dotted 3px red;
-}
-
-tab {
-    min-height: 100px;
-    padding-top: 10px;
-    position: relative;
-}
-
-.arrowSelect {
-    height: 200px;
-}
-
-.line_colorPicker {
-    width: 50%;
-}
-
-.picker {
-    float: left;
-}
-
-.hc_colorPicker {
-    width: 50%;
 }
 
 .colorInput {
