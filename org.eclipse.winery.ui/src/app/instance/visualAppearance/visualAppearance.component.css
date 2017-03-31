@@ -9,24 +9,39 @@
  * Contributors:
  *     Lukas Balzer- initial API and implementation
  */
-.colorPicker {
-    float: left;
-    position: relative;
-    height: 300px;
-    cursor: pointer;
-}
 
-.img {
+img {
     float: left;
+    margin-left: 10px;
 }
 
 button.upload {
     float: right;
-    margin-right: 700px;
+    margin-right: 70px;
+}
+
+.uploadImgArea {
+    float: right;
+    width: 45%;
+}
+
+.colorPickerArea {
+    float: left;
+    width: 45%;
+}
+
+.arrowSelectArea {
+    margin-top: 320px;
+    width: 45%;
+    height: 230px;
+}
+
+.floatContent {
+    height: 70px;
 }
 
 .imgDropZone {
-    min-height: 50px;
+    height: 60px;
     margin-bottom: 20px;
     margin-top: 10px;
     padding-left: 20px;
@@ -37,21 +52,88 @@ button.upload {
     background-color: ghostwhite;
 }
 
-.fileZone {
-    border: solid 3px lightgray;
-    border-radius: 3px;
-    padding: 5px;
-}
-
 .nv-file-over {
     border: dotted 3px red;
 }
 
-.colorTab {
-    height: 350px;
-    padding-top: 10px;
+.colorInput {
+    width: 200px;
 }
 
-.floatContent {
-    margin-left: 250px;
+.save {
+    margin-left: 850px;
+}
+
+/**
+*Definition of the  Arrow selector style
+ */
+.slot {
+    float: left;
+}
+
+.list {
+    box-shadow: 1px 2px #3F3F3F;
+}
+
+.header {
+    border: groove 1px;
+    margin-bottom: 5px;
+}
+
+.item {
+    float: left;
+    background-color: lightgray;
+    cursor: pointer;
+    margin-right: 5px;
+    clear: both;
+    width: 70px;
+    height: 30px;
+}
+
+.middle {
+    width: 100px;
+}
+
+.item:nth-child(2n-1) {
+    background-color: lightsteelblue;
+}
+
+.item:hover {
+    background-color: lightblue;
+}
+
+.dottedLine {
+    background-image: url('../../../assets/img/relationshiptype/dottedLine100.png');
+}
+
+.plainLine {
+    background-image: url('../../../assets/img/relationshiptype/plainLine100.png');
+}
+
+.dotted2Line {
+    background-image: url('../../../assets/img/relationshiptype/dotted2Line100.png');
+}
+
+.noneTarget {
+    background-image: url('../../../assets/img/relationshiptype/noneTarget70.png');
+}
+
+.DiamondTarget {
+    background-image: url('../../../assets/img/relationshiptype/DiamondTarget70.png');
+}
+
+.PlainArrowTarget {
+    background-image: url('../../../assets/img/relationshiptype/PlainArrowTarget70.png');
+}
+
+.noneSource {
+    background-image: url('../../../assets/img/relationshiptype/noneSource70.png');
+}
+
+.DiamondSource {
+    background-image: url('../../../assets/img/relationshiptype/DiamondSource70.png');
+}
+
+.PlainArrowSource {
+    background-image: url('../../../assets/img/relationshiptype/PlainArrowSource70.png');
 }

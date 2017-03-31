@@ -17,10 +17,13 @@ import { TabsModule, TypeaheadModule } from 'ng2-bootstrap';
 import { CommonModule } from '@angular/common';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { VisualAppearanceComponent } from './visualAppearance.component';
-// Due to issues regarding the angular version, use anther color picker here https://github.com/Alberplz/angular2-color-picker/issues/66
-// import { ColorPickerModule, ColorPickerService } from 'angular2-color-picker';
 import { FileUploadModule } from 'ng2-file-upload';
+import { WineryUploaderModule } from '../../fileUploaderModal/wineryUploader.module';
 
+/**
+ * an angular module for displaying the visualApperances for both the nodeTypes and the relationshipTypes
+ * therefore an instance of <code>NodeTypesVisualsApiData</code> or <code>RelationshipTypesVisualsApiData</code> is loaded from the backend
+ */
 @NgModule({
     imports: [
         TabsModule.forRoot(),
@@ -28,14 +31,14 @@ import { FileUploadModule } from 'ng2-file-upload';
         FormsModule,
         LoaderModule,
         CommonModule,
-        // ColorPickerModule,
         WineryModalModule,
-        FileUploadModule
+        FileUploadModule,
+        WineryUploaderModule
     ],
     exports: [],
     declarations: [
         VisualAppearanceComponent,
-    ],
+    ]
 })
 export class VisualAppearanceModule {
 }

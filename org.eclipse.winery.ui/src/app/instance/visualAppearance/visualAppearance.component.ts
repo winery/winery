@@ -7,8 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
- *     Lukas Balzer - added fileUploader and color picker component
+ *     Lukas Balzer - initial API and implementation
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -16,6 +15,8 @@ import { VisualAppearanceService } from './visualAppearance.service';
 import { FileUploader, FileItem } from 'ng2-file-upload';
 import { NotificationService } from '../../notificationModule/notification.service';
 import { isNullOrUndefined } from 'util';
+import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
+import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
 
 @Component({
     selector: 'winery-instance-visualAppearance',
@@ -26,11 +27,12 @@ import { isNullOrUndefined } from 'util';
     providers: [VisualAppearanceService]
 })
 export class VisualAppearanceComponent implements OnInit {
-    color = '#f00';
-    isColorLoaded = false;
+    relationshipData: RelationshipTypesVisualsApiData;
+    nodeTypeData: NodeTypesVisualsApiData;
     loading = true;
     img16uploader: FileUploader;
     img50uploader: FileUploader;
+    fileItem: FileItem;
     img16Path: string;
     img50Path: string;
     hasImg16DropZoneOver = false;
@@ -38,30 +40,64 @@ export class VisualAppearanceComponent implements OnInit {
     @ViewChild('upload16Modal') upload16Modal: any;
     @ViewChild('upload50Modal') upload50Modal: any;
 
-    fileItem: FileItem;
-
     constructor(private service: VisualAppearanceService,
                 private notify: NotificationService) {
     }
 
     ngOnInit() {
+        this.loading = true;
         this.img16Path = this.service.getImg16x16Path();
         this.img50Path = this.service.getImg50x50Path();
         this.img16uploader = this.service.getUploader(this.img16Path);
         this.img50uploader = this.service.getUploader(this.img50Path);
-        this.getColorFromServer();
+        if (this.service.isNodeType) {
+            this.getNodeTypeData();
+        } else {
+            this.getRelationshipData();
+        }
     }
 
-    getColorFromServer() {
-        this.service.getColor().subscribe(
-            data => this.handleColorData(data),
-            error => this.handleError(error)
-        );
-    }
-
-    handleColorData(data: any) {
-        this.loading = false;
-        this.color = data;
+    /**
+     *
+     * @param type the part of the arrow that should be changed<p>
+     *             should be one of<ul>
+     *                 <li>dash
+     *                 <li>sourcearrowhead
+     *                 <li>targetarrowhead
+     *                 </ul>
+     * @param style the style of the line which should be one of the styles accepted by jsPlumb:<p>
+     *              <b>for source-/targetarrowhead</b>
+     *              <ul>
+     *                  <li>none
+     *                  <li>PlainArrow
+     *                  <li>Diamond
+     *              </ul><b>for dash</b>
+     *              <ul>
+     *                  <li>plain
+     *                  <li>dotted
+     *                  <li>dotted2
+     *              </ul>
+     */
+    selectArrowItem(type?: string, style?: string) {
+        let shouldOpen = false;
+        let hasType = !isNullOrUndefined(type);
+        let hasStyle = !isNullOrUndefined(style);
+        let dashSelected = false;
+        let sourcearrowheadSelected = false;
+        let targetarrowheadSelected = false;
+        if (hasType && type === 'dash') {
+            this.relationshipData.dash = hasStyle ? style : this.relationshipData.dash;
+            dashSelected = !this.relationshipData.boolData.dashSelected;
+        } else if (hasType && type === 'sourcearrowhead') {
+            this.relationshipData.sourcearrowhead = hasStyle ? style : this.relationshipData.sourcearrowhead;
+            sourcearrowheadSelected = !this.relationshipData.boolData.sourcearrowheadSelected;
+        } else if (hasType && type === 'targetarrowhead') {
+            this.relationshipData.targetarrowhead = hasStyle ? style : this.relationshipData.targetarrowhead;
+            targetarrowheadSelected = !this.relationshipData.boolData.targetarrowheadSelected;
+        }
+        this.relationshipData.boolData.dashSelected = dashSelected;
+        this.relationshipData.boolData.sourcearrowheadSelected = sourcearrowheadSelected;
+        this.relationshipData.boolData.targetarrowheadSelected = targetarrowheadSelected;
     }
 
     onUpload(uploader: FileUploader, event: any, modal?: any): boolean {
@@ -94,25 +130,71 @@ export class VisualAppearanceComponent implements OnInit {
     }
 
     saveToServer() {
-        this.service.saveColor(this.color)
-            .subscribe(
+        if (this.service.isNodeType) {
+            this.service.saveVisuals(new NodeTypesVisualsApiData(this.nodeTypeData)).subscribe(
                 data => this.handleResponse(data),
                 error => this.handleError(error)
             );
+        } else {
+            this.service.saveVisuals(new RelationshipTypesVisualsApiData(this.relationshipData, false)).subscribe(
+                data => this.handleResponse(data),
+                error => this.handleError(error)
+            );
+        }
     }
 
-    colorChange(event: any) {
-        if (this.isColorLoaded) {
-            this.color = event;
-        } else {
-            this.isColorLoaded = true;
-            this.getColorFromServer();
-        }
+    getRelationshipData() {
+        this.service.getData().subscribe(
+            data => this.handleRelationshipData(data),
+            error => this.handleError(error)
+        );
+    }
+
+    getNodeTypeData() {
+        this.service.getData().subscribe(
+            data => this.handleColorData(data),
+            error => this.handleError(error)
+        );
+    }
+
+    handleColorData(data: any) {
+        this.nodeTypeData = new NodeTypesVisualsApiData(data);
+        this.loading = false;
+    }
+
+    handleRelationshipData(data: any) {
+        this.relationshipData = new RelationshipTypesVisualsApiData(data, true);
+        this.loading = false;
+    }
+
+    public get colorLocal() {
+        return this.relationshipData.color;
+    }
+
+    public set colorLocal(color: string) {
+        this.relationshipData.color = color;
+    }
+
+    public get borderColorLocal() {
+        return this.nodeTypeData.color;
+    }
+
+    public set borderColorLocal(color: string) {
+        this.nodeTypeData.color = color;
+    }
+
+    public get hoverColorLocal() {
+        return this.relationshipData.hovercolor;
+    }
+
+    public set hoverColorLocal(color: string) {
+        this.relationshipData.hovercolor = color;
+        this.saveToServer();
     }
 
     private handleResponse(response: any) {
         this.loading = false;
-        this.notify.success('Successfully saved bordercolor!');
+        this.notify.success('Successfully saved visual data!');
     }
 
     private handleError(error: any): void {

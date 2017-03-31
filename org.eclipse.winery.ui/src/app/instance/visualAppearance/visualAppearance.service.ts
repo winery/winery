@@ -19,12 +19,15 @@ import { FileUploader } from 'ng2-file-upload';
 
 @Injectable()
 export class VisualAppearanceService {
-
+    isNodeType = true;
     private path: string;
 
     constructor(private http: Http,
                 private route: Router) {
         this.path = decodeURIComponent(this.route.url);
+        if (this.path.includes('relationshiptypes')) {
+            this.isNodeType = false;
+        }
     }
 
     getImg16x16Path(): string {
@@ -43,17 +46,16 @@ export class VisualAppearanceService {
         return fileUploader;
     }
 
-    getColor(): Observable<any> {
-        let headers = new Headers({'Accept': 'text/plain'});
+    getData() {
+        let headers = new Headers({'Accept': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseUri + this.path + '/bordercolor', options)
-            .map(res => res.text());
+        return this.http.get(backendBaseUri + this.path + '/', options)
+            .map(res => res.json());
     }
 
-    saveColor(color: string): Observable<Response> {
-        let headers = new Headers({'Content-Type': 'text/plain'});
+    saveVisuals(data: any): Observable<Response> {
+        let headers = new Headers({'Content-Type': 'application/json'});
         let options = new RequestOptions({headers: headers});
-        let sendString: string = 'color=' + encodeURIComponent(color);
-        return this.http.put(backendBaseUri + this.path + '/bordercolor', sendString, options);
+        return this.http.put(backendBaseUri + this.path + '/', JSON.stringify(data), options);
     }
 }
