@@ -178,7 +178,7 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 			return Response.status(Status.CONFLICT).build();
 		}
 		this.list.add(entity);
-		return CollectionsHelper.persist(this.res, this, entity);
+		return CollectionsHelper.persist(this.res, this, entity, true);
 	}
 
 	@Override

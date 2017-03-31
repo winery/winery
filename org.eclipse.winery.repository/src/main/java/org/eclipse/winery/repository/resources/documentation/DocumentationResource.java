@@ -37,7 +37,7 @@ public class DocumentationResource extends EntityWithoutIdResource<TDocumentatio
 		this.o.getContent().clear();
 		this.o.getContent().add(documentation);
 		this.list.set(this.idx, this.o);
-		return CollectionsHelper.persist(this.res, this.idDetermination, this.o);
+		return CollectionsHelper.persist(this.res, this.idDetermination, this.o, false);
 	}
 
 }
