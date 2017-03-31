@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.apiData;
 
-
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.VisualAppearanceResource;
 
 public class NodeTypesVisualsApiData {
@@ -21,5 +20,6 @@ public class NodeTypesVisualsApiData {
 		this.color = visuals.getBorderColor();
 	}
 
-	public NodeTypesVisualsApiData () {}
-}
+	public NodeTypesVisualsApiData () {
+	}
+ }

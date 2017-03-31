@@ -28,10 +28,12 @@ public class RelationshipTypesVisualsApiData {
 		this.hovercolor = visuals.getHoverColor();
 	}
 
-	public RelationshipTypesVisualsApiData() {}
+	public RelationshipTypesVisualsApiData() {
+
+	}
 
 	@Override
 	public String toString() {
-		return "{sourcearrowhead: "+sourcearrowhead+"}";
+		return "{sourcearrowhead: " + sourcearrowhead + "}";
 	}
 }

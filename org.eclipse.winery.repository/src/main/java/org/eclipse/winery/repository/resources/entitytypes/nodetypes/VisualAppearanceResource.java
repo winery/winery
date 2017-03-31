@@ -34,7 +34,6 @@ import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.resources.GenericVisualAppearanceResource;
 import org.eclipse.winery.repository.resources.apiData.NodeTypesVisualsApiData;
 
-import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 import org.slf4j.Logger;
