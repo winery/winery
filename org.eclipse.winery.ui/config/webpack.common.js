@@ -59,7 +59,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 include: helpers.root('src', 'app'),
-                loaders: ['raw-loader']
+                use: ['to-string-loader', 'css-loader', 'resolve-url-loader']
             },
             {
                 test: /\.(png|jpe?g|gif|ico|ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
