@@ -10,12 +10,6 @@
  *     Lukas Balzer- initial API and implementation
  */
 
-/**
-* background-images: url(..) links are not correctly resolved by webpack
-* when the .css file is not located in sry/css
-* Bsp.: the url(../assets/sth.png) in comp/comp.css is resolved to localhost:3000/assets/sth.png
-* while it should be localhost:3000/assets/sth.[hash].png
- */
 img {
     float: left;
     margin-left: 10px;
@@ -109,37 +103,37 @@ button.upload {
 }
 
 .dottedLine {
-    background-image: url('../assets/img/relationshiptype/dottedLine100.png');
+    background-image: url('../../../assets/img/relationshiptype/dottedLine100.png');
 }
 
 .plainLine {
-    background-image: url('../assets/img/relationshiptype/plainLine100.png');
+    background-image: url('../../../assets/img/relationshiptype/plainLine100.png');
 }
 
 .dotted2Line {
-    background-image: url('../assets/img/relationshiptype/dotted2Line100.png');
+    background-image: url('../../../assets/img/relationshiptype/dotted2Line100.png');
 }
 
 .noneTarget {
-    background-image: url('../assets/img/relationshiptype/noneTarget70.png');
+    background-image: url('../../../assets/img/relationshiptype/noneTarget70.png');
 }
 
 .DiamondTarget {
-    background-image: url('../assets/img/relationshiptype/DiamondTarget70.png');
+    background-image: url('../../../assets/img/relationshiptype/DiamondTarget70.png');
 }
 
 .PlainArrowTarget {
-    background-image: url('../assets/img/relationshiptype/PlainArrowTarget70.png');
+    background-image: url('../../../assets/img/relationshiptype/PlainArrowTarget70.png');
 }
 
 .noneSource {
-    background-image: url('../assets/img/relationshiptype/noneSource70.png');
+    background-image: url('../../../assets/img/relationshiptype/noneSource70.png');
 }
 
 .DiamondSource {
-    background-image: url('../assets/img/relationshiptype/DiamondSource70.png');
+    background-image: url('../../../assets/img/relationshiptype/DiamondSource70.png');
 }
 
 .PlainArrowSource {
-    background-image: url('../assets/img/relationshiptype/PlainArrowSource70.png');
+    background-image: url('../../../assets/img/relationshiptype/PlainArrowSource70.png');
 }

@@ -51,6 +51,7 @@
         "codelyzer": "2.0.1",
         "copy-webpack-plugin": "4.0.1",
         "css-loader": "0.27.3",
+        "to-string-loader": "1.1.5",
         "extract-text-webpack-plugin": "2.1.0",
         "file-loader": "0.10.1",
         "html-loader": "0.4.5",

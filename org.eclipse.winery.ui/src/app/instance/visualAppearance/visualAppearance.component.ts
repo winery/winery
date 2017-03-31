@@ -17,11 +17,13 @@ import { NotificationService } from '../../notificationModule/notification.servi
 import { isNullOrUndefined } from 'util';
 import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
-import '../../../css/visualAppearance.component.css';
 
 @Component({
     selector: 'winery-instance-visualAppearance',
     templateUrl: 'visualAppearance.component.html',
+    styleUrls: [
+        'visualAppearance.component.css'
+    ],
     providers: [VisualAppearanceService]
 })
 export class VisualAppearanceComponent implements OnInit {
