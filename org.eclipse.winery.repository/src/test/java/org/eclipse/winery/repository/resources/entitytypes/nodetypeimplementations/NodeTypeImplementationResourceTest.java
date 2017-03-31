@@ -32,5 +32,6 @@ public class NodeTypeImplementationResourceTest extends AbstractResourceTest {
 		this.setRevisionTo("9c486269f6280e0eb14730d01554e7e4553a3d60");
 		this.assertPost("nodetypeimplementations/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypeimplementations%252Ffruits/baobab_impl/implementationartifacts/",
 				"entitytypes/nodetypeimplementations/baobab_create_artifact.json");
+		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab_bananaInterface_IA/", "entitytypes/nodetypeimplementations/initial_artifact_template.json");
 	}
 }

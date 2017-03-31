@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -108,7 +109,6 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_XML)
 	@RestDoc(methodDescription = "Creates a new implementation/deployment artifact. " +
 			"If an implementation artifact with the same name already exists, it is <em>overridden</em>.")
 	@SuppressWarnings("unchecked")
