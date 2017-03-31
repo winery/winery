@@ -189,7 +189,6 @@ export class VisualAppearanceComponent implements OnInit {
 
     public set hoverColorLocal(color: string) {
         this.relationshipData.hovercolor = color;
-        this.saveToServer();
     }
 
     private handleResponse(response: any) {
