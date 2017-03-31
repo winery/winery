@@ -12,11 +12,13 @@
 
 package org.eclipse.winery.repository.resources.apiData;
 
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.restdoc.annotations.RestDocParam;
 
 public class GenerateArtifactApiData {
 
-	// must not be null
+	@XmlAttribute(required = true)
 	@RestDocParam(description = "This is the name of the implementation/deployment artifact. " +
 			"Is <em>also</em>used as prefix of the name of the corresponding artifact template if no specific template is provided. " +
 			"In contrast to CS01, we require a artifactName also for the implementationArtifact to be able to properly referencing it.")
@@ -37,7 +39,7 @@ public class GenerateArtifactApiData {
 			"Otherwise, the artifactNameStr is used as name for the artifact and a <em>new</em> artifact template is created having {@code <artifactNameString>Template} as name")
 	public String autoCreateArtifactTemplate;
 
-	// must not be null
+	@XmlAttribute(required = true)
 	@RestDocParam(description = "QName of the type, format: {namespace}localname. " +
 			"Optional if artifactTemplateName + artifactTempalteNS is provided")
 	public String artifactType;

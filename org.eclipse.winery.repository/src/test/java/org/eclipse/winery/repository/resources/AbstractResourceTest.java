@@ -166,10 +166,8 @@ public abstract class AbstractResourceTest {
 
 	/**
 	 * Because some methods don't respond with a "created" status.
-	 * TODO: fix all methods which return "noContent" status
+	 * TODO: fix all methods which return "noContent" status so that this method can be deleted.
 	 *
-	 * @param restURL
-	 * @param fileName
 	 */
 	public void assertNoContentPost(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);
