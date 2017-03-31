@@ -37,7 +37,7 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
-	public void baboabVisualAppearence() throws Exception {
+	public void baobabVisualAppearence() throws Exception {
 		this.setRevisionTo("9c486269f6280e0eb14730d01554e7e4553a3d60");
 		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/visualappearance/", "entitytypes/nodetypes/baobab_visual_appearance.json");
 	}
