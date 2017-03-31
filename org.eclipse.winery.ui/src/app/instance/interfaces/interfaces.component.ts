@@ -234,7 +234,7 @@ export class InterfacesComponent implements OnInit {
         this.generateArtifactApiData.artifactTemplateName =
             this.sharedData.selectedComponentId + '_' + this.selectedInterface.name.replace(/\W/g, '_') + '_IA';
         this.generateArtifactApiData.artifactTemplateNamespace = this.sharedData.selectedNamespace;
-        this.generateArtifactApiData.autoCreateArtifactTemplate = true;
+        this.generateArtifactApiData.autoCreateArtifactTemplate = 'yes';
         this.generateArtifactApiData.interfaceName = this.selectedInterface.name;
 
         this.implementationName = this.sharedData.selectedComponentId + '_impl';
@@ -248,6 +248,7 @@ export class InterfacesComponent implements OnInit {
 
     generateImplementationArtifact(): void {
         this.generating = true;
+        this.generateArtifactApiData.artifactName = this.generateArtifactApiData.artifactTemplateName;
         if (this.createImplementation) {
             this.service.createImplementation(this.selectedResource.replace(' ', '').toLowerCase(), this.implementationName, this.implementationNamespace)
                 .subscribe(
@@ -259,6 +260,30 @@ export class InterfacesComponent implements OnInit {
         }
     }
 
+    // endregion
+
+    // region ########## Generate Lifecycle Interface ##########
+    generateLifecycleInterface(): void {
+        const lifecycle = new InterfacesApiData('http://www.example.com/interfaces/lifecycle');
+        lifecycle.operation.push(new InterfaceOperationApiData('install'));
+        lifecycle.operation.push(new InterfaceOperationApiData('configure'));
+        lifecycle.operation.push(new InterfaceOperationApiData('start'));
+        lifecycle.operation.push(new InterfaceOperationApiData('stop'));
+        lifecycle.operation.push(new InterfaceOperationApiData('unistall'));
+        this.interfacesData.push(lifecycle);
+    }
+
+    containsDefaultLifecycle(): boolean {
+        if (isNullOrUndefined(this.interfacesData)) {
+            return false;
+        }
+
+        const lifecycleId = this.interfacesData.findIndex((value, index, obj) => {
+            return value.name.endsWith('http://www.example.com/interfaces/lifecycle');
+        });
+
+        return lifecycleId !== -1;
+    }
     // endregion
 
     onRemoveElement() {

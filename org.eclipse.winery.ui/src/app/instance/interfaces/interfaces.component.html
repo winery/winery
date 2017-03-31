@@ -55,10 +55,14 @@
         </winery-table>
     </div>
     <div class="generateButtons">
-        <button class="btn btn-default btn-sm" [disabled]="!selectedInterface" (click)="showGenerateImplementationModal();">Generate Implementation
-            Artifact
+        <button class="btn btn-default btn-sm"
+                [disabled]="!selectedInterface" (click)="showGenerateImplementationModal();">
+            Generate Implementation Artifact
         </button>
-        <button class="btn btn-default btn-sm">Generate lifecycle interface</button>
+        <button class="btn btn-default btn-sm"
+                [disabled]="containsDefaultLifecycle()" (click)="generateLifecycleInterface()">
+            Generate lifecycle interface
+        </button>
     </div>
 </div>
 
@@ -170,7 +174,6 @@
             <div class="form-group">
                 <label for="javaPackage" class="control-label">Java Package</label>
                 <input type="text" name="javaPackage" [(ngModel)]="generateArtifactApiData.javaPackage"
-                       (change)="checkImplementationExists();"
                        required id="javaPackage"
                        class="form-control">
             </div>
@@ -180,8 +183,8 @@
                         {{ selectedResource }} Implementation Name
                     </label>
                     <input type="text" name="implementationName" [(ngModel)]="implementationName"
-                           class="form-control" required
-                           id="implName">
+                           class="form-control" (input)="checkImplementationExists();"
+                           id="implName" required>
                     <div *ngIf="createImplementation; else reuseImplementation" class="alert alert-success">Will be
                         created.
                     </div>
@@ -205,7 +208,7 @@
                         Artifact Template Name
                     </label>
                     <input type="text" name="artName" [(ngModel)]="generateArtifactApiData.artifactTemplateName"
-                           class="form-control" (change)="checkArtifactTemplateExists();"
+                           class="form-control" (input)="checkArtifactTemplateExists();"
                            id="artName" required>
                     <div *ngIf="createArtifactTemplate; else artifactExists" class="alert alert-success">
                         Will be created.
@@ -228,6 +231,7 @@
     <winery-modalFooter
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Generate'"
+        [disableOkButton]="!(createImplementation || createArtifactTemplate)"
         (onOk)="generateImplementationArtifact()"
         (onCancel)="show = false">
     </winery-modalFooter>

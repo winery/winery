@@ -10,10 +10,16 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 export class GenerateArtifactApiData {
+    // artifactName = artifactTemplateName; MUST be set
+    artifactName: string;
+    artifactTemplate: string;
     artifactTemplateName: string;
     artifactTemplateNamespace: string;
-    autoCreateArtifactTemplate: boolean;
+    autoCreateArtifactTemplate: string;
+    // MUST be set
+    artifactType = '{http://opentosca.org/artifacttypes}WAR';
+    artifactSpecificContent: string;
     interfaceName: string;
-    artifactName: string;
+    operationName: string;
     javaPackage: string;
 }
