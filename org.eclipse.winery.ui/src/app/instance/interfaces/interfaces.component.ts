@@ -11,6 +11,15 @@
  *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { isNullOrUndefined } from 'util';
+import { backendBaseUri } from '../../configuration';
+import { YesNoEnum } from '../../interfaces/enums';
+import { NotificationService } from '../../notificationModule/notification.service';
+import { ExistService } from '../../util/existService';
+import { ValidatorObject } from '../../validators/duplicateValidator.directive';
+import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
+import { InstanceService } from '../instance.service';
+import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesService } from './interfaces.service';
 import {
     InputParameters,
@@ -19,15 +28,13 @@ import {
     InterfacesApiData,
     OutputParameters
 } from './interfacesApiData';
-import { isNullOrUndefined } from 'util';
-import { YesNoEnum } from '../../interfaces/enums';
-import { NotificationService } from '../../notificationModule/notification.service';
-import { ValidatorObject } from '../../validators/duplicateValidator.directive';
-import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 
 @Component({
     selector: 'winery-instance-interfaces',
     templateUrl: 'interfaces.component.html',
+    styleUrls: [
+        'interfaces.component.css'
+    ],
     providers: [
         InterfacesService
     ],
@@ -35,6 +42,7 @@ import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component
 export class InterfacesComponent implements OnInit {
 
     loading = true;
+    generating = false;
     interfacesData: InterfacesApiData[];
 
     operations: any[] = null;
@@ -45,9 +53,9 @@ export class InterfacesComponent implements OnInit {
     selectedInputParameter: InterfaceParameter;
     selectedOutputParameter: InterfaceParameter;
     columns: Array<WineryTableColumn> = [
-        { title: 'Name', name: 'name', sort: true },
-        { title: 'Type', name: 'type', sort: true },
-        { title: 'Required', name: 'required', sort: false }
+        {title: 'Name', name: 'name', sort: true},
+        {title: 'Type', name: 'type', sort: true},
+        {title: 'Required', name: 'required', sort: false}
     ];
 
     modalTitle: string;
@@ -59,8 +67,16 @@ export class InterfacesComponent implements OnInit {
     @ViewChild('addElementForm') addElementForm: any;
     @ViewChild('parameterForm') parameterForm: any;
 
-    constructor(private service: InterfacesService,
-                private notify: NotificationService) {
+    @ViewChild('generateImplModal') generateImplModal: any;
+    generateArtifactApiData = new GenerateArtifactApiData();
+    selectedResource: string;
+    createImplementation = true;
+    createArtifactTemplate = true;
+    implementationName: string = null;
+    implementationNamespace: string = null;
+
+    constructor(private service: InterfacesService, private notify: NotificationService,
+                private sharedData: InstanceService, private existService: ExistService) {
     }
 
     ngOnInit() {
@@ -69,6 +85,7 @@ export class InterfacesComponent implements OnInit {
                 data => this.handleInterfacesApiData(data),
                 error => this.handleError(error)
             );
+        this.selectedResource = this.sharedData.selectedResource.charAt(0).toUpperCase() + this.sharedData.selectedResource.slice(1);
     }
 
     // region ########### Template Callbacks ##########
@@ -210,6 +227,65 @@ export class InterfacesComponent implements OnInit {
 
     // endregion
 
+    // region ########## Generate Implementation ##########
+    showGenerateImplementationModal(): void {
+        this.generateArtifactApiData = new GenerateArtifactApiData();
+        this.generateArtifactApiData.javaPackage = this.getPackageNameFromNamespace();
+        this.generateArtifactApiData.artifactTemplateName =
+            this.sharedData.selectedComponentId + '_' + this.selectedInterface.name.replace(/\W/g, '_') + '_IA';
+        this.generateArtifactApiData.artifactTemplateNamespace = this.sharedData.selectedNamespace;
+        this.generateArtifactApiData.autoCreateArtifactTemplate = 'yes';
+        this.generateArtifactApiData.interfaceName = this.selectedInterface.name;
+
+        this.implementationName = this.sharedData.selectedComponentId + '_impl';
+        this.implementationNamespace = this.sharedData.selectedNamespace;
+
+        this.checkImplementationExists();
+        this.checkArtifactTemplateExists();
+
+        this.generateImplModal.show();
+    }
+
+    generateImplementationArtifact(): void {
+        this.generating = true;
+        this.generateArtifactApiData.artifactName = this.generateArtifactApiData.artifactTemplateName;
+        if (this.createImplementation) {
+            this.service.createImplementation(this.selectedResource.replace(' ', '').toLowerCase(), this.implementationName, this.implementationNamespace)
+                .subscribe(
+                    data => this.handleGeneratedImplementation(data),
+                    error => this.handleError(error)
+                );
+        } else if (!this.createImplementation && this.createArtifactTemplate) {
+            this.handleGeneratedImplementation();
+        }
+    }
+
+    // endregion
+
+    // region ########## Generate Lifecycle Interface ##########
+    generateLifecycleInterface(): void {
+        const lifecycle = new InterfacesApiData('http://www.example.com/interfaces/lifecycle');
+        lifecycle.operation.push(new InterfaceOperationApiData('install'));
+        lifecycle.operation.push(new InterfaceOperationApiData('configure'));
+        lifecycle.operation.push(new InterfaceOperationApiData('start'));
+        lifecycle.operation.push(new InterfaceOperationApiData('stop'));
+        lifecycle.operation.push(new InterfaceOperationApiData('unistall'));
+        this.interfacesData.push(lifecycle);
+    }
+
+    containsDefaultLifecycle(): boolean {
+        if (isNullOrUndefined(this.interfacesData)) {
+            return false;
+        }
+
+        const lifecycleId = this.interfacesData.findIndex((value, index, obj) => {
+            return value.name.endsWith('http://www.example.com/interfaces/lifecycle');
+        });
+
+        return lifecycleId !== -1;
+    }
+    // endregion
+
     onRemoveElement() {
         switch (this.modalTitle) {
             case 'Remove Operation':
@@ -252,7 +328,76 @@ export class InterfacesComponent implements OnInit {
     }
 
     private handleError(error: any) {
+        this.loading = false;
+        this.generating = false;
         this.notify.error(error.toString());
+    }
+
+    private getPackageNameFromNamespace(): string {
+        // to only get the relevant information, without the 'http://'
+        const namespaceArray = this.sharedData.selectedNamespace.split('/').slice(2);
+        const domainArray = namespaceArray[0].split('.');
+
+        let javaPackage = '';
+        for (let i = domainArray.length - 1; i >= 0; i--) {
+            if (javaPackage.length > 0) {
+                javaPackage += '.';
+            }
+            javaPackage += domainArray[i];
+        }
+        for (let i = 1; i < namespaceArray.length; i++) {
+            javaPackage += '.' + namespaceArray[i];
+        }
+
+        return javaPackage;
+    }
+
+    private checkImplementationExists(): void {
+        if (!this.implementationNamespace.endsWith('/')) {
+            this.existService.check(backendBaseUri + '/'
+                + this.selectedResource.replace(' ', '').toLowerCase() + 'implementations/'
+                + encodeURIComponent(encodeURIComponent(this.implementationNamespace)) + '/'
+                + this.implementationName + '/'
+            ).subscribe(
+                data => this.createImplementation = false,
+                error => this.createImplementation = true
+            );
+        }
+    }
+
+    private checkArtifactTemplateExists(): void {
+        if (!this.generateArtifactApiData.artifactTemplateNamespace.endsWith('/')) {
+            this.existService.check(backendBaseUri + '/artifacttemplates/'
+                + encodeURIComponent(encodeURIComponent(this.generateArtifactApiData.artifactTemplateNamespace)) + '/'
+                + this.generateArtifactApiData.artifactTemplateName + '/'
+            ).subscribe(
+                data => this.createArtifactTemplate = false,
+                error => this.createArtifactTemplate = true
+            );
+        }
+    }
+
+    private handleGeneratedImplementation(data?: any) {
+        if (this.createArtifactTemplate) {
+            this.service.createImplementationArtifact(this.selectedResource.replace(' ', '').toLowerCase(), this.implementationName,
+                this.implementationNamespace, this.generateArtifactApiData)
+                .subscribe(
+                    data => this.handleGeneratedArtifact(),
+                    error => this.handleError(error)
+                );
+        } else {
+            this.generating = false;
+            this.generateImplModal.hide();
+        }
+        if (!isNullOrUndefined(data)) {
+            this.notify.success('Successfully created Implementation!');
+        }
+    }
+
+    private handleGeneratedArtifact() {
+        this.generating = false;
+        this.generateImplModal.hide();
+        this.notify.success('Successfully created Artifact!');
     }
 
     // endregion

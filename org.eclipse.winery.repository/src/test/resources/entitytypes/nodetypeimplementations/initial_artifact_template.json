@@ -1,0 +1,51 @@
+{
+  "documentation": [
+
+  ],
+  "any": [
+
+  ],
+  "otherAttributes": {
+
+  },
+  "extensions": null,
+  "types": null,
+  "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+	{
+	  "documentation": [
+
+	  ],
+	  "any": [
+
+	  ],
+	  "otherAttributes": {
+
+	  },
+	  "properties": null,
+	  "propertyConstraints": null,
+	  "id": "baobab_bananaInterface_IA",
+	  "type": "{http://winery.opentosca.org/test/artifacttypes/fruits}WAR",
+	  "artifactReferences": null,
+	  "name": null
+	}
+  ],
+  "id": "winery-defs-for_ns0-baobab_bananaInterface_IA",
+  "name": null,
+  "targetNamespace": "http://winery.opentosca.org/test/artifacttemplates/fruits",
+  "import": [
+	{
+	  "documentation": [
+
+	  ],
+	  "any": [
+
+	  ],
+	  "otherAttributes": {
+
+	  },
+	  "namespace": "http://winery.opentosca.org/test/artifacttypes/fruits",
+	  "location": "ns1__WAR.tosca",
+	  "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+	}
+  ]
+}

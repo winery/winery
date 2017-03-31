@@ -11,7 +11,7 @@
  *     Niko Stadelmaier - module refactoring
  */
 import { NgModule } from '@angular/core';
-import { WineryUploader } from './winerUploader.component';
+import { WineryUploader } from './wineryUploader.component';
 import { WineryUploaderService } from './wineryUploader.service';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { FileUploadModule } from 'ng2-file-upload';

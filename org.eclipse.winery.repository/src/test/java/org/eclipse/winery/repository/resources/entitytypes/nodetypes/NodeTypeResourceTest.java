@@ -90,4 +90,12 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 				.then()
 				.statusCode(404);
 	}
+
+	@Test
+	public void baobabAddInterface() throws Exception {
+		this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779");
+		this.assertNoContentPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/interfaces/", "entitytypes/nodetypes/baobab_create_interface_and_operations.json");
+		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/interfaces/", "entitytypes/nodetypes/baobab_initial_interface.json");
+	}
+  
 }

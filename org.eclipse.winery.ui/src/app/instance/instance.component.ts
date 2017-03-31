@@ -16,6 +16,7 @@ import { InstanceService } from './instance.service';
 import { NotificationService } from '../notificationModule/notification.service';
 import { backendBaseUri } from '../configuration';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
+import { ExistService } from '../util/existService';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -30,14 +31,14 @@ export class InstanceComponent implements OnInit, OnDestroy {
     selectedResource: string;
     selectedComponentId: string;
     selectedNamespace: string;
-    imageUri: string;
+    imageUrl: string;
 
     routeSub: Subscription;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
                 private service: InstanceService,
-                private notify: NotificationService) {
+                private notify: NotificationService, private existService: ExistService) {
     }
 
     ngOnInit(): void {
@@ -50,7 +51,12 @@ export class InstanceComponent implements OnInit, OnDestroy {
 
                     this.service.setSharedData(this.selectedResource, this.selectedNamespace, this.selectedComponentId);
                     if (this.selectedResource === 'nodeType') {
-                        this.imageUri = backendBaseUri + this.service.path + '/visualappearance/50x50';
+                        const img = backendBaseUri + this.service.path + '/visualappearance/50x50';
+                        this.existService.check(img)
+                            .subscribe(
+                                data => this.imageUrl = img,
+                                error => this.imageUrl = null,
+                            );
                     }
 
                     this.availableTabs = this.service.getSubMenuByResource();

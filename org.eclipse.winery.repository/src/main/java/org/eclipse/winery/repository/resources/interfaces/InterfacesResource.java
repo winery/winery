@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
@@ -49,6 +50,25 @@ public class InterfacesResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onPost(List<TInterface> interfaceApiData) {
+		if (!interfaceApiData.isEmpty()) {
+			for (TInterface tInt: interfaceApiData) {
+				if (!tInt.getOperation().isEmpty()) {
+					for (TOperation tOp: tInt.getOperation()) {
+						if (tOp.getInputParameters() == null || tOp.getInputParameters().getInputParameter().isEmpty()) {
+							tOp.setInputParameters(null);
+						}
+						if (tOp.getOutputParameters() == null || tOp.getOutputParameters().getOutputParameter().isEmpty()) {
+							tOp.setOutputParameters(null);
+						}
+					}
+				} else {
+					return Response.status(Response.Status.BAD_REQUEST).entity("No operation provided!").build();
+				}
+			}
+		} else {
+			return Response.status(Response.Status.BAD_REQUEST).entity("No interface provided!").build();
+		}
+
 		if (this.res instanceof RelationshipTypeResource) {
 			TRelationshipType relationshipType = (TRelationshipType) this.res.getElement();
 			switch (this.interfaceType) {
