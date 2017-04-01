@@ -89,9 +89,8 @@ module.exports = {
          * https://github.com/angular/angular/issues/11580
          */
         new webpack.ContextReplacementPlugin(
-            /angular(\\|\/)core(\\|\/)(esm(\\|\/)src|src)(\\|\/)linker/,
-            helpers.root('src'),
-            {}
+            /angular(\\|\/)core(\\|\/)@angular/,
+            path.resolve(__dirname, '../src')
         ),
 
         /*
