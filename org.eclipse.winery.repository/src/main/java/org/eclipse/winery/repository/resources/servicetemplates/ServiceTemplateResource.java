@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,24 +9,34 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
+ *     Karoline Saatkamp - add injector APIs
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.XMLId;
@@ -35,25 +45,36 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceWithReferencesResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.IHasName;
+import org.eclipse.winery.repository.resources._support.dataadapter.InjectorReplaceData;
+import org.eclipse.winery.repository.resources._support.dataadapter.InjectorReplaceOptions;
 import org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.BoundaryDefinitionsResource;
 import org.eclipse.winery.repository.resources.servicetemplates.plans.PlansResource;
 import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 import org.eclipse.winery.repository.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
+import org.eclipse.winery.repository.splitting.Splitting;
+import org.eclipse.winery.repository.splitting.SplittingException;
 
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
 
@@ -149,6 +170,104 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		this.getServiceTemplate().setSubstitutableNodeType(null);
 		BackendUtils.persist(this);
 		return Response.noContent().build();
+	}
+
+	@GET
+	@Path("injector/options")
+	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+	public Response getInjectorOptions() {
+		Splitting splitting = new Splitting();
+		TTopologyTemplate topologyTemplate = this.getServiceTemplate().getTopologyTemplate();
+		Map<String, List<TNodeTemplate>> matchingOptions;
+		InjectorReplaceOptions injectionReplaceOptions = new InjectorReplaceOptions();
+
+		try {
+			matchingOptions = splitting.getMatchingOptionsWithDefaultLabeling(topologyTemplate);
+			injectionReplaceOptions.setTopologyTemplate(topologyTemplate);
+			injectionReplaceOptions.setInjectionOptions(matchingOptions);
+		} catch (SplittingException e) {
+			LOGGER.error("Could not get matching options", e);
+			return Response.serverError().entity("Could not get matching options").build();
+		}
+		return Response.ok().entity(injectionReplaceOptions).build();
+	}
+
+	@POST
+	@Path("injector/replace")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+	public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData) throws IOException, ParserConfigurationException, SAXException {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+
+		Splitting splitting = new Splitting();
+		Collection<TNodeTemplate> injectorNodeTemplates = injectorReplaceData.injections.values();
+		Map<QName, String> tempConvertedOtherAttributes = new HashMap<>();
+
+		for (TNodeTemplate injectorNodeTemplate : injectorNodeTemplates) {
+
+			//Convert the wrong QName created by the JSON serialization back to a right QName
+			for (Map.Entry<QName, String> otherAttribute : injectorNodeTemplate.getOtherAttributes().entrySet()) {
+				QName qName = QName.valueOf(otherAttribute.getKey().getLocalPart());
+				tempConvertedOtherAttributes.put(qName, otherAttribute.getValue());
+			}
+			injectorNodeTemplate.getOtherAttributes().clear();
+			injectorNodeTemplate.getOtherAttributes().putAll(tempConvertedOtherAttributes);
+			tempConvertedOtherAttributes.clear();
+
+			// Convert the String created by the JSON serialization back to a XML dom document
+			TEntityTemplate.Properties properties = injectorNodeTemplate.getProperties();
+			if (properties != null) {
+				Object any = properties.getAny();
+				if (any instanceof String) {
+					Document doc = documentBuilder.parse(new InputSource(new StringReader((String) any)));
+					injectorNodeTemplate.getProperties().setAny(doc.getDocumentElement());
+				}
+			}
+		}
+		TTopologyTemplate tTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.injections);
+		this.getServiceTemplate().setTopologyTemplate(tTopologyTemplate);
+		ServiceTemplateId injectedServiceTemplateId = new ServiceTemplateId(id.getNamespace().getDecoded(), id.getXmlId().getDecoded() + "-injected", false);
+		Repository.INSTANCE.forceDelete(injectedServiceTemplateId);
+		Repository.INSTANCE.flagAsExisting(injectedServiceTemplateId);
+		ServiceTemplateResource splitServiceTempateResource = (ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(injectedServiceTemplateId);
+
+		splitServiceTempateResource.getServiceTemplate().setTopologyTemplate(tTopologyTemplate);
+		LOGGER.debug("Persisting...");
+		splitServiceTempateResource.persist();
+		LOGGER.debug("Persisted.");
+		return Utils.getXML(TTopologyTemplate.class, tTopologyTemplate);
+	}
+
+	/**
+	 * Used for testing
+	 */
+	@GET
+	@Path("injector/replace")
+	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+	public Response getInjectorReplacement() {
+		//Test data
+		InjectorReplaceData injectorReplaceData = new InjectorReplaceData();
+		TTopologyTemplate tt = new TTopologyTemplate();
+		TNodeTemplate nt1 = new TNodeTemplate();
+		nt1.setId("nt1");
+		TNodeTemplate nt2 = new TNodeTemplate();
+		nt2.setId("nt2");
+		TNodeTemplate nt3 = new TNodeTemplate();
+		nt3.setId("nt3");
+		TNodeTemplate.Requirements r = new TNodeTemplate.Requirements();
+		TRequirement rt = new TRequirement();
+		rt.setName("Requ");
+		r.getRequirement().add(rt);
+		nt3.setRequirements(r);
+		tt.getNodeTemplateOrRelationshipTemplate().add(nt1);
+		//injectorReplaceData.setTopologyTemplate(tt);
+		Map<String, TNodeTemplate> replaceNodes = new HashMap<>();
+		replaceNodes.put("test", nt2);
+		replaceNodes.put("test2", nt3);
+		injectorReplaceData.setInjections(replaceNodes);
+
+		return Response.ok().entity(injectorReplaceData).build();
 	}
 
 	public TServiceTemplate getServiceTemplate() {

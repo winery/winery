@@ -8,14 +8,19 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API, implementation, maintenance
+ *     Karoline Saatkamp - support for target location labels
  *******************************************************************************/
 package org.eclipse.winery.common;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -64,8 +69,9 @@ import org.w3c.dom.Text;
 
 public class ModelUtilities {
 
-	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
+	public static final QName QNAME_LOCATION = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "location");
 
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
 
 	/**
 	 * This is a special method for Winery. Winery allows to define a property
@@ -659,6 +665,78 @@ public class ModelUtilities {
 		relationshipTemplate.setTargetElement(target);
 
 		return relationshipTemplate;
+	}
+
+	public static Optional<String> getTargetLabel(TNodeTemplate nodeTemplate) {
+		if (nodeTemplate == null) {
+			return Optional.empty();
+		}
+		Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
+		String targetLabel = otherAttributes.get(QNAME_LOCATION);
+		return Optional.ofNullable(targetLabel);
+	}
+
+	public static void setTargetLabel(TNodeTemplate nodeTemplate, String targetLabel) {
+		Objects.requireNonNull(nodeTemplate);
+		Objects.requireNonNull(targetLabel);
+		Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
+		otherAttributes.put(QNAME_LOCATION, targetLabel);
+	}
+
+	/**
+	 * @return incoming relation ship templates <em>pointing to node templates</em>
+	 */
+	public static List<TRelationshipTemplate> getIncomingRelationshipTemplates(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
+		Objects.requireNonNull(topologyTemplate);
+		Objects.requireNonNull(nodeTemplate);
+
+		return getAllRelationshipTemplates(topologyTemplate)
+				.stream()
+				.filter(rt -> rt.getTargetElement().getRef().equals(nodeTemplate))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * @return outgoing relation ship templates <em>pointing to node templates</em>
+	 */
+	public static List<TRelationshipTemplate> getOutgoingRelationshipTemplates(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
+		Objects.requireNonNull(topologyTemplate);
+		Objects.requireNonNull(nodeTemplate);
+
+		return getAllRelationshipTemplates(topologyTemplate)
+				.stream()
+				.filter(rt -> rt.getSourceElement().getRef().equals(nodeTemplate))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 *
+	 * @param topologyTemplate
+	 * @return all nodes templates of the topologyTemplate
+	 */
+	public static List<TNodeTemplate> getAllNodeTemplates (TTopologyTemplate topologyTemplate) {
+		Objects.requireNonNull(topologyTemplate);
+
+		return topologyTemplate.getNodeTemplateOrRelationshipTemplate()
+				.stream()
+				.filter(x -> x instanceof TNodeTemplate)
+				.map(TNodeTemplate.class::cast)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 *
+	 * @param topologyTemplate
+	 * @return all relationship templates of the topologyTemplate
+	 */
+	public static List<TRelationshipTemplate> getAllRelationshipTemplates (TTopologyTemplate topologyTemplate) {
+		Objects.requireNonNull(topologyTemplate);
+
+		return topologyTemplate.getNodeTemplateOrRelationshipTemplate()
+				.stream()
+				.filter(x -> x instanceof TRelationshipTemplate)
+				.map(TRelationshipTemplate.class::cast)
+				.collect(Collectors.toList());
 	}
 
 	public static String convertTopologyTempalteToJson(TTopologyTemplate topologyTemplate) {
