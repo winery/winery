@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013,2015 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,7 @@
  * Contributors:
  *     Kálmán Képes - initial API and implementation and/or initial documentation
  *     Oliver Kopp - adapted to new storage model and to TOSCA v1.0
+ *     Karoline Saatkamp - adapted importer to return importMetaInformation
  *******************************************************************************/
 package org.eclipse.winery.repository.importing;
 
@@ -29,6 +30,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -130,11 +132,13 @@ public class CSARImporter {
 	 * Reads the CSAR from the given inputstream
 	 *
 	 * @param in the inputstream to read from
-	 * @param errors the list of errors during the import. Has to be non-null
 	 * @param overwrite if true: contents of the repo are overwritten
+	 * @param asyncWPDParsing true if WPD should be parsed asynchronously to
+	 *            speed up the import. Required, because JUnit terminates the
+	 *            used ExecutorService
 	 *
 	 */
-	public void readCSAR(InputStream in, List<String> errors, boolean overwrite, final boolean asyncWPDParsing) throws IOException {
+	public ImportMetaInformation readCSAR(InputStream in, boolean overwrite, final boolean asyncWPDParsing) throws IOException {
 		// we have to extract the file to a temporary directory as
 		// the .definitions file does not necessarily have to be the first entry in the archive
 		Path csarDir = Files.createTempDirectory("winery");
@@ -148,7 +152,7 @@ public class CSARImporter {
 					Files.copy(zis, targetPath);
 				}
 			}
-			this.importFromDir(csarDir, errors, overwrite, asyncWPDParsing);
+			return this.importFromDir(csarDir, overwrite, asyncWPDParsing);
 		} catch (Exception e) {
 			CSARImporter.LOGGER.debug("Could not import CSAR", e);
 			throw e;
@@ -167,11 +171,12 @@ public class CSARImporter {
 	 *            speed up the import. Required, because JUnit terminates the
 	 *            used ExecutorService
 	 */
-	void importFromDir(final Path path, final List<String> errors, final boolean overwrite, final boolean asyncWPDParsing) throws IOException {
+	public ImportMetaInformation importFromDir(final Path path, final boolean overwrite, final boolean asyncWPDParsing) throws IOException {
+		final ImportMetaInformation importMetaInformation = new ImportMetaInformation();
 		Path toscaMetaPath = path.resolve("TOSCA-Metadata/TOSCA.meta");
 		if (!Files.exists(toscaMetaPath)) {
-			errors.add("TOSCA.meta does not exist");
-			return;
+			importMetaInformation.errors.add("TOSCA.meta does not exist");
+			return importMetaInformation;
 		}
 		final TOSCAMetaFileParser tmfp = new TOSCAMetaFileParser();
 		final TOSCAMetaFile tmf = tmfp.parse(toscaMetaPath);
@@ -183,9 +188,9 @@ public class CSARImporter {
 			// we obey the entry definitions and "just" import that
 			// imported definitions are added recursively
 			Path defsPath = path.resolve(tmf.getEntryDefinitions());
-			this.importDefinitions(tmf, defsPath, errors, overwrite, asyncWPDParsing);
+			importMetaInformation.entryServiceTemplate = this.importDefinitions(tmf, defsPath, importMetaInformation.errors, overwrite, asyncWPDParsing);
 
-			this.importSelfServiceMetaData(tmf, path, defsPath, errors);
+			this.importSelfServiceMetaData(tmf, path, defsPath, importMetaInformation.errors);
 		} else {
 			// no explicit entry definitions found
 			// we import all available definitions
@@ -193,8 +198,8 @@ public class CSARImporter {
 			// The alternative is to go through all entries in the TOSCA Meta File, but there is no guarantee that this list is complete
 			Path definitionsDir = path.resolve("Definitions");
 			if (!Files.exists(definitionsDir)) {
-				errors.add("No entry definitions defined and Definitions directory does not exist.");
-				return;
+				importMetaInformation.errors.add("No entry definitions defined and Definitions directory does not exist.");
+				return importMetaInformation;
 			}
 			final List<IOException> exceptions = new ArrayList<>();
 			Files.walkFileTree(definitionsDir, new SimpleFileVisitor<Path>() {
@@ -211,7 +216,7 @@ public class CSARImporter {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 					try {
-						CSARImporter.this.importDefinitions(tmf, file, errors, overwrite, asyncWPDParsing);
+						CSARImporter.this.importDefinitions(tmf, file, importMetaInformation.errors, overwrite, asyncWPDParsing);
 					} catch (IOException e) {
 						exceptions.add(e);
 						return FileVisitResult.TERMINATE;
@@ -228,6 +233,8 @@ public class CSARImporter {
 		}
 
 		this.importNamespacePrefixes(path);
+
+		return importMetaInformation;
 	}
 
 	/**
@@ -370,13 +377,13 @@ public class CSARImporter {
 	 *            definitions
 	 * @param overwrite true: existing contents are overwritten
 	 */
-	public void importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors, boolean overwrite, boolean asyncWPDParsing) throws IOException {
+	public Optional<ServiceTemplateId> importDefinitions(TOSCAMetaFile tmf, Path defsPath, final List<String> errors, boolean overwrite, boolean asyncWPDParsing) throws IOException {
 		if (defsPath == null) {
 			throw new IllegalStateException("path to definitions must not be null");
 		}
 		if (!Files.exists(defsPath)) {
 			errors.add(String.format("Definitions %1$s does not exist", defsPath.getFileName()));
-			return;
+			return Optional.empty();
 		}
 
 		Unmarshaller um = JAXBSupport.createUnmarshaller();
@@ -395,10 +402,10 @@ public class CSARImporter {
 			} while (cause != null);
 			errors.add("Could not unmarshal definitions " + defsPath.getFileName() + " " + eMsg);
 			CSARImporter.LOGGER.debug("Unmarshalling error", e);
-			return;
+			return Optional.empty();
 		} catch (ClassCastException e) {
 			errors.add("Definitions " + defsPath.getFileName() + " is not a TDefinitions " + e.getMessage());
-			return;
+			return Optional.empty();
 		}
 
 		List<TImport> imports = defs.getImport();
@@ -408,6 +415,8 @@ public class CSARImporter {
 		// this method adds new imports to defs which may not be imported using "importImports".
 		// Therefore, "importTypes" has to be called *after* importImports
 		this.importTypes(defs, errors);
+
+		Optional<ServiceTemplateId> entryServiceTemplate = Optional.empty();
 
 		String defaultNamespace = defs.getTargetNamespace();
 		List<TExtensibleElements> componentInstanceList = defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation();
@@ -456,6 +465,7 @@ public class CSARImporter {
 				this.adjustRelationshipType(defsPath.getParent().getParent(), (TRelationshipType) ci, (RelationshipTypeId) wid, tmf, errors);
 			} else if (ci instanceof TServiceTemplate) {
 				this.adjustServiceTemplate(defsPath.getParent().getParent(), tmf, (ServiceTemplateId) wid, (TServiceTemplate) ci, errors);
+				entryServiceTemplate = Optional.of((ServiceTemplateId) wid);
 			}
 
 			// node types and relationship types are subclasses of TEntityType
@@ -477,6 +487,8 @@ public class CSARImporter {
 				CSARImporter.storeDefinitions(wid, newDefs);
 			}
 		}
+
+		return entryServiceTemplate;
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2015 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,13 +8,14 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Lukas Harzentter - remove ending "/" for all resources
+ *     Karoline Saatkamp - adpated importCSAR to return importMetaInformation
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +24,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.importing.CSARImporter;
+import org.eclipse.winery.repository.importing.ImportMetaInformation;
 import org.eclipse.winery.repository.resources.API.APIResource;
 import org.eclipse.winery.repository.resources.admin.AdminTopResource;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
@@ -151,22 +155,28 @@ public class MainResource {
 	// @formatter:off
 	public Response importCSAR(
 		@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
-		@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite) {
+		@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
+		@Context UriInfo uriInfo) {
 		// @formatter:on
 		CSARImporter importer = new CSARImporter();
-		List<String> errors = new ArrayList<>();
 		boolean ow;
 		ow = (overwrite != null) && overwrite;
+		ImportMetaInformation importMetaInformation;
 		try {
-			importer.readCSAR(uploadedInputStream, errors, ow, true);
+			importMetaInformation = importer.readCSAR(uploadedInputStream, ow, true);
 		} catch (Exception e) {
 			return Response.serverError().entity("Could not import CSAR").entity(e.getMessage()).build();
 		}
-		if (errors.isEmpty()) {
-			return Response.noContent().build();
+		if (importMetaInformation.errors.isEmpty()) {
+			if (importMetaInformation.entryServiceTemplate.isPresent()) {
+				URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(importMetaInformation.entryServiceTemplate.get()));
+				return Response.created(url).build();
+			} else {
+				return Response.noContent().build();
+			}
 		} else {
 			// In case there are errors, we send them as "bad request"
-			return Response.status(Status.BAD_REQUEST).entity(errors).build();
+			return Response.status(Status.BAD_REQUEST).entity(importMetaInformation.errors).build();
 		}
 	}
 

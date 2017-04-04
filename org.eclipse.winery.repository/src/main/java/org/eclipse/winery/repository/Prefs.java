@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     C. Timurhan Sungur - jClouds preferences
+ *     Karoline Saatkamp - support for target location labels
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
@@ -89,7 +90,7 @@ public class Prefs implements ServletContextListener {
 	 * @param initializeRepository true if the repository should be initialized
 	 *            as provided in winery.properties
 	 */
-	protected Prefs(boolean initializeRepository) throws IOException {
+	public Prefs(boolean initializeRepository) throws IOException {
 		this();
 
 		// emulate behavior of doInitialization(Context)

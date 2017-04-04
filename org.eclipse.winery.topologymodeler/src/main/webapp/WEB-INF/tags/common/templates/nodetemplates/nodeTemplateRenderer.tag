@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -10,6 +10,7 @@
  * Contributors:
  *    Uwe Breitenbücher - skeletton for node template shapes
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *	  Karoline Saatkamp - maintenance
  *******************************************************************************/
 --%>
 <%@tag language="java" pageEncoding="UTF-8" description="This tag is used for both real nodeTemplate node rendering and rendering of a 'template' used to create a nodeTemplateShape. The latter is called by palette.jsp. Therefore, this tag has to be more general."%>
@@ -30,44 +31,31 @@
 <%@attribute name="nodeType" type="org.eclipse.winery.model.tosca.TNodeType" %>
 <%@attribute name="nodeTypeQName" type="javax.xml.namespace.QName"%>
 
-<%@tag import="org.eclipse.winery.model.tosca.TArtifactTemplate"%>
-<%@tag import="org.eclipse.winery.model.tosca.TArtifactType"%>
-<%@tag import="org.eclipse.winery.model.tosca.TCapability"%>
-<%@tag import="org.eclipse.winery.model.tosca.TDeploymentArtifact"%>
-<%@tag import="org.eclipse.winery.model.tosca.TDeploymentArtifacts"%>
-<%@tag import="org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition"%>
-<%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate"%>
-<%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate.Capabilities"%>
-<%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate.Requirements"%>
-<%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate.Policies"%>
-<%@tag import="org.eclipse.winery.model.tosca.TNodeType"%>
-<%@tag import="org.eclipse.winery.model.tosca.TPolicy"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRelationshipType"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRequirement"%>
-<%@tag import="org.eclipse.winery.common.ModelUtilities"%>
-<%@tag import="org.eclipse.winery.common.Util"%>
-<%@tag import="org.eclipse.winery.common.ids.definitions.ArtifactTemplateId"%>
-<%@tag import="org.eclipse.winery.common.ids.definitions.ArtifactTypeId"%>
-<%@tag import="org.eclipse.winery.common.interfaces.IWineryRepository"%>
-<%@tag import="org.w3c.dom.Element" %>
-<%@tag import="org.apache.commons.configuration.Configuration"%>
-<%@tag import="org.apache.commons.lang3.StringUtils"%>
-<%@tag import="org.apache.commons.lang3.StringEscapeUtils"%>
-<%@tag import="java.io.StringWriter" %>
-<%@tag import="java.util.Collections"%>
 <%@tag import="java.util.Collection"%>
-<%@tag import="java.util.Iterator"%>
+<%@tag import="java.util.Collections"%>
 <%@tag import="java.util.List"%>
-<%@tag import="java.util.Map"%>
 <%@tag import="java.util.UUID"%>
 <%@tag import="javax.xml.namespace.QName"%>
 <%@tag import="javax.xml.transform.OutputKeys"%>
 <%@tag import="javax.xml.transform.Transformer"%>
 <%@tag import="javax.xml.transform.TransformerFactory"%>
-<%@tag import="javax.xml.transform.dom.DOMSource"%>
-<%@tag import="javax.xml.transform.stream.StreamResult"%>
+<%@tag import="org.eclipse.winery.common.ModelUtilities"%>
+<%@tag import="org.eclipse.winery.common.Util"%>
+<%@tag import="org.eclipse.winery.common.ids.definitions.ArtifactTemplateId"%>
+<%@tag import="org.eclipse.winery.common.ids.definitions.ArtifactTypeId"%>
+<%@tag import="org.eclipse.winery.model.tosca.TCapability"%>
+<%@tag import="org.eclipse.winery.model.tosca.TDeploymentArtifact"%>
+<%@tag import="org.eclipse.winery.model.tosca.TDeploymentArtifacts"%>
+<%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate.Capabilities"%>
+<%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate.Policies"%>
+<%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate.Requirements"%>
+<%@tag import="org.eclipse.winery.model.tosca.TNodeType"%>
+<%@tag import="org.eclipse.winery.model.tosca.TPolicy" %>
+<%@tag import="org.eclipse.winery.model.tosca.TRelationshipType"%>
+<%@tag import="org.eclipse.winery.model.tosca.TRequirement"%>
+<%@tag import="org.apache.commons.lang3.StringUtils"%>
 
-<%@taglib prefix="nt"    tagdir="/WEB-INF/tags/common/templates/nodetemplates" %>
+<%@taglib prefix="nt" tagdir="/WEB-INF/tags/common/templates/nodetemplates" %>
 <%@taglib prefix="ntrq"  tagdir="/WEB-INF/tags/common/templates/nodetemplates/reqscaps" %>
 <%@taglib prefix="pol"   tagdir="/WEB-INF/tags/common/policies" %>
 <%@taglib prefix="props" tagdir="/WEB-INF/tags/common/templates" %>
@@ -148,6 +136,15 @@
 		<%
 			}
 		%>
+		</div>
+
+		<div class="targetLocationContainer">
+			<div class="header">
+				Target Location
+			</div>
+			<div class="content">
+				<a class="thetargetlocation" href="#" data-type="text" data-title="Enter the target location"><%=ModelUtilities.getTargetLabel(nodeTemplate).orElse("")%></a>
+			</div>
 		</div>
 
 		<%-- Properties --%>

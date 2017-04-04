@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Karoline Saatkamp - add split API
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates.topologytemplates;
 
@@ -48,6 +49,7 @@ import org.eclipse.winery.repository.client.IWineryRepositoryClient;
 import org.eclipse.winery.repository.client.WineryRepositoryClientFactory;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplatesResource;
+import org.eclipse.winery.repository.splitting.Splitting;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource.Builder;
@@ -348,6 +350,20 @@ public class TopologyTemplateResource {
 	// @formatter:on
 	public Response getComponentInstanceXML() {
 		return Utils.getXML(TTopologyTemplate.class, this.topologyTemplate);
+	}
+
+	@POST
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response split(@Context UriInfo uriInfo) {
+		Splitting splitting = new Splitting();
+		ServiceTemplateId splitServiceTemplateId;
+		try {
+			splitServiceTemplateId = splitting.splitTopologyOfServiceTemplate((ServiceTemplateId) this.serviceTemplateRes.getId());
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not split. " + e.getMessage()).build();
+		}
+		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(splitServiceTemplateId));
+		return Response.created(url).build();
 	}
 
 }
