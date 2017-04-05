@@ -6,7 +6,7 @@ import { DatePipe } from '@angular/common';
 export class NotificationService {
 
     toastr: ToastsManager;
-    notifications: Array<any> = [];
+    notifications: Array<WineryNotification> = [];
 
     constructor(private pToastr: ToastsManager,
                 private datePipe: DatePipe) {
@@ -59,7 +59,7 @@ export class NotificationService {
      */
     warning(message: string, title = 'warning') {
         this.toastr.warning(message, title);
-        this.notifications.push({title: title, messages: message, type: 'warning', createdOn: this.getCurrentDate()});
+        this.notifications.push({title: title, message: message, type: 'warning', createdOn: this.getCurrentDate()});
     }
 
     /**
@@ -69,4 +69,11 @@ export class NotificationService {
     getCurrentDate() {
         return this.datePipe.transform(Date.now(), 'short');
     }
+}
+
+interface WineryNotification {
+    title: string;
+    type: string;
+    message: string;
+    createdOn: string;
 }
