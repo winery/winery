@@ -43,7 +43,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     showNamespace = 'all';
     changeViewButtonTitle: string = showGrouped;
     componentData: SectionData[];
-    types: SelectData;
+    types: SelectData[];
 
     newComponentName: string;
     newComponentNamespace: string;
@@ -180,13 +180,6 @@ export class SectionComponent implements OnInit, OnDestroy {
                         error => this.handleError(error)
                     );
                 break;
-            case 'policyType':
-                this.service.getSectionData('/policytypes?grouped=angularSelect')
-                    .subscribe(
-                        data => this.handleTypes(data),
-                        error => this.handleError(error)
-                    );
-                break;
             case 'policyTemplate':
                 this.service.getSectionData('/policytemplates?grouped=angularSelect')
                     .subscribe(
@@ -199,9 +192,9 @@ export class SectionComponent implements OnInit, OnDestroy {
         }
     }
 
-    private handleTypes(types: SelectData): void {
+    private handleTypes(types: SelectData[]): void {
         this.loading = false;
-        this.types = types;
+        this.types = types.length > 0 ? types : null;
     }
 
     private handleSaveSuccess() {

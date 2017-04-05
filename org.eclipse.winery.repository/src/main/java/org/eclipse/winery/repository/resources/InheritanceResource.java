@@ -49,8 +49,8 @@ public class InheritanceResource {
 	 *
 	 * @return JSON object in the format
 	 * {
-	 *    "abstract": "no",
-	 *    "final": "yes",
+	 *    "isAbstract": "no",
+	 *    "isFinal": "yes",
 	 *    "derivedFrom": "[QName]"
 	 *  }
 	 */
@@ -63,8 +63,8 @@ public class InheritanceResource {
 	/**
 	 * Saves the inheritance management from a putted json object in the format:
 	 * {
-	 *   "abstract": "no",
-	 *   "final": "yes",
+	 *   "isAbstract": "no",
+	 *   "isFinal": "yes",
 	 *   "derivedFrom": "[QName]"
 	 * }
 	 *

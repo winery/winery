@@ -50,10 +50,8 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 	}
 
 	/**
-	 * @return The associated name of this resource. CSDPR01 foresees a NCName
-	 *         name and no ID for an entity type. Therefore, we use the ID as
-	 *         unique identification and convert it to a name when a read
-	 *         request is put.
+	 * @return The associated name of this resource. CSDPR01 foresees a NCName name and no ID for an entity type.
+	 * Therefore, we use the ID as unique identification and convert it to a name when a read request is put.
 	 */
 	@GET
 	@Path("name")
@@ -135,17 +133,19 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 	}
 
 	/**
-	 *
-	 * @param json
 	 * @return Response
 	 */
 	Response putInheritance(InheritanceResourceApiData json) {
-		QName qname = QName.valueOf(json.derivedFrom);
-
 		// see getAvailableSuperClasses for verbose comments
+		DerivedFrom derivedFrom = null;
 		Method method;
-		DerivedFrom derivedFrom = new DerivedFrom();
-		derivedFrom.setTypeRef(qname);
+
+		// If (none) is selected, derivedFrom needs to be null in order to have valid XML in ALL cases!
+		if (!json.derivedFrom.endsWith("(none)")) {
+			QName qname = QName.valueOf(json.derivedFrom);
+			derivedFrom = new DerivedFrom();
+			derivedFrom.setTypeRef(qname);
+		}
 
 		try {
 			method = this.getElement().getClass().getMethod("setDerivedFrom", DerivedFrom.class);
@@ -163,5 +163,4 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 		}
 		return BackendUtils.persist(this);
 	}
-
 }
