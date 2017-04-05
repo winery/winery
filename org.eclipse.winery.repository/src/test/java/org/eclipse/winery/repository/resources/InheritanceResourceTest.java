@@ -26,7 +26,7 @@ public class InheritanceResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
-	public void xmlStillValidAfterAddingDerivedFromNoneInheritanceToOneNodeType() throws Exception{
+	public void xmlStillValidAfterAddingDerivedFromNoneInheritanceToOneNodeType() throws Exception {
 		this.setRevisionTo("2fd9edf31bc0d7a1118fa19eb7050922d0653cb0");
 		this.assertPut("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/grape/inheritance/", "entitytypes/nodetypes/grape_add_none_inheritance.json");
 		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/grape/", "entitytypes/nodetypes/grape_inheritance_none.xml");
@@ -42,7 +42,7 @@ public class InheritanceResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
-	public void xmlStillValidAfterAddingDerivedFromNoneInheritanceToOnePolicyType() throws Exception{
+	public void xmlStillValidAfterAddingDerivedFromNoneInheritanceToOnePolicyType() throws Exception {
 		this.setRevisionTo("96a908b37fd3ee190d6371eff4112455eb0097fb");
 		this.assertPut("policytypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fpolicytypes%252Ffruits/european/inheritance/", "entitytypes/policytypes/organic_add_none_inheritance.json");
 		this.assertGet("policytypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fpolicytypes%252Ffruits/european/", "entitytypes/policytypes/organic_inheritance_none.xml");
