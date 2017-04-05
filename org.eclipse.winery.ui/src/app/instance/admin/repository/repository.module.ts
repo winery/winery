@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RepositoryComponent } from './repository.component';
-import { WineryUploaderModule } from '../../fileUploaderModal/wineryUploader.module';
+import { WineryUploaderModule } from '../../../fileUploaderModal/wineryUploader.module';
 import { RepositoryService } from './repository.service';
 
 @NgModule({

@@ -11,8 +11,8 @@
  */
 import { Component, OnInit } from '@angular/core';
 import { RepositoryService } from './repository.service';
-import { NotificationService } from '../../notificationModule/notification.service';
-import { backendBaseUri } from '../../configuration';
+import { NotificationService } from '../../../notificationModule/notification.service';
+import { backendBaseUri } from '../../../configuration';
 
 @Component({
     selector: 'winery-instance-repository',

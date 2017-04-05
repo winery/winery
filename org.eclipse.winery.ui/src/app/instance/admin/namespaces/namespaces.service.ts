@@ -11,12 +11,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import { NamespaceSelectorService } from '../../namespaceSelector/namespaceSelector.service';
+import { NamespaceSelectorService } from '../../../namespaceSelector/namespaceSelector.service';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
-import { backendBaseUri } from '../../configuration';
+import { backendBaseUri } from '../../../configuration';
 import { Router } from '@angular/router';
-import { NamespaceWithPrefix } from '../../interfaces/namespaceWithPrefix';
+import { NamespaceWithPrefix } from '../../../interfaces/namespaceWithPrefix';
 
 @Injectable()
 export class NamespacesService {

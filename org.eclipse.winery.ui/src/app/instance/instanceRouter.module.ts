@@ -35,18 +35,16 @@ import { PropertiesComponent } from './properties/properties.component';
 import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
 import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
 import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
-import { LoggerComponent } from './logger/logger.component';
-import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
-import { NamespacesComponent } from './namespaces/namespaces.component';
-import { RepositoryComponent } from './repository/repository.component';
-import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
-import { PlanTypesComponent } from './planTypes/planTypes.component';
+import { LoggerComponent } from './admin/logger/logger.component';
+import { PlanLanguagesComponent } from './admin/planLanguages/planLanguages.component';
+import { NamespacesComponent } from './admin/namespaces/namespaces.component';
+import { RepositoryComponent } from './admin/repository/repository.component';
+import { ConstraintTypesComponent } from './admin/contraintTypes/constraintTypes.component';
+import { PlanTypesComponent } from './admin/planTypes/planTypes.component';
 import { TagComponent } from './tag/tag.component';
 import { RouterModule } from '@angular/router';
 
-
 const instanceRoutes = [
-
     {
         path: 'admin',
         component: InstanceComponent,

@@ -11,7 +11,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { backendBaseUri } from '../../configuration';
+import { backendBaseUri } from '../../../configuration';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 

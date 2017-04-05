@@ -11,7 +11,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { NotificationService } from '../../notificationModule/notification.service';
+import { NotificationService } from '../../../notificationModule/notification.service';
 
 @Component({
     selector: 'winery-instance-logger-component',

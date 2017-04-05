@@ -11,12 +11,12 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NamespaceSelectorService } from '../../namespaceSelector/namespaceSelector.service';
+import { NamespaceSelectorService } from '../../../namespaceSelector/namespaceSelector.service';
 import { NamespacesService } from './namespaces.service';
-import { NotificationService } from '../../notificationModule/notification.service';
-import { ValidatorObject } from '../../validators/duplicateValidator.directive';
+import { NotificationService } from '../../../notificationModule/notification.service';
+import { ValidatorObject } from '../../../validators/duplicateValidator.directive';
 import { isNullOrUndefined } from 'util';
-import { NamespaceWithPrefix } from '../../interfaces/namespaceWithPrefix';
+import { NamespaceWithPrefix } from '../../../interfaces/namespaceWithPrefix';
 import { Response } from '@angular/http';
 
 @Component({

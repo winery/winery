@@ -41,21 +41,20 @@ import { BoundaryDefinitionsComponent } from './boundaryDefinitions/boundaryDefi
 import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
 import { FilesComponent } from './filesTag/files.component';
 import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
-import { ConstraintTypesComponent } from './contraintTypes/constraintTypes.component';
+import { ConstraintTypesComponent } from './admin/contraintTypes/constraintTypes.component';
 import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
 import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
 import { ImplementationsModule } from './implementations/implementations.module';
 import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
-import { LoggerComponent } from './logger/logger.component';
-import { NamespacesComponent } from './namespaces/namespaces.component';
-import { PlanLanguagesComponent } from './planLanguages/planLanguages.component';
-import { PlanTypesComponent } from './planTypes/planTypes.component';
+import { LoggerComponent } from './admin/logger/logger.component';
+import { NamespacesComponent } from './admin/namespaces/namespaces.component';
+import { PlanLanguagesComponent } from './admin/planLanguages/planLanguages.component';
+import { PlanTypesComponent } from './admin/planTypes/planTypes.component';
 import { PropertiesComponent } from './properties/properties.component';
 import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
-import { RepositoryModule } from './repository/repository.module';
+import { RepositoryModule } from './admin/repository/repository.module';
 import { TagModule } from './tag/tag.module';
 import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortName.component';
-
 
 @NgModule({
     imports: [
