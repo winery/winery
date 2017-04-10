@@ -917,6 +917,7 @@ div.titledTableBox {
 .topologyTemplatePreviewSizing {
     height: 400px;
     width: 921px;
+    border: 0;
 }
 
 #topologyTemplatePreview {
