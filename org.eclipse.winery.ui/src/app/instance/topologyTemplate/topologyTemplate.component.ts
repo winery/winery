@@ -10,14 +10,29 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit } from '@angular/core';
+import { InstanceService } from '../instance.service';
+import { backendBaseUri } from '../../configuration';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
     templateUrl: 'topologyTemplate.component.html'
 })
 export class TopologyTemplateComponent implements OnInit {
-    constructor() {
+
+    loading = true;
+    templateUrl: SafeResourceUrl;
+    editorUrl: string;
+
+    constructor(private sanitizer: DomSanitizer, private sharedData: InstanceService) {
     }
 
     ngOnInit() {
+        this.templateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+            backendBaseUri + this.sharedData.path + '/topologytemplate/?view'
+        );
+        this.editorUrl = backendBaseUri + '-topologymodeler/'
+            + '?repositoryURL=' + encodeURIComponent(backendBaseUri)
+            + '&ns=' + encodeURIComponent(this.sharedData.selectedNamespace)
+            + '&id=' + this.sharedData.selectedComponentId;
     }
 }
