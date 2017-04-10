@@ -94,7 +94,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     onAdd() {
         this.validatorObject = new ValidatorObject(this.componentData, 'id');
         this.addComponentForm.reset();
-        this.newComponentNamespace = '';
+        this.newComponentNamespace = (this.showNamespace !== 'all' && this.showNamespace !== 'group') ? this.showNamespace : '';
         this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
         this.addModal.show();
     }
