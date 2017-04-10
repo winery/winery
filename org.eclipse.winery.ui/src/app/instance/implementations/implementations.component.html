@@ -28,9 +28,9 @@ to get an overview on all implementations stored in this repository. </p>
     </winery-table>
 </div>
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <winery-modalHeader [title]="'Add Node Type Implementation'">
-    </winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Add Node Type Implementation'">
+    </winery-modal-header>
+    <winery-modal-body>
         <form #addImplForm="ngForm" id="addImplForm">
             <div class="form-group">
                 <label class="control-label" for="localname">Name</label>
@@ -41,7 +41,7 @@ to get an overview on all implementations stored in this repository. </p>
                        name="localname"
                        required
                        [(ngModel)]="newImplementation.localname"
-                       [duplicateValidator]="validatorObject"
+                       [wineryDuplicateValidator]="validatorObject"
                         />
                 <div *ngIf="localNameInput.errors && (localNameInput.dirty || localNameInput.touched)"
                      class="alert alert-danger">
@@ -54,33 +54,33 @@ to get an overview on all implementations stored in this repository. </p>
                 </div>
             </div>
             <div class="form-group">
-                <winery-namespaceSelector
+                <winery-namespace-selector
                     name="namespaceSelector"
                     required
                     [isRequired]="true"
                     [typeAheadListLimit]="20"
-                    [(ngModel)]="selectedNamespace"></winery-namespaceSelector>
+                    [(ngModel)]="selectedNamespace"></winery-namespace-selector>
             </div>
         </form>
-    </winery-modalBody>
-    <winery-modalFooter (onOk)="addNewImplementation(localNameInput.value)"
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="addNewImplementation(localNameInput.value)"
                         [closeButtonLabel]="'Cancel'"
                         [okButtonLabel]="'Add'"
                         [disableOkButton]="!addImplForm?.form.valid">
-    </winery-modalFooter>
+    </winery-modal-footer>
 
 </winery-modal>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <winery-modalHeader [title]="'Delete Implementation'">
-    </winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Delete Implementation'">
+    </winery-modal-header>
+    <winery-modal-body>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">
             Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.localname }}</span>?
         </p>
-    </winery-modalBody>
-    <winery-modalFooter (onOk)="removeConfirmed();"
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
                         [closeButtonLabel]="'Cancel'"
                         [okButtonLabel]="'Delete'">
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>

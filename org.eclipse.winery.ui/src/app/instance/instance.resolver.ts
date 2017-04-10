@@ -11,11 +11,8 @@
  *     Niko Stadelmaier - add admin component
  */
 
-import { Injectable }             from '@angular/core';
-import {
-    ActivatedRouteSnapshot, Resolve, ResolveData,
-    Router, RouterStateSnapshot
-} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 
 import { isNullOrUndefined } from 'util';
 import { sections } from '../configuration';
@@ -28,9 +25,9 @@ export class InstanceResolver implements Resolve<InstanceResolverData> {
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): InstanceResolverData {
         // TODO: get the instance from the server, only return it, when it's valid
-        let section = sections[route.params['section']];
-        let namespace = route.params['namespace'];
-        let instanceId = route.params['instanceId'];
+        const section = sections[route.params['section']];
+        const namespace = route.params['namespace'];
+        const instanceId = route.params['instanceId'];
 
         if (!isNullOrUndefined(instanceId) && !isNullOrUndefined(namespace) && !isNullOrUndefined(section)) {
             return {

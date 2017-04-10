@@ -19,7 +19,6 @@ import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiDa
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
 
 @Component({
-    selector: 'winery-instance-visualAppearance',
     templateUrl: 'visualAppearance.component.html',
     styleUrls: [
         'visualAppearance.component.css'
@@ -79,9 +78,9 @@ export class VisualAppearanceComponent implements OnInit {
      *              </ul>
      */
     selectArrowItem(type?: string, style?: string) {
-        let shouldOpen = false;
-        let hasType = !isNullOrUndefined(type);
-        let hasStyle = !isNullOrUndefined(style);
+        const shouldOpen = false;
+        const hasType = !isNullOrUndefined(type);
+        const hasStyle = !isNullOrUndefined(style);
         let dashSelected = false;
         let sourcearrowheadSelected = false;
         let targetarrowheadSelected = false;

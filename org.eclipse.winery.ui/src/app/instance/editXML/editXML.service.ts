@@ -28,16 +28,16 @@ export class EditXMLService {
     }
 
     getXmlData(): Observable<string> {
-        let headers = new Headers({ 'Accept': 'application/xml' });
-        let options = new RequestOptions({ headers: headers });
+        const headers = new Headers({ 'Accept': 'application/xml' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.get(backendBaseUri + this.path + '/xml/', options)
             .map(res => res.text());
     }
 
     saveXmlData(xmlData: String): Observable<any> {
-        let headers = new Headers({ 'Content-Type': 'text/xml' });
-        let options = new RequestOptions({ headers: headers });
+        const headers = new Headers({ 'Content-Type': 'text/xml' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.put(backendBaseUri + this.path + '/', xmlData, options);
     }

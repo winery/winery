@@ -26,16 +26,16 @@ export class DocumentationService {
     }
 
     getDocumentationData(): Observable<string> {
-        let headers = new Headers({ 'Accept': 'text/plain' });
-        let options = new RequestOptions({ headers: headers });
+        const headers = new Headers({ 'Accept': 'text/plain' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.get(backendBaseUri + this.path, options)
             .map(res => res.text());
     }
 
     saveDocumentationData(documentationData: string): Observable<any> {
-        let headers = new Headers({'Content-Type': 'text/plain', 'Accept': 'text/plain'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'text/plain', 'Accept': 'text/plain'});
+        const options = new RequestOptions({headers: headers});
         return this.http.put(backendBaseUri + this.path + '/', documentationData, options);
     }
 }

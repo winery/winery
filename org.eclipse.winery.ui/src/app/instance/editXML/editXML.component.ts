@@ -16,7 +16,7 @@ import { NotificationService } from '../../notificationModule/notification.servi
 declare var requirejs: any;
 
 @Component({
-    selector: 'winery-instance-editXML',
+    selector: 'winery-instance-edit-xml',
     templateUrl: 'editXML.component.html',
     providers: [EditXMLService]
 })

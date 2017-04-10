@@ -56,7 +56,7 @@ import { NotificationService } from '../notificationModule/notification.service'
     selector: 'winery-uploader',
     templateUrl: 'wineryUploader.component.html'
 })
-export class WineryUploader implements OnInit {
+export class WineryUploaderComponent implements OnInit {
 
     fileOver = false;
     loading = false;

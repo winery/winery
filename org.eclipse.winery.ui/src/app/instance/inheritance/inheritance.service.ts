@@ -29,27 +29,27 @@ export class InheritanceService {
     }
 
     getInheritanceData(): Observable<InheritanceApiData> {
-        let headers = new Headers({ 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.get(backendBaseUri + this.path + '/inheritance/', options)
             .map(res => res.json());
     }
 
     getAvailableSuperClasses(): Observable<QNameList> {
-        let headers = new Headers({ 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.get(backendBaseUri + this.path + '/getAvailableSuperClasses', options)
             .map(res => res.json());
     }
 
     saveInheritanceData(inheritanceData: InheritanceApiData): Observable<any> {
-        let headers = new Headers({ 'Content-Type': 'application/json', 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        const headers = new Headers({ 'Content-Type': 'application/json', 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         // create a copy to not send unnecessary data to the server
-        let copy = new InheritanceApiData();
+        const copy = new InheritanceApiData();
         copy.derivedFrom = inheritanceData.derivedFrom;
         copy.isAbstract = inheritanceData.isAbstract;
         copy.isFinal = inheritanceData.isFinal;

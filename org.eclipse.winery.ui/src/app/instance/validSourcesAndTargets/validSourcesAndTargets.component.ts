@@ -12,7 +12,6 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'winery-validSourcesAndTargets',
     templateUrl: 'validSourcesAndTargets.component.html'
 })
 export class ValidSourcesAndTargetsComponent implements OnInit {

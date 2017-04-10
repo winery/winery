@@ -17,7 +17,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { TypeaheadModule } from 'ng2-bootstrap';
 import { ToastModule } from 'ng2-toastr';
 import { LoaderModule } from '../loader/loader.module';
-import { NamespaceSelectorComponent }   from './namespaceSelector.component';
+import { NamespaceSelectorComponent } from './namespaceSelector.component';
 
 @NgModule({
     imports: [

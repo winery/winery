@@ -34,8 +34,8 @@ export class SectionService {
     }
 
     getSectionData(resourceType?: string): Observable<any> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         if (isNullOrUndefined(resourceType)) {
             resourceType = this.path;
@@ -46,8 +46,8 @@ export class SectionService {
     }
 
     createComponent(newComponentName: string, newComponentNamespace: string, newComponentSelectedType?: string) {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         let saveObject: any;
         if (!isNullOrUndefined(newComponentSelectedType)) {

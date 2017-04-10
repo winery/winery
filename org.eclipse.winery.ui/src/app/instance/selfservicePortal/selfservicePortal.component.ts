@@ -12,7 +12,6 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'winery-selfservicePortal',
     templateUrl: 'selfservicePortal.component.html'
 })
 export class SelfservicePortalComponent implements OnInit {

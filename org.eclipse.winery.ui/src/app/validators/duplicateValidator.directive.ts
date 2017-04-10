@@ -34,26 +34,26 @@ export class ValidatorObject {
             } else {
                 no = compareObject.list.find(item => item[compareObject.property] === name);
             }
-            return no ? { 'duplicateValidator': { name } } : null;
+            return no ? {'duplicateValidator': {name}} : null;
         };
     }
 }
 
 @Directive({
-    selector: '[duplicateValidator]',
-    providers: [{ provide: NG_VALIDATORS, useExisting: DuplicateValidatorDirective, multi: true }]
+    selector: '[wineryDuplicateValidator]',
+    providers: [{provide: NG_VALIDATORS, useExisting: DuplicateValidatorDirective, multi: true}]
 })
 export class DuplicateValidatorDirective implements Validator, OnChanges {
 
-    @Input() duplicateValidator: ValidatorObject;
+    @Input() wineryDuplicateValidator: ValidatorObject;
 
     private valFn = Validators.nullValidator;
 
     ngOnChanges(changes: SimpleChanges): void {
         const change = changes['duplicateValidator'];
-        if (change && !isNullOrUndefined(this.duplicateValidator)) {
+        if (change && !isNullOrUndefined(this.wineryDuplicateValidator)) {
             const val: ValidatorObject = change.currentValue;
-            this.valFn = this.duplicateValidator.validate(val);
+            this.valFn = this.wineryDuplicateValidator.validate(val);
         } else {
             this.valFn = Validators.nullValidator;
         }

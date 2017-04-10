@@ -30,23 +30,23 @@ export class InterfacesService {
     }
 
     getInterfaces(): Observable<InterfacesApiData[]> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
 
     save(interfacesData: InterfacesApiData[]): Observable<any> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(interfacesData), options);
     }
 
     createImplementation(resourceType: string, implementationName: string, implementationNamespace: string): Observable<any> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(backendBaseUri + '/' + resourceType + 'implementations/',
             JSON.stringify({
@@ -59,8 +59,8 @@ export class InterfacesService {
 
     createImplementationArtifact(resourceType: string, implementationName: string, implementationNamespace: string,
                                  generateArtifactApiData: GenerateArtifactApiData) {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(backendBaseUri + '/' + resourceType + 'implementations/'
             + encodeURIComponent(encodeURIComponent(implementationNamespace)) + '/'

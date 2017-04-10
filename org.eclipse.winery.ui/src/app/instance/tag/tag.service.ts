@@ -27,22 +27,22 @@ export class TagService {
     }
 
     getTagsData(): Observable<TagsAPIData[]> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
     removeTagData(data: TagsAPIData): Observable<Response> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
-        let pathAddition = this.path
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
+        const pathAddition = this.path
             + '/' + data.id + '/';
         return this.http.delete(backendBaseUri + pathAddition, options);
     }
 
     postTag(tagsApiData: TagsAPIData): Observable<string> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(tagsApiData), options)
             .map(res => res.text());
     }

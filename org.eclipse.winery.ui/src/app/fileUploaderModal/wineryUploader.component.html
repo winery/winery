@@ -14,8 +14,8 @@
 -->
 
 <winery-modal bsModal #wineryUploader="bs-modal" [modalRef]="wineryUploader">
-    <winery-modalHeader [title]="title"></winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="title"></winery-modal-header>
+    <winery-modal-body>
         <input type="file" ng2FileSelect [uploader]="service.uploader" (change)="uploadFile()"/>
         <br>
         <div ng2FileDrop
@@ -29,8 +29,8 @@
         <div *ngIf="showProgress" class="progress" style="">
             <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': service.uploader.progress + '%' }"></div>
         </div>
-    </winery-modalBody>
-    <winery-modalFooter [showDefaultButtons]="false">
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="wineryUploader.hide()">Cancel</button>
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>

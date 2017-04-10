@@ -38,17 +38,17 @@ import { QNameList } from './qNameApiData';
  *
  * @example <caption>Basic usage</caption>
  * ```html
- * <winery-qNameSelector
+ * <winery-qname-selector
  *     [title]="'Derived from'"
  *     [displayList]="availableSuperClasses"
  *     [selectedResource]="selectedResource"
  *     [selectedValue]="inheritanceApiData.derivedFrom"
  *     (selectedValueChanged)="onSelectedValueChanged($event.value)">
- * </winery-qNameSelector>
+ * </winery-qname-selector>
  * ```
  */
 @Component({
-    selector: 'winery-qNameSelector',
+    selector: 'winery-qname-selector',
     templateUrl: 'qNameSelector.component.html',
 })
 export class QNameSelectorComponent {
@@ -84,12 +84,12 @@ export class QNameSelectorComponent {
             this.selectedValue = '(none)';
         }
 
-        let parts = this.selectedValue.split('}');
+        const parts = this.selectedValue.split('}');
 
         // can be '(none)'
         if (parts.length > 1) {
-            let namespace = parts[0].slice(1);
-            let name = parts[1];
+            const namespace = parts[0].slice(1);
+            const name = parts[1];
             this.openSuperClassLink = '/' + this.selectedResource + '/' + encodeURIComponent(encodeURIComponent(namespace)) + '/' + name;
         }
     }

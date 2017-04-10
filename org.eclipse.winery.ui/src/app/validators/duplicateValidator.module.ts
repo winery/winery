@@ -12,7 +12,7 @@
 
 import { NgModule } from '@angular/core';
 
-import { DuplicateValidatorDirective }   from './duplicateValidator.directive';
+import { DuplicateValidatorDirective } from './duplicateValidator.directive';
 
 @NgModule({
     imports: [],

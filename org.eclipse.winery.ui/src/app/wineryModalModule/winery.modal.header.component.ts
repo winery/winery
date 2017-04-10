@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'winery-modalHeader',
+    selector: 'winery-modal-header',
     templateUrl: 'winery.modal.header.component.html'
 })
 export class WineryModalHeaderComponent {

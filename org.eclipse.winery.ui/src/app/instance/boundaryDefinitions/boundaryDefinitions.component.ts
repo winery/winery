@@ -12,7 +12,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'winery-boundaryDefinitions',
+    selector: 'winery-boundary-definitions',
     templateUrl: 'boundaryDefinitions.component.html'
 })
 export class BoundaryDefinitionsComponent implements OnInit {

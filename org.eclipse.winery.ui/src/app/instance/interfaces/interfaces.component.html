@@ -20,19 +20,19 @@
         <button class="btn btn-primary" name="save" (click)="save()">Save</button>
     </div>
     <div style="display: inline-flex;">
-        <winery-selectableList [title]="'Interfaces'"
+        <winery-selectable-list [title]="'Interfaces'"
                                [rows]="interfacesData"
                                (addButtonClicked)="addInterface()"
                                (selectionChanged)="onInterfaceSelect($event)"
                                (removeButtonClicked)="removeInterface($event)">
-        </winery-selectableList>
-        <winery-selectableList *ngIf="operations"
+        </winery-selectable-list>
+        <winery-selectable-list *ngIf="operations"
                                [title]="'Operations'"
                                [rows]="operations"
                                (addButtonClicked)="addOperation()"
                                (selectionChanged)="onOperationSelected($event)"
                                (removeButtonClicked)="removeOperation()">
-        </winery-selectableList>
+        </winery-selectable-list>
     </div>
     <div>
         <winery-table *ngIf="inputParameters"
@@ -67,8 +67,8 @@
 </div>
 
 <winery-modal bsModal #addIntOpModal="bs-modal" [modalRef]="addIntOpModal">
-    <winery-modalHeader [title]="modalTitle"></winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="modalTitle"></winery-modal-header>
+    <winery-modal-body>
         <form #addElementForm="ngForm">
             <div class="form-group">
                 <label for="interfaceName" class="control-label">Name</label>
@@ -79,7 +79,7 @@
                        #newName="ngModel"
                        ngModel
                        required
-                       [duplicateValidator]="validatorObject">
+                       [wineryDuplicateValidator]="validatorObject">
                 <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
                      class="alert alert-danger">
                     <div [hidden]="!newName.errors.duplicateValidator">
@@ -91,18 +91,18 @@
                 </div>
             </div>
         </form>
-    </winery-modalBody>
-    <winery-modalFooter
+    </winery-modal-body>
+    <winery-modal-footer
         (onOk)="modalTitle === 'Interface' ? onAddInterface(newName.value) : onAddOperation(newName.value);"
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Add'"
         [disableOkButton]="!addElementForm?.form.valid">
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>
 
 <winery-modal bsModal #addIntParametersModal="bs-modal" [modalRef]="addIntParametersModal">
-    <winery-modalHeader [title]="modalTitle"></winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="modalTitle"></winery-modal-header>
+    <winery-modal-body>
         <form #parameterForm="ngForm">
             <div class="form-group">
                 <label for="parameterName" class="control-label">Name</label>
@@ -113,7 +113,7 @@
                        ngModel
                        #paramName="ngModel"
                        required
-                       [duplicateValidator]="validatorObject">
+                       [wineryDuplicateValidator]="validatorObject">
                 <div *ngIf="paramName.errors && (paramName.dirty || paramName.touched)"
                      class="alert alert-danger">
                     <div [hidden]="!paramName.errors.duplicateValidator">
@@ -147,29 +147,29 @@
                 </div>
             </div>
         </form>
-    </winery-modalBody>
-    <winery-modalFooter
+    </winery-modal-body>
+    <winery-modal-footer
         (onOk)="modalTitle === 'Input Parameter' ? onAddInputParam(paramName.value, paramType.value, required.checked) : onAddOutputParam(paramName.value, paramType.value, required.checked);"
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Add'"
         [disableOkButton]="!parameterForm?.form.valid">
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>
 
 <winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
-    <winery-modalHeader [title]="modalTitle"></winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="modalTitle"></winery-modal-header>
+    <winery-modal-body>
         <p>
             Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
         </p>
-    </winery-modalBody>
-    <winery-modalFooter [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
-                        (onOk)="onRemoveElement()"></winery-modalFooter>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+                        (onOk)="onRemoveElement()"></winery-modal-footer>
 </winery-modal>
 
 <winery-modal bsModal #generateImplModal="bs-modal" [modalRef]="generateImplModal">
-    <winery-modalHeader [title]="'Generate Implementation Artifact'"></winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Generate Implementation Artifact'"></winery-modal-header>
+    <winery-modal-body>
         <form *ngIf="!generating; else loadingGeneration" #generateForm="ngForm">
             <div class="form-group">
                 <label for="javaPackage" class="control-label">Java Package</label>
@@ -191,11 +191,11 @@
                     <ng-template #reuseImplementation>
                         <div class="alert alert-info">Will be reused.</div>
                     </ng-template>
-                    <winery-namespaceSelector
+                    <winery-namespace-selector
                         name="implementationNamespace"
                         [(ngModel)]="implementationNamespace"
                         (onChange)="checkImplementationExists();">
-                    </winery-namespaceSelector>
+                    </winery-namespace-selector>
                 </div>
             </div>
             <p>
@@ -216,23 +216,23 @@
                     <ng-template #artifactExists>
                         <div class="alert alert-info">Artifact Template already exists!</div>
                     </ng-template>
-                    <winery-namespaceSelector
+                    <winery-namespace-selector
                         name="artifactNamespace"
                         [(ngModel)]="generateArtifactApiData.artifactTemplateNamespace"
                         (onChange)="checkArtifactTemplateExists();">
-                    </winery-namespaceSelector>
+                    </winery-namespace-selector>
                 </div>
             </div>
         </form>
         <ng-template #loadingGeneration>
             <winery-loader></winery-loader>
         </ng-template>
-    </winery-modalBody>
-    <winery-modalFooter
+    </winery-modal-body>
+    <winery-modal-footer
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Generate'"
         [disableOkButton]="!(createImplementation || createArtifactTemplate)"
         (onOk)="generateImplementationArtifact()"
         (onCancel)="show = false">
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>

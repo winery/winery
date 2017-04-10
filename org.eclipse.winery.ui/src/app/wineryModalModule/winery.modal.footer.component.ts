@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-    selector: 'winery-modalFooter',
+    selector: 'winery-modal-footer',
     templateUrl: 'winery.modal.footer.component.html'
 })
 export class WineryModalFooterComponent {
