@@ -37,8 +37,7 @@ module.exports = webpackMerge(common, {
 
         new ExtractTextPlugin('[name].[hash].css'),
 
-        new webpack.NoErrorsPlugin(),
-        new webpack.optimize.DedupePlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
         new webpack.optimize.UglifyJsPlugin(),
 
         /*
