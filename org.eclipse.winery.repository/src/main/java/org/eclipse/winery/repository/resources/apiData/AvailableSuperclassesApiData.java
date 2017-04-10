@@ -25,8 +25,18 @@ public class AvailableSuperclassesApiData {
 	public List<QNameWithIdApiData> classes;
 
 	public AvailableSuperclassesApiData(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(res.getId().getClass());
-		allTOSCAcomponentIds.remove(res.getId());
+		this.generateList(res.getId().getClass(), res.getId());
+	}
+
+	public AvailableSuperclassesApiData(Class<? extends TOSCAComponentId> clazz) {
+		this.generateList(clazz, null);
+	}
+
+	private void generateList(Class<? extends TOSCAComponentId> clazz, TOSCAComponentId classToExclude) {
+		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(clazz);
+		if (classToExclude != null) {
+			allTOSCAcomponentIds.remove(classToExclude);
+		}
 		this.classes = new ArrayList<>();
 		for (TOSCAComponentId id : allTOSCAcomponentIds) {
 			QNameWithIdApiData q = new QNameWithIdApiData(id);
