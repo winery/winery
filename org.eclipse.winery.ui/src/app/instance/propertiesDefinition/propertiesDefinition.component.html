@@ -67,7 +67,7 @@
                                [(ngModel)]="resourceApiData.winerysPropertiesDefinition.elementName">
                     </div>
                     <div class="wrapperTabButtom">
-                        <winery-namespaceSelector [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"></winery-namespaceSelector>
+                        <winery-namespace-selector [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"></winery-namespace-selector>
                     </div>
                 </tab>
             </tabset>
@@ -76,9 +76,9 @@
 </div>
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <winery-modalHeader [title]="'Add Property'">
-    </winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Add Property'">
+    </winery-modal-header>
+    <winery-modal-body>
         <form #addPropertyFrom="ngForm" id="addPropertyForm">
             <div class="form-group">
                 <label class="control-label" for="key">Name</label>
@@ -90,7 +90,7 @@
                        autocomplete=off
                        required
                        [(ngModel)]="newProperty.key"
-                       [duplicateValidator]="validatorObject"/>
+                       [wineryDuplicateValidator]="validatorObject"/>
 
                 <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
                      class="alert alert-danger">
@@ -114,24 +114,24 @@
                 </select>
             </div>
         </form>
-    </winery-modalBody>
-    <winery-modalFooter (onOk)="addProperty(selectProperty.value, propName.value); addPropertyFrom.reset();"
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="addProperty(selectProperty.value, propName.value); addPropertyFrom.reset();"
                         [closeButtonLabel]="'Cancel'"
                         [okButtonLabel]="'Add'"
                         [disableOkButton]="!addPropertyFrom?.form.valid">
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <winery-modalHeader [title]="'Delete Property'">
-    </winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Delete Property'">
+    </winery-modal-header>
+    <winery-modal-body>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">
             Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.key }}</span>?
         </p>
-    </winery-modalBody>
-    <winery-modalFooter (onOk)="removeConfirmed();"
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
                         [closeButtonLabel]="'Cancel'"
                         [okButtonLabel]="'Delete'">
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>

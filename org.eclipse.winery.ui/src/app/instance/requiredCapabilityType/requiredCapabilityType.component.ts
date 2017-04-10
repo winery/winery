@@ -12,7 +12,6 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'winery-requiredCapabilityType',
     templateUrl: 'requiredCapabilityType.component.html'
 })
 export class RequiredCapabilityTypeComponent implements OnInit {

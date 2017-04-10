@@ -12,7 +12,6 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'winery-topologyTemplate',
     templateUrl: 'topologyTemplate.component.html'
 })
 export class TopologyTemplateComponent implements OnInit {

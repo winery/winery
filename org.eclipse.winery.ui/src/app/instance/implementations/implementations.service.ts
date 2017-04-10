@@ -29,29 +29,29 @@ export class ImplementationService {
     }
 
     getImplementationData(): Observable<ImplementationAPIData[]> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
 
     getAllNamespaces(): Observable<string[]> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseUri + '/admin/namespaces', options)
             .map(res => res.json());
     }
 
     postImplementation(implApiData: ImplementationWithTypeAPIData): Observable<Response> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.post(backendBaseUri + '/nodetypeimplementations/', JSON.stringify(implApiData), options);
     }
 
     deleteImplementations(implToDelete: ImplementationAPIData) {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
-        let pathAddition = '/nodetypeimplementations/'
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
+        const pathAddition = '/nodetypeimplementations/'
             + encodeURIComponent(encodeURIComponent(implToDelete.namespace)) + '/'
             + implToDelete.localname + '/';
         return this.http.delete(backendBaseUri + pathAddition, options);

@@ -17,6 +17,7 @@ import { NotificationService } from '../notificationModule/notification.service'
 import { backendBaseUri } from '../configuration';
 import { RemoveWhiteSpacesPipe } from '../pipes/removeWhiteSpaces.pipe';
 import { ExistService } from '../util/existService';
+import { subscribeOn } from 'rxjs/operator/subscribeOn';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -54,8 +55,8 @@ export class InstanceComponent implements OnInit, OnDestroy {
                         const img = backendBaseUri + this.service.path + '/visualappearance/50x50';
                         this.existService.check(img)
                             .subscribe(
-                                data => this.imageUrl = img,
-                                error => this.imageUrl = null,
+                                () => this.imageUrl = img,
+                                () => this.imageUrl = null,
                             );
                     }
 

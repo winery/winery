@@ -11,7 +11,7 @@
  *     Niko Stadelmaier - add font-awesome, add ng2-toastr css
  */
 
-import { enableProdMode }         from '@angular/core';
+import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { WineryRepositoryModule } from './app/wineryRepository.module';

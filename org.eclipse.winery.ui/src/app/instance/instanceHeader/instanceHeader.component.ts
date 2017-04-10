@@ -25,12 +25,6 @@ import { InstanceService } from '../instance.service';
     providers: [
         RemoveWhiteSpacesPipe
     ],
-    inputs: [
-        'selectedNamespace',
-        'selectedComponentId',
-        'selectedResource',
-        'subMenu'
-    ]
 })
 
 export class InstanceHeaderComponent implements OnInit {

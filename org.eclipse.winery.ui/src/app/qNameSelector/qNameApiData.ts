@@ -10,7 +10,6 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-
 export interface QNameApiData {
     name: string;
     qName: string;

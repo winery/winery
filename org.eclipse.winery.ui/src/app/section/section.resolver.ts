@@ -10,26 +10,24 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Injectable }             from '@angular/core';
-import {
-    ActivatedRouteSnapshot, Resolve, ResolveData,
-    Router, RouterStateSnapshot
-} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { isNullOrUndefined } from 'util';
 import { sections } from '../configuration';
 import { SectionResolverData } from '../interfaces/resolverData';
 
 @Injectable()
 export class SectionResolver implements Resolve<SectionResolverData> {
-    constructor(private router: Router) {}
+    constructor(private router: Router) {
+    }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): SectionResolverData {
-        let section = sections[route.params['section']];
-        let namespace = decodeURIComponent(decodeURIComponent(route.params['namespace']));
+        const section = sections[route.params['section']];
+        const namespace = decodeURIComponent(decodeURIComponent(route.params['namespace']));
         // TODO: get the namespace from the server, only return it, when it's valid
 
         if (!isNullOrUndefined(section)) {
-            return { section: section, namespace: namespace, path: route.params['section'] };
+            return {section: section, namespace: namespace, path: route.params['section']};
         } else { // id not found
             this.router.navigate(['/notfound']);
             return null;

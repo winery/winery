@@ -104,7 +104,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     addComponent() {
-        let compType = this.newComponentSelectedType ? this.newComponentSelectedType.id : null;
+        const compType = this.newComponentSelectedType ? this.newComponentSelectedType.id : null;
         this.service.createComponent(this.newComponentName, this.newComponentNamespace, compType)
             .subscribe(
                 data => this.handleSaveSuccess(),
@@ -140,7 +140,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     private getComponentData(data: any) {
-        let resolved: SectionResolverData = data['resolveData'];
+        const resolved: SectionResolverData = data['resolveData'];
 
         this.selectedResource = resolved.section;
         this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : this.showNamespace;

@@ -25,9 +25,9 @@
     </winery-table>
 </div>
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <winery-modalHeader [title]="'Add Tag'">
-    </winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Add Tag'">
+    </winery-modal-header>
+    <winery-modal-body>
         <form #addTagForm="ngForm" id="addTagForm">
             <div class="form-group">
                 <label class="control-label" for="name">Name</label>
@@ -38,7 +38,7 @@
                        name="name"
                        required
                        [(ngModel)]="newTag.name"
-                       [duplicateValidator]="validatorObject"
+                       [wineryDuplicateValidator]="validatorObject"
                 />
                 <div *ngIf="nameInput.errors && (nameInput.dirty || nameInput.touched)"
                      class="alert alert-danger">
@@ -71,25 +71,25 @@
                 </div>
             </div>
         </form>
-    </winery-modalBody>
-    <winery-modalFooter (onOk)="addNewTag()"
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="addNewTag()"
                         [closeButtonLabel]="'Cancel'"
                         [okButtonLabel]="'Add'"
                         [disableOkButton]="!addTagForm?.form.valid">
-    </winery-modalFooter>
+    </winery-modal-footer>
 
 </winery-modal>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <winery-modalHeader [title]="'Delete Tag'">
-    </winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Delete Tag'">
+    </winery-modal-header>
+    <winery-modal-body>
         <p *ngIf="selectedCell != null" id="diagyesnomsg">
             Do you want to delete the Element <span style="font-weight:bold;">{{ selectedCell.name }}</span>?
         </p>
-    </winery-modalBody>
-    <winery-modalFooter (onOk)="removeConfirmed();"
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
                         [closeButtonLabel]="'Cancel'"
                         [okButtonLabel]="'Delete'">
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>

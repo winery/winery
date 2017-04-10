@@ -27,7 +27,6 @@ import { ValidatorObject } from '../../validators/duplicateValidator.directive';
 import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 
 @Component({
-    selector: 'winery-instance-propertyDefinition',
     templateUrl: 'propertiesDefinition.component.html',
     styleUrls: [
         'propertiesDefinition.component.css'
@@ -317,7 +316,7 @@ export class PropertiesDefinitionComponent implements OnInit {
      * @param itemToDelete
      */
     private deleteItemFromPropertyDefinitionKvList(itemToDelete: any): void {
-        let list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
+        const list = this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList;
         for (let i = 0; i < list.length; i++) {
             if (list[i].key === itemToDelete.key) {
                 list.splice(i, 1);

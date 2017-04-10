@@ -38,23 +38,23 @@ export class TypeWithShortNameService {
     }
 
     getAllTypes(): Observable<TypeWithShortName[]> {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseUri + this.path + '/', options)
                    .map(res => res.json());
     };
 
     postTypes(types: TypeWithShortName[]): Observable<Response> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(types), options);
     }
 
     postType(type: TypeWithShortName) {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(backendBaseUri + this.path + '/', JSON.stringify(type), options);
     }

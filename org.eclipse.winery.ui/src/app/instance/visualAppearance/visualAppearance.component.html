@@ -120,9 +120,9 @@
 <button (click)="saveToServer()" class="btn btn-info btn-sm save">save</button>
 
 <winery-modal bsModal #upload16Modal="bs-modal" [modalRef]="upload16Modal">
-    <winery-modalHeader [title]="'Upload Icon (16x16) used in palette'">
-    </winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Upload Icon (16x16) used in palette'">
+    </winery-modal-header>
+    <winery-modal-body>
         <div class="modal-upload">
             <b>File</b>
             <input type="file" ng2FileSelect [uploader]="img16uploader"
@@ -137,16 +137,16 @@
             <br/>
             The file is <b>immediately</b> uploaded without any confirmation.
         </div>
-    </winery-modalBody>
-    <winery-modalFooter [showDefaultButtons]="false">
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="upload16Modal.hide()">Cancel</button>
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>
 
 <winery-modal bsModal #upload50Modal="bs-modal" [modalRef]="upload50Modal">
-    <winery-modalHeader [title]="'Upload Icon (50x50) used in palette'">
-    </winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Upload Icon (50x50) used in palette'">
+    </winery-modal-header>
+    <winery-modal-body>
         <div class="modal-upload">
             <input type="file" ng2FileSelect [uploader]="img50uploader"
                    (change)="onUpload(img50uploader,false, upload50Modal);"/>
@@ -160,8 +160,8 @@
             <br/>
             The file is <b>immediately</b> uploaded without any confirmation.
         </div>
-    </winery-modalBody>
-    <winery-modalFooter [showDefaultButtons]="false">
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="upload50Modal.hide()">Cancel</button>
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>

@@ -39,7 +39,7 @@ export class VisualAppearanceService {
     }
 
     getUploader(path: string): FileUploader {
-        let fileUploader: FileUploader = new FileUploader({url: path});
+        const fileUploader: FileUploader = new FileUploader({url: path});
         fileUploader.onAfterAddingFile = (item) => {
             item.method = 'PUT';
         };
@@ -47,15 +47,15 @@ export class VisualAppearanceService {
     }
 
     getData() {
-        let headers = new Headers({'Accept': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseUri + this.path + '/', options)
             .map(res => res.json());
     }
 
     saveVisuals(data: any): Observable<Response> {
-        let headers = new Headers({'Content-Type': 'application/json'});
-        let options = new RequestOptions({headers: headers});
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.put(backendBaseUri + this.path + '/', JSON.stringify(data), options);
     }
 }

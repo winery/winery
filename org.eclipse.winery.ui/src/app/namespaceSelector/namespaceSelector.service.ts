@@ -24,8 +24,8 @@ export class NamespaceSelectorService {
     }
 
     getAllNamespaces(): Observable<NamespaceWithPrefix[]> {
-        let headers = new Headers({ 'Accept': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.get(backendBaseUri + '/admin/namespaces/', options)
             .map(res => res.json());

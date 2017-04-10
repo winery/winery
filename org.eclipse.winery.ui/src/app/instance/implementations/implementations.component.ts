@@ -106,10 +106,10 @@ export class ImplementationsComponent implements OnInit {
 
     private addNewImplementation(localname: string) {
         this.loading = true;
-        let typeNamespace = this.sharedData.selectedNamespace;
-        let typeName = this.sharedData.selectedComponentId;
-        let type = '{' + typeNamespace + '}' + typeName;
-        let resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
+        const typeNamespace = this.sharedData.selectedNamespace;
+        const typeName = this.sharedData.selectedComponentId;
+        const type = '{' + typeNamespace + '}' + typeName;
+        const resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
             localname,
             type);
         this.service.postImplementation(resource).subscribe(

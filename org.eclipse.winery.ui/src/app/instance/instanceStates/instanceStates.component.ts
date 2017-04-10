@@ -19,7 +19,6 @@ import { isNullOrUndefined } from 'util';
 import { NotificationService } from '../../notificationModule/notification.service';
 
 @Component({
-    selector: 'winery-instance-instanceStates',
     templateUrl: 'instanceStates.component.html',
     providers: [InstanceStateService]
 })

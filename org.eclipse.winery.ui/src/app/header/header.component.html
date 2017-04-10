@@ -58,9 +58,9 @@
 </div>
 
 <winery-modal bsModal #aboutModal="bs-modal" [modalRef]="aboutModal">
-    <winery-modalHeader [title]="'Winery 1.0.0-SNAPSHOT'">
-    </winery-modalHeader>
-    <winery-modalBody>
+    <winery-modal-header [title]="'Winery 1.0.0-SNAPSHOT'">
+    </winery-modal-header>
+    <winery-modal-body>
         <p> Supporting <a href="docs.oasis-open.org/tosca/TOSCA/v1.0/os/TOSCA-v1.0-os.html">TOSCA-v1.0 &ndash;
             Topology and Orchestration Specification for Cloud Applications Version 1.0. 25 November 2013. OASIS
             Standard.</a><br/>
@@ -84,8 +84,8 @@
             Unless otherwise indicated below, the terms and conditions of the EPL still apply to any source code in the
             Content and such source code may be obtained at <a href="http://www.eclipse.org">http://www.eclipse.org</a>.
         </p>
-    </winery-modalBody>
-    <winery-modalFooter [showDefaultButtons]="false">
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="aboutModal.hide()">Ok</button>
-    </winery-modalFooter>
+    </winery-modal-footer>
 </winery-modal>

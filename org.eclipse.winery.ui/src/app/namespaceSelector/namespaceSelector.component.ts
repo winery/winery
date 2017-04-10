@@ -11,10 +11,10 @@
  *     Niko Stadelmaier - add types and documentation
  */
 
-import { Component, OnInit, Input, forwardRef, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
 import { NamespaceSelectorService } from './namespaceSelector.service';
 import { NotificationService } from '../notificationModule/notification.service';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NamespaceWithPrefix } from '../interfaces/namespaceWithPrefix';
 
 const noop = () => {
@@ -44,26 +44,26 @@ const customInputControl: any = {
  * <br>
  * @example <caption>Basic usage</caption>
  * ```html
- * <winery-namespaceSelector name="namespaceSelector" [(ngModel)]="mySelectedNamespace">
- * </winery-namespaceSelector>
+ * <winery-namespace-selector name="namespaceSelector" [(ngModel)]="mySelectedNamespace">
+ * </winery-namespace-selector>
  * ```
  *
  * @example <caption>Example with using the required validation</caption>
  * ```html
  * <form #myForm="ngForm">
- *     <winery-namespaceSelector
+ *     <winery-namespace-selector
  *         name="namespaceSelector"
  *         [(ngModel)]="mySelectedNamespace"
  *         [isRequired]="true"
  *         [typeAheadListLimit]="20"
  *         required>
- *     </winery-namespaceSelector>
+ *     </winery-namespace-selector>
  *     <button type="button" [disabled]="!myForm?.form.valid" (click)="onSave();">Save</button>
  * </form>
  * ```
  */
 @Component({
-    selector: 'winery-namespaceSelector',
+    selector: 'winery-namespace-selector',
     templateUrl: 'namespaceSelector.component.html',
     providers: [
         NamespaceSelectorService,

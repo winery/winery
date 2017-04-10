@@ -14,7 +14,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 
 @Component({
-    selector: 'winery-selectableList',
+    selector: 'winery-selectable-list',
     templateUrl: 'selectableList.component.html',
     styleUrls: [
         'selectableList.component.css',
@@ -25,9 +25,9 @@ export class SelectableListComponent implements OnInit {
     @Input() rows: Array<any>;
     @Input() title: string;
 
-    @Output() removeButtonClicked = new EventEmitter <any>();
-    @Output() addButtonClicked = new EventEmitter <any>();
-    @Output() selectionChanged = new EventEmitter <any>();
+    @Output() removeButtonClicked = new EventEmitter<any>();
+    @Output() addButtonClicked = new EventEmitter<any>();
+    @Output() selectionChanged = new EventEmitter<any>();
     currentSelected: any;
 
     constructor() {

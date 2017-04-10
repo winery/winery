@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, ContentChild, Input } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, ContentChild, HostBinding, Input } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { WineryModalFooterComponent } from './winery.modal.footer.component';
 import { WineryModalHeaderComponent } from './winery.modal.header.component';
@@ -36,11 +36,6 @@ import { WineryModalHeaderComponent } from './winery.modal.header.component';
 @Component({
     selector: 'winery-modal',
     templateUrl: 'winery.modal.component.html',
-    host: {
-        'class': 'modal fade',
-        'role': 'dialog',
-        'tabindex': '-1'
-    }
 })
 export class WineryModalComponent implements AfterViewInit, AfterContentInit {
 
@@ -64,6 +59,10 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
      * @type {boolean}
      */
     @Input() backdrop: string | boolean = true;
+
+    @HostBinding('class') hostClass = 'modal fade';
+    @HostBinding('attr.role') hostRole = 'dialog';
+    @HostBinding('tabindex') hostTabIndex = '-1';
 
     @ContentChild(WineryModalHeaderComponent) headerContent: WineryModalHeaderComponent;
     @ContentChild(WineryModalFooterComponent) footerContent: WineryModalFooterComponent;
@@ -89,11 +88,13 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
 
         this.modalRef.config.keyboard = this.keyboard;
 
-        if (ModalSize.validSize(this.size)) this.overrideSize = this.size;
+        if (ModalSize.validSize(this.size)) {
+            this.overrideSize = this.size;
+        }
     }
 
     getCssClasses(): string {
-        let classes: string[] = [];
+        const classes: string[] = [];
 
         if (this.isSmall()) {
             classes.push('modal-sm');

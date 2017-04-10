@@ -13,7 +13,6 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'winery-instance-planLanguages',
     templateUrl: 'planLanguages.component.html'
 })
 export class PlanLanguagesComponent implements OnInit {

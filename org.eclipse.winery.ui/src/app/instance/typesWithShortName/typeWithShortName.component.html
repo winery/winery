@@ -23,25 +23,25 @@
     </winery-table>
 
     <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-        <winery-modalHeader>
+        <winery-modal-header>
             <h4 class="modal-title">Delete Property</h4>
-        </winery-modalHeader>
-        <winery-modalBody>
+        </winery-modal-header>
+        <winery-modal-body>
             <p *ngIf="elementToRemove != null" id="diagyesnomsg">
                 Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove?.shortName }}</span>?
             </p>
-        </winery-modalBody>
-        <winery-modalFooter (onOk)="deleteType();"
+        </winery-modal-body>
+        <winery-modal-footer (onOk)="deleteType();"
                             [closeButtonLabel]="'No'"
                             [okButtonLabel]="'Yes'">
-        </winery-modalFooter>
+        </winery-modal-footer>
     </winery-modal>
 
     <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-        <winery-modalHeader>
+        <winery-modal-header>
             <h4 class="modal-title">Add Property</h4>
-        </winery-modalHeader>
-        <winery-modalBody>
+        </winery-modal-header>
+        <winery-modal-body>
             <form #addTypeForm="ngForm" id="addTypeForm">
                 <div class="form-group">
                     <label class="control-label" for="shortName">Shortname</label>
@@ -53,7 +53,7 @@
                            autocomplete=off
                            required
                            [(ngModel)]="newTypeWithShortName.shortName"
-                           [duplicateValidator]="validatorObjectShortName"/>
+                           [wineryDuplicateValidator]="validatorObjectShortName"/>
 
                         <div *ngIf="shortName.errors && (shortName.dirty || shortName.touched)"
                          class="alert alert-danger">
@@ -75,7 +75,7 @@
                            autocomplete=off
                            required
                            [(ngModel)]="newTypeWithShortName.type"
-                           [duplicateValidator]="validatorObjectType"/>
+                           [wineryDuplicateValidator]="validatorObjectType"/>
 
                     <div *ngIf="type.errors && (type.dirty || type.touched)"
                          class="alert alert-danger">
@@ -90,12 +90,12 @@
 
 
             </form>
-        </winery-modalBody>
-        <winery-modalFooter (onOk)="addType(shortName.value, type.value); addTypeForm.reset();"
+        </winery-modal-body>
+        <winery-modal-footer (onOk)="addType(shortName.value, type.value); addTypeForm.reset();"
                             [closeButtonLabel]="'Cancel'"
                             [okButtonLabel]="'Add'"
                             [disableOkButton]="!addTypeForm?.form.valid">
-        </winery-modalFooter>
+        </winery-modal-footer>
     </winery-modal>
 </div>
 

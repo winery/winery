@@ -12,7 +12,6 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'winery-deploymentArtifacts',
     templateUrl: 'deploymentArtifacts.component.html'
 })
 export class DeploymentArtifactsComponent implements OnInit {

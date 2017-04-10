@@ -55,12 +55,12 @@ export class SectionPipe implements PipeTransform {
                 }
             );
         } else if (args.showNamespaces === 'group') {
-            let distinctNamespaces: SectionData[] = [];
+            const distinctNamespaces: SectionData[] = [];
 
             // Get all namespaces and count their appearance
-            for (let item of value) {
+            for (const item of value) {
                 if (isNullOrUndefined(distinctNamespaces[item.namespace])) {
-                    let o: SectionData = { namespace: item.namespace, count: 1 };
+                    const o: SectionData = { namespace: item.namespace, count: 1 };
                     distinctNamespaces[item.namespace] = o;
                     distinctNamespaces.push(o);
                 } else {

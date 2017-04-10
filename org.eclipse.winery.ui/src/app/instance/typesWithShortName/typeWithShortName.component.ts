@@ -17,7 +17,7 @@ import { Response } from '@angular/http';
 import { TypeWithShortNameService, TypeWithShortName } from './typeWithShortName.service';
 
 @Component({
-    selector: 'winery-instance-typeWithShortName',
+    selector: 'winery-instance-type-with-short-name',
     templateUrl: 'typeWithShortName.component.html',
     providers: [NamespaceSelectorService, TypeWithShortNameService],
 })
@@ -116,7 +116,7 @@ export class TypeWithShortNameComponent implements OnInit {
      * @param itemToDelete
      */
     private deleteItemFromTypesWithShortNameList(itemToDelete: TypeWithShortName): void {
-        let list = this.types;
+        const list = this.types;
         for (let i = 0; i < list.length; i++) {
             if (list[i].type === itemToDelete.type) {
                 list.splice(i, 1);

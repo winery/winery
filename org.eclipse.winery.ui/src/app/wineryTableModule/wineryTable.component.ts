@@ -10,7 +10,7 @@
  *     Niko Stadelmaier - initial API and implementation
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, DoCheck, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 /**
  * This component provides an easy and fast way to use the ng2-table with further modifications
@@ -37,7 +37,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
     templateUrl: 'wineryTable.component.html',
     styleUrls: ['wineryTable.component.css']
 })
-export class WineryTableComponent implements OnInit {
+export class WineryTableComponent implements OnInit, DoCheck {
 
     /**
      * Sets the title for this table.
@@ -96,7 +96,16 @@ export class WineryTableComponent implements OnInit {
     @Input() filterString: string;
     /**
      * @Input
-     * @type {{paging: boolean; sorting: {columns: (Array<WineryTableColumn>|boolean)}; filtering: {filterString: string}; className: [string,string]}}
+     * @type {
+     *          paging: boolean;
+     *          sorting: {
+     *            columns: (Array<WineryTableColumn>|boolean)
+     *          };
+     *          filtering: {
+     *            filterString: string
+     *          };
+     *          className: [string,string];
+     *       }}
      */
     @Input() config: any = {
         /**
@@ -124,21 +133,21 @@ export class WineryTableComponent implements OnInit {
      * @Output contains the data of the whole selected row.
      * @type {EventEmitter<any>}
      */
-    @Output() cellSelected = new EventEmitter <any>();
+    @Output() cellSelected = new EventEmitter<any>();
     /**
      * Event which gets fired after the remove button has been clicked.
      *
      * @Output
      * @type {EventEmitter<any>}
      */
-    @Output() removeBtnClicked = new EventEmitter <any>();
+    @Output() removeBtnClicked = new EventEmitter<any>();
     /**
      * Event which gets fired after the add button has been clicked.
      *
      * @Output
      * @type {EventEmitter<any>}
      */
-    @Output() addBtnClicked = new EventEmitter <any>();
+    @Output() addBtnClicked = new EventEmitter<any>();
 
     public rows: Array<any> = [];
     public page = 1;
@@ -149,7 +158,7 @@ export class WineryTableComponent implements OnInit {
 
     // region #######Table events and functions######
 
-    public onChangeTable(config: any, page: any = { page: this.page, itemsPerPage: this.itemsPerPage }): any {
+    public onChangeTable(config: any, page: any = {page: this.page, itemsPerPage: this.itemsPerPage}): any {
         if (config.filtering) {
             Object.assign(this.config.filtering, config.filtering);
         }
@@ -158,15 +167,15 @@ export class WineryTableComponent implements OnInit {
             Object.assign(this.config.sorting, config.sorting);
         }
 
-        let filteredData = this.changeFilter(this.data, this.config);
-        let sortedData = this.changeSort(filteredData, this.config);
+        const filteredData = this.changeFilter(this.data, this.config);
+        const sortedData = this.changeSort(filteredData, this.config);
         this.rows = page && config.paging ? this.changePage(page, sortedData) : sortedData;
         this.length = sortedData.length;
     }
 
     public changePage(page: any, data: Array<any> = this.data): Array<any> {
-        let start = (page.page - 1) * page.itemsPerPage;
-        let end = page.itemsPerPage > -1 ? (start + page.itemsPerPage) : data.length;
+        const start = (page.page - 1) * page.itemsPerPage;
+        const end = page.itemsPerPage > -1 ? (start + page.itemsPerPage) : data.length;
         return data.slice(start, end);
     }
 
@@ -175,7 +184,7 @@ export class WineryTableComponent implements OnInit {
             return data;
         }
         // console.log('changeSort:config', config);
-        let columns = this.config.sorting.columns || [];
+        const columns = this.config.sorting.columns || [];
         let columnName: string = void 0;
         let sort: string = void 0;
 
@@ -220,7 +229,7 @@ export class WineryTableComponent implements OnInit {
                 item[config.filtering.columnName].match(this.config.filtering.filterString));
         }
 
-        let tempArray: Array<any> = [];
+        const tempArray: Array<any> = [];
         filteredData.forEach((item: any) => {
             let flag = false;
             this.columns.forEach((column: any) => {
@@ -276,8 +285,8 @@ export class WineryTableComponent implements OnInit {
             this.oldLength = this.data.length;
             this.onChangeTable(this.config);
         } else {
-            let newLength = this.data.length;
-            let old = this.oldLength;
+            const newLength = this.data.length;
+            const old = this.oldLength;
             if (old !== newLength) {
                 // let direction = old < newLength ? 'grew' : 'shrunk';
                 // this.logs.push(`heroes ${direction} from ${old} to ${newLength}`);

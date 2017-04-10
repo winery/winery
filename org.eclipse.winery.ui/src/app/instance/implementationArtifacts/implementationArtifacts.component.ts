@@ -12,7 +12,6 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'winery-implementationArtifacts',
     templateUrl: 'implementationArtifacts.component.html'
 })
 export class ImplementationArtifactsComponent implements OnInit {

@@ -106,7 +106,7 @@ export class NamespacesComponent implements OnInit {
      * @param itemToDelete
      */
     private deleteItemFromPropertyDefinitionKvList(itemToDelete: NamespaceWithPrefix): void {
-        let list = this.adminNamespaces;
+        const list = this.adminNamespaces;
         for (let i = 0; i < list.length; i++) {
             if (list[i].namespace === itemToDelete.namespace) {
                 list.splice(i, 1);

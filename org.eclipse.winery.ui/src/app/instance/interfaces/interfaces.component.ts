@@ -250,7 +250,8 @@ export class InterfacesComponent implements OnInit {
         this.generating = true;
         this.generateArtifactApiData.artifactName = this.generateArtifactApiData.artifactTemplateName;
         if (this.createImplementation) {
-            this.service.createImplementation(this.selectedResource.replace(' ', '').toLowerCase(), this.implementationName, this.implementationNamespace)
+            this.service.createImplementation(this.selectedResource.replace(' ', '').toLowerCase(),
+                this.implementationName, this.implementationNamespace)
                 .subscribe(
                     data => this.handleGeneratedImplementation(data),
                     error => this.handleError(error)
@@ -284,6 +285,7 @@ export class InterfacesComponent implements OnInit {
 
         return lifecycleId !== -1;
     }
+
     // endregion
 
     onRemoveElement() {
@@ -382,7 +384,7 @@ export class InterfacesComponent implements OnInit {
             this.service.createImplementationArtifact(this.selectedResource.replace(' ', '').toLowerCase(), this.implementationName,
                 this.implementationNamespace, this.generateArtifactApiData)
                 .subscribe(
-                    data => this.handleGeneratedArtifact(),
+                    () => this.handleGeneratedArtifact(),
                     error => this.handleError(error)
                 );
         } else {

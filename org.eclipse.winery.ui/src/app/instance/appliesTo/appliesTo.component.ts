@@ -12,7 +12,6 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'winery-appliesTo',
     templateUrl: 'appliesTo.component.html'
 })
 export class AppliesToComponent implements OnInit {
