@@ -19,7 +19,7 @@
         <button class="btn btn-primary" name="save" (click)="save()">Save</button>
     </div>
     <winery-qname-selector
-        [selectedResource]="qNameResourceType"
+
         [displayList]="requiredCapTypeData.capabilityTypeList"
         [selectedValue]="requiredCapTypeData.currentRequiredCapabilityType"
         (selectedValueChanged)="changedCapType($event)">

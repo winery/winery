@@ -25,7 +25,7 @@ export class RequiredCapabilityTypeComponent implements OnInit {
     loading = true;
     selectedCapType: string;
     requiredCapTypeData: RequiredCapabilityTypeApiData;
-    qNameResourceType = 'requirementtypes';
+    qNameResourceType = 'capabilitytypes';
 
     constructor(private notify: NotificationService, private service: RequiredCapabilityTypeService) {
     }
@@ -39,15 +39,23 @@ export class RequiredCapabilityTypeComponent implements OnInit {
     }
 
     changedCapType(event: any) {
-        this.selectedCapType = event;
+        this.selectedCapType = event.value;
     }
 
     save() {
-        this.service.save(this.selectedCapType)
-            .subscribe(
-                () => this.notify.success('Successfully saved required Capability-Type!'),
-                error => this.notify.error(error)
-            );
+        if (this.selectedCapType === '(none)') {
+            this.service.delete()
+                .subscribe(
+                    () => this.notify.success('Successfully removed required Capability-Type!'),
+                    error => this.notify.error(error)
+                );
+        } else {
+            this.service.save(this.selectedCapType)
+                .subscribe(
+                    () => this.notify.success('Successfully saved required Capability-Type!'),
+                    error => this.notify.error(error)
+                );
+        }
     }
 
     private handleData(data: RequiredCapabilityTypeApiData) {

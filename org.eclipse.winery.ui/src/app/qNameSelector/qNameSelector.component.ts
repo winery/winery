@@ -10,7 +10,7 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { QNameList } from './qNameApiData';
 
@@ -24,7 +24,8 @@ import { QNameList } from './qNameApiData';
  *     </li>
  *     <li><code>displayList</code> the list of QNames in {@link QNameList} format. This field is
  *         mandatory!
- *     <li><code>selectedResource</code>
+ *     <li><code>selectedResource</code> is the resource type which can be selected in the dropdown. This is
+ *         required for the open button.
  *     </li>
  *     <li><code>selectedValue</code> sets the currently selected value in the dropdown
  *     </li>
@@ -51,7 +52,7 @@ import { QNameList } from './qNameApiData';
     selector: 'winery-qname-selector',
     templateUrl: 'qNameSelector.component.html',
 })
-export class QNameSelectorComponent {
+export class QNameSelectorComponent implements OnInit {
 
     @Input() title: string;
     @Input() displayList: QNameList;
@@ -67,16 +68,14 @@ export class QNameSelectorComponent {
     constructor() {
     }
 
+    ngOnInit() {
+        this.setButtonLink();
+    }
+
     onChange(value: string): void {
         this.selectedValue = value;
         this.setButtonLink();
         this.selectedValueChanged.emit({value: this.selectedValue});
-    }
-
-    private handleData(availableSuperClasses: QNameList): void {
-
-        this.qNameList = availableSuperClasses;
-        this.setButtonLink();
     }
 
     private setButtonLink(): void {

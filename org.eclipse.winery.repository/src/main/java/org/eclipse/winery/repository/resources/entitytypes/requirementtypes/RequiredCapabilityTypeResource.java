@@ -8,11 +8,9 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - JSON API
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.requirementtypes;
-
-import java.util.Collection;
-import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -32,7 +30,6 @@ import org.eclipse.winery.repository.resources.apiData.AvailableSuperclassesApiD
 import org.eclipse.winery.repository.resources.apiData.RequiredCapabilityTypeApiData;
 
 import com.sun.jersey.api.NotFoundException;
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 
 public class RequiredCapabilityTypeResource {

@@ -23,18 +23,24 @@ export class RequiredCapabilityTypeService {
 
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
+        this.path = backendBaseUri + decodeURIComponent(this.route.url) + '/';
     }
 
     getRequiredCapabilityTypeData(): Observable<RequiredCapabilityTypeApiData> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
-        return this.http.get(backendBaseUri + this.path + '/', options)
+        return this.http.get(this.path, options)
             .map(res => res.json());
     }
 
     save(requiredCapabilityType: string): Observable<any> {
-        return this.http.put(backendBaseUri + this.path + '/', requiredCapabilityType);
+        const headers = new Headers({'Content-Type': 'text/plain'});
+        const options = new RequestOptions({headers: headers});
+        return this.http.put(this.path, requiredCapabilityType, options);
+    }
+
+    delete(): Observable<any> {
+        return this.http.delete(this.path);
     }
 }
