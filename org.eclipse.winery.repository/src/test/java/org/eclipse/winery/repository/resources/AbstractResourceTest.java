@@ -154,6 +154,18 @@ public abstract class AbstractResourceTest {
 				.statusCode(204);
 	}
 
+	/**
+	 * Maybe remove in order to force JSON.
+	 */
+	public void assertPutText(String restURL, String content) {
+		start()
+				.body(content)
+				.contentType(ContentType.TEXT)
+				.put(callURL(restURL))
+				.then()
+				.statusCode(204);
+	}
+
 	public void assertPost(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);
 		start()
