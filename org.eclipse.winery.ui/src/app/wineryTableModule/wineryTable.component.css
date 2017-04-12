@@ -1,0 +1,15 @@
+.table-component-header {
+    margin-top: 1rem;
+}
+
+.table-component-header-btn-wrap{
+    margin: 1rem 0 1rem 1rem;
+    height: auto;
+    display: inline-block;
+    float: right;
+}
+
+.table-component-select-wrap {
+    display: inline-block;
+    width:75px;
+}

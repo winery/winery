@@ -135,10 +135,11 @@ public abstract class AbstractResourceTest {
 
 	public void assertGetSize(String restURL, int size) {
 		start()
+				.accept(ContentType.JSON)
 				.get(callURL(restURL))
 				.then()
 				.log()
-				.ifError()
+				.all()
 				.statusCode(200)
 				.body("size()", is(size));
 	}
@@ -153,6 +154,18 @@ public abstract class AbstractResourceTest {
 				.statusCode(204);
 	}
 
+	/**
+	 * Maybe remove in order to force JSON.
+	 */
+	public void assertPutText(String restURL, String content) {
+		start()
+				.body(content)
+				.contentType(ContentType.TEXT)
+				.put(callURL(restURL))
+				.then()
+				.statusCode(204);
+	}
+
 	public void assertPost(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);
 		start()
@@ -161,6 +174,21 @@ public abstract class AbstractResourceTest {
 				.post(callURL(restURL))
 				.then()
 				.statusCode(201);
+	}
+
+	/**
+	 * Because some methods don't respond with a "created" status.
+	 * TODO: fix all methods which return "noContent" status so that this method can be deleted.
+	 *
+	 */
+	public void assertNoContentPost(String restURL, String fileName) {
+		String contents = readFromClasspath(fileName);
+		start()
+				.body(contents)
+				.contentType(getAccept(fileName))
+				.post(callURL(restURL))
+				.then()
+				.statusCode(204);
 	}
 
 	public void assertPost(String restURL, String namespace, String name) {

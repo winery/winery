@@ -11,9 +11,9 @@ dist: trusty
 before_install:
   # This is https://github.com/codacy/codacy-coverage-reporter#install-jpm, but the SSL certificate is expired, therefore we directly do the commands of the install script here
   # This is needed, because we use TypeScript and Java in one project
-  - curl -sL https://cdn.rawgit.com/jpm4j/jpm4j.installers/6b3c5176/dist/biz.aQute.jpm.run.jar >jpm4j.jar
-  - java -jar jpm4j.jar -u init
-  - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
+  #- curl -sL https://cdn.rawgit.com/jpm4j/jpm4j.installers/6b3c5176/dist/biz.aQute.jpm.run.jar >jpm4j.jar
+  #- java -jar jpm4j.jar -u init
+  #- ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
 
 script:
   - mvn package --fail-at-end

@@ -1,0 +1,36 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - module refactoring
+ */
+-->
+
+<winery-modal bsModal #wineryUploader="bs-modal" [modalRef]="wineryUploader">
+    <winery-modal-header [title]="title"></winery-modal-header>
+    <winery-modal-body>
+        <input type="file" ng2FileSelect [uploader]="service.uploader" (change)="uploadFile()"/>
+        <br>
+        <div ng2FileDrop
+             class="dropZone noFile"
+             [ngClass]="{'fileOver': fileOver}"
+             (fileOver)="uploadFile($event)"
+             [uploader]="service.uploader">
+            You may <span style="font-weight:bold;">drop the file</span> here.
+        </div>
+        <p>The file is <span style="font-weight:bold;">immediately</span> uploaded without any confirmation.</p>
+        <div *ngIf="showProgress" class="progress" style="">
+            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': service.uploader.progress + '%' }"></div>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" (click)="wineryUploader.hide()">Cancel</button>
+    </winery-modal-footer>
+</winery-modal>

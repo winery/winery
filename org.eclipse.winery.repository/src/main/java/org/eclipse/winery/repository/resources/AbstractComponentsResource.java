@@ -24,11 +24,8 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -48,7 +45,6 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
-import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -112,23 +108,6 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 			}
 		}
 		return res;
-	}
-
-	/**
-	 * Creates a new component instance in the given namespace
-	 *
-	 * @param namespace plain namespace
-	 * @param name plain id
-	 * @param ignored this parameter is ignored, but necessary for
-	 *            {@link ArtifactTemplatesResource} to be able to accept the
-	 *            artifact type at a post
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response onPost(@FormParam("namespace") String namespace, @FormParam("name") String name, String ignored) {
-		ResourceCreationResult res = this.onPost(namespace, name);
-		return res.getResponse();
 	}
 
 	/**
@@ -251,11 +230,11 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 *
 	 * @param grouped if given, the JSON output is grouped by namespace
 	 *
-	 * @return A list of all ids of all instances of this component type. If the
-	 *         "name" attribute is required, that name is used as id <br />
+	 * @return A list of all ids of all instances of this component type. <br />
 	 *         Format:
-	 *         <code>[({"namespace": "<namespace>", "id": "<id>"},)* ]</code>. A
-	 *         <code>name<code> field is added if the model allows an additional name attribute
+	 *         <code>[({"namespace": "[namespace]", "id": "[id]"},)* ]</code>. <br /><br />
+	 *         If grouped is set, the list will be grouped by namespace. <br />
+	 *         <code>[{"id": "[namsepace encoded]", "test": "[namespace decoded]", "children":[{"id": "[qName]", "text": "[id]"}]}]</code>
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -284,32 +263,39 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 				}
 				jg.writeEndArray();
 			} else {
-				jg.writeStartObject();
+				jg.writeStartArray();
 				Map<Namespace, ? extends List<? extends TOSCAComponentId>> groupedIds = allTOSCAcomponentIds.stream().collect(Collectors.groupingBy(id -> id.getNamespace()));
 				groupedIds.keySet().stream().sorted().forEach(namespace -> {
 					try {
-						jg.writeFieldName(namespace.getDecoded());
+						jg.writeStartObject();
+						jg.writeStringField("id", namespace.getEncoded());
+						jg.writeStringField("text", namespace.getDecoded());
+						jg.writeFieldName("children");
 						jg.writeStartArray();
 						groupedIds.get(namespace).forEach(id -> {
 							try {
 								jg.writeStartObject();
-								jg.writeStringField("id", id.getXmlId().getDecoded());
+								String text;
 								if (supportsNameAttribute) {
 									AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
-									String name = ((IHasName) componentInstaceResource).getName();
-									jg.writeStringField("name", name);
+									text = ((IHasName) componentInstaceResource).getName();
+								} else {
+									text = id.getXmlId().getDecoded();
 								}
+								jg.writeStringField("id", id.getQName().toString());
+								jg.writeStringField("text", text);
 								jg.writeEndObject();
 							} catch (IOException e) {
 								AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
 							}
 						});
 						jg.writeEndArray();
+						jg.writeEndObject();
 					} catch (IOException e) {
 						AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
 					}
 				});
-				jg.writeEndObject();
+				jg.writeEndArray();
 			}
 			jg.close();
 		} catch (Exception e) {

@@ -69,7 +69,7 @@ import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources._support.IPersistable;
-import org.eclipse.winery.repository.resources.documentation.DocumentationsResource;
+import org.eclipse.winery.repository.resources.documentation.DocumentationResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.imports.genericimports.GenericImportResource;
@@ -309,7 +309,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 				}
 			}
 		};
-		return Response.ok().type(MediaType.TEXT_XML).entity(so).build();
+		return Response.ok().entity(so).build();
 	}
 
 	@GET
@@ -562,21 +562,19 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 	@GET
 	@Path("xml/")
-	@Produces(MediaType.TEXT_HTML)
-	public Response getXML() {
-		Viewable viewable = new Viewable("/jsp/xmlSource.jsp", this);
-		return Response.ok().entity(viewable).build();
+	@Produces(MediaType.APPLICATION_XML)
+	public Response getXMLasString() {
+		return Response.ok().entity(this.getDefinitionsAsXMLString()).build();
 	}
 
 	@Path("documentation/")
-	public DocumentationsResource getDocumentationsResource() {
-		return new DocumentationsResource(this, this.getElement().getDocumentation());
+	public DocumentationResource getDocumentationsResource() {
+		return new DocumentationResource(this, this.getElement().getDocumentation());
 	}
 
 	@Path("tags/")
 	public final TagsResource getTags() {
 		TTags tags = null;
-
 		if (this.element instanceof TServiceTemplate) {
 			tags = ((TServiceTemplate) this.element).getTags();
 			if (tags == null) {
