@@ -19,3 +19,4 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ### Fixed
 * Bounary definitions can be browsed for exported operations again
+* 

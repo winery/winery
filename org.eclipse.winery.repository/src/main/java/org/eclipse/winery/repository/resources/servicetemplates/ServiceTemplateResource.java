@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.resources.servicetemplates;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,9 +31,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,7 +61,6 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceWithReferencesResource;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.IHasName;
 import org.eclipse.winery.repository.resources._support.dataadapter.InjectorReplaceData;
 import org.eclipse.winery.repository.resources._support.dataadapter.InjectorReplaceOptions;
@@ -196,7 +198,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	@Path("injector/replace")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-	public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData) throws IOException, ParserConfigurationException, SAXException {
+	public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws IOException, ParserConfigurationException, SAXException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
 
@@ -226,17 +228,17 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 			}
 		}
 		TTopologyTemplate tTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.injections);
+		this.getServiceTemplate().setTopologyTemplate(null);
 		this.getServiceTemplate().setTopologyTemplate(tTopologyTemplate);
-		ServiceTemplateId injectedServiceTemplateId = new ServiceTemplateId(id.getNamespace().getDecoded(), id.getXmlId().getDecoded() + "-injected", false);
-		Repository.INSTANCE.forceDelete(injectedServiceTemplateId);
-		Repository.INSTANCE.flagAsExisting(injectedServiceTemplateId);
-		ServiceTemplateResource splitServiceTempateResource = (ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(injectedServiceTemplateId);
-
-		splitServiceTempateResource.getServiceTemplate().setTopologyTemplate(tTopologyTemplate);
 		LOGGER.debug("Persisting...");
-		splitServiceTempateResource.persist();
+		this.persist();
 		LOGGER.debug("Persisted.");
-		return Utils.getXML(TTopologyTemplate.class, tTopologyTemplate);
+
+		//No renaming of the Service Template allowed because of the plans
+
+		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(id));
+		LOGGER.debug("URI of the old and new ServiceTemplate: " + url.toString());
+		return Response.created(url).build();
 	}
 
 	/**

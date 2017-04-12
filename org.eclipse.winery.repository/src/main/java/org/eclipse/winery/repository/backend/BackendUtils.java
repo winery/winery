@@ -727,6 +727,10 @@ public class BackendUtils {
 		nodeTemplateClone.setProperties(nodeTemplate.getProperties());
 		nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
 
+		if (ModelUtilities.getTargetLabel(nodeTemplate).isPresent()) {
+			ModelUtilities.setTargetLabel(nodeTemplateClone, ModelUtilities.getTargetLabel(nodeTemplate).get());
+		}
+
 		return nodeTemplateClone;
 	}
 
