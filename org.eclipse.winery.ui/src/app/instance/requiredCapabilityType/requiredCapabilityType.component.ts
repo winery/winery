@@ -10,14 +10,56 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit } from '@angular/core';
+import { RequiredCapabilityTypeService } from './requiredCapabilityType.service';
+import { NotificationService } from '../../notificationModule/notification.service';
+import { RequiredCapabilityTypeApiData } from './requiredCapabilityTypeApiData';
 
 @Component({
-    templateUrl: 'requiredCapabilityType.component.html'
+    templateUrl: 'requiredCapabilityType.component.html',
+    providers: [
+        RequiredCapabilityTypeService
+    ]
 })
 export class RequiredCapabilityTypeComponent implements OnInit {
-    constructor() {
+
+    loading = true;
+    selectedCapType: string;
+    requiredCapTypeData: RequiredCapabilityTypeApiData;
+    qNameResourceType = 'capabilitytypes';
+
+    constructor(private notify: NotificationService, private service: RequiredCapabilityTypeService) {
     }
 
     ngOnInit() {
+        this.service.getRequiredCapabilityTypeData()
+            .subscribe(
+                data => this.handleData(data),
+                error => this.notify.error(error)
+            );
+    }
+
+    changedCapType(event: any) {
+        this.selectedCapType = event.value;
+    }
+
+    save() {
+        if (this.selectedCapType === '(none)') {
+            this.service.delete()
+                .subscribe(
+                    () => this.notify.success('Successfully removed required Capability-Type!'),
+                    error => this.notify.error(error)
+                );
+        } else {
+            this.service.save(this.selectedCapType)
+                .subscribe(
+                    () => this.notify.success('Successfully saved required Capability-Type!'),
+                    error => this.notify.error(error)
+                );
+        }
+    }
+
+    private handleData(data: RequiredCapabilityTypeApiData) {
+        this.loading = false;
+        this.requiredCapTypeData = data;
     }
 }
