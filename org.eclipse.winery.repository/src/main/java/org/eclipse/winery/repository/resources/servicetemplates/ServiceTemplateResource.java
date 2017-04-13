@@ -228,7 +228,6 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 			}
 		}
 		TTopologyTemplate tTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.injections);
-		this.getServiceTemplate().setTopologyTemplate(null);
 		this.getServiceTemplate().setTopologyTemplate(tTopologyTemplate);
 		LOGGER.debug("Persisting...");
 		this.persist();
@@ -237,7 +236,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		//No renaming of the Service Template allowed because of the plans
 
 		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(id));
-		LOGGER.debug("URI of the old and new ServiceTemplate: " + url.toString());
+		LOGGER.debug("URI of the old and new service template {}", url.toString());
 		return Response.created(url).build();
 	}
 

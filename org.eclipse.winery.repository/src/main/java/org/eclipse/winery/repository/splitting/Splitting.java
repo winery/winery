@@ -124,7 +124,7 @@ public class Splitting {
 			if (!transitiveAndDirectSuccessors.get(node).isEmpty()) {
 				for (TNodeTemplate successor : transitiveAndDirectSuccessors.get(node)) {
 					if (ModelUtilities.getTargetLabel(successor).isPresent() && ModelUtilities.getTargetLabel(node).isPresent()
-						&& !ModelUtilities.getTargetLabel(node).get().toLowerCase().equals(ModelUtilities.getTargetLabel(successor).get().toLowerCase())) {
+						&& !ModelUtilities.getTargetLabel(node).get().equalsIgnoreCase(ModelUtilities.getTargetLabel(successor).get())) {
 							return false;
 					}
 				}
@@ -200,8 +200,8 @@ public class Splitting {
 							 * The origin relationships are duplicated
 							*/
 							if (sourceElementIncommingRel instanceof TNodeTemplate
-									&& ((ModelUtilities.getTargetLabel((TNodeTemplate) sourceElementIncommingRel).get().toLowerCase()
-									.equals(ModelUtilities.getTargetLabel(duplicatedNode).get().toLowerCase())
+									&& ((ModelUtilities.getTargetLabel((TNodeTemplate) sourceElementIncommingRel).get()
+									.equalsIgnoreCase(ModelUtilities.getTargetLabel(duplicatedNode).get())
 									&& incomingRelationship.getType().getLocalPart().toLowerCase().contains("hostedon"))
 									|| !predecessors.contains(sourceElementIncommingRel))) {
 
