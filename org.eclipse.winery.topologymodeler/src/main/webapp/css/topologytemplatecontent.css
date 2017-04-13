@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,7 +8,7 @@
  *
  * Contributors:
  *    Uwe Breitenbücher - initial API and implementation and/or initial documentation
- *    Oliver Kopp - improvements
+ *    Oliver Kopp, Karoline Saatkamp - improvements
  *******************************************************************************/
 
 /** This CSS is shared between the Winery Repository and the Winery Topology Modeler **/
@@ -112,6 +112,21 @@ img.createAnnotation {
 a.KVPropertyValue {
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+div.NodeTemplateShape > div.targetLocationContainer {
+	border: 1px solid #aeaeae;
+	background: #ffffff;
+	margin: 7px;
+	width: 198px;
+	border-radius: 7px;
+	padding: 5px;
+	float: left;
+	overflow-x: hidden;
+	display: none;
+}
+
+div.NodeTemplateShape > div.targetLocationContainer > div.content > .thetargetlocation {
 }
 
 div.NodeTemplateShape > div.deploymentArtifactsContainer {

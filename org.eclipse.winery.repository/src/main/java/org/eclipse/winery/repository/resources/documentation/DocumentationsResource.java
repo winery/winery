@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -55,6 +55,6 @@ public class DocumentationsResource extends EntityWithoutIdCollectionResource<Do
 		doc.getContent().add(documentation);
 		// TODO: check for duplicates as in instance states
 		this.list.add(doc);
-		return CollectionsHelper.persist(this.res, this, doc);
+		return CollectionsHelper.persist(this.res, this, doc, true);
 	}
 }

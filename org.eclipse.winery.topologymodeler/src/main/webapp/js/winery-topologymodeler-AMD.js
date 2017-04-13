@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2015 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Karoline Saatkamp - add split functionality
  *******************************************************************************/
 
 /**
@@ -27,6 +28,7 @@ define(
 			openChooseTopologyToImportDiag: openChooseTopologyToImportDiag,
 			importTopology: importTopology,
 			save: save,
+			split: split,
 			setTopologyTemplateURL: function (url) {
 				topologyTemplateURL = url;
 			},
@@ -60,19 +62,19 @@ define(
 		}
 
 		function importTopology(urlPrefix, serviceTemplateQName) {
-			$("#importButon").button('loading');
+			$("#importButon").button("loading");
 			$.ajax({
 				url: topologyTemplateURL + "merge",
 				type: "POST",
 				contentType: 'text/plain',
 				data: serviceTemplateQName,
 				success: function(data, textStatus, jqXHR) {
-					$("#importButon").button('reset');
+					$("#importButon").button("reset");
 					vShowSuccess("successfully saved. Reloading page...");
 					window.location.reload(true);
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					$("#importButon").button('reset');
+					$("#importButon").button("reset");
 					vShowAJAXError("Could not import", jqXHR, errorThrown);
 				}
 			});
@@ -89,7 +91,7 @@ define(
 		 * "doSave"
 		 */
 		function save() {
-			$("#saveBtn").button('loading');
+			$("#saveBtn").button("loading");
 
 			$.ajax({
 				url: topologyTemplateURL,
@@ -97,12 +99,33 @@ define(
 				contentType: 'text/xml',
 				data: getTopologyTemplateAsXML(false),
 				success: function(data, textStatus, jqXHR) {
-					$("#saveBtn").button('reset');
+					$("#saveBtn").button("reset");
 					vShowSuccess("successfully saved.");
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
-					$("#saveBtn").button('reset');
+					$("#saveBtn").button("reset");
 					vShowAJAXError("Could not save", jqXHR, errorThrown);
+				}
+			});
+		}
+
+		/**
+		 * "doSplit"
+		 */
+		function split() {
+			$("#splitBtn").button("loading");
+
+			$.ajax({
+				url: topologyTemplateURL,
+				type: "POST",
+				success: function(data, textStatus, jqXHR) {
+					$("#splitBtn").button("reset");
+					var location = jqXHR.getResponseHeader("Location");
+					vShowSuccess("Successfully split. <a target=\"_blank\" href=\"" + location + "\">Open split service template</a>");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#splitBtn").button("reset");
+					vShowAJAXError("Could not split", jqXHR, errorThrown);
 				}
 			});
 		}
@@ -159,6 +182,10 @@ define(
 				}
 				xmlw.writeAttributeString("winery:x", x);
 				xmlw.writeAttributeString("winery:y", y);
+				var targetLocation = $(this).find("div.targetLocationContainer > div.content > .thetargetlocation").editable("getValue").undefined;
+				if (targetLocation !== "") {
+					xmlw.writeAttributeString("winery:location", targetLocation);
+				}
 
 				/** Properties **/
 				savePropertiesFromDivToXMLWriter($(this).children("div.propertiesContainer"), xmlw);

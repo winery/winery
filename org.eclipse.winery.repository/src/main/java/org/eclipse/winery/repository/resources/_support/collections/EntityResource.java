@@ -107,7 +107,7 @@ public abstract class EntityResource<EntityT> {
 	public Response setValue(EntityT o) {
 		this.list.set(this.idx, o);
 		this.o = o;
-		return CollectionsHelper.persist(this.res, this.idDetermination, o);
+		return CollectionsHelper.persist(this.res, this.idDetermination, o, false);
 	}
 
 	@DELETE

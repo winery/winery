@@ -66,7 +66,7 @@ public class TagsResource extends EntityWithoutIdCollectionResource<TagResource,
 		tag.setValue(value);
 
 		this.list.add(tag);
-		return CollectionsHelper.persist(this.res, this, tag);
+		return CollectionsHelper.persist(this.res, this, tag, true);
 	}
 
 }

@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -12,6 +12,7 @@
  *    Oliver Kopp - integration with the repository, adapted to TOSCA v1.0
  *    Yves Schubert - switch to bootstrap 3
  *    Lukas Balzer, Nicole Keppler - switch to bootstrap-touchspin
+ *    Karoline Saatkamp - maintenance
  *******************************************************************************/
 --%>
 
@@ -450,6 +451,8 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 
 		<button data-toggle="button" class="btn btn-default" onclick="togglePrintView(!$(this).hasClass('active'));">Print View</button>
 
+		<button class="btn btn-default" onclick="winery.events.fire(winery.events.name.command.SPLIT);" id="splitBtn" data-loading-text="Splitting...">Split</button>
+
 		<button class="btn btn-default topbutton" onclick="winery.events.fire(winery.events.name.command.IMPORT_TOPOLOGY);" id="importBtn">Import Topology</button>
 
 		<div class="btn-group">
@@ -649,12 +652,12 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 
 </script>
 <script>
-require(["winery-topologymodeler-AMD"], function(wt) {
-	winery.events.register(winery.events.name.command.IMPORT_TOPOLOGY, wt.openChooseTopologyToImportDiag);
-	winery.events.register(winery.events.name.command.SAVE, wt.save);
-	wt.setTopologyTemplateURL("<%=topologyTemplateURL%>");
-
-});
+	require(["winery-topologymodeler-AMD"], function(wt) {
+		winery.events.register(winery.events.name.command.IMPORT_TOPOLOGY, wt.openChooseTopologyToImportDiag);
+		winery.events.register(winery.events.name.command.SAVE, wt.save);
+		winery.events.register(winery.events.name.command.SPLIT, wt.split);
+		wt.setTopologyTemplateURL("<%=topologyTemplateURL%>");
+	});
 </script>
 <script>
 
@@ -1348,6 +1351,11 @@ require(["winery-topologymodeler-AMD"], function(wt) {
 // Initialize skeletton editor
 // A clone also clones the editing functionality
 $(".skelettonPropertyEditorForRelationshipTemplate").find(".KVPropertyValue").editable();
+</script>
+
+<script>
+	// initialize location editing
+	$(".thetargetlocation").editable();
 </script>
 
 <script>
