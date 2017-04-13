@@ -27,6 +27,10 @@
 			<param-value>GET,PUT,POST,DELETE,HEAD,OPTIONS</param-value>
 		</init-param>
 		<init-param>
+			<param-name>cors.exposed.headers</param-name>
+			<param-value>Location, Access-Control-Allow-Origin</param-value>
+		</init-param>
+		<init-param>
 			<param-name>cors.preflight.maxage</param-name>
 			<param-value>10</param-value>
 		</init-param>
