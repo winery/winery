@@ -47,6 +47,10 @@ Check out the [guide on GitHub](https://help.github.com/articles/setting-your-em
 
 Please follow <http://eclipse.github.io/winery/> to setup a git hook, which ensures that each commit contains a `Signed-off-by:` line.
 
+## Configuring GitHub
+
+Please ensure that the Email-Adress you use at Eclipse is the same as the "Public email" configured at https://github.com/settings/profile.
+
 ## Making the Commit
 
 When making the commit for the pull request it is vital that you "sign-off" on the commit using `git commit -s` option.

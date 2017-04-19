@@ -124,7 +124,7 @@ public class Splitting {
 			if (!transitiveAndDirectSuccessors.get(node).isEmpty()) {
 				for (TNodeTemplate successor : transitiveAndDirectSuccessors.get(node)) {
 					if (ModelUtilities.getTargetLabel(successor).isPresent() && ModelUtilities.getTargetLabel(node).isPresent()
-						&& !ModelUtilities.getTargetLabel(node).equals(ModelUtilities.getTargetLabel(successor))) {
+						&& !ModelUtilities.getTargetLabel(node).get().equalsIgnoreCase(ModelUtilities.getTargetLabel(successor).get())) {
 							return false;
 					}
 				}
@@ -169,7 +169,7 @@ public class Splitting {
 					}
 
 					//noinspection OptionalGetWithoutIsPresent
-					predecessorsTargetLabel.add(targetLabel.get());
+					predecessorsTargetLabel.add(targetLabel.get().toLowerCase());
 				}
 				// If all predecessors have the same target label assign this label to the considered node
 				if (predecessorsTargetLabel.size() == 1) {
@@ -200,8 +200,8 @@ public class Splitting {
 							 * The origin relationships are duplicated
 							*/
 							if (sourceElementIncommingRel instanceof TNodeTemplate
-									&& ((ModelUtilities.getTargetLabel((TNodeTemplate) sourceElementIncommingRel)
-									.equals(ModelUtilities.getTargetLabel(duplicatedNode))
+									&& ((ModelUtilities.getTargetLabel((TNodeTemplate) sourceElementIncommingRel).get()
+									.equalsIgnoreCase(ModelUtilities.getTargetLabel(duplicatedNode).get())
 									&& incomingRelationship.getType().getLocalPart().toLowerCase().contains("hostedon"))
 									|| !predecessors.contains(sourceElementIncommingRel))) {
 
@@ -294,7 +294,6 @@ public class Splitting {
 
 				//Add compatible nodes to the injectionOptions to host the considered lowest level node
 				if (!compatibleNodeTemplates.isEmpty()) {
-					compatibleNodeTemplates.stream().forEach(n -> ModelUtilities.setTargetLabel(n,targetLabel));
 					injectionOptions.put(needHostNode.getId(), compatibleNodeTemplates);
 					nodesForWhichHostsFound.add(needHostNode);
 				}
@@ -326,7 +325,6 @@ public class Splitting {
 							.getAllNodeTemplatesForLocationAndOfferingCapability(targetLabel, predecessor.getRequirements().getRequirement());
 					//Add compatible nodes to the injectionOptions to host the considered lowest level node
 					if (!compatibleNodeTemplates.isEmpty()) {
-						compatibleNodeTemplates.stream().forEach(n -> ModelUtilities.setTargetLabel(n, targetLabel));
 						injectionOptions.put(predecessor.getId(), compatibleNodeTemplates);
 						nodesForWhichHostsFound.add(predecessor);
 					}
@@ -419,16 +417,24 @@ public class Splitting {
 			originHostSuccessors.clear();
 			originHostSuccessors = getHostedOnSuccessorsOfNodeTemplate(topologyTemplate, predecessorOfNewHost);
 			TNodeTemplate newMatchingNodeTemplate;
+			TNodeTemplate newHostNodeTemplate = injectNodes.get(predecessorOfNewHostId);
+
+			boolean matchingFound = matching.stream()
+					.anyMatch(nt -> ModelUtilities.getTargetLabel(nt).get().toLowerCase()
+							.equals(ModelUtilities.getTargetLabel(newHostNodeTemplate).get().toLowerCase())
+					&& nt.getId().equals(Util.makeNCName(newHostNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(newHostNodeTemplate).get())));
 
 			//Check if the chosen replace node is already in the matching
-			if (!matching.contains(injectNodes.get(predecessorOfNewHostId))) {
+			if (!matchingFound) {
 				newMatchingNodeTemplate = injectNodes.get(predecessorOfNewHostId);
-				newMatchingNodeTemplate.setId(Util.makeNCName(newMatchingNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(predecessorOfNewHost).get()));
-				newMatchingNodeTemplate.setName(Util.makeNCName(newMatchingNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(predecessorOfNewHost).get()));
+				newMatchingNodeTemplate.setId(Util.makeNCName(newMatchingNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(newMatchingNodeTemplate).get()));
+				newMatchingNodeTemplate.setName(Util.makeNCName(newMatchingNodeTemplate.getName() + "-" + ModelUtilities.getTargetLabel(newMatchingNodeTemplate).get()));
 				topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(newMatchingNodeTemplate);
 				matching.add(newMatchingNodeTemplate);
 			} else {
-				newMatchingNodeTemplate = matching.stream().filter(nt -> injectNodes.get(predecessorOfNewHostId).equals(nt)).findAny().get();
+				newMatchingNodeTemplate = matching.stream().filter(nt -> ModelUtilities.getTargetLabel(nt).get().toLowerCase()
+						.equals(ModelUtilities.getTargetLabel(newHostNodeTemplate).get().toLowerCase())
+						&& nt.getId().equals(Util.makeNCName(newHostNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(newHostNodeTemplate).get()))).findAny().get();
 			}
 
 			//In case the predecessor was a lowest node a new hostedOn relationship has to be added

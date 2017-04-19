@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -55,9 +56,15 @@ public class ProviderRepository {
 				// get all contained node templates
 				.flatMap(id -> {
 					ServiceTemplateResource serviceTemplateResource = (ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(id);
-					return serviceTemplateResource.getServiceTemplate().getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().stream()
+					List<TNodeTemplate> matchedNodeTemplates = serviceTemplateResource.getServiceTemplate().getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().stream()
 							.filter(t -> t instanceof TNodeTemplate)
-							.map(TNodeTemplate.class::cast);
+							.map(TNodeTemplate.class::cast)
+							.collect(Collectors.toList());
+
+					matchedNodeTemplates.stream().forEach(t -> ModelUtilities.setTargetLabel(t, id.getNamespace().getDecoded().replace(NS_NAME_START, "")));
+
+					return matchedNodeTemplates.stream();
+
 				})
 				.collect(Collectors.toList());
 	}
