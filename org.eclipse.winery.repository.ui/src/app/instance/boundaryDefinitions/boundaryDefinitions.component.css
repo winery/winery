@@ -1,0 +1,39 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Balzer - initial API and implementation
+ */
+-->
+nav .links {
+    margin-top: 50px;
+    border: groove 1px;
+    position: relative;
+    background-color: #5bc0de;
+    border-bottom: groove 1px;
+    border-left: groove 1px;
+}
+
+a {
+    width: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #f9f9f9;
+    border-color: black;
+    border-top: groove 1px;
+    border-left: groove 1px;
+    border-right: groove 1px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+}
+
+a:hover {
+    background: lightblue;
+}

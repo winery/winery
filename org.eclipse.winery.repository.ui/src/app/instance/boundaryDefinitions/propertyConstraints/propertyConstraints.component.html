@@ -1,0 +1,96 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Balzer - initial API and implementation
+ */
+-->
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table
+        [data]="propertyConstraints"
+        [columns]="columns"
+        (cellSelected)="onCellSelected($event)"
+        [itemsPerPage]="10"
+        (removeBtnClicked)="onRemoveClick($event)"
+        (addBtnClicked)="onAddClick();">
+    </winery-table>
+</div>
+
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <winery-modal-header [title]="'Add property constraint'"></winery-modal-header>
+    <winery-modal-body>
+        <form #addConstraintForm="ngForm" id="addConstraintForm">
+            <div class="form-group">
+                <label class="control-label" for="property">Service Template Property</label>
+                <input #propertyInput="ngModel"
+                       id="property"
+                       class="form-control"
+                       type="text"
+                       name="property"
+                       required
+                       [(ngModel)]="newConstraint.property"
+                       [wineryDuplicateValidator]="validatorObject"
+                />
+                <div *ngIf="propertyInput.errors && (propertyInput.dirty || propertyInput.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!propertyInput.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!propertyInput.errors.required">
+                        Service Template Property is required!
+                    </div>
+                </div>
+                <br>
+                <label class="control-label" for="type">Constraint Type</label>
+                <div class="list-content">
+                    <select #typeSelect="ngModel"
+                            [(ngModel)]="newConstraint.constraintType"
+                            id="type"
+                            name="type"
+                            required>
+                        <option *ngFor="let item of constraintTypes" [ngValue]="item.type">{{ item.shortName }}</option>
+                    </select>
+                    <a [routerLink]="['/admin/constrainttypes']">
+                        <button type="button" class="btn btn-default btn-xs">Manage</button>
+                    </a>
+                    <button type="button" class="btn btn-default btn-xs" (click)="getConstraintTypes()">Refresh</button>
+                </div>
+                <div *ngIf="typeSelect.errors && (typeSelect.dirty || typeSelect.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!typeSelect.errors.required">
+                        Type is required!
+                    </div>
+                </div>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="addNewConstraint()"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="!addConstraintForm?.form.valid">
+    </winery-modal-footer>
+
+</winery-modal>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete Property Constraint'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="selectedCell != null" id="diagyesnomsg">
+            Do you want to delete the Constraint for Property <span style="font-weight:bold;">{{ selectedCell.property }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>

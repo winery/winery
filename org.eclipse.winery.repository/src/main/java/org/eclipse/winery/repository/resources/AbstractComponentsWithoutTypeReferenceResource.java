@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 University of Stuttgart.
+ * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -13,41 +13,44 @@
 package org.eclipse.winery.repository.resources;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
-import org.eclipse.winery.repository.resources.apiData.QNameWithTypeApiData;
-
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.winery.repository.resources.apiData.QNameApiData;
 
 /**
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate>
  * as these templates are directly nested in a TDefinitionsElement
  */
-public abstract class AbstractComponentsWithTypeReferenceResource<T extends AbstractComponentInstanceResource> extends AbstractComponentsResource<T> {
+public abstract class AbstractComponentsWithoutTypeReferenceResource<T extends AbstractComponentInstanceResource> extends AbstractComponentsResource<T> {
 
+	/**
+	 * Creates a new component instance in the given namespace
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response onJsonPost(QNameWithTypeApiData jsonData) {
-		// only check for type parameter as namespace and name are checked in super.onPost
-		if (StringUtils.isEmpty(jsonData.type)) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
+	public Response onJsonPost(QNameApiData jsonData) {
 		ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
-		if (!creationResult.isSuccess()) {
-			return creationResult.getResponse();
-		}
-		if (creationResult.getStatus().equals(Status.CREATED)) {
-			IHasTypeReference resource = (IHasTypeReference) AbstractComponentsResource.getComponentInstaceResource((TOSCAComponentId) creationResult.getId());
-			resource.setType(jsonData.type);
-			// we assume that setType succeeded and just return the result of the
-			// creation of the artifact template resource
-			// Thus, we do NOT change res
-		}
 		return creationResult.getResponse();
+	}
+
+	/**
+	 * Creates a new component instance in the given namespace
+	 *
+	 * @param namespace plain namespace
+	 * @param name      plain id
+	 * @param ignored   this parameter is ignored, but necessary for {@link ArtifactTemplatesResource} to be able to
+	 *                  accept the artifact type at a post
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response onPost(@FormParam("namespace") String namespace, @FormParam("name") String name, String ignored) {
+		ResourceCreationResult res = this.onPost(namespace, name);
+		return res.getResponse();
 	}
 }
