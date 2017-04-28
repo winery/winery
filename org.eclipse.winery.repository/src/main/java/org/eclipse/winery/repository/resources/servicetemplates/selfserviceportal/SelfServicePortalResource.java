@@ -17,7 +17,6 @@ import java.io.StringWriter;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
@@ -183,15 +182,17 @@ public class SelfServicePortalResource implements IPersistable {
 
 	@Path("displayname")
 	@PUT
-	public Response onPutOnDisplayName(@FormParam("value") String value) {
-		this.application.setDisplayName(value);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response onPutOnDisplayName( Application value) {
+		this.application.setDisplayName(value.getDisplayName());
 		return BackendUtils.persist(this);
 	}
 
 	@Path("description")
 	@PUT
-	public Response onPutOnDescription(@FormParam("value") String value) {
-		this.application.setDescription(value);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response onPutOnDescription(Application value) {
+		this.application.setDescription(value.getDescription());
 		return BackendUtils.persist(this);
 	}
 
