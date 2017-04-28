@@ -10,6 +10,7 @@
  *     Oliver Kopp - initial API and implementation
  *     Lukas Harzenetter - return namespaces sorted
  *     Nicole Keppler - return filtered namespace with number of containing components
+ *     Niko Stadelmaier - return namespaces with prefix
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.admin;
 
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,14 +41,11 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.NamespaceAndCountOfComponentInstances;
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
+import org.eclipse.winery.repository.resources.apiData.NamespaceWithPrefix;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sun.jersey.api.view.Viewable;
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,77 +70,6 @@ public class NamespacesResource extends AbstractAdminResource {
 		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery");
 	}
 
-	public static NamespacesResource getInstance() {
-		return new NamespacesResource();
-	}
-
-	private Collection<String> getAllPrefixes() {
-		Iterator<String> keys = this.configuration.getKeys();
-		HashSet<String> res = new HashSet<>();
-		while (keys.hasNext()) {
-			String key = keys.next();
-			String prefix = this.configuration.getString(key);
-			res.add(prefix);
-		}
-		return res;
-	}
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/admin/namespaces.jsp", this);
-		return Response.ok().entity(viewable).build();
-	}
-
-	/**
-	 * Sets / overwrites prefix/namespace mapping
-	 *
-	 * In case the prefix is already bound to another namespace, BAD_REQUEST is
-	 * returned.
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addNamespace(@FormParam("namespace") String namespace, @FormParam("nsPrefix") String prefix) {
-		if (StringUtils.isEmpty(namespace)) {
-			return Response.status(Status.BAD_REQUEST).entity("namespace must be given.").build();
-		}
-		if (StringUtils.isEmpty(prefix)) {
-			return Response.status(Status.BAD_REQUEST).entity("prefix must be given.").build();
-		}
-		namespace = Util.URLdecode(namespace);
-		prefix = Util.URLdecode(prefix);
-		Collection<String> allPrefixes = this.getAllPrefixes();
-		if (allPrefixes.contains(prefix)) {
-			if (NamespacesResource.getPrefix(namespace).equals(prefix)) {
-				return Response.notModified().build();
-			} else {
-				// the requested prefix is already bound to a different namespace
-				return Response.status(Status.BAD_REQUEST).entity("prefix already bound to a different namespace.").build();
-			}
-		}
-		this.configuration.setProperty(namespace, prefix);
-		return Response.noContent().build();
-	}
-
-	/**
-	 * Deletes given namespace from the repository
-	 *
-	 * @param URI to delete. The namespace is URLencoded.
-	 */
-	@DELETE
-	@Path("{namespace}")
-	public Response onDelete(@PathParam("namespace") String URI) {
-		Response res;
-		URI = Util.URLdecode(URI);
-		if (this.configuration.containsKey(URI)) {
-			this.configuration.clearProperty(URI);
-			res = Response.noContent().build();
-		} else {
-			res = Response.status(Status.NOT_FOUND).build();
-		}
-		return res;
-	}
-
 	/**
 	 * SIDEFFECT: URI is added to list of known namespaces if it did not exist
 	 * before
@@ -151,14 +77,6 @@ public class NamespacesResource extends AbstractAdminResource {
 	public static String getPrefix(Namespace namespace) {
 		String ns = namespace.getDecoded();
 		return NamespacesResource.getPrefix(ns);
-	}
-
-	@Path("{namespace}")
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getPrefixForEncodedNamespace(@PathParam("namespace") String URI) {
-		URI = Util.URLdecode(URI);
-		return NamespacesResource.getPrefix(URI);
 	}
 
 	/**
@@ -169,11 +87,10 @@ public class NamespacesResource extends AbstractAdminResource {
 		if (namespace == null) {
 			throw new IllegalArgumentException("Namespace must not be null");
 		}
-		final Configuration configuration = NamespacesResource.getInstance().configuration;
-		String prefix = configuration.getString(namespace);
+		String prefix = NamespacesResource.getInstance().configuration.getString(namespace);
 		if (prefix == null) {
 			prefix = NamespacesResource.generatePrefix(namespace);
-			configuration.setProperty(namespace, prefix);
+			NamespacesResource.getInstance().configuration.setProperty(namespace, prefix);
 		}
 		return prefix;
 	}
@@ -189,23 +106,6 @@ public class NamespacesResource extends AbstractAdminResource {
 			resource.nsCount++;
 		} while (allPrefixes.contains(prefix));
 		return prefix;
-	}
-
-	/**
-	 * Returns the list of all namespaces registered with his manager. It could
-	 * be incomplete, if entries have been added manually to the repository
-	 *
-	 * @return all namespaces registered with this manager.
-	 */
-	private HashSet<Namespace> getRegisteredNamespaces() {
-		HashSet<Namespace> res = new HashSet<>();
-		Iterator<String> keys = this.configuration.getKeys();
-		while (keys.hasNext()) {
-			String key = keys.next();
-			Namespace ns = new Namespace(key, false);
-			res.add(ns);
-		}
-		return res;
 	}
 
 	/**
@@ -246,8 +146,8 @@ public class NamespacesResource extends AbstractAdminResource {
 			for (TOSCAComponentId toscaComponentId : setOfAllTOSCAComponentIds) {
 				if (toscaComponentId.getNamespace().toString().equals(groupOfComponents.getKey())) {
 					namespacesAndCount.add(
-						new NamespaceAndCountOfComponentInstances(
-								toscaComponentId.getNamespace(), Objects.requireNonNull(groupOfComponents.getValue()).intValue()));
+							new NamespaceAndCountOfComponentInstances(
+									toscaComponentId.getNamespace(), Objects.requireNonNull(groupOfComponents.getValue()).intValue()));
 					break;
 				}
 			}
@@ -257,6 +157,7 @@ public class NamespacesResource extends AbstractAdminResource {
 
 	/**
 	 * Returns the list of all namespaces in the given TOSCA component.
+	 *
 	 * @param clazz the TOSCA component class which namespaces' should be returned.
 	 */
 	public static Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz) {
@@ -265,6 +166,122 @@ public class NamespacesResource extends AbstractAdminResource {
 		ArrayList<Namespace> list = new ArrayList<>(res);
 		Collections.sort(list);
 		return list;
+	}
+
+	public static NamespacesResource getInstance() {
+		return new NamespacesResource();
+	}
+
+	private Collection<String> getAllPrefixes() {
+		Iterator<String> keys = this.configuration.getKeys();
+		HashSet<String> res = new HashSet<>();
+		while (keys.hasNext()) {
+			String key = keys.next();
+			String prefix = this.configuration.getString(key);
+			res.add(prefix);
+		}
+		return res;
+	}
+
+	/**
+	 * Sets / overwrites prefix/namespace mapping
+	 * <p>
+	 * In case the prefix is already bound to another namespace, BAD_REQUEST is
+	 * returned.
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response addNamespace(@FormParam("namespace") String namespace, @FormParam("nsPrefix") String prefix) {
+		if (StringUtils.isEmpty(namespace)) {
+			return Response.status(Status.BAD_REQUEST).entity("namespace must be given.").build();
+		}
+		if (StringUtils.isEmpty(prefix)) {
+			return Response.status(Status.BAD_REQUEST).entity("prefix must be given.").build();
+		}
+		namespace = Util.URLdecode(namespace);
+		prefix = Util.URLdecode(prefix);
+		Collection<String> allPrefixes = this.getAllPrefixes();
+		if (allPrefixes.contains(prefix)) {
+			if (NamespacesResource.getPrefix(namespace).equals(prefix)) {
+				return Response.notModified().build();
+			} else {
+				// the requested prefix is already bound to a different namespace
+				return Response.status(Status.BAD_REQUEST).entity("prefix already bound to a different namespace.").build();
+			}
+		}
+		this.configuration.setProperty(namespace, prefix);
+		return Response.noContent().build();
+	}
+
+	public void addNamespace(String namespace) {
+		String prefix = generatePrefix(namespace);
+		// directly store it in the internal data structure
+		this.configuration.setProperty(namespace, prefix);
+	}
+
+	/**
+	 * Sets / overwrites prefix/namespace mapping
+	 * <p>
+	 * In case the prefix is already bound to another namespace, BAD_REQUEST is
+	 * returned.
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addNamespace(ArrayList<NamespaceWithPrefix> namespacesList) {
+		if (namespacesList == null) {
+			return Response.status(Status.BAD_REQUEST).entity("namespace list must be given.").build();
+		}
+		//delete all namespaces
+		this.configuration.clear();
+		//set all namespaces
+		for (NamespaceWithPrefix nsp : namespacesList) {
+			this.addNamespace(nsp.namespace, nsp.prefix);
+		}
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Deletes given namespace from the repository
+	 *
+	 * @param URI to delete. The namespace is URLencoded.
+	 */
+	@DELETE
+	@Path("{namespace}")
+	public Response onDelete(@PathParam("namespace") String URI) {
+		Response res;
+		URI = Util.URLdecode(URI);
+		if (this.configuration.containsKey(URI)) {
+			this.configuration.clearProperty(URI);
+			res = Response.noContent().build();
+		} else {
+			res = Response.status(Status.NOT_FOUND).build();
+		}
+		return res;
+	}
+
+	@Path("{namespace}")
+	@GET
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getPrefixForEncodedNamespace(@PathParam("namespace") String URI) {
+		URI = Util.URLdecode(URI);
+		return NamespacesResource.getPrefix(URI);
+	}
+
+	/**
+	 * Returns the list of all namespaces registered with his manager. It could
+	 * be incomplete, if entries have been added manually to the repository
+	 *
+	 * @return all namespaces registered with this manager.
+	 */
+	private HashSet<Namespace> getRegisteredNamespaces() {
+		HashSet<Namespace> res = new HashSet<>();
+		Iterator<String> keys = this.configuration.getKeys();
+		while (keys.hasNext()) {
+			String key = keys.next();
+			Namespace ns = new Namespace(key, false);
+			res.add(ns);
+		}
+		return res;
 	}
 
 	/**
@@ -281,37 +298,31 @@ public class NamespacesResource extends AbstractAdminResource {
 	 * at component instances.
 	 *
 	 * @return a JSON list containing the non-encoded URIs of each known
-	 *         namespace
+	 * namespace
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getNamespacesAsJSONlist() {
+	public ArrayList<NamespaceWithPrefix> getNamespacesAsJSONlist() {
 		Collection<Namespace> namespaces = NamespacesResource.getNamespaces();
 
 		// We now have all namespaces
 		// We need to convert from Namespace to String
 
-		TreeSet<String> stringNamespaces = new TreeSet<>();
+		ArrayList<NamespaceWithPrefix> namespacesList = new ArrayList<>();
 		for (Namespace ns : namespaces) {
-			stringNamespaces.add(ns.getDecoded());
+			namespacesList.add(new NamespaceWithPrefix(ns));
 		}
-
-		String res;
-		try {
-			res = Utils.mapper.writeValueAsString(stringNamespaces);
-		} catch (JsonProcessingException e) {
-			NamespacesResource.LOGGER.error(e.getMessage(), e);
-			res = "[]";
-		}
-		return res;
+		Collections.sort(namespacesList);
+		return namespacesList;
 	}
 
 	/**
 	 * Checks whether a prefix is registered for a namespace
-	 *
+	 * <p>
 	 * Used at CSARImporter
 	 */
 	public boolean getIsPrefixKnownForNamespace(String namespace) {
 		return this.configuration.containsKey(namespace);
 	}
+
 }
