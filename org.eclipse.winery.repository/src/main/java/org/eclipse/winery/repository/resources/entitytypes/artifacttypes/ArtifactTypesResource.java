@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -22,9 +22,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
-public class ArtifactTypesResource extends AbstractComponentsResource<ArtifactTypeResource> {
+public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenceResource<ArtifactTypeResource> {
 
 	// This cannot be used as the INSTANCE is per startup of the whole
 	// application

@@ -41,5 +41,4 @@ public class RequirementDefinitionsResource extends RequirementOrCapabilityDefin
 		SortedSet<RequirementTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(RequirementTypeId.class);
 		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
 	}
-
 }

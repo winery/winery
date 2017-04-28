@@ -25,6 +25,7 @@ public class NamespaceIdOptionalName {
 	private String namespace;
 	private String id;
 	private String name = null;
+	private String qName = null;
 
 
 	public NamespaceIdOptionalName() {
@@ -53,5 +54,13 @@ public class NamespaceIdOptionalName {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getqName() {
+		return qName;
+	}
+
+	public void setqName(String qName) {
+		this.qName = qName;
 	}
 }

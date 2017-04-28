@@ -10,7 +10,6 @@
  *     Philipp Meyer - initial API and implementation
  */
 import { NgModule } from '@angular/core';
-
 import { SpinnerWithInfinityComponent } from './winerySpinnerWithInfinity.component';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';

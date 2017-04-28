@@ -1,0 +1,53 @@
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzentter - initial API and implementation
+ */
+body {
+  width: 1000px;
+  background: #eaeaea;
+}
+
+nav#mainMenuContainer {
+  height: 28px;
+  position: absolute;
+  top: 38px;
+}
+
+.orderRight {
+  float: right;
+}
+
+a.styledTabMenuButton {
+  margin-bottom: 3px;
+  float: left;
+}
+
+a.styledTabMenuButton > div {
+  height: 28px;
+  float: left;
+}
+
+a.styledTabMenuButton > div.left {
+  width: 19px;
+}
+
+a.styledTabMenuButton > div.center {
+  line-height: 29px;
+  text-decoration: none;
+  font-family: arial, sans-serif;
+  color: #787878;
+  font-size: 14px;
+  text-shadow: 1px 1px 0 white;
+  padding-left: 5px;
+}
+
+a.styledTabMenuButton > div.right {
+  width: 29px;
+}

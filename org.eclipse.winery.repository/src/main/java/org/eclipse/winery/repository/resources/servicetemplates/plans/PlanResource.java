@@ -66,7 +66,6 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 
 	/**
 	 * Ugly hack to get the parent service template resource
-	 *
 	 */
 	public ServiceTemplateResource getServiceTemplateResource() {
 		// Solution proposal 1: Each sub-resource should know its parent service

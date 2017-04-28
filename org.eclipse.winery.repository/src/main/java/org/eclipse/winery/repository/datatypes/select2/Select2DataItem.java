@@ -17,9 +17,12 @@ package org.eclipse.winery.repository.datatypes.select2;
  */
 public class Select2DataItem implements Comparable<Select2DataItem> {
 
-	private final String id;
-	private final String text;
+	public String id;
+	public String text;
 
+	public Select2DataItem() {
+
+	}
 
 	public Select2DataItem(String id, String text) {
 		this.id = id;
@@ -52,5 +55,4 @@ public class Select2DataItem implements Comparable<Select2DataItem> {
 		}
 		return this.getId().equals(((Select2DataItem) o).getId());
 	}
-
 }
