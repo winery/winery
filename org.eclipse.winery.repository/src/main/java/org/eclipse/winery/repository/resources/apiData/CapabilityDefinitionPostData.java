@@ -9,13 +9,14 @@
  * Contributors:
  *     Tino Stadelmaier - initial API and implementation
  */
+package org.eclipse.winery.repository.resources.apiData;
 
-import { Component } from '@angular/core';
+public class CapabilityDefinitionPostData {
+	public String name;
+	public String type;
+	public String upperBound;
+	public String lowerBound;
 
-@Component({
-    selector: 'winery-instance-requirements',
-    templateUrl: './requirements.component.html',
-})
-export class RequirementsComponent {
+	CapabilityDefinitionPostData() {
+	}
 }
-
