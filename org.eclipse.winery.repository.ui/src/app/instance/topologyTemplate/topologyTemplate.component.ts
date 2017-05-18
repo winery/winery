@@ -27,11 +27,13 @@ export class TopologyTemplateComponent implements OnInit {
     }
 
     ngOnInit() {
+        const uiURL = encodeURIComponent(window.location.origin);
         this.templateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-            backendBaseURL + this.sharedData.path + '/topologytemplate/?view'
+            backendBaseURL + this.sharedData.path + '/topologytemplate/?view&uiURL=' + uiURL
         );
         this.editorUrl = backendBaseURL + '-topologymodeler/'
             + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
+            + '&uiURL=' + uiURL
             + '&ns=' + encodeURIComponent(this.sharedData.selectedNamespace)
             + '&id=' + this.sharedData.selectedComponentId;
     }

@@ -131,7 +131,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
 	/**
 	 * @param useProxy if a debugging proxy should be used
-	 *
 	 * @throws IllegalStateException if DOM parser could not be created
 	 */
 	public WineryRepositoryClient(boolean useProxy) {
@@ -303,18 +302,12 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
 			// this could be parsed using JAXB
 			// (http://jersey.java.net/nonav/documentation/latest/json.html),
-			// but we are short in time, so we do a quick hack
-			String nsList = namespacesResource.accept(MediaType.APPLICATION_JSON).get(String.class);
-			LOGGER.trace(nsList);
-			List<String> nsListList;
-			try {
-				nsListList = this.mapper.readValue(nsList, new TypeReference<List<String>>() {
-				});
-			} catch (Exception e) {
-				LOGGER.error(e.getMessage(), e);
-				continue;
+			// ~but we are short in time~ but this module will be removed in near future, so we do a quick hack
+			TopologyNamespace[] nsList = namespacesResource.accept(MediaType.APPLICATION_JSON).get(TopologyNamespace[].class);
+
+			for (TopologyNamespace ns : nsList) {
+				res.add(ns.namespace);
 			}
-			res.addAll(nsListList);
 		}
 		return res;
 	}
@@ -400,11 +393,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	/**
 	 * Fetches java objects at a given URL
 	 *
-	 * @param path the path to use. E.g., "nodetypes" for node types, ...
-	 * @param className the class of the expected return type. May be
-	 *            TDefinitions or TEntityType. TDefinitions the mode is that the
-	 *            import statement are recursively resolved and added to the
-	 *            returned Defintitions elment
+	 * @param path      the path to use. E.g., "nodetypes" for node types, ...
+	 * @param className the class of the expected return type. May be TDefinitions or TEntityType. TDefinitions the mode
+	 *                  is that the import statement are recursively resolved and added to the returned Defintitions
+	 *                  elment
 	 */
 	// we convert an object to T if it T is definitions
 	// does not work without compiler error
@@ -606,7 +598,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	}
 
 	/**
-	 *
 	 * @param stream the stream to parse
 	 * @return null if document is invalid
 	 */
@@ -742,10 +733,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		String id;
 	}
 
-    /**
-     * @param oldId the old id
-     * @param newId the new id
-     */
+	/**
+	 * @param oldId the old id
+	 * @param newId the new id
+	 */
 	@Override
 	public void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException {
 		String pathFragment = IdUtil.getURLPathFragment(oldId);
@@ -776,5 +767,4 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		boolean res = (response.getClientResponseStatus() == ClientResponse.Status.OK);
 		return res;
 	}
-
 }
