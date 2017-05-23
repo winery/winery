@@ -165,6 +165,9 @@ export class SectionComponent implements OnInit, OnDestroy {
             case 'policyTemplate':
                 typesUrl = '/policytypes';
                 break;
+            case 'artifactTemplate':
+                typesUrl = '/artifacttypes';
+                break;
             default:
                 this.loading = false;
         }
