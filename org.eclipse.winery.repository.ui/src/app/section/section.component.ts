@@ -19,6 +19,7 @@ import { ValidatorObject } from '../wineryValidators/wineryDuplicateValidator.di
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { backendBaseURL } from '../configuration';
+import { isNullOrUndefined } from 'util';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -152,30 +153,28 @@ export class SectionComponent implements OnInit, OnDestroy {
             this.changeViewButtonTitle = showGrouped;
         }
 
+        let typesUrl: string;
+
         switch (this.selectedResource) {
             case 'nodeTypeImplementation':
-                this.service.getSectionData('/nodetypes?grouped=angularSelect')
-                    .subscribe(
-                        data => this.handleTypes(data),
-                        error => this.handleError(error)
-                    );
+                typesUrl = '/nodetypes';
                 break;
             case 'relationshipTypeImplementation':
-                this.service.getSectionData('/relationshiptypes?grouped=angularSelect')
-                    .subscribe(
-                        data => this.handleTypes(data),
-                        error => this.handleError(error)
-                    );
+                typesUrl = '/relationshiptypes';
                 break;
             case 'policyTemplate':
-                this.service.getSectionData('/policytemplates?grouped=angularSelect')
-                    .subscribe(
-                        data => this.handleTypes(data),
-                        error => this.handleError(error)
-                    );
+                typesUrl = '/policytypes';
                 break;
             default:
                 this.loading = false;
+        }
+
+        if (!isNullOrUndefined(typesUrl)) {
+            this.service.getSectionData(typesUrl + '?grouped=angularSelect')
+                .subscribe(
+                    data => this.handleTypes(data),
+                    error => this.handleError(error)
+                );
         }
     }
 
