@@ -11,4 +11,24 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 -->
-properties
+<div *ngIf="!loading; else loadingIcon">
+    <div *ngIf="properties !== null; else elseBlock">
+        <div class="right">
+            <button class="btn btn-primary" (click)="save()">Save</button>
+        </div>
+        <div *ngFor="let prop of propertyKeys">
+            <label for="{{ prop }}">{{ prop }}</label>
+            <input id="{{ prop }}" [(ngModel)]="properties[prop]">
+        </div>
+    </div>
+    <ng-template #elseBlock>
+        <div>
+            The type does not have a “Properties Definition”.
+        </div>
+    </ng-template>
+</div>
+<ng-template #loadingIcon>
+    <div>
+        <winery-loader></winery-loader>
+    </div>
+</ng-template>
