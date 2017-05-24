@@ -20,6 +20,9 @@ import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { backendBaseURL } from '../configuration';
 import { isNullOrUndefined } from 'util';
+import { NgForm } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap';
+import { Response } from '@angular/http';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -53,9 +56,9 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     fileUploadUrl = backendBaseURL + '/';
 
-    @ViewChild('addModal') addModal: any;
-    @ViewChild('addComponentForm') addComponentForm: any;
-    @ViewChild('addCsarModal') addCsarModal: any;
+    @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('addComponentForm') addComponentForm: NgForm;
+    @ViewChild('addCsarModal') addCsarModal: ModalDirective;
 
     constructor(private route: ActivatedRoute,
                 private change: ChangeDetectorRef,
@@ -131,8 +134,12 @@ export class SectionComponent implements OnInit, OnDestroy {
             );
     }
 
+    /**
+     * Handle the resolved data.
+     * @param data needs to be of type any because there is no specifc type specified by angular
+     */
     private handleResolverData(data: any) {
-        const resolved: SectionResolverData = data['resolveData'];
+        const resolved: SectionResolverData = data.resolveData;
 
         this.selectedResource = resolved.section;
         this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : this.showNamespace;
@@ -188,14 +195,13 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     private handleSaveSuccess() {
         this.notify.success('Successfully saved component ' + this.newComponentName);
-        // redirect to this new component
         this.router.navigateByUrl('/'
             + this.selectedResource.toLowerCase() + 's/'
             + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
             + this.newComponentName);
     }
 
-    private handleError(error: any): void {
+    private handleError(error: Response): void {
         this.loading = false;
         this.notify.error(error.toString());
     }
