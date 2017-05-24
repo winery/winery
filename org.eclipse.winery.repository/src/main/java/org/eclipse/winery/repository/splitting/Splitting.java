@@ -8,6 +8,7 @@
  *
  * Contributors:
  *    Karoline Saatkamp - initial API and implementation and/or initial documentation
+ *    Marvin Wohlfarth - implementation for detection of duplicate ids
  *******************************************************************************/
 
 package org.eclipse.winery.repository.splitting;
@@ -40,6 +41,9 @@ import org.slf4j.LoggerFactory;
 public class Splitting {
 
 	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Splitting.class);
+
+	private static int newRelationshipIdCounter = 100;
+	private static int nodeTemplateIdCounter = 1;
 
 	// Required variables for the following computation of the transitive closure of a given topology
 	private Map<TNodeTemplate, Set<TNodeTemplate>> initDirectSuccessors = new HashMap<>();
@@ -185,8 +189,9 @@ public class Splitting {
 					// Otherwise, duplicate the considered node for each target label
 					for (String targetLabel: predecessorsTargetLabel) {
 						TNodeTemplate duplicatedNode = BackendUtils.clone(currentNode);
-						duplicatedNode.setId(Util.makeNCName(currentNode.getId() + "-" + targetLabel));
-						duplicatedNode.setName(Util.makeNCName(currentNode.getName() + "-" + targetLabel));
+						duplicatedNode = BackendUtils.checkId(duplicatedNode, currentNode, targetLabel);
+						//duplicatedNode.setId(Util.makeNCName(currentNode.getId() + "-" + targetLabel));
+						//duplicatedNode.setName(Util.makeNCName(currentNode.getName() + "-" + targetLabel));
 						topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
 						topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
 						ModelUtilities.setTargetLabel(duplicatedNode, targetLabel);
@@ -400,6 +405,8 @@ public class Splitting {
 	 * @return modified topology with the replaced Node Templates
 	 */
 	public TTopologyTemplate injectNodeTemplates (TTopologyTemplate topologyTemplate, Map<String, TNodeTemplate> injectNodes) {
+		String id = UUID.randomUUID().toString();
+
 		// Matching contains all cloud provider nodes matched to the topology
 		List<TNodeTemplate> matching = new ArrayList<>();
 		matching.clear();
@@ -440,9 +447,24 @@ public class Splitting {
 			//In case the predecessor was a lowest node a new hostedOn relationship has to be added
 			if (originHostSuccessors.isEmpty()) {
 				TRelationshipTemplate newHostedOnRelationship = new TRelationshipTemplate();
-				//TODO Fix naming of new Relationships (Util.makeNCName ?)
-				newHostedOnRelationship.setId(UUID.randomUUID().toString());
-				newHostedOnRelationship.setName(UUID.randomUUID().toString());
+				List<String> ids = new ArrayList<>();
+				List<TRelationshipTemplate> tRelationshipTemplates = ModelUtilities.getAllRelationshipTemplates(topologyTemplate);
+				for (int i = 0; i < tRelationshipTemplates.size(); i++) {
+					TRelationshipTemplate tRelationshipTemplate = tRelationshipTemplates.get(i);
+					ids.add(tRelationshipTemplate.getId());
+				}
+				//Check if counter is already set in another Id, if yes -> increase newRelationshipCounter +1
+				if (!ids.contains(newRelationshipIdCounter)) {
+					id = "con_" + newRelationshipIdCounter + "-" + ModelUtilities.getTargetLabel(predecessorOfNewHost).get();
+					newRelationshipIdCounter++;
+				} else {
+					while (ids.contains(newRelationshipIdCounter)) {
+						newRelationshipIdCounter++;
+					}
+				}
+				newHostedOnRelationship.setId(id);
+				newHostedOnRelationship.setName(id);
+
 				TRelationshipTemplate.SourceElement sourceElement = new TRelationshipTemplate.SourceElement();
 				TRelationshipTemplate.TargetElement targetElement = new TRelationshipTemplate.TargetElement();
 				sourceElement.setRef(predecessorOfNewHost);
@@ -505,13 +527,13 @@ public class Splitting {
 					topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, successor));
 				}
 			}
-
 			topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(transitiveAndDirectSuccessors.get(deleteOriginNode));
 			topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(ModelUtilities.getIncomingRelationshipTemplates(topologyTemplate, deleteOriginNode));
 			topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, deleteOriginNode));
 
 		}
 		topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(replacedNodeTemplatesToDelete);
+		fixDuplicateTemplateIds(topologyTemplate);
 
 		return topologyTemplate;
 	}
@@ -532,8 +554,15 @@ public class Splitting {
 			TRelationshipTemplate.SourceElement sourceElementNew = new TRelationshipTemplate.SourceElement();
 			sourceElementNew.setRef(newSource);
 			newOutgoingRelationship.setSourceElement(sourceElementNew);
-			newOutgoingRelationship.setId(Util.makeNCName(outgoingRelationship.getId() + "-" + ModelUtilities.getTargetLabel(newSource).get()));
-			newOutgoingRelationship.setName(Util.makeNCName(outgoingRelationship.getName() + "-" + ModelUtilities.getTargetLabel(newSource).get()));
+
+			//TargetLable is only appended if not done yet
+			if (outgoingRelationship.getId().contains(ModelUtilities.getTargetLabel(newSource).get())) {
+				newOutgoingRelationship.setId(Util.makeNCName(outgoingRelationship.getId()));
+				newOutgoingRelationship.setName(Util.makeNCName(outgoingRelationship.getName()));
+			} else {
+				newOutgoingRelationship.setId(Util.makeNCName(outgoingRelationship.getId() + "-" + ModelUtilities.getTargetLabel(newSource).get()));
+				newOutgoingRelationship.setName(Util.makeNCName(outgoingRelationship.getName() + "-" + ModelUtilities.getTargetLabel(newSource).get()));
+			}
 			newOutgoingRel.add(newOutgoingRelationship);
 		}
 		return newOutgoingRel;
@@ -552,9 +581,15 @@ public class Splitting {
 			TRelationshipTemplate.TargetElement targetElementNew = new TRelationshipTemplate.TargetElement();
 			targetElementNew.setRef(newTarget);
 			newIncomingRelationship.setTargetElement(targetElementNew);
-			newIncomingRelationship.setId(Util.makeNCName(incomingRelationship.getId() + "-" + ModelUtilities.getTargetLabel(newTarget).get()));
-			newIncomingRelationship.setName(Util.makeNCName(incomingRelationship.getName() + "-" + ModelUtilities.getTargetLabel(newTarget).get()));
 
+			//TargetLable is only appended if not done yet
+			if (incomingRelationship.getId().contains(ModelUtilities.getTargetLabel(newTarget).get())) {
+				newIncomingRelationship.setId(Util.makeNCName(incomingRelationship.getId()));
+				newIncomingRelationship.setName(Util.makeNCName(incomingRelationship.getName()));
+			} else {
+				newIncomingRelationship.setId(Util.makeNCName(incomingRelationship.getId() + "-" + ModelUtilities.getTargetLabel(newTarget).get()));
+				newIncomingRelationship.setName(Util.makeNCName(incomingRelationship.getName() + "-" + ModelUtilities.getTargetLabel(newTarget).get()));
+			}
 			newIncomingRel.add(newIncomingRelationship);
 		}
 		return newIncomingRel;
@@ -706,6 +741,73 @@ public class Splitting {
 			}
 			transitiveAndDirectSuccessors.get(nodeTemplate).add(successorToCheck);
 			transitiveAndDirectSuccessors.get(nodeTemplate).addAll(transitiveAndDirectSuccessors.get(successorToCheck));
+		}
+	}
+
+
+	/**
+	 * compare each id to all other ids and fix duplicated ones
+	 * @param tTopologyTemplate
+	 */
+	public static void fixDuplicateTemplateIds(TTopologyTemplate tTopologyTemplate) {
+		List<TRelationshipTemplate> tRelationshipTemplates = ModelUtilities.getAllRelationshipTemplates(tTopologyTemplate);
+		char idNumbers[];
+
+		for (int i = 0; i < tRelationshipTemplates.size(); i++) {
+			idNumbers = new char[3];
+			//get the 3 digits for the number of the id
+			tRelationshipTemplates.get(i).getId().getChars(4, 7, idNumbers, 0);
+
+			//check if id only contains 2 digits, if yes -> reduce array
+			String check = String.valueOf(idNumbers[2]);
+			if (check.equals("-")) {
+				char tempOne = idNumbers[0];
+				char tempTwo = idNumbers[1];
+				idNumbers = new char[2];
+				idNumbers[0] = tempOne;
+				idNumbers[1] = tempTwo;
+			}
+			String tempRelationshipId = new String(idNumbers);
+			for (int j = 0; j < tRelationshipTemplates.size(); j++) {
+				//skip the comparison of the id with herself
+				if (j == i) {
+					continue;
+				} else if (tRelationshipTemplates.get(j).getId().contains(tempRelationshipId)) {
+					String newRelationshipId = tRelationshipTemplates.get(i).getId();
+					String newRelationshipName = tRelationshipTemplates.get(i).getName();
+
+					//overwrite the actual id with a new increasing counter
+					newRelationshipId = newRelationshipId.replace(tempRelationshipId, String.valueOf(newRelationshipIdCounter));
+					newRelationshipName = newRelationshipName.replace(tempRelationshipId, String.valueOf(newRelationshipIdCounter));
+
+					tRelationshipTemplates.get(i).setId(newRelationshipId);
+					tRelationshipTemplates.get(i).setName(newRelationshipName);
+					newRelationshipIdCounter++;
+				}
+			}
+		}
+
+		//check for duplicate NodeTemplateIds, if detected one, append a counter
+		List<TNodeTemplate> tNodeTemplates = ModelUtilities.getAllNodeTemplates(tTopologyTemplate);
+		List<String> ids = new ArrayList<>();
+		for (TNodeTemplate tNodeTemplate: tNodeTemplates) {
+			if (ids.isEmpty()) {
+				ids.add(tNodeTemplate.getId());
+			} else {
+				for (String string: ids) {
+					if (string == tNodeTemplate.getId()) {
+						StringBuilder builder = new StringBuilder();
+						builder.append(string).append("_").append(nodeTemplateIdCounter);
+						String tempId = builder.toString();
+						nodeTemplateIdCounter++;
+						tNodeTemplate.setId(tempId);
+						tNodeTemplate.setName(tempId);
+						ids.add(tempId);
+						break;
+					}
+				}
+				ids.add(tNodeTemplate.getId());
+			}
 		}
 	}
 }
