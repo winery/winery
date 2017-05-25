@@ -22,11 +22,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ModelUtilities;
+import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
+import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
-
-import com.sun.jersey.api.view.Viewable;
 
 public class PropertiesResource {
 
@@ -56,22 +57,17 @@ public class PropertiesResource {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytemplates/properties.jsp", this);
-	}
-
-	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Properties getJson() {
-		return ModelUtilities.getPropertiesKV(this.template);
-	}
-
-	/**
-	 * data for the JSP
-	 **/
-
-	public TEntityTemplate getTemplate() {
-		return this.template;
+		Properties properties = ModelUtilities.getPropertiesKV(this.template);
+		WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(Utils.getTypeForTemplate(this.template));
+		// iterate on all defined properties and add them if necessary
+		for (PropertyDefinitionKV propdef : wpd.getPropertyDefinitionKVList()) {
+			String key = propdef.getKey();
+			if (properties.getProperty(key) == null) {
+				properties.put(key, "");
+			}
+		}
+		return properties;
 	}
 }

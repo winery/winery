@@ -62,7 +62,7 @@ export class PropertiesComponent implements OnInit {
     private handleProperties(data: any) {
         this.loading = false;
         this.propertyKeys = Object.keys(data);
-        if (!isNullOrUndefined(data) && this.propertyKeys.length > 0) {
+        if (this.propertyKeys.length > 0) {
             this.properties = data;
         }
     }
