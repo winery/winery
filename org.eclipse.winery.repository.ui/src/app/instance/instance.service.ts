@@ -11,10 +11,11 @@
  *     Niko Stadelmaier - add admin component
  */
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../configuration';
+import { WineryInstance } from '../wineryInterfaces/wineryComponent';
 
 @Injectable()
 export class InstanceService {
@@ -115,5 +116,12 @@ export class InstanceService {
 
     public deleteComponent(): Observable<any> {
         return this.http.delete(backendBaseURL + this.path + '/');
+    }
+
+    public getComponentData(): Observable<WineryInstance> {
+        const headers = new Headers({'Content-Type': 'application/xml'});
+        const options = new RequestOptions({headers: headers});
+        return this.http.get(backendBaseURL + this.path + '/', options)
+            .map(res => res.json());
     }
 }

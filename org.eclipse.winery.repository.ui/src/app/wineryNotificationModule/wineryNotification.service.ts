@@ -48,7 +48,7 @@ export class WineryNotificationService {
      * @param message
      * @param title
      */
-    success(message: string, title = 'success') {
+    success(message: string, title = 'Success') {
         this.toastr.success(message, title);
         this.notifications.push({title: title, message: message, type: 'success', createdOn: this.getCurrentDate()});
     }
@@ -58,7 +58,7 @@ export class WineryNotificationService {
      * @param message
      * @param title
      */
-    error(message: string, title = 'error') {
+    error(message: string, title = 'Error') {
         this.toastr.error(message, title);
         this.notifications.push({title: title, message: message, type: 'error', createdOn: this.getCurrentDate()});
     }
@@ -68,7 +68,7 @@ export class WineryNotificationService {
      * @param message
      * @param title
      */
-    warning(message: string, title = 'warning') {
+    warning(message: string, title = 'Warning') {
         this.toastr.warning(message, title);
         this.notifications.push({title: title, message: message, type: 'warning', createdOn: this.getCurrentDate()});
     }
