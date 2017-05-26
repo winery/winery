@@ -62,7 +62,7 @@ public class BoundaryDefinitionsResource {
 		return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getDefs();
 	}
 
-	@Path("xml")
+	@Path("xml/")
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public String getXML(@Context UriInfo uriInfo) {
@@ -78,7 +78,7 @@ public class BoundaryDefinitionsResource {
 		return BackendUtils.persist(this.serviceTemplateResource);
 	}
 
-	@Path("properties")
+	@Path("properties/")
 	@GET
 	@Produces(MediaType.APPLICATION_XML)
 	public String getProperties(@Context UriInfo uriInfo) {
