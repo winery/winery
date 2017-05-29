@@ -19,16 +19,9 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 
-import com.sun.jersey.api.view.Viewable;
-
 public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag> {
 
 	public TagsResource(IPersistable res, List<TTag> list) {
 		super(TagResource.class, TTag.class, list, res);
 	}
-
-	public Viewable getHTML() {
-		return new Viewable("/jsp/tags/tags.jsp", this);
-	}
-
 }

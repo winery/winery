@@ -23,17 +23,10 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 
-import com.sun.jersey.api.view.Viewable;
-
 public class RequirementDefinitionsResource extends RequirementOrCapabilityDefinitionsResource<RequirementDefinitionResource, TRequirementDefinition> {
 
 	public RequirementDefinitionsResource(NodeTypeResource res, List<TRequirementDefinition> defs) {
 		super(RequirementDefinitionResource.class, TRequirementDefinition.class, defs, res);
-	}
-
-	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/nodetypes/reqandcapdefs/reqdefs.jsp", this);
 	}
 
 	@Override

@@ -17,7 +17,6 @@ import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 
-import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,11 +28,4 @@ public class ConstraintsResource extends EntityWithoutIdCollectionResource<Const
 	public ConstraintsResource(List<TConstraint> constraints, NodeTypeResource res) {
 		super(ConstraintResource.class, TConstraint.class, constraints, res);
 	}
-
-	@Override
-	public Viewable getHTML() {
-		// TODO Auto-generated method stub
-		throw new IllegalStateException("Not yet implemented.");
-	}
-
 }

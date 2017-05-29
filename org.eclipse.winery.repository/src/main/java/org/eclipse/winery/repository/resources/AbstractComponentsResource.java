@@ -24,14 +24,12 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
@@ -49,7 +47,6 @@ import org.eclipse.winery.repository.backend.ResourceCreationResult;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.sun.jersey.api.NotFoundException;
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,12 +63,6 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentsResource.class);
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML(@DefaultValue("false") @QueryParam("full") boolean full) {
-		return Response.ok().entity(new Viewable("/jsp/genericcomponentpage.jsp", new GenericComponentPageData(this.getClass(), full))).build();
-	}
-
 	@Path("{namespace}/")
 	public ComponentsOfOneNamespaceResource getAllResourcesInNamespaceResource(@PathParam("namespace") String namespace) {
 		return new ComponentsOfOneNamespaceResource(this.getClass(), namespace);
@@ -81,7 +72,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * Creates a new component instance in the given namespace
 	 *
 	 * @param namespace plain namespace
-	 * @param name the name; used as id
+	 * @param name      the name; used as id
 	 */
 	protected ResourceCreationResult onPost(String namespace, String name) {
 		ResourceCreationResult res;
@@ -123,11 +114,8 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	/**
 	 * Creates a new instance of the current component
 	 *
-	 * @return <ul>
-	 *         <li>Status.CREATED (201) if the resource has been created,</li>
-	 *         <li>Status.CONFLICT if the resource already exists,</li>
-	 *         <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li>
-	 *         </ul>
+	 * @return <ul> <li>Status.CREATED (201) if the resource has been created,</li> <li>Status.CONFLICT if the resource
+	 * already exists,</li> <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li> </ul>
 	 */
 	protected ResourceCreationResult createComponentInstance(TOSCAComponentId tcId) {
 		return BackendUtils.create(tcId);
@@ -151,9 +139,8 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	}
 
 	/**
-	 *
 	 * @param namespace encoded namespace
-	 * @param id encoded id
+	 * @param id        encoded id
 	 * @return an instance of the requested resource
 	 */
 	@Path("{namespace}/{id}/")
@@ -229,12 +216,10 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * the UI
 	 *
 	 * @param grouped if given, the JSON output is grouped by namespace
-	 *
-	 * @return A list of all ids of all instances of this component type. <br />
-	 *         Format:
-	 *         <code>[({"namespace": "[namespace]", "id": "[id]"},)* ]</code>. <br /><br />
-	 *         If grouped is set, the list will be grouped by namespace. <br />
-	 *         <code>[{"id": "[namsepace encoded]", "test": "[namespace decoded]", "children":[{"id": "[qName]", "text": "[id]"}]}]</code>
+	 * @return A list of all ids of all instances of this component type. <br /> Format: <code>[({"namespace":
+	 * "[namespace]", "id": "[id]"},)* ]</code>. <br /><br /> If grouped is set, the list will be grouped by namespace.
+	 * <br /> <code>[{"id": "[namsepace encoded]", "test": "[namespace decoded]", "children":[{"id": "[qName]", "text":
+	 * "[id]"}]}]</code>
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
