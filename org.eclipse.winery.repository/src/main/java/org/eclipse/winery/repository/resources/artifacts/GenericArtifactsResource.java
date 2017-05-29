@@ -277,9 +277,9 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			// no IA generation
 			// we include an XML for the data table
 
-			String implOrDeplArtifactXML = Utils.getXMLAsString(resultingArtifact);
+//			String implOrDeplArtifactXML = Utils.getXMLAsString(resultingArtifact);
 
-			return Response.created(Utils.createURI(Util.URLencode(apiData.artifactName))).entity(implOrDeplArtifactXML).build();
+			return Response.created(Utils.createURI(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
 		} else {
 			// after everything was created, we fire up the artifact generation
 			return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId, artifactTemplateResource);
