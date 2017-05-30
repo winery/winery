@@ -18,9 +18,12 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
 import org.eclipse.winery.repository.WineryUsingHttpServer;
 
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataMultiPart;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.MultiPartInputStreamParser;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -135,10 +138,11 @@ public abstract class AbstractResourceTest {
 
 	public void assertGetSize(String restURL, int size) {
 		start()
+				.accept(ContentType.JSON)
 				.get(callURL(restURL))
 				.then()
 				.log()
-				.ifError()
+				.all()
 				.statusCode(200)
 				.body("size()", is(size));
 	}
@@ -153,14 +157,42 @@ public abstract class AbstractResourceTest {
 				.statusCode(204);
 	}
 
+	/**
+	 * Maybe remove in order to force JSON.
+	 */
+	public void assertPutText(String restURL, String content) {
+		start()
+				.body(content)
+				.contentType(ContentType.TEXT)
+				.put(callURL(restURL))
+				.then()
+				.statusCode(204);
+	}
+
 	public void assertPost(String restURL, String fileName) {
+		String contents = readFromClasspath(fileName);
+		start()
+				.body(contents)
+				.contentType(getAccept(fileName))
+				.accept(getAccept(fileName))
+				.post(callURL(restURL))
+				.then()
+				.statusCode(201);
+	}
+
+	/**
+	 * Because some methods don't respond with a "created" status.
+	 * TODO: fix all methods which return "noContent" status so that this method can be deleted.
+	 *
+	 */
+	public void assertNoContentPost(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);
 		start()
 				.body(contents)
 				.contentType(getAccept(fileName))
 				.post(callURL(restURL))
 				.then()
-				.statusCode(201);
+				.statusCode(204);
 	}
 
 	public void assertPost(String restURL, String namespace, String name) {

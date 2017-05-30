@@ -1,0 +1,26 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzenetter - initial API and implementation
+ */
+-->
+<div *ngIf="loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <div class="right">
+        <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+    </div>
+    <winery-qname-selector
+        [displayList]="requiredCapTypeData.capabilityTypeList"
+        [selectedValue]="requiredCapTypeData.currentRequiredCapabilityType"
+        (selectedValueChanged)="changedCapType($event)">
+    </winery-qname-selector>
+</div>

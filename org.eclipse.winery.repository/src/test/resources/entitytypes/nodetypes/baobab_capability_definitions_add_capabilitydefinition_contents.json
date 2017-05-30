@@ -1,0 +1,47 @@
+[
+  {
+	"documentation": [
+
+	],
+	"any": [
+
+	],
+	"otherAttributes": {
+
+	},
+	"constraints": {
+	  "constraint": [
+		{
+		  "any": null,
+		  "constraintType": "http://winery.opentosca.org/test/constrainttypes/fruits/healthy"
+		}
+	  ]
+	},
+	"name": "ImportConstraintsHealthy",
+	"capabilityType": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Healthy",
+	"lowerBound": 1,
+	"upperBound": "1",
+	"id": "ImportConstraintsHealthy"
+  },
+  {
+	"documentation": [
+
+	],
+	"any": [
+
+	],
+	"otherAttributes": {
+
+	},
+	"constraints": {
+	  "constraint": [
+
+	  ]
+	},
+	"name": "ImportConstraintsSaturating",
+	"capabilityType": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Saturating",
+	"lowerBound": 1,
+	"upperBound": "1",
+	"id": "ImportConstraintsSaturating"
+  }
+]

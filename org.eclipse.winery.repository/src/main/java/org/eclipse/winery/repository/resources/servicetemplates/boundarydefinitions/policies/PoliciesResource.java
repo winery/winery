@@ -21,17 +21,10 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 
-import com.sun.jersey.api.view.Viewable;
-
 public class PoliciesResource extends EntityWithoutIdCollectionResource<PolicyResource, TPolicy> {
 
 	public PoliciesResource(List<TPolicy> list, IPersistable res) {
 		super(PolicyResource.class, TPolicy.class, list, res);
-	}
-
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not required: boundarydefinitions.jsp also includes the content of the Policy tab.");
 	}
 
 	@PUT
@@ -42,5 +35,4 @@ public class PoliciesResource extends EntityWithoutIdCollectionResource<PolicyRe
 		}
 		return BackendUtils.persist(this.res);
 	}
-
 }

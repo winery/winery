@@ -17,7 +17,6 @@ import java.io.StringWriter;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
@@ -41,7 +40,6 @@ import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataI
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
-import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 import org.apache.commons.io.IOUtils;
@@ -74,7 +72,7 @@ public class SelfServicePortalResource implements IPersistable {
 
 	/**
 	 * @param serviceTemplateResource may be null
-	 * @param serviceTemplateId the id, must not be null
+	 * @param serviceTemplateId       the id, must not be null
 	 */
 	private SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource, ServiceTemplateId serviceTemplateId) {
 		this.serviceTemplateResource = serviceTemplateResource;
@@ -131,12 +129,6 @@ public class SelfServicePortalResource implements IPersistable {
 		return app;
 	}
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/servicetemplates/selfservicemetadata/selfservicemetadata.jsp", this);
-	}
-
 	@Override
 	public void persist() throws IOException {
 		BackendUtils.persist(this.application, this.data_xml_ref, MediaType.TEXT_XML_TYPE);
@@ -183,15 +175,17 @@ public class SelfServicePortalResource implements IPersistable {
 
 	@Path("displayname")
 	@PUT
-	public Response onPutOnDisplayName(@FormParam("value") String value) {
-		this.application.setDisplayName(value);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response onPutOnDisplayName(Application value) {
+		this.application.setDisplayName(value.getDisplayName());
 		return BackendUtils.persist(this);
 	}
 
 	@Path("description")
 	@PUT
-	public Response onPutOnDescription(@FormParam("value") String value) {
-		this.application.setDescription(value);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response onPutOnDescription(Application value) {
+		this.application.setDescription(value.getDescription());
 		return BackendUtils.persist(this);
 	}
 

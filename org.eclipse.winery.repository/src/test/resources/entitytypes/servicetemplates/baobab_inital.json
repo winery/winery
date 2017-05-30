@@ -1,0 +1,8 @@
+[
+  {
+	"namespace": "http://winery.opentosca.org/test/servicetemplates/fruits",
+	"id": "baobab_serviceTemplate",
+	"name": "baobab_serviceTemplate",
+	"qName": "{http://winery.opentosca.org/test/servicetemplates/fruits}baobab_serviceTemplate"
+  }
+]

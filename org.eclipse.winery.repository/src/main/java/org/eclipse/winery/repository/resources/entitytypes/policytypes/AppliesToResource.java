@@ -11,13 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.policytypes;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
 import org.eclipse.winery.model.tosca.TPolicyType;
-
-import com.sun.jersey.api.view.Viewable;
 
 public class AppliesToResource {
 
@@ -28,14 +22,7 @@ public class AppliesToResource {
 		this.policyTypeResource = policyTypeResource;
 	}
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/policytypes/appliesto.jsp", this);
-	}
-
 	public TPolicyType getPolicyType() {
 		return this.policyTypeResource.getPolicyType();
 	}
-
 }

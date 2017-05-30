@@ -34,9 +34,10 @@ import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 
-//import com.fasterxml.jackson.annotation.JsonIgnore; // currently not required
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+
+//import com.fasterxml.jackson.annotation.JsonIgnore; // currently not required
 
 /**
  * Contains methods for both visual appearance for
@@ -54,7 +55,7 @@ public abstract class GenericVisualAppearanceResource {
 
 	/**
 	 * @param otherAttributes the other attributes of the node/relationship type
-	 * @param id the id of this subresource required for storing the images
+	 * @param id              the id of this subresource required for storing the images
 	 */
 	public GenericVisualAppearanceResource(TopologyGraphElementEntityTypeResource res, Map<QName, String> otherAttributes, VisualAppearanceId id) {
 		this.id = id;
@@ -118,5 +119,4 @@ public abstract class GenericVisualAppearanceResource {
 	public Response post16x16Image(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
 		return this.putImage(Filename.FILENAME_SMALL_ICON, uploadedInputStream, body.getMediaType());
 	}
-
 }

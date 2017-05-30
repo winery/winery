@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Properties xmlns="http://docs.oasis-open.org/tosca/ns/2011/12">
+	<Properties xmlns="http://opentosca.org/artifacttypes/propertiesdefinition/winery">
+		<Configuration></Configuration>
+		<Input><![CDATA[fruit in it's shell]]></Input>
+	</Properties>
+</Properties>

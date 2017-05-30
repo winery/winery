@@ -1,0 +1,5 @@
+{
+  "localname": "baobab_impl",
+  "namespace": "http://winery.opentosca.org/test/nodetypeimplementations/fruits",
+  "type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab"
+}
