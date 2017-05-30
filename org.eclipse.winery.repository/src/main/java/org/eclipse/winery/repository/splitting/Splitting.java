@@ -760,7 +760,7 @@ public class Splitting {
 
 			//check if id only contains 2 digits, if yes -> reduce array
 			String check = String.valueOf(idNumbers[2]);
-			if (check.equals("-")) {
+			if ("-".equals(check)) {
 				char tempOne = idNumbers[0];
 				char tempTwo = idNumbers[1];
 				idNumbers = new char[2];
