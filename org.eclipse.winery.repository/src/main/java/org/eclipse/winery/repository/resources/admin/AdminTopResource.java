@@ -11,24 +11,13 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.admin;
 
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.repository.resources.admin.types.ConstraintTypesManager;
 import org.eclipse.winery.repository.resources.admin.types.PlanLanguagesManager;
 import org.eclipse.winery.repository.resources.admin.types.PlanTypesManager;
 
-import com.sun.jersey.api.view.Viewable;
-
 public class AdminTopResource {
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/admin/adminindex.jsp", this);
-	}
 
 	@Path("namespaces/")
 	public NamespacesResource getNamespacesResource() {

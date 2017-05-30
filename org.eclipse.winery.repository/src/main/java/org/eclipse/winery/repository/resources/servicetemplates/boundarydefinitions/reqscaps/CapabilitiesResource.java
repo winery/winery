@@ -30,8 +30,6 @@ import org.eclipse.winery.repository.resources._support.collections.withoutid.En
 import org.eclipse.winery.repository.resources.apiData.RequirementsOrCapabilityApiData;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
-import com.sun.jersey.api.view.Viewable;
-
 /**
  * This class is an adaption from
  * {@link org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps.RequirementsResource}
@@ -40,11 +38,6 @@ public class CapabilitiesResource extends EntityWithoutIdCollectionResource<Capa
 
 	public CapabilitiesResource(IPersistable res, List<TCapabilityRef> refs) {
 		super(CapabilityResource.class, TCapabilityRef.class, refs, res);
-	}
-
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet required: boundarydefinitions.jsp renders all tab content.");
 	}
 
 	@POST
@@ -102,5 +95,4 @@ public class CapabilitiesResource extends EntityWithoutIdCollectionResource<Capa
 		this.list.add(ref);
 		return CollectionsHelper.persist(this.res, this, ref, true);
 	}
-
 }

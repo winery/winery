@@ -1,4 +1,3 @@
-<!--
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -8,7 +7,12 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ * Lukas Harzenetter - initial API and implementation
  */
--->
-- Update not yet implemented.
+
+package org.eclipse.winery.repository.client;
+
+class TopologyNamespace {
+	public String prefix = "";
+	public String namespace = "";
+}

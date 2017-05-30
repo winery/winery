@@ -37,7 +37,6 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
-import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import org.apache.commons.lang3.StringUtils;
@@ -53,12 +52,6 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 
 	public PlansResource(List<TPlan> plans, ServiceTemplateResource res) {
 		super(PlanResource.class, TPlan.class, plans, res);
-	}
-
-	// TODO: remove on cleanup
-	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/servicetemplates/plans/plans.jsp", new PlansResourceData(this.list));
 	}
 
 	@POST

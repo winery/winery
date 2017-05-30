@@ -74,7 +74,6 @@ import org.eclipse.winery.repository.resources.entitytypeimplementations.relatio
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.resources.servicetemplates.topologytemplates.NodeTemplateResource;
 
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
@@ -86,7 +85,6 @@ import org.xml.sax.InputSource;
 
 /**
  * Resource handling both deployment and implementation artifacts
- *
  */
 public abstract class GenericArtifactsResource<ArtifactResource extends GenericArtifactResource<ArtifactT>, ArtifactT> extends EntityWithIdCollectionResource<ArtifactResource, ArtifactT> {
 
@@ -203,7 +201,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				// element
 				Namespace namespace = this.resWithNamespace.getNamespace();
 
-				artifactTemplateId = new ArtifactTemplateId(namespace, new XMLId(apiData.	artifactName + "artifactTemplate", false));
+				artifactTemplateId = new ArtifactTemplateId(namespace, new XMLId(apiData.artifactName + "artifactTemplate", false));
 			} else {
 				QName artifactTemplateQName = new QName(apiData.artifactTemplateNamespace, apiData.artifactTemplateName);
 				artifactTemplateId = new ArtifactTemplateId(artifactTemplateQName);
@@ -277,9 +275,9 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			// no IA generation
 			// we include an XML for the data table
 
-			String implOrDeplArtifactXML = Utils.getXMLAsString(resultingArtifact);
+//			String implOrDeplArtifactXML = Utils.getXMLAsString(resultingArtifact);
 
-			return Response.created(Utils.createURI(Util.URLencode(apiData.artifactName))).entity(implOrDeplArtifactXML).build();
+			return Response.created(Utils.createURI(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
 		} else {
 			// after everything was created, we fire up the artifact generation
 			return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId, artifactTemplateResource);
@@ -313,9 +311,8 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 * generator. Also sets the proeprties according to the requirements of
 	 * OpenTOSCA.
 	 *
-	 * @param artifactTemplateResource the resource associated with the
-	 *            artifactTempalteId. If null, the object is created in this
-	 *            method
+	 * @param artifactTemplateResource the resource associated with the artifactTempalteId. If null, the object is
+	 *                                 created in this method
 	 */
 	private Response generateImplementationArtifact(String interfaceNameStr, String javapackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId, ArtifactTemplateResource artifactTemplateResource) {
 		TInterface iface;
@@ -378,7 +375,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(artifactTemplateId);
 		RepositoryFileReference fref = new RepositoryFileReference(fileDir, zipFile.getName());
 		try (InputStream is = Files.newInputStream(zipFile.toPath());
-				BufferedInputStream bis = new BufferedInputStream(is)) {
+			 BufferedInputStream bis = new BufferedInputStream(is)) {
 			String mediaType = Utils.getMimeType(bis, zipFile.getName());
 			// TODO: do the catch thing as in CSARImporter
 
@@ -437,11 +434,6 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		propertiesResource.setProperties(properties);
 	}
 
-	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/artifacts/artifacts.jsp", this);
-	}
-
 	/**
 	 * Required for artifacts.jsp
 	 *
@@ -484,10 +476,8 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 * AbstractComponentInstanceResource, but its grandparent resource
 	 * ServiceTemplate is
 	 *
-	 * @param res the resource to determine the the
-	 *            AbstractComponentInstanceResource for
-	 * @return the AbstractComponentInstanceResource where the given res is
-	 *         contained in
+	 * @param res the resource to determine the the AbstractComponentInstanceResource for
+	 * @return the AbstractComponentInstanceResource where the given res is contained in
 	 */
 	public static AbstractComponentInstanceResource getAbstractComponentInstanceResource(INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
 		final AbstractComponentInstanceResource r;

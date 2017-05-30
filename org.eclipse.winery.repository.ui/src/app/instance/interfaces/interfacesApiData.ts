@@ -10,6 +10,7 @@
  *     Niko Stadelmaier - initial API and implementation
  */
 import { InputParameters, OutputParameters } from '../../wineryInterfaces/parameters';
+import { WineryComponent } from '../../wineryInterfaces/wineryComponent';
 
 export class InterfacesApiData {
     operation: InterfaceOperationApiData[] = [];
@@ -20,15 +21,7 @@ export class InterfacesApiData {
     }
 }
 
-export class InterfaceOperationApiData {
-    documentation: Array<any> = null;
-    any: Array<any> = null;
-    otherAttributes: Object = null;
+export class InterfaceOperationApiData extends WineryComponent {
     inputParameters: InputParameters = new InputParameters();
     outputParameters: OutputParameters = new OutputParameters();
-    name = '';
-
-    constructor(name = '') {
-        this.name = name;
-    }
 }

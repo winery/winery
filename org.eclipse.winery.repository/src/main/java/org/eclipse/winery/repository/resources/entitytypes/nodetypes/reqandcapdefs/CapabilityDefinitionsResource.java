@@ -23,7 +23,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 
-import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +33,6 @@ public class CapabilityDefinitionsResource extends RequirementOrCapabilityDefini
 
 	public CapabilityDefinitionsResource(NodeTypeResource res, List<TCapabilityDefinition> defs) {
 		super(CapabilityDefinitionResource.class, TCapabilityDefinition.class, defs, res);
-	}
-
-	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/nodetypes/reqandcapdefs/capdefs.jsp", this);
 	}
 
 	@Override
