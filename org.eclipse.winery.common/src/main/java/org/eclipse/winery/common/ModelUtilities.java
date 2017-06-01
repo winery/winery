@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API, implementation, maintenance
+ *     Pascal Hirmer - support for instantiation of node templates and relationship templates
  *     Karoline Saatkamp - support for target location labels
  *******************************************************************************/
 package org.eclipse.winery.common;
