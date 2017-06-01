@@ -1080,10 +1080,7 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Check the id's for new nodes, avoid repeating of target labels
-	 * @param duplicatedNode
-	 * @param tNodeTemplate
-	 * @param targetLabel
+	 * Check the ids for new nodes, avoid repeating of target labels
 	 */
 	public static TNodeTemplate checkId(TNodeTemplate duplicatedNode, TNodeTemplate tNodeTemplate, String targetLabel) {
 		if (tNodeTemplate.getId().contains(targetLabel)) {
@@ -1099,13 +1096,12 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Fix the Ids to avoid duplicate Ids in capabilities
-	 * @param nodeTemplate
-	 * @return fixedCapabilities with fixed Ids
+	 * Fix the ids to avoid duplicate ids in capabilities
+	 * @return fixedCapabilities with fixed ids or null if the nodeTemplate has no capabilities
 	 */
 	public static TNodeTemplate.Capabilities cloneCapabilities(TNodeTemplate nodeTemplate) {
 		if (nodeTemplate.getCapabilities() == null) {
-			LOGGER.info("Capabilites are null, not cloned any capabilities for " +  nodeTemplate.getId());
+			LOGGER.debug("Capabilites are null, not cloned any capabilities for " +  nodeTemplate.getId());
 			return null;
 		}
 			TNodeTemplate.Capabilities fixedCapabilities = new TNodeTemplate.Capabilities();
@@ -1118,20 +1114,20 @@ public class BackendUtils {
 				tempCapability.setPropertyConstraints(nodeTemplate.getCapabilities().getCapability().get(i).getPropertyConstraints());
 				tempCapability.setType(nodeTemplate.getCapabilities().getCapability().get(i).getType());
 				fixedCapabilities.getCapability().add(tempCapability);
-				LOGGER.info("Cloned requirements for " + nodeTemplate.getId());
+				LOGGER.debug("Cloned requirements for " + nodeTemplate.getId());
 				idCounterCapabilities++;
 			}
 			return fixedCapabilities;
 	}
 
 	/**
-	 * Fix the Ids to avoid duplicate Ids in requirements
+	 * Fix the ids to avoid duplicate ids in requirements
 	 * @param nodeTemplate
-	 * @return fixedRequirements with fixed Ids
+	 * @return fixedRequirements with fixed ids or null if the nodeTemplate has no requirements
 	 */
 	public static TNodeTemplate.Requirements cloneRequirements(TNodeTemplate nodeTemplate) {
 		if (nodeTemplate.getRequirements() == null) {
-			LOGGER.info("Requirements are null, not cloned any requirements for " + nodeTemplate.getId());
+			LOGGER.debug("Requirements are null, not cloned any requirements for " + nodeTemplate.getId());
 			return null;
 		}
 		TNodeTemplate.Requirements fixedRequirements = new TNodeTemplate.Requirements();
@@ -1144,7 +1140,7 @@ public class BackendUtils {
 			tempRequirement.setPropertyConstraints(nodeTemplate.getRequirements().getRequirement().get(i).getPropertyConstraints());
 			tempRequirement.setType(nodeTemplate.getRequirements().getRequirement().get(i).getType());
 			fixedRequirements.getRequirement().add(tempRequirement);
-			LOGGER.info("Cloned requirements for " + nodeTemplate.getId());
+			LOGGER.debug("Cloned requirements for " + nodeTemplate.getId());
 			idCounterRequirements++;
 		}
 		return fixedRequirements;

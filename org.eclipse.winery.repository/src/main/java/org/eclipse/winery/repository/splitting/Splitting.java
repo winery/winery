@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.common.ModelUtilities;
@@ -42,6 +41,7 @@ public class Splitting {
 
 	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Splitting.class);
 
+	// counter for relationships starts at 100 because all TRelationshipTemplate should have a 3 digit number in their id
 	private static int newRelationshipIdCounter = 100;
 	private static int nodeTemplateIdCounter = 1;
 
@@ -190,8 +190,6 @@ public class Splitting {
 					for (String targetLabel: predecessorsTargetLabel) {
 						TNodeTemplate duplicatedNode = BackendUtils.clone(currentNode);
 						duplicatedNode = BackendUtils.checkId(duplicatedNode, currentNode, targetLabel);
-						//duplicatedNode.setId(Util.makeNCName(currentNode.getId() + "-" + targetLabel));
-						//duplicatedNode.setName(Util.makeNCName(currentNode.getName() + "-" + targetLabel));
 						topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
 						topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
 						ModelUtilities.setTargetLabel(duplicatedNode, targetLabel);
@@ -405,7 +403,7 @@ public class Splitting {
 	 * @return modified topology with the replaced Node Templates
 	 */
 	public TTopologyTemplate injectNodeTemplates (TTopologyTemplate topologyTemplate, Map<String, TNodeTemplate> injectNodes) {
-		String id = UUID.randomUUID().toString();
+		String id;
 
 		// Matching contains all cloud provider nodes matched to the topology
 		List<TNodeTemplate> matching = new ArrayList<>();
@@ -461,6 +459,8 @@ public class Splitting {
 					while (ids.contains(newRelationshipIdCounter)) {
 						newRelationshipIdCounter++;
 					}
+					id = "con_" + newRelationshipIdCounter + "-" + ModelUtilities.getTargetLabel(predecessorOfNewHost).get();
+					newRelationshipIdCounter++;
 				}
 				newHostedOnRelationship.setId(id);
 				newHostedOnRelationship.setName(id);
