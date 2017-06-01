@@ -713,8 +713,10 @@ public class ModelUtilities {
 	 *
 	 * @param topologyTemplate
 	 * @return all nodes templates of the topologyTemplate
+	 * @deprecated Use {@link TTopologyTemplate#getNodeTemplates()}
 	 */
-	public static List<TNodeTemplate> getAllNodeTemplates (TTopologyTemplate topologyTemplate) {
+	@Deprecated
+	public static List<TNodeTemplate> getAllNodeTemplates(TTopologyTemplate topologyTemplate) {
 		Objects.requireNonNull(topologyTemplate);
 
 		return topologyTemplate.getNodeTemplateOrRelationshipTemplate()
@@ -725,11 +727,10 @@ public class ModelUtilities {
 	}
 
 	/**
-	 *
-	 * @param topologyTemplate
-	 * @return all relationship templates of the topologyTemplate
+	 * @deprecated Use {@link TTopologyTemplate#getRelationshipTemplates()}
 	 */
-	public static List<TRelationshipTemplate> getAllRelationshipTemplates (TTopologyTemplate topologyTemplate) {
+	@Deprecated
+	public static List<TRelationshipTemplate> getAllRelationshipTemplates(TTopologyTemplate topologyTemplate) {
 		Objects.requireNonNull(topologyTemplate);
 
 		return topologyTemplate.getNodeTemplateOrRelationshipTemplate()
