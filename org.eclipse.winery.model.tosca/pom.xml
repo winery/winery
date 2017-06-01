@@ -60,24 +60,6 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-						<configuration>
-							<schemaDirectory>${project.basedir}/src/main/resources</schemaDirectory>
-							<!--<schemaFiles>TOSCA-v1.0-cos01.xsd</schemaFiles>-->
-							<packageName>org.eclipse.winery.model.tosca</packageName>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 </project>
