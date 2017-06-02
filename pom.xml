@@ -69,6 +69,7 @@
 		<module>org.eclipse.winery.model.csar.toscametafile</module>
 		<module>org.eclipse.winery.model.selfservice</module>
 		<module>org.eclipse.winery.model.tosca</module>
+		<module>org.eclipse.winery.model.tosca.yaml</module>
 	</modules>
 	<build>
 		<plugins>
