@@ -14,18 +14,21 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 
 /**
  * <p>Java class for tNodeTemplate complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="tNodeTemplate">
  *   &lt;complexContent>
@@ -89,8 +92,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tNodeTemplate", propOrder = {
@@ -99,6 +102,7 @@ import javax.xml.bind.annotation.XmlType;
     "policies",
     "deploymentArtifacts"
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TNodeTemplate
     extends TEntityTemplate
 {
@@ -120,11 +124,11 @@ public class TNodeTemplate
 
     /**
      * Gets the value of the requirements property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TNodeTemplate.Requirements }
-     *     
+     *
      */
     public TNodeTemplate.Requirements getRequirements() {
         return requirements;
@@ -132,11 +136,11 @@ public class TNodeTemplate
 
     /**
      * Sets the value of the requirements property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TNodeTemplate.Requirements }
-     *     
+     *
      */
     public void setRequirements(TNodeTemplate.Requirements value) {
         this.requirements = value;
@@ -144,11 +148,11 @@ public class TNodeTemplate
 
     /**
      * Gets the value of the capabilities property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TNodeTemplate.Capabilities }
-     *     
+     *
      */
     public TNodeTemplate.Capabilities getCapabilities() {
         return capabilities;
@@ -156,11 +160,11 @@ public class TNodeTemplate
 
     /**
      * Sets the value of the capabilities property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TNodeTemplate.Capabilities }
-     *     
+     *
      */
     public void setCapabilities(TNodeTemplate.Capabilities value) {
         this.capabilities = value;
@@ -168,11 +172,11 @@ public class TNodeTemplate
 
     /**
      * Gets the value of the policies property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TNodeTemplate.Policies }
-     *     
+     *
      */
     public TNodeTemplate.Policies getPolicies() {
         return policies;
@@ -180,11 +184,11 @@ public class TNodeTemplate
 
     /**
      * Sets the value of the policies property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TNodeTemplate.Policies }
-     *     
+     *
      */
     public void setPolicies(TNodeTemplate.Policies value) {
         this.policies = value;
@@ -192,11 +196,11 @@ public class TNodeTemplate
 
     /**
      * Gets the value of the deploymentArtifacts property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TDeploymentArtifacts }
-     *     
+     *
      */
     public TDeploymentArtifacts getDeploymentArtifacts() {
         return deploymentArtifacts;
@@ -204,11 +208,11 @@ public class TNodeTemplate
 
     /**
      * Sets the value of the deploymentArtifacts property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TDeploymentArtifacts }
-     *     
+     *
      */
     public void setDeploymentArtifacts(TDeploymentArtifacts value) {
         this.deploymentArtifacts = value;
@@ -216,11 +220,11 @@ public class TNodeTemplate
 
     /**
      * Gets the value of the name property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getName() {
         return name;
@@ -228,11 +232,11 @@ public class TNodeTemplate
 
     /**
      * Sets the value of the name property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setName(String value) {
         this.name = value;
@@ -240,11 +244,11 @@ public class TNodeTemplate
 
     /**
      * Gets the value of the minInstances property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link Integer }
-     *     
+     *
      */
     public int getMinInstances() {
         if (minInstances == null) {
@@ -256,11 +260,11 @@ public class TNodeTemplate
 
     /**
      * Sets the value of the minInstances property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link Integer }
-     *     
+     *
      */
     public void setMinInstances(Integer value) {
         this.minInstances = value;
@@ -268,11 +272,11 @@ public class TNodeTemplate
 
     /**
      * Gets the value of the maxInstances property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getMaxInstances() {
         if (maxInstances == null) {
@@ -284,11 +288,11 @@ public class TNodeTemplate
 
     /**
      * Sets the value of the maxInstances property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setMaxInstances(String value) {
         this.maxInstances = value;
@@ -297,9 +301,9 @@ public class TNodeTemplate
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -311,8 +315,8 @@ public class TNodeTemplate
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
+     *
+     *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
@@ -325,25 +329,25 @@ public class TNodeTemplate
 
         /**
          * Gets the value of the capability property.
-         * 
+         *
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the capability property.
-         * 
+         *
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getCapability().add(newItem);
          * </pre>
-         * 
-         * 
+         *
+         *
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TCapability }
-         * 
-         * 
+         *
+         *
          */
         public List<TCapability> getCapability() {
             if (capability == null) {
@@ -357,9 +361,9 @@ public class TNodeTemplate
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -371,8 +375,8 @@ public class TNodeTemplate
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
+     *
+     *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
@@ -385,25 +389,25 @@ public class TNodeTemplate
 
         /**
          * Gets the value of the policy property.
-         * 
+         *
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the policy property.
-         * 
+         *
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getPolicy().add(newItem);
          * </pre>
-         * 
-         * 
+         *
+         *
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TPolicy }
-         * 
-         * 
+         *
+         *
          */
         public List<TPolicy> getPolicy() {
             if (policy == null) {
@@ -417,9 +421,9 @@ public class TNodeTemplate
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -431,8 +435,8 @@ public class TNodeTemplate
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
+     *
+     *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
@@ -445,25 +449,25 @@ public class TNodeTemplate
 
         /**
          * Gets the value of the requirement property.
-         * 
+         *
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the requirement property.
-         * 
+         *
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getRequirement().add(newItem);
          * </pre>
-         * 
-         * 
+         *
+         *
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TRequirement }
-         * 
-         * 
+         *
+         *
          */
         public List<TRequirement> getRequirement() {
             if (requirement == null) {

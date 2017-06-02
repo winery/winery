@@ -15,12 +15,16 @@ package org.eclipse.winery.model.tosca;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 
 /**
@@ -48,6 +52,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "tTopologyTemplate", propOrder = {
     "nodeTemplateOrRelationshipTemplate"
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TTopologyTemplate
     extends TExtensibleElements
 {
@@ -81,6 +86,7 @@ public class TTopologyTemplate
      *
      *
      */
+	@JsonIgnore
     public List<TEntityTemplate> getNodeTemplateOrRelationshipTemplate() {
         if (nodeTemplateOrRelationshipTemplate == null) {
             nodeTemplateOrRelationshipTemplate = new ArrayList<TEntityTemplate>();
@@ -99,6 +105,13 @@ public class TTopologyTemplate
 				.collect(Collectors.toList());
 	}
 
+	public void setNodeTemplates(List<TNodeTemplate> nodeTemplates) {
+		this.nodeTemplateOrRelationshipTemplate = Stream.concat(
+				nodeTemplates.stream().map(TEntityTemplate.class::cast),
+				this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
+				.collect(Collectors.toList());
+	}
+
 	/**
 	 * @return all relationship templates of the topologyTemplate
 	 */
@@ -107,6 +120,13 @@ public class TTopologyTemplate
 				.stream()
 				.filter(x -> x instanceof TRelationshipTemplate)
 				.map(TRelationshipTemplate.class::cast)
+				.collect(Collectors.toList());
+	}
+
+	public void setRelationshipTemplates(List<TRelationshipTemplate> relationshipTemplates) {
+		this.nodeTemplateOrRelationshipTemplate = Stream.concat(
+				this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
+				relationshipTemplates.stream().map(TEntityTemplate.class::cast))
 				.collect(Collectors.toList());
 	}
 

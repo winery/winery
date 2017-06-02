@@ -28,4 +28,12 @@ public class TopologyTemplateResourceTest  extends AbstractResourceTest {
 		this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
 		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate.xml");
 	}
+
+	@Test
+	public void topologyTemplateUpdate() throws Exception {
+		this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
+		this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate_v2.json");
+		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate_v2.json");
+	}
+
 }

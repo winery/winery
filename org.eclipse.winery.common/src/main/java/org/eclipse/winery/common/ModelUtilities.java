@@ -13,7 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.common;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +35,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.constants.QNames;
-import org.eclipse.winery.common.json.TopologyTemplateModule;
 import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
@@ -56,9 +59,6 @@ import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
@@ -67,6 +67,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class ModelUtilities {
 
@@ -741,16 +743,55 @@ public class ModelUtilities {
 				.collect(Collectors.toList());
 	}
 
-	public static String convertTopologyTempalteToJson(TTopologyTemplate topologyTemplate) {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		mapper.registerModule(new TopologyTemplateModule());
-		String json = null;
+	/**
+	 * When sending JSON to the server, the content of "any" is a String and not some JSON data structure.
+	 * To be able to save it as XML, we have to "objectize" the content of Any
+	 *
+	 * @param nodeTemplates The node templates to update. The content of the given collection is modified.
+     * @throws IllegalStateException if DocumentBuilder could not iniitialized
+	 * @throws IOException if something goes wrong during parsing
+	 */
+	public static void patchAnyAttributes(Collection<TNodeTemplate> nodeTemplates) throws IOException {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder = null;
 		try {
-			return mapper.writeValueAsString(topologyTemplate);
-		} catch (JsonProcessingException e) {
-			LOGGER.error("Could not convert to JSON", e);
-			return null;
+			documentBuilder = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			LOGGER.error("Could not initialize document builder", e);
+			throw new IllegalStateException("Could not initialize document builder", e);
+		}
+
+		Map<QName, String> tempConvertedOtherAttributes = new HashMap<>();
+
+		for (TNodeTemplate nodeTemplate : nodeTemplates) {
+
+			//Convert the wrong QName created by the JSON serialization back to a right QName
+			for (Map.Entry<QName, String> otherAttribute : nodeTemplate.getOtherAttributes().entrySet()) {
+				QName qName = QName.valueOf(otherAttribute.getKey().getLocalPart());
+				tempConvertedOtherAttributes.put(qName, otherAttribute.getValue());
+			}
+			nodeTemplate.getOtherAttributes().clear();
+			nodeTemplate.getOtherAttributes().putAll(tempConvertedOtherAttributes);
+			tempConvertedOtherAttributes.clear();
+
+			// Convert the String created by the JSON serialization back to a XML dom document
+			TEntityTemplate.Properties properties = nodeTemplate.getProperties();
+			if (properties != null) {
+				Object any = properties.getAny();
+				if (any instanceof String) {
+					Document doc = null;
+					try {
+						doc = documentBuilder.parse(new InputSource(new StringReader((String) any)));
+					} catch (SAXException e) {
+						LOGGER.error("Could not parse", e);
+						throw new IOException("Could not parse", e);
+					} catch (IOException e) {
+						LOGGER.error("Could not parse", e);
+						throw e;
+					}
+					nodeTemplate.getProperties().setAny(doc.getDocumentElement());
+				}
+			}
 		}
 	}
 

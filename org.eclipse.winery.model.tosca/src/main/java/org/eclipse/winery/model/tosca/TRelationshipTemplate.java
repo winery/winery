@@ -22,14 +22,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.w3c.dom.Element;
 
 
 /**
  * <p>Java class for tRelationshipTemplate complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="tRelationshipTemplate">
  *   &lt;complexContent>
@@ -82,8 +84,8 @@ import org.w3c.dom.Element;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRelationshipTemplate", propOrder = {
@@ -91,6 +93,7 @@ import org.w3c.dom.Element;
     "targetElement",
     "relationshipConstraints"
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TRelationshipTemplate
     extends TEntityTemplate
 {
@@ -106,11 +109,11 @@ public class TRelationshipTemplate
 
     /**
      * Gets the value of the sourceElement property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TRelationshipTemplate.SourceElement }
-     *     
+     *
      */
     public TRelationshipTemplate.SourceElement getSourceElement() {
         return sourceElement;
@@ -118,11 +121,11 @@ public class TRelationshipTemplate
 
     /**
      * Sets the value of the sourceElement property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TRelationshipTemplate.SourceElement }
-     *     
+     *
      */
     public void setSourceElement(TRelationshipTemplate.SourceElement value) {
         this.sourceElement = value;
@@ -130,11 +133,11 @@ public class TRelationshipTemplate
 
     /**
      * Gets the value of the targetElement property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TRelationshipTemplate.TargetElement }
-     *     
+     *
      */
     public TRelationshipTemplate.TargetElement getTargetElement() {
         return targetElement;
@@ -142,11 +145,11 @@ public class TRelationshipTemplate
 
     /**
      * Sets the value of the targetElement property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TRelationshipTemplate.TargetElement }
-     *     
+     *
      */
     public void setTargetElement(TRelationshipTemplate.TargetElement value) {
         this.targetElement = value;
@@ -154,11 +157,11 @@ public class TRelationshipTemplate
 
     /**
      * Gets the value of the relationshipConstraints property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TRelationshipTemplate.RelationshipConstraints }
-     *     
+     *
      */
     public TRelationshipTemplate.RelationshipConstraints getRelationshipConstraints() {
         return relationshipConstraints;
@@ -166,11 +169,11 @@ public class TRelationshipTemplate
 
     /**
      * Sets the value of the relationshipConstraints property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TRelationshipTemplate.RelationshipConstraints }
-     *     
+     *
      */
     public void setRelationshipConstraints(TRelationshipTemplate.RelationshipConstraints value) {
         this.relationshipConstraints = value;
@@ -178,11 +181,11 @@ public class TRelationshipTemplate
 
     /**
      * Gets the value of the name property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link String }
-     *     
+     *
      */
     public String getName() {
         return name;
@@ -190,11 +193,11 @@ public class TRelationshipTemplate
 
     /**
      * Sets the value of the name property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link String }
-     *     
+     *
      */
     public void setName(String value) {
         this.name = value;
@@ -203,9 +206,9 @@ public class TRelationshipTemplate
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -228,8 +231,8 @@ public class TRelationshipTemplate
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
+     *
+     *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
@@ -242,25 +245,25 @@ public class TRelationshipTemplate
 
         /**
          * Gets the value of the relationshipConstraint property.
-         * 
+         *
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the relationshipConstraint property.
-         * 
+         *
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getRelationshipConstraint().add(newItem);
          * </pre>
-         * 
-         * 
+         *
+         *
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint }
-         * 
-         * 
+         *
+         *
          */
         public List<TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint> getRelationshipConstraint() {
             if (relationshipConstraint == null) {
@@ -272,9 +275,9 @@ public class TRelationshipTemplate
 
         /**
          * <p>Java class for anonymous complex type.
-         * 
+         *
          * <p>The following schema fragment specifies the expected content contained within this class.
-         * 
+         *
          * <pre>
          * &lt;complexType>
          *   &lt;complexContent>
@@ -287,8 +290,8 @@ public class TRelationshipTemplate
          *   &lt;/complexContent>
          * &lt;/complexType>
          * </pre>
-         * 
-         * 
+         *
+         *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "", propOrder = {
@@ -304,12 +307,12 @@ public class TRelationshipTemplate
 
             /**
              * Gets the value of the any property.
-             * 
+             *
              * @return
              *     possible object is
              *     {@link Element }
              *     {@link Object }
-             *     
+             *
              */
             public Object getAny() {
                 return any;
@@ -317,12 +320,12 @@ public class TRelationshipTemplate
 
             /**
              * Sets the value of the any property.
-             * 
+             *
              * @param value
              *     allowed object is
              *     {@link Element }
              *     {@link Object }
-             *     
+             *
              */
             public void setAny(Object value) {
                 this.any = value;
@@ -330,11 +333,11 @@ public class TRelationshipTemplate
 
             /**
              * Gets the value of the constraintType property.
-             * 
+             *
              * @return
              *     possible object is
              *     {@link String }
-             *     
+             *
              */
             public String getConstraintType() {
                 return constraintType;
@@ -342,11 +345,11 @@ public class TRelationshipTemplate
 
             /**
              * Sets the value of the constraintType property.
-             * 
+             *
              * @param value
              *     allowed object is
              *     {@link String }
-             *     
+             *
              */
             public void setConstraintType(String value) {
                 this.constraintType = value;
@@ -359,9 +362,9 @@ public class TRelationshipTemplate
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -371,8 +374,8 @@ public class TRelationshipTemplate
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
+     *
+     *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
@@ -385,11 +388,11 @@ public class TRelationshipTemplate
 
         /**
          * Gets the value of the ref property.
-         * 
+         *
          * @return
          *     possible object is
          *     {@link Object }
-         *     
+         *
          */
         public Object getRef() {
             return ref;
@@ -397,11 +400,11 @@ public class TRelationshipTemplate
 
         /**
          * Sets the value of the ref property.
-         * 
+         *
          * @param value
          *     allowed object is
          *     {@link Object }
-         *     
+         *
          */
         public void setRef(Object value) {
             this.ref = value;
@@ -412,9 +415,9 @@ public class TRelationshipTemplate
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -424,8 +427,8 @@ public class TRelationshipTemplate
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
+     *
+     *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
@@ -438,11 +441,11 @@ public class TRelationshipTemplate
 
         /**
          * Gets the value of the ref property.
-         * 
+         *
          * @return
          *     possible object is
          *     {@link Object }
-         *     
+         *
          */
         public Object getRef() {
             return ref;
@@ -450,11 +453,11 @@ public class TRelationshipTemplate
 
         /**
          * Sets the value of the ref property.
-         * 
+         *
          * @param value
          *     allowed object is
          *     {@link Object }
-         *     
+         *
          */
         public void setRef(Object value) {
             this.ref = value;

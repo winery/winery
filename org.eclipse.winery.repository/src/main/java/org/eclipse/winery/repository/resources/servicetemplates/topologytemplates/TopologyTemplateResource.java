@@ -232,8 +232,7 @@ public class TopologyTemplateResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	// @formatter:on
 	public Response getComponentInstanceJSON() {
-		String json = ModelUtilities.convertTopologyTempalteToJson(this.topologyTemplate);
-		return Response.ok(json).build();
+		return Response.ok(this.topologyTemplate).build();
 	}
 
 	/**
@@ -333,6 +332,15 @@ public class TopologyTemplateResource {
 	@RestDoc(methodDescription = "Replaces the topology by the information given in the XML")
 	@Consumes(MediaType.TEXT_XML)
 	public Response setModel(TTopologyTemplate topologyTemplate) {
+		this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
+		return BackendUtils.persist(this.serviceTemplateRes);
+	}
+
+	@PUT
+	@RestDoc(methodDescription = "Replaces the topology by the information given in the XML")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response setModelJson(TTopologyTemplate topologyTemplate) throws Exception {
+		ModelUtilities.patchAnyAttributes(topologyTemplate.getNodeTemplates());
 		this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
 		return BackendUtils.persist(this.serviceTemplateRes);
 	}
