@@ -1,0 +1,13 @@
+{
+  "operation": [
+	{
+	  "nodeOperation": {
+		"nodeRef": "",
+		"interfaceName": "",
+		"operationName": ""
+	  },
+	  "name": "baobab-relationshiptemplate-interface-peel"
+	}
+  ],
+  "name": "baobab-relationshiptemplate-interface"
+}
