@@ -9,20 +9,25 @@
  * Contributors:
  *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { XMLEditorService } from './xmlEditor.service';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { EditXMLService } from './editXML.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { WineryEditorComponent } from '../../../wineryEditorModul/wineryEditor.component';
 
 declare var requirejs: any;
 
 @Component({
-    selector: 'winery-instance-boundary-edit-xml',
-    templateUrl: 'xmlEditor.component.html',
-    providers: [XMLEditorService]
+    selector: 'winery-instance-edit-xml',
+    templateUrl: 'editXML.component.html',
+    providers: [EditXMLService]
 })
-export class XMLEditorComponent implements OnInit {
+export class EditXMLComponent implements OnInit {
 
-    @ViewChild('editor') editor: any;
+    @Input() getXmlData = true;
+    @Input() hideSaveButton = false;
+    @Input() xmlData: string;
+
+    @ViewChild('editor') editor: WineryEditorComponent;
     loading = true;
 
     id = 'XML';
@@ -30,18 +35,21 @@ export class XMLEditorComponent implements OnInit {
 
     // Set height to 500 px
     height = 500;
-    xmlData: string;
 
-    constructor(private service: XMLEditorService,
+    constructor(private service: EditXMLService,
                 private notify: WineryNotificationService) {
     }
 
     ngOnInit() {
-        this.service.getXmlData()
-            .subscribe(
-                data => this.handleXmlData(data),
-                error => this.handleError(error)
-            );
+        if (this.getXmlData) {
+            this.service.getXmlData()
+                .subscribe(
+                    data => this.handleXmlData(data),
+                    error => this.handleError(error)
+                );
+        } else {
+            this.loading = false;
+        }
     }
 
     saveXmlData(): void {
@@ -51,6 +59,15 @@ export class XMLEditorComponent implements OnInit {
                 error => this.handleError(error)
             );
         this.loading = true;
+    }
+
+    getEditorContent(): string {
+        return this.editor.getData();
+    }
+
+    setEditorContent(xml: string) {
+        this.xmlData = xml;
+        this.editor.setData(this.xmlData);
     }
 
     private handleXmlData(xml: string) {

@@ -92,7 +92,6 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
 
     // set accessor including call the onchange callback
     set value(v: any) {
-        console.log('set Value');
         if (v !== this.innerValue) {
             this.innerValue = v;
             this.onChangeCallback(v);
@@ -127,6 +126,12 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
     getData() {
         if (!isNullOrUndefined(this.orionEditor)) {
             return this.orionEditor.getText();
+        }
+    }
+
+    setData(value: string) {
+        if (!isNullOrUndefined(this.orionEditor)) {
+            return this.orionEditor.setText(value);
         }
     }
 

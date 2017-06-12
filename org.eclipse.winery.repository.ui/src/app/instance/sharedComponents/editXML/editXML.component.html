@@ -9,6 +9,7 @@
  *
  * Contributors:
  *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
+ *     Niko Stadelmaier - change component name, get path from url
  */
 -->
 <div [class.hidden]="!loading">
@@ -16,5 +17,5 @@
 </div>
 <div>
     <winery-editor #editor [ngModel]="xmlData" ></winery-editor>
-    <button class="btn btn-primary" type="button" (click)="saveXmlData()">Save</button>
+    <button *ngIf="!hideSaveButton" class="btn btn-primary" type="button" (click)="saveXmlData()">Save</button>
 </div>

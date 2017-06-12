@@ -9,14 +9,12 @@
  * Contributors:
  *     Lukas Balzer - initial API and implementation
  */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { VisualAppearanceService } from './visualAppearance.service';
-import { FileUploader, FileItem } from 'ng2-file-upload';
-import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { isNullOrUndefined } from 'util';
 import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
 import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
-import { WineryUploaderComponent } from '../../wineryUploader/wineryUploader.component';
 
 @Component({
     templateUrl: 'visualAppearance.component.html',
@@ -49,11 +47,12 @@ export class VisualAppearanceComponent implements OnInit {
 
     /**
      * @param type the part of the arrow that should be changed<p>
-     *             should be one of<ul>
+     *             should be one of
+     *             <ul>
      *                 <li>dash
      *                 <li>sourceArrowHead
      *                 <li>targetArrowHead
-     *                 </ul>
+     *             </ul>
      * @param style the style of the line which should be one of the styles accepted by jsPlumb:<p>
      *              <b>for source-/targetArrowHead</b>
      *              <ul>
@@ -68,7 +67,6 @@ export class VisualAppearanceComponent implements OnInit {
      *              </ul>
      */
     selectArrowItem(type?: string, style?: string) {
-        const shouldOpen = false;
         const hasType = !isNullOrUndefined(type);
         const hasStyle = !isNullOrUndefined(style);
         let dashSelected = false;

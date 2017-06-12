@@ -17,7 +17,7 @@ import { HttpModule } from '@angular/http';
 import { SelfServiceDescriptionComponent } from './selfServicePortalDescription.component';
 import { SelfServicePortalImagesComponent } from './selfServicePortalImages.component';
 import { SelfServicePortalOptionsComponent } from './selfServciePortalOptions.component';
-import { SelfServicePortalXmlComponent } from './selfServicePortalXml.component';
+import { EditXMLComponent } from '../../sharedComponents/editXML/editXML.component';
 
 export const selfServiceRoutes = [
     {
@@ -34,7 +34,7 @@ export const selfServiceRoutes = [
     },
     {
         path: 'xml',
-        component: SelfServicePortalXmlComponent
+        component: EditXMLComponent
     },
     {
         path: '',

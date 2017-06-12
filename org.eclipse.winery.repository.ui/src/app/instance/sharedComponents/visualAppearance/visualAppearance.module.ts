@@ -10,14 +10,14 @@
  *     Lukas Balzer - initial API and implementation
  */
 import { NgModule } from '@angular/core';
-import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { TabsModule } from 'ngx-bootstrap';
 import { CommonModule } from '@angular/common';
-import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
+import { TabsModule } from 'ngx-bootstrap';
+import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
+import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
 import { VisualAppearanceComponent } from './visualAppearance.component';
-import { WineryUploaderModule } from '../../wineryUploader/wineryUploader.module';
+import { WineryUploaderModule } from '../../../wineryUploader/wineryUploader.module';
 
 /**
  * An angular module for displaying the visualApperances for both the nodeTypes and the relationshipTypes

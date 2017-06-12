@@ -12,7 +12,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Headers, RequestOptions, Http, Response } from '@angular/http';
-import { backendBaseURL } from '../../configuration';
+import { backendBaseURL } from '../../../configuration';
 import { Router } from '@angular/router';
 import { FileUploader } from 'ng2-file-upload';
 

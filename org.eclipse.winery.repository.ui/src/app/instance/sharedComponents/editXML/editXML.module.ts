@@ -7,23 +7,31 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Philipp Meyer - initial API and implementation
+ *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
  */
+
 import { NgModule } from '@angular/core';
+
+import { EditXMLComponent } from './editXML.component';
+import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
+import { WineryEditorModule } from '../../../wineryEditorModul/wineryEditor.module';
+import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { WineryEditorComponent } from './wineryEditor.component';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     imports: [
+        HttpModule,
+        CommonModule,
+        FormsModule,
         BrowserModule,
-        FormsModule
+        WineryLoaderModule,
+        WineryEditorModule
     ],
-    exports: [
-        WineryEditorComponent
-    ],
-    declarations: [WineryEditorComponent],
+    exports: [EditXMLComponent],
+    declarations: [EditXMLComponent],
     providers: [],
 })
-export class WineryEditorModule {
+export class WineryEditXMLModule {
 }

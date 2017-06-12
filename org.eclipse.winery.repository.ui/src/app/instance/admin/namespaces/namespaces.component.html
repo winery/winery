@@ -15,9 +15,6 @@
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading">
-    <div class="right">
-        <button class="btn btn-primary" name="save" (click)="save()">Save</button>
-    </div>
     <winery-table title="Defined Prefixes for Namespaces"
                   [columns]="columns"
                   [data]="adminNamespaces"
@@ -64,7 +61,7 @@
                             No duplicates allowed!
                         </div>
                         <div [hidden]="!prefixName.errors.required">
-                            Name is required
+                            Prefix is required
                         </div>
                     </div>
                 </div>
