@@ -27,7 +27,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
 
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDocParam;
 import org.slf4j.Logger;
@@ -90,10 +89,4 @@ public class ParametersResource extends EntityWithIdCollectionResource<Parameter
 	public String getId(TParameter entity) {
 		return entity.getName();
 	}
-
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet implemented.");
-	}
-
 }

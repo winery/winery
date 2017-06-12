@@ -1,4 +1,3 @@
-///<reference path="../wineryModalModule/winery.modal.module.ts"/>
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -11,11 +10,10 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { NgModule } from '@angular/core';
-
-import { WineryIoParameterComponent } from './wineryIoParameter.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { WineryIoParameterComponent } from './wineryIoParameter.component';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
 import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplicateValidator.module';

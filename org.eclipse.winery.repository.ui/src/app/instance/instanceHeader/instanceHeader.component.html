@@ -25,13 +25,15 @@
         <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
         <a class="btn btn-info" target="_blank" href="{{ backendLink }}?definitions">XML</a>
         <a class="btn btn-info" href="{{ backendLink }}?csar">CSAR</a>
+        <div *ngIf="typeUrl">
+            {{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a>
+        </div>
     </div>
     <div class="subMenu">
         <a *ngFor="let item of subMenu"
            class="styledTabMenuButton styledTabMenuButton2ndlevel"
            [routerLink]="['./' + item | lowercase | removeWhiteSpaces ]"
-           routerLinkActive="selected"
-           [routerLinkActiveOptions]="{exact: true}"
+           [routerLinkActive]="'selected'"
            (click)="selectedTab = item">
             <div class="left"></div>
             <div class="center">{{ item }}</div>

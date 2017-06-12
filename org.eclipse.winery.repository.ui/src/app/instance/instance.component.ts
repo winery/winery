@@ -17,7 +17,8 @@ import { WineryNotificationService } from '../wineryNotificationModule/wineryNot
 import { backendBaseURL } from '../configuration';
 import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
 import { ExistService } from '../wineryUtils/existService';
-import { subscribeOn } from 'rxjs/operator/subscribeOn';
+import { isNullOrUndefined } from 'util';
+import { WineryInstance } from '../wineryInterfaces/wineryComponent';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -32,6 +33,9 @@ export class InstanceComponent implements OnInit, OnDestroy {
     selectedResource: string;
     selectedComponentId: string;
     selectedNamespace: string;
+    typeUrl: string;
+    typeId: string;
+    typeOf: string;
     imageUrl: string;
 
     routeSub: Subscription;
@@ -60,11 +64,18 @@ export class InstanceComponent implements OnInit, OnDestroy {
                             );
                     }
 
+                    if (!this.router.url.includes('/admin')) {
+                        this.service.getComponentData()
+                            .subscribe(
+                                compData => this.handleComponentData(compData)
+                            );
+                    }
+
                     this.availableTabs = this.service.getSubMenuByResource();
 
                     // redirect to first element in the menu
                     if (!this.router.url.includes('/admin') && this.router.url.split('/').length < 5) {
-                            this.router.navigate([this.service.path + '/' + this.availableTabs[0].toLowerCase().replace(/ /g, '')]);
+                        this.router.navigate([this.service.path + '/' + this.availableTabs[0].toLowerCase().replace(/ /g, '')]);
                     }
                 },
                 error => this.handleError(error)
@@ -75,12 +86,54 @@ export class InstanceComponent implements OnInit, OnDestroy {
         this.service.deleteComponent().subscribe(data => this.handleDelete(), error => this.handleError(error));
     }
 
-    handleDelete() {
+    private handleComponentData(data: WineryInstance) {
+        switch (this.selectedResource) {
+            case 'nodeTypeImplementation':
+                this.typeUrl = '/nodetypes';
+                break;
+            case 'relationshipTypeImplementation':
+                this.typeUrl = '/relationshiptypes';
+                break;
+            case 'policyTemplate':
+                this.typeUrl = '/policytypes';
+                break;
+            case 'artifactTemplate':
+                this.typeUrl = '/artifacttypes';
+                break;
+            default:
+                this.typeUrl = null;
+        }
+
+        if (!isNullOrUndefined(this.typeUrl)) {
+            const tempOrImpl = data.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
+            let qName: string[];
+
+            if (!isNullOrUndefined(tempOrImpl.type)) {
+                qName = tempOrImpl.type.slice(1).split('}');
+                this.typeOf = 'Type: ';
+            } else if (!isNullOrUndefined(tempOrImpl.nodeType)) {
+                qName = tempOrImpl.nodeType.slice(1).split('}');
+                this.typeOf = 'Implementation for ';
+            } else if (!isNullOrUndefined(tempOrImpl.relationshipType)) {
+                qName = tempOrImpl.relationshipType.slice(1).split('}');
+                this.typeOf = 'Implementation for ';
+            }
+
+            if (qName.length === 2) {
+                this.typeUrl += '/' + encodeURIComponent(encodeURIComponent(qName[0])) + '/' + qName[1];
+                this.typeId = qName[1];
+            } else {
+                this.typeUrl = null;
+            }
+        }
+    }
+
+    private handleDelete() {
         this.notify.success('Successfully deleted ' + this.selectedComponentId);
         this.router.navigate(['/' + this.selectedResource.toLowerCase() + 's']);
     }
 
-    handleError(error: any) {
+    private handleError(error: any) {
         this.notify.error(error.toString(), 'Error');
     }
 

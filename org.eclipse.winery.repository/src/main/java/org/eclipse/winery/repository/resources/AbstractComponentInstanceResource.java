@@ -34,12 +34,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -66,7 +64,6 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources.documentation.DocumentationResource;
@@ -77,7 +74,6 @@ import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateR
 import org.eclipse.winery.repository.resources.tags.TagsResource;
 
 import com.sun.jersey.api.NotFoundException;
-import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -220,51 +216,14 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		} else {
 			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().toString(), false);
 		}
-        return BackendUtils.rename(this.getId(), newId);
-    }
+		return BackendUtils.rename(this.getId(), newId);
+	}
 
-    @POST
-    @Path("namespace")
-    public Response putNamespace(@FormParam("ns") String namespace) {
-        TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().getDecoded(), false);
-        return BackendUtils.rename(this.getId(), newId);
-    }
-
-    /**
-	 * Main page
-	 */
-	// @Produces(MediaType.TEXT_HTML) // not true because of ?csar leads to send
-	// a csar. We nevertheless have to annotate that to be able to get a JSON
-	// representation required for the file upload (in {@link
-	// ArtifactTemplateResource})
-	//
-	// we cannot issue a request expecting content-type application/zip as it is
-	// not possible to offer the result in a "save-as"-dialog:
-	// http://stackoverflow.com/questions/7464665/ajax-response-content-disposition-attachment
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public final Response getHTML(@QueryParam(value = "definitions") String definitions, @QueryParam(value = "csar") String csar, @Context UriInfo uriInfo) {
-		if (!Repository.INSTANCE.exists(this.id)) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		if (definitions != null) {
-			return Utils.getDefinitionsOfSelectedResource(this, uriInfo.getBaseUri());
-		} else if (csar != null) {
-			return this.getCSAR();
-		} else {
-			String type = Utils.getTypeForInstance(this.getClass());
-			String viewableName = "/jsp/" + Utils.getIntermediateLocationStringForType(type, "/") + "/" + type.toLowerCase() + ".jsp";
-			Viewable viewable = new Viewable(viewableName, this);
-
-			return Response.ok().entity(viewable).build();
-
-			// we can't do the following as the GET request from the browser
-			// cannot set the accept header properly
-			// "vary: accept" header has to be set as we may also return a THOR
-			// on the same URL
-			// return Response.ok().header(HttpHeaders.VARY,
-			// HttpHeaders.ACCEPT).entity(viewable).build();
-		}
+	@POST
+	@Path("namespace")
+	public Response putNamespace(@FormParam("ns") String namespace) {
+		TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().getDecoded(), false);
+		return BackendUtils.rename(this.getId(), newId);
 	}
 
 	@GET
@@ -338,10 +297,9 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	}
 
 	/**
-	 * @throws IllegalStateException if an IOException occurred. We opted not to
-	 *             propagate the IOException directly as this exception occurs
-	 *             seldom and is a not an exception to be treated by all callers
-	 *             in the prototype.
+	 * @throws IllegalStateException if an IOException occurred. We opted not to propagate the IOException directly as
+	 *                               this exception occurs seldom and is a not an exception to be treated by all callers
+	 *                               in the prototype.
 	 */
 	private void load() {
 		try {
@@ -410,19 +368,17 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	protected abstract TExtensibleElements createNewElement();
 
 	/**
-	 * Copies the current id of the resource to the appropriate fields in the
-	 * element.
+	 * Copies the current id of the resource to the appropriate fields in the element.
 	 *
 	 * For instance, the id is put in the "name" field for EntityTypes
 	 *
-	 * We opted for a separate method from createNewElement to enable renaming
-	 * of the object
-     *
-     * Should be protected, but {@link FilebasedRepository#rename(org.eclipse.winery.common.ids.definitions.TOSCAComponentId, org.eclipse.winery.common.ids.definitions.TOSCAComponentId)} requires it.
-     * TODO: move this method to BackendUtils or some other utility classes
-	 *       Reason: This method is used by BackendUtils.rename
-	 *       Not yet done, because the logic is sophisticated and much intelligence is currently in the child classes.
-	 *       The logic is also bundled together with the resources. For instance, the logic for ServiceTemplate is at ServiceTemplateResource.
+	 * We opted for a separate method from createNewElement to enable renaming of the object
+	 *
+	 * Should be protected, but {@link FilebasedRepository#rename(org.eclipse.winery.common.ids.definitions.TOSCAComponentId,
+	 * org.eclipse.winery.common.ids.definitions.TOSCAComponentId)} requires it. TODO: move this method to BackendUtils
+	 * or some other utility classes Reason: This method is used by BackendUtils.rename Not yet done, because the logic
+	 * is sophisticated and much intelligence is currently in the child classes. The logic is also bundled together with
+	 * the resources. For instance, the logic for ServiceTemplate is at ServiceTemplateResource.
 	 */
 	public abstract void copyIdToFields(TOSCAComponentId id);
 
@@ -446,10 +402,9 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	}
 
 	/**
-	 * @return the reference to the internal list of imports. Can be changed if
-	 *         some imports are required or should be removed
-	 * @throws IllegalStateException if definitions was not loaded or not
-	 *             initialized
+	 * @return the reference to the internal list of imports. Can be changed if some imports are required or should be
+	 * removed
+	 * @throws IllegalStateException if definitions was not loaded or not initialized
 	 */
 	protected List<TImport> getImport() {
 		if (this.definitions == null) {
@@ -582,7 +537,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 				((ServiceTemplateResource) this).getServiceTemplate().setTags(tags);
 			}
 		} else if (this.element instanceof TEntityType) {
-			tags = ((TEntityType)this.element).getTags();
+			tags = ((TEntityType) this.element).getTags();
 			if (tags == null) {
 				tags = new TTags();
 				((EntityTypeResource) this).getEntityType().setTags(tags);
@@ -594,7 +549,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 				((NodeTypeImplementationResource) this).getNTI().setTags(tags);
 			}
 		} else if (this.element instanceof TRelationshipTypeImplementation) {
-			tags = ((TRelationshipTypeImplementation)this.element).getTags();
+			tags = ((TRelationshipTypeImplementation) this.element).getTags();
 			if (tags == null) {
 				tags = new TTags();
 				((RelationshipTypeImplementationResource) this).getRTI().setTags(tags);
@@ -605,5 +560,4 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 		return new TagsResource(this, tags.getTag());
 	}
-
 }

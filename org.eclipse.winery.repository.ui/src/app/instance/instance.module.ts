@@ -15,51 +15,51 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { SelectModule } from 'ng2-select';
-import { EditXMLComponent } from './editXML/editXML.component';
 import { InstanceComponent } from './instance.component';
 import { InstanceHeaderComponent } from './instanceHeader/instanceHeader.component';
 import { InstanceRouterModule } from './instanceRouter.module';
-import { DocumentationComponent } from './documentation/documentation.component';
-import { InheritanceComponent } from './inheritance/inheritance.component';
-import { RequirementDefinitionsComponent } from './requirementDefinitions/requirementDefinitions.component';
-import { CapabilityDefinitionsComponent } from './capabilityDefinitions/capabilityDefinitions.component';
+import { DocumentationComponent } from './sharedComponents/documentation/documentation.component';
+import { InheritanceComponent } from './sharedComponents/inheritance/inheritance.component';
+import { RequirementDefinitionsComponent } from './nodeTypes/requirementDefinitions/requirementDefinitions.component';
+import { CapabilityDefinitionsComponent } from './nodeTypes/capabilityDefinitions/capabilityDefinitions.component';
 import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
 import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
 import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
 import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplicateValidator.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
-import { InterfacesModule } from './interfaces/interfaces.module';
-import { VisualAppearanceModule } from './visualAppearance/visualAppearance.module';
+import { InterfacesModule } from './sharedComponents/interfaces/interfaces.module';
+import { VisualAppearanceModule } from './sharedComponents/visualAppearance/visualAppearance.module';
 import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
-import { AppliesToComponent } from './appliesTo/appliesTo.component';
-import { LanguageComponent } from './language/language.component';
-import { TopologyTemplateComponent } from './topologyTemplate/topologyTemplate.component';
-import { PlansComponent } from './plans/plans.component';
-import { BoundaryDefinitionsModule } from './boundaryDefinitions/boundaryDefinitions.module';
-import { ValidSourcesAndTargetsComponent } from './validSourcesAndTargets/validSourcesAndTargets.component';
-import { FilesComponent } from './filesTag/files.component';
-import { RequiredCapabilityTypeComponent } from './requiredCapabilityType/requiredCapabilityType.component';
+import { AppliesToComponent } from './policyTypes/appliesTo/appliesTo.component';
+import { LanguageComponent } from './policyTypes/language/language.component';
+import { TopologyTemplateComponent } from './serviceTemplates/topologyTemplate/topologyTemplate.component';
+import { PlansComponent } from './serviceTemplates/plans/plans.component';
+import { BoundaryDefinitionsModule } from './serviceTemplates/boundaryDefinitions/boundaryDefinitions.module';
+import { ValidSourcesAndTargetsComponent } from './relationshipTypes/validSourcesAndTargets/validSourcesAndTargets.component';
+import { FilesComponent } from './artifactTemplates/filesTag/files.component';
+import { RequiredCapabilityTypeComponent } from './requirementTypes/requiredCapabilityType/requiredCapabilityType.component';
 import { ConstraintTypesComponent } from './admin/contraintTypes/constraintTypes.component';
-import { ImplementationArtifactsComponent } from './implementationArtifacts/implementationArtifacts.component';
-import { DeploymentArtifactsComponent } from './deploymentArtifacts/deploymentArtifacts.component';
-import { ImplementationsModule } from './implementations/implementations.module';
-import { InstanceStatesComponent } from './instanceStates/instanceStates.component';
+import { ImplementationArtifactsComponent } from './sharedComponents/implementationArtifacts/implementationArtifacts.component';
+import { DeploymentArtifactsComponent } from './nodeTypeImplementations/deploymentArtifacts/deploymentArtifacts.component';
+import { ImplementationsModule } from './sharedComponents/implementations/implementations.module';
+import { InstanceStatesComponent } from './sharedComponents/instanceStates/instanceStates.component';
 import { LoggerComponent } from './admin/logger/logger.component';
 import { NamespacesComponent } from './admin/namespaces/namespaces.component';
 import { PlanLanguagesComponent } from './admin/planLanguages/planLanguages.component';
 import { PlanTypesComponent } from './admin/planTypes/planTypes.component';
-import { PropertiesComponent } from './properties/properties.component';
-import { PropertiesDefinitionModule } from './propertiesDefinition/propertiesDefinition.module';
+import { PropertiesComponent } from './sharedComponents/properties/properties.component';
+import { PropertiesDefinitionModule } from './sharedComponents/propertiesDefinition/propertiesDefinition.module';
 import { RepositoryModule } from './admin/repository/repository.module';
-import { TagModule } from './tag/tag.module';
-import { TypeWithShortNameComponent } from './typesWithShortName/typeWithShortName.component';
+import { TagModule } from './serviceTemplates/tag/tag.module';
+import { TypeWithShortNameComponent } from './admin/typesWithShortName/typeWithShortName.component';
 import { SpinnerWithInfinityModule } from '../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.module';
 import { WineryEditorModule } from '../wineryEditorModul/wineryEditor.module';
-import { CapOrReqDefComponent } from './capabilityOrRequirementDefinitions/capOrReqDef.component';
+import { CapOrReqDefComponent } from './nodeTypes/capabilityOrRequirementDefinitions/capOrReqDef.component';
 import { SelfServicePortalModule } from './serviceTemplates/selfServicePortal/selfServicePortal.module';
 import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
 import { WineryIoParameterModule } from '../wineryIoParameter/wineryIoParameters.module';
 import { WineryQNameSelectorModule } from '../wineryQNameSelector/wineryQNameSelector.module';
+import { WineryEditXMLModule } from './sharedComponents/editXML/editXML.module';
 
 @NgModule({
     imports: [
@@ -85,13 +85,13 @@ import { WineryQNameSelectorModule } from '../wineryQNameSelector/wineryQNameSel
         WineryQNameSelectorModule,
         WineryUploaderModule,
         WineryIoParameterModule,
-        BoundaryDefinitionsModule
+        BoundaryDefinitionsModule,
+        WineryEditXMLModule
     ],
     exports: [],
     declarations: [
         AppliesToComponent,
         DocumentationComponent,
-        EditXMLComponent,
         InheritanceComponent,
         InstanceComponent,
         InstanceHeaderComponent,

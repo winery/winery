@@ -1,0 +1,16 @@
+[
+  {
+	"id": "http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fpolicytypes%2Ffruits",
+	"text": "http://winery.opentosca.org/test/policytypes/fruits",
+	"children": [
+	  {
+		"id": "{http://winery.opentosca.org/test/policytypes/fruits}european",
+		"text": "european"
+	  },
+	  {
+		"id": "{http://winery.opentosca.org/test/policytypes/fruits}organic",
+		"text": "organic"
+	  }
+	]
+  }
+]

@@ -13,7 +13,7 @@ import { Directive, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { isNullOrUndefined } from 'util';
 
-export class ValidatorObject {
+export class WineryValidatorObject {
     list: Array<any>;
     property?: string;
 
@@ -22,7 +22,7 @@ export class ValidatorObject {
         this.property = property;
     }
 
-    validate(compareObject: ValidatorObject): ValidatorFn {
+    validate(compareObject: WineryValidatorObject): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } => {
             if (isNullOrUndefined(compareObject) || isNullOrUndefined(compareObject.list)) {
                 return null;
@@ -45,14 +45,14 @@ export class ValidatorObject {
 })
 export class WineryDuplicateValidatorDirective implements Validator, OnChanges {
 
-    @Input() wineryDuplicateValidator: ValidatorObject;
+    @Input() wineryDuplicateValidator: WineryValidatorObject;
 
     private valFn = Validators.nullValidator;
 
     ngOnChanges(changes: SimpleChanges): void {
         const change = changes['wineryDuplicateValidator'];
         if (change && !isNullOrUndefined(this.wineryDuplicateValidator)) {
-            const val: ValidatorObject = change.currentValue;
+            const val: WineryValidatorObject = change.currentValue;
             this.valFn = this.wineryDuplicateValidator.validate(val);
         } else {
             this.valFn = Validators.nullValidator;

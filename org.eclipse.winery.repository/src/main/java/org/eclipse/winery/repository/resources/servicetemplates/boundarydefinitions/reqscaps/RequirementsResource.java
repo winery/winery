@@ -30,8 +30,6 @@ import org.eclipse.winery.repository.resources._support.collections.withoutid.En
 import org.eclipse.winery.repository.resources.apiData.RequirementsOrCapabilityApiData;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
-import com.sun.jersey.api.view.Viewable;
-
 /**
  * This class is mirrored at
  * {@link org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps.CapabilitiesResource}
@@ -42,18 +40,13 @@ public class RequirementsResource extends EntityWithoutIdCollectionResource<Requ
 		super(RequirementResource.class, TRequirementRef.class, refs, res);
 	}
 
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet required: boundarydefinitions.jsp renders all tab content.");
-	}
-
 	/**
 	 * Adds an element using form-encoding
 	 *
 	 * This is necessary as TRequirementRef contains an IDREF and the XML
 	 * snippet itself does not contain the target id
 	 *
-	 * @param name the optional name of the requirement
+	 * @param name      the optional name of the requirement
 	 * @param reference the reference to a requirement in the topology
 	 */
 	@POST
@@ -111,5 +104,4 @@ public class RequirementsResource extends EntityWithoutIdCollectionResource<Requ
 		this.list.add(ref);
 		return CollectionsHelper.persist(this.res, this, ref, true);
 	}
-
 }

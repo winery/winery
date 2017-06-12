@@ -12,7 +12,7 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { WineryTableColumn } from '../wineryTableModule/wineryTable.component';
 import { InterfaceParameter } from '../wineryInterfaces/parameters';
-import { ValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
+import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
 import { YesNoEnum } from '../wineryInterfaces/enums';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 
@@ -80,7 +80,7 @@ export class WineryIoParameterComponent {
 
     modalTitle: string;
     elementToRemove: string;
-    validatorObject: ValidatorObject;
+    validatorObject: WineryValidatorObject;
 
     constructor(private notify: WineryNotificationService) {
 
@@ -89,7 +89,7 @@ export class WineryIoParameterComponent {
     // region ########## Input Parameters ##########
     addInputParam() {
         this.modalTitle = 'Input Parameter';
-        this.validatorObject = new ValidatorObject(this.inputParameters, 'name');
+        this.validatorObject = new WineryValidatorObject(this.inputParameters, 'name');
         this.parameterForm.reset();
         this.addParametersModal.show();
     }
@@ -121,7 +121,7 @@ export class WineryIoParameterComponent {
     // region ########## Output Parameters ##########
     addOutputParam() {
         this.modalTitle = 'Output Parameter';
-        this.validatorObject = new ValidatorObject(this.outputParameters, 'name');
+        this.validatorObject = new WineryValidatorObject(this.outputParameters, 'name');
         this.parameterForm.reset();
         this.addParametersModal.show();
     }

@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.jersey.api.NotFoundException;
-import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,12 +149,6 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	 * @return the resource managing the given entity
 	 */
 	protected abstract EntityResourceT getEntityResourceInstance(EntityT entity, int idx);
-
-	/**
-	 * called by getHTMLAsResponse
-	 */
-	// TODO: remove
-	public abstract Viewable getHTML();
 
 	/**
 	 * Adds a new entity

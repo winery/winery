@@ -3,13 +3,10 @@
 	"operation": [
 	  {
 		"documentation": [
-
 		],
 		"any": [
-
 		],
 		"otherAttributes": {
-
 		},
 		"inputParameters": {
 		  "inputParameter": [
@@ -38,13 +35,10 @@
 	  },
 	  {
 		"documentation": [
-
 		],
 		"any": [
-
 		],
 		"otherAttributes": {
-
 		},
 		"inputParameters": {
 		  "inputParameter": [
@@ -55,7 +49,6 @@
 			}
 		  ]
 		},
-		"outputParameters": null,
 		"name": "eat"
 	  }
 	],

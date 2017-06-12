@@ -8,8 +8,6 @@
   "otherAttributes": {
 
   },
-  "extensions": null,
-  "types": null,
   "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
 	{
 	  "documentation": [
@@ -21,22 +19,13 @@
 	  "otherAttributes": {
 
 	  },
-	  "tags": null,
-	  "derivedFrom": null,
-	  "propertiesDefinition": null,
 	  "name": "kiwi",
 	  "targetNamespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
-	  "instanceStates": null,
-	  "sourceInterfaces": null,
-	  "targetInterfaces": null,
-	  "validSource": null,
-	  "validTarget": null,
 	  "abstract": "NO",
 	  "final": "NO"
 	}
   ],
   "id": "winery-defs-for_ns0-kiwi",
-  "name": null,
   "targetNamespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
   "import": [
 

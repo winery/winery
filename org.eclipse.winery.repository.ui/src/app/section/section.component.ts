@@ -15,10 +15,14 @@ import { Subscription } from 'rxjs';
 import { SectionResolverData } from '../wineryInterfaces/resolverData';
 import { SelectData } from '../wineryInterfaces/selectData';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { ValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
+import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { backendBaseURL } from '../configuration';
+import { isNullOrUndefined } from 'util';
+import { NgForm } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap';
+import { Response } from '@angular/http';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -48,13 +52,13 @@ export class SectionComponent implements OnInit, OnDestroy {
     newComponentName: string;
     newComponentNamespace: string;
     newComponentSelectedType: SelectData = new SelectData();
-    validatorObject: ValidatorObject;
+    validatorObject: WineryValidatorObject;
 
     fileUploadUrl = backendBaseURL + '/';
 
-    @ViewChild('addModal') addModal: any;
-    @ViewChild('addComponentForm') addComponentForm: any;
-    @ViewChild('addCsarModal') addCsarModal: any;
+    @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('addComponentForm') addComponentForm: NgForm;
+    @ViewChild('addCsarModal') addCsarModal: ModalDirective;
 
     constructor(private route: ActivatedRoute,
                 private change: ChangeDetectorRef,
@@ -93,7 +97,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     onAdd() {
-        this.validatorObject = new ValidatorObject(this.componentData, 'id');
+        this.validatorObject = new WineryValidatorObject(this.componentData, 'id');
 
         // This is needed for the modal to correctly display the selected namespace
         this.newComponentNamespace = '';
@@ -130,8 +134,12 @@ export class SectionComponent implements OnInit, OnDestroy {
             );
     }
 
+    /**
+     * Handle the resolved data.
+     * @param data needs to be of type any because there is no specifc type specified by angular
+     */
     private handleResolverData(data: any) {
-        const resolved: SectionResolverData = data['resolveData'];
+        const resolved: SectionResolverData = data.resolveData;
 
         this.selectedResource = resolved.section;
         this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : this.showNamespace;
@@ -152,30 +160,31 @@ export class SectionComponent implements OnInit, OnDestroy {
             this.changeViewButtonTitle = showGrouped;
         }
 
+        let typesUrl: string;
+
         switch (this.selectedResource) {
             case 'nodeTypeImplementation':
-                this.service.getSectionData('/nodetypes?grouped=angularSelect')
-                    .subscribe(
-                        data => this.handleTypes(data),
-                        error => this.handleError(error)
-                    );
+                typesUrl = '/nodetypes';
                 break;
             case 'relationshipTypeImplementation':
-                this.service.getSectionData('/relationshiptypes?grouped=angularSelect')
-                    .subscribe(
-                        data => this.handleTypes(data),
-                        error => this.handleError(error)
-                    );
+                typesUrl = '/relationshiptypes';
                 break;
             case 'policyTemplate':
-                this.service.getSectionData('/policytemplates?grouped=angularSelect')
-                    .subscribe(
-                        data => this.handleTypes(data),
-                        error => this.handleError(error)
-                    );
+                typesUrl = '/policytypes';
+                break;
+            case 'artifactTemplate':
+                typesUrl = '/artifacttypes';
                 break;
             default:
                 this.loading = false;
+        }
+
+        if (!isNullOrUndefined(typesUrl)) {
+            this.service.getSectionData(typesUrl + '?grouped=angularSelect')
+                .subscribe(
+                    data => this.handleTypes(data),
+                    error => this.handleError(error)
+                );
         }
     }
 
@@ -185,15 +194,15 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     private handleSaveSuccess() {
+        this.newComponentName = this.newComponentName.replace(/\s/g, '_');
         this.notify.success('Successfully saved component ' + this.newComponentName);
-        // redirect to this new component
         this.router.navigateByUrl('/'
             + this.selectedResource.toLowerCase() + 's/'
             + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
             + this.newComponentName);
     }
 
-    private handleError(error: any): void {
+    private handleError(error: Response): void {
         this.loading = false;
         this.notify.error(error.toString());
     }

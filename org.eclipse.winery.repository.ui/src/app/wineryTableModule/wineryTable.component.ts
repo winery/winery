@@ -184,7 +184,7 @@ export class WineryTableComponent implements OnInit, DoCheck {
         if (!config.sorting) {
             return data;
         }
-        // console.log('changeSort:config', config);
+
         const columns = this.config.sorting.columns || [];
         let columnName: string = void 0;
         let sort: string = void 0;
