@@ -13,50 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.IOUtils;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.model.selfservice.Application;
-import org.eclipse.winery.model.selfservice.Application.Options;
-import org.eclipse.winery.model.selfservice.ApplicationOption;
-import org.eclipse.winery.model.tosca.TArtifactReference;
-import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.Prefs;
-import org.eclipse.winery.repository.Utils;
-import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
-import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
-import org.eclipse.winery.repository.resources.admin.NamespacesResource;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -72,6 +28,53 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.selfservice.Application;
+import org.eclipse.winery.model.selfservice.Application.Options;
+import org.eclipse.winery.model.selfservice.ApplicationOption;
+import org.eclipse.winery.model.tosca.TArtifactReference;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.repository.Constants;
+import org.eclipse.winery.repository.GitInfo;
+import org.eclipse.winery.repository.Prefs;
+import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
+import org.eclipse.winery.repository.resources.admin.NamespacesResource;
+import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 /**
  * This class exports a CSAR crawling from the the given GenericId<br/>
@@ -201,7 +204,7 @@ public class CSARExporter {
 	 * @throws IOException thrown when the temporary directory can not be created
 	 */
 	private void addArtifactTemplateToZipFile(ArchiveOutputStream zos, RepositoryFileReference ref, String archivePath) throws IOException {
-		Utils.GitInfo gitInfo = Utils.getGitInformation((ArtifactTemplateDirectoryId)ref.getParent());
+		GitInfo gitInfo = Utils.getGitInformation((ArtifactTemplateDirectoryId)ref.getParent());
 
 		if (gitInfo == null) {
             try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
@@ -257,10 +260,10 @@ public class CSARExporter {
 
 	/**
 	 * Adds a dummy file to the archive
-	 * @param zos
-	 * @param transformer
-	 * @param ref
-	 * @param archivePath
+	 * @param zos Output stream of the archive
+	 * @param transformer Given transformer to transform the {@link DummyRepositoryFileReferenceForGeneratedXSD} to a {@link ArchiveOutputStream}
+	 * @param ref The dummy document that should be exported as an archive
+	 * @param archivePath The output path of the archive
 	 * @throws IOException
 	 */
 	private void addDummyRepositoryFileReferenceForGeneratedXSD(ArchiveOutputStream zos, Transformer transformer, DummyRepositoryFileReferenceForGeneratedXSD ref, String archivePath) throws IOException {

@@ -11,20 +11,41 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
-import org.apache.taglibs.standard.functions.Functions;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.xerces.xs.XSConstants;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
+import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
@@ -65,43 +86,25 @@ import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.Rel
 import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
 import org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import org.apache.taglibs.standard.functions.Functions;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.xerces.xs.XSConstants;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Element;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.Response.Status.Family;
-import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Contains utility functionality concerning with everything that is
@@ -110,20 +113,12 @@ import java.util.TreeSet;
  * {@link BackendUtils}
  */
 public class Utils {
+	/**
+	 * Shared object to map JSONs
+	 */
+	public static final ObjectMapper mapper = new ObjectMapper();
 
 	private static final XLogger LOGGER = XLoggerFactory.getXLogger(Utils.class);
-
-
-	public static URI createURI(String uri) {
-		try {
-			return new URI(uri);
-		} catch (URISyntaxException e) {
-			LOGGER.error("uri " + uri + " caused an exception", e);
-			throw new IllegalStateException();
-		}
-	}
-
-
 	// RegExp inspired by http://stackoverflow.com/a/5396246/873282
 	// NameStartChar without ":"
 	// stackoverflow: -dfff, standard: d7fff
@@ -133,6 +128,18 @@ public class Utils {
 	private static final String RANGE_NCNAMECHAR = Utils.RANGE_NCNAMESTARTCHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
 	private static final String REGEX_INVALIDNCNAMESCHAR = "[^" + Utils.RANGE_NCNAMECHAR + "]";
 
+	private static final String slashEncoded = Util.URLencode("/");
+
+	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.valueOf("application/octet-stream");
+
+	public static URI createURI(String uri) {
+		try {
+			return new URI(uri);
+		} catch (URISyntaxException e) {
+			LOGGER.error("uri " + uri + " caused an exception", e);
+			throw new IllegalStateException();
+		}
+	}
 
 	/**
 	 * Creates a (valid) XML ID (NCName) based on the passed name
@@ -300,10 +307,6 @@ public class Utils {
 		return Utils.getComponentIdClass(idClassName);
 	}
 
-
-	private static final String slashEncoded = Util.URLencode("/");
-
-
 	public static String getURLforPathInsideRepo(String pathInsideRepo) {
 		// first encode the whole string
 		String res = Util.URLencode(pathInsideRepo);
@@ -311,13 +314,6 @@ public class Utils {
 		res = res.replaceAll(Utils.slashEncoded, "/");
 		return res;
 	}
-
-
-	/**
-	 * Shared object to map JSONs
-	 */
-	public static final ObjectMapper mapper = new ObjectMapper();
-
 
 	public static String Object2JSON(Object o) {
 		String res;
@@ -484,10 +480,6 @@ public class Utils {
 		org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md);
 		return mediaType.toString();
 	}
-
-
-	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.valueOf("application/octet-stream");
-
 
 	/**
 	 * Fixes the mediaType if it is too vague (such as application/octet-stream)
@@ -1001,27 +993,6 @@ public class Utils {
 	public static boolean isGlobMatch(String glob, Path path) {
 		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + glob);
 		return matcher.matches(path);
-	}
-
-	public static class GitInfo {
-		/**
-		 * The URL of the git repository
-		 */
-		public final String URL;
-		/**
-		 * The branch or tag that should be pulled from the repository
-		 */
-		public final String BRANCH;
-
-		/**
-		 * Constructs a new pair of values.
-		 * @param url The URL of the git repository
-		 * @param branch The branch or tag that should be pulled from the repository
-		 */
-		GitInfo(String url, String branch) {
-			this.URL = url;
-			this.BRANCH = branch;
-		}
 	}
 
 	public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) {
