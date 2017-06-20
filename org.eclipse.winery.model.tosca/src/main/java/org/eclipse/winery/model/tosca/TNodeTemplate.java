@@ -103,9 +103,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
     "deploymentArtifacts"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TNodeTemplate
-    extends TEntityTemplate
-{
+public class TNodeTemplate  extends RelationshipSourceOrTarget {
 
     @XmlElement(name = "Requirements")
     protected TNodeTemplate.Requirements requirements;
@@ -121,6 +119,14 @@ public class TNodeTemplate
     protected Integer minInstances;
     @XmlAttribute(name = "maxInstances")
     protected String maxInstances;
+
+    public TNodeTemplate() {
+    	super();
+	}
+
+    public TNodeTemplate(String id) {
+    	super(id);
+	}
 
     /**
      * Gets the value of the requirements property.

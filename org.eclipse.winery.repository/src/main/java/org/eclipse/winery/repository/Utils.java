@@ -109,7 +109,7 @@ public class Utils {
 	/**
 	 * Shared object to map JSONs
 	 */
-	public static final ObjectMapper mapper = new ObjectMapper();
+	public static final ObjectMapper mapper = getObjectMapper();
 
 	private static final XLogger LOGGER = XLoggerFactory.getXLogger(Utils.class);
 
@@ -222,6 +222,15 @@ public class Utils {
 		sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
 		sb.append("\"");
 		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+	}
+
+	private static ObjectMapper getObjectMapper() {
+		final ObjectMapper objectMapper = new ObjectMapper();
+		// DO NOT ACTIVE the following - JSON is serialized differently and thus, the JAX-B annotations must not be used
+		// For instance, "nodeTemplateOrRelationshipTemplate" is a bad thing for JSON as it cannot distinguish whether a child is a node template or a relationship template
+		// final JaxbAnnotationModule module = new JaxbAnnotationModule();
+		// objectMapper.registerModule(module);
+		return objectMapper;
 	}
 
 	/**

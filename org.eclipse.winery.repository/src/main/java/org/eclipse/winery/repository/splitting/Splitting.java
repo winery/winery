@@ -465,8 +465,8 @@ public class Splitting {
 				newHostedOnRelationship.setId(id);
 				newHostedOnRelationship.setName(id);
 
-				TRelationshipTemplate.SourceElement sourceElement = new TRelationshipTemplate.SourceElement();
-				TRelationshipTemplate.TargetElement targetElement = new TRelationshipTemplate.TargetElement();
+				TRelationshipTemplate.SourceOrTargetElement sourceElement = new TRelationshipTemplate.SourceOrTargetElement();
+				TRelationshipTemplate.SourceOrTargetElement targetElement = new TRelationshipTemplate.SourceOrTargetElement();
 				sourceElement.setRef(predecessorOfNewHost);
 				targetElement.setRef(newMatchingNodeTemplate);
 				newHostedOnRelationship.setSourceElement(sourceElement);
@@ -551,7 +551,7 @@ public class Splitting {
 		List<TRelationshipTemplate> newOutgoingRel = new ArrayList<>();
 		for (TRelationshipTemplate outgoingRelationship : outgoingRel) {
 			TRelationshipTemplate newOutgoingRelationship = BackendUtils.clone(outgoingRelationship);
-			TRelationshipTemplate.SourceElement sourceElementNew = new TRelationshipTemplate.SourceElement();
+			TRelationshipTemplate.SourceOrTargetElement sourceElementNew = new TRelationshipTemplate.SourceOrTargetElement();
 			sourceElementNew.setRef(newSource);
 			newOutgoingRelationship.setSourceElement(sourceElementNew);
 
@@ -578,7 +578,7 @@ public class Splitting {
 		List<TRelationshipTemplate> newIncomingRel = new ArrayList<>();
 		for (TRelationshipTemplate incomingRelationship : incomingRel) {
 			TRelationshipTemplate newIncomingRelationship = BackendUtils.clone(incomingRelationship);
-			TRelationshipTemplate.TargetElement targetElementNew = new TRelationshipTemplate.TargetElement();
+			TRelationshipTemplate.SourceOrTargetElement targetElementNew = new TRelationshipTemplate.SourceOrTargetElement();
 			targetElementNew.setRef(newTarget);
 			newIncomingRelationship.setTargetElement(targetElementNew);
 

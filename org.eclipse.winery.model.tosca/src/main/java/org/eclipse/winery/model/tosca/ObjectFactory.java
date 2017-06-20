@@ -19,18 +19,18 @@ import javax.xml.namespace.QName;
 
 
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the org.eclipse.winery.model.tosca package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the org.eclipse.winery.model.tosca package.
+ * <p>An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
+ * and classes representing the binding of schema
+ * type definitions, element declarations and model
+ * groups.  Factory methods for each of these are
  * provided in this class.
- * 
+ *
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -39,14 +39,14 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.eclipse.winery.model.tosca
-     * 
+     *
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link TBoundaryDefinitions.Properties }
-     * 
+     *
      */
     public TBoundaryDefinitions.Properties createTBoundaryDefinitionsProperties() {
         return new TBoundaryDefinitions.Properties();
@@ -54,7 +54,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TImplementationArtifact }
-     * 
+     *
      */
     public TImplementationArtifact createTImplementationArtifact() {
         return new TImplementationArtifact();
@@ -62,7 +62,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TBoundaryDefinitions.Interfaces }
-     * 
+     *
      */
     public TBoundaryDefinitions.Interfaces createTBoundaryDefinitionsInterfaces() {
         return new TBoundaryDefinitions.Interfaces();
@@ -70,7 +70,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeTypeImplementation.DerivedFrom }
-     * 
+     *
      */
     public TNodeTypeImplementation.DerivedFrom createTNodeTypeImplementationDerivedFrom() {
         return new TNodeTypeImplementation.DerivedFrom();
@@ -78,7 +78,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TArtifactType }
-     * 
+     *
      */
     public TArtifactType createTArtifactType() {
         return new TArtifactType();
@@ -86,7 +86,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TBoundaryDefinitions.Requirements }
-     * 
+     *
      */
     public TBoundaryDefinitions.Requirements createTBoundaryDefinitionsRequirements() {
         return new TBoundaryDefinitions.Requirements();
@@ -94,7 +94,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRequirementDefinition.Constraints }
-     * 
+     *
      */
     public TRequirementDefinition.Constraints createTRequirementDefinitionConstraints() {
         return new TRequirementDefinition.Constraints();
@@ -102,7 +102,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRequirementDefinition }
-     * 
+     *
      */
     public TRequirementDefinition createTRequirementDefinition() {
         return new TRequirementDefinition();
@@ -110,7 +110,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TArtifactTemplate.ArtifactReferences }
-     * 
+     *
      */
     public TArtifactTemplate.ArtifactReferences createTArtifactTemplateArtifactReferences() {
         return new TArtifactTemplate.ArtifactReferences();
@@ -118,7 +118,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TImport }
-     * 
+     *
      */
     public TImport createTImport() {
         return new TImport();
@@ -126,23 +126,19 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TParameter }
-     * 
+     *
      */
     public TParameter createTParameter() {
         return new TParameter();
     }
 
-    /**
-     * Create an instance of {@link TRelationshipTemplate.TargetElement }
-     * 
-     */
-    public TRelationshipTemplate.TargetElement createTRelationshipTemplateTargetElement() {
-        return new TRelationshipTemplate.TargetElement();
+    public TRelationshipTemplate.SourceOrTargetElement createTRelationshipTemplateTargetElement() {
+        return new TRelationshipTemplate.SourceOrTargetElement();
     }
 
     /**
      * Create an instance of {@link TPlan.PlanModelReference }
-     * 
+     *
      */
     public TPlan.PlanModelReference createTPlanPlanModelReference() {
         return new TPlan.PlanModelReference();
@@ -150,7 +146,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TDeploymentArtifact }
-     * 
+     *
      */
     public TDeploymentArtifact createTDeploymentArtifact() {
         return new TDeploymentArtifact();
@@ -158,7 +154,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeType }
-     * 
+     *
      */
     public TNodeType createTNodeType() {
         return new TNodeType();
@@ -166,7 +162,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TCapabilityDefinition.Constraints }
-     * 
+     *
      */
     public TCapabilityDefinition.Constraints createTCapabilityDefinitionConstraints() {
         return new TCapabilityDefinition.Constraints();
@@ -174,7 +170,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TTag }
-     * 
+     *
      */
     public TTag createTTag() {
         return new TTag();
@@ -182,7 +178,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipTypeImplementation.DerivedFrom }
-     * 
+     *
      */
     public TRelationshipTypeImplementation.DerivedFrom createTRelationshipTypeImplementationDerivedFrom() {
         return new TRelationshipTypeImplementation.DerivedFrom();
@@ -190,7 +186,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TImplementationArtifacts }
-     * 
+     *
      */
     public TImplementationArtifacts createTImplementationArtifacts() {
         return new TImplementationArtifacts();
@@ -198,7 +194,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeType.CapabilityDefinitions }
-     * 
+     *
      */
     public TNodeType.CapabilityDefinitions createTNodeTypeCapabilityDefinitions() {
         return new TNodeType.CapabilityDefinitions();
@@ -206,7 +202,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TExtension }
-     * 
+     *
      */
     public TExtension createTExtension() {
         return new TExtension();
@@ -214,7 +210,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPropertyConstraint }
-     * 
+     *
      */
     public TPropertyConstraint createTPropertyConstraint() {
         return new TPropertyConstraint();
@@ -222,7 +218,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPlan.OutputParameters }
-     * 
+     *
      */
     public TPlan.OutputParameters createTPlanOutputParameters() {
         return new TPlan.OutputParameters();
@@ -230,7 +226,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TTopologyElementInstanceStates }
-     * 
+     *
      */
     public TTopologyElementInstanceStates createTTopologyElementInstanceStates() {
         return new TTopologyElementInstanceStates();
@@ -238,7 +234,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TExportedOperation.RelationshipOperation }
-     * 
+     *
      */
     public TExportedOperation.RelationshipOperation createTExportedOperationRelationshipOperation() {
         return new TExportedOperation.RelationshipOperation();
@@ -246,7 +242,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TInterface }
-     * 
+     *
      */
     public TInterface createTInterface() {
         return new TInterface();
@@ -254,7 +250,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TExtensions }
-     * 
+     *
      */
     public TExtensions createTExtensions() {
         return new TExtensions();
@@ -262,7 +258,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TOperation }
-     * 
+     *
      */
     public TOperation createTOperation() {
         return new TOperation();
@@ -270,7 +266,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TBoundaryDefinitions.Properties.PropertyMappings }
-     * 
+     *
      */
     public TBoundaryDefinitions.Properties.PropertyMappings createTBoundaryDefinitionsPropertiesPropertyMappings() {
         return new TBoundaryDefinitions.Properties.PropertyMappings();
@@ -278,7 +274,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeTypeImplementation }
-     * 
+     *
      */
     public TNodeTypeImplementation createTNodeTypeImplementation() {
         return new TNodeTypeImplementation();
@@ -286,23 +282,19 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition }
-     * 
+     *
      */
     public org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition createTEntityTypePropertiesDefinition() {
         return new org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition();
     }
 
-    /**
-     * Create an instance of {@link TRelationshipTemplate.SourceElement }
-     * 
-     */
-    public TRelationshipTemplate.SourceElement createTRelationshipTemplateSourceElement() {
-        return new TRelationshipTemplate.SourceElement();
+    public TRelationshipTemplate.SourceOrTargetElement createTRelationshipTemplateSourceElement() {
+        return new TRelationshipTemplate.SourceOrTargetElement();
     }
 
     /**
      * Create an instance of {@link TExportedOperation }
-     * 
+     *
      */
     public TExportedOperation createTExportedOperation() {
         return new TExportedOperation();
@@ -310,7 +302,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TAppliesTo }
-     * 
+     *
      */
     public TAppliesTo createTAppliesTo() {
         return new TAppliesTo();
@@ -318,7 +310,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRequirementType }
-     * 
+     *
      */
     public TRequirementType createTRequirementType() {
         return new TRequirementType();
@@ -326,7 +318,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipType.TargetInterfaces }
-     * 
+     *
      */
     public TRelationshipType.TargetInterfaces createTRelationshipTypeTargetInterfaces() {
         return new TRelationshipType.TargetInterfaces();
@@ -334,7 +326,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPlan.PlanModel }
-     * 
+     *
      */
     public TPlan.PlanModel createTPlanPlanModel() {
         return new TPlan.PlanModel();
@@ -342,7 +334,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeType.RequirementDefinitions }
-     * 
+     *
      */
     public TNodeType.RequirementDefinitions createTNodeTypeRequirementDefinitions() {
         return new TNodeType.RequirementDefinitions();
@@ -350,7 +342,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TExportedOperation.Plan }
-     * 
+     *
      */
     public TExportedOperation.Plan createTExportedOperationPlan() {
         return new TExportedOperation.Plan();
@@ -358,7 +350,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TExportedInterface }
-     * 
+     *
      */
     public TExportedInterface createTExportedInterface() {
         return new TExportedInterface();
@@ -366,7 +358,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TExportedOperation.NodeOperation }
-     * 
+     *
      */
     public TExportedOperation.NodeOperation createTExportedOperationNodeOperation() {
         return new TExportedOperation.NodeOperation();
@@ -374,7 +366,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TTags }
-     * 
+     *
      */
     public TTags createTTags() {
         return new TTags();
@@ -382,7 +374,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TCapabilityRef }
-     * 
+     *
      */
     public TCapabilityRef createTCapabilityRef() {
         return new TCapabilityRef();
@@ -390,7 +382,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeTemplate }
-     * 
+     *
      */
     public TNodeTemplate createTNodeTemplate() {
         return new TNodeTemplate();
@@ -398,7 +390,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TCapabilityDefinition }
-     * 
+     *
      */
     public TCapabilityDefinition createTCapabilityDefinition() {
         return new TCapabilityDefinition();
@@ -406,7 +398,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPolicy }
-     * 
+     *
      */
     public TPolicy createTPolicy() {
         return new TPolicy();
@@ -414,7 +406,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TConstraint }
-     * 
+     *
      */
     public TConstraint createTConstraint() {
         return new TConstraint();
@@ -422,7 +414,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link org.eclipse.winery.model.tosca.TEntityTemplate.PropertyConstraints }
-     * 
+     *
      */
     public org.eclipse.winery.model.tosca.TEntityTemplate.PropertyConstraints createTEntityTemplatePropertyConstraints() {
         return new org.eclipse.winery.model.tosca.TEntityTemplate.PropertyConstraints();
@@ -430,7 +422,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipType.SourceInterfaces }
-     * 
+     *
      */
     public TRelationshipType.SourceInterfaces createTRelationshipTypeSourceInterfaces() {
         return new TRelationshipType.SourceInterfaces();
@@ -438,7 +430,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRequirement }
-     * 
+     *
      */
     public TRequirement createTRequirement() {
         return new TRequirement();
@@ -446,7 +438,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipTemplate }
-     * 
+     *
      */
     public TRelationshipTemplate createTRelationshipTemplate() {
         return new TRelationshipTemplate();
@@ -454,7 +446,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TBoundaryDefinitions }
-     * 
+     *
      */
     public TBoundaryDefinitions createTBoundaryDefinitions() {
         return new TBoundaryDefinitions();
@@ -462,7 +454,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipTypeImplementation }
-     * 
+     *
      */
     public TRelationshipTypeImplementation createTRelationshipTypeImplementation() {
         return new TRelationshipTypeImplementation();
@@ -470,7 +462,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipTemplate.RelationshipConstraints }
-     * 
+     *
      */
     public TRelationshipTemplate.RelationshipConstraints createTRelationshipTemplateRelationshipConstraints() {
         return new TRelationshipTemplate.RelationshipConstraints();
@@ -478,7 +470,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TCondition }
-     * 
+     *
      */
     public TCondition createTCondition() {
         return new TCondition();
@@ -486,7 +478,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link org.eclipse.winery.model.tosca.TEntityTemplate.Properties }
-     * 
+     *
      */
     public org.eclipse.winery.model.tosca.TEntityTemplate.Properties createTEntityTemplateProperties() {
         return new org.eclipse.winery.model.tosca.TEntityTemplate.Properties();
@@ -494,7 +486,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TExtensibleElements }
-     * 
+     *
      */
     public TExtensibleElements createTExtensibleElements() {
         return new TExtensibleElements();
@@ -502,7 +494,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TDocumentation }
-     * 
+     *
      */
     public TDocumentation createTDocumentation() {
         return new TDocumentation();
@@ -510,7 +502,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TImplementationArtifacts.ImplementationArtifact }
-     * 
+     *
      */
     public TImplementationArtifacts.ImplementationArtifact createTImplementationArtifactsImplementationArtifact() {
         return new TImplementationArtifacts.ImplementationArtifact();
@@ -518,7 +510,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TBoundaryDefinitions.PropertyConstraints }
-     * 
+     *
      */
     public TBoundaryDefinitions.PropertyConstraints createTBoundaryDefinitionsPropertyConstraints() {
         return new TBoundaryDefinitions.PropertyConstraints();
@@ -526,7 +518,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeTemplate.Policies }
-     * 
+     *
      */
     public TNodeTemplate.Policies createTNodeTemplatePolicies() {
         return new TNodeTemplate.Policies();
@@ -534,7 +526,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRequiredContainerFeature }
-     * 
+     *
      */
     public TRequiredContainerFeature createTRequiredContainerFeature() {
         return new TRequiredContainerFeature();
@@ -542,7 +534,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipType.ValidTarget }
-     * 
+     *
      */
     public TRelationshipType.ValidTarget createTRelationshipTypeValidTarget() {
         return new TRelationshipType.ValidTarget();
@@ -550,7 +542,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TDefinitions }
-     * 
+     *
      */
     public TDefinitions createTDefinitions() {
         return new TDefinitions();
@@ -558,7 +550,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TBoundaryDefinitions.Policies }
-     * 
+     *
      */
     public TBoundaryDefinitions.Policies createTBoundaryDefinitionsPolicies() {
         return new TBoundaryDefinitions.Policies();
@@ -566,7 +558,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPolicyTemplate }
-     * 
+     *
      */
     public TPolicyTemplate createTPolicyTemplate() {
         return new TPolicyTemplate();
@@ -574,7 +566,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TArtifactReference.Exclude }
-     * 
+     *
      */
     public TArtifactReference.Exclude createTArtifactReferenceExclude() {
         return new TArtifactReference.Exclude();
@@ -582,7 +574,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TDefinitions.Extensions }
-     * 
+     *
      */
     public TDefinitions.Extensions createTDefinitionsExtensions() {
         return new TDefinitions.Extensions();
@@ -590,7 +582,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TCapabilityType }
-     * 
+     *
      */
     public TCapabilityType createTCapabilityType() {
         return new TCapabilityType();
@@ -598,7 +590,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPlans }
-     * 
+     *
      */
     public TPlans createTPlans() {
         return new TPlans();
@@ -606,7 +598,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TArtifactReference.Include }
-     * 
+     *
      */
     public TArtifactReference.Include createTArtifactReferenceInclude() {
         return new TArtifactReference.Include();
@@ -614,7 +606,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TAppliesTo.NodeTypeReference }
-     * 
+     *
      */
     public TAppliesTo.NodeTypeReference createTAppliesToNodeTypeReference() {
         return new TAppliesTo.NodeTypeReference();
@@ -622,7 +614,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TTopologyTemplate }
-     * 
+     *
      */
     public TTopologyTemplate createTTopologyTemplate() {
         return new TTopologyTemplate();
@@ -630,7 +622,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeTemplate.Capabilities }
-     * 
+     *
      */
     public TNodeTemplate.Capabilities createTNodeTemplateCapabilities() {
         return new TNodeTemplate.Capabilities();
@@ -638,7 +630,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPlan.InputParameters }
-     * 
+     *
      */
     public TPlan.InputParameters createTPlanInputParameters() {
         return new TPlan.InputParameters();
@@ -646,7 +638,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TOperation.OutputParameters }
-     * 
+     *
      */
     public TOperation.OutputParameters createTOperationOutputParameters() {
         return new TOperation.OutputParameters();
@@ -654,7 +646,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TCapability }
-     * 
+     *
      */
     public TCapability createTCapability() {
         return new TCapability();
@@ -662,7 +654,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeType.Interfaces }
-     * 
+     *
      */
     public TNodeType.Interfaces createTNodeTypeInterfaces() {
         return new TNodeType.Interfaces();
@@ -670,7 +662,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPolicyType }
-     * 
+     *
      */
     public TPolicyType createTPolicyType() {
         return new TPolicyType();
@@ -678,7 +670,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint }
-     * 
+     *
      */
     public TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint createTRelationshipTemplateRelationshipConstraintsRelationshipConstraint() {
         return new TRelationshipTemplate.RelationshipConstraints.RelationshipConstraint();
@@ -686,7 +678,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TArtifactReference }
-     * 
+     *
      */
     public TArtifactReference createTArtifactReference() {
         return new TArtifactReference();
@@ -694,7 +686,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPropertyMapping }
-     * 
+     *
      */
     public TPropertyMapping createTPropertyMapping() {
         return new TPropertyMapping();
@@ -702,7 +694,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipType.ValidSource }
-     * 
+     *
      */
     public TRelationshipType.ValidSource createTRelationshipTypeValidSource() {
         return new TRelationshipType.ValidSource();
@@ -710,7 +702,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TOperation.InputParameters }
-     * 
+     *
      */
     public TOperation.InputParameters createTOperationInputParameters() {
         return new TOperation.InputParameters();
@@ -718,7 +710,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TTopologyElementInstanceStates.InstanceState }
-     * 
+     *
      */
     public TTopologyElementInstanceStates.InstanceState createTTopologyElementInstanceStatesInstanceState() {
         return new TTopologyElementInstanceStates.InstanceState();
@@ -726,7 +718,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRelationshipType }
-     * 
+     *
      */
     public TRelationshipType createTRelationshipType() {
         return new TRelationshipType();
@@ -734,7 +726,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TNodeTemplate.Requirements }
-     * 
+     *
      */
     public TNodeTemplate.Requirements createTNodeTemplateRequirements() {
         return new TNodeTemplate.Requirements();
@@ -742,7 +734,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link Definitions }
-     * 
+     *
      */
     public Definitions createDefinitions() {
         return new Definitions();
@@ -750,7 +742,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRequiredContainerFeatures }
-     * 
+     *
      */
     public TRequiredContainerFeatures createTRequiredContainerFeatures() {
         return new TRequiredContainerFeatures();
@@ -758,7 +750,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TRequirementRef }
-     * 
+     *
      */
     public TRequirementRef createTRequirementRef() {
         return new TRequirementRef();
@@ -766,7 +758,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TDefinitions.Types }
-     * 
+     *
      */
     public TDefinitions.Types createTDefinitionsTypes() {
         return new TDefinitions.Types();
@@ -774,7 +766,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TPlan }
-     * 
+     *
      */
     public TPlan createTPlan() {
         return new TPlan();
@@ -782,7 +774,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link org.eclipse.winery.model.tosca.TEntityType.DerivedFrom }
-     * 
+     *
      */
     public org.eclipse.winery.model.tosca.TEntityType.DerivedFrom createTEntityTypeDerivedFrom() {
         return new org.eclipse.winery.model.tosca.TEntityType.DerivedFrom();
@@ -790,7 +782,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TBoundaryDefinitions.Capabilities }
-     * 
+     *
      */
     public TBoundaryDefinitions.Capabilities createTBoundaryDefinitionsCapabilities() {
         return new TBoundaryDefinitions.Capabilities();
@@ -798,7 +790,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TServiceTemplate }
-     * 
+     *
      */
     public TServiceTemplate createTServiceTemplate() {
         return new TServiceTemplate();
@@ -806,7 +798,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TDeploymentArtifacts }
-     * 
+     *
      */
     public TDeploymentArtifacts createTDeploymentArtifacts() {
         return new TDeploymentArtifacts();
@@ -814,7 +806,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link TArtifactTemplate }
-     * 
+     *
      */
     public TArtifactTemplate createTArtifactTemplate() {
         return new TArtifactTemplate();
@@ -822,7 +814,7 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link TDocumentation }{@code >}}
-     * 
+     *
      */
     @XmlElementDecl(namespace = "http://docs.oasis-open.org/tosca/ns/2011/12", name = "documentation")
     public JAXBElement<TDocumentation> createDocumentation(TDocumentation value) {

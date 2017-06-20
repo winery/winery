@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -37,10 +37,15 @@ public class TopologyTemplateResourceTest  extends AbstractResourceTest {
 	}
 
 	@Test
-	public void farmTopologyTemplateIsCorrectlyStoredInXml() throws Exception {
+	public void farmTopologyTemplateIsCorrectlyReturnAsJson() throws Exception {
+		this.setRevisionTo("2d35f0d3c15b384c53df10967164d97e4a7dd6f2");
+		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/farm/topologytemplate/", "servicetemplates/baobab_topologytemplate.json");
+	}
+
+	@Test
+	public void farmTopologyTemplateIsCorrectlyReturnedAsXml() throws Exception {
 		this.setRevisionTo("2d35f0d3c15b384c53df10967164d97e4a7dd6f2");
 		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/farm/topologytemplate/", "servicetemplates/farm_topologytemplate.xml");
 	}
-
 
 }
