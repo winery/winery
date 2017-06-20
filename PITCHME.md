@@ -57,16 +57,16 @@ Scroll down for more information about git.
 
 * Check winery/CONTRIBUTING.md
 * Steps to prepare Pull Request:
-  1. git fetch upstream
-  2. git merge upstream/master
+  1. `git fetch upstream`
+  2. `git merge upstream/master`
   3. (Resolve merge conflicts)
-  4. Commit & Push with signed commit message (Ctrl+S in Git Gui)
-  5. git reset the upstream/master (to achieve that all commits are squashed together)
+  4. Commit & Push with signed commit message (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui)
+  5. `git reset upstream/master` (to achieve that all commits are squashed together)
   6. Check changes in Git Gui & adapt the Copyright information in the changed files & Check again the style (!) (Don't forget RESCAN to see the current changes)
   7. Add Changes/Fixed to the CHANGELOG.md and add description to docs/index (if helpful)
   8. Stage To Commit --> All Changes are staged to Commit
-  9. Sign the Commit Message (Ctrl+S)
-  10. Commit & Push with "force overwrite" since you changed the branch git push -f
+  9. Sign the Commit Message (<kbd>Ctrl</kbd>+<kbd>S</kbd>)
+  10. Commit & Push with "force overwrite" since you changed the branch: `git push -f`
 
 +++
 
@@ -86,7 +86,7 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
 
 * There are automatic checks in place
 
-![GitAutoCheck](grpahics/autoCheckGit.png)
+![GitAutoCheck](docs/graphics/autoCheckGit.png)
 
 * If there is a red cross, click in repective "Details" and fix them (see next slide)
 
@@ -106,4 +106,4 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
 
 ## Excursus: Git
 
-![ExcursusGit](graphics/ExcursusGit.png)
+![ExcursusGit](docs/graphics/ExcursusGit.png)
