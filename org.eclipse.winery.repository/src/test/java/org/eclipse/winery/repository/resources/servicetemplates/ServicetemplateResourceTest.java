@@ -16,11 +16,13 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.resources.AbstractResourceTest;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServicetemplateResourceTest extends AbstractResourceTest {
 
 	@Test
+	@Ignore
 	public void addServicetemplate() throws Exception {
 		this.setRevisionTo("337119ea2e694e70b994bcb3d97295856c0ab0f6");
 		this.assertPost("servicetemplates/", "entitytypes/servicetemplates/baobab_create_servicetemplate.json");
@@ -34,7 +36,8 @@ public class ServicetemplateResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
-	public void createInstance() {
+	public void createInstance() throws Exception {
+		this.setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
 		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/fruits", "farm", false);
 		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
 		Assert.assertNotNull(serviceTemplateResource);
