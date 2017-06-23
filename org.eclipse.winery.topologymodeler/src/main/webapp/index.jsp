@@ -11,6 +11,8 @@
  *    Uwe Breitenbücher - initial API and implementation and/or initial documentation
  *    Oliver Kopp - integration with the repository, adapted to TOSCA v1.0
  *    Yves Schubert - switch to bootstrap 3
+ *    Niko Stadelmaier - removal of select2 library
+ *    Philipp Meyer - removal of select2 library
  *    Lukas Balzer, Nicole Keppler - switch to bootstrap-touchspin
  *    Karoline Saatkamp - maintenance
  *******************************************************************************/
@@ -148,10 +150,6 @@
 	<link type="text/css" href="components/pnotify/jquery.pnotify.default.css" media="all" rel="stylesheet" />
 	<link type="text/css" href="components/pnotify/jquery.pnotify.default.icons.css" media="all" rel="stylesheet" />
 
-	<!-- select2 -->
-	<link type="text/css" href="components/select2/select2.css" media="all" rel="stylesheet" />
-	<link type="text/css" href="components/select2/select2-bootstrap.css" media="all" rel="stylesheet" />
-
 	<!-- x-editable -->
 	<link type="text/css" href="components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" media="all" rel="stylesheet" />
 
@@ -200,7 +198,7 @@
 			"keyboardjs": "../components/KeyboardJS/keyboard",
 			"orioneditor": "http://eclipse.org/orion/editor/releases/6.0/built-editor-amd",
 			"pnotify": "../components/pnotify/jquery.pnotify",
-			"select2": "../components/select2/select2",
+			"bootstrap3-typeahead": "../components/bootstrap3-typeahead/bootstrap3-typeahead",
 			"tmpl": "../components/blueimp-tmpl/js/tmpl",
 			"XMLWriter": "../components/XMLWriter/XMLWriter"
 		}
@@ -221,8 +219,6 @@
 <script type='text/javascript' src='components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4.js'></script>
 
 <script type="text/javascript" src="components/jquery-typing/plugin/jquery.typing-0.3.2.js"></script>
-
-<script type="text/javascript" src="components/select2/select2.js"></script>
 
 <script type="text/javascript" src="components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
 
