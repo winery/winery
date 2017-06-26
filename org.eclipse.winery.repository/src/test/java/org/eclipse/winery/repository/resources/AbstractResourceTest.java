@@ -35,7 +35,7 @@ import static org.hamcrest.core.Is.is;
 public abstract class AbstractResourceTest {
 
 	// with trailing /
-	private static final String PREFIX = "/winery/";
+	private static final String PREFIX = "http://localhost:9080/winery/";
 
 	private static Git git;
 
@@ -46,7 +46,7 @@ public abstract class AbstractResourceTest {
 		// enable git-backed repository
 		PrefsTestEnabledGitBackedRepository prefsTestEnabledGitBackedRepository = new PrefsTestEnabledGitBackedRepository();
 		git = prefsTestEnabledGitBackedRepository.git;
-		server = WineryUsingHttpServer.createHttpServer();
+		server = WineryUsingHttpServer.createHttpServer(9080);
 		server.start();
 	}
 
