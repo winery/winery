@@ -65,7 +65,7 @@ public abstract class AbstractResourceTest {
 				.call();
 	}
 
-	protected String readFromClasspath(String fileName) {
+	public static String readFromClasspath(String fileName) {
 		final InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
 		if (inputStream == null) {
 			throw new IllegalStateException("Could not find " + fileName + " on classpath");

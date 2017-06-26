@@ -17,12 +17,16 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 public abstract class HasId extends TExtensibleElements {
 
 	@XmlAttribute(name = "id", required = true)
 	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
 	@XmlID
 	@XmlSchemaType(name = "ID")
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 	private String id;
 
 	public HasId() {
