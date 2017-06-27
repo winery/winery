@@ -26,7 +26,6 @@ public abstract class HasId extends TExtensibleElements {
 	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
 	@XmlID
 	@XmlSchemaType(name = "ID")
-	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 	private String id;
 
 	public HasId() {

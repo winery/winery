@@ -21,7 +21,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 /**
@@ -103,6 +105,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
     "deploymentArtifacts"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class TNodeTemplate  extends RelationshipSourceOrTarget {
 
     @XmlElement(name = "Requirements")
