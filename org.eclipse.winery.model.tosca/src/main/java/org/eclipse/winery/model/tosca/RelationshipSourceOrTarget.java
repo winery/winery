@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
-public class RelationshipSourceOrTarget extends TEntityTemplate {
+public abstract class RelationshipSourceOrTarget extends TEntityTemplate {
 
 	public RelationshipSourceOrTarget() {
 		super();
