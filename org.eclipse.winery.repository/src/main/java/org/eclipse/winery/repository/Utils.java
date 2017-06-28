@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Armin Hüneburg - add initial git support
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
@@ -19,6 +20,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,11 +44,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
@@ -53,6 +59,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -67,6 +74,7 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.export.CSARExporter;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
@@ -97,6 +105,7 @@ import org.apache.xerces.xs.XSConstants;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Element;
+
 
 /**
  * Contains utility functionality concerning with everything that is
@@ -787,6 +796,38 @@ public class Utils {
 		return res;
 	}
 
+	/**
+	 *
+	 * @param directoryId ArtifactTemplateDirectoryId of the ArtifactTemplate that should contain a reference to a git repository.
+	 * @return The URL and the branch/tag that contains the files for the ArtifactTemplate. null if no git information is given.
+	 */
+	public static GitInfo getGitInformation(ArtifactTemplateDirectoryId directoryId) {
+		if (!(directoryId.getParent() instanceof ArtifactTemplateId)) {
+			return null;
+		}
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
+		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+			Unmarshaller u = JAXBSupport.createUnmarshaller();
+			Definitions defs = ((Definitions) u.unmarshal(is));
+			Map<QName, String> atts = defs.getOtherAttributes();
+			String src = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitsrc"));
+			String branch = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitbranch"));
+			// ^ is the XOR operator
+			if (src == null ^ branch == null) {
+				Utils.LOGGER.error("Git information not complete, URL or branch missing");
+				return null;
+			} else if (src == null && branch == null) {
+				return null;
+			}
+			return new GitInfo(src, branch);
+		} catch (IOException e) {
+			Utils.LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
+		} catch (JAXBException e) {
+			Utils.LOGGER.error("Error in XML in " + ref.getFileName(), e);
+		}
+		return null;
+	}
+
 	public static Set<String> clean(Set<String> set) {
 		Set<String> newSet = new HashSet<String>();
 
@@ -930,6 +971,40 @@ public class Utils {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 *
+	 * @param directoryId DirectoryID of the TArtifactTemplate that should be returned.
+	 * @return The TArtifactTemplate corresponding to the directoryId.
+	 */
+	public static TArtifactTemplate getTArtifactTemplate(ArtifactTemplateDirectoryId directoryId) {
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
+		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+			Unmarshaller u = JAXBSupport.createUnmarshaller();
+			Definitions defs = ((Definitions) u.unmarshal(is));
+			for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
+				if (elem instanceof TArtifactTemplate) {
+					return (TArtifactTemplate) elem;
+				}
+			}
+		} catch (IOException e) {
+			Utils.LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
+		} catch (JAXBException e) {
+			Utils.LOGGER.error("Error in XML in " + ref.getFileName(), e);
+		}
+		return null;
+	}
+
+	/**
+	 * Tests if a path matches a glob pattern. {@see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>}
+	 * @param glob Glob pattern to test the path against.
+	 * @param path Path that should match the glob pattern.
+	 * @return Whether the glob and the path result in a match.
+	 */
+	public static boolean isGlobMatch(String glob, Path path) {
+		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + glob);
+		return matcher.matches(path);
 	}
 
 	public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) {
