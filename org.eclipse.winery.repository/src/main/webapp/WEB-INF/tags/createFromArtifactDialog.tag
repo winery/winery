@@ -12,24 +12,17 @@
  *******************************************************************************/
 --%>
 
-<%@tag import="org.eclipse.winery.repository.Utils"%>
-<%@tag import="org.eclipse.winery.repository.backend.BackendUtils"%>
-<%@tag
-	import="org.eclipse.winery.common.ids.definitions.ServiceTemplateId"%>
+<%@tag import="org.eclipse.winery.common.ids.definitions.ServiceTemplateId"%>
 <%@tag import="org.eclipse.winery.repository.backend.Repository"%>
-<%@tag
-	import="org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource"%>
+<%@tag import="org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource"%>
 <%@tag import="org.eclipse.winery.model.tosca.TServiceTemplate"%>
 <%@tag import="org.eclipse.winery.model.tosca.TTag"%>
-<%@tag import="java.util.ArrayList"%>
-<%@tag import="java.util.Collection"%>
 <%@tag import="java.util.Set"%>
 <%@tag import="java.util.HashSet"%>
 <%@tag import="javax.xml.namespace.QName"%>
 <%@tag
 	description="Dialog to create ServiceTemplates from a given artifact"
 	pageEncoding="UTF-8"%>
-
 
 <%@attribute name="allSubResources" required="true"
 	type="java.util.TreeSet" description="All available ServiceTemplates"%>

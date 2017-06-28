@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -49,8 +49,8 @@ import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
 interface IGenericRepository extends IWineryRepositoryCommon {
 
 	/**
-	 * Flags the given TOSCA element as existing. The resources itself create
-	 * appropriate data files.
+	 * Flags the given TOSCA element as existing.
+	 * The respective resource itself creates appropriate data files.
 	 *
 	 * Pre-Condition: !exists(id)<br/>
 	 * Post-Condition: exists(id)

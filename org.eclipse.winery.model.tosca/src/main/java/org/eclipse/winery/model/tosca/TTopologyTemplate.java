@@ -153,4 +153,12 @@ public class TTopologyTemplate
 				.collect(Collectors.toList());
 	}
 
+	public void addNodeTemplate(TNodeTemplate nt) {
+		this.getNodeTemplateOrRelationshipTemplate().add(nt);
+	}
+
+	public void addRelationshipTemplate(TRelationshipTemplate rt) {
+		this.getNodeTemplateOrRelationshipTemplate().add(rt);
+	}
+
 }

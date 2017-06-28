@@ -36,8 +36,6 @@
 <%@page import="org.eclipse.winery.model.tosca.TPolicyType"%>
 <%@page import="org.eclipse.winery.model.tosca.TRelationshipType"%>
 <%@page import="org.eclipse.winery.model.tosca.TRelationshipTemplate"%>
-<%@page import="org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceElement"%>
-<%@page import="org.eclipse.winery.model.tosca.TRelationshipTemplate.TargetElement"%>
 <%@page import="org.eclipse.winery.model.tosca.TRequirement"%>
 <%@page import="org.eclipse.winery.model.tosca.TRequirementType"%>
 <%@page import="org.eclipse.winery.common.constants.Namespaces" %>

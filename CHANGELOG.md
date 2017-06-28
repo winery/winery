@@ -16,6 +16,7 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 * `csarName`, `version`, and `authors` are now contained in `data.xml` and `data.json`, too.
 * Enfore `LF` line endings in the repository
 * Add splitting functionality based on target labels
+* BREAKING: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
 
 ### Fixed
 * Bounary definitions can be browsed for exported operations again

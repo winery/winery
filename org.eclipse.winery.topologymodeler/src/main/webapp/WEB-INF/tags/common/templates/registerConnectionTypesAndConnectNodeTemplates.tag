@@ -25,8 +25,7 @@
 <%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate"%>
 <%@tag import="org.eclipse.winery.model.tosca.TRelationshipType"%>
 <%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceElement"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate.TargetElement"%>
+<%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceOrTargetElement"%>
 <%@tag import="org.eclipse.winery.common.Util"%>
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -118,7 +117,7 @@ require(["jquery", "jsplumb", "winery-common-topologyrendering"], function(globa
 					var cap = undefined;
 <%
 					// Source: Either NodeTemplate or Requirement
-					SourceElement sourceElement = relationshipTemplate.getSourceElement();
+					SourceOrTargetElement sourceElement = relationshipTemplate.getSourceElement();
 					if (sourceElement == null) {
 						%>vShowError("sourceElement is null for <%=relationshipTemplate.getId()%>");<%
 						continue;
@@ -141,7 +140,7 @@ require(["jquery", "jsplumb", "winery-common-topologyrendering"], function(globa
 					}
 
 					// Target: Either NodeTemplate or Requirement
-					TargetElement targetElement = relationshipTemplate.getTargetElement();
+					SourceOrTargetElement targetElement = relationshipTemplate.getTargetElement();
 					if (targetElement == null) {
 						%>vShowError("targetElement is null for <%=relationshipTemplate.getId()%>");<%
 						continue;

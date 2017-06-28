@@ -98,18 +98,18 @@ public class SplittingTest {
 		nt3.setId("NT3");
 
 		TRelationshipTemplate rt = new TRelationshipTemplate();
-		TRelationshipTemplate.TargetElement targetElement = new TRelationshipTemplate.TargetElement();
+		TRelationshipTemplate.SourceOrTargetElement targetElement = new TRelationshipTemplate.SourceOrTargetElement();
 		targetElement.setRef(nt2);
 		rt.setTargetElement(targetElement);
-		TRelationshipTemplate.SourceElement sourceElement = new TRelationshipTemplate.SourceElement();
+		TRelationshipTemplate.SourceOrTargetElement sourceElement = new TRelationshipTemplate.SourceOrTargetElement();
 		sourceElement.setRef(nt1);
 		rt.setSourceElement(sourceElement);
 
 		TRelationshipTemplate rt2 = new TRelationshipTemplate();
-		TRelationshipTemplate.TargetElement targetElement1 = new TRelationshipTemplate.TargetElement();
+		TRelationshipTemplate.SourceOrTargetElement targetElement1 = new TRelationshipTemplate.SourceOrTargetElement();
 		targetElement1.setRef(nt1);
 		rt2.setTargetElement(targetElement1);
-		TRelationshipTemplate.SourceElement sourceElement1 = new TRelationshipTemplate.SourceElement();
+		TRelationshipTemplate.SourceOrTargetElement sourceElement1 = new TRelationshipTemplate.SourceOrTargetElement();
 		sourceElement1.setRef(nt3);
 		rt2.setSourceElement(sourceElement1);
 
