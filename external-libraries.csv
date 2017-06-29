@@ -1,0 +1,3 @@
+Group;Artifact;Version;Project;URL;License;Buildtime/Runtime;Mailinglist discussion;CQ;Comment
+;versioneye;;;;;Buildtime;https://dev.eclipse.org/mhonarc/lists/soa-pmc/msg02057.html;;
+;markdown-toc;;;https://github.com/jonschlinkert/markdown-toc;MIT;Buildtime;n/a;n/a;not required, because it is manually executed during build time
