@@ -16,7 +16,6 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.resources.TestIds;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xmlunit.matchers.CompareMatcher;
 
@@ -54,7 +53,6 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
-	@Ignore
 	public void baobabRoundTrip() throws Exception {
 		this.setRevisionTo("15cd64e30770ca7986660a34e1a4a7e0cf332f19"); // empty repository
 		this.assertNotFound("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/");
