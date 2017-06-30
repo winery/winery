@@ -24,10 +24,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.w3c.dom.Element;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -268,7 +266,6 @@ public class TRelationshipTemplate
 		@XmlAttribute(name = "ref", required = true)
 		@XmlIDREF
 		@XmlSchemaType(name = "IDREF")
-		@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 		@JsonIdentityReference(alwaysAsId = true)
 		private RelationshipSourceOrTarget ref;
 

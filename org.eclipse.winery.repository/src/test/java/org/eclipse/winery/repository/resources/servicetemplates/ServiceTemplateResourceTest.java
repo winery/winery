@@ -19,7 +19,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class ServicetemplateResourceTest extends AbstractResourceTest {
+public class ServiceTemplateResourceTest extends AbstractResourceTest {
 
 	@Test
 	@Ignore

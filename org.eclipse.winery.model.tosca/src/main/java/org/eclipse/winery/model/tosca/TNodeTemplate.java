@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 
 /**
@@ -103,6 +104,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
     "deploymentArtifacts"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonTypeInfo(
+		defaultImpl = TNodeTemplate.class,
+		use = JsonTypeInfo.Id.NAME,
+		include = JsonTypeInfo.As.EXISTING_PROPERTY,
+		property = "fakeJacksonType")
 public class TNodeTemplate  extends RelationshipSourceOrTarget {
 
     @XmlElement(name = "Requirements")
@@ -128,7 +134,12 @@ public class TNodeTemplate  extends RelationshipSourceOrTarget {
     	super(id);
 	}
 
-    /**
+	@Override
+	public String getFakeJacksonType() {
+		return "nodetemplate";
+	}
+
+	/**
      * Gets the value of the requirements property.
      *
      * @return
