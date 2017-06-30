@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -34,12 +34,13 @@
 <!-- createArtifactTemplate class is required for artifactcreationdialog -->
 <div class="form-group createArtifactTemplate">
 	<label for="${idOfInput}" class="control-label">Namespace</label>
-	<input type="hidden" class="form-control" name="${nameOfInput}" id="${idOfInput}"></input>
+	<input type="text" class="form-control" name="${nameOfInput}" id="${idOfInput}"></input>
 </div>
 
 <script>
 	// we have to use data as select2 does not allow "createSearchChoice" when using <select> as underlying html element
-require("bootstrap3-typeahead", function(){
+	require(["bootstrap3-typeahead"], function () {
+
 	$("#${idOfInput}").typeahead({
 
 		source:[

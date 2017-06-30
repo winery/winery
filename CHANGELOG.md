@@ -20,3 +20,8 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ### Fixed
 * Bounary definitions can be browsed for exported operations again
+* Relationship Type -> Visual Appearance  "Arrow" tab can opened again
+* Boundary definitions -> interfaces
+	*	interfaces selection is properly reloaded if new interface is added
+	*	operations selection is properly reloaded if new operation is added
+
