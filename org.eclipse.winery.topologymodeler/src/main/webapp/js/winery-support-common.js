@@ -183,7 +183,8 @@ define([], function() {
 				}
 				// console.log("params", params);
 				// init select2 and select first item
-				require(["bootstrap3-typeahead"], function(){
+				require(["bootstrap3-typeahead"], function() {
+					$("#" + fieldId).typeahead('destroy');
 					$("#" + fieldId).typeahead(params);
 					if (result.length === 0) {
 						$("#" + fieldId).val("");

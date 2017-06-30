@@ -1521,7 +1521,7 @@ function onDoneRegisterConnectionTypesAndConnectNodeTemplates() {
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" id="importButon" class="btn btn-primary" data-loading="Adding..."  onclick="require(['winery-topologymodeler-AMD'], function(wt) {wt.importTopology('<%=repositoryURL%>/servicetemplates/', $('#serviceTemplate').select2('data').id);})">Add</button>
+				<button type="button" id="importButon" class="btn btn-primary" data-loading="Adding..."  onclick="require(['winery-topologymodeler-AMD'], function(wt) {wt.importTopology('<%=repositoryURL%>/servicetemplates/', $('#serviceTemplate').val());})">Add</button>
 			</div>
 		</div>
 	</div>

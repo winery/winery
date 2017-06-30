@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2016 University of Stuttgart.
+ * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -337,14 +337,14 @@
 			<div class="form-group">
 				<label for="interface" class="col-sm-1 control-label">Interface</label>
 				<div class="col-sm-8">
-					<input id="interface" class="form-control" placeholder="NCName or URI">
+					<input id="interface" autocomplete="off" class="form-control" placeholder="NCName or URI">
 				</div>
 				<button type="button" class="btn btn-danger btn-sm col-sm-1" onclick="deleteCurrentlySelectedInterface();">Delete</button>
 			</div>
 			<div class="form-group">
 				<label for="operation" class="col-sm-1 control-label">Operation</label>
 				<div class="col-sm-8">
-					<input id="operation" class="form-control" placeholder="NCName">
+					<input id="operation" autocomplete="off" class="form-control" placeholder="NCName">
 				</div>
 				<button type="button" class="btn btn-danger btn-sm col-sm-1" onclick="deleteCurrentlySelectedOperation();">Delete</button>
 			</div>
@@ -435,13 +435,22 @@
 	require(["winery-support-common"], function(wsc) {
 		wsc.fetchSelect2DataAndInitSelect2("interface", "boundarydefinitions/interfaces/?select2", function() {
 			$("#interface").on("change", function() {
+				$("#operation").val("");
 				updateOperationsField();
 			});
 			if ($("#interface").val()!= "") {
+				$("#operation").val("");
 				updateOperationsField();
 			}
 		}, true);
 	});
+
+	function updateInterfaces(){
+		require(["winery-support-common"], function(wsc) {
+		    //pass null as callback since event handler for interfaces are alredy set above, therefore no callback required
+			wsc.fetchSelect2DataAndInitSelect2("interface", "boundarydefinitions/interfaces/?select2", null, true);
+		});
+	}
 
 	function getInterfacesAndInterfaceURLs() {
 		var iface = $("#interface").val();
@@ -490,6 +499,7 @@
 						contentType: "application/json"
 					}).done(function (result) {
 						vShowSuccess("Sucessfully created interface");
+						updateInterfaces();
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 						vShowAJAXError("Could not create interface", jqXHR, errorThrown);
 					});
@@ -523,6 +533,7 @@
 						contentType: "application/json"
 					}).done(function (result) {
 						vShowSuccess("Sucessfully created operation");
+						updateOperationsField();
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 						vShowAJAXError("Could not create interface", jqXHR, errorThrown);
 					});

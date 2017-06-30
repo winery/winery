@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -22,7 +22,7 @@
 <ul class="nav nav-tabs" id="myTab">
 	<li class="active"><a href="#icon">Icon</a></li>
 	<li><a href="#colors">Colors</a></li>
-	<li><a href="#arrow">Arrow</a></li>
+	<li><a href="#arrowDiv">Arrow</a></li>
 </ul>
 
 <div class="tab-content">
