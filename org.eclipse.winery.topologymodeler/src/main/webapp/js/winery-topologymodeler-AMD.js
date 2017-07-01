@@ -29,6 +29,7 @@ define(
 			importTopology: importTopology,
 			save: save,
 			split: split,
+			match: match,
 			setTopologyTemplateURL: function (url) {
 				topologyTemplateURL = url;
 			},
@@ -116,7 +117,7 @@ define(
 			$("#splitBtn").button("loading");
 
 			$.ajax({
-				url: topologyTemplateURL,
+				url: topologyTemplateURL + 'split',
 				type: "POST",
 				success: function(data, textStatus, jqXHR) {
 					$("#splitBtn").button("reset");
@@ -126,6 +127,27 @@ define(
 				error: function(jqXHR, textStatus, errorThrown) {
 					$("#splitBtn").button("reset");
 					vShowAJAXError("Could not split", jqXHR, errorThrown);
+				}
+			});
+		}
+
+		/**
+		 * "doMatch"
+		 */
+		function match() {
+			$("#matchBtn").button("loading");
+
+			$.ajax({
+				url: topologyTemplateURL + 'match',
+				type: "POST",
+				success: function(data, textStatus, jqXHR) {
+					$("#matchBtn").button("reset");
+					var location = jqXHR.getResponseHeader("Location");
+					vShowSuccess("Successfully matched. <a target=\"_blank\" href=\"" + location + "\">Open matched service template</a>");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#matchBtn").button("reset");
+					vShowAJAXError("Could not match", jqXHR, errorThrown);
 				}
 			});
 		}

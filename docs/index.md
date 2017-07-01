@@ -46,3 +46,23 @@ The split as well as the matched topology are persistently stored with an attach
 the Service Template Id.
 
 ![image](splitting.png)
+
+### Matching Functionality
+
+Additional and based on the split function a match function is added to the winery.
+A topology is inspected if open requirements are contained. A open requirement is a requirement for which no relationship 
+to a node template exists which has the matching capability assigned.
+In case open requirements are found, the provider repositories are searched for suitable matching candidates.
+A matching candidate can be a single node, but also a whole topology fragment.
+The matching can be done to new hosts, but also to dat resources, etc.
+That means, based on the matching capabilities matching candidates are found and based on the requirements and capabilities
+and their inheritance hierarchies the correct relationship types are determined.
+
+To use this functionality a strict type and inheritance system is important.
+These are the rules:
+	- Each capability type with the semantic, that it acts as host/container has to be derived from the capability "Container"
+	- Each capability type with the semantic, that it acts as a endpoint has to be derived from the capability "Endpoint"
+	- The two default relationship types "hostedOn" and "connectsTo" should ne available and requires as valid target the 
+	capability "Container" oder "Endpoint"
+	
+By using this function a vertical as well as horizontal matching is possible.

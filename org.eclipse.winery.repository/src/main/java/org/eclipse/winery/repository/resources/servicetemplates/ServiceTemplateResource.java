@@ -175,16 +175,41 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	public Response getInjectorOptions() {
 		Splitting splitting = new Splitting();
 		TTopologyTemplate topologyTemplate = this.getServiceTemplate().getTopologyTemplate();
-		Map<String, List<TNodeTemplate>> matchingOptions;
+		Map<String, List<TTopologyTemplate>> hostMatchingOptions;
+		Map<String, List<TTopologyTemplate>> connectionMatchingOptions;
 		InjectorReplaceOptions injectionReplaceOptions = new InjectorReplaceOptions();
 
 		try {
-			matchingOptions = splitting.getMatchingOptionsWithDefaultLabeling(topologyTemplate);
+
+			Map<TRequirement, String> requirementsAndMatchingBasisCapabilityTypes =
+					splitting.getOpenRequirementsAndMatchingBasisCapabilityTypeNames(this.getServiceTemplate().getTopologyTemplate());
+			// Output check
+			for (TRequirement req : requirementsAndMatchingBasisCapabilityTypes.keySet()) {
+				System.out.println("open Requirement: " + req.getId());
+				System.out.println("matchingBasisType: " + requirementsAndMatchingBasisCapabilityTypes.get(req));
+			}
+
+			if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
+				hostMatchingOptions = splitting.getHostingMatchingOptionsWithDefaultLabeling(topologyTemplate);
+			} else {
+				hostMatchingOptions = null;
+			}
+			if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
+				connectionMatchingOptions = splitting.getConnectionInjectionOptions(topologyTemplate);
+			} else {
+				connectionMatchingOptions = null;
+			}
+
 			injectionReplaceOptions.setTopologyTemplate(topologyTemplate);
-			injectionReplaceOptions.setInjectionOptions(matchingOptions);
+			injectionReplaceOptions.setHostInjectionOptions(hostMatchingOptions);
+			injectionReplaceOptions.setConnectionInjectionOptions(connectionMatchingOptions);
+
+			if (hostMatchingOptions == null && connectionMatchingOptions == null) {
+				return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("No need for matching").build();
+			}
 		} catch (SplittingException e) {
-			LOGGER.error("Could not get matching options", e);
-			return Response.serverError().entity("Could not get matching options").build();
+			LOGGER.error("Could not match", e);
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 		return Response.ok().entity(injectionReplaceOptions).build();
 	}
@@ -193,14 +218,55 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	@Path("injector/replace")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-	public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws IOException, ParserConfigurationException, SAXException {
-		Collection<TNodeTemplate> injectorNodeTemplates = injectorReplaceData.injections.values();
-		ModelUtilities.patchAnyAttributes(injectorNodeTemplates);
+	public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws IOException, ParserConfigurationException, SAXException, SplittingException {
+		Collection<TTopologyTemplate> hostInjectorTopologyTemplates = injectorReplaceData.hostInjections.values();
+		hostInjectorTopologyTemplates.forEach(t -> {
+			try {
+				ModelUtilities.patchAnyAttributes(t.getNodeTemplates());
+			} catch (IOException e) {
+				LOGGER.error("XML was invalid", e);
+			}
+		});
+
+		Collection<TTopologyTemplate> connectionInjectorTopologyTemplates = injectorReplaceData.connectionInjections.values();
+		connectionInjectorTopologyTemplates.forEach(t -> {
+			try {
+				ModelUtilities.patchAnyAttributes(t.getNodeTemplates());
+			} catch (IOException e) {
+				LOGGER.error("XML was invalid", e);
+			}
+		});
 
 		Splitting splitting = new Splitting();
+		TTopologyTemplate matchedHostsTopologyTemplate;
+		TTopologyTemplate matchedConnectedTopologyTemplate;
 
-		TTopologyTemplate tTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.injections);
-		this.getServiceTemplate().setTopologyTemplate(tTopologyTemplate);
+		//Test Method findOpenRequirements
+		Map<TRequirement, String> requirementsAndMatchingBasisCapabilityTypes =
+				splitting.getOpenRequirementsAndMatchingBasisCapabilityTypeNames(this.getServiceTemplate().getTopologyTemplate());
+		// Output check
+		for (TRequirement req : requirementsAndMatchingBasisCapabilityTypes.keySet()) {
+			System.out.println("open Requirement: " + req.getId());
+			System.out.println("matchingbasisType: " + requirementsAndMatchingBasisCapabilityTypes.get(req));
+		}
+		// End Output check
+
+		if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
+			matchedHostsTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.hostInjections);
+
+			if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
+				matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(matchedHostsTopologyTemplate, injectorReplaceData.connectionInjections);
+			} else {
+				matchedConnectedTopologyTemplate = matchedHostsTopologyTemplate;
+			}
+		} else if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
+			matchedConnectedTopologyTemplate = splitting.injectConnectionNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.connectionInjections);
+		} else {
+			throw new SplittingException("No open Requirements which can be matched");
+		}
+
+		this.getServiceTemplate().setTopologyTemplate(matchedConnectedTopologyTemplate);
+
 		LOGGER.debug("Persisting...");
 		this.persist();
 		LOGGER.debug("Persisted.");
@@ -238,7 +304,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		Map<String, TNodeTemplate> replaceNodes = new HashMap<>();
 		replaceNodes.put("test", nt2);
 		replaceNodes.put("test2", nt3);
-		injectorReplaceData.setInjections(replaceNodes);
+		//injectorReplaceData.setInjections(replaceNodes);
 
 		return Response.ok().entity(injectorReplaceData).build();
 	}

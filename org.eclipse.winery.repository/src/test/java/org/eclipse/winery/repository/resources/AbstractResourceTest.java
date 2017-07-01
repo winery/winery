@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Karoline Saatkamp - add get BadRequest test method
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
@@ -25,6 +26,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.xmlunit.matchers.CompareMatcher;
@@ -87,9 +89,16 @@ public abstract class AbstractResourceTest {
 		return (fileName.endsWith("xml"));
 	}
 
+	private boolean isTxt(String fileName) {
+		return (fileName.endsWith("txt"));
+	}
+
 	private ContentType getAccept(String fileName) {
 		if (isXml(fileName)) {
 			return ContentType.XML;
+		} else if (fileName.endsWith("-badrequest.txt")) {
+			// convention: we always expect JSON
+			return ContentType.JSON;
 		} else {
 			return ContentType.JSON;
 		}
@@ -122,6 +131,35 @@ public abstract class AbstractResourceTest {
 					.asString();
 			if (isXml(fileName)) {
 				org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
+			} else {
+				JSONAssert.assertEquals(
+						expectedStr,
+						receivedStr,
+						true);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void assertGetExpectBadRequestResponse(String restURL, String fileName) {
+		try {
+			String expectedStr = readFromClasspath(fileName);
+			final String receivedStr = start()
+					.accept(getAccept(fileName))
+					.get(callURL(restURL))
+					.then()
+					.log()
+					.all()
+					.statusCode(400)
+					.extract()
+					.response()
+					.getBody()
+					.asString();
+			if (isXml(fileName)) {
+				org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
+			} else if (isTxt(fileName)) {
+				Assert.assertEquals(expectedStr, receivedStr);
 			} else {
 				JSONAssert.assertEquals(
 						expectedStr,
