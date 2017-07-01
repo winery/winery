@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -10,6 +10,7 @@
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
  *    Yves Schubert - switch to bootstrap 3
+ *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -21,7 +22,7 @@
 <ul class="nav nav-tabs" id="myTab">
 	<li class="active"><a href="#icon">Icon</a></li>
 	<li><a href="#colors">Colors</a></li>
-	<li><a href="#arrow">Arrow</a></li>
+	<li><a href="#arrowDiv">Arrow</a></li>
 </ul>
 
 <div class="tab-content">
@@ -53,37 +54,50 @@
 				<div class="form-group">
 					<label for="arrow">Arrow appearance</label>
 					<div style="width:100%" id="arrow">
-						<div style="float:left; width:50px;">
+						<div style="float:left; ">
 							<!-- Same values as the beginning of the file names in src\main\webapp\images\relationshiptype -->
-							<select id="dropDownSourceHead">
-								<option value="none"></option>
-								<option value="PlainArrow"></option>
-								<option value="Diamond"></option>
+							<div id="dropDownSourceHead">
+							<input type="radio" id="dropDownSourceHeadNone" name="sourceHead" value="none">
+							<label for="dropDownSourceHeadNone"></label>
+							<br>
+							<input type="radio" id="dropDownSourceHeadPain" name="sourceHead" value="PlainArrow">
+							<label for="dropDownSourceHeadPain"></label>
+							<br>
+							<input type="radio" id="dropDownSourceHeadDiamond" name="sourceHead" value="Diamond">
+							<label for="dropDownSourceHeadDiamond"></label>
+							</div>
+						</div>
+						<div id="lineSelect" style="float:left; margin-left: 2rem">
+
+							<input type="radio" id="lineSelectPlain" name="lineRadio" value="plain">
+							<!--  not yet supported
+                            <option value="simpleArrow"></option>
+                            <option value="doubleArrow"></option>
+                            <option value="circle"></option>
+                            <option value="square"></option> -->
+							</input>
+							<label for="lineSelectPlain"></label>
+							<br>
+							<input type="radio" id="lineSelectDotted" name="lineRadio" value="dotted">
+							<label for="lineSelectDotted"></label>
+							<br>
+							<input type="radio" id="lineSelectDotted2" name="lineRadio" value="dotted2">
+							<label for="lineSelectDotted2"></label>
+						</div>
+						<div id="dropDownTargetHead" style="float:left; margin-left: 2rem">
+							<input type="radio" id="dropDownTargetHeadNone" name="targetRadio" value="none">
 								<!--  not yet supported
 								<option value="simpleArrow"></option>
 								<option value="doubleArrow"></option>
 								<option value="circle"></option>
 								<option value="square"></option> -->
-							</select>
-						</div>
-						<div style="float:left; width:80px;">
-							<select id="lineSelect">
-								<option value="plain"></option>
-								<option value="dotted"></option>
-								<option value="dotted2"></option>
-							</select>
-						</div>
-						<div style="float:left; width:50px;">
-							<select id="dropDownTargetHead">
-								<option value="none"></option>
-								<option value="PlainArrow"></option>
-								<option value="Diamond"></option>
-								<!--  not yet supported
-								<option value="simpleArrow"></option>
-								<option value="doubleArrow"></option>
-								<option value="circle"></option>
-								<option value="square"></option> -->
-							</select>
+							<label for="dropDownTargetHeadNone"></label>
+							<br>
+							<input type="radio" name="targetRadio" id="dropDownTargetHeadPlain" value="PlainArrow">
+							<label for="dropDownTargetHeadPlain"></label>
+							<br>
+							<input type="radio" id="dropDownTargetHeadDiamond" name="targetRadio" value="Diamond">
+							<label for="dropDownTargetHeadDiamond"></label>
 						</div>
 					</div>
 				</div>
@@ -103,7 +117,7 @@ $('#myTab a').click(function (e) {
  */
 function formatArrow(config, sourceOrTarget) {
 	var path = "${pageContext.request.contextPath}/images/relationshiptype/" + config.id + sourceOrTarget + ".png";
-	return "<img src='" + path +"' />";
+	return "<img width='16px' src='" + path +"' />";
 }
 
 var globalAJAXParamsForSelect2VisualAppearance = {
@@ -115,7 +129,26 @@ var globalAJAXParamsForSelect2VisualAppearance = {
 	error : function(jqXHR, textStatus, errorThrown) {
 		vShowAJAXError("Could not supdate arrow appearance", jqXHR, errorThrown);
 	}
-}
+};
+
+$(function(){
+
+   $("#dropDownSourceHead label").each(function(){
+		var radioVal = $("#" + $(this).attr("for")).val();
+	   $(this).html(formatArrowSource({id: radioVal}));
+   });
+
+	$("#lineSelect label").each(function(){
+		var radioVal = $("#" + $(this).attr("for")).val();
+		$(this).html(formatLine({id: radioVal}));
+	});
+
+	$("#dropDownTargetHead label").each(function(){
+		var radioVal = $("#" + $(this).attr("for")).val();
+		$(this).html(formatArrowTarget({id: radioVal}));
+	});
+
+});
 
 /* source arrow head */
 
@@ -124,22 +157,14 @@ function formatArrowSource(config) {
 }
 
 // set stored value
-$("#dropDownSourceHead").val("${it.sourceArrowHead}")
+$("input[name='sourceHead'][value='${it.sourceArrowHead}']").prop('checked', true);
 // enable storage on change of element
-.on("change", function(e) {
+$("#dropDownSourceHead input[name='sourceHead']").on("change", function(e) {
 	params = globalAJAXParamsForSelect2VisualAppearance;
 	params.url = "visualappearance/sourcearrowhead";
-	params.data = e.val;
+	params.data = $(this).val();
 	$.ajax(params);
-})
-// make the selection box show arrows
-.select2({
-	formatResult: formatArrowSource,
-	formatSelection: formatArrowSource,
-	escapeMarkup: function(m) { return m; },
-	minimumResultsForSearch: -1
 });
-
 
 /* line */
 function formatLine(config) {
@@ -148,23 +173,13 @@ function formatLine(config) {
 }
 
 //set stored value
-$("#lineSelect").val("${it.dash}")
-//enable storage on change of element
-.on("change", function(e) {
-	params = globalAJAXParamsForSelect2VisualAppearance;
+$("input[name='lineRadio'][value='${it.dash}']").prop('checked', true);//enable storage on change of element
+$("#lineSelect input[name='lineRadio']").on("change", function(e) {
+	var params = globalAJAXParamsForSelect2VisualAppearance;
 	params.url = "visualappearance/dash";
-	params.data = e.val;
+	params.data = $(this).val();
 	$.ajax(params);
-})
-//make the selection box show arrows
-.select2({
-	formatResult: formatLine,
-	formatSelection: formatLine,
-	escapeMarkup: function(m) { return m; },
-	minimumResultsForSearch: -1
 });
-
-
 
 /* target arrow head */
 
@@ -173,21 +188,13 @@ function formatArrowTarget(config) {
 }
 
 //set stored value
-$("#dropDownTargetHead").val("${it.targetArrowHead}")
+$("input[name='targetRadio'][value='${it.targetArrowHead}']").prop('checked', true);
 //enable storage on change of element
-.on("change", function(e) {
-	params = globalAJAXParamsForSelect2VisualAppearance;
+$("#dropDownTargetHead input[name='targetRadio']").on("change", function(e) {
+	var params = globalAJAXParamsForSelect2VisualAppearance;
 	params.url = "visualappearance/targetarrowhead";
-	params.data = e.val;
+	params.data = $(this).val();
 	$.ajax(params);
-})
-//make the selection box show arrows
-.select2({
-	formatResult: formatArrowTarget,
-	formatSelection: formatArrowTarget,
-	escapeMarkup: function(m) { return m; },
-	minimumResultsForSearch: -1
 });
-
 </script>
 

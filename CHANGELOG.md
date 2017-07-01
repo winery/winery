@@ -17,6 +17,12 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 * Enfore `LF` line endings in the repository
 * Add splitting functionality based on target labels
 * BREAKING: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
+* Fix: If there are only XaaS packages without an infrastructure node defined the XaasPackager dialog  sends an undefined QName, got fixed by adding a check
 
 ### Fixed
 * Bounary definitions can be browsed for exported operations again
+* Relationship Type -> Visual Appearance  "Arrow" tab can opened again
+* Boundary definitions -> interfaces
+	*	interfaces selection is properly reloaded if new interface is added
+	*	operations selection is properly reloaded if new operation is added
+
