@@ -74,9 +74,9 @@
 			<version>1.1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.springsource.util</groupId>
-			<artifactId>com.springsource.util.parser.manifest</artifactId>
-			<version>2.0.5.RELEASE</version>
+			<groupId>org.eclipse.virgo.util</groupId>
+			<artifactId>org.eclipse.virgo.util.parser.manifest</artifactId>
+			<version>3.5.0.RELEASE</version>
 		</dependency>
 	</dependencies>
 </project>
