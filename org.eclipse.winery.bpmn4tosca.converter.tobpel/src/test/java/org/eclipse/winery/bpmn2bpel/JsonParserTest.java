@@ -53,7 +53,7 @@ public class JsonParserTest {
 	@Test
 	public void testParse() throws MalformedURLException, ParseException, URISyntaxException {
 		Bpmn4JsonParser parser = new Bpmn4JsonParser();
-		URI srcUri = Paths.get(RESOURCES_DIR, "bppmn4tosca.json").toUri();
+		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.json").toUri();
 		ManagementFlow actualFlow = parser.parse(srcUri);
 		ManagementFlow expectedFlow = createReferenceFlow();
 
@@ -224,7 +224,6 @@ public class JsonParserTest {
 		flow.addEdge(runUbuntuTask, endTask);
 
 		return flow;
-
 
 	}
 

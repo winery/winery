@@ -65,7 +65,4 @@ public class ManagementFlow extends SimpleDirectedGraph<Node, Link> {
 		return super.toStringFromSets(vertexSet, edgeSet, directed);
 	}
 
-
-
-
 }

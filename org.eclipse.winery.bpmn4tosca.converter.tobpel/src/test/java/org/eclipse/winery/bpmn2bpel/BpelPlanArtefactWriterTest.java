@@ -43,7 +43,7 @@ public class BpelPlanArtefactWriterTest {
 	@Test
 	public void testWritePlan() throws MalformedURLException, ParseException, URISyntaxException {
 		Bpmn4JsonParser parser = new Bpmn4JsonParser();
-		URI uri = Paths.get("src/test/resources/bpmn4tosca/bppmn4tosca.json").toUri();
+		URI uri = Paths.get("src/test/resources/bpmn4tosca/bpmn4tosca.json").toUri();
 		//Path testBpmn4JsonFile = Paths.get("C:/temp/bpmn4tosca/bppmn4tosca.json");
 		ManagementFlow mngmtFlow = parser.parse(uri);
 
