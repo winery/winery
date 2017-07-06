@@ -8,6 +8,8 @@ Here, the categories "Changed" for added and changed functionality,
 
 We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `#NUM`.
 
+## [unreleased]
+
 ## [v2.0.0-M1] - 2017-07-03
 
 ### Changed

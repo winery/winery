@@ -39,8 +39,6 @@ import org.eclipse.winery.bpmn2bpel.model.param.TopologyParameter;
 import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
 import org.eclipse.winery.bpmn2bpel.parser.ParseException;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -53,7 +51,7 @@ public class JsonParserTest {
 	@Test
 	public void testParse() throws MalformedURLException, ParseException, URISyntaxException {
 		Bpmn4JsonParser parser = new Bpmn4JsonParser();
-		URI srcUri = Paths.get(RESOURCES_DIR, "bppmn4tosca.json").toUri();
+		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.json").toUri();
 		ManagementFlow actualFlow = parser.parse(srcUri);
 		ManagementFlow expectedFlow = createReferenceFlow();
 
