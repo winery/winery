@@ -9,9 +9,15 @@
 #
 
 ##########################################################################
+# TOSCA Namespacing keyword specifies the TOSCA Namespace Alias value which 
+# all TOSCA Service Templates MUST always have.
+##########################################################################
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+##########################################################################
 # TOSCA Artifacts Types represent the types of packages and files used by 
 # the orchestrator when deploying  TOSCA Node or Relationship Types or 
-# nvoking their interfaces. 
+# invoking their interfaces. 
 ##########################################################################    
 artifact_types:
 
