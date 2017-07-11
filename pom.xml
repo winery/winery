@@ -71,6 +71,7 @@
 		<module>org.eclipse.winery.model.csar.toscametafile</module>
 		<module>org.eclipse.winery.model.selfservice</module>
 		<module>org.eclipse.winery.model.tosca</module>
+		<module>org.eclipse.winery.bpmn4tosca.converter.frombpel</module>
 	</modules>
 	<build>
 		<plugins>
