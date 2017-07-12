@@ -1,11 +1,15 @@
----
----
-
-# Winery Developer Guide
+# Eclipse Winery Developer Guide
 
 <!-- toc -->
 
 - [Overview](#overview)
+- [Development Information](#development-information)
+  * [Making the wars](#making-the-wars)
+- [Branches](#branches)
+- [Projects](#projects)
+- [Development Setup](#development-setup)
+  * [IntelliJ Ultimate setup](#intellij-ultimate-setup)
+  * [Eclipse setup](#eclipse-setup)
 - [General Compilation Remarks](#general-compilation-remarks)
 - [Overview on Projects](#overview-on-projects)
   * [Project org.eclipse.winery.common](#project-orgeclipsewinerycommon)
@@ -21,7 +25,7 @@
   * [AdminId](#adminid)
   * [TOSCAComponentId](#toscacomponentid)
   * [Filesystem Layout](#filesystem-layout)
-  * [Rest Resources](#rest-resources)
+  * [REST Resources](#rest-resources)
   * [URL Schema](#url-schema)
   * [Collections of Components](#collections-of-components)
   * [Component Instances](#component-instances)
@@ -51,6 +55,7 @@
 - [Example Repository](#example-repository)
 - [Abbreviations](#abbreviations)
 - [References](#references)
+- [License](#license)
 
 <!-- tocstop -->
 
@@ -58,26 +63,46 @@
 
 This document provides the design ideas of Winery.
 
-Winery is a Web based environment to graphically model TOSCA topologies and plans managing these topologies.
-It is an Eclipse project and thus support is available through its project page <https://projects.eclipse.org/projects/soa.winery>. Winery is also part of the OpenTOSCA ecosystem where more information is available at <http://www.opentosca.org>.
+## Development Information
 
-![Winery Components](graphics/WineryComponents.png)  
+Winery uses maven and [bower] for fetching dependencies and building.
+Bower is installed automatically using the [frontend-maven-plugin].
+We recommend installing JDK8 by using `choco install jdk8` to be able to update it via `choco upgrade all`. See at the homepage of [chocolatey] for more information.
+Please follow the the next step "Making the wars" before importing the project into an IDE.
 
-Winery consists of four parts (1) the type and template management, (2) the topology modeler, (3) the BPMN4TOSCA plan modeler, and (4) the repository.
+### Making the wars
+Run `mvn package`.
+In case [bower] fails, try to investigate using `mvn package -X`.
+You can start bower manually in `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler` by issuing `bower install`.
 
-The type, template and artifact management enables managing all TOSCA types, templates and related artifacts.
-This includes node types, relationship types, policy types, artifact types, artifact templates, and artifacts such as virtual machine images.
+There are two WARs generated:
 
-The topology modeler enables to create service templates.
-Service templates consists of instances of node types (node templates) and instances of relationship types (relationship templates).
-They can be annotated with requirements and capabilities, properties, and policies.
+* `org.eclipse.winery.repository/target/winery.war` and
+* `org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war`
 
-The BPMN4TOSCA plan modeler offers web based creation of BPMN models with the TOSCA extension BPMN4TOSCA.
-That means the modeler supports the BPMN elements and structures required by TOSCA plans and not the full set of BPMN [KBBL12].
-This part is currently in development and not part of the opensourced code of Winery.
+They can be deployed on a Tomcat runtime environment.
 
-The repository stores TOSCA models and allows managing their content. For instance, node types, policy types, and artifact templates are managed by the repository.
-The repository is also responsible for importing and  exporting CSARs, the exchange format of TOSCA files and related artifacts.
+## Branches
+
+The `master` branch is always compiling and all tests should go through.
+It contains the most recent improvements.
+All other branches are real development branches and might event not compile.
+
+There are no explicit branches for stable versions as winery is currently in development-only mode.
+
+## Projects
+
+## Development Setup
+
+Please enable the git-hooks by executing `git config core.hooksPath .git-hooks` in the root of the repository.
+
+### IntelliJ Ultimate setup
+
+See [config/IntelliJ IDEA/README.md](config/IntelliJ IDEA/README.md).
+
+### Eclipse setup
+
+See [config/Eclipse/README.md](config/Eclipse/README.md).
 
 ## General Compilation Remarks
 
@@ -145,12 +170,8 @@ generated XML Schema Definitions due to the use of Winery's key/value properties
 the parent element for all TOSCA Elements which may be defined directly as child of a "Definitions" element.
 All other elements have "TOSCAElementId" as parent.
 
-<center>
-
 ![GenericId Hierarchy](graphics/GenericIdHierarchy.png)  
 **Figure 2: Inheritance hierarchy of GenericId**
-
-</center> 
 
 ### AdminId
 
@@ -160,24 +181,18 @@ not node types etc., but ConstraintTypes (for Constraints), PlanLanguages (for p
 The inclusion of "PlanLanguages" is due to reuse of the class AbstractTypesManager for plan languages. TOSCA
 does not restrict these enumerations. Therefore, Winery manages all known types for itself.
 
-<center>
-
 ![AdminId Hierarchy](graphics/AdminIdHierarchy.png)  
 **Figure 3: Inheritance hierarchy of AdminId**
-
-</center>
 
 ### TOSCAComponentId
 
 This Id class is used for all entities directly nested in a TDefinitions element. They all have a namespace and an
 id attribute. This is ensured by ToscaComponentId. Figure 4 shows the inheritance hierarchy for TOSCAComponentId.
 
-<center>
 
 ![ComponentId Hierarchy](graphics/ComponentIdHierarchy.png)  
 **Figure 4: inheritance hierarchy of ToscaComponentId**
 
-</center>
 
 "EntityTemplateId" collects all Entity Templates directly nested in a Definitions element. As a result, the ids of
 NodeTemplates or RelationshipTemplates do not inherit from EntityTemplateId. They are contained in a Service Template
@@ -196,31 +211,9 @@ imports might be XSD definitions, vut als WSDL files.
 
 ### Filesystem Layout
 
-The general structure is ROOT/<componenttype>s/<encoded-namespace>/<encoded-id>/<resource-specific-part>.
-Encoding is done following RFC 3986. This makes the structure to the URL structure (cf. Section 7).
+See [RepositoryLayout](RepositoryLayout).
 
-The resource-specific part typically is a file named <componenttype>.tosca . It contains the Definitions
-XML file where all the data is stored. Files may be added to artifact templates. Therefore, a subdirectory "files"
-is created in ROOT/artifacttemplates/<encoded-namespace>/<encoded-id>/. There, the files are stored.
-
-For instance, the NodeType "NT1" in the namespace "http://www.example.com/NodeTypes" is found behind the URL
-"nodetypes/http%3A%2F%2Fexample.com%2FNodeTypes/NT1/". As the browser decodes the URL, the namespace and the
-id are double encoded. The content of the Definitions is stored in "NodeType.tosca".
-
-The URL encoding is necessary as some letter allowed in namespaces (e.g. ".", ":", ";", "/") and IDs are not allowed
-on all operating systems. IDs are NCNames, which are based on XML 1.0 Names, which in turn allows nearly all
-unicode characters. Therefore, each namespace and ID is URLencoded when written to the filesystem and URLdecoded
-when read from the filesystem.
-
-Figure 5 shows the root directory of the filesystem and the directory layout for the NodeType NT1.
-
-<center>
-
-![Filesystem Directory Layout](graphics/FilesystemDirectoryLayout.png)  
-**Figure 5: Filesystem directory layout**
-
-
-### Rest Resources
+### REST Resources
 
 All resources are implemented in classes in the package org.eclipse.winery.repository.resources. We call all
 elements directly nested in the definitions element "components". They are implemented using JAX RS 1.1 
@@ -244,12 +237,10 @@ The resource specific part is realized by subclasses of AbstractComponentInstanc
 
 ### Collections of Components
 
-<center>
 
 ![AbstractCompoenentResource Inheritance](graphics/InheritanceOfAbstractComponentResource.png)  
 **Figure 6: Inheritance of AbstractComponentResource**
 
-</center>
 
 Figure 6 shows the inheritance of AbstractComponentsResource. It contains an intermediate class
 "AbstractComponentsWithTypeReferenceResource" which handles a POST with an additional type. It is used at
@@ -261,12 +252,10 @@ creation of AbstractComponentInstanceResources.
 
 ### Component Instances
 
-<center>
 
 ![AbstractComponentInstanceResource Inheritance](graphics/InheritanceOfAbstractComponentInstanceResource.png)  
 **Figure 7: Inheritance of AbstractComponentInstanceResource**
 
-</center>
 
 Figure 7 shows the inheritance of AbstractComponentInstanceResource. For each component, a class exists.
 Using Intermediate classes, common properties are handled. These are explained in the following sections.
@@ -303,12 +292,10 @@ Figure 8 shows all interfaces related to interactions with the repository. The g
 repository and the repository client. The repository itself is only accessed through the REST resources offered
 by org.eclipse.winery.repository. The repository client uses these REST resources to access content of the repository.
 
-<center>
 
 ![Repository Interfaces Inheritance](graphics/InheritanceOfInterfacesRelatedToTheRepository.png)  
 **Figure 8: Inheritance of interfaces related to the repository**
 
-</center>
 ### IWineryRepositoryCommon
 
 IWineryRepositoryCommon collects all methods available both to the REST resources and the client. Currently,
@@ -374,19 +361,15 @@ Figure 10 shows the shared tags "orioneditor.tag" is a wrapper for an Orion base
 functionality for all entity templates such as artifact templates or node templates. Node templates may carry
 requirements and capabilities. The respective tags are contained in the "reqscaps" folder.
 
-<center>
 
 ![Shared JSP Files](graphics/SharedJSPFiles.png)  
 **Figure 9: Shared JSP files**
 
-</center>
 
-<center>
 
 ![Shared Tags](graphics/SharedTags.png)  
 **Figure 10: Shared Tags**
 
-</center>
 
 ## Type, Template, and Artifact Management
 
@@ -394,12 +377,10 @@ The REST resources offer the method getHTML, which returns a HTML page, when *te
 It uses JSPs to generate the requested page. Figure 11 shows the structure of the available jsps. They are sorted
 according the different entity types available in TOSCA.
 
-<center>
 
 ![JSP Structure](graphics/JSPStructure.png)  
 **Figure 11: JSP structure**
 
-</center>
 
 Figure 12 shows the rendered result for the instance states of a node type. The URL used is
 nodetypes/http%253A%252F%252Fexample.com%252FNodeTypes/NT1/#instancestates. A GET with accept
@@ -413,12 +394,10 @@ The general idea is to have the content of the fragment identifier rendered by a
 functionality is implemented in "hashloading.jsp". At each change of the fragment identifier, the respective
 URL is constricted and the content of the div containing the tab content is replaced by the response of the server.
 
-<center>
 
 ![Nodetypes Rendering](graphics/WinerysRenderingofNodetypes.png)  
 **Figure 12 Winery's rendering of nodetypes/http%253A%252F%252Fexample.com%252FNodeTypes/NT1/#instancestates**
 
-</center>
 
 ## Topology Modeler
 
@@ -433,12 +412,10 @@ render a single node template. The relationship templates are drawn using "tmpl:
 whereby "tmpl" is bound to "/WEB-INF/tags/common/templates". the property on the right side is rendered by 
 "propertiesOfOneNodeTemplate.tag" for node templates and by "propertiesOfOneRelationshipTemplate.tag" for relationship templates.
 
-<center>
 
 ![Topology Modeler](graphics/WinerysTopologyModeler.png)  
 **Figure 13: Winery's topology modeler**
 
-</center>
 
 ## Debugging Hints
 
@@ -486,6 +463,20 @@ There is the maxFormContentSize set in jetty web.xml, but it currently does not 
 If the Prefs class is not found, something is wrong with the libraries, tomcat config, eclipse environment (check
 the build path!), etc.
 
+In case, `Version.java` is not found, then run `mvn compile`, which should trigger a regeneration of Version.java.
+
+The error message
+`HTTP Status 500 - com.sun.jersey.api.container.ContainerException: org.apache.jasper.JasperException: The absolute uri: http://www.eclipse.org/winery/functions cannot be resolved in either web.xml or the jar files deployed with this application` indicates that `mvn generate-sources` was not run.
+
+In case `javax.servlet.jsp.PageContext` cannot be found:
+Project -> right click -> Properties -> Project Facets -> Dynamic Web Module -> "Runtimes" -> "New..."
+
+When running in jetty 9.0.5, there is always the error message "Request Entity Too Large" when uploading a file.
+There is the `maxFormContentSize` set in `jetty-web.xml`, but it currently does not help to solve this issue.
+
+When doing a copy-libs-to-tomcat hack, possibly "W3C_XML_SCHEMA_NS_URI cannot be resolved or is not a field" appears.
+Remove `stax-api-1.0.1.jar` out of `tomcat7/lib`: Java's `rt.jar` should be used instead for `javax.xml.XMLConstants`.
+
 ### "name" vs. "id" at Entities
 
 Some entities carry a name, some an id and some both. A justification is available at TOSCA issue 47
@@ -521,3 +512,16 @@ One can import the repository by *Administration*, then *Repository* and finally
 [BBKL14] Breitenbücher, Uwe; Binz, Tobias; Kopp, Oliver; Leymann, Frank: Vinothek - A Self-Service Portal for TOSCA. In: Herzberg, Nico (Hrsg); Kunze, Matthias (Hrsg): Proceedings of the 6th Central-European Workshop on Services and their Composition (ZEUS 2014).
 
 [KBBL12] Kopp, Oliver; Binz, Tobias; Breitenbücher, Uwe; Leymann, Frank: BPMN4TOSCA: A Domain-Specific Language to Model Management Plans for Composite Applications. In: Mendling, Jan (Hrsg); Weidlich, Matthias (Hrsg): 4th International Workshop on the Business Process Model and Notation, 2012
+
+## License
+
+Copyright (c) 2013-2017 University of Stuttgart.
+
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the [Eclipse Public License v1.0]
+and the [Apache License v2.0] which both accompany this distribution,
+and are available at http://www.eclipse.org/legal/epl-v10.html
+and http://www.apache.org/licenses/LICENSE-2.0
+
+ [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
+ [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html

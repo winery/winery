@@ -1,59 +1,13 @@
 # Eclipse Winery
+
 Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these topologies.
 It is an Eclipse project and thus support is available through its project page <https://projects.eclipse.org/projects/soa.winery>.
 Winery is also part of the OpenTOSCA ecosystem where more information is available at <http://www.opentosca.org>.
 
 **The code and the linked libraries are NOT approved by Eclipse Legal.**
 
-## Runtime Requirements
-* Java 8
-* Servlet 3.0 capable container (e.g., Tomcat 7)
-
-## Development Information
-Winery uses maven and [bower] for fetching dependencies and building.
-Bower is installed automatically using the [frontend-maven-plugin].
-We recommend installing JDK8 by using `choco install jdk8` to be able to update it via `choco upgrade all`. See at the homepage of [chocolatey] for more information.
-Please follow the the next step "Making the wars" before importing the project into an IDE.
-
-### Making the wars
-Run `mvn package`.
-In case [bower] fails, try to investigate using `mvn package -X`.
-You can start bower manually in `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler` by issuing `bower install`.
-
-There are two WARs generated:
-
-* `org.eclipse.winery.repository/target/winery.war` and
-* `org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war`
-
-They can be deployed on a Tomcat runtime environment.
-
-## Branches
-The `master` branch is always compiling and all tests should go through.
-It contains the most recent improvements.
-All other branches are real development branches and might event not compile.
-
-There are no explicit branches for stable versions as winery is currently in development-only mode.
-
-## Projects
-
-### Model projects
-Each of these projects are versioned separately.
-
-* org.eclipse.winery.model.csar.toscametafile: model for TOSCA meta files contained in a CSAR
-* org.eclipse.winery.model.selfservice: model for the self service portal
-* org.eclipse.winery.model.tosca: model for TOCSA
-
-### Support projects
-* org.eclipse.winery.highlevelrestapi: support library to REST calls.
-
-### Winery itself
-Versioned together to ease development.
-
-* org.eclipse.winery.common: Used in repository and topology modeler
-* org.eclipse.winery.generators.ia: Implementation Artifact Generator, used as component in the repository
-* org.eclipse.winery.repository: the repository including a JSP-based UI
-* org.eclipse.winery.repository.client: Java-client for the repository
-* org.eclipse.winery.topologymodeler: Graph-based modeler for topology templates
+Both development and user documentation is rendered at <http://eclipse.github.io/winery/>.
+The source for the documentation can be found at [docs/](docs).
 
 ## Next steps
 Winery currently is far from being a production ready modeling tool.
