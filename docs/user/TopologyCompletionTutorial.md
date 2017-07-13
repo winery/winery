@@ -84,3 +84,16 @@ In this example, the repository only contains one Node Template that is able to 
 When selecting the "Use Template" button, the Node and Relationship Templates are added to the topology and the next step is displayed. So you should select the used Relationship Templates before pressing one of the buttons.
 
 Keep choosing Node Templates until you receive a notification that the completion is successful. The completed topology is then displayed in a new browser window. Be aware that blocking pop-ups on the winery site will prevent opening a new browser tab. In that case you can access the completed topology through the repository. In case you don't select the Step-by-Step approach, the steps are hidden and the completed topology is displayed after a short time.
+
+## License
+
+Copyright (c) 2013-2017 University of Stuttgart.
+
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the [Eclipse Public License v1.0]
+and the [Apache License v2.0] which both accompany this distribution,
+and are available at http://www.eclipse.org/legal/epl-v10.html
+and http://www.apache.org/licenses/LICENSE-2.0
+
+Contributors:
+  * Pascal Hirmer - initial API and implementation

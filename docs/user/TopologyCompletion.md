@@ -72,6 +72,17 @@ After the completion the completed topology will be displayed in the topology mo
 
 ## Topology Completion - Getting started
 
-[[Winery/Addons/Winery Topology Completion/Tutorial|Getting Started - A Topology Completion Tutorial]]
+Please head to the [tutorial](TopologyCompletionTutorial)
 
-For feedback or questions contact pascalhirmer(at)googlemail.com or create a discussion page above.
+## License
+
+Copyright (c) 2013-2017 University of Stuttgart.
+
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the [Eclipse Public License v1.0]
+and the [Apache License v2.0] which both accompany this distribution,
+and are available at http://www.eclipse.org/legal/epl-v10.html
+and http://www.apache.org/licenses/LICENSE-2.0
+
+Contributors:
+  * Pascal Hirmer - initial API and implementation
