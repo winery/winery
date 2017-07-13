@@ -68,9 +68,6 @@ Contributors:
 
 See http://www.opentosca.org/#publications for a list of publications in the OpenTOSCA ecosystem.
 
-### Programming
-* Joshua Bloch. Effective Java, 2nd edition. Addison-Wesley
-
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
  [bug421284]: https://bugs.eclipse.org/bugs/show_bug.cgi?id=421284
  [bower]: https://github.com/bower/bower

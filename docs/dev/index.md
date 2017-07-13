@@ -525,6 +525,10 @@ An example Repository is available at
 https://github.com/OpenTOSCA/OpenTOSCA.github.io/blob/master/third-party/winery-repository.zip .
 One can import the repository by *Administration*, then *Repository* and finally *Import repository*.
 
+## Recommended Programming Literature
+
+* Joshua Bloch. Effective Java, 2nd edition. Addison-Wesley
+
 ## Abbreviations
 
 |       |                                                                       |
