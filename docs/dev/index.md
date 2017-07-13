@@ -63,7 +63,11 @@
 
 This document provides (i) guides about development and (ii) design ideas of Winery.
 
-For a general guide for the GitHub workflow, see [ToolChain](ToolChain).
+Other sources of information:
+
+- [ToolChain](ToolChain) - GitHub workflow
+- [CodeHeaders](CodeHeaders) - documentation about required code headers
+- [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
 
 ## Development Setup
 
