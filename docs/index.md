@@ -1,4 +1,4 @@
-# Eclipse Winery
+# Eclipse Winery™
 
 - [UserGuide](user/) - a guide for the users
 - [DeveloperGuide](DeveloperGuide) - a guide for developers

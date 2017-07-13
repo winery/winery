@@ -1,4 +1,4 @@
-# Eclipse Winery Developer Guide
+# Eclipse Winery™ Developer Guide
 
 <!-- toc -->
 
