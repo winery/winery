@@ -1,7 +1,7 @@
 # Eclipse Winery
 
 Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these topologies.
-It is an Eclipse project and thus support is available through its project page <https://projects.eclipse.org/projects/soa.winery>.
+It is an Eclipse project and thus support is available through its project page <https://eclipse.org/winery>.
 Winery is also part of the OpenTOSCA ecosystem where more information is available at <http://www.opentosca.org>.
 
 **The code and the linked libraries are NOT approved by Eclipse Legal.**
@@ -13,8 +13,6 @@ The source for the documentation can be found at [docs/](docs).
 Winery currently is far from being a production ready modeling tool.
 The next steps are:
 
-* UI design improvements
-  * Have Orion support `XML` as language. See also [Bug 421284][bug421284]
 * Add more usability features to the topology modeler
 * Remove non-required files from components/ directory to reduce the file size of the WAR file
   * This has to be done by submitting patches to `bower.json` of the upstream libraries
@@ -27,30 +25,16 @@ We plan to use frameworks such as [TerrificJS] to provide a better modularity.
 This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 
 ## Known issues
+
 * XSD Type declarations are not directly supported
 ** Declared types are converted to imports during a CSAR Import
 ** Editing of XSDs is not possible
-* **The XSD of OASIS TOSCA v1.0 has been modified**
+* **The XSD of OASIS TOSCA v1.0 has been modified** - see https://github.com/eclipse/winery/issues/71
 ** An Implementation Artifact may carry a `name` attribute
 ** The contents of properties of Boundary Definitions are processed in `lax` mode
 
-### Configure Winery (optional)
-The repository location can be changed:
-Copy `winery.properties` to `path-to-workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\winery`.
-
-### Trouble shooting
-* IntelliJ
-  * `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already` and `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already. Could not load [org.apache.xerces.util.XMLGrammarPoolImpl].`
-    * `mvn clean package`
-    * Build -> Build Artifacts... -> org.eclipse.winery.repository.war:exploded: Clean
-    * Build -> Rebuild Project
-  * Has issues with a new selfserivce portal model:  Use [everything](https://www.voidtools.com/) (`choco install everything`) to locate all "selfservice metadata jars" and delete them. Otherwise, Winery does not compile.
-* In case some JavaScript libraries cannot be found by the browser, execute `bower prune`, `bower install`, `bower update` in both `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler`.
-* If `mvn package` does not work in a sub project, execute `mvn install` in the root. [Source](http://stackoverflow.com/q/29712865/873282)
-* See [README.md of the repository](org.eclipse.winery.repository/README.md)
-* See [README.md of the topology modeler](org.eclipse.winery.topologymodeler/README.md)
-
 #### Libraries
+
 * Do NOT update to jQuery 2.1.0.
   When using with firefox, line 5571 in jquery.js fails: `divStyle is null`.
   That means `window.getComputedStyle( div, null );` returned `null`, too.
@@ -58,11 +42,13 @@ Copy `winery.properties` to `path-to-workspace\.metadata\.plugins\org.eclipse.ws
   The new connection type determination does not play well together with Winery's usage of jsPlumb. See [jsPlumb#165].
 
 ## Acknowledgements
+
 The initial code contribution has been supported by the [Federal Ministry for Economic Affairs and Energy] as part of the [CloudCycle] project (01MD11023).
 Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the [SmartOrchestra] project (01MD16001F).
 
 ## License
-Copyright (c) 2012-2016 University of Stuttgart.
+
+Copyright (c) 2012-2017 University of Stuttgart.
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the [Eclipse Public License v1.0]

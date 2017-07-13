@@ -460,7 +460,19 @@ for hot code replacement in the Tomcat in Eclipse.
   *		standalone=yes means that there is no external DTD
   *		eleminates parsing errors in firefox
 
+### Trouble shooting IntelliJ
+
+  * `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already` and `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already. Could not load [org.apache.xerces.util.XMLGrammarPoolImpl].`
+    * `mvn clean package`
+    * Build -> Build Artifacts... -> org.eclipse.winery.repository.war:exploded: Clean
+    * Build -> Rebuild Project
+  * Has issues with a new selfserivce portal model:  Use [everything](https://www.voidtools.com/) (`choco install everything`) to locate all "selfservice metadata jars" and delete them. Otherwise, Winery does not compile.
+
 ### Other Troubleshootings
+
+In case some JavaScript libraries cannot be found by the browser, execute `bower prune`, `bower install`, `bower update` in both `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler`.
+
+If `mvn package` does not work in a sub project, execute `mvn install` in the root. [Source](http://stackoverflow.com/q/29712865/873282)
 
 When “The superclass "javax.servlet.jsp.tagext.SimpleTagSupport" was not found on the Java Build Path.”
 appears, right click on the project then **Properties**, **Project Facets** and finally **Runtime**.
