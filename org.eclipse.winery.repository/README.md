@@ -10,15 +10,6 @@ The REST API does **not** follow the HATEOAS approach.
 The URLs follow the pattern `/<type>/<encoded namespace>/<encoded id>`, where `type` is `servicetemplate`, `nodetype`, ...
 Below a concrete instance, subresources such as `name` exist.
 
-Definitions are not modeled as explicit element. Only the nested elements are handled by Winery.
-That means, it is not possible to specify custom definitions bundling a customized subset of available elements.
-
-Intentionally, a QName should be unique within the repository.
-We did not follow this assumption, but only require that QNames are unique within a type.
-That means, the repository allows `{http://www.example.org}id` for both a service template and a node type.
-We introduced TOSCAcomponentId uniquely identifying a TOSCA element.
-Future versions might redesign the backend to use a QName as the unique key.
-
 Currently, Winery is switching from plain Javascript library loading to [RequireJS].
 
 The file `src/main/webapp/WEB-INF/common-functions.tld` and the files in `src/main/webapp/WEB-INF/tags/common` are copied from the sister project `org.eclipse.winery.topologymodler` at `mvn generate-sources`.

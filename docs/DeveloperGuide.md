@@ -160,6 +160,19 @@ managed. It realizes the components "Type, Template, and Artifact Management" an
 This part of Winery enables modeling topologies graphically. It realizes the component "Topology Modeler"
 (Figure 1).
 
+## TOSCA Definitions in Winery
+
+Definitions are not modeled as explicit element. Only the nested elements are handled by Winery.
+That means, it is not possible to specify custom definitions bundling a customized subset of available elements.
+
+## Uniqueness of QNames
+
+Intentionally, a QName should be unique within the repository.
+We did not follow this assumption, but only require that QNames are unique within a type.
+That means, the repository allows `{http://www.example.org}id` for both a service template and a node type.
+We introduced TOSCAcomponentId uniquely identifying a TOSCA element.
+Future versions might redesign the backend to use a QName as the unique key.
+
 ## Winery's Id System
 
 The general idea behind the storage of Winery is that each entity comes with an id. The id is either self
