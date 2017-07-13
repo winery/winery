@@ -3,15 +3,13 @@
 <!-- toc -->
 
 - [Overview](#overview)
-- [Development Information](#development-information)
-  * [Making the wars](#making-the-wars)
-- [Branches](#branches)
-- [Projects](#projects)
 - [Development Setup](#development-setup)
   * [IntelliJ Ultimate setup](#intellij-ultimate-setup)
   * [Eclipse setup](#eclipse-setup)
-- [General Compilation Remarks](#general-compilation-remarks)
-- [Overview on Projects](#overview-on-projects)
+- [Development Information](#development-information)
+  * [Making the wars](#making-the-wars)
+  * [Branches](#branches)
+- [Projects](#projects)
   * [Project org.eclipse.winery.common](#project-orgeclipsewinerycommon)
   * [Project org.eclipse.winery.highlevelrestapi](#project-orgeclipsewineryhighlevelrestapi)
   * [Project org.eclipse.winery.generators.ia](#project-orgeclipsewinerygeneratorsia)
@@ -21,6 +19,8 @@
   * [Project org.eclipse.winery.repository.client](#project-orgeclipsewineryrepositoryclient)
   * [Project org.eclipse.winery.repository](#project-orgeclipsewineryrepository)
   * [Project org.eclipse.winery.topologymodeler](#project-orgeclipsewinerytopologymodeler)
+- [TOSCA Definitions in Winery](#tosca-definitions-in-winery)
+- [Uniqueness of QNames](#uniqueness-of-qnames)
 - [Winery's Id System](#winerys-id-system)
   * [AdminId](#adminid)
   * [TOSCAComponentId](#toscacomponentid)
@@ -61,38 +61,9 @@
 
 ## Overview
 
-This document provides the design ideas of Winery.
+This document provides (i) guides about development and (ii) design ideas of Winery.
 
 For a general guide for the GitHub workflow, see [ToolChain](ToolChain).
-
-## Development Information
-
-Winery uses maven and [bower] for fetching dependencies and building.
-Bower is installed automatically using the [frontend-maven-plugin].
-We recommend installing JDK8 by using `choco install jdk8` to be able to update it via `choco upgrade all`. See at the homepage of [chocolatey] for more information.
-Please follow the the next step "Making the wars" before importing the project into an IDE.
-
-### Making the wars
-Run `mvn package`.
-In case [bower] fails, try to investigate using `mvn package -X`.
-You can start bower manually in `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler` by issuing `bower install`.
-
-There are two WARs generated:
-
-* `org.eclipse.winery.repository/target/winery.war` and
-* `org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war`
-
-They can be deployed on a Tomcat runtime environment.
-
-## Branches
-
-The `master` branch is always compiling and all tests should go through.
-It contains the most recent improvements.
-All other branches are real development branches and might event not compile.
-
-There are no explicit branches for stable versions as winery is currently in development-only mode.
-
-## Projects
 
 ## Development Setup
 
@@ -106,13 +77,36 @@ See [config/IntelliJ IDEA/README.md](config/IntelliJ IDEA/README.md).
 
 See [config/Eclipse/README.md](config/Eclipse/README.md).
 
-## General Compilation Remarks
+## Development Information
 
-Winery is built using Maven.
-The JavaScript libraries are fetched using bower.
-More information is contained in the README.md
+Winery uses [Apache Maven] for Java depedency management.
+[bower] is used for fetching JavaScript dependencies.
+Bower is installed automatically using the [frontend-maven-plugin].
+We recommend installing JDK8 by using `choco install jdk8` to be able to update it via `choco upgrade all`. See at the homepage of [chocolatey] for more information.
+Please follow the the next step "Making the wars" before importing the project into an IDE.
 
-## Overview on Projects
+### Making the wars
+
+Run `mvn package`.
+In case [bower] fails, try to investigate using `mvn package -X`.
+You can start bower manually in `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler` by issuing `bower install`.
+
+There are two WARs generated:
+
+* `org.eclipse.winery.repository/target/winery.war` and
+* `org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war`
+
+They can be deployed on a Apache Tomcat runtime environment.
+
+### Branches
+
+The `master` branch is always compiling and all tests should go through.
+It contains the most recent improvements.
+All other branches are real development branches and might event not compile.
+
+There are no explicit branches for stable versions as winery is currently in development-only mode.
+
+## Projects
 
 This section provides a short overview on all projects Winery consists of.
 
@@ -538,5 +532,7 @@ and the [Apache License v2.0] which both accompany this distribution,
 and are available at http://www.eclipse.org/legal/epl-v10.html
 and http://www.apache.org/licenses/LICENSE-2.0
 
+ [Apache Maven]: https://maven.apache.org/
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
+ [bower]: https://bower.io/
  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
