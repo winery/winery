@@ -72,7 +72,7 @@ After the completion the completed topology will be displayed in the topology mo
 
 ## Topology Completion - Getting started
 
-Please head to the [tutorial](TopologyCompletionTutorial)
+Please head to the [tutorial](TopologyCompletionTutorial).
 
 ## License
 
