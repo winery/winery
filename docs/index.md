@@ -2,6 +2,7 @@
 
 - [UserGuide](user/) - a guide for the users
 - [DeveloperGuide](dev/) - a guide for developers
+- [TOSCA](tosca/) - notes on OASIS TOSCA
 
 ## Contributing
 

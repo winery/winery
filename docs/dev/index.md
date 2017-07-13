@@ -68,6 +68,7 @@ Other sources of information:
 - [ToolChain](ToolChain) - GitHub workflow
 - [CodeHeaders](CodeHeaders) - documentation about required code headers
 - [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
+- [TOSCA](../tosca/) - notes on OASIS TOSCA
 
 ## Development Setup
 
