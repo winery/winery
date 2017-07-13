@@ -59,21 +59,11 @@ and http://www.apache.org/licenses/LICENSE-2.0
 Contributors:
 * Oliver Kopp - initial API and implementation
 
-## Literature
-
-### About TOSCA
-* Binz, T., Breiter, G., Leymann, F., Spatzier, T.: Portable Cloud Services Using TOSCA. IEEE Internet Computing 16(03), 80--85 (May 2012). [DOI:10.1109/MIC.2012.43]
-* Topology and Orchestration Specification for Cloud Applications Version 1.0. 25 November 2013. OASIS Standard. http://docs.oasis-open.org/tosca/TOSCA/v1.0/os/TOSCA-v1.0-os.html
-* OASIS: Topology and Orchestration Specification for Cloud Applications (TOSCA) Primer Version 1.0 (2013)
-
-See http://www.opentosca.org/#publications for a list of publications in the OpenTOSCA ecosystem.
-
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
  [bug421284]: https://bugs.eclipse.org/bugs/show_bug.cgi?id=421284
  [bower]: https://github.com/bower/bower
  [chocolatey]: http://chocolatey.org/
  [CloudCycle]: http://www.cloudcycle.org/en/
- [DOI:10.1109/MIC.2012.43]: http://dx.doi.org/10.1109/MIC.2012.43
  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
  [Eclipse IDE for Java EE Developers]: https://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/neon2
  [Federal Ministry for Economic Affairs and Energy]: http://www.bmwi.de/EN/
