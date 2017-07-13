@@ -1,6 +1,6 @@
 # Eclipse Winery
 
-- [UserGuide](UserGuide) - a guide for the users
+- [UserGuide](user/) - a guide for the users
 - [DeveloperGuide](DeveloperGuide) - a guide for developers
 - [ToolChain](ToolChain) - GitHub workflow
 - [CodeHeaders](CodeHeaders) - documentation about required code headers
