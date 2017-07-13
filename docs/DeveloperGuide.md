@@ -63,6 +63,8 @@
 
 This document provides the design ideas of Winery.
 
+For a general guide for the GitHub workflow, see [ToolChain](ToolChain).
+
 ## Development Information
 
 Winery uses maven and [bower] for fetching dependencies and building.

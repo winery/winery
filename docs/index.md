@@ -2,6 +2,7 @@
 
 - [UserGuide](UserGuide) - a guide for the users
 - [DeveloperGuide](DeveloperGuide) - a guide for developers
+- [ToolChain](ToolChain) - GitHub workflow
 - [CodeHeaders](CodeHeaders) - documentation about required code headers
 - [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
 
