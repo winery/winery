@@ -1,4 +1,4 @@
-# Eclipse Winery
+# Eclipse Winery™
 
 Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these topologies.
 It is an Eclipse project and thus support is available through its project page <https://eclipse.org/winery>.
