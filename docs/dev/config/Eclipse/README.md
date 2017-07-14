@@ -42,7 +42,19 @@ Code Templates: codetemplates.xml
 
 Java -> Editor -> Templates: java_editor_templates.xml
 
-Save Actions: follow eclipse_save_actions*.png
+Save Actions: follow eclipse_save_actions*.png:
+
+![eclipse_save_actions.png](eclipse_save_actions.png)
+![eclipse_save_actions_1_code_organizing.png](eclipse_save_actions_1_code_organizing.png)
+![eclipse_save_actions_2_code_style.png](eclipse_save_actions_2_code_style.png)
+![eclipse_save_actions_3_member_accesses.png](eclipse_save_actions_3_member_accesses.png)
+![eclipse_save_actions_4_missing_code.png](eclipse_save_actions_4_missing_code.png)
+![eclipse_save_actions_5_unnecessary_code.png](eclipse_save_actions_5_unnecessary_code.png)
+
+## Further hints
+
+The repository location can be changed:
+Copy `winery.properties` to `path-to-workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\winery`.
 
 ## License
 Copyright (c) 2012-2014 University of Stuttgart.
