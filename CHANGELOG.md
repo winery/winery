@@ -10,6 +10,10 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ## [unreleased]
 
+### Removed
+* `csarname` is empty at all CSAR exports
+* `data.json` is not exported any more
+
 ## [v2.0.0-M1] - 2017-07-03
 
 ### Changed
