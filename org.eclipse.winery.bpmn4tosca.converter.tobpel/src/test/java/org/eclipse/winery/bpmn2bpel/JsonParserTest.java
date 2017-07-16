@@ -39,8 +39,6 @@ import org.eclipse.winery.bpmn2bpel.model.param.TopologyParameter;
 import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
 import org.eclipse.winery.bpmn2bpel.parser.ParseException;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

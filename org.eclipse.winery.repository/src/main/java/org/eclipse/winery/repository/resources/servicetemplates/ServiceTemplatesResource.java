@@ -57,7 +57,7 @@ public class ServiceTemplatesResource extends AbstractComponentsResource<Service
 				toRemove.add(serviceTemplate);
 				continue;
 			}
-			if (infrastructureNodeType != null) {
+			if (infrastructureNodeType != null && !infrastructureNodeType.getLocalPart().equals("undefined")) {
 				if (Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageInfrastructure") == null) {
 					toRemove.add(serviceTemplate);
 					continue;

@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.springsource.util.parser.manifest.ManifestContents;
+import org.eclipse.virgo.util.parser.manifest.ManifestContents;
 
 /**
  * Provides structured access to the content of a TOSCA meta file.<br />

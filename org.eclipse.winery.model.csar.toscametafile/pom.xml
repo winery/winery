@@ -17,7 +17,6 @@
 	<artifactId>org.eclipse.winery.model.csar.toscametafile</artifactId>
 	<version>0.0.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>Model for TOSCA metafile</name>
 	<description>This project offers a data model and parsing facility for TOSCA meta files.</description>
 	<url>http://www.eclipse.org/winery</url>
 	<organization>
@@ -74,9 +73,9 @@
 			<version>1.1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.springsource.util</groupId>
-			<artifactId>com.springsource.util.parser.manifest</artifactId>
-			<version>2.0.5.RELEASE</version>
+			<groupId>org.eclipse.virgo.util</groupId>
+			<artifactId>org.eclipse.virgo.util.parser.manifest</artifactId>
+			<version>3.5.0.RELEASE</version>
 		</dependency>
 	</dependencies>
 </project>
