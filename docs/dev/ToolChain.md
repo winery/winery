@@ -13,25 +13,11 @@
 
 <!-- tocstop -->
 
-## IntelliJ
+This presents the tool chain used for creating and updating a pull request on GitHub.
 
-* Install Plugins
-  1. JRebel
-    - JRebel enables a better debugging - changes can be immediately loaded without building the whole project again
-    - Download https://zeroturnaround.com/software/jrebel/
-    - File --> Settings --> Plugins --> Search for JRebel
-    - If JRebel is not available press "Browse repositories" --> Search -->Install
-  2. Checkstyle
-    - httpa://eclipse.github.io/winery/ --> IntelliJ Ultimate Setup
-    - Follow the steps and apply it in IntelliJ
-* Shortcuts
-  - 2x Shift / Str + Shift + F / Str + F: Differrent forms of search
-  - Str + Alt + O: check style
-  - Str + X: if nothing is marked - delete line and free space
-  
-## Git and GitHub
+For setup the IDE, please go to the [DevGuide](./).
 
-### GitHub - Start
+## GitHub - Start
 
 * To contribute to the winery you need a github account and access to https://github.com/opentosca/winery
 * First steps:
@@ -48,13 +34,13 @@
   5. Commit. Don't forget to sign the commit (Ctrl+S in Git Gui)
   6. Push the changes to origin: git push
 
-### GitHub - Preparation First Pull Request
+## GitHub - Preparation First Pull Request
 
 * Check winery/CONTRIBUTING.md and carefully read the instruction
 * http://wiki.eclipse.org/Development_Resources/Contributing_via_Git --> Create an account WITH THE SAME EMAIL THEN USED FOR THE COMMITS (can also be checked in Gitk)
 * Sign the Contributor Agreement electronically
 
-### GitHub - Prepare Pull Request
+## GitHub - Prepare Pull Request
 
 * Check [CONTRIBUTING.MD](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md)
 * Steps to prepare Pull Request:
@@ -69,7 +55,7 @@
   9. Sign the Commit Message (<kbd>Ctrl</kbd>+<kbd>S</kbd>)
   10. Commit & Push with "force overwrite" since you changed the branch: `git push -f`
 
-### GitHub - Create Pull Request
+## GitHub - Create Pull Request
 
 Attention: Commits on the same branch done after the Pull Request is sent are still part of the Pull Request (!)
 
@@ -79,8 +65,7 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
 * Add `[x]` to the items listed in the write field
 * Check the description in the Preview and send the Pull Request
 
-
-### GitHub - Change Pull Request
+## GitHub - Change Pull Request
 
 * There are automatic checks in place
 
@@ -96,6 +81,6 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
   - Commit
   - Push
 
-### Excursus: Git
+## Excursus: Git
 
 ![ExcursusGit](graphics/ExcursusGit.png)
