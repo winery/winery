@@ -28,7 +28,7 @@ import org.eclipse.winery.bpmn2bpel.parser.ParseException;
 
 
 public class BpelPlanArtefactWriterTest {
-
+	
 	@Before
 	public void setUp() throws Exception {
 	}
