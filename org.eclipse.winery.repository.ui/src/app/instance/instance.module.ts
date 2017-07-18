@@ -38,7 +38,7 @@ import { BoundaryDefinitionsModule } from './serviceTemplates/boundaryDefinition
 import { ValidSourcesAndTargetsComponent } from './relationshipTypes/validSourcesAndTargets/validSourcesAndTargets.component';
 import { FilesComponent } from './artifactTemplates/filesTag/files.component';
 import { RequiredCapabilityTypeComponent } from './requirementTypes/requiredCapabilityType/requiredCapabilityType.component';
-import { ConstraintTypesComponent } from './admin/contraintTypes/constraintTypes.component';
+import { ConstraintTypesComponent } from './admin/constraintTypes/constraintTypes.component';
 import { ImplementationArtifactsComponent } from './sharedComponents/implementationArtifacts/implementationArtifacts.component';
 import { DeploymentArtifactsComponent } from './nodeTypeImplementations/deploymentArtifacts/deploymentArtifacts.component';
 import { ImplementationsModule } from './sharedComponents/implementations/implementations.module';

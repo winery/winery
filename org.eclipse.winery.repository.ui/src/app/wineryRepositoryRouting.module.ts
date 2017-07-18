@@ -24,7 +24,6 @@ const appRoutes: Routes = [
     {path: ':section', component: SectionComponent, resolve: {resolveData: SectionResolver}},
     {path: '', redirectTo: '/servicetemplates', pathMatch: 'full'},
     {path: '**', component: NotFoundComponent},
-    // TODO: add namespaces, other routes available in other, etc...
 ];
 
 @NgModule({

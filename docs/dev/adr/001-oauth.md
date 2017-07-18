@@ -1,15 +1,6 @@
 <!--
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
- * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - OAuth with GitHub
- *******************************************************************************/
+Contributors:
+    Lukas Harzenetter - API and implementation
 -->
 
 # OAuth with GitHub
@@ -24,7 +15,7 @@ In order to use (private) repositories instead of uploading all files into a Art
 1. GitHub answers with the `status` and `code` parameters which are parsed and send to our server to get the access token.
 1. Our server responses with the access token.
 
-[[/images/architecture/oauth-flow.png | OAuth flow diagram]]
+![OAuth flow diagram](graphics/oauth-flow.png)  
 
 ## Considered Alternatives:
 * *[ALTERNATIVE 1]* Perform the whole login process in the browser
@@ -51,8 +42,18 @@ In order to use (private) repositories instead of uploading all files into a Art
 * *+ pro arguments of both alternatives*
 * *- more communication needed to perform the login*
 
-------------------------------------------------------------------------
-------------------------------------------------------------------------
-------------------------------------------------------------------------
+## License
 
-Template provided by [schubmat](https://github.com/schubmat/DecisionCapture/blob/master/templates/captureTemplate_full.md).
+Copyright (c) 2017 University of Stuttgart.
+
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the [Eclipse Public License v1.0]
+and the [Apache License v2.0] which both accompany this distribution,
+and are available at http://www.eclipse.org/legal/epl-v10.html
+and http://www.apache.org/licenses/LICENSE-2.0
+
+Contributors:
+* Lukas Harzenetter - initial API and implementation
+
+ [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
+ [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html

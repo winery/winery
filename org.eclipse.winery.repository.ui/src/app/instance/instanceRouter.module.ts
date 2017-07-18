@@ -40,7 +40,7 @@ import { LoggerComponent } from './admin/logger/logger.component';
 import { PlanLanguagesComponent } from './admin/planLanguages/planLanguages.component';
 import { NamespacesComponent } from './admin/namespaces/namespaces.component';
 import { RepositoryComponent } from './admin/repository/repository.component';
-import { ConstraintTypesComponent } from './admin/contraintTypes/constraintTypes.component';
+import { ConstraintTypesComponent } from './admin/constraintTypes/constraintTypes.component';
 import { PlanTypesComponent } from './admin/planTypes/planTypes.component';
 import { TagComponent } from './serviceTemplates/tag/tag.component';
 import { RouterModule } from '@angular/router';
