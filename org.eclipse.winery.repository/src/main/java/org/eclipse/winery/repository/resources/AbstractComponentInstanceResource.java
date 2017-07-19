@@ -304,7 +304,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 				Map<String, Object> conf = new HashMap<>();
 				try {
 					exporter.exportTOSCA(AbstractComponentInstanceResource.this.id, output, conf);
-				} catch (JAXBException e) {
+				} catch (Exception e) {
 					throw new WebApplicationException(e);
 				}
 			}

@@ -86,6 +86,7 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
@@ -137,7 +138,7 @@ public class TOSCAExportUtil {
 	 * @return a collection of TOSCAcomponentIds referenced by the given
 	 *         component
 	 */
-	public Collection<TOSCAComponentId> exportTOSCA(TOSCAComponentId id, OutputStream out, Map<String, Object> exportConfiguration) throws IOException, JAXBException {
+	public Collection<TOSCAComponentId> exportTOSCA(TOSCAComponentId id, OutputStream out, Map<String, Object> exportConfiguration) throws IOException, JAXBException, RepositoryCorruptException {
 		this.exportConfiguration = exportConfiguration;
 		this.initializeExport();
 		return this.writeDefinitionsElement(id, out);
@@ -178,7 +179,7 @@ public class TOSCAExportUtil {
 	 * @return a collection of TOSCAcomponentIds referenced by the given
 	 *         component
 	 */
-	protected Collection<TOSCAComponentId> exportTOSCA(TOSCAComponentId id, OutputStream out, Map<RepositoryFileReference, String> referencesToPathInCSARMap, Map<String, Object> exportConfiguration) throws IOException, JAXBException {
+	protected Collection<TOSCAComponentId> exportTOSCA(TOSCAComponentId id, OutputStream out, Map<RepositoryFileReference, String> referencesToPathInCSARMap, Map<String, Object> exportConfiguration) throws IOException, JAXBException, RepositoryCorruptException {
 		this.referencesToPathInCSARMap = referencesToPathInCSARMap;
 		return this.exportTOSCA(id, out, exportConfiguration);
 	}
@@ -198,13 +199,13 @@ public class TOSCAExportUtil {
 	 * @return a collection of TOSCAcomponentIds referenced by the given
 	 *         component
 	 *
-	 * @throws IllegalStateException if tcId does not exist
+	 * @throws RepositoryCorruptException if tcId does not exist
 	 */
-	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws JAXBException {
+	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws JAXBException, RepositoryCorruptException {
 		if (!Repository.INSTANCE.exists(tcId)) {
 			String error = "Component instance " + tcId.toString() + " does not exist.";
 			TOSCAExportUtil.LOGGER.error(error);
-			throw new IllegalStateException(error);
+			throw new RepositoryCorruptException(error);
 		}
 
 		AbstractComponentInstanceResource res = AbstractComponentsResource.getComponentInstaceResource(tcId);
@@ -364,7 +365,7 @@ public class TOSCAExportUtil {
 	 *
 	 * @param id the id to search its children for referenced elements
 	 */
-	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(TOSCAComponentId id) {
+	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(TOSCAComponentId id) throws RepositoryCorruptException {
 		Collection<TOSCAComponentId> referencedTOSCAComponentIds;
 
 		// first of all, handle the concrete elements
@@ -642,7 +643,7 @@ public class TOSCAExportUtil {
 	 *
 	 * @return a collection of referenced TOCSA Component Ids
 	 */
-	private Collection<TOSCAComponentId> prepareForExport(ArtifactTemplateId id) {
+	private Collection<TOSCAComponentId> prepareForExport(ArtifactTemplateId id) throws RepositoryCorruptException {
 		Collection<TOSCAComponentId> ids = new ArrayList<>();
 
 		ArtifactTemplateResource res = new ArtifactTemplateResource(id);
@@ -650,7 +651,7 @@ public class TOSCAExportUtil {
 		// "Export" type
 		QName type = res.getType();
 		if (type == null) {
-			throw new IllegalStateException("Type is null for " + id.toString());
+			throw new RepositoryCorruptException("Type is null for " + id.toString());
 		}
 		ids.add(new ArtifactTypeId(type));
 
