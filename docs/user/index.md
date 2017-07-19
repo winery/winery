@@ -28,3 +28,4 @@ The repository is also responsible for importing and  exporting CSARs, the excha
 
 - [Splitting](Splitting) - splitting functionality
 - [TopologyCompletion](TopologyCompletion) - topology completion with a [Tutorial](TopologyCompletionTutorial)
+- [XaaSPackager](XaaSPackager) - Enables reusing modeled topologies as templates for single applications
