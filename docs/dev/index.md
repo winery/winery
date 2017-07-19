@@ -1,8 +1,18 @@
 # Eclipse Winery™ Developer Guide
 
+This document provides (i) guides about development and (ii) design ideas of Winery.
+
+Other sources of information:
+
+- [ToolChain](ToolChain) - GitHub workflow
+- [CodeHeaders](CodeHeaders) - documentation about required code headers
+- [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
+- [TOSCA](../tosca/) - notes on OASIS TOSCA
+
+Table of contents:
+
 <!-- toc -->
 
-- [Overview](#overview)
 - [Development Setup](#development-setup)
   * [IntelliJ Ultimate setup](#intellij-ultimate-setup)
   * [Eclipse setup](#eclipse-setup)
@@ -58,17 +68,6 @@
 - [License](#license)
 
 <!-- tocstop -->
-
-## Overview
-
-This document provides (i) guides about development and (ii) design ideas of Winery.
-
-Other sources of information:
-
-- [ToolChain](ToolChain) - GitHub workflow
-- [CodeHeaders](CodeHeaders) - documentation about required code headers
-- [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
-- [TOSCA](../tosca/) - notes on OASIS TOSCA
 
 ## Development Setup
 
