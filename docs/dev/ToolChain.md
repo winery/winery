@@ -2,14 +2,12 @@
 
 <!-- toc -->
 
-- [IntelliJ](#intellij)
-- [Git and GitHub](#git-and-github)
-  * [GitHub - Start](#github---start)
-  * [GitHub - Preparation First Pull Request](#github---preparation-first-pull-request)
-  * [GitHub - Prepare Pull Request](#github---prepare-pull-request)
-  * [GitHub - Create Pull Request](#github---create-pull-request)
-  * [GitHub - Change Pull Request](#github---change-pull-request)
-  * [Excursus: Git](#excursus-git)
+- [GitHub - Start](#github---start)
+- [GitHub - Preparation First Pull Request](#github---preparation-first-pull-request)
+- [GitHub - Prepare Pull Request](#github---prepare-pull-request)
+- [GitHub - Create Pull Request](#github---create-pull-request)
+- [GitHub - Change Pull Request](#github---change-pull-request)
+- [Excursus: Git](#excursus-git)
 
 <!-- tocstop -->
 
@@ -25,14 +23,14 @@ For setup the IDE, please go to the [DevGuide](./).
   2. git remote add upstream [https://github.com/eclipse/winery.git]
 * Steps for working on a topic
   1. Create a new branch for each topic (fix a bug, add functionality) and name it accordingly.
-  2. Sync with latest upstream/master: git fech upstream
-  3. Create branch based on upstream/master and make it known publicly:  
-     git checkout upstream/master  
-	 git checkout -b [name]  
-	 git push --set-upstream origin [name]
+  2. Sync with latest upstream/master: `git fetch upstream`
+  3. Create branch based on `upstream/master` and make it known publicly:
+     - `git checkout upstream/master`
+	 - `git checkout -b [name]`
+	 - `git push --set-upstream origin [name]`
   4. Work on the branch with the specific name
-  5. Commit. Don't forget to sign the commit (Ctrl+S in Git Gui)
-  6. Push the changes to origin: git push
+  5. Commit. Don't forget to sign the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui)
+  6. Push the changes to origin: `git push`
 
 ## GitHub - Preparation First Pull Request
 
@@ -61,7 +59,7 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
 
 * Go to eclipse/winery --> Pull Request
 * Fill in the title of the Pull Request and give a more detailed description of the changes or added functionality
-* In case of UI changes: Add Screenshots
+* In case of UI changes: Add screenshots
 * Add `[x]` to the items listed in the write field
 * Check the description in the Preview and send the Pull Request
 
