@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.eclipse.winery.Logger;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
@@ -60,6 +61,7 @@ public class CSARExporterTest extends AbstractWineryWithRepositoryTest {
 	private InputStream is;
 	
 	public CSARExporterTest(String commitId, TOSCAComponentId id) {
+		Logger.debug(this, "Debugging %s and %s", commitId, id);
 		this.commitId = commitId;
 		this.id = id;
 	}
