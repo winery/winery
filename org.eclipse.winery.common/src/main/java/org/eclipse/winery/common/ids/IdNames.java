@@ -16,16 +16,16 @@ package org.eclipse.winery.common.ids;
  */
 public class IdNames {
 
-	public static final String DEPLOYMENTARTIFACTS = "deploymentartifacts";
-	public static final String INSTANCESTATES = "instancestates";
-	public static final String INTERFACES = "interfaces"; // used at node type
-	public static final String INPUTPARAMETERS = "inputParameters";
-	public static final String IMPLEMENTATIONARTIFACTS = "implementationartifacts";
-	public static final String NODETEMPLATES = "nodetemplates";
-	public static final String OUTPUTPARAMETERS = "outputParameters";
-	public static final String PROPERTIES = "properties";
-	public static final String RELATIONSHIPTEMPLATES = "relationshiptemplates";
-	public static final String SOURCEINTERFACES = "sourceinterfaces";
-	public static final String TARGETINTERFACES = "targetinterfaces";
-	public static final String TOPOLOGYTEMPATE = "topologytemplate";
+    public static final String DEPLOYMENTARTIFACTS = "deploymentartifacts";
+    public static final String INSTANCESTATES = "instancestates";
+    public static final String INTERFACES = "interfaces"; // used at node type
+    public static final String INPUTPARAMETERS = "inputParameters";
+    public static final String IMPLEMENTATIONARTIFACTS = "implementationartifacts";
+    public static final String NODETEMPLATES = "nodetemplates";
+    public static final String OUTPUTPARAMETERS = "outputParameters";
+    public static final String PROPERTIES = "properties";
+    public static final String RELATIONSHIPTEMPLATES = "relationshiptemplates";
+    public static final String SOURCEINTERFACES = "sourceinterfaces";
+    public static final String TARGETINTERFACES = "targetinterfaces";
+    public static final String TOPOLOGYTEMPATE = "topologytemplate";
 }

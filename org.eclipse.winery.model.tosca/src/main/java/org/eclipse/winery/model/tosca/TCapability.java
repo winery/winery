@@ -23,10 +23,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tCapability")
 @JsonTypeInfo(
-		defaultImpl = TCapability.class,
-		use = JsonTypeInfo.Id.NAME,
-		include = JsonTypeInfo.As.EXISTING_PROPERTY,
-		property = "fakeJacksonType")
+        defaultImpl = TCapability.class,
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "fakeJacksonType")
 public class TCapability extends RelationshipSourceOrTarget {
 
     @XmlAttribute(name = "name", required = true)
@@ -56,8 +56,8 @@ public class TCapability extends RelationshipSourceOrTarget {
         this.name = value;
     }
 
-	@Override
-	public String getFakeJacksonType() {
-		return "capability";
-	}
+    @Override
+    public String getFakeJacksonType() {
+        return "capability";
+    }
 }

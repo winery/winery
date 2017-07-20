@@ -18,16 +18,16 @@ import org.eclipse.winery.common.ids.XMLId;
 
 public final class PolicyTypeId extends EntityTypeId {
 
-	public PolicyTypeId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
+    public PolicyTypeId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public PolicyTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public PolicyTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public PolicyTypeId(QName qname) {
-		super(qname);
-	}
+    public PolicyTypeId(QName qname) {
+        super(qname);
+    }
 
 }

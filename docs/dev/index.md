@@ -450,19 +450,19 @@ http://localhost:8080/winery as URL, and enable LiveReload in the browser.
 
 ### Faster Redeployment
 
-It takes a few seconds until the whole application is redeployed. You can use JRebel ( http://www.jrebel.com )
-for hot code replacement in the Tomcat in Eclipse.
+It takes a few seconds until the whole application is redeployed.
+You can use [JRebel](http://www.jrebel.com) for hot code replacement in the Tomcat in Eclipse.
 
 ## Miscellaneous Hints
 
 ### Generating the Right Output
 
-*	If necessary, set the content type of the JSP: <%@page contentType="image/svg+xml; charset=utf-8" %>
-  *		Otherwise, answer is plain text (and not XML)
+* If necessary, set the content type of the JSP: `<%@page contentType="image/svg+xml; charset=utf-8" %>`
+  * Otherwise, answer is plain text (and not XML)
 
-*	XML documents have to contain the header <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-  *		standalone=yes means that there is no external DTD
-  *		eleminates parsing errors in firefox
+* XML documents have to contain the header `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`
+ * `standalone=yes` means that there is no external DTD
+ * eleminates parsing errors in FireFox
 
 ### Trouble shooting IntelliJ
 
@@ -518,9 +518,10 @@ Implementation Artifacts (IAs) may be attached at
 * NodeTemplate
 
 Deployment Artifacts (DAs) may be attached at
-*NodeType
-*NodeTemplate
-	
+
+* NodeType
+* NodeTemplate
+
 ## Example Repository
 
 An example Repository is available at

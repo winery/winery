@@ -18,11 +18,11 @@ import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
 public class ArtifactTemplateDirectoryId extends TOSCAElementId {
 
-	private final static XMLId xmlID = new XMLId(IdNames.ARTIFACTTEMPLATEDIRECTORY, false);
+    private final static XMLId xmlID = new XMLId(IdNames.ARTIFACTTEMPLATEDIRECTORY, false);
 
 
-	public ArtifactTemplateDirectoryId(ArtifactTemplateId parent) {
-		super(parent, ArtifactTemplateDirectoryId.xmlID);
-	}
+    public ArtifactTemplateDirectoryId(ArtifactTemplateId parent) {
+        super(parent, ArtifactTemplateDirectoryId.xmlID);
+    }
 
 }

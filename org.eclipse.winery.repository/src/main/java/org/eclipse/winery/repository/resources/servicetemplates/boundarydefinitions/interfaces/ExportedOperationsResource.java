@@ -21,18 +21,18 @@ import com.sun.jersey.api.view.Viewable;
 
 public class ExportedOperationsResource extends EntityWithIdCollectionResource<ExportedOperationResource, TExportedOperation> {
 
-	public ExportedOperationsResource(List<TExportedOperation> list, IPersistable res) {
-		super(ExportedOperationResource.class, TExportedOperation.class, list, res);
-	}
+    public ExportedOperationsResource(List<TExportedOperation> list, IPersistable res) {
+        super(ExportedOperationResource.class, TExportedOperation.class, list, res);
+    }
 
-	@Override
-	public String getId(TExportedOperation entity) {
-		return entity.getName();
-	}
+    @Override
+    public String getId(TExportedOperation entity) {
+        return entity.getName();
+    }
 
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("No implementation required: boundarydefinitions.jsp contains all required html.");
-	}
+    @Override
+    public Viewable getHTML() {
+        throw new IllegalStateException("No implementation required: boundarydefinitions.jsp contains all required html.");
+    }
 
 }

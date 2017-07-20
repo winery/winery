@@ -19,20 +19,20 @@ import org.eclipse.winery.repository.resources.AbstractComponentsResource;
  */
 public class GenericImportsResource extends AbstractComponentsResource<GenericImportResource> {
 
-	private String type;
+    private String type;
 
 
-	/**
-	 * @param id the (decoded) id, e.g., http://schemas.xmlsoap.org/wsdl/
-	 */
-	public GenericImportsResource(String id) {
-		this.type = id;
-	}
+    /**
+     * @param id the (decoded) id, e.g., http://schemas.xmlsoap.org/wsdl/
+     */
+    public GenericImportsResource(String id) {
+        this.type = id;
+    }
 
-	@Override
-	public GenericImportResource getComponentInstaceResource(String namespace, String id, boolean encoded) {
-		GenericImportId iId = new GenericImportId(namespace, id, encoded, this.type);
-		return new GenericImportResource(iId);
-	}
+    @Override
+    public GenericImportResource getComponentInstaceResource(String namespace, String id, boolean encoded) {
+        GenericImportId iId = new GenericImportId(namespace, id, encoded, this.type);
+        return new GenericImportResource(iId);
+    }
 
 }

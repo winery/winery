@@ -43,113 +43,113 @@ import org.junit.Test;
 @Ignore("Winery does not run on travis yet")
 public class TestWineryRepositoryClient {
 
-	// private final String repositoryURI = "http://2471.de:8080/wineydev";
-	private static final String repositoryURI = "http://localhost:8080/winery";
+    // private final String repositoryURI = "http://2471.de:8080/wineydev";
+    private static final String repositoryURI = "http://localhost:8080/winery";
 
-	private static final boolean USE_PROXY = false;
+    private static final boolean USE_PROXY = false;
 
-	private static final IWineryRepositoryClient client = new WineryRepositoryClient(TestWineryRepositoryClient.USE_PROXY);
-	static {
-		TestWineryRepositoryClient.client.addRepository(TestWineryRepositoryClient.repositoryURI);
-	}
+    private static final IWineryRepositoryClient client = new WineryRepositoryClient(TestWineryRepositoryClient.USE_PROXY);
+    static {
+        TestWineryRepositoryClient.client.addRepository(TestWineryRepositoryClient.repositoryURI);
+    }
 
-	/**
-	 * The namespace to put new things in. <br />
-	 * TODO: Is deleted completely after testing
-	 */
-	private static final String namespaceForNewArtifacts = "http://www.example.org/test/wineryclient/";
+    /**
+     * The namespace to put new things in. <br />
+     * TODO: Is deleted completely after testing
+     */
+    private static final String namespaceForNewArtifacts = "http://www.example.org/test/wineryclient/";
 
 
-	@Test
-	public void getAllNodeTypes() {
-		Collection<TNodeType> allTypes = TestWineryRepositoryClient.client.getAllTypes(TNodeType.class);
-		for (TNodeType type : allTypes) {
-			Assert.assertNotNull("name is null", type.getName());
-			Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
-		}
-	}
+    @Test
+    public void getAllNodeTypes() {
+        Collection<TNodeType> allTypes = TestWineryRepositoryClient.client.getAllTypes(TNodeType.class);
+        for (TNodeType type : allTypes) {
+            Assert.assertNotNull("name is null", type.getName());
+            Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
+        }
+    }
 
-	@Test
-	public void getAllRelationshipTypes() {
-		Collection<TRelationshipType> allTypes = TestWineryRepositoryClient.client.getAllTypes(TRelationshipType.class);
-		for (TRelationshipType type : allTypes) {
-			Assert.assertNotNull("name is null", type.getName());
-			Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
-		}
-	}
+    @Test
+    public void getAllRelationshipTypes() {
+        Collection<TRelationshipType> allTypes = TestWineryRepositoryClient.client.getAllTypes(TRelationshipType.class);
+        for (TRelationshipType type : allTypes) {
+            Assert.assertNotNull("name is null", type.getName());
+            Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
+        }
+    }
 
-	@Test
-	public void getAllNodeTypesWithAssociatedElements() {
-		Collection<TDefinitions> allTypes = TestWineryRepositoryClient.client.getAllTypesWithAssociatedElements(TNodeType.class);
-		Assert.assertNotNull(allTypes);
-	}
+    @Test
+    public void getAllNodeTypesWithAssociatedElements() {
+        Collection<TDefinitions> allTypes = TestWineryRepositoryClient.client.getAllTypesWithAssociatedElements(TNodeType.class);
+        Assert.assertNotNull(allTypes);
+    }
 
-	@Test
-	public void getAllRelationshipTypesWithAssociatedElements() {
-		Collection<TDefinitions> allTypes = TestWineryRepositoryClient.client.getAllTypesWithAssociatedElements(TRelationshipType.class);
-		Assert.assertNotNull(allTypes);
-	}
+    @Test
+    public void getAllRelationshipTypesWithAssociatedElements() {
+        Collection<TDefinitions> allTypes = TestWineryRepositoryClient.client.getAllTypesWithAssociatedElements(TRelationshipType.class);
+        Assert.assertNotNull(allTypes);
+    }
 
-	@Test
-	public void getAllServiceTemplates() {
-		Collection<TServiceTemplate> allTypes = TestWineryRepositoryClient.client.getAllTypes(TServiceTemplate.class);
-		Assert.assertNotEquals(0, allTypes.size());
-		for (TServiceTemplate type : allTypes) {
-			Assert.assertNotNull("name is null", type.getName());
-			Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
-		}
-	}
+    @Test
+    public void getAllServiceTemplates() {
+        Collection<TServiceTemplate> allTypes = TestWineryRepositoryClient.client.getAllTypes(TServiceTemplate.class);
+        Assert.assertNotEquals(0, allTypes.size());
+        for (TServiceTemplate type : allTypes) {
+            Assert.assertNotNull("name is null", type.getName());
+            Assert.assertNotNull("target namespace is null", type.getTargetNamespace());
+        }
+    }
 
-	@Test
-	public void getPropertiesOfAllNodeTypes() {
-		// TODO
-	}
+    @Test
+    public void getPropertiesOfAllNodeTypes() {
+        // TODO
+    }
 
-	@Test
-	public void getPropertiesOfAllRelationshipTypes() {
-		// TODO
-	}
+    @Test
+    public void getPropertiesOfAllRelationshipTypes() {
+        // TODO
+    }
 
-	@Test
-	public void getTestTopologyTemplate() {
-		QName serviceTemplate = new QName("test", "test");
-		TTopologyTemplate topologyTemplate = TestWineryRepositoryClient.client.getTopologyTemplate(serviceTemplate);
-		Assert.assertNotNull(topologyTemplate);
-	}
+    @Test
+    public void getTestTopologyTemplate() {
+        QName serviceTemplate = new QName("test", "test");
+        TTopologyTemplate topologyTemplate = TestWineryRepositoryClient.client.getTopologyTemplate(serviceTemplate);
+        Assert.assertNotNull(topologyTemplate);
+    }
 
-	@Test
-	public void getPropertiesOfTestTopologyTemplate() {
-		QName serviceTemplate = new QName("test", "test");
-		TTopologyTemplate topologyTemplate = TestWineryRepositoryClient.client.getTopologyTemplate(serviceTemplate);
-		Assert.assertNotNull(topologyTemplate);
-		List<TEntityTemplate> allTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
-		for (TEntityTemplate e : allTemplates) {
-			// TODO
-		}
-	}
+    @Test
+    public void getPropertiesOfTestTopologyTemplate() {
+        QName serviceTemplate = new QName("test", "test");
+        TTopologyTemplate topologyTemplate = TestWineryRepositoryClient.client.getTopologyTemplate(serviceTemplate);
+        Assert.assertNotNull(topologyTemplate);
+        List<TEntityTemplate> allTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
+        for (TEntityTemplate e : allTemplates) {
+            // TODO
+        }
+    }
 
-	@Test
-	public void artifactTypeForWARfiles() {
-		QName artifactType = TestWineryRepositoryClient.client.getArtifactTypeQNameForExtension("war");
-		Assert.assertNotNull("Artifact Type for .war does not exist", artifactType);
-	}
+    @Test
+    public void artifactTypeForWARfiles() {
+        QName artifactType = TestWineryRepositoryClient.client.getArtifactTypeQNameForExtension("war");
+        Assert.assertNotNull("Artifact Type for .war does not exist", artifactType);
+    }
 
-	@Test
-	public void createArtifactTemplate() throws IOException, QNameAlreadyExistsException {
-		// assure that the artifact type exists
-		QName artifactTypeQName = TestWineryRepositoryClient.client.getArtifactTypeQNameForExtension("war");
-		Assert.assertNotNull("Artifact Type for .war does not exist", artifactTypeQName);
+    @Test
+    public void createArtifactTemplate() throws IOException, QNameAlreadyExistsException {
+        // assure that the artifact type exists
+        QName artifactTypeQName = TestWineryRepositoryClient.client.getArtifactTypeQNameForExtension("war");
+        Assert.assertNotNull("Artifact Type for .war does not exist", artifactTypeQName);
 
-		// assure that the artifact template does not yet exist
-		// one possibility is to delete the artifact template, the other
-		// possibility is to
+        // assure that the artifact template does not yet exist
+        // one possibility is to delete the artifact template, the other
+        // possibility is to
 
-		QName artifactTemplateQName = new QName(TestWineryRepositoryClient.namespaceForNewArtifacts, "artifactTemplate");
-		ArtifactTemplateId atId = new ArtifactTemplateId(artifactTemplateQName);
+        QName artifactTemplateQName = new QName(TestWineryRepositoryClient.namespaceForNewArtifacts, "artifactTemplate");
+        ArtifactTemplateId atId = new ArtifactTemplateId(artifactTemplateQName);
 
-		// ensure that the template does not exist yet
-		TestWineryRepositoryClient.client.forceDelete(atId);
+        // ensure that the template does not exist yet
+        TestWineryRepositoryClient.client.forceDelete(atId);
 
-		TestWineryRepositoryClient.client.createArtifactTemplate(artifactTemplateQName, artifactTypeQName);
-	}
+        TestWineryRepositoryClient.client.createArtifactTemplate(artifactTemplateQName, artifactTypeQName);
+    }
 }

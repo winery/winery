@@ -8,7 +8,7 @@
 
 <!-- Get NodeInstance URL-->
 <bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">    
-	<bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse" uri="$bpelvar[instanceDataAPIUrl]/nodeInstances?nodeTemplateID={http://trustedcloud.de}OpenStack&amp;serviceInstanceID=$bpelvar[OpenTOSCAContainerAPIServiceInstanceURL]"/>
+    <bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse" uri="$bpelvar[instanceDataAPIUrl]/nodeInstances?nodeTemplateID={http://trustedcloud.de}OpenStack&amp;serviceInstanceID=$bpelvar[OpenTOSCAContainerAPIServiceInstanceURL]"/>
 </bpel:extensionActivity>
 
 <!-- Aus der List der NodeInstances die "richtige" auswählen -->
@@ -23,5 +23,5 @@
 
 <!-- Properties der NodeInstanz besorgen -->
 <bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">    
-	<bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse" uri="$bpelvar[nodeInstanceURLbpel4restlightVarResponse17]/properties"/>
+    <bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse" uri="$bpelvar[nodeInstanceURLbpel4restlightVarResponse17]/properties"/>
 </bpel:extensionActivity>

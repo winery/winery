@@ -20,22 +20,22 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 <div class="form-group-grouping">
-	<!-- createArtifactTemplate class is required for artifactcreationdialog -->
-	<div class="form-group createArtifactTemplate">
-		<label>Artifact Template Name</label>
-		<!-- name is an NCName -->
-		<input class="artifactData form-control" id="artifactTemplateName" name="artifactTemplateName" type="text" required="required" autocomplete="on" placeholder="Enter name for artifact template" pattern="[\i-[:]][\c-[:]]*"/>
-		<div id="artifactTemplateNameIsValid" class="invalid">
-			<span id="artifactTemplateNameIsInvalidReason"></span>
-		</div>
-	</div>
+    <!-- createArtifactTemplate class is required for artifactcreationdialog -->
+    <div class="form-group createArtifactTemplate">
+        <label>Artifact Template Name</label>
+        <!-- name is an NCName -->
+        <input class="artifactData form-control" id="artifactTemplateName" name="artifactTemplateName" type="text" required="required" autocomplete="on" placeholder="Enter name for artifact template" pattern="[\i-[:]][\c-[:]]*"/>
+        <div id="artifactTemplateNameIsValid" class="invalid">
+            <span id="artifactTemplateNameIsInvalidReason"></span>
+        </div>
+    </div>
 
-	<t:namespaceChooser allNamespaces="${allNamespaces}" idOfInput="artifactTemplateNS" selected="${defaultNSForArtifactTemplate}"></t:namespaceChooser>
+    <t:namespaceChooser allNamespaces="${allNamespaces}" idOfInput="artifactTemplateNS" selected="${defaultNSForArtifactTemplate}"></t:namespaceChooser>
 </div>
 
 <script>
 require(["artifacttemplateselection"], function(ast) {
-	// configure the plugin
-	ast.setRepositoryURL("${repositoryURL}");
+    // configure the plugin
+    ast.setRepositoryURL("${repositoryURL}");
 });
 </script>

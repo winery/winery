@@ -15,8 +15,8 @@ import org.eclipse.winery.common.ids.XMLId;
 
 public class PlanId extends TOSCAElementId {
 
-	public PlanId(PlansId parent, XMLId xmlId) {
-		super(parent, xmlId);
-	}
+    public PlanId(PlansId parent, XMLId xmlId) {
+        super(parent, xmlId);
+    }
 
 }

@@ -16,8 +16,8 @@ import org.eclipse.winery.repository.backend.IRepository;
 
 public class ConsistencyCheck {
 
-	public void checkConsistency(IRepository repository) {
+    public void checkConsistency(IRepository repository) {
 
-	}
+    }
 
 }

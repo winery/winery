@@ -19,7 +19,7 @@
 <%@page import="org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.JAXBHelper"%>
 
 <%
-	String topologyXML = JAXBHelper.addTemplatesToTopology(request.getParameter("topology"), request.getParameter("allChoices"), request.getParameter("selectedNodeTemplates"), request.getParameter("selectedRelationshipTemplates"));
+    String topologyXML = JAXBHelper.addTemplatesToTopology(request.getParameter("topology"), request.getParameter("allChoices"), request.getParameter("selectedNodeTemplates"), request.getParameter("selectedRelationshipTemplates"));
 %>
 
 <%=topologyXML%>

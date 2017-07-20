@@ -40,45 +40,45 @@ import org.slf4j.LoggerFactory;
 
 public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(VisualAppearanceResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(VisualAppearanceResource.class);
 
 
-	public VisualAppearanceResource(NodeTypeResource res, Map<QName, String> map, NodeTypeId parentId) {
-		super(res, map, new VisualAppearanceId(parentId));
-	}
+    public VisualAppearanceResource(NodeTypeResource res, Map<QName, String> map, NodeTypeId parentId) {
+        super(res, map, new VisualAppearanceId(parentId));
+    }
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/entitytypes/nodetypes/visualappearance.jsp", this);
-		return Response.ok().entity(viewable).build();
-	}
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response getHTML() {
+        Viewable viewable = new Viewable("/jsp/entitytypes/nodetypes/visualappearance.jsp", this);
+        return Response.ok().entity(viewable).build();
+    }
 
-	@GET
-	@Path("50x50")
-	public Response get50x50Image(@HeaderParam("If-Modified-Since") String modified) {
-		return this.getImage(Filename.FILENAME_BIG_ICON, modified);
-	}
+    @GET
+    @Path("50x50")
+    public Response get50x50Image(@HeaderParam("If-Modified-Since") String modified) {
+        return this.getImage(Filename.FILENAME_BIG_ICON, modified);
+    }
 
-	@PUT
-	@Path("50x50")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response post50x50Image(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
-		return this.putImage(Filename.FILENAME_BIG_ICON, uploadedInputStream, body.getMediaType());
-	}
+    @PUT
+    @Path("50x50")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response post50x50Image(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
+        return this.putImage(Filename.FILENAME_BIG_ICON, uploadedInputStream, body.getMediaType());
+    }
 
-	@GET
-	@Path("bordercolor")
-	public String getBorderColor() {
-		return BackendUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_BORDER_COLOR, this.otherAttributes, this.res);
-	}
+    @GET
+    @Path("bordercolor")
+    public String getBorderColor() {
+        return BackendUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_BORDER_COLOR, this.otherAttributes, this.res);
+    }
 
-	@PUT
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Path("bordercolor")
-	public Response putBorderColor(@FormParam("color") String color) {
-		this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, color);
-		return BackendUtils.persist(this.res);
-	}
+    @PUT
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Path("bordercolor")
+    public Response putBorderColor(@FormParam("color") String color) {
+        this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, color);
+        return BackendUtils.persist(this.res);
+    }
 
 }

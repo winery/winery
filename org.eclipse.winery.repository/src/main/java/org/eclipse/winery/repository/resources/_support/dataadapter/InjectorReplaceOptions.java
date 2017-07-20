@@ -32,18 +32,18 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 @XmlRootElement(name = "InjectorReplaceOptions")
 public class InjectorReplaceOptions {
 
-	@XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
-	public TTopologyTemplate topologyTemplate;
+    @XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
+    public TTopologyTemplate topologyTemplate;
 
-	@XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
-	public Map<String, List<TNodeTemplate>> injections = new HashMap<>();
+    @XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
+    public Map<String, List<TNodeTemplate>> injections = new HashMap<>();
 
-	public void setTopologyTemplate (TTopologyTemplate topologyTemplate) {
-		this.topologyTemplate = topologyTemplate;
-	}
+    public void setTopologyTemplate (TTopologyTemplate topologyTemplate) {
+        this.topologyTemplate = topologyTemplate;
+    }
 
-	public void setInjectionOptions(Map<String, List<TNodeTemplate>> injectionOptions) {
-		this.injections = injectionOptions;
-	}
+    public void setInjectionOptions(Map<String, List<TNodeTemplate>> injectionOptions) {
+        this.injections = injectionOptions;
+    }
 
 }

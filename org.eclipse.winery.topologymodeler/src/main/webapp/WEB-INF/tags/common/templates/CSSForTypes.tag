@@ -25,26 +25,26 @@
 
 <style>
 <%
-	for (TNodeType nt: (Collection<TNodeType>) nodeTypes) {
-		String borderColor = ModelUtilities.getBorderColor(nt);
-		String cssName = Util.makeCSSName(nt.getTargetNamespace(), nt.getName());
+    for (TNodeType nt: (Collection<TNodeType>) nodeTypes) {
+        String borderColor = ModelUtilities.getBorderColor(nt);
+        String cssName = Util.makeCSSName(nt.getTargetNamespace(), nt.getName());
 %>
-		div.NodeTemplateShape.<%=cssName%> {
-			border-color: <%=borderColor%>;
-		}
+        div.NodeTemplateShape.<%=cssName%> {
+            border-color: <%=borderColor%>;
+        }
 <%
-	}
+    }
 
-	// relationship types CSS
-	for (TRelationshipType rt: (Collection<TRelationshipType>) relationshipTypes) {
-		String color = ModelUtilities.getColor(rt);
-		QName qname = new QName(rt.getTargetNamespace(), rt.getName());
-		String cssName = Util.makeCSSName(qname) + "_box";
+    // relationship types CSS
+    for (TRelationshipType rt: (Collection<TRelationshipType>) relationshipTypes) {
+        String color = ModelUtilities.getColor(rt);
+        QName qname = new QName(rt.getTargetNamespace(), rt.getName());
+        String cssName = Util.makeCSSName(qname) + "_box";
 %>
-		div.<%=cssName%> {
-			background: <%=color%>;
-		}
+        div.<%=cssName%> {
+            background: <%=color%>;
+        }
 <%
-	}
+    }
 %>
 </style>

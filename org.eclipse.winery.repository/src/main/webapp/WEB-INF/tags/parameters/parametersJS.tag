@@ -17,117 +17,117 @@
 
 <script>
 var inputParametersTableInfo = {
-	id: '#inputparameterstab'
+    id: '#inputparameterstab'
 };
 
 var outputParametersTableInfo = {
-	id: '#outputparameterstab'
+    id: '#outputparameterstab'
 };
 
 $(function() {
-	// for options see http://datatables.net/usage/options#sDom
-	var opts = {
-				"sDom": '<"H"r>t<"F"ip>',
-				"iDisplayLength" : 3
-			};
+    // for options see http://datatables.net/usage/options#sDom
+    var opts = {
+                "sDom": '<"H"r>t<"F"ip>',
+                "iDisplayLength" : 3
+            };
 
-	require(["winery-support"], function(ws) {
-		ws.initTable(inputParametersTableInfo, opts);
-		$(inputParametersTableInfo.id).click(function(event) {
-			if (inputParametersTableInfo.selectedRow) {
-				// something has been selected
-				$("#removeInParBtn").removeAttr("disabled");
-			} else {
-				// row has been deselected
-				$("#removeInParBtn").attr("disabled", "disabled");
-			}
-		});
+    require(["winery-support"], function(ws) {
+        ws.initTable(inputParametersTableInfo, opts);
+        $(inputParametersTableInfo.id).click(function(event) {
+            if (inputParametersTableInfo.selectedRow) {
+                // something has been selected
+                $("#removeInParBtn").removeAttr("disabled");
+            } else {
+                // row has been deselected
+                $("#removeInParBtn").attr("disabled", "disabled");
+            }
+        });
 
-		ws.initTable(outputParametersTableInfo, opts, function() {
-			${afterLoad}
-		});
-		$(outputParametersTableInfo.id).click(function(event) {
-			if (outputParametersTableInfo.selectedRow) {
-				// something has been selected
-				$("#removeOutParBtn").removeAttr("disabled");
-			} else {
-				// row has been deselected
-				$("#removeOutParBtn").attr("disabled", "disabled");
-			}
-		});
-	});
+        ws.initTable(outputParametersTableInfo, opts, function() {
+            ${afterLoad}
+        });
+        $(outputParametersTableInfo.id).click(function(event) {
+            if (outputParametersTableInfo.selectedRow) {
+                // something has been selected
+                $("#removeOutParBtn").removeAttr("disabled");
+            } else {
+                // row has been deselected
+                $("#removeOutParBtn").attr("disabled", "disabled");
+            }
+        });
+    });
 
 });
 
 function afterInputParameterCreation(serializedArray, resData, textStatus, jqXHR) {
-	var required;
-	if (serializedArray.length == 2) {
-		required = "no";
-	} else {
-		required = serializedArray[2].value;
-	}
-	addRowToParameterstable(inputParametersTableInfo, serializedArray[0].value, serializedArray[1].value, required);
+    var required;
+    if (serializedArray.length == 2) {
+        required = "no";
+    } else {
+        required = serializedArray[2].value;
+    }
+    addRowToParameterstable(inputParametersTableInfo, serializedArray[0].value, serializedArray[1].value, required);
 }
 
 function afterOutputParameterCreation(serializedArray, resData, textStatus, jqXHR) {
-	var required;
-	if (serializedArray.length == 2) {
-		required = "no";
-	} else {
-		required = serializedArray[2].value;
-	}
-	addRowToParameterstable(outputParametersTableInfo, serializedArray[0].value, serializedArray[1].value, required);
+    var required;
+    if (serializedArray.length == 2) {
+        required = "no";
+    } else {
+        required = serializedArray[2].value;
+    }
+    addRowToParameterstable(outputParametersTableInfo, serializedArray[0].value, serializedArray[1].value, required);
 }
 
 function createInputParameter(baseURL) {
-	var url = baseURL + "inputparameters/";
-	createResource('Input Parameter', [
-			{'label': 'Name', 'name':'name'},
-			{
-				label: 'Type',
-				name: 'type',
-				hint:'TOSCA v1.0 does not specify any type system here. The content of this field is a string. The concrete semantics is left open. The convension is to use the xsd prefix for XML Schema basic types.'
-			},
-			{'label':'Required', 'name':'required', 'type': 'checkbox'}
-		],
-		url,
-		afterInputParameterCreation);
+    var url = baseURL + "inputparameters/";
+    createResource('Input Parameter', [
+            {'label': 'Name', 'name':'name'},
+            {
+                label: 'Type',
+                name: 'type',
+                hint:'TOSCA v1.0 does not specify any type system here. The content of this field is a string. The concrete semantics is left open. The convension is to use the xsd prefix for XML Schema basic types.'
+            },
+            {'label':'Required', 'name':'required', 'type': 'checkbox'}
+        ],
+        url,
+        afterInputParameterCreation);
 }
 
 function createOutputParameter(baseURL) {
-	var url = baseURL + "outputparameters/";
-	createResource('Output Parameter', [
-			{'label': 'Name', 'name':'name'},
-			{
-				label: 'Type',
-				name: 'type',
-				hint:'TOSCA v1.0 does not specify any type system here. The content of this field is a string. The concrete semantics is left open. The convension is to use the xsd prefix for XML Schema basic types.'
-			},
-			{'label':'Required', 'name':'required', 'type': 'checkbox'}
-		],
-		url,
-		afterOutputParameterCreation);
+    var url = baseURL + "outputparameters/";
+    createResource('Output Parameter', [
+            {'label': 'Name', 'name':'name'},
+            {
+                label: 'Type',
+                name: 'type',
+                hint:'TOSCA v1.0 does not specify any type system here. The content of this field is a string. The concrete semantics is left open. The convension is to use the xsd prefix for XML Schema basic types.'
+            },
+            {'label':'Required', 'name':'required', 'type': 'checkbox'}
+        ],
+        url,
+        afterOutputParameterCreation);
 }
 
 function addRowToParameterstable(tableInfo, name, type, required) {
-	var checked;
-	required = required.toLowerCase();
-	if ((required == "yes") || (required == "on")) {
-		checked = ' checked="checked"';
-	} else {
-		checked = "";
-	}
-	var checkbox = '<input type="checkbox"' + checked + ' disabled="disabled"></input>';
-	var addData = [name, type, checkbox];
-	tableInfo.table.fnAddData(addData);
+    var checked;
+    required = required.toLowerCase();
+    if ((required == "yes") || (required == "on")) {
+        checked = ' checked="checked"';
+    } else {
+        checked = "";
+    }
+    var checkbox = '<input type="checkbox"' + checked + ' disabled="disabled"></input>';
+    var addData = [name, type, checkbox];
+    tableInfo.table.fnAddData(addData);
 }
 
 function deleteInputParameter() {
-	deleteOnServerAndInTable(inputParametersTableInfo, "Input Parameter", getOperationURL() + "inputparameters/");
+    deleteOnServerAndInTable(inputParametersTableInfo, "Input Parameter", getOperationURL() + "inputparameters/");
 }
 
 function deleteOutputParameter() {
-	deleteOnServerAndInTable(outputParametersTableInfo, "Output Parameter", getOperationURL() + "outputparameters/");
+    deleteOnServerAndInTable(outputParametersTableInfo, "Output Parameter", getOperationURL() + "outputparameters/");
 }
 
 /**
@@ -137,41 +137,41 @@ function deleteOutputParameter() {
  * @param inOrOut: "In"|"Out"
  */
 function updateParameters(url, tableInfo, inOrOut) {
-	$.ajax({
-		"url": url,
-		dataType: "json",
-		success: function(data) {
-			tableInfo.table.fnClearTable();
-			$.each(data, function(number, item) {
-				var paramURL = url + item + "/";
-				$.ajax({
-					async: false,
-					dataType: "json",
-					url: paramURL,
-					error: function(jqXHR, textStatus, errorThrown) {
-						vShowAJAXError("Could not fetch operation information", jqXHR, errorThrown);
-					},
-					success: function(data) {
-						addRowToParameterstable(tableInfo, data.name, data.type, data.required);
-					}
-				});
-			});
-			$("#add" + inOrOut + "ParBtn").removeAttr("disabled");
+    $.ajax({
+        "url": url,
+        dataType: "json",
+        success: function(data) {
+            tableInfo.table.fnClearTable();
+            $.each(data, function(number, item) {
+                var paramURL = url + item + "/";
+                $.ajax({
+                    async: false,
+                    dataType: "json",
+                    url: paramURL,
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        vShowAJAXError("Could not fetch operation information", jqXHR, errorThrown);
+                    },
+                    success: function(data) {
+                        addRowToParameterstable(tableInfo, data.name, data.type, data.required);
+                    }
+                });
+            });
+            $("#add" + inOrOut + "ParBtn").removeAttr("disabled");
 
-			// remove button should always be disalbed as it gets enabled only after clicking a row in the table
-			$("#remove" + inOrOut + "ParBtn").attr("disabled", "disabled");
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			vShowAJAXError("Could not fetch interface", jqXHR, errorThrown);
-		}
-	});
+            // remove button should always be disalbed as it gets enabled only after clicking a row in the table
+            $("#remove" + inOrOut + "ParBtn").attr("disabled", "disabled");
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            vShowAJAXError("Could not fetch interface", jqXHR, errorThrown);
+        }
+    });
 }
 
 function updateInputAndOutputParameters(baseURL) {
-	var url = baseURL + "inputparameters/";
-	updateParameters(url, inputParametersTableInfo, "In");
-	url = baseURL + "outputparameters/";
-	updateParameters(url, outputParametersTableInfo, "Out");
+    var url = baseURL + "inputparameters/";
+    updateParameters(url, inputParametersTableInfo, "In");
+    url = baseURL + "outputparameters/";
+    updateParameters(url, outputParametersTableInfo, "Out");
 }
 
 </script>

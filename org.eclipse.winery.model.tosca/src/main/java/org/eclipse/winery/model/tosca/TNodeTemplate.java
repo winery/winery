@@ -105,10 +105,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
-		defaultImpl = TNodeTemplate.class,
-		use = JsonTypeInfo.Id.NAME,
-		include = JsonTypeInfo.As.EXISTING_PROPERTY,
-		property = "fakeJacksonType")
+        defaultImpl = TNodeTemplate.class,
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "fakeJacksonType")
 public class TNodeTemplate  extends RelationshipSourceOrTarget {
 
     @XmlElement(name = "Requirements")
@@ -127,19 +127,19 @@ public class TNodeTemplate  extends RelationshipSourceOrTarget {
     protected String maxInstances;
 
     public TNodeTemplate() {
-    	super();
-	}
+        super();
+    }
 
     public TNodeTemplate(String id) {
-    	super(id);
-	}
+        super(id);
+    }
 
-	@Override
-	public String getFakeJacksonType() {
-		return "nodetemplate";
-	}
+    @Override
+    public String getFakeJacksonType() {
+        return "nodetemplate";
+    }
 
-	/**
+    /**
      * Gets the value of the requirements property.
      *
      * @return

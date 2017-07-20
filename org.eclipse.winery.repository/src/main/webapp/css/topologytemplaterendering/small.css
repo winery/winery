@@ -10,28 +10,28 @@
  *    Uwe Breitenbücher - initial implementation
  *******************************************************************************/
 div.relationshipTypeLabel {
-	display:none;
+    display:none;
 }
 
 div.nodetemplate.name {
-	display: none;
+    display: none;
 }
 div.NodeTemplateShape > .headerContainer > div.type {
-	top: 15px;
-	left: 34px;
-	width: 111px;
-	text-align: center;
-	font-size: 11px;
+    top: 15px;
+    left: 34px;
+    width: 111px;
+    text-align: center;
+    font-size: 11px;
 }
 
 div.NodeTemplateShape > .headerContainer > img.icon {
-	height: 35px;
-	margin: 4px 4px;
+    height: 35px;
+    margin: 4px 4px;
 }
 
 div.NodeTemplateShape {
-	border-width: 1px;
-	height: 45px;
-	width: 150px;
-	border-radius: 8px;
+    border-width: 1px;
+    height: 45px;
+    width: 150px;
+    border-radius: 8px;
 }

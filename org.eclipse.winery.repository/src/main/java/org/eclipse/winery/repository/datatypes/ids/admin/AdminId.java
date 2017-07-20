@@ -20,36 +20,36 @@ import org.eclipse.winery.common.ids.XMLId;
  */
 public abstract class AdminId extends GenericId {
 
-	protected AdminId(XMLId xmlId) {
-		super(xmlId);
-	}
+    protected AdminId(XMLId xmlId) {
+        super(xmlId);
+    }
 
-	@Override
-	public int compareTo(GenericId o) {
-		if (o instanceof AdminId) {
-			return this.getXmlId().compareTo(o.getXmlId());
-		} else {
-			throw new IllegalStateException();
-		}
-	}
+    @Override
+    public int compareTo(GenericId o) {
+        if (o instanceof AdminId) {
+            return this.getXmlId().compareTo(o.getXmlId());
+        } else {
+            throw new IllegalStateException();
+        }
+    }
 
-	@Override
-	public GenericId getParent() {
-		return null;
-	}
+    @Override
+    public GenericId getParent() {
+        return null;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof AdminId) {
-			return this.getXmlId().equals(((AdminId) obj).getXmlId());
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AdminId) {
+            return this.getXmlId().equals(((AdminId) obj).getXmlId());
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		return this.getXmlId().hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return this.getXmlId().hashCode();
+    }
 
 }

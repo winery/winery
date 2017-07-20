@@ -18,23 +18,23 @@ import org.junit.BeforeClass;
 
 public class AbstractWineryWithRepositoryTest {
 
-	private static Git git;
+    private static Git git;
 
-	@BeforeClass
-	public static void init() throws Exception {
-		// enable git-backed repository
-		PrefsTestEnabledGitBackedRepository prefsTestEnabledGitBackedRepository = new PrefsTestEnabledGitBackedRepository();
-		git = prefsTestEnabledGitBackedRepository.git;
-	}
+    @BeforeClass
+    public static void init() throws Exception {
+        // enable git-backed repository
+        PrefsTestEnabledGitBackedRepository prefsTestEnabledGitBackedRepository = new PrefsTestEnabledGitBackedRepository();
+        git = prefsTestEnabledGitBackedRepository.git;
+    }
 
-	protected static void setRevisionTo(String ref) throws GitAPIException {
-		// TODO: newer JGit version: setForce(true)
-		git.clean().setCleanDirectories(true).call();
+    protected static void setRevisionTo(String ref) throws GitAPIException {
+        // TODO: newer JGit version: setForce(true)
+        git.clean().setCleanDirectories(true).call();
 
-		git.reset()
-				.setMode(ResetCommand.ResetType.HARD)
-				.setRef(ref)
-				.call();
-	}
+        git.reset()
+                .setMode(ResetCommand.ResetType.HARD)
+                .setRef(ref)
+                .call();
+    }
 
 }

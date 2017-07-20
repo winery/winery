@@ -12,65 +12,65 @@
  *******************************************************************************/
 
 div.propertiesView {
-	width: 200px;
-	position: fixed;
-	top: 57px;
-	right: -1px;
-	background: #eaeaea;
-	z-index: 600;
-	background-image: linear-gradient(to left, #FFFFFF 0%, rgb(237, 243, 247) 100%);
-	border-radius: 9px 0px 0px 9px;
-	border: 1px solid #aeaeae;
-	padding: 14px;
-	box-shadow: -1px 2px 7px rgb(156, 156, 156);
-	font-size: 80%;
+    width: 200px;
+    position: fixed;
+    top: 57px;
+    right: -1px;
+    background: #eaeaea;
+    z-index: 600;
+    background-image: linear-gradient(to left, #FFFFFF 0%, rgb(237, 243, 247) 100%);
+    border-radius: 9px 0px 0px 9px;
+    border: 1px solid #aeaeae;
+    padding: 14px;
+    box-shadow: -1px 2px 7px rgb(156, 156, 156);
+    font-size: 80%;
 }
 
 #propertiesSection {
-	padding: 10px;
+    padding: 10px;
 }
 
 #propertiesSection div.content {
-	background: rgb(244, 247, 250);
+    background: rgb(244, 247, 250);
 }
 
 #daSection {
-	background: #eaeaea;
-	padding: 10px;
+    background: #eaeaea;
+    padding: 10px;
 }
 
 #daSection div.content {
-	background: rgb(244, 247, 250);
+    background: rgb(244, 247, 250);
 }
 
 #nodeTemplateInformationSection > div.control-group > label.control-label {
-	width: 37px;
+    width: 37px;
 }
 
 #nodeTemplateInformationSection > div.control-group > input {
-	width: 100px;
+    width: 100px;
 }
 
 
 /* relationship templates only; adapted from topologytemplatecontent.css */
 
 #RTPropertiesView > div.propertiesContainer > div.header {
-	font-weight: bold
+    font-weight: bold
 }
 
 #RTPropertiesView > div.propertiesContainer > div.header > a {
-	float: right;
-	height: 6px;
+    float: right;
+    height: 6px;
 }
 
 #RTPropertiesView > div.propertiesContainer > div.content > span.namespace {
-	display: none;
+    display: none;
 }
 
 #RTPropertiesView > div.propertiesContainer > div.content > span.elementName {
-	display: none;
+    display: none;
 }
 
 #RTPropertiesView > div.propertiesContainer > div.content table {
-	float: left;
+    float: left;
 }

@@ -21,66 +21,66 @@ import org.eclipse.winery.common.interfaces.QNameWithName;
 
 public class WineryUtil {
 
-	/**
-	 * LocalName is the ID of the element, whereas Name is the speaking name
-	 */
-	public static class LocalNameNamePair implements Comparable<LocalNameNamePair> {
+    /**
+     * LocalName is the ID of the element, whereas Name is the speaking name
+     */
+    public static class LocalNameNamePair implements Comparable<LocalNameNamePair> {
 
-		String localName;
-		String name;
+        String localName;
+        String name;
 
 
-		public LocalNameNamePair(String localName, String name) {
-			this.localName = localName;
-			this.name = name;
-		}
+        public LocalNameNamePair(String localName, String name) {
+            this.localName = localName;
+            this.name = name;
+        }
 
-		public String getLocalName() {
-			return this.localName;
-		}
+        public String getLocalName() {
+            return this.localName;
+        }
 
-		public String getName() {
-			return this.name;
-		}
+        public String getName() {
+            return this.name;
+        }
 
-		/**
-		 * Ordering according to name
-		 */
-		@Override
-		public int compareTo(LocalNameNamePair otherPair) {
-			return this.name.compareTo(otherPair.name);
-		}
+        /**
+         * Ordering according to name
+         */
+        @Override
+        public int compareTo(LocalNameNamePair otherPair) {
+            return this.name.compareTo(otherPair.name);
+        }
 
-		@Override
-		public int hashCode() {
-			return this.localName.hashCode();
-		}
+        @Override
+        public int hashCode() {
+            return this.localName.hashCode();
+        }
 
-		@Override
-		public boolean equals(Object o) {
-			if (o instanceof LocalNameNamePair) {
-				return this.localName.equals(((LocalNameNamePair) o).getLocalName());
-			} else {
-				return false;
-			}
-		}
-	}
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof LocalNameNamePair) {
+                return this.localName.equals(((LocalNameNamePair) o).getLocalName());
+            } else {
+                return false;
+            }
+        }
+    }
 
-	public static SortedMap<String, SortedSet<LocalNameNamePair>> convertQNameWithNameListToNamespaceToLocalNameNamePairList(List<QNameWithName> list) {
-		if (list == null) {
-			throw new IllegalArgumentException("list may not be null");
-		}
-		SortedMap<String, SortedSet<LocalNameNamePair>> res = new TreeMap<>();
-		for (QNameWithName qnameWithName : list) {
-			SortedSet<LocalNameNamePair> localNameNamePairSet = res.get(qnameWithName.qname.getNamespaceURI());
-			if (localNameNamePairSet == null) {
-				localNameNamePairSet = new TreeSet<>();
-				res.put(qnameWithName.qname.getNamespaceURI(), localNameNamePairSet);
-			}
-			LocalNameNamePair pair = new LocalNameNamePair(qnameWithName.qname.getLocalPart(), qnameWithName.name);
-			localNameNamePairSet.add(pair);
-		}
-		return res;
-	}
+    public static SortedMap<String, SortedSet<LocalNameNamePair>> convertQNameWithNameListToNamespaceToLocalNameNamePairList(List<QNameWithName> list) {
+        if (list == null) {
+            throw new IllegalArgumentException("list may not be null");
+        }
+        SortedMap<String, SortedSet<LocalNameNamePair>> res = new TreeMap<>();
+        for (QNameWithName qnameWithName : list) {
+            SortedSet<LocalNameNamePair> localNameNamePairSet = res.get(qnameWithName.qname.getNamespaceURI());
+            if (localNameNamePairSet == null) {
+                localNameNamePairSet = new TreeSet<>();
+                res.put(qnameWithName.qname.getNamespaceURI(), localNameNamePairSet);
+            }
+            LocalNameNamePair pair = new LocalNameNamePair(qnameWithName.qname.getLocalPart(), qnameWithName.name);
+            localNameNamePairSet.add(pair);
+        }
+        return res;
+    }
 
 }

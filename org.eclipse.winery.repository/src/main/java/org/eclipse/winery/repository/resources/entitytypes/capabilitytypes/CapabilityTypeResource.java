@@ -21,28 +21,28 @@ import org.slf4j.LoggerFactory;
 
 public final class CapabilityTypeResource extends EntityTypeResource {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CapabilityTypeResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CapabilityTypeResource.class);
 
 
-	/**
-	 * Constructor has to be public because of test cases
-	 */
-	public CapabilityTypeResource(CapabilityTypeId id) {
-		super(id);
-	}
+    /**
+     * Constructor has to be public because of test cases
+     */
+    public CapabilityTypeResource(CapabilityTypeId id) {
+        super(id);
+    }
 
-	/**
-	 * Convenience method to avoid casting at the caller's side.
-	 *
-	 * @return the CapabilityType object this resource is representing
-	 */
-	public TCapabilityType getCapabilityType() {
-		return (TCapabilityType) this.getElement();
-	}
+    /**
+     * Convenience method to avoid casting at the caller's side.
+     *
+     * @return the CapabilityType object this resource is representing
+     */
+    public TCapabilityType getCapabilityType() {
+        return (TCapabilityType) this.getElement();
+    }
 
-	@Override
-	protected TExtensibleElements createNewElement() {
-		return new TCapabilityType();
-	}
+    @Override
+    protected TExtensibleElements createNewElement() {
+        return new TCapabilityType();
+    }
 
 }

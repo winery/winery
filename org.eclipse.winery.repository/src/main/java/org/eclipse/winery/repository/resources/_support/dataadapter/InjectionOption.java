@@ -21,18 +21,18 @@ import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 
 public class InjectionOption {
-	@XmlElement(name = "hostedNodeID")
-	protected String hostedNodeID;
+    @XmlElement(name = "hostedNodeID")
+    protected String hostedNodeID;
 
-	@XmlElementWrapper (name = "hostOptions")
-	@XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "NodeTemplate")
-	protected List<TNodeTemplate> hostNodeTemplateOptions;
+    @XmlElementWrapper (name = "hostOptions")
+    @XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "NodeTemplate")
+    protected List<TNodeTemplate> hostNodeTemplateOptions;
 
-	public InjectionOption() {
-	}
+    public InjectionOption() {
+    }
 
-	public InjectionOption(String hostedNodeID, List<TNodeTemplate> hostNodeTemplateOptions) {
-		this.hostedNodeID = hostedNodeID;
-		this.hostNodeTemplateOptions = hostNodeTemplateOptions;
-	}
+    public InjectionOption(String hostedNodeID, List<TNodeTemplate> hostNodeTemplateOptions) {
+        this.hostedNodeID = hostedNodeID;
+        this.hostNodeTemplateOptions = hostNodeTemplateOptions;
+    }
 }

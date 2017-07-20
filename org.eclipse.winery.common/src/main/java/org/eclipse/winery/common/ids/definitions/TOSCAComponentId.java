@@ -35,81 +35,81 @@ import org.eclipse.winery.common.ids.XMLId;
  */
 public abstract class TOSCAComponentId extends GenericId {
 
-	private final Namespace namespace;
+    private final Namespace namespace;
 
 
-	public TOSCAComponentId(Namespace namespace, XMLId xmlId) {
-		super(xmlId);
-		this.namespace = namespace;
-	}
+    public TOSCAComponentId(Namespace namespace, XMLId xmlId) {
+        super(xmlId);
+        this.namespace = namespace;
+    }
 
-	/**
-	 * Creates a new id based on strings. This constructor is required for
-	 * {@link org.eclipse.winery.repository.resources.AbstractComponentsResource}
-	 *
-	 * @param ns the namespace to be used
-	 * @param id the id to be used
-	 * @param URLencoded true: both Strings are URLencoded, false: both Strings
-	 *            are not URLencoded
-	 */
-	public TOSCAComponentId(String ns, String id, boolean URLencoded) {
-		this(new Namespace(ns, URLencoded), new XMLId(id, URLencoded));
-	}
+    /**
+     * Creates a new id based on strings. This constructor is required for
+     * {@link org.eclipse.winery.repository.resources.AbstractComponentsResource}
+     *
+     * @param ns the namespace to be used
+     * @param id the id to be used
+     * @param URLencoded true: both Strings are URLencoded, false: both Strings
+     *            are not URLencoded
+     */
+    public TOSCAComponentId(String ns, String id, boolean URLencoded) {
+        this(new Namespace(ns, URLencoded), new XMLId(id, URLencoded));
+    }
 
-	public TOSCAComponentId(QName qname) {
-		this(qname.getNamespaceURI(), qname.getLocalPart(), false);
-	}
+    public TOSCAComponentId(QName qname) {
+        this(qname.getNamespaceURI(), qname.getLocalPart(), false);
+    }
 
-	public QName getQName() {
-		return new QName(this.getNamespace().getDecoded(), this.getXmlId().getDecoded());
-	}
+    public QName getQName() {
+        return new QName(this.getNamespace().getDecoded(), this.getXmlId().getDecoded());
+    }
 
-	public Namespace getNamespace() {
-		return this.namespace;
-	}
+    public Namespace getNamespace() {
+        return this.namespace;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.namespace.hashCode() ^ this.getXmlId().hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return this.namespace.hashCode() ^ this.getXmlId().hashCode();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof TOSCAComponentId)) {
-			return false;
-		} else {
-			TOSCAComponentId other = (TOSCAComponentId) obj;
-			return this.getXmlId().equals(other.getXmlId()) && this.namespace.equals(other.namespace);
-		}
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof TOSCAComponentId)) {
+            return false;
+        } else {
+            TOSCAComponentId other = (TOSCAComponentId) obj;
+            return this.getXmlId().equals(other.getXmlId()) && this.namespace.equals(other.namespace);
+        }
+    }
 
-	@Override
-	public String toString() {
-		QName qn = this.getQName();
-		return this.getClass().toString() + " / " + qn.toString();
-	}
+    @Override
+    public String toString() {
+        QName qn = this.getQName();
+        return this.getClass().toString() + " / " + qn.toString();
+    }
 
-	@Override
-	public GenericId getParent() {
-		return null;
-	}
+    @Override
+    public GenericId getParent() {
+        return null;
+    }
 
-	@Override
-	public int compareTo(GenericId o1) {
-		if (o1 instanceof TOSCAComponentId) {
-			TOSCAComponentId o = (TOSCAComponentId) o1;
-			int res = this.getXmlId().compareTo(o.getXmlId());
-			if (res == 0) {
-				res = this.getNamespace().compareTo(o.getNamespace());
-			}
-			return res;
-		} else {
-			// comparing TOSCAcomponentIDs with non-TOSCAcomponentIDs is not
-			// possible
-			throw new IllegalStateException();
-		}
-	}
+    @Override
+    public int compareTo(GenericId o1) {
+        if (o1 instanceof TOSCAComponentId) {
+            TOSCAComponentId o = (TOSCAComponentId) o1;
+            int res = this.getXmlId().compareTo(o.getXmlId());
+            if (res == 0) {
+                res = this.getNamespace().compareTo(o.getNamespace());
+            }
+            return res;
+        } else {
+            // comparing TOSCAcomponentIDs with non-TOSCAcomponentIDs is not
+            // possible
+            throw new IllegalStateException();
+        }
+    }
 }

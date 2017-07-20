@@ -12,12 +12,12 @@
 package org.eclipse.winery.repository.exceptions;
 
 public class RepositoryCorruptException extends WineryRepositoryException {
-	
-	public RepositoryCorruptException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    
+    public RepositoryCorruptException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public RepositoryCorruptException(String message) {
-		super(message);
-	}
+    public RepositoryCorruptException(String message) {
+        super(message);
+    }
 }

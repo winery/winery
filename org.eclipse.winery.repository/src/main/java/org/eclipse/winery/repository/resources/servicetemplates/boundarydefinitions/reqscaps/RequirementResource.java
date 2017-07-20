@@ -19,8 +19,8 @@ import org.eclipse.winery.repository.resources._support.collections.withoutid.En
 
 public class RequirementResource extends EntityWithoutIdResource<TRequirementRef> {
 
-	public RequirementResource(TRequirementRef o, int idx, List<TRequirementRef> list, IPersistable res) {
-		super(o, idx, list, res);
-	}
+    public RequirementResource(TRequirementRef o, int idx, List<TRequirementRef> list, IPersistable res) {
+        super(o, idx, list, res);
+    }
 
 }

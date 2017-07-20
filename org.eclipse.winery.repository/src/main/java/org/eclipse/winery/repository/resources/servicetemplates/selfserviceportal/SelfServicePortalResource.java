@@ -51,185 +51,185 @@ import org.slf4j.LoggerFactory;
 
 public class SelfServicePortalResource implements IPersistable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SelfServicePortalResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SelfServicePortalResource.class);
 
-	public final RepositoryFileReference data_xml_ref;
-	public final RepositoryFileReference icon_jpg_ref;
-	public final RepositoryFileReference image_jpg_ref;
+    public final RepositoryFileReference data_xml_ref;
+    public final RepositoryFileReference icon_jpg_ref;
+    public final RepositoryFileReference image_jpg_ref;
 
-	private final ServiceTemplateResource serviceTemplateResource;
+    private final ServiceTemplateResource serviceTemplateResource;
 
-	private final Application application;
+    private final Application application;
 
-	private final SelfServiceMetaDataId id;
+    private final SelfServiceMetaDataId id;
 
 
-	public SelfServicePortalResource(ServiceTemplateId serviceTemplateId) {
-		this(null, serviceTemplateId);
-	}
+    public SelfServicePortalResource(ServiceTemplateId serviceTemplateId) {
+        this(null, serviceTemplateId);
+    }
 
-	public SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource) {
-		this(serviceTemplateResource, (ServiceTemplateId) serviceTemplateResource.getId());
-	}
+    public SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource) {
+        this(serviceTemplateResource, (ServiceTemplateId) serviceTemplateResource.getId());
+    }
 
-	/**
-	 * @param serviceTemplateResource may be null
-	 * @param serviceTemplateId the id, must not be null
-	 */
-	private SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource, ServiceTemplateId serviceTemplateId) {
-		this.serviceTemplateResource = serviceTemplateResource;
-		this.id = new SelfServiceMetaDataId(serviceTemplateId);
-		this.data_xml_ref = new RepositoryFileReference(this.id, "data.xml");
-		this.icon_jpg_ref = new RepositoryFileReference(this.id, "icon.jpg");
-		this.image_jpg_ref = new RepositoryFileReference(this.id, "image.jpg");
-		this.application = this.getData();
-	}
+    /**
+     * @param serviceTemplateResource may be null
+     * @param serviceTemplateId the id, must not be null
+     */
+    private SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource, ServiceTemplateId serviceTemplateId) {
+        this.serviceTemplateResource = serviceTemplateResource;
+        this.id = new SelfServiceMetaDataId(serviceTemplateId);
+        this.data_xml_ref = new RepositoryFileReference(this.id, "data.xml");
+        this.icon_jpg_ref = new RepositoryFileReference(this.id, "icon.jpg");
+        this.image_jpg_ref = new RepositoryFileReference(this.id, "image.jpg");
+        this.application = this.getData();
+    }
 
-	SelfServiceMetaDataId getId() {
-		return this.id;
-	}
+    SelfServiceMetaDataId getId() {
+        return this.id;
+    }
 
-	public void ensureDataXmlExists() {
-		if (!Repository.INSTANCE.exists(this.data_xml_ref)) {
-			// this.application is already initialized with a default value.
-			// So we just need to persist this resource
-			BackendUtils.persist(this);
-		}
-	}
+    public void ensureDataXmlExists() {
+        if (!Repository.INSTANCE.exists(this.data_xml_ref)) {
+            // this.application is already initialized with a default value.
+            // So we just need to persist this resource
+            BackendUtils.persist(this);
+        }
+    }
 
-	@GET
-	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
-	public Application getData() {
-		if (Repository.INSTANCE.exists(this.data_xml_ref)) {
-			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref)) {
-				return (Application) u.unmarshal(is);
-			} catch (IOException | JAXBException e) {
-				SelfServicePortalResource.LOGGER.error("Could not read from " + this.data_xml_ref, e);
-				return new Application();
-			}
-		} else {
-			return this.getDefaultApplicationData();
-		}
-	}
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
+    public Application getData() {
+        if (Repository.INSTANCE.exists(this.data_xml_ref)) {
+            Unmarshaller u = JAXBSupport.createUnmarshaller();
+            try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref)) {
+                return (Application) u.unmarshal(is);
+            } catch (IOException | JAXBException e) {
+                SelfServicePortalResource.LOGGER.error("Could not read from " + this.data_xml_ref, e);
+                return new Application();
+            }
+        } else {
+            return this.getDefaultApplicationData();
+        }
+    }
 
-	private Application getDefaultApplicationData() {
-		Application app = new Application();
-		app.setIconUrl("icon.jpg");
-		app.setImageUrl("image.jpg");
-		if (this.serviceTemplateResource != null) {
-			app.setDisplayName(this.serviceTemplateResource.getName());
-			List<TDocumentation> documentation = this.serviceTemplateResource.getServiceTemplate().getDocumentation();
-			if ((documentation != null) && (!documentation.isEmpty())) {
-				TDocumentation doc = documentation.get(0);
-				List<Object> content = doc.getContent();
-				if ((content != null) && (!content.isEmpty())) {
-					app.setDescription(content.get(0).toString());
-				}
-			}
-		}
-		return app;
-	}
+    private Application getDefaultApplicationData() {
+        Application app = new Application();
+        app.setIconUrl("icon.jpg");
+        app.setImageUrl("image.jpg");
+        if (this.serviceTemplateResource != null) {
+            app.setDisplayName(this.serviceTemplateResource.getName());
+            List<TDocumentation> documentation = this.serviceTemplateResource.getServiceTemplate().getDocumentation();
+            if ((documentation != null) && (!documentation.isEmpty())) {
+                TDocumentation doc = documentation.get(0);
+                List<Object> content = doc.getContent();
+                if ((content != null) && (!content.isEmpty())) {
+                    app.setDescription(content.get(0).toString());
+                }
+            }
+        }
+        return app;
+    }
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/servicetemplates/selfservicemetadata/selfservicemetadata.jsp", this);
-	}
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getHTML() {
+        return new Viewable("/jsp/servicetemplates/selfservicemetadata/selfservicemetadata.jsp", this);
+    }
 
-	@Override
-	public void persist() throws IOException {
-		BackendUtils.persist(this.application, this.data_xml_ref, MediaType.TEXT_XML_TYPE);
-	}
+    @Override
+    public void persist() throws IOException {
+        BackendUtils.persist(this.application, this.data_xml_ref, MediaType.TEXT_XML_TYPE);
+    }
 
-	@PUT
-	@Consumes(MediaType.TEXT_XML)
-	public Response onPutXML(Application data) {
-		String content = Utils.getXMLAsString(data);
-		return BackendUtils.putContentToFile(this.data_xml_ref, content, MediaType.TEXT_XML_TYPE);
-	}
+    @PUT
+    @Consumes(MediaType.TEXT_XML)
+    public Response onPutXML(Application data) {
+        String content = Utils.getXMLAsString(data);
+        return BackendUtils.putContentToFile(this.data_xml_ref, content, MediaType.TEXT_XML_TYPE);
+    }
 
-	@Path("icon.jpg")
-	@GET
-	public Response getIcon(@HeaderParam("If-Modified-Since") String modified) {
-		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
-		return BackendUtils.returnRepoPath(ref, modified);
-	}
+    @Path("icon.jpg")
+    @GET
+    public Response getIcon(@HeaderParam("If-Modified-Since") String modified) {
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
+        return BackendUtils.returnRepoPath(ref, modified);
+    }
 
-	@Path("icon.jpg")
-	@PUT
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response putIcon(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
-		ensureDataXmlExists();
-		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
-		return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
-	}
+    @Path("icon.jpg")
+    @PUT
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response putIcon(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
+        ensureDataXmlExists();
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
+        return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+    }
 
-	@Path("image.jpg")
-	@GET
-	public Response getImage(@HeaderParam("If-Modified-Since") String modified) {
-		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
-		return BackendUtils.returnRepoPath(ref, modified);
-	}
+    @Path("image.jpg")
+    @GET
+    public Response getImage(@HeaderParam("If-Modified-Since") String modified) {
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
+        return BackendUtils.returnRepoPath(ref, modified);
+    }
 
-	@Path("image.jpg")
-	@PUT
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response putImage(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
-		ensureDataXmlExists();
-		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
-		return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
-	}
+    @Path("image.jpg")
+    @PUT
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response putImage(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
+        ensureDataXmlExists();
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
+        return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+    }
 
-	@Path("displayname")
-	@PUT
-	public Response onPutOnDisplayName(@FormParam("value") String value) {
-		this.application.setDisplayName(value);
-		return BackendUtils.persist(this);
-	}
+    @Path("displayname")
+    @PUT
+    public Response onPutOnDisplayName(@FormParam("value") String value) {
+        this.application.setDisplayName(value);
+        return BackendUtils.persist(this);
+    }
 
-	@Path("description")
-	@PUT
-	public Response onPutOnDescription(@FormParam("value") String value) {
-		this.application.setDescription(value);
-		return BackendUtils.persist(this);
-	}
+    @Path("description")
+    @PUT
+    public Response onPutOnDescription(@FormParam("value") String value) {
+        this.application.setDescription(value);
+        return BackendUtils.persist(this);
+    }
 
-	@Path("options/")
-	public OptionsResource getOptionsResource() {
-		Options options = this.application.getOptions();
-		if (options == null) {
-			options = new Options();
-			this.application.setOptions(options);
-		}
-		return new OptionsResource(options.getOption(), this);
-	}
+    @Path("options/")
+    public OptionsResource getOptionsResource() {
+        Options options = this.application.getOptions();
+        if (options == null) {
+            options = new Options();
+            this.application.setOptions(options);
+        }
+        return new OptionsResource(options.getOption(), this);
+    }
 
-	/**
-	 * @return the internal application object. Used for the export.
-	 */
-	public Application getApplication() {
-		return this.application;
-	}
+    /**
+     * @return the internal application object. Used for the export.
+     */
+    public Application getApplication() {
+        return this.application;
+    }
 
-	/**
-	 * Used in JSP only
-	 */
-	public String getApplicationAsXMLStringEncoded() {
-		String res;
-		if (Repository.INSTANCE.exists(this.data_xml_ref)) {
-			StringWriter sw = new StringWriter();
-			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref)) {
-				IOUtils.copy(is, sw);
-			} catch (IOException e) {
-				SelfServicePortalResource.LOGGER.error("Could not read from file", e);
-			}
-			res = sw.toString();
-		} else {
-			// return skeleton for application
-			// application object is already filled with default values if no file exists in repo
-			res = Utils.getXMLAsString(this.getApplication());
-		}
-		return Functions.escapeXml(res);
-	}
+    /**
+     * Used in JSP only
+     */
+    public String getApplicationAsXMLStringEncoded() {
+        String res;
+        if (Repository.INSTANCE.exists(this.data_xml_ref)) {
+            StringWriter sw = new StringWriter();
+            try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref)) {
+                IOUtils.copy(is, sw);
+            } catch (IOException e) {
+                SelfServicePortalResource.LOGGER.error("Could not read from file", e);
+            }
+            res = sw.toString();
+        } else {
+            // return skeleton for application
+            // application object is already filled with default values if no file exists in repo
+            res = Utils.getXMLAsString(this.getApplication());
+        }
+        return Functions.escapeXml(res);
+    }
 }

@@ -17,6 +17,6 @@ import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
 
 public abstract class Parser {
 
-	public abstract ManagementFlow parse(URI input) throws ParseException;
+    public abstract ManagementFlow parse(URI input) throws ParseException;
 
 }

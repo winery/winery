@@ -30,8 +30,8 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 * Boundary definitions can be browsed for exported operations again
 * Relationship Type -> Visual Appearance  "Arrow" tab can opened again
 * Boundary definitions -> interfaces
-	*	interfaces selection is properly reloaded if new interface is added
-	*	operations selection is properly reloaded if new operation is added
+    *    interfaces selection is properly reloaded if new interface is added
+    *    operations selection is properly reloaded if new operation is added
 
 ## Initial Code Contribution - 2014-03-27
 

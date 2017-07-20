@@ -26,15 +26,15 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/components/XMLWriter/XMLWriter.js"></script>
 
 <style>
-	div.header {
-		display: none;
-	}
-	span.elementName {
-		display: none;
-	}
-	span.namespace {
-		display: none;
-	}
+    div.header {
+        display: none;
+    }
+    span.elementName {
+        display: none;
+    }
+    span.namespace {
+        display: none;
+    }
 </style>
 
 <props:propertiesBasic></props:propertiesBasic>
@@ -44,21 +44,21 @@
 <div id="containerForPropertiesContainer">
 <div> <%-- This div is required by props:properties to be consistent with a node template. This mirrors div class="content" --%>
 <props:properties
-	propertiesDefinition="${type.propertiesDefinition}"
-	wpd="${wc:winerysPropertiesDefinition(type)}"
-	template="${it.template}"
-	pathToImages="${w:topologyModelerURI()}/images/">
+    propertiesDefinition="${type.propertiesDefinition}"
+    wpd="${wc:winerysPropertiesDefinition(type)}"
+    template="${it.template}"
+    pathToImages="${w:topologyModelerURI()}/images/">
 </props:properties>
 </div>
 </div>
 
 <c:choose>
-	<c:when test="${not empty type.propertiesDefinition or not empty wc:winerysPropertiesDefinition(type)}">
-		<button id="propsSaveBtn" data-loading-text="Saving..." type="button" class="btn btn-primary btn-sm" onclick="saveProperties();">Save</button>
-	</c:when>
-	<c:otherwise>
-		The type does not have a &ldquo;properties definition&rdquo;.
-	</c:otherwise>
+    <c:when test="${not empty type.propertiesDefinition or not empty wc:winerysPropertiesDefinition(type)}">
+        <button id="propsSaveBtn" data-loading-text="Saving..." type="button" class="btn btn-primary btn-sm" onclick="saveProperties();">Save</button>
+    </c:when>
+    <c:otherwise>
+        The type does not have a &ldquo;properties definition&rdquo;.
+    </c:otherwise>
 </c:choose>
 
 <script>
@@ -66,27 +66,27 @@ $(".KVPropertyValue").editable();
 
 // similar to topology modeler's index.jsp save() function
 function saveProperties() {
-	$("#propsSaveBtn").button('loading');
-	var w = new XMLWriter("utf-8");
-	w.writeStartDocument();
-	var divContainer = $("#containerForPropertiesContainer");
-	savePropertiesFromDivToXMLWriter(divContainer.children("div").children(".propertiesContainer"), w, true);
-	w.writeEndDocument();
+    $("#propsSaveBtn").button('loading');
+    var w = new XMLWriter("utf-8");
+    w.writeStartDocument();
+    var divContainer = $("#containerForPropertiesContainer");
+    savePropertiesFromDivToXMLWriter(divContainer.children("div").children(".propertiesContainer"), w, true);
+    w.writeEndDocument();
 
-	$.ajax({
-		url: "properties/",
-		type: "PUT",
-		contentType: 'text/xml',
-		data: w.flush(),
-		success: function(data, textStatus, jqXHR) {
-			$("#propsSaveBtn").button('reset');
-			vShowSuccess("successfully saved.");
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			$("#propsSaveBtn").button('reset');
-			vShowAJAXError("Could not save", errorThrown, jqXHR.responseText);
-		}
-	});
+    $.ajax({
+        url: "properties/",
+        type: "PUT",
+        contentType: 'text/xml',
+        data: w.flush(),
+        success: function(data, textStatus, jqXHR) {
+            $("#propsSaveBtn").button('reset');
+            vShowSuccess("successfully saved.");
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            $("#propsSaveBtn").button('reset');
+            vShowAJAXError("Could not save", errorThrown, jqXHR.responseText);
+        }
+    });
 
 }
 </script>

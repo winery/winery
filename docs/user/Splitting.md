@@ -11,8 +11,8 @@ Topology Template, which should be split, and the Node Templates in the reposito
 The latter just have requirements assigned because they form the lowest level of the topology.
 The naming convention for the mapping of Reqs and Caps are:
 
-	- Requirement: ReqCanHostxyz
-	- Capability:  CapCanHostxyz
+    - Requirement: ReqCanHostxyz
+    - Capability:  CapCanHostxyz
 
 By clicking the "Split" button first the topology is split according to the assigned labels (nodes with
 hostedOn-predecessors with different labels are duplicated) and second the host nodes from the provider repositories

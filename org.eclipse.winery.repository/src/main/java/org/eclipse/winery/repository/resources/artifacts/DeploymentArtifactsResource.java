@@ -25,50 +25,50 @@ import org.slf4j.LoggerFactory;
 
 public class DeploymentArtifactsResource extends GenericArtifactsResource<DeploymentArtifactResource, TDeploymentArtifact> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentArtifactsResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentArtifactsResource.class);
 
-	private List<TDeploymentArtifact> deploymentArtifacts;
+    private List<TDeploymentArtifact> deploymentArtifacts;
 
 
-	public DeploymentArtifactsResource(TNodeTemplate nodeTemplate, INodeTemplateResourceOrNodeTypeImplementationResource res) {
-		this(DeploymentArtifactsResource.getDeploymentArtifacts(nodeTemplate), res);
-	}
+    public DeploymentArtifactsResource(TNodeTemplate nodeTemplate, INodeTemplateResourceOrNodeTypeImplementationResource res) {
+        this(DeploymentArtifactsResource.getDeploymentArtifacts(nodeTemplate), res);
+    }
 
-	public DeploymentArtifactsResource(List<TDeploymentArtifact> deploymentArtifact, INodeTemplateResourceOrNodeTypeImplementationResource res) {
-		super(DeploymentArtifactResource.class, TDeploymentArtifact.class, deploymentArtifact, res);
-		this.deploymentArtifacts = deploymentArtifact;
-	}
+    public DeploymentArtifactsResource(List<TDeploymentArtifact> deploymentArtifact, INodeTemplateResourceOrNodeTypeImplementationResource res) {
+        super(DeploymentArtifactResource.class, TDeploymentArtifact.class, deploymentArtifact, res);
+        this.deploymentArtifacts = deploymentArtifact;
+    }
 
-	/**
-	 * Determines the list of DAs belonging to the given node template.
-	 *
-	 * If no DAs are existing, an empty list is created in the model for the
-	 * node template
-	 */
-	private static List<TDeploymentArtifact> getDeploymentArtifacts(TNodeTemplate nodeTemplate) {
-		TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
-		final List<TDeploymentArtifact> res;
-		if (deploymentArtifacts == null) {
-			deploymentArtifacts = new TDeploymentArtifacts();
-			nodeTemplate.setDeploymentArtifacts(deploymentArtifacts);
-		}
-		res = deploymentArtifacts.getDeploymentArtifact();
-		return res;
-	}
+    /**
+     * Determines the list of DAs belonging to the given node template.
+     *
+     * If no DAs are existing, an empty list is created in the model for the
+     * node template
+     */
+    private static List<TDeploymentArtifact> getDeploymentArtifacts(TNodeTemplate nodeTemplate) {
+        TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+        final List<TDeploymentArtifact> res;
+        if (deploymentArtifacts == null) {
+            deploymentArtifacts = new TDeploymentArtifacts();
+            nodeTemplate.setDeploymentArtifacts(deploymentArtifacts);
+        }
+        res = deploymentArtifacts.getDeploymentArtifact();
+        return res;
+    }
 
-	@Override
-	public Collection<DeploymentArtifactResource> getAllArtifactResources() {
-		Collection<DeploymentArtifactResource> res = new ArrayList<>(this.deploymentArtifacts.size());
-		for (TDeploymentArtifact da : this.deploymentArtifacts) {
-			DeploymentArtifactResource r = new DeploymentArtifactResource(da, this.deploymentArtifacts, this.res);
-			res.add(r);
-		}
-		return res;
-	}
+    @Override
+    public Collection<DeploymentArtifactResource> getAllArtifactResources() {
+        Collection<DeploymentArtifactResource> res = new ArrayList<>(this.deploymentArtifacts.size());
+        for (TDeploymentArtifact da : this.deploymentArtifacts) {
+            DeploymentArtifactResource r = new DeploymentArtifactResource(da, this.deploymentArtifacts, this.res);
+            res.add(r);
+        }
+        return res;
+    }
 
-	@Override
-	public String getId(TDeploymentArtifact entity) {
-		return entity.getName();
-	}
+    @Override
+    public String getId(TDeploymentArtifact entity) {
+        return entity.getName();
+    }
 
 }

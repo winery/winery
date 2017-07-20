@@ -17,40 +17,40 @@ package org.eclipse.winery.repository.datatypes.select2;
  */
 public class Select2DataItem implements Comparable<Select2DataItem> {
 
-	private final String id;
-	private final String text;
+    private final String id;
+    private final String text;
 
 
-	public Select2DataItem(String id, String text) {
-		this.id = id;
-		this.text = text;
-	}
+    public Select2DataItem(String id, String text) {
+        this.id = id;
+        this.text = text;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
-	public String getText() {
-		return this.text;
-	}
+    public String getText() {
+        return this.text;
+    }
 
-	/**
-	 * Sort order is based on text
-	 */
-	@Override
-	public int compareTo(Select2DataItem o) {
-		return this.getText().compareTo(o.getText());
-	}
+    /**
+     * Sort order is based on text
+     */
+    @Override
+    public int compareTo(Select2DataItem o) {
+        return this.getText().compareTo(o.getText());
+    }
 
-	/**
-	 * Equality is checked at id level
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof Select2DataItem)) {
-			return false;
-		}
-		return this.getId().equals(((Select2DataItem) o).getId());
-	}
+    /**
+     * Equality is checked at id level
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Select2DataItem)) {
+            return false;
+        }
+        return this.getId().equals(((Select2DataItem) o).getId());
+    }
 
 }

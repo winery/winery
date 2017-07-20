@@ -13,48 +13,48 @@ package org.eclipse.winery.repository.datatypes;
 
 public class TypeWithShortName implements Comparable<TypeWithShortName> {
 
-	private final String type;
-	// we could have used "URI" as type here but this seems to be unnecessary
-	// overhead
+    private final String type;
+    // we could have used "URI" as type here but this seems to be unnecessary
+    // overhead
 
-	// this is a kind of ID
-	private final String shortName;
+    // this is a kind of ID
+    private final String shortName;
 
 
-	public TypeWithShortName(String type, String shortName) {
-		this.type = type;
-		this.shortName = shortName;
-	}
+    public TypeWithShortName(String type, String shortName) {
+        this.type = type;
+        this.shortName = shortName;
+    }
 
-	public String getType() {
-		return this.type;
-	}
+    public String getType() {
+        return this.type;
+    }
 
-	public String getShortName() {
-		return this.shortName;
-	}
+    public String getShortName() {
+        return this.shortName;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof TypeWithShortName) {
-			return ((TypeWithShortName) o).getType().equals(this.getType());
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof TypeWithShortName) {
+            return ((TypeWithShortName) o).getType().equals(this.getType());
+        } else {
+            return false;
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		return this.getType().hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return this.getType().hashCode();
+    }
 
-	@Override
-	public int compareTo(TypeWithShortName o) {
-		int c = this.getShortName().compareTo(o.getShortName());
-		if (c == 0) {
-			// not sure if this will ever happen
-			c = this.getType().compareTo(o.getType());
-		}
-		return c;
-	}
+    @Override
+    public int compareTo(TypeWithShortName o) {
+        int c = this.getShortName().compareTo(o.getShortName());
+        if (c == 0) {
+            // not sure if this will ever happen
+            c = this.getType().compareTo(o.getType());
+        }
+        return c;
+    }
 }

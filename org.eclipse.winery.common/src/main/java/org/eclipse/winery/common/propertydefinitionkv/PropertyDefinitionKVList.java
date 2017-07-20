@@ -20,11 +20,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "PropertyDefinitions")
 public class PropertyDefinitionKVList extends ArrayList<PropertyDefinitionKV> {
 
-	private static final long serialVersionUID = -6442041855597987094L;
+    private static final long serialVersionUID = -6442041855597987094L;
 
-	@XmlElement(name = "PropertyDefinition")
-	public List<PropertyDefinitionKV> getPropertyDefinitionKVs() {
-		return this;
-	}
+    @XmlElement(name = "PropertyDefinition")
+    public List<PropertyDefinitionKV> getPropertyDefinitionKVs() {
+        return this;
+    }
 
 }

@@ -21,19 +21,19 @@ import com.sun.jersey.api.view.Viewable;
 
 public class NodeTemplatesResource extends TEntityTemplatesResource<NodeTemplateResource, TNodeTemplate> {
 
-	public NodeTemplatesResource(List<TNodeTemplate> list, IPersistable res) {
-		super(NodeTemplateResource.class, TNodeTemplate.class, list, res);
-	}
+    public NodeTemplatesResource(List<TNodeTemplate> list, IPersistable res) {
+        super(NodeTemplateResource.class, TNodeTemplate.class, list, res);
+    }
 
-	@Override
-	public String getId(TNodeTemplate entity) {
-		return entity.getId();
-	}
+    @Override
+    public String getId(TNodeTemplate entity) {
+        return entity.getId();
+    }
 
-	@Override
-	public Viewable getHTML() {
-		// TODO Auto-generated method stub
-		throw new IllegalStateException("Not yet implemented.");
-	}
+    @Override
+    public Viewable getHTML() {
+        // TODO Auto-generated method stub
+        throw new IllegalStateException("Not yet implemented.");
+    }
 
 }

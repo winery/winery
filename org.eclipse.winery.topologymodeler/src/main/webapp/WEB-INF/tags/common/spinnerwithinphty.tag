@@ -37,66 +37,66 @@ We decided to use JSP tags to avoid an additional JavaScript library
 
 <%-- Set default name value if required --%>
 <c:if test="${empty name}">
-	<c:set var="name" value="${id}"></c:set>
+    <c:set var="name" value="${id}"></c:set>
 </c:if>
 
 <c:if test="${empty width}">
-	<c:set var="width" value="3"></c:set>
+    <c:set var="width" value="3"></c:set>
 </c:if>
 
 <div class="form-group">
-	<label for="${id}">${label}</label>
-	<div class="row">
-		<div class="col-lg-${width}">
-			<div class="input-sm">
-				<input id="${id}" type="text" value="" name="${name}"
-					   <c:if test="${not empty changedfunction}">onblur="${changedfunction}();"</c:if> />
-			</div>
-		</div>
-	</div>
+    <label for="${id}">${label}</label>
+    <div class="row">
+        <div class="col-lg-${width}">
+            <div class="input-sm">
+                <input id="${id}" type="text" value="" name="${name}"
+                       <c:if test="${not empty changedfunction}">onblur="${changedfunction}();"</c:if> />
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-	<%--
-	included multiple times.
-	Drawback when not using HTML5 components and keeping the JavaScript functions closed to the HTML code
-	--%>
-	function setToInfin(id, changedFunction) {
-		var spinner = $("#" + id);
-		spinner.val('∞'); // &inphty; - jQuery does not decode that, but places the plain text. Therefore, we directly pass the char we want
-		if (changedFunction !== undefined) {
-			changedFunction();
-		}
-	}
+    <%--
+    included multiple times.
+    Drawback when not using HTML5 components and keeping the JavaScript functions closed to the HTML code
+    --%>
+    function setToInfin(id, changedFunction) {
+        var spinner = $("#" + id);
+        spinner.val('∞'); // &inphty; - jQuery does not decode that, but places the plain text. Therefore, we directly pass the char we want
+        if (changedFunction !== undefined) {
+            changedFunction();
+        }
+    }
 
-	$(function() {
-		var param = {}
-		<c:if test="${not empty min}">
-		param.min = "${min}";
-		</c:if>
-		<c:if test="${empty max}">
-		param.max = 1000;
-		</c:if>
-		<c:if test="${not empty withinphty}">
-		param.postfix='∞';
-		param.postfix_extraclass= "btn btn-default";
-		</c:if>
-		param.verticalbuttons = true;
-		param.verticalupclass= 'glyphicon glyphicon-chevron-up';
-		param.verticaldownclass= 'glyphicon glyphicon-chevron-down';
-		//use touchspin plugin
-		$("#${id}").TouchSpin(param);
-		<c:if test="${not empty withinphty}">
-		$("#${id}").parent().find('.bootstrap-touchspin-postfix').on('mousedown',
-				function(){
-					//register mousedown function for calling the setToInf function
-					setToInfin('${id}'<c:if test="${not empty changedfunction}">, ${changedfunction}</c:if>);
-				});
-		</c:if>
-		<c:if test="${not empty changedfunction}">
-		$("#${id}").on('valueChanged', ${changedfunction});
-		</c:if>
+    $(function() {
+        var param = {}
+        <c:if test="${not empty min}">
+        param.min = "${min}";
+        </c:if>
+        <c:if test="${empty max}">
+        param.max = 1000;
+        </c:if>
+        <c:if test="${not empty withinphty}">
+        param.postfix='∞';
+        param.postfix_extraclass= "btn btn-default";
+        </c:if>
+        param.verticalbuttons = true;
+        param.verticalupclass= 'glyphicon glyphicon-chevron-up';
+        param.verticaldownclass= 'glyphicon glyphicon-chevron-down';
+        //use touchspin plugin
+        $("#${id}").TouchSpin(param);
+        <c:if test="${not empty withinphty}">
+        $("#${id}").parent().find('.bootstrap-touchspin-postfix').on('mousedown',
+                function(){
+                    //register mousedown function for calling the setToInf function
+                    setToInfin('${id}'<c:if test="${not empty changedfunction}">, ${changedfunction}</c:if>);
+                });
+        </c:if>
+        <c:if test="${not empty changedfunction}">
+        $("#${id}").on('valueChanged', ${changedfunction});
+        </c:if>
 
-	});
+    });
 
 </script>

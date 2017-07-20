@@ -34,60 +34,60 @@ import org.eclipse.winery.repository.resources.interfaces.InterfaceResource;
  */
 public class ImplementationArtifactsResource extends GenericArtifactsResource<ImplementationArtifactResource, ImplementationArtifact> {
 
-	private List<ImplementationArtifact> implementationArtifacts;
+    private List<ImplementationArtifact> implementationArtifacts;
 
 
-	public ImplementationArtifactsResource(List<ImplementationArtifact> implementationArtifact, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
-		super(ImplementationArtifactResource.class, ImplementationArtifact.class, implementationArtifact, res);
-		this.implementationArtifacts = implementationArtifact;
-	}
+    public ImplementationArtifactsResource(List<ImplementationArtifact> implementationArtifact, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
+        super(ImplementationArtifactResource.class, ImplementationArtifact.class, implementationArtifact, res);
+        this.implementationArtifacts = implementationArtifact;
+    }
 
-	/**
-	 * @return a cast to TNodeTypeImplementationResource of the parent of this
-	 *         resource.
-	 */
-	protected NodeTypeImplementationResource getNTI() {
-		return (NodeTypeImplementationResource) this.res;
-	}
+    /**
+     * @return a cast to TNodeTypeImplementationResource of the parent of this
+     *         resource.
+     */
+    protected NodeTypeImplementationResource getNTI() {
+        return (NodeTypeImplementationResource) this.res;
+    }
 
-	/**
-	 * @return a cast to TNodeTypeImplementationResource of the parent of this
-	 *         resource.
-	 */
-	protected RelationshipTypeImplementationResource getRTI() {
-		return (RelationshipTypeImplementationResource) this.res;
-	}
+    /**
+     * @return a cast to TNodeTypeImplementationResource of the parent of this
+     *         resource.
+     */
+    protected RelationshipTypeImplementationResource getRTI() {
+        return (RelationshipTypeImplementationResource) this.res;
+    }
 
-	@Override
-	public Collection<ImplementationArtifactResource> getAllArtifactResources() {
-		Collection<ImplementationArtifactResource> res = new ArrayList<>(this.implementationArtifacts.size());
-		for (ImplementationArtifact da : this.implementationArtifacts) {
-			ImplementationArtifactResource r = new ImplementationArtifactResource(da, this.implementationArtifacts, this.res);
-			res.add(r);
-		}
-		return res;
-	}
+    @Override
+    public Collection<ImplementationArtifactResource> getAllArtifactResources() {
+        Collection<ImplementationArtifactResource> res = new ArrayList<>(this.implementationArtifacts.size());
+        for (ImplementationArtifact da : this.implementationArtifacts) {
+            ImplementationArtifactResource r = new ImplementationArtifactResource(da, this.implementationArtifacts, this.res);
+            res.add(r);
+        }
+        return res;
+    }
 
-	/** required by artifacts.jsp **/
-	public List<InterfaceResource> getInterfacesOfAssociatedType() {
-		boolean isNodeTypeImplementation = this.res instanceof NodeTypeImplementationResource;
-		QName type;
-		List<InterfaceResource> interfaces = new ArrayList<>();
-		if (isNodeTypeImplementation) {
-			type = this.getNTI().getType();
-			NodeTypeResource typeResource = (NodeTypeResource) new NodeTypesResource().getComponentInstaceResource(type);
-			interfaces.addAll(typeResource.getInterfaces().getAllEntityResources());
-		} else {
-			type = this.getRTI().getType();
-			RelationshipTypeResource typeResource = (RelationshipTypeResource) new RelationshipTypesResource().getComponentInstaceResource(type);
-			interfaces.addAll(typeResource.getSourceInterfaces().getAllEntityResources());
-			interfaces.addAll(typeResource.getTargetInterfaces().getAllEntityResources());
-		}
-		return interfaces;
-	}
+    /** required by artifacts.jsp **/
+    public List<InterfaceResource> getInterfacesOfAssociatedType() {
+        boolean isNodeTypeImplementation = this.res instanceof NodeTypeImplementationResource;
+        QName type;
+        List<InterfaceResource> interfaces = new ArrayList<>();
+        if (isNodeTypeImplementation) {
+            type = this.getNTI().getType();
+            NodeTypeResource typeResource = (NodeTypeResource) new NodeTypesResource().getComponentInstaceResource(type);
+            interfaces.addAll(typeResource.getInterfaces().getAllEntityResources());
+        } else {
+            type = this.getRTI().getType();
+            RelationshipTypeResource typeResource = (RelationshipTypeResource) new RelationshipTypesResource().getComponentInstaceResource(type);
+            interfaces.addAll(typeResource.getSourceInterfaces().getAllEntityResources());
+            interfaces.addAll(typeResource.getTargetInterfaces().getAllEntityResources());
+        }
+        return interfaces;
+    }
 
-	@Override
-	public String getId(ImplementationArtifact entity) {
-		return entity.getName();
-	}
+    @Override
+    public String getId(ImplementationArtifact entity) {
+        return entity.getName();
+    }
 }

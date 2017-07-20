@@ -21,21 +21,21 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 
 public class InjectionDataMapAdapter extends XmlAdapter<Injections, Map<String, TNodeTemplate>> {
 
-	@Override
-	public Map<String, TNodeTemplate> unmarshal(Injections injections) throws Exception {
-		Map<String, TNodeTemplate> mapInjections = new HashMap<>();
-		for (Injection injection : injections.getInjections()) {
-			mapInjections.put(injection.hostedNodeID, injection.hostNodeTemplate);
-		}
-		return mapInjections;
-	}
+    @Override
+    public Map<String, TNodeTemplate> unmarshal(Injections injections) throws Exception {
+        Map<String, TNodeTemplate> mapInjections = new HashMap<>();
+        for (Injection injection : injections.getInjections()) {
+            mapInjections.put(injection.hostedNodeID, injection.hostNodeTemplate);
+        }
+        return mapInjections;
+    }
 
-	@Override
-	public Injections marshal(Map<String, TNodeTemplate> mapInjections) throws Exception {
-		Injections injections = new Injections();
-		for (Map.Entry<String, TNodeTemplate> entry : mapInjections.entrySet()) {
-			injections.addInjection(new Injection(entry.getKey(), entry.getValue()));
-		}
-		return injections;
-	}
+    @Override
+    public Injections marshal(Map<String, TNodeTemplate> mapInjections) throws Exception {
+        Injections injections = new Injections();
+        for (Map.Entry<String, TNodeTemplate> entry : mapInjections.entrySet()) {
+            injections.addInjection(new Injection(entry.getKey(), entry.getValue()));
+        }
+        return injections;
+    }
 }

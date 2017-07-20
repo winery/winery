@@ -24,34 +24,34 @@ import com.sun.jersey.api.view.Viewable;
 
 public class AdminTopResource {
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/admin/adminindex.jsp", this);
-	}
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getHTML() {
+        return new Viewable("/jsp/admin/adminindex.jsp", this);
+    }
 
-	@Path("namespaces/")
-	public NamespacesResource getNamespacesResource() {
-		return NamespacesResource.getInstance();
-	}
+    @Path("namespaces/")
+    public NamespacesResource getNamespacesResource() {
+        return NamespacesResource.getInstance();
+    }
 
-	@Path("repository/")
-	public RepositoryAdminResource getRepositoryAdminResource() {
-		return new RepositoryAdminResource();
-	}
+    @Path("repository/")
+    public RepositoryAdminResource getRepositoryAdminResource() {
+        return new RepositoryAdminResource();
+    }
 
-	@Path("planlanguages/")
-	public PlanLanguagesManager getPlanLanguagesResource() {
-		return PlanLanguagesManager.INSTANCE;
-	}
+    @Path("planlanguages/")
+    public PlanLanguagesManager getPlanLanguagesResource() {
+        return PlanLanguagesManager.INSTANCE;
+    }
 
-	@Path("plantypes/")
-	public PlanTypesManager getPlanTypesResource() {
-		return PlanTypesManager.INSTANCE;
-	}
+    @Path("plantypes/")
+    public PlanTypesManager getPlanTypesResource() {
+        return PlanTypesManager.INSTANCE;
+    }
 
-	@Path("constrainttypes/")
-	public ConstraintTypesManager getConstraintTypesManager() {
-		return ConstraintTypesManager.INSTANCE;
-	}
+    @Path("constrainttypes/")
+    public ConstraintTypesManager getConstraintTypesManager() {
+        return ConstraintTypesManager.INSTANCE;
+    }
 }

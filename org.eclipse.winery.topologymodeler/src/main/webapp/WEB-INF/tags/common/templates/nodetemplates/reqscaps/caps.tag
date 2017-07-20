@@ -21,13 +21,13 @@
 <%@attribute name="pathToImages" required="true" description="The path (URI path) to the image/ url, where xml.png is available. Has to end with '/'"%>
 
 <nt:reqsorcaps
-	headerLabel="Capabilities"
-	cssClassPrefix="capabilities"
-	list="${list}"
-	shortName="Cap"
-	TReqOrCapTypeClass="<%=org.eclipse.winery.model.tosca.TCapabilityType.class%>"
-	repositoryURL="${repositoryURL}"
-	typeURLFragment="capabilitytypes"
-	pathToImages="${pathToImages}"
-	client="${client}"
+    headerLabel="Capabilities"
+    cssClassPrefix="capabilities"
+    list="${list}"
+    shortName="Cap"
+    TReqOrCapTypeClass="<%=org.eclipse.winery.model.tosca.TCapabilityType.class%>"
+    repositoryURL="${repositoryURL}"
+    typeURLFragment="capabilitytypes"
+    pathToImages="${pathToImages}"
+    client="${client}"
 />

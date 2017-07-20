@@ -31,42 +31,42 @@ import org.slf4j.LoggerFactory;
 
 public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TagsResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TagsResource.class);
 
-	public TagsResource(IPersistable res, List<TTag> list) {
-		super(TagResource.class, TTag.class, list, res);
-	}
+    public TagsResource(IPersistable res, List<TTag> list) {
+        super(TagResource.class, TTag.class, list, res);
+    }
 
-	public Viewable getHTML() {
-		return new Viewable("/jsp/tags/tags.jsp", this);
-	}
+    public Viewable getHTML() {
+        return new Viewable("/jsp/tags/tags.jsp", this);
+    }
 
 
-	/**
-	 * Adds an element using form-encoding
-	 *
-	 * FIXME: This is necessary as TRequirementRef contains an IDREF and the XML snippet itself does not contain the target id
-	 *
-	 * TODO: Why can't just addNewElement be used? Why do we need form-based updates?
-	 *
-	 * @param id ignored (TODO - see above - addNewElement?)
-	 * @param name the  name of the tag
-	 * @param value the value of the tag
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addNewElement(
-			@FormParam("id") String id,
-			@FormParam("name") String name,
-			@FormParam("value") String value) {
+    /**
+     * Adds an element using form-encoding
+     *
+     * FIXME: This is necessary as TRequirementRef contains an IDREF and the XML snippet itself does not contain the target id
+     *
+     * TODO: Why can't just addNewElement be used? Why do we need form-based updates?
+     *
+     * @param id ignored (TODO - see above - addNewElement?)
+     * @param name the  name of the tag
+     * @param value the value of the tag
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addNewElement(
+            @FormParam("id") String id,
+            @FormParam("name") String name,
+            @FormParam("value") String value) {
 
-		TTag tag = new TTag();
+        TTag tag = new TTag();
 
-		tag.setName(name);
-		tag.setValue(value);
+        tag.setName(name);
+        tag.setValue(value);
 
-		this.list.add(tag);
-		return CollectionsHelper.persist(this.res, this, tag, true);
-	}
+        this.list.add(tag);
+        return CollectionsHelper.persist(this.res, this, tag, true);
+    }
 
 }

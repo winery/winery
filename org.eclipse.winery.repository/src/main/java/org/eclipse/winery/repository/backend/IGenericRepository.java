@@ -48,145 +48,145 @@ import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
  */
 interface IGenericRepository extends IWineryRepositoryCommon {
 
-	/**
-	 * Flags the given TOSCA element as existing.
-	 * The respective resource itself creates appropriate data files.
-	 *
-	 * Pre-Condition: !exists(id)<br/>
-	 * Post-Condition: exists(id)
-	 *
-	 * Typically, the given TOSCA element is created if a configuration is asked
-	 * for
-	 */
-	boolean flagAsExisting(GenericId id);
+    /**
+     * Flags the given TOSCA element as existing.
+     * The respective resource itself creates appropriate data files.
+     *
+     * Pre-Condition: !exists(id)<br/>
+     * Post-Condition: exists(id)
+     *
+     * Typically, the given TOSCA element is created if a configuration is asked
+     * for
+     */
+    boolean flagAsExisting(GenericId id);
 
-	/**
-	 * Checks whether the associated TOSCA element exists
-	 *
-	 * @param id the id to check
-	 * @return true iff the TOSCA element belonging to the given ID exists
-	 */
-	boolean exists(GenericId id);
+    /**
+     * Checks whether the associated TOSCA element exists
+     *
+     * @param id the id to check
+     * @return true iff the TOSCA element belonging to the given ID exists
+     */
+    boolean exists(GenericId id);
 
-	/**
-	 * Deletes the referenced object from the repository
-	 */
-	void forceDelete(RepositoryFileReference ref) throws IOException;
+    /**
+     * Deletes the referenced object from the repository
+     */
+    void forceDelete(RepositoryFileReference ref) throws IOException;
 
-	/**
-	 * @param ref reference to check
-	 * @return true if the file associated with the given reference exists
-	 */
-	boolean exists(RepositoryFileReference ref);
+    /**
+     * @param ref reference to check
+     * @return true if the file associated with the given reference exists
+     */
+    boolean exists(RepositoryFileReference ref);
 
-	/**
-	 * Puts the given content to the given file. Replaces existing content.
-	 *
-	 * If the parent of the reference does not exist, it is created.
-	 *
-	 * @param ref the reference to the file. Must not be null.
-	 * @param content the content to put into the file. Must not be null.
-	 * @param mediaType the media type of the file. Must not be null.
-	 *
-	 * @throws IOException if something goes wrong
-	 */
-	void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException;
+    /**
+     * Puts the given content to the given file. Replaces existing content.
+     *
+     * If the parent of the reference does not exist, it is created.
+     *
+     * @param ref the reference to the file. Must not be null.
+     * @param content the content to put into the file. Must not be null.
+     * @param mediaType the media type of the file. Must not be null.
+     *
+     * @throws IOException if something goes wrong
+     */
+    void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException;
 
-	/**
-	 * Puts the given content to the given file. Replaces existing content.
-	 *
-	 * If the parent of the reference does not exist, it is created.
-	 *
-	 * @param ref the reference to the file
-	 * @param inputStream the content to put into the file
-	 * @throws IOException if something goes wrong
-	 */
-	void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
+    /**
+     * Puts the given content to the given file. Replaces existing content.
+     *
+     * If the parent of the reference does not exist, it is created.
+     *
+     * @param ref the reference to the file
+     * @param inputStream the content to put into the file
+     * @throws IOException if something goes wrong
+     */
+    void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
 
-	/**
-	 * Creates an opened inputStream of the contents referenced by ref. The
-	 * stream has to be closed by the caller.
-	 *
-	 * @param ref the reference to the file
-	 * @return an inputstream
-	 * @throws IOException if something goes wrong
-	 */
-	InputStream newInputStream(RepositoryFileReference ref) throws IOException;
+    /**
+     * Creates an opened inputStream of the contents referenced by ref. The
+     * stream has to be closed by the caller.
+     *
+     * @param ref the reference to the file
+     * @return an inputstream
+     * @throws IOException if something goes wrong
+     */
+    InputStream newInputStream(RepositoryFileReference ref) throws IOException;
 
-	/**
-	 * Returns the size of the file referenced by ref
-	 *
-	 * @param ref a refernce to the file stored in the repository
-	 * @return the size in bytes
-	 * @throws IOException if something goes wrong
-	 */
-	long getSize(RepositoryFileReference ref) throws IOException;
+    /**
+     * Returns the size of the file referenced by ref
+     *
+     * @param ref a refernce to the file stored in the repository
+     * @return the size in bytes
+     * @throws IOException if something goes wrong
+     */
+    long getSize(RepositoryFileReference ref) throws IOException;
 
-	/**
-	 * Returns the last modification time of the entry.
-	 *
-	 * @param ref the reference to the file
-	 * @return the time of the last modification
-	 * @throws IOException if something goes wrong
-	 */
-	FileTime getLastModifiedTime(RepositoryFileReference ref) throws IOException;
+    /**
+     * Returns the last modification time of the entry.
+     *
+     * @param ref the reference to the file
+     * @return the time of the last modification
+     * @throws IOException if something goes wrong
+     */
+    FileTime getLastModifiedTime(RepositoryFileReference ref) throws IOException;
 
-	/**
-	 * Returns the mimetype belonging to the reference.
-	 *
-	 * @param ref the reference to the file
-	 * @return the mimetype as string
-	 * @throws IOException if something goes wrong
-	 * @throws IllegalStateException if an internal error occurs, which is not
-	 *             an IOException
-	 */
-	String getMimeType(RepositoryFileReference ref) throws IOException;
+    /**
+     * Returns the mimetype belonging to the reference.
+     *
+     * @param ref the reference to the file
+     * @return the mimetype as string
+     * @throws IOException if something goes wrong
+     * @throws IllegalStateException if an internal error occurs, which is not
+     *             an IOException
+     */
+    String getMimeType(RepositoryFileReference ref) throws IOException;
 
-	/**
-	 * @return the last change date of the file belonging to the given
-	 *         reference. NULL if the associated file does not exist.
-	 */
-	Date getLastUpdate(RepositoryFileReference ref);
+    /**
+     * @return the last change date of the file belonging to the given
+     *         reference. NULL if the associated file does not exist.
+     */
+    Date getLastUpdate(RepositoryFileReference ref);
 
-	/**
-	 * Returns all components available of the given id type
-	 *
-	 * @param idClass class of the Ids to search for
-	 * @return empty set if no ids are available
-	 */
-	<T extends TOSCAComponentId> SortedSet<T> getAllTOSCAComponentIds(Class<T> idClass);
+    /**
+     * Returns all components available of the given id type
+     *
+     * @param idClass class of the Ids to search for
+     * @return empty set if no ids are available
+     */
+    <T extends TOSCAComponentId> SortedSet<T> getAllTOSCAComponentIds(Class<T> idClass);
 
-	/**
-	 * Returns the set of <em>all</em> ids nested in the given reference
-	 *
-	 * The generated Ids are linked as child to the id associated to the given
-	 * reference
-	 *
-	 * Required for getting plans nested in a service template: plans are nested
-	 * below the PlansOfOneServiceTemplateId
-	 *
-	 * @param ref a reference to the TOSCA element to be checked. The path
-	 *            belonging to this element is checked.
-	 * @param idClass the class of the Id
-	 * @return the set of Ids nested in the given reference. Empty set if there
-	 *         are no or the reference itself does not exist.
-	 */
-	<T extends TOSCAElementId> SortedSet<T> getNestedIds(GenericId ref, Class<T> idClass);
+    /**
+     * Returns the set of <em>all</em> ids nested in the given reference
+     *
+     * The generated Ids are linked as child to the id associated to the given
+     * reference
+     *
+     * Required for getting plans nested in a service template: plans are nested
+     * below the PlansOfOneServiceTemplateId
+     *
+     * @param ref a reference to the TOSCA element to be checked. The path
+     *            belonging to this element is checked.
+     * @param idClass the class of the Id
+     * @return the set of Ids nested in the given reference. Empty set if there
+     *         are no or the reference itself does not exist.
+     */
+    <T extends TOSCAElementId> SortedSet<T> getNestedIds(GenericId ref, Class<T> idClass);
 
-	/**
-	 * Returns the set of files nested in the given reference
-	 */
-	SortedSet<RepositoryFileReference> getContainedFiles(GenericId id);
+    /**
+     * Returns the set of files nested in the given reference
+     */
+    SortedSet<RepositoryFileReference> getContainedFiles(GenericId id);
 
-	/**
-	 * Returns all namespaces used by all known TOSCA components
-	 */
-	Collection<Namespace> getUsedNamespaces();
+    /**
+     * Returns all namespaces used by all known TOSCA components
+     */
+    Collection<Namespace> getUsedNamespaces();
 
-	/**
-	 * Returns all namespaces specific for a given TOSCA component
-	 *
-	 * @param clazz the TOSCA component class which namespaces' should be returned.
-	 */
-	Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz);
+    /**
+     * Returns all namespaces specific for a given TOSCA component
+     *
+     * @param clazz the TOSCA component class which namespaces' should be returned.
+     */
+    Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz);
 }

@@ -16,11 +16,11 @@ import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
 public class PlanLanguagesId extends TypesId {
 
-	private final static XMLId xmlId = new XMLId(IdNames.PLANLANGUAGES, false);
+    private final static XMLId xmlId = new XMLId(IdNames.PLANLANGUAGES, false);
 
 
-	public PlanLanguagesId() {
-		super(PlanLanguagesId.xmlId);
-	}
+    public PlanLanguagesId() {
+        super(PlanLanguagesId.xmlId);
+    }
 
 }

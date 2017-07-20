@@ -26,8 +26,8 @@ For setup the IDE, please go to the [DevGuide](./).
   2. Sync with latest upstream/master: `git fetch upstream`
   3. Create branch based on `upstream/master` and make it known publicly:
      - `git checkout upstream/master`
-	 - `git checkout -b [name]`
-	 - `git push --set-upstream origin [name]`
+     - `git checkout -b [name]`
+     - `git push --set-upstream origin [name]`
   4. Work on the branch with the specific name
   5. Commit. Don't forget to sign the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui)
   6. Push the changes to origin: `git push`

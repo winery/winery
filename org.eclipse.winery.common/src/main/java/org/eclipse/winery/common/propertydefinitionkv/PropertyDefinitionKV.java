@@ -16,44 +16,44 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "PropertyDefinition")
 public class PropertyDefinitionKV {
 
-	private String key;
-	private String type;
+    private String key;
+    private String type;
 
 
-	public PropertyDefinitionKV() {
-		super();
-	}
+    public PropertyDefinitionKV() {
+        super();
+    }
 
-	public PropertyDefinitionKV(String key, String type) {
-		super();
-		this.setKey(key);
-		this.setType(type);
-	}
+    public PropertyDefinitionKV(String key, String type) {
+        super();
+        this.setKey(key);
+        this.setType(type);
+    }
 
-	public String getKey() {
-		return this.key;
-	}
+    public String getKey() {
+        return this.key;
+    }
 
-	public void setKey(String key) {
-		if (key == null) {
-			throw new IllegalArgumentException();
-		}
-		this.key = key;
-	}
+    public void setKey(String key) {
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
+        this.key = key;
+    }
 
-	public String getType() {
-		return this.type;
-	}
+    public String getType() {
+        return this.type;
+    }
 
-	public void setType(String type) {
-		if (type == null) {
-			throw new IllegalArgumentException();
-		}
-		this.type = type;
-	}
+    public void setType(String type) {
+        if (type == null) {
+            throw new IllegalArgumentException();
+        }
+        this.type = type;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.key.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return this.key.hashCode();
+    }
 }

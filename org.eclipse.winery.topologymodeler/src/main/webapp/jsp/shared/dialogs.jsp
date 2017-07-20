@@ -25,59 +25,59 @@
  * @param title    (optional) title of the dialog
  */
 function vConfirmYesNo(msg, fnOnYes, title) {
-	title = title || "Please confirm";
-	$("#diagyesnotitle").text(title);
-	$("#diagyesnomsg").text(msg);
-	$("#diagyesnoyesbtn").off("click");
-	$("#diagyesnoyesbtn").on("click", function() {
-		var diag = $("#diagyesno");
-		// quick hack to get fnOnYes() working -> use the hidden.bs.modal event
-		diag.on("hidden.bs.modal", function() {
-			fnOnYes();
-			diag.off("hidden.bs.modal");
-		});
-		diag.modal("hide");
-	});
-	$("#diagyesno").modal("show");
+    title = title || "Please confirm";
+    $("#diagyesnotitle").text(title);
+    $("#diagyesnomsg").text(msg);
+    $("#diagyesnoyesbtn").off("click");
+    $("#diagyesnoyesbtn").on("click", function() {
+        var diag = $("#diagyesno");
+        // quick hack to get fnOnYes() working -> use the hidden.bs.modal event
+        diag.on("hidden.bs.modal", function() {
+            fnOnYes();
+            diag.off("hidden.bs.modal");
+        });
+        diag.modal("hide");
+    });
+    $("#diagyesno").modal("show");
 }
 
 $(function() {
-	$("#diagyesno").on("shown.bs.modal", function() {
-		$("#diagyesnoyesbtn").focus();
-	});
+    $("#diagyesno").on("shown.bs.modal", function() {
+        $("#diagyesnoyesbtn").focus();
+    });
 });
 </script>
 
 <div class="modal fade z1051" id="diagyesno">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="diagyesnotitle"></h4>
-			</div>
-			<div class="modal-body">
-				<p id="diagyesnomsg"></p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-				<button id="diagyesnoyesbtn" type="button" class="btn btn-primary">Yes</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="diagyesnotitle"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="diagyesnomsg"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button id="diagyesnoyesbtn" type="button" class="btn btn-primary">Yes</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade z1060" id="diagmessage">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="diagmessagetitle"></h4>
-			</div>
-			<div class="modal-body" id="diagmessagemsg">
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="diagmessagetitle"></h4>
+            </div>
+            <div class="modal-body" id="diagmessagemsg">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
 </div>

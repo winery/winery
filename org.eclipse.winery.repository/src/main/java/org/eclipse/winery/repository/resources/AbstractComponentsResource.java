@@ -68,254 +68,254 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentsResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentsResource.class);
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML(@DefaultValue("false") @QueryParam("full") boolean full) {
-		return Response.ok().entity(new Viewable("/jsp/genericcomponentpage.jsp", new GenericComponentPageData(this.getClass(), full))).build();
-	}
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response getHTML(@DefaultValue("false") @QueryParam("full") boolean full) {
+        return Response.ok().entity(new Viewable("/jsp/genericcomponentpage.jsp", new GenericComponentPageData(this.getClass(), full))).build();
+    }
 
-	@Path("{namespace}/")
-	public ComponentsOfOneNamespaceResource getAllResourcesInNamespaceResource(@PathParam("namespace") String namespace) {
-		return new ComponentsOfOneNamespaceResource(this.getClass(), namespace);
-	}
+    @Path("{namespace}/")
+    public ComponentsOfOneNamespaceResource getAllResourcesInNamespaceResource(@PathParam("namespace") String namespace) {
+        return new ComponentsOfOneNamespaceResource(this.getClass(), namespace);
+    }
 
-	/**
-	 * Creates a new component instance in the given namespace
-	 *
-	 * @param namespace plain namespace
-	 * @param name the name; used as id
-	 */
-	protected ResourceCreationResult onPost(String namespace, String name) {
-		ResourceCreationResult res;
-		if (StringUtils.isEmpty(namespace) || StringUtils.isEmpty(name)) {
-			res = new ResourceCreationResult(Status.BAD_REQUEST);
-		} else {
-			String id = Utils.createXMLidAsString(name);
-			TOSCAComponentId tcId;
-			try {
-				tcId = this.getTOSCAcomponentId(namespace, id, false);
-				res = this.createComponentInstance(tcId);
-				// in case the resource additionally supports a name attribute, we set the original name
-				if (res.getStatus().equals(Status.CREATED)) {
-					if ((tcId instanceof ServiceTemplateId) || (tcId instanceof ArtifactTemplateId) || (tcId instanceof PolicyTemplateId)) {
-						// these three types have an additional name (instead of a pure id)
-						// we store the name
-						IHasName resource = (IHasName) AbstractComponentsResource.getComponentInstaceResource(tcId);
-						resource.setName(name);
-					}
-				}
-			} catch (Exception e) {
-				AbstractComponentsResource.LOGGER.debug("Could not create id instance", e);
-				res = new ResourceCreationResult(Status.INTERNAL_SERVER_ERROR);
-			}
-		}
-		return res;
-	}
+    /**
+     * Creates a new component instance in the given namespace
+     *
+     * @param namespace plain namespace
+     * @param name the name; used as id
+     */
+    protected ResourceCreationResult onPost(String namespace, String name) {
+        ResourceCreationResult res;
+        if (StringUtils.isEmpty(namespace) || StringUtils.isEmpty(name)) {
+            res = new ResourceCreationResult(Status.BAD_REQUEST);
+        } else {
+            String id = Utils.createXMLidAsString(name);
+            TOSCAComponentId tcId;
+            try {
+                tcId = this.getTOSCAcomponentId(namespace, id, false);
+                res = this.createComponentInstance(tcId);
+                // in case the resource additionally supports a name attribute, we set the original name
+                if (res.getStatus().equals(Status.CREATED)) {
+                    if ((tcId instanceof ServiceTemplateId) || (tcId instanceof ArtifactTemplateId) || (tcId instanceof PolicyTemplateId)) {
+                        // these three types have an additional name (instead of a pure id)
+                        // we store the name
+                        IHasName resource = (IHasName) AbstractComponentsResource.getComponentInstaceResource(tcId);
+                        resource.setName(name);
+                    }
+                }
+            } catch (Exception e) {
+                AbstractComponentsResource.LOGGER.debug("Could not create id instance", e);
+                res = new ResourceCreationResult(Status.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return res;
+    }
 
-	/**
-	 * Creates a new component instance in the given namespace
-	 *
-	 * @param namespace plain namespace
-	 * @param name plain id
-	 * @param ignored this parameter is ignored, but necessary for
-	 *            {@link ArtifactTemplatesResource} to be able to accept the
-	 *            artifact type at a post
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response onPost(@FormParam("namespace") String namespace, @FormParam("name") String name, String ignored) {
-		ResourceCreationResult res = this.onPost(namespace, name);
-		return res.getResponse();
-	}
+    /**
+     * Creates a new component instance in the given namespace
+     *
+     * @param namespace plain namespace
+     * @param name plain id
+     * @param ignored this parameter is ignored, but necessary for
+     *            {@link ArtifactTemplatesResource} to be able to accept the
+     *            artifact type at a post
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response onPost(@FormParam("namespace") String namespace, @FormParam("name") String name, String ignored) {
+        ResourceCreationResult res = this.onPost(namespace, name);
+        return res.getResponse();
+    }
 
-	/**
-	 * Creates a TOSCAcomponentId for the given namespace / id combination
-	 *
-	 * Uses reflection to create a new instance
-	 */
-	protected TOSCAComponentId getTOSCAcomponentId(String namespace, String id, boolean URLencoded) {
-		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
-		return BackendUtils.getTOSCAcomponentId(idClass, namespace, id, URLencoded);
-	}
+    /**
+     * Creates a TOSCAcomponentId for the given namespace / id combination
+     *
+     * Uses reflection to create a new instance
+     */
+    protected TOSCAComponentId getTOSCAcomponentId(String namespace, String id, boolean URLencoded) {
+        Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
+        return BackendUtils.getTOSCAcomponentId(idClass, namespace, id, URLencoded);
+    }
 
-	/**
-	 * Creates a new instance of the current component
-	 *
-	 * @return <ul>
-	 *         <li>Status.CREATED (201) if the resource has been created,</li>
-	 *         <li>Status.CONFLICT if the resource already exists,</li>
-	 *         <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li>
-	 *         </ul>
-	 */
-	protected ResourceCreationResult createComponentInstance(TOSCAComponentId tcId) {
-		return BackendUtils.create(tcId);
-	}
+    /**
+     * Creates a new instance of the current component
+     *
+     * @return <ul>
+     *         <li>Status.CREATED (201) if the resource has been created,</li>
+     *         <li>Status.CONFLICT if the resource already exists,</li>
+     *         <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li>
+     *         </ul>
+     */
+    protected ResourceCreationResult createComponentInstance(TOSCAComponentId tcId) {
+        return BackendUtils.create(tcId);
+    }
 
-	@SuppressWarnings("unchecked")
-	private static Class<? extends AbstractComponentInstanceResource> getComponentInstanceResourceClassForType(String type) {
-		// Guess the package
-		String pkg = "org.eclipse.winery.repository.resources.";
+    @SuppressWarnings("unchecked")
+    private static Class<? extends AbstractComponentInstanceResource> getComponentInstanceResourceClassForType(String type) {
+        // Guess the package
+        String pkg = "org.eclipse.winery.repository.resources.";
 
-		pkg += Utils.getIntermediateLocationStringForType(type, ".");
+        pkg += Utils.getIntermediateLocationStringForType(type, ".");
 
-		// naming convention: Instance is named after container, but without the
-		// plural s
-		String className = pkg + "." + type + "Resource";
-		try {
-			return (Class<? extends AbstractComponentInstanceResource>) Class.forName(className);
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException("Could not find id class for component instance", e);
-		}
-	}
+        // naming convention: Instance is named after container, but without the
+        // plural s
+        String className = pkg + "." + type + "Resource";
+        try {
+            return (Class<? extends AbstractComponentInstanceResource>) Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Could not find id class for component instance", e);
+        }
+    }
 
-	/**
-	 *
-	 * @param namespace encoded namespace
-	 * @param id encoded id
-	 * @return an instance of the requested resource
-	 */
-	@Path("{namespace}/{id}/")
-	public R getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return this.getComponentInstaceResource(namespace, id, true);
-	}
+    /**
+     *
+     * @param namespace encoded namespace
+     * @param id encoded id
+     * @return an instance of the requested resource
+     */
+    @Path("{namespace}/{id}/")
+    public R getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstaceResource(namespace, id, true);
+    }
 
-	/**
-	 * @param encoded specifies whether namespace and id are encoded
-	 * @return an instance of the requested resource
-	 */
-	@SuppressWarnings("unchecked")
-	protected R getComponentInstaceResource(String namespace, String id, boolean encoded) {
-		TOSCAComponentId tcId;
-		try {
-			tcId = this.getTOSCAcomponentId(namespace, id, encoded);
-		} catch (Exception e) {
-			throw new IllegalStateException("Could not create id instance", e);
-		}
-		return (R) AbstractComponentsResource.getComponentInstaceResource(tcId);
-	}
+    /**
+     * @param encoded specifies whether namespace and id are encoded
+     * @return an instance of the requested resource
+     */
+    @SuppressWarnings("unchecked")
+    protected R getComponentInstaceResource(String namespace, String id, boolean encoded) {
+        TOSCAComponentId tcId;
+        try {
+            tcId = this.getTOSCAcomponentId(namespace, id, encoded);
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not create id instance", e);
+        }
+        return (R) AbstractComponentsResource.getComponentInstaceResource(tcId);
+    }
 
-	/**
-	 * @return an instance of the requested resource
-	 */
-	public R getComponentInstaceResource(QName qname) {
-		return this.getComponentInstaceResource(qname.getNamespaceURI(), qname.getLocalPart(), false);
-	}
+    /**
+     * @return an instance of the requested resource
+     */
+    public R getComponentInstaceResource(QName qname) {
+        return this.getComponentInstaceResource(qname.getNamespaceURI(), qname.getLocalPart(), false);
+    }
 
-	/**
-	 * @return an instance of the requested resource
-	 * @throws NotFoundException if resource doesn't exist.
-	 */
-	public static AbstractComponentInstanceResource getComponentInstaceResource(TOSCAComponentId tcId) {
-		String type = Util.getTypeForComponentId(tcId.getClass());
-		if (!Repository.INSTANCE.exists(tcId)) {
-			AbstractComponentsResource.LOGGER.debug("TOSCA component id " + tcId.toString() + " not found");
-			throw new NotFoundException("TOSCA component id " + tcId.toString() + " not found");
-		}
-		Class<? extends AbstractComponentInstanceResource> newResource = AbstractComponentsResource.getComponentInstanceResourceClassForType(type);
-		Constructor<?>[] constructors = newResource.getConstructors();
-		assert (constructors.length == 1);
-		AbstractComponentInstanceResource newInstance;
-		try {
-			newInstance = (AbstractComponentInstanceResource) constructors[0].newInstance(tcId);
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
-			AbstractComponentsResource.LOGGER.error("Could not instantiate sub resource " + tcId);
-			throw new IllegalStateException("Could not instantiate sub resource", e);
-		}
-		return newInstance;
-	}
+    /**
+     * @return an instance of the requested resource
+     * @throws NotFoundException if resource doesn't exist.
+     */
+    public static AbstractComponentInstanceResource getComponentInstaceResource(TOSCAComponentId tcId) {
+        String type = Util.getTypeForComponentId(tcId.getClass());
+        if (!Repository.INSTANCE.exists(tcId)) {
+            AbstractComponentsResource.LOGGER.debug("TOSCA component id " + tcId.toString() + " not found");
+            throw new NotFoundException("TOSCA component id " + tcId.toString() + " not found");
+        }
+        Class<? extends AbstractComponentInstanceResource> newResource = AbstractComponentsResource.getComponentInstanceResourceClassForType(type);
+        Constructor<?>[] constructors = newResource.getConstructors();
+        assert (constructors.length == 1);
+        AbstractComponentInstanceResource newInstance;
+        try {
+            newInstance = (AbstractComponentInstanceResource) constructors[0].newInstance(tcId);
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException e) {
+            AbstractComponentsResource.LOGGER.error("Could not instantiate sub resource " + tcId);
+            throw new IllegalStateException("Could not instantiate sub resource", e);
+        }
+        return newInstance;
+    }
 
-	/**
-	 * Returns resources for all known component instances
-	 *
-	 * Required by topologytemplateedit.jsp
-	 */
-	public Collection<AbstractComponentInstanceResource> getAll() {
-		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
-		ArrayList<AbstractComponentInstanceResource> res = new ArrayList<>(allTOSCAcomponentIds.size());
-		for (TOSCAComponentId id : allTOSCAcomponentIds) {
-			AbstractComponentInstanceResource r = AbstractComponentsResource.getComponentInstaceResource(id);
-			res.add(r);
-		}
-		return res;
-	}
+    /**
+     * Returns resources for all known component instances
+     *
+     * Required by topologytemplateedit.jsp
+     */
+    public Collection<AbstractComponentInstanceResource> getAll() {
+        Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
+        SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
+        ArrayList<AbstractComponentInstanceResource> res = new ArrayList<>(allTOSCAcomponentIds.size());
+        for (TOSCAComponentId id : allTOSCAcomponentIds) {
+            AbstractComponentInstanceResource r = AbstractComponentsResource.getComponentInstaceResource(id);
+            res.add(r);
+        }
+        return res;
+    }
 
-	/**
-	 * Used by org.eclipse.winery.repository.repository.client and by the
-	 * artifactcreationdialog.tag. Especially the "name" field is used there at
-	 * the UI
-	 *
-	 * @param grouped if given, the JSON output is grouped by namespace
-	 *
-	 * @return A list of all ids of all instances of this component type. If the
-	 *         "name" attribute is required, that name is used as id <br />
-	 *         Format:
-	 *         <code>[({"namespace": "<namespace>", "id": "<id>"},)* ]</code>. A
-	 *         <code>name<code> field is added if the model allows an additional name attribute
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getListOfAllIds(@QueryParam("grouped") String grouped) {
-		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
-		boolean supportsNameAttribute = Util.instanceSupportsNameAttribute(idClass);
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
-		JsonFactory jsonFactory = new JsonFactory();
-		StringWriter sw = new StringWriter();
-		try {
-			JsonGenerator jg = jsonFactory.createGenerator(sw);
-			// We produce org.eclipse.winery.repository.client.WineryRepositoryClient.NamespaceAndId by hand here
-			// Refactoring could move this class to common and fill it here
-			if (grouped == null) {
-				jg.writeStartArray();
-				for (TOSCAComponentId id : allTOSCAcomponentIds) {
-					jg.writeStartObject();
-					jg.writeStringField("namespace", id.getNamespace().getDecoded());
-					jg.writeStringField("id", id.getXmlId().getDecoded());
-					if (supportsNameAttribute) {
-						AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
-						String name = ((IHasName) componentInstaceResource).getName();
-						jg.writeStringField("name", name);
-					}
-					jg.writeEndObject();
-				}
-				jg.writeEndArray();
-			} else {
-				jg.writeStartObject();
-				Map<Namespace, ? extends List<? extends TOSCAComponentId>> groupedIds = allTOSCAcomponentIds.stream().collect(Collectors.groupingBy(id -> id.getNamespace()));
-				groupedIds.keySet().stream().sorted().forEach(namespace -> {
-					try {
-						jg.writeFieldName(namespace.getDecoded());
-						jg.writeStartArray();
-						groupedIds.get(namespace).forEach(id -> {
-							try {
-								jg.writeStartObject();
-								jg.writeStringField("id", id.getXmlId().getDecoded());
-								if (supportsNameAttribute) {
-									AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
-									String name = ((IHasName) componentInstaceResource).getName();
-									jg.writeStringField("name", name);
-								}
-								jg.writeEndObject();
-							} catch (IOException e) {
-								AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
-							}
-						});
-						jg.writeEndArray();
-					} catch (IOException e) {
-						AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
-					}
-				});
-				jg.writeEndObject();
-			}
-			jg.close();
-		} catch (Exception e) {
-			AbstractComponentsResource.LOGGER.error(e.getMessage(), e);
-			return "[]";
-		}
-		return sw.toString();
-	}
+    /**
+     * Used by org.eclipse.winery.repository.repository.client and by the
+     * artifactcreationdialog.tag. Especially the "name" field is used there at
+     * the UI
+     *
+     * @param grouped if given, the JSON output is grouped by namespace
+     *
+     * @return A list of all ids of all instances of this component type. If the
+     *         "name" attribute is required, that name is used as id <br />
+     *         Format:
+     *         <code>[({"namespace": "<namespace>", "id": "<id>"},)* ]</code>. A
+     *         <code>name<code> field is added if the model allows an additional name attribute
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getListOfAllIds(@QueryParam("grouped") String grouped) {
+        Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
+        boolean supportsNameAttribute = Util.instanceSupportsNameAttribute(idClass);
+        SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
+        JsonFactory jsonFactory = new JsonFactory();
+        StringWriter sw = new StringWriter();
+        try {
+            JsonGenerator jg = jsonFactory.createGenerator(sw);
+            // We produce org.eclipse.winery.repository.client.WineryRepositoryClient.NamespaceAndId by hand here
+            // Refactoring could move this class to common and fill it here
+            if (grouped == null) {
+                jg.writeStartArray();
+                for (TOSCAComponentId id : allTOSCAcomponentIds) {
+                    jg.writeStartObject();
+                    jg.writeStringField("namespace", id.getNamespace().getDecoded());
+                    jg.writeStringField("id", id.getXmlId().getDecoded());
+                    if (supportsNameAttribute) {
+                        AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
+                        String name = ((IHasName) componentInstaceResource).getName();
+                        jg.writeStringField("name", name);
+                    }
+                    jg.writeEndObject();
+                }
+                jg.writeEndArray();
+            } else {
+                jg.writeStartObject();
+                Map<Namespace, ? extends List<? extends TOSCAComponentId>> groupedIds = allTOSCAcomponentIds.stream().collect(Collectors.groupingBy(id -> id.getNamespace()));
+                groupedIds.keySet().stream().sorted().forEach(namespace -> {
+                    try {
+                        jg.writeFieldName(namespace.getDecoded());
+                        jg.writeStartArray();
+                        groupedIds.get(namespace).forEach(id -> {
+                            try {
+                                jg.writeStartObject();
+                                jg.writeStringField("id", id.getXmlId().getDecoded());
+                                if (supportsNameAttribute) {
+                                    AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
+                                    String name = ((IHasName) componentInstaceResource).getName();
+                                    jg.writeStringField("name", name);
+                                }
+                                jg.writeEndObject();
+                            } catch (IOException e) {
+                                AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
+                            }
+                        });
+                        jg.writeEndArray();
+                    } catch (IOException e) {
+                        AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
+                    }
+                });
+                jg.writeEndObject();
+            }
+            jg.close();
+        } catch (Exception e) {
+            AbstractComponentsResource.LOGGER.error(e.getMessage(), e);
+            return "[]";
+        }
+        return sw.toString();
+    }
 }

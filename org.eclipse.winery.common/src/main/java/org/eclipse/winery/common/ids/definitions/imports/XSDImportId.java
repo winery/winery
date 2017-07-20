@@ -23,12 +23,12 @@ import org.eclipse.winery.common.ids.XMLId;
  */
 public class XSDImportId extends GenericImportId {
 
-	public XSDImportId(String ns, String id, boolean encoded) {
-		super(ns, id, encoded, XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	}
+    public XSDImportId(String ns, String id, boolean encoded) {
+        super(ns, id, encoded, XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    }
 
-	public XSDImportId(Namespace ns, XMLId id) {
-		super(ns, id, XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	}
+    public XSDImportId(Namespace ns, XMLId id) {
+        super(ns, id, XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    }
 
 }

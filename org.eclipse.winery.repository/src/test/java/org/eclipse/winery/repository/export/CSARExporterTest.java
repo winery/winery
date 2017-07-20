@@ -39,57 +39,57 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class CSARExporterTest extends AbstractWineryWithRepositoryTest {
 
-	/**
-	 * Test multiple branches with different commits and all instances of all TOSCAComponents 
-	 */
-	@Parameterized.Parameters
-	public static Collection<Object[]> data() throws Exception {
-		AbstractWineryWithRepositoryTest.init();
-		Set<Object[]> res = new UnifiedSet<>();
-		for (String commitId: Arrays.asList("black")) {
-			setRevisionTo(commitId);
-			for (Class<? extends TOSCAComponentId> idClass : new Class[]{
-					ArtifactTypeId.class, ServiceTemplateId.class}) {
-				Repository.INSTANCE.getAllTOSCAComponentIds(idClass).stream().sorted().forEach(id -> res.add(new Object[]{commitId, id}));
-			}
-		}
-		return res;
-	}
+    /**
+     * Test multiple branches with different commits and all instances of all TOSCAComponents 
+     */
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() throws Exception {
+        AbstractWineryWithRepositoryTest.init();
+        Set<Object[]> res = new UnifiedSet<>();
+        for (String commitId: Arrays.asList("black")) {
+            setRevisionTo(commitId);
+            for (Class<? extends TOSCAComponentId> idClass : new Class[]{
+                    ArtifactTypeId.class, ServiceTemplateId.class}) {
+                Repository.INSTANCE.getAllTOSCAComponentIds(idClass).stream().sorted().forEach(id -> res.add(new Object[]{commitId, id}));
+            }
+        }
+        return res;
+    }
 
-	private final String commitId;
-	private TOSCAComponentId id;
+    private final String commitId;
+    private TOSCAComponentId id;
 
-	private ByteArrayOutputStream os;
-	private InputStream is;
-	
-	public CSARExporterTest(String commitId, TOSCAComponentId id) {
-		Logger.debug(this, "Debugging %s and %s", commitId, id);
-		this.commitId = commitId;
-		this.id = id;
-	}
-	
-	@Before
-	public void createOutputAndInputStream() throws Exception {
-		setRevisionTo(commitId);
-		CSARExporter exporter = new CSARExporter();
-		os = new ByteArrayOutputStream();
-		exporter.writeCSAR(id, os);
-		is = new ByteArrayInputStream(os.toByteArray());
-	}
-	
-	@Test
-	public void csarIsNotZeroBytes() throws Exception {
-		Assert.assertNotEquals(0, os.size());
-	}
+    private ByteArrayOutputStream os;
+    private InputStream is;
+    
+    public CSARExporterTest(String commitId, TOSCAComponentId id) {
+        Logger.debug(this, "Debugging %s and %s", commitId, id);
+        this.commitId = commitId;
+        this.id = id;
+    }
+    
+    @Before
+    public void createOutputAndInputStream() throws Exception {
+        setRevisionTo(commitId);
+        CSARExporter exporter = new CSARExporter();
+        os = new ByteArrayOutputStream();
+        exporter.writeCSAR(id, os);
+        is = new ByteArrayInputStream(os.toByteArray());
+    }
+    
+    @Test
+    public void csarIsNotZeroBytes() throws Exception {
+        Assert.assertNotEquals(0, os.size());
+    }
 
-	@Test
-	public void csarIsValidZip() throws Exception {
-		try (ZipInputStream zis = new ZipInputStream(is)) {
-			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
-				Assert.assertNotNull(entry.getName());
-			}
-		}
-	}
+    @Test
+    public void csarIsValidZip() throws Exception {
+        try (ZipInputStream zis = new ZipInputStream(is)) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                Assert.assertNotNull(entry.getName());
+            }
+        }
+    }
 
 }

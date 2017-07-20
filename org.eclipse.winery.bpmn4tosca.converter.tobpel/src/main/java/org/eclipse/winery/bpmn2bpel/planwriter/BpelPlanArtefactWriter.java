@@ -34,104 +34,104 @@ import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
 
 public class BpelPlanArtefactWriter {
 
-	private ManagementFlow mangagementFlow;
+    private ManagementFlow mangagementFlow;
 
-	public static String TEMPLATE_PATH = "./src/main/resources/templates/";
+    public static String TEMPLATE_PATH = "./src/main/resources/templates/";
 
-	private static Logger log = LoggerFactory.getLogger(BpelPlanArtefactWriter.class);
+    private static Logger log = LoggerFactory.getLogger(BpelPlanArtefactWriter.class);
 
-	public BpelPlanArtefactWriter(ManagementFlow mangagementFlow) {
-		this.mangagementFlow = mangagementFlow;
-		Velocity.init();
-	}
-
-
-	public String completePlanTemplate() {
-		log.debug("Completing BPEL process template...");
-
-		/* Traverse  the management flow and add the nodes in the order of their execution to a list */
-		List<Node> managementTaskSeq = new ArrayList<Node>();
-		GraphIterator<Node, Link> iterator = new DepthFirstIterator<Node, Link>(mangagementFlow);
-		while (iterator.hasNext()) {
-			Node node = iterator.next();
-			/* In this version the templates do only support management tasks and exclusive gateway */
-			if (node instanceof ManagementTask) {
-				/* Wrapper adds convenience functions that can be accessed from the Velocity template */
-				ManagementTaskTemplateWrapper taskWrapper = new ManagementTaskTemplateWrapper((ManagementTask) node); //TODO move to factory and remove setters from constructor
-				managementTaskSeq.add(taskWrapper);
-			} else if (node instanceof Gateway) {
-				managementTaskSeq.add(node);
-			}
-		}
+    public BpelPlanArtefactWriter(ManagementFlow mangagementFlow) {
+        this.mangagementFlow = mangagementFlow;
+        Velocity.init();
+    }
 
 
-		VelocityContext context = new VelocityContext();
-		/* In the Velocity template for each management task an own scope is created containing the variables and
-		 * activities required to perform the management task based on the properties of the respective task  */
-		Template planTemplate = Velocity.getTemplate(TEMPLATE_PATH + "bpel_management_plan_template.xml");
-		context.put("mngmtTaskList", managementTaskSeq);
-		StringWriter planWriter = new StringWriter();
-		planTemplate.merge( context, planWriter );
+    public String completePlanTemplate() {
+        log.debug("Completing BPEL process template...");
 
-		String bpelProcessContent = planWriter.toString();
+        /* Traverse  the management flow and add the nodes in the order of their execution to a list */
+        List<Node> managementTaskSeq = new ArrayList<Node>();
+        GraphIterator<Node, Link> iterator = new DepthFirstIterator<Node, Link>(mangagementFlow);
+        while (iterator.hasNext()) {
+            Node node = iterator.next();
+            /* In this version the templates do only support management tasks and exclusive gateway */
+            if (node instanceof ManagementTask) {
+                /* Wrapper adds convenience functions that can be accessed from the Velocity template */
+                ManagementTaskTemplateWrapper taskWrapper = new ManagementTaskTemplateWrapper((ManagementTask) node); //TODO move to factory and remove setters from constructor
+                managementTaskSeq.add(taskWrapper);
+            } else if (node instanceof Gateway) {
+                managementTaskSeq.add(node);
+            }
+        }
 
-		log.debug("Completed BPEL process template" + bpelProcessContent);
 
-		return bpelProcessContent;
+        VelocityContext context = new VelocityContext();
+        /* In the Velocity template for each management task an own scope is created containing the variables and
+         * activities required to perform the management task based on the properties of the respective task  */
+        Template planTemplate = Velocity.getTemplate(TEMPLATE_PATH + "bpel_management_plan_template.xml");
+        context.put("mngmtTaskList", managementTaskSeq);
+        StringWriter planWriter = new StringWriter();
+        planTemplate.merge( context, planWriter );
 
-	}
+        String bpelProcessContent = planWriter.toString();
 
-	public String completePlanWsdlTemplate() {
-		log.debug("Completing BPEL WSDL template");
+        log.debug("Completed BPEL process template" + bpelProcessContent);
 
-		VelocityContext context = new VelocityContext();
-		Template wsdlTemplate = Velocity.getTemplate(TEMPLATE_PATH + "management_plan_wsdl_template.xml");
+        return bpelProcessContent;
 
-		StringWriter wsdlWriter = new StringWriter();
-		wsdlTemplate.merge( context, wsdlWriter );
+    }
 
-		String bpelProcessWSDL = wsdlWriter.toString();
+    public String completePlanWsdlTemplate() {
+        log.debug("Completing BPEL WSDL template");
 
-		log.debug("Completed BPEL WSDL template" + bpelProcessWSDL);
+        VelocityContext context = new VelocityContext();
+        Template wsdlTemplate = Velocity.getTemplate(TEMPLATE_PATH + "management_plan_wsdl_template.xml");
 
-		return bpelProcessWSDL;
-	}
+        StringWriter wsdlWriter = new StringWriter();
+        wsdlTemplate.merge( context, wsdlWriter );
 
-	public String completeInvokerWsdlTemplate() {
-		log.debug("Retrieving service invoker WSDL");
+        String bpelProcessWSDL = wsdlWriter.toString();
 
-		VelocityContext context = new VelocityContext();
-		Template invokerWsdlTemplate = Velocity.getTemplate(TEMPLATE_PATH + "invoker.wsdl");
+        log.debug("Completed BPEL WSDL template" + bpelProcessWSDL);
 
-		StringWriter wsdlWriter = new StringWriter();
-		invokerWsdlTemplate.merge( context, wsdlWriter );
+        return bpelProcessWSDL;
+    }
 
-		return wsdlWriter.toString();
-	}
+    public String completeInvokerWsdlTemplate() {
+        log.debug("Retrieving service invoker WSDL");
 
-	public String completeInvokerXsdTemplate() {
-		log.debug("Retrieving service invoker XSD");
+        VelocityContext context = new VelocityContext();
+        Template invokerWsdlTemplate = Velocity.getTemplate(TEMPLATE_PATH + "invoker.wsdl");
 
-		VelocityContext context = new VelocityContext();
-		Template invokerXsdTemplate = Velocity.getTemplate(TEMPLATE_PATH + "invoker.xsd");
+        StringWriter wsdlWriter = new StringWriter();
+        invokerWsdlTemplate.merge( context, wsdlWriter );
 
-		StringWriter xsdWriter = new StringWriter();
-		invokerXsdTemplate.merge( context, xsdWriter );
+        return wsdlWriter.toString();
+    }
 
-		return xsdWriter.toString();
-	}
+    public String completeInvokerXsdTemplate() {
+        log.debug("Retrieving service invoker XSD");
 
-	public String completeDeploymentDescriptorTemplate() {
-		log.debug("Retrieving Apache ODE deployment descriptor");
+        VelocityContext context = new VelocityContext();
+        Template invokerXsdTemplate = Velocity.getTemplate(TEMPLATE_PATH + "invoker.xsd");
 
-		VelocityContext context = new VelocityContext();
-		Template invokerXsdTemplate = Velocity.getTemplate(TEMPLATE_PATH + "deploy.xml");
+        StringWriter xsdWriter = new StringWriter();
+        invokerXsdTemplate.merge( context, xsdWriter );
 
-		StringWriter xsdWriter = new StringWriter();
-		invokerXsdTemplate.merge( context, xsdWriter );
+        return xsdWriter.toString();
+    }
 
-		return xsdWriter.toString();
-	}
+    public String completeDeploymentDescriptorTemplate() {
+        log.debug("Retrieving Apache ODE deployment descriptor");
+
+        VelocityContext context = new VelocityContext();
+        Template invokerXsdTemplate = Velocity.getTemplate(TEMPLATE_PATH + "deploy.xml");
+
+        StringWriter xsdWriter = new StringWriter();
+        invokerXsdTemplate.merge( context, xsdWriter );
+
+        return xsdWriter.toString();
+    }
 
 
 

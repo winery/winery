@@ -20,11 +20,11 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 
 public class ImportMetaInformation {
 
-	public final List<String> errors;
-	public Optional<ServiceTemplateId> entryServiceTemplate = Optional.empty();
+    public final List<String> errors;
+    public Optional<ServiceTemplateId> entryServiceTemplate = Optional.empty();
 
-	public ImportMetaInformation() {
-		this.errors = new ArrayList<>();
-	}
+    public ImportMetaInformation() {
+        this.errors = new ArrayList<>();
+    }
 
 }

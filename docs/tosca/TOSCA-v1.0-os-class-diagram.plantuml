@@ -22,10 +22,10 @@ Specification: http://docs.oasis-open.org/tosca/TOSCA/v1.0/TOSCA-v1.0.html
 'We're better off with manual setting
 
 skinparam class {
-	BackgroundColor White
-	ArrowColor Black
-	BorderColor Black
-	LegendBackgroundColor White
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+    LegendBackgroundColor White
 }
 
 skinparam stereotypeCBackgroundColor LightGray

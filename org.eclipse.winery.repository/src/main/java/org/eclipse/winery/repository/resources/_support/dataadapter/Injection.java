@@ -19,18 +19,18 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 
 //@XmlType
 public class Injection {
-	@XmlElement(name = "hostedNodeID")
-	protected String hostedNodeID;
-	@XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "NodeTemplate")
-	protected TNodeTemplate hostNodeTemplate;
+    @XmlElement(name = "hostedNodeID")
+    protected String hostedNodeID;
+    @XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "NodeTemplate")
+    protected TNodeTemplate hostNodeTemplate;
 
-	public Injection() {
-	}
+    public Injection() {
+    }
 
-	public Injection(String hostedNodeID, TNodeTemplate hostNodeTemplate) {
-		this.hostedNodeID = hostedNodeID;
-		this.hostNodeTemplate = hostNodeTemplate;
-	}
+    public Injection(String hostedNodeID, TNodeTemplate hostNodeTemplate) {
+        this.hostedNodeID = hostedNodeID;
+        this.hostNodeTemplate = hostNodeTemplate;
+    }
 
 }
 

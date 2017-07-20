@@ -18,35 +18,35 @@ import java.util.TreeSet;
 
 public class Select2DataWithOptGroups {
 
-	Map<String, Select2OptGroup> idx = new HashMap<>();
+    Map<String, Select2OptGroup> idx = new HashMap<>();
 
 
-	/**
-	 * Add an item to a group
-	 *
-	 * @param group the group
-	 * @param id the id of the item
-	 * @param text the text of the item {@inheritDoc}
-	 */
-	public void add(String group, String id, String text) {
-		Select2OptGroup optGroup = this.idx.get(group);
-		if (optGroup == null) {
-			optGroup = new Select2OptGroup(group);
-			this.idx.put(group, optGroup);
-		}
+    /**
+     * Add an item to a group
+     *
+     * @param group the group
+     * @param id the id of the item
+     * @param text the text of the item {@inheritDoc}
+     */
+    public void add(String group, String id, String text) {
+        Select2OptGroup optGroup = this.idx.get(group);
+        if (optGroup == null) {
+            optGroup = new Select2OptGroup(group);
+            this.idx.put(group, optGroup);
+        }
 
-		Select2DataItem item = new Select2DataItem(id, text);
-		optGroup.addItem(item);
-	}
+        Select2DataItem item = new Select2DataItem(id, text);
+        optGroup.addItem(item);
+    }
 
-	public SortedSet<Select2OptGroup> asSortedSet() {
-		// convert the index to the real result
-		SortedSet<Select2OptGroup> res = new TreeSet<>();
-		for (Select2OptGroup optGroup : this.idx.values()) {
-			res.add(optGroup);
-		}
+    public SortedSet<Select2OptGroup> asSortedSet() {
+        // convert the index to the real result
+        SortedSet<Select2OptGroup> res = new TreeSet<>();
+        for (Select2OptGroup optGroup : this.idx.values()) {
+            res.add(optGroup);
+        }
 
-		return res;
+        return res;
 
-	}
+    }
 }
