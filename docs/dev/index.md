@@ -36,7 +36,7 @@ Table of contents:
   * [TOSCAComponentId](#toscacomponentid)
   * [Filesystem Layout](#filesystem-layout)
   * [REST Resources](#rest-resources)
-  * [URL Schema](#url-schema)
+  * [URL Structure](#url-structure)
   * [Collections of Components](#collections-of-components)
   * [Component Instances](#component-instances)
   * [AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal](#abstractcomponentinstanceresourcewithnamederivedfromabstractfinal)
@@ -59,10 +59,12 @@ Table of contents:
   * [Faster Redeployment](#faster-redeployment)
 - [Miscellaneous Hints](#miscellaneous-hints)
   * [Generating the Right Output](#generating-the-right-output)
+  * [Trouble shooting IntelliJ](#trouble-shooting-intellij)
   * [Other Troubleshootings](#other-troubleshootings)
   * ["name" vs. "id" at Entities](#name-vs-id-at-entities)
   * [Possible Attachments of Artifacts](#possible-attachments-of-artifacts)
 - [Example Repository](#example-repository)
+- [Recommended Programming Literature](#recommended-programming-literature)
 - [Abbreviations](#abbreviations)
 - [References](#references)
 - [License](#license)
@@ -175,12 +177,14 @@ Future versions might redesign the backend to use a QName as the unique key.
 
 ## Winery's Id System
 
-The general idea behind the storage of Winery is that each entity comes with an id. The id is either self
-contained or references a parent id, where the element is nested in. All Ids inherit from GenericId.  
-Figure 2 shows the inheritance hierarchy of GenericId. The child "AdminId" is used for all administrative elements
-required for internal management. "DummyParentForGeneratedXSDRef" is required during the export of 
-generated XML Schema Definitions due to the use of Winery's key/value properties. "TOSCAComponentId" is
-the parent element for all TOSCA Elements which may be defined directly as child of a "Definitions" element.
+The general idea behind the storage of Winery is that each entity comes with an id.
+The id is either self contained or references a parent id, where the element is nested in.
+All Ids inherit from GenericId.
+
+Figure 2 shows the inheritance hierarchy of `GenericId`.
+The child `AdminId` is used for all administrative elements required for internal management.
+`DummyParentForGeneratedXSDRef` is required during the export of generated XML Schema Definitions due to the use of Winery's key/value properties.
+`TOSCAComponentId` is the parent element for all TOSCA Elements which may be defined directly as child of a "Definitions" element.
 All other elements have "TOSCAElementId" as parent.
 
 ![GenericId Hierarchy](graphics/GenericIdHierarchy.png)  
@@ -188,11 +192,13 @@ All other elements have "TOSCAElementId" as parent.
 
 ### AdminId
 
-Figure 3 shows the inheritance hierarchy of AdminId. "NamespacesId" is used as container for a mapping file
-from namespace prefixes to namespaces. "TypesId" is the parent element of all types user can set. This are 
-not node types etc., but ConstraintTypes (for Constraints), PlanLanguages (for plans), and PlanTypes (for plans).
-The inclusion of "PlanLanguages" is due to reuse of the class AbstractTypesManager for plan languages. TOSCA
-does not restrict these enumerations. Therefore, Winery manages all known types for itself.
+Figure 3 shows the inheritance hierarchy of `AdminId`.
+`NamespacesId` is used as container for a mapping file from namespace prefixes to namespaces. 
+`TypesId` is the parent element of all types user can set.
+These are not node types etc., but `ConstraintTypes` (for Constraints), `PlanLanguages` (for plans), and `PlanTypes` (for plans).
+The inclusion of `PlanLanguages` is due to reuse of the class `AbstractTypesManager` for plan languages.
+TOSCA does not restrict these enumerations.
+Therefore, Winery manages all known types for itself.
 
 ![AdminId Hierarchy](graphics/AdminIdHierarchy.png)  
 **Figure 3: Inheritance hierarchy of AdminId**
@@ -207,10 +213,10 @@ id attribute. This is ensured by ToscaComponentId. Figure 4 shows the inheritanc
 **Figure 4: inheritance hierarchy of ToscaComponentId**
 
 
-"EntityTemplateId" collects all Entity Templates directly nested in a Definitions element. As a result, the ids of
-NodeTemplates or RelationshipTemplates do not inherit from EntityTemplateId. They are contained in a Service Template
-and not directly in the Definitions element. Thus, the only children of EntityTemplateId are ArtifactTemplateId,
-PolicyTemplateId, and ServiceTemplateId.
+`EntityTemplateId` collects all Entity Templates directly nested in a Definitions element.
+As a result, the ids of NodeTemplates or RelationshipTemplates do not inherit from EntityTemplateId.
+They are contained in a Service Template and not directly in the Definitions element.
+Thus, the only children of EntityTemplateId are ArtifactTemplateId, PolicyTemplateId, and ServiceTemplateId.
 
 "EntityTypeId" collects all Entity Types directly nested in a TDefinitions element.These are IDs for ArtifactTypes,
 CapabilityTypes, PolicyTypes, RequirementTypes, NodeTypes and RelationshipTypes. Node Types and RelationshipTypes
@@ -219,8 +225,8 @@ have the direct parent "TopologyGraphElementTypeId" as these two Types form the 
 "EntityTypeImplementationId" is the parent id for NodeTypeImplementationId and RelationshipTypeImplementationId and thus
 subsumes the two possible entities which can be implementations.
 
-"GenericImportId" is an artificial entity. It is used to be able to store imports of an imported CSAR. These
-imports might be XSD definitions, vut als WSDL files.
+"GenericImportId" is an artificial entity. It is used to be able to store imports of an imported CSAR.
+These imports might be XSD definitions, but also WSDL files.
 
 ### Filesystem Layout
 
@@ -228,50 +234,50 @@ See [RepositoryLayout](RepositoryLayout).
 
 ### REST Resources
 
-All resources are implemented in classes in the package org.eclipse.winery.repository.resources. We call all
-elements directly nested in the definitions element "components". They are implemented using JAX RS 1.1 
-using Jersey 1.17
+All resources are implemented in classes in the package `org.eclipse.winery.repository.resources`.
+We call all elements directly nested in the definitions element "components".
+They are implemented using JAX RS 1.1 using [Jersey 1.x](https://jersey.github.io/documentation/1.19.1/index.html).
 
-The full set the API is used by the Type, Template, and Artifact Management UI (see Section 10). A subset of the
-API is used at IWineryRepository (see Section 8.4).
+The full set the API is used by the Type, Template, and Artifact Management UI (see [User Documentation](../user/)).
+A subset of the API is used at [IWineryRepository](#iwineryrepository).
 
-### URL Schema
+### URL Structure
 
-The idea behind the URL schema may shortly describes by ROOT/<componenttype>s/<double-encoded-namespace>/<double-encoded-id>/<resource-specific-part>,
-which makes the structure similar to the file system (cf. Section 6). Encoding is done following RFC 3986. An online
-URL-encoder may be found at: http://www.albinoresearch.com/misc/urlencode.php .
+The idea behind the URL structure may shortly describes by `ROOT/<componenttype>s/<double-encoded-namespace>/<double-encoded-id>/<resource-specific-part>`, which makes the structure similar to one of the [file system](RepositoryLayout).
+Encoding is done following [RFC 3986](https://tools.ietf.org/html/rfc3986#section-2.1). 
+An online URL-encoder may be found at: <http://www.albinoresearch.com/misc/urlencode.php>.
 
-For instance, the NodeType "NT1" in the namespace "http://www.example.com/NodeTypes" is found behind the URL "nodetypes/http%253A%252F%252Fexample.com%252FNodeTypes/NT1/".
-As the browser decodes the URL, the namespace and the id are double encoded. note the additional encoding of the symbol "%" in
-comparison to the encoding at the filesystem (see Section 6).
+For instance, the NodeType "NT1" in the namespace `http://www.example.com/NodeTypes` is found at the URL `nodetypes/http%253A%252F%252Fexample.com%252FNodeTypes/NT1/`.
+As the browser decodes the URL, the namespace and the id are double encoded. 
+Note the additional encoding of the symbol `%` in comparison to the encoding at the filesystem.
 
-The part until "<componenttype>s"is realized by "AbstractComponentsResource" and its subclasses (see Section 7.2).
-The resource specific part is realized by subclasses of AbstractComponentInstanceResource (see Section 7.3).
+The part until `<componenttype>s` is realized by ["AbstractComponentsResource" and its subclasses](#collections-of-components).
+The resource specific part is realized by [subclasses of AbstractComponentInstanceResource](#component-instances).
+
+More information on encoding is given at [Encoding](Encoding).
 
 ### Collections of Components
 
-
 ![AbstractCompoenentResource Inheritance](graphics/InheritanceOfAbstractComponentResource.png)  
 **Figure 6: Inheritance of AbstractComponentResource**
-
 
 Figure 6 shows the inheritance of AbstractComponentsResource. It contains an intermediate class
 "AbstractComponentsWithTypeReferenceResource" which handles a POST with an additional type. It is used at
 all components which have a type associated. These are artifact templates, node type implementations,
 relationship type implementations and policy templates.
 
-All logic is implemented in AbstractComponentsRessource. it handles creation of resources (using POST) and
-creation of AbstractComponentInstanceResources.
+All logic is implemented in AbstractComponentsRessource.
+It handles creation of resources (using POST) and creation of AbstractComponentInstanceResources.
 
 ### Component Instances
-
 
 ![AbstractComponentInstanceResource Inheritance](graphics/InheritanceOfAbstractComponentInstanceResource.png)  
 **Figure 7: Inheritance of AbstractComponentInstanceResource**
 
-
-Figure 7 shows the inheritance of AbstractComponentInstanceResource. For each component, a class exists.
-Using Intermediate classes, common properties are handled. These are explained in the following sections.
+Figure 7 shows the inheritance of AbstractComponentInstanceResource.
+For each component, a class exists.
+Using Intermediate classes, common properties are handled.
+These are explained in the following sections.
 
 ### AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal
 
@@ -551,11 +557,7 @@ The test repository is avaiable at https://github.com/winery/test-repository.
 
 Copyright (c) 2013-2017 University of Stuttgart.
 
-All rights reserved. This program and the accompanying materials
-are made available under the terms of the [Eclipse Public License v1.0]
-and the [Apache License v2.0] which both accompany this distribution,
-and are available at http://www.eclipse.org/legal/epl-v10.html
-and http://www.apache.org/licenses/LICENSE-2.0
+All rights reserved. Made available under the terms of the [Eclipse Public License v1.0] and the [Apache License v2.0] which both accompany this distribution.
 
  [Apache Maven]: https://maven.apache.org/
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
