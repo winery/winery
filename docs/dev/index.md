@@ -1,8 +1,18 @@
 # Eclipse Winery™ Developer Guide
 
+This document provides (i) guides about development and (ii) design ideas of Winery.
+
+Other sources of information:
+
+- [ToolChain](ToolChain) - GitHub workflow
+- [CodeHeaders](CodeHeaders) - documentation about required code headers
+- [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
+- [TOSCA](../tosca/) - notes on OASIS TOSCA
+
+Table of contents:
+
 <!-- toc -->
 
-- [Overview](#overview)
 - [Development Setup](#development-setup)
   * [IntelliJ Ultimate setup](#intellij-ultimate-setup)
   * [Eclipse setup](#eclipse-setup)
@@ -58,17 +68,6 @@
 - [License](#license)
 
 <!-- tocstop -->
-
-## Overview
-
-This document provides (i) guides about development and (ii) design ideas of Winery.
-
-Other sources of information:
-
-- [ToolChain](ToolChain) - GitHub workflow
-- [CodeHeaders](CodeHeaders) - documentation about required code headers
-- [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
-- [TOSCA](../tosca/) - notes on OASIS TOSCA
 
 ## Development Setup
 
@@ -475,6 +474,8 @@ for hot code replacement in the Tomcat in Eclipse.
 
 ### Other Troubleshootings
 
+When executing tests, winery logs its output in `winery-debug.log`, too.
+
 In case some JavaScript libraries cannot be found by the browser, execute `bower prune`, `bower install`, `bower update` in both `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler`.
 
 If `mvn package` does not work in a sub project, execute `mvn install` in the root. [Source](http://stackoverflow.com/q/29712865/873282)
@@ -525,6 +526,8 @@ Deployment Artifacts (DAs) may be attached at
 An example Repository is available at
 https://github.com/OpenTOSCA/OpenTOSCA.github.io/blob/master/third-party/winery-repository.zip .
 One can import the repository by *Administration*, then *Repository* and finally *Import repository*.
+
+The test repository is avaiable at https://github.com/winery/test-repository.
 
 ## Recommended Programming Literature
 

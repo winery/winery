@@ -16,15 +16,12 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
+import org.eclipse.winery.repository.AbstractWineryWithRepositoryTest;
 import org.eclipse.winery.repository.WineryUsingHttpServer;
 
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -34,20 +31,16 @@ import org.xmlunit.matchers.CompareMatcher;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.Is.is;
 
-public abstract class AbstractResourceTest {
+public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryTest {
 
 	// with trailing /
 	private static final String PREFIX = "http://localhost:9080/winery/";
-
-	private static Git git;
 
 	private static Server server;
 
 	@BeforeClass
 	public static void init() throws Exception {
-		// enable git-backed repository
-		PrefsTestEnabledGitBackedRepository prefsTestEnabledGitBackedRepository = new PrefsTestEnabledGitBackedRepository();
-		git = prefsTestEnabledGitBackedRepository.git;
+		AbstractWineryWithRepositoryTest.init();
 		server = WineryUsingHttpServer.createHttpServer(9080);
 		server.start();
 	}
@@ -55,16 +48,6 @@ public abstract class AbstractResourceTest {
 	@AfterClass
 	public static void shutdown() throws Exception {
 		server.stop();
-	}
-
-	protected void setRevisionTo(String ref) throws GitAPIException {
-		// TODO: newer JGit version: setForce(true)
-		git.clean().setCleanDirectories(true).call();
-
-		this.git.reset()
-				.setMode(ResetCommand.ResetType.HARD)
-				.setRef(ref)
-				.call();
 	}
 
 	public static String readFromClasspath(String fileName) {
