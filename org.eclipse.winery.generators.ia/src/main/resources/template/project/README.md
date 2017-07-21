@@ -59,5 +59,5 @@ In case you want to install it automatically:
     - `M2_HOME`: `C:\Path\where\your\maven\was\unzipped\to` (no backslash at the end)
     - `M2`: `%M2_HOME%\bin`
     - `MAVEN_OPTS`: `-Xms256m -Xmx512m`
-	- Append `;%M2%` to the `Path` environment variable. Make sure to separate the new entry with a semicolon (`;`) from the last one.
+  - Append `;%M2%` to the `Path` environment variable. Make sure to separate the new entry with a semicolon (`;`) from the last one.
 - After that you have to open a new command line windows (if you already opened one) to let the changes take effect.

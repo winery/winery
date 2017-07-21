@@ -457,12 +457,12 @@ for hot code replacement in the Tomcat in Eclipse.
 
 ### Generating the Right Output
 
-*	If necessary, set the content type of the JSP: <%@page contentType="image/svg+xml; charset=utf-8" %>
-  *		Otherwise, answer is plain text (and not XML)
+*  If necessary, set the content type of the JSP: <%@page contentType="image/svg+xml; charset=utf-8" %>
+  *    Otherwise, answer is plain text (and not XML)
 
-*	XML documents have to contain the header <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-  *		standalone=yes means that there is no external DTD
-  *		eleminates parsing errors in firefox
+*  XML documents have to contain the header <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  *    standalone=yes means that there is no external DTD
+  *    eleminates parsing errors in firefox
 
 ### Trouble shooting IntelliJ
 
@@ -518,9 +518,9 @@ Implementation Artifacts (IAs) may be attached at
 * NodeTemplate
 
 Deployment Artifacts (DAs) may be attached at
-*NodeType
-*NodeTemplate
-	
+* NodeType
+* NodeTemplate
+
 ## Example Repository
 
 An example Repository is available at
