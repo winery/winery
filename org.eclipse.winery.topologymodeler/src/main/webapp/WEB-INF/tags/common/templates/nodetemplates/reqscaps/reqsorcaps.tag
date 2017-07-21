@@ -31,33 +31,33 @@
 <%@tag import="org.eclipse.winery.common.ModelUtilities"%>
 
 <div class="${cssClassPrefix}Container">
-	<div class="header">${headerLabel}</div>
-	<div class="content">
-		<c:forEach var="item" items="${list}">
-			<div class="reqorcap ${cssClassPrefix} row" id="${item.id}">
-				<div class="col-xs-4 id reqorcap">${item.id}</div>
-				<div class="col-xs-4 name reqorcap">${item.name}</div>
-				<div class="col-xs-4 type reqorcap">${wc:qname2href(repositoryURL, TReqOrCapTypeClass, item.type)}</div>
-				<c:set var="type" value="${wc:getType(client, item.type, TReqOrCapTypeClass)}" />
-				<props:properties
-					template="${item}"
-					propertiesDefinition="${type.propertiesDefinition}"
-					wpd="${wc:winerysPropertiesDefinition(type)}"
-					pathToImages="${pathToImages}" />
-			</div>
-		</c:forEach>
-		<div class="addnewreqorcap row" style="display:none;">
-			<button class="btn btn-default btn-xs center-block" onclick="showAddOrUpdateDiagFor${shortName}($(this).parent().parent().parent().parent().attr('id'));">Add new</button>
-		</div>
-	</div>
+    <div class="header">${headerLabel}</div>
+    <div class="content">
+        <c:forEach var="item" items="${list}">
+            <div class="reqorcap ${cssClassPrefix} row" id="${item.id}">
+                <div class="col-xs-4 id reqorcap">${item.id}</div>
+                <div class="col-xs-4 name reqorcap">${item.name}</div>
+                <div class="col-xs-4 type reqorcap">${wc:qname2href(repositoryURL, TReqOrCapTypeClass, item.type)}</div>
+                <c:set var="type" value="${wc:getType(client, item.type, TReqOrCapTypeClass)}" />
+                <props:properties
+                    template="${item}"
+                    propertiesDefinition="${type.propertiesDefinition}"
+                    wpd="${wc:winerysPropertiesDefinition(type)}"
+                    pathToImages="${pathToImages}" />
+            </div>
+        </c:forEach>
+        <div class="addnewreqorcap row" style="display:none;">
+            <button class="btn btn-default btn-xs center-block" onclick="showAddOrUpdateDiagFor${shortName}($(this).parent().parent().parent().parent().attr('id'));">Add new</button>
+        </div>
+    </div>
 </div>
 
 <%-- parameters: o.id, o.name, o.type, o.xml. Has to be consistent with above HTML --%>
 <script type="text/x-tmpl" id="tmpl-${shortName}">
-	<div class="reqorcap ${cssClassPrefix}" id="{%=o.id%}">
-		<div class="col-xs-4 id reqorcap">{%=o.id%}</div>
-		<div class="col-xs-4 name reqorcap">{%=o.name%}</div>
-		<div class="col-xs-4 type reqorcap">{%#require("winery-support-common").qname2href("${repositoryURL}", "${typeURLFragment}", o.type)%}</div>
-		<div id="toBeReplacedByProperties"></div>
-	</div>
+    <div class="reqorcap ${cssClassPrefix}" id="{%=o.id%}">
+        <div class="col-xs-4 id reqorcap">{%=o.id%}</div>
+        <div class="col-xs-4 name reqorcap">{%=o.name%}</div>
+        <div class="col-xs-4 type reqorcap">{%#require("winery-support-common").qname2href("${repositoryURL}", "${typeURLFragment}", o.type)%}</div>
+        <div id="toBeReplacedByProperties"></div>
+    </div>
 </script>

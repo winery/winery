@@ -30,66 +30,66 @@ import org.slf4j.LoggerFactory;
 
 public class ImplementationsOfOneRelationshipTypeResource extends ImplementationsOfOneType {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationsOfOneRelationshipTypeResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImplementationsOfOneRelationshipTypeResource.class);
 
 
-	public ImplementationsOfOneRelationshipTypeResource(RelationshipTypeId typeId) {
-		super(typeId);
-	}
+    public ImplementationsOfOneRelationshipTypeResource(RelationshipTypeId typeId) {
+        super(typeId);
+    }
 
 
-	/**
-	 * required by implementations.jsp
-	 *
-	 * Method similar top the one of ImplementationsOfOneNodeTypeResource
-	 *
-	 * @return for each node type implementation implementing the associated
-	 *         node type
-	 */
-	@Override
-	public String getImplementationsTableData() {
-		String res;
-		JsonFactory jsonFactory = new JsonFactory();
-		StringWriter tableDataSW = new StringWriter();
-		try {
-			JsonGenerator jGenerator = jsonFactory.createGenerator(tableDataSW);
-			jGenerator.writeStartArray();
+    /**
+     * required by implementations.jsp
+     *
+     * Method similar top the one of ImplementationsOfOneNodeTypeResource
+     *
+     * @return for each node type implementation implementing the associated
+     *         node type
+     */
+    @Override
+    public String getImplementationsTableData() {
+        String res;
+        JsonFactory jsonFactory = new JsonFactory();
+        StringWriter tableDataSW = new StringWriter();
+        try {
+            JsonGenerator jGenerator = jsonFactory.createGenerator(tableDataSW);
+            jGenerator.writeStartArray();
 
-			Collection<RelationshipTypeImplementationId> allNTIids = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
-			for (RelationshipTypeImplementationId ntiID : allNTIids) {
-				jGenerator.writeStartArray();
-				jGenerator.writeString(ntiID.getNamespace().getDecoded());
-				jGenerator.writeString(ntiID.getXmlId().getDecoded());
-				jGenerator.writeEndArray();
-			}
-			jGenerator.writeEndArray();
-			jGenerator.close();
-			tableDataSW.close();
-			res = tableDataSW.toString();
-		} catch (Exception e) {
-			ImplementationsOfOneRelationshipTypeResource.LOGGER.error(e.getMessage(), e);
-			res = "[]";
-		}
-		return res;
-	}
+            Collection<RelationshipTypeImplementationId> allNTIids = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
+            for (RelationshipTypeImplementationId ntiID : allNTIids) {
+                jGenerator.writeStartArray();
+                jGenerator.writeString(ntiID.getNamespace().getDecoded());
+                jGenerator.writeString(ntiID.getXmlId().getDecoded());
+                jGenerator.writeEndArray();
+            }
+            jGenerator.writeEndArray();
+            jGenerator.close();
+            tableDataSW.close();
+            res = tableDataSW.toString();
+        } catch (Exception e) {
+            ImplementationsOfOneRelationshipTypeResource.LOGGER.error(e.getMessage(), e);
+            res = "[]";
+        }
+        return res;
+    }
 
-	@Override
-	public String getType() {
-		return "relationshiptype";
-	}
+    @Override
+    public String getType() {
+        return "relationshiptype";
+    }
 
-	@Override
-	public String getTypeStr() {
-		return "Relationship Type";
-	}
+    @Override
+    public String getTypeStr() {
+        return "Relationship Type";
+    }
 
-	@Override
-	public Response getJSON() {
-		Collection<RelationshipTypeImplementationId> allImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
-		ArrayList<QName> res = new ArrayList<>(allImplementations.size());
-		for (RelationshipTypeImplementationId id : allImplementations) {
-			res.add(id.getQName());
-		}
-		return Response.ok().entity(res).build();
-	}
+    @Override
+    public Response getJSON() {
+        Collection<RelationshipTypeImplementationId> allImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
+        ArrayList<QName> res = new ArrayList<>(allImplementations.size());
+        for (RelationshipTypeImplementationId id : allImplementations) {
+            res.add(id.getQName());
+        }
+        return Response.ok().entity(res).build();
+    }
 }

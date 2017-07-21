@@ -21,21 +21,21 @@ import com.sun.jersey.api.view.Viewable;
 
 public class AppliesToResource {
 
-	private final PolicyTypeResource policyTypeResource;
+    private final PolicyTypeResource policyTypeResource;
 
 
-	public AppliesToResource(PolicyTypeResource policyTypeResource) {
-		this.policyTypeResource = policyTypeResource;
-	}
+    public AppliesToResource(PolicyTypeResource policyTypeResource) {
+        this.policyTypeResource = policyTypeResource;
+    }
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/policytypes/appliesto.jsp", this);
-	}
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getHTML() {
+        return new Viewable("/jsp/entitytypes/policytypes/appliesto.jsp", this);
+    }
 
-	public TPolicyType getPolicyType() {
-		return this.policyTypeResource.getPolicyType();
-	}
+    public TPolicyType getPolicyType() {
+        return this.policyTypeResource.getPolicyType();
+    }
 
 }

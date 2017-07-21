@@ -22,21 +22,21 @@
 <script>
 function createConnectorEndpoints(nodeTemplateShapeSet) {
 <%
-	for (TRelationshipType relationshipType: (Collection<TRelationshipType>) relationshipTypes) {
+    for (TRelationshipType relationshipType: (Collection<TRelationshipType>) relationshipTypes) {
 %>
-		nodeTemplateShapeSet.find(".<%=Util.makeCSSName(relationshipType.getTargetNamespace(), relationshipType.getName()) %>").each(function(i,e) {
-			var p = $(e).parent();
-			var grandparent = $(p).parent();
+        nodeTemplateShapeSet.find(".<%=Util.makeCSSName(relationshipType.getTargetNamespace(), relationshipType.getName()) %>").each(function(i,e) {
+            var p = $(e).parent();
+            var grandparent = $(p).parent();
 
-			jsPlumb.makeSource($(e), {
-				parent:grandparent,
-				anchor:"Continuous",
-				connectionType: "{<%=relationshipType.getTargetNamespace()%>}<%=relationshipType.getName()%>",
-				endpoint:"Blank"
-			});
-		});
+            jsPlumb.makeSource($(e), {
+                parent:grandparent,
+                anchor:"Continuous",
+                connectionType: "{<%=relationshipType.getTargetNamespace()%>}<%=relationshipType.getName()%>",
+                endpoint:"Blank"
+            });
+        });
 <%
-	}
+    }
 %>
 }
 </script>

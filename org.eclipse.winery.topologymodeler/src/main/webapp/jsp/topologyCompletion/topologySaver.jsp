@@ -26,25 +26,25 @@
 <%@page import="org.eclipse.winery.model.tosca.TTopologyTemplate"%>
 
 <%
-	String xmlString = request.getParameter("topology");
-	String templateURL = request.getParameter("templateURL");
-	String repositoryURL = request.getParameter("repositoryURL");
+    String xmlString = request.getParameter("topology");
+    String templateURL = request.getParameter("templateURL");
+    String repositoryURL = request.getParameter("repositoryURL");
 
-	// initiate JaxB context
-	JAXBContext context;
-	context = JAXBContext.newInstance(Definitions.class);
-	StringReader reader = new StringReader(xmlString);
+    // initiate JaxB context
+    JAXBContext context;
+    context = JAXBContext.newInstance(Definitions.class);
+    StringReader reader = new StringReader(xmlString);
 
-	// unmarshall the topology XML string
-	Unmarshaller um = context.createUnmarshaller();
-	Definitions jaxBDefinitions = (Definitions) um.unmarshal(reader);
-	TServiceTemplate st = (TServiceTemplate) jaxBDefinitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
-	TTopologyTemplate toBeSaved = st.getTopologyTemplate();
+    // unmarshall the topology XML string
+    Unmarshaller um = context.createUnmarshaller();
+    Definitions jaxBDefinitions = (Definitions) um.unmarshal(reader);
+    TServiceTemplate st = (TServiceTemplate) jaxBDefinitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
+    TTopologyTemplate toBeSaved = st.getTopologyTemplate();
 
-	// depending on the selected save method (overwrite or create new) the save method is called
-	if (request.getParameter("overwriteTopology").equals("true")) {
-		RESTHelper.saveCompleteTopology(toBeSaved, templateURL, true, "", "", repositoryURL);
-	} else {
-		RESTHelper.saveCompleteTopology(toBeSaved, templateURL, false, request.getParameter("topologyName"), request.getParameter("topologyNamespace"), repositoryURL);
-	}
+    // depending on the selected save method (overwrite or create new) the save method is called
+    if (request.getParameter("overwriteTopology").equals("true")) {
+        RESTHelper.saveCompleteTopology(toBeSaved, templateURL, true, "", "", repositoryURL);
+    } else {
+        RESTHelper.saveCompleteTopology(toBeSaved, templateURL, false, request.getParameter("topologyName"), request.getParameter("topologyNamespace"), repositoryURL);
+    }
 %>

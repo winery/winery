@@ -18,14 +18,14 @@
 <t:genericpage windowtitle="Test" selected="Admin" cssClass="admin">
 
 <input id="fileupload" type="file" name="files[]" multiple
-	data-url="/path/to/upload/handler.json"
-	data-sequential-uploads="true"
-	data-form-data='{"script": "true"}'>
+    data-url="/path/to/upload/handler.json"
+    data-sequential-uploads="true"
+    data-form-data='{"script": "true"}'>
 
 <script>
 var fu = $("#fileupload");
 requirejs(["jquery.fileupload"], function() {
-	fu.fileupload({autoUpload:true});
+    fu.fileupload({autoUpload:true});
 });
 </script>
 

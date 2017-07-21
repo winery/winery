@@ -21,13 +21,13 @@
 <%@tag import="java.util.HashSet"%>
 <%@tag import="javax.xml.namespace.QName"%>
 <%@tag
-	description="Dialog to create ServiceTemplates from a given artifact"
-	pageEncoding="UTF-8"%>
+    description="Dialog to create ServiceTemplates from a given artifact"
+    pageEncoding="UTF-8"%>
 
 <%@attribute name="allSubResources" required="true"
-	type="java.util.TreeSet" description="All available ServiceTemplates"%>
+    type="java.util.TreeSet" description="All available ServiceTemplates"%>
 <%@attribute name="allNodeTypes" required="true"
-	type="java.util.Collection" description="All available Node Types"%>
+    type="java.util.Collection" description="All available Node Types"%>
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
@@ -35,178 +35,178 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/components/taggingJS/tagging.min.js"></script>
 
 <%
-	Set<QName> artifactTypes = new HashSet<QName>();
-	Set<QName> infrastructureNodeTypes = new HashSet<QName>();
+    Set<QName> artifactTypes = new HashSet<QName>();
+    Set<QName> infrastructureNodeTypes = new HashSet<QName>();
 %>
 
 <%
-	for (Object obj : allSubResources) {
-		ServiceTemplateId id = (ServiceTemplateId) obj;
-		ServiceTemplateResource stRes = new ServiceTemplateResource(id);
-		TServiceTemplate serviceTemplate = stRes.getServiceTemplate();
-		if (serviceTemplate.getTags() != null) {
-			int check = 0;
-			QName artifactType = null;
-			for (TTag tag : serviceTemplate.getTags().getTag()) {
-				switch (tag.getName()) {
-					case "xaasPackageNode" :
-						check++;
-						break;
-					case "xaasPackageArtifactType" :
-						check++;
-						artifactType = QName.valueOf(tag.getValue());
-						break;
-					case "xaasPackageDeploymentArtifact" :
-						check++;
-						break;
-					case "xaasPackageInfrastructure" :
-						// optional tag, hence no check++
-						infrastructureNodeTypes.add(QName.valueOf(tag.getValue()));
-					default :
-						break;
-				}
-			}
-			if (check == 3) {
-				artifactTypes.add(artifactType);
-			}
-		}
-	}
+    for (Object obj : allSubResources) {
+        ServiceTemplateId id = (ServiceTemplateId) obj;
+        ServiceTemplateResource stRes = new ServiceTemplateResource(id);
+        TServiceTemplate serviceTemplate = stRes.getServiceTemplate();
+        if (serviceTemplate.getTags() != null) {
+            int check = 0;
+            QName artifactType = null;
+            for (TTag tag : serviceTemplate.getTags().getTag()) {
+                switch (tag.getName()) {
+                    case "xaasPackageNode" :
+                        check++;
+                        break;
+                    case "xaasPackageArtifactType" :
+                        check++;
+                        artifactType = QName.valueOf(tag.getValue());
+                        break;
+                    case "xaasPackageDeploymentArtifact" :
+                        check++;
+                        break;
+                    case "xaasPackageInfrastructure" :
+                        // optional tag, hence no check++
+                        infrastructureNodeTypes.add(QName.valueOf(tag.getValue()));
+                    default :
+                        break;
+                }
+            }
+            if (check == 3) {
+                artifactTypes.add(artifactType);
+            }
+        }
+    }
 %>
 
 <div class="modal fade" id="createFromArtifactDiag">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Create ServiceTemplate from Artifact</h4>
-			</div>
-			<div class="modal-body">
-				<form id="createFromArtifactForm" enctype="multipart/form-data">
-					<fieldset>
-						<div class="form-group">
-							<label for="artifactType" class="control-label">Type</label>
-							<select id="artifactType" name="type" class="form-control">
-								<c:forEach var="typeId" items="<%=artifactTypes%>">
-									<option value="${typeId.toString()}">${typeId.toString()}</option>
-								</c:forEach>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="createFromArtifactForm">Select Artifact:</label>
-							<input
-								id="createFromArtifactFormUpload" class="form-control"
-								type="file" name="createFromArtifactForm" />
-						</div>
-						<div class="form-group">
-							<label for="createFromArtifactForm">Tags:</label>
-							<div id="createArtifactFormTags"></div>
-						</div>
-						<div class="form-group" id="nodeTypesDiv">
-							<label for="artifactType">Node Types:</label> <select
-								name="artifactType" class="form-control" id="nodeTypes" multiple>
-								<c:forEach var="t" items="${allNodeTypes}">
-									<option value="${t.getQName()}">${t.getQName()}</option>
-								</c:forEach>
-							</select>
-						</div>
-						<c:if test="<%=!infrastructureNodeTypes.isEmpty()%>">
-							<div class="form-group" id="infrastructureDiv">
-							<label for="infrastructureNodeTypes">Infrastructure:</label>
-							<select name="infrastructure" class="form-control" id="infrastructureNodeTypes">
-								<option value="" selected>None</option>
-								<c:forEach var="t" items="<%=infrastructureNodeTypes%>">
-									<option value="${t.toString()}">${t.toString()}</option>
-								</c:forEach>
-							</select>
-						</div>
-						</c:if>
-					</fieldset>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal"
-					onclick="$('#createFromArtifactDiag').modal('hide');">Cancel</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal"
-					onclick="createTemplateFromArtifact();">Add</button>
-			</div>
-		</div>
-	</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                    aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Create ServiceTemplate from Artifact</h4>
+            </div>
+            <div class="modal-body">
+                <form id="createFromArtifactForm" enctype="multipart/form-data">
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="artifactType" class="control-label">Type</label>
+                            <select id="artifactType" name="type" class="form-control">
+                                <c:forEach var="typeId" items="<%=artifactTypes%>">
+                                    <option value="${typeId.toString()}">${typeId.toString()}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="createFromArtifactForm">Select Artifact:</label>
+                            <input
+                                id="createFromArtifactFormUpload" class="form-control"
+                                type="file" name="createFromArtifactForm" />
+                        </div>
+                        <div class="form-group">
+                            <label for="createFromArtifactForm">Tags:</label>
+                            <div id="createArtifactFormTags"></div>
+                        </div>
+                        <div class="form-group" id="nodeTypesDiv">
+                            <label for="artifactType">Node Types:</label> <select
+                                name="artifactType" class="form-control" id="nodeTypes" multiple>
+                                <c:forEach var="t" items="${allNodeTypes}">
+                                    <option value="${t.getQName()}">${t.getQName()}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <c:if test="<%=!infrastructureNodeTypes.isEmpty()%>">
+                            <div class="form-group" id="infrastructureDiv">
+                            <label for="infrastructureNodeTypes">Infrastructure:</label>
+                            <select name="infrastructure" class="form-control" id="infrastructureNodeTypes">
+                                <option value="" selected>None</option>
+                                <c:forEach var="t" items="<%=infrastructureNodeTypes%>">
+                                    <option value="${t.toString()}">${t.toString()}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        </c:if>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                    onclick="$('#createFromArtifactDiag').modal('hide');">Cancel</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    onclick="createTemplateFromArtifact();">Add</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-	var files;
+    var files;
 
-	$('#createFromArtifactFormUpload').on('change', prepareUpload);
+    $('#createFromArtifactFormUpload').on('change', prepareUpload);
 
-	// Grab the files and set them to our variable
-	function prepareUpload(event) {
-		files = event.target.files;
-	}
+    // Grab the files and set them to our variable
+    function prepareUpload(event) {
+        files = event.target.files;
+    }
 
-	var options = {
-		"no-duplicate" : true,
-		"tag-box-class" : "tagging",
-		"case-sensitive" : true
-	}
+    var options = {
+        "no-duplicate" : true,
+        "tag-box-class" : "tagging",
+        "case-sensitive" : true
+    }
 
-	var taggin = $('#createArtifactFormTags').tagging(options);
+    var taggin = $('#createArtifactFormTags').tagging(options);
 
-	function createTemplateFromArtifact() {
-		var artifactType = $('#artifactType').val();
-		var tags = taggin[0].tagging("getTags");
-		var nodeTypes = $('#nodeTypes').val();
-		var infrastructureNodeType = $('#infrastructureNodeTypes').val();
-		var filesForUpload = $('#createFromArtifactFormUpload')[0].files;
+    function createTemplateFromArtifact() {
+        var artifactType = $('#artifactType').val();
+        var tags = taggin[0].tagging("getTags");
+        var nodeTypes = $('#nodeTypes').val();
+        var infrastructureNodeType = $('#infrastructureNodeTypes').val();
+        var filesForUpload = $('#createFromArtifactFormUpload')[0].files;
 
-		// upload data
-		var formData = new FormData();
+        // upload data
+        var formData = new FormData();
 
-		// the file
-		for (var i = 0; i < filesForUpload.length; i++) {
-			var file = filesForUpload[i];
-			formData.append("file", file, file.name);
-		}
+        // the file
+        for (var i = 0; i < filesForUpload.length; i++) {
+            var file = filesForUpload[i];
+            formData.append("file", file, file.name);
+        }
 
-		formData.append("artifactType", artifactType);
+        formData.append("artifactType", artifactType);
 
-		if(infrastructureNodeType != "") {
-			formData.append("infrastructureNodeType", infrastructureNodeType);
-		}
+        if(infrastructureNodeType != "") {
+            formData.append("infrastructureNodeType", infrastructureNodeType);
+        }
 
 
-		if (nodeTypes == null) {
-			formData.append("nodeTypes", null);
-		} else {
-			formData.append("nodeTypes", nodeTypes);
-		}
+        if (nodeTypes == null) {
+            formData.append("nodeTypes", null);
+        } else {
+            formData.append("nodeTypes", nodeTypes);
+        }
 
-		if (tags.length == 0) {
-			formData.append("tags", null);
-		} else {
-			formData.append("tags", tags);
-		}
+        if (tags.length == 0) {
+            formData.append("tags", null);
+        } else {
+            formData.append("tags", tags);
+        }
 
-		$.ajax({
-			url : "${url}",
-			type : "POST",
-			async : false,
-			data : formData,
-			processData : false,
-			contentType : false,
-			error : function(jqXHR, textStatus, errorThrown) {
-				vShowError("Could not create ServiceTemplate from artifact: "
-						+ errorThrown + "<br/>" + jqXHR.responseText);
-			},
-			success : function(id, textStatus, jqXHR) {
-				// Data has been validated at the server
-				// We can just add the local data
+        $.ajax({
+            url : "${url}",
+            type : "POST",
+            async : false,
+            data : formData,
+            processData : false,
+            contentType : false,
+            error : function(jqXHR, textStatus, errorThrown) {
+                vShowError("Could not create ServiceTemplate from artifact: "
+                        + errorThrown + "<br/>" + jqXHR.responseText);
+            },
+            success : function(id, textStatus, jqXHR) {
+                // Data has been validated at the server
+                // We can just add the local data
 
-				var loc = jqXHR.getResponseHeader('Location');
-				$('#createFromArtifactDiag').modal('hide');
-				window.location = loc;
-			}
-		});
+                var loc = jqXHR.getResponseHeader('Location');
+                $('#createFromArtifactDiag').modal('hide');
+                window.location = loc;
+            }
+        });
 
-	}
+    }
 </script>

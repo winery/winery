@@ -41,70 +41,70 @@ import org.slf4j.LoggerFactory;
 
 public class RepositoryAdminResource {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryAdminResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryAdminResource.class);
 
 
-	// @formatter:off
-	@GET
-	@Produces(MediaType.TEXT_HTML) // we cannot add MimeTypes.MIMETYPE_ZIP as dumpRepository also produces that mimetype
-	@RestDoc(methodDescription = "Returns the repository admin page and implements administration utility")
-	public Response onGet(
-		@QueryParam(value = "dump") @RestDocParam(description = "If given, a dump of the repository is sent") String dump,
-		@QueryParam(value = "reset") @RestDocParam(description = "Resets the repository to the last &ldquo;official&rdquo; known state") String reset,
-		@QueryParam(value = "commit") @RestDocParam(description = "Commits the current state to the repository and pushes it upstream") String commit
-	) {
-		// @formatter:on
-		if (dump != null) {
-			return this.dumpRepository();
-		} else if (reset != null) {
-			try {
-				((GitBasedRepository) Prefs.INSTANCE.getRepository()).cleanAndResetHard();
-			} catch (Exception e) {
-				Response res;
-				res = Response.serverError().entity(e.getMessage()).build();
-				return res;
-			}
-			return Response.noContent().build();
-		} else if (commit != null) {
-			try {
-				((GitBasedRepository) Prefs.INSTANCE.getRepository()).addCommit("Files changed externally");
-			} catch (Exception e) {
-				Response res;
-				res = Response.serverError().entity(e.getMessage()).build();
-				return res;
-			}
-			return Response.noContent().build();
-		} else {
-			Viewable viewable = new Viewable("/jsp/admin/repository.jsp", this);
-			return Response.ok().entity(viewable).build();
-		}
-	}
+    // @formatter:off
+    @GET
+    @Produces(MediaType.TEXT_HTML) // we cannot add MimeTypes.MIMETYPE_ZIP as dumpRepository also produces that mimetype
+    @RestDoc(methodDescription = "Returns the repository admin page and implements administration utility")
+    public Response onGet(
+        @QueryParam(value = "dump") @RestDocParam(description = "If given, a dump of the repository is sent") String dump,
+        @QueryParam(value = "reset") @RestDocParam(description = "Resets the repository to the last &ldquo;official&rdquo; known state") String reset,
+        @QueryParam(value = "commit") @RestDocParam(description = "Commits the current state to the repository and pushes it upstream") String commit
+    ) {
+        // @formatter:on
+        if (dump != null) {
+            return this.dumpRepository();
+        } else if (reset != null) {
+            try {
+                ((GitBasedRepository) Prefs.INSTANCE.getRepository()).cleanAndResetHard();
+            } catch (Exception e) {
+                Response res;
+                res = Response.serverError().entity(e.getMessage()).build();
+                return res;
+            }
+            return Response.noContent().build();
+        } else if (commit != null) {
+            try {
+                ((GitBasedRepository) Prefs.INSTANCE.getRepository()).addCommit("Files changed externally");
+            } catch (Exception e) {
+                Response res;
+                res = Response.serverError().entity(e.getMessage()).build();
+                return res;
+            }
+            return Response.noContent().build();
+        } else {
+            Viewable viewable = new Viewable("/jsp/admin/repository.jsp", this);
+            return Response.ok().entity(viewable).build();
+        }
+    }
 
-	/**
-	 * Imports the given ZIP
-	 */
-	@POST
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response importRepositoryDump(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
-		((IRepositoryAdministration) Repository.INSTANCE).doImport(uploadedInputStream);
-		return Response.noContent().build();
-	}
+    /**
+     * Imports the given ZIP
+     */
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response importRepositoryDump(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+        ((IRepositoryAdministration) Repository.INSTANCE).doImport(uploadedInputStream);
+        return Response.noContent().build();
+    }
 
-	@DELETE
-	public void deleteRepositoryData() {
-		((IRepositoryAdministration) Repository.INSTANCE).doClear();
-	}
+    @DELETE
+    public void deleteRepositoryData() {
+        ((IRepositoryAdministration) Repository.INSTANCE).doClear();
+    }
 
-	@GET
-	@Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
-	public Response dumpRepository() {
-		StreamingOutput so = new StreamingOutput() {
+    @GET
+    @Produces(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP)
+    public Response dumpRepository() {
+        StreamingOutput so = new StreamingOutput() {
 
-			@Override
-			public void write(OutputStream output) throws IOException, WebApplicationException {
-				((IRepositoryAdministration) Repository.INSTANCE).doDump(output);
-			}
-		};
-		return Response.ok().header("Content-Disposition", "attachment;filename=\"repository.zip\"").type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
-	}
+            @Override
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                ((IRepositoryAdministration) Repository.INSTANCE).doDump(output);
+            }
+        };
+        return Response.ok().header("Content-Disposition", "attachment;filename=\"repository.zip\"").type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();
+    }
 }

@@ -33,28 +33,28 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
  */
 public interface IWineryRepositoryCommon {
 
-	/**
-	 * Deletes the TOSCA element <b>and all sub elements</b> referenced by the
-	 * given id from the repository
-	 *
-	 * We assume that each id is a directory
-	 */
-	void forceDelete(GenericId id) throws IOException;
+    /**
+     * Deletes the TOSCA element <b>and all sub elements</b> referenced by the
+     * given id from the repository
+     *
+     * We assume that each id is a directory
+     */
+    void forceDelete(GenericId id) throws IOException;
 
-	/**
-	 * Renames a TOSCA component id
-	 *
-	 * @param oldId the old id
-	 * @param newId the new id
-	 */
-	void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException;
+    /**
+     * Renames a TOSCA component id
+     *
+     * @param oldId the old id
+     * @param newId the new id
+     */
+    void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException;
 
-	 /**
-	  * Deletes all TOSCA components nested in the given namespace
-	  *
-	  * @param toscaComponentIdClazz the type of TOSCA components to delete
-	  * @param namespace the namespace to delete
-	  */
-	void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException;
+     /**
+      * Deletes all TOSCA components nested in the given namespace
+      *
+      * @param toscaComponentIdClazz the type of TOSCA components to delete
+      * @param namespace the namespace to delete
+      */
+    void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException;
 
 }

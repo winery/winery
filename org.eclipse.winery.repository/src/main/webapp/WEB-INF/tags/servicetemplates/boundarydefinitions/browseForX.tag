@@ -20,30 +20,30 @@
 
 <%-- Browse for property --%>
 <div class="modal fade z1051" id="browseFor${XShort}Diag">
-	<div class="modal-dialog" style="width:1000px;">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Choose a ${XLong}</h4>
-			</div>
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Choose a ${XLong}</h4>
+            </div>
 
-			<div class="modal-body">
-				<p class="text-info">Please click on the desired ${XLong}</p>
-				<iframe id="topologyTemplatePreview" class="topologyTemplatePreviewSizing" src="topologytemplate/?view=${XShort}Selection&script=${pageContext.request.contextPath}/js/boundaryDefinitionsXSelection.js"></iframe>
-				<form>
-					<fieldset>
-						<div class="form-group">
-							<label for="${XShort}RefeferenceField">Reference to the ${XLong} in the topology template</label>
-							<input type="text" id="${XShort}ReferenceField" class="form-control newObjectRef" />
-						</div>
-					</fieldset>
-				</form>
-			</div>
+            <div class="modal-body">
+                <p class="text-info">Please click on the desired ${XLong}</p>
+                <iframe id="topologyTemplatePreview" class="topologyTemplatePreviewSizing" src="topologytemplate/?view=${XShort}Selection&script=${pageContext.request.contextPath}/js/boundaryDefinitionsXSelection.js"></iframe>
+                <form>
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="${XShort}RefeferenceField">Reference to the ${XLong} in the topology template</label>
+                            <input type="text" id="${XShort}ReferenceField" class="form-control newObjectRef" />
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
 
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" onclick="set${XShort}Ref();">Set</button>
-			</div>
-		</div>
-	</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="set${XShort}Ref();">Set</button>
+            </div>
+        </div>
+    </div>
 </div>

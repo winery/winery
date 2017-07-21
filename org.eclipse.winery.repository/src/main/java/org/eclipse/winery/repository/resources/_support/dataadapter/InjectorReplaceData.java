@@ -27,11 +27,11 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 @XmlRootElement(name = "InjectorReplaceData")
 public class InjectorReplaceData {
 
-	@XmlJavaTypeAdapter(value = InjectionDataMapAdapter.class)
+    @XmlJavaTypeAdapter(value = InjectionDataMapAdapter.class)
     public Map<String, TNodeTemplate> injections;
 
-	public void setInjections (Map<String, TNodeTemplate> injections) {
-		this.injections = injections;
-	}
+    public void setInjections (Map<String, TNodeTemplate> injections) {
+        this.injections = injections;
+    }
 
 }

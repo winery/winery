@@ -62,139 +62,139 @@ import org.restdoc.annotations.RestDocReturnCode;
 @Path("/")
 public class MainResource {
 
-	@Path("API/")
-	public APIResource api() {
-		return new APIResource();
-	}
+    @Path("API/")
+    public APIResource api() {
+        return new APIResource();
+    }
 
-	@Path("artifacttemplates/")
-	public ArtifactTemplatesResource artifacttemplates() {
-		return new ArtifactTemplatesResource();
-	}
+    @Path("artifacttemplates/")
+    public ArtifactTemplatesResource artifacttemplates() {
+        return new ArtifactTemplatesResource();
+    }
 
-	@Path("artifacttypes/")
-	public ArtifactTypesResource artifactypes() {
-		return new ArtifactTypesResource();
-	}
+    @Path("artifacttypes/")
+    public ArtifactTypesResource artifactypes() {
+        return new ArtifactTypesResource();
+    }
 
-	@Path("admin/")
-	public AdminTopResource admin() {
-		return new AdminTopResource();
-	}
+    @Path("admin/")
+    public AdminTopResource admin() {
+        return new AdminTopResource();
+    }
 
-	@Path("capabilitytypes/")
-	public CapabilityTypesResource capabilitytypes() {
-		return new CapabilityTypesResource();
-	}
+    @Path("capabilitytypes/")
+    public CapabilityTypesResource capabilitytypes() {
+        return new CapabilityTypesResource();
+    }
 
-	@Path("imports/")
-	public ImportsResource imports() {
-		return new ImportsResource();
-	}
+    @Path("imports/")
+    public ImportsResource imports() {
+        return new ImportsResource();
+    }
 
-	@Path("nodetypes/")
-	public NodeTypesResource nodetypes() {
-		return new NodeTypesResource();
-	}
+    @Path("nodetypes/")
+    public NodeTypesResource nodetypes() {
+        return new NodeTypesResource();
+    }
 
-	@Path("nodetypeimplementations/")
-	public NodeTypeImplementationsResource nodetypeimplementations() {
-		return new NodeTypeImplementationsResource();
-	}
+    @Path("nodetypeimplementations/")
+    public NodeTypeImplementationsResource nodetypeimplementations() {
+        return new NodeTypeImplementationsResource();
+    }
 
-	@Path("other/")
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getOtherElements() {
-		return new Viewable("/jsp/otherElements.jsp");
-	}
+    @Path("other/")
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getOtherElements() {
+        return new Viewable("/jsp/otherElements.jsp");
+    }
 
-	@Path("policytemplates/")
-	public PolicyTemplatesResource policytemplates() {
-		return new PolicyTemplatesResource();
-	}
+    @Path("policytemplates/")
+    public PolicyTemplatesResource policytemplates() {
+        return new PolicyTemplatesResource();
+    }
 
-	@Path("policytypes/")
-	public PolicyTypesResource policytypes() {
-		return new PolicyTypesResource();
-	}
+    @Path("policytypes/")
+    public PolicyTypesResource policytypes() {
+        return new PolicyTypesResource();
+    }
 
-	@Path("relationshiptypes/")
-	public RelationshipTypesResource relationshiptypes() {
-		return new RelationshipTypesResource();
-	}
+    @Path("relationshiptypes/")
+    public RelationshipTypesResource relationshiptypes() {
+        return new RelationshipTypesResource();
+    }
 
-	@Path("requirementtypes/")
-	public RequirementTypesResource requirementtypes() {
-		return new RequirementTypesResource();
-	}
+    @Path("requirementtypes/")
+    public RequirementTypesResource requirementtypes() {
+        return new RequirementTypesResource();
+    }
 
-	@Path("relationshiptypeimplementations/")
-	public RelationshipTypeImplementationsResource relationshiptypeimplementations() {
-		return new RelationshipTypeImplementationsResource();
-	}
+    @Path("relationshiptypeimplementations/")
+    public RelationshipTypeImplementationsResource relationshiptypeimplementations() {
+        return new RelationshipTypeImplementationsResource();
+    }
 
-	@Path("servicetemplates/")
-	public ServiceTemplatesResource servicetemplates() {
-		return new ServiceTemplatesResource();
-	}
+    @Path("servicetemplates/")
+    public ServiceTemplatesResource servicetemplates() {
+        return new ServiceTemplatesResource();
+    }
 
-	/**
-	 * Returns the main page of winery.
-	 */
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response onGet() {
-		return Response.temporaryRedirect(Utils.createURI("servicetemplates/")).build();
-	}
+    /**
+     * Returns the main page of winery.
+     */
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response onGet() {
+        return Response.temporaryRedirect(Utils.createURI("servicetemplates/")).build();
+    }
 
-	@POST
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@RestDoc(methodDescription = "Imports the given CSAR (sent by simplesinglefileupload.jsp)")
-	@RestDocReturnCode(code = "200", description = "If the CSAR could be partially imported, the points where it failed are returned in the body")
-	// @formatter:off
-	public Response importCSAR(
-		@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
-		@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
-		@Context UriInfo uriInfo) {
-		// @formatter:on
-		CSARImporter importer = new CSARImporter();
-		boolean ow;
-		ow = (overwrite != null) && overwrite;
-		ImportMetaInformation importMetaInformation;
-		try {
-			importMetaInformation = importer.readCSAR(uploadedInputStream, ow, true);
-		} catch (Exception e) {
-			return Response.serverError().entity("Could not import CSAR").entity(e.getMessage()).build();
-		}
-		if (importMetaInformation.errors.isEmpty()) {
-			if (importMetaInformation.entryServiceTemplate.isPresent()) {
-				URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(importMetaInformation.entryServiceTemplate.get()));
-				return Response.created(url).build();
-			} else {
-				return Response.noContent().build();
-			}
-		} else {
-			// In case there are errors, we send them as "bad request"
-			return Response.status(Status.BAD_REQUEST).entity(importMetaInformation.errors).build();
-		}
-	}
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @RestDoc(methodDescription = "Imports the given CSAR (sent by simplesinglefileupload.jsp)")
+    @RestDocReturnCode(code = "200", description = "If the CSAR could be partially imported, the points where it failed are returned in the body")
+    // @formatter:off
+    public Response importCSAR(
+        @FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
+        @FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
+        @Context UriInfo uriInfo) {
+        // @formatter:on
+        CSARImporter importer = new CSARImporter();
+        boolean ow;
+        ow = (overwrite != null) && overwrite;
+        ImportMetaInformation importMetaInformation;
+        try {
+            importMetaInformation = importer.readCSAR(uploadedInputStream, ow, true);
+        } catch (Exception e) {
+            return Response.serverError().entity("Could not import CSAR").entity(e.getMessage()).build();
+        }
+        if (importMetaInformation.errors.isEmpty()) {
+            if (importMetaInformation.entryServiceTemplate.isPresent()) {
+                URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(importMetaInformation.entryServiceTemplate.get()));
+                return Response.created(url).build();
+            } else {
+                return Response.noContent().build();
+            }
+        } else {
+            // In case there are errors, we send them as "bad request"
+            return Response.status(Status.BAD_REQUEST).entity(importMetaInformation.errors).build();
+        }
+    }
 
-	@POST
-	@Consumes(MediaType.APPLICATION_XML)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response importDefinitions(InputStream is) throws IOException {
-		File toscaFile;
-		toscaFile = File.createTempFile("TOSCA", ".tosca");
-		FileUtils.copyInputStreamToFile(is, toscaFile);
-		CSARImporter importer = new CSARImporter();
-		List<String> errors = new ArrayList<>();
-		importer.importDefinitions(null, toscaFile.toPath(), errors, false, true);
-		if (errors.isEmpty()) {
-			return Response.noContent().build();
-		} else {
-			return Response.status(Status.BAD_REQUEST).entity(errors).build();
-		}
-	}
+    @POST
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response importDefinitions(InputStream is) throws IOException {
+        File toscaFile;
+        toscaFile = File.createTempFile("TOSCA", ".tosca");
+        FileUtils.copyInputStreamToFile(is, toscaFile);
+        CSARImporter importer = new CSARImporter();
+        List<String> errors = new ArrayList<>();
+        importer.importDefinitions(null, toscaFile.toPath(), errors, false, true);
+        if (errors.isEmpty()) {
+            return Response.noContent().build();
+        } else {
+            return Response.status(Status.BAD_REQUEST).entity(errors).build();
+        }
+    }
 
 }

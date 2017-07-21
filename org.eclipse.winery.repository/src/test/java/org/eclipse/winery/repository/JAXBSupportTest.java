@@ -16,19 +16,19 @@ import org.junit.Test;
 
 public class JAXBSupportTest {
 
-	@Test
-	public void createMarshaller() throws Exception {
-		Assert.assertNotNull(JAXBSupport.createMarshaller(true));
-	}
+    @Test
+    public void createMarshaller() throws Exception {
+        Assert.assertNotNull(JAXBSupport.createMarshaller(true));
+    }
 
-	@Test
-	public void createUnmarshaller() throws Exception {
-		Assert.assertNotNull(JAXBSupport.createUnmarshaller());
-	}
+    @Test
+    public void createUnmarshaller() throws Exception {
+        Assert.assertNotNull(JAXBSupport.createUnmarshaller());
+    }
 
-	@Test
-	public void JAXBContextIsNotNull() {
-		Assert.assertNotNull(JAXBSupport.context);
-	}
+    @Test
+    public void JAXBContextIsNotNull() {
+        Assert.assertNotNull(JAXBSupport.context);
+    }
 
 }

@@ -21,8 +21,8 @@ import java.io.IOException;
  */
 public class PrefsTestEnabledUsingConfiguredRepository extends PrefsTestEnabled {
 
-	public PrefsTestEnabledUsingConfiguredRepository() throws IOException {
-		super(true);
-	}
+    public PrefsTestEnabledUsingConfiguredRepository() throws IOException {
+        super(true);
+    }
 
 }

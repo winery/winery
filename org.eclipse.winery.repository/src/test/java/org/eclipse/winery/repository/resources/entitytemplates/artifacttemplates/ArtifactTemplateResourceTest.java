@@ -26,21 +26,21 @@ import org.junit.Test;
 @Ignore("Working on old test repository")
 public class ArtifactTemplateResourceTest {
 
-	@BeforeClass
-	public static void init() throws Exception {
-		// enable git-backed repository
-		new PrefsTestEnabledGitBackedRepository();
-	}
+    @BeforeClass
+    public static void init() throws Exception {
+        // enable git-backed repository
+        new PrefsTestEnabledGitBackedRepository();
+    }
 
-	@Before
-	public void setRevision() throws Exception {
-		((GitBasedRepository) Repository.INSTANCE).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
-	}
+    @Before
+    public void setRevision() throws Exception {
+        ((GitBasedRepository) Repository.INSTANCE).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
+    }
 
-	@Test
-	public void countMatches() {
-		ArtifactTemplateId id = new ArtifactTemplateId("http%3A%2F%2Fdocs.oasis-open.org%2Ftosca%2Fns%2F2011%2F12%2FToscaSpecificTypes", "at-0cd9ab5d-6c2e-4fc2-9cb0-3fee1e431f9f", true);
-		ArtifactTemplateResource res = (ArtifactTemplateResource) AbstractComponentsResource.getComponentInstaceResource(id);
-		Assert.assertEquals(1, res.getReferenceCount());
-	}
+    @Test
+    public void countMatches() {
+        ArtifactTemplateId id = new ArtifactTemplateId("http%3A%2F%2Fdocs.oasis-open.org%2Ftosca%2Fns%2F2011%2F12%2FToscaSpecificTypes", "at-0cd9ab5d-6c2e-4fc2-9cb0-3fee1e431f9f", true);
+        ArtifactTemplateResource res = (ArtifactTemplateResource) AbstractComponentsResource.getComponentInstaceResource(id);
+        Assert.assertEquals(1, res.getReferenceCount());
+    }
 }

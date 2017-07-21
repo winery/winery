@@ -33,8 +33,8 @@
 
 <!-- createArtifactTemplate class is required for artifactcreationdialog -->
 <div class="form-group createArtifactTemplate">
-	<label for="${idOfInput}" class="control-label">Namespace</label>
-	<input type="select" class="form-control" name="${nameOfInput}" id="${idOfInput}"></input>
+    <label for="${idOfInput}" class="control-label">Namespace</label>
+    <input type="select" class="form-control" name="${nameOfInput}" id="${idOfInput}"></input>
 </div>
 
 <script>

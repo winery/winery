@@ -27,71 +27,71 @@ import org.slf4j.LoggerFactory;
  */
 public class RESTHelper {
 
-	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(RESTHelper.class.getName());
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(RESTHelper.class.getName());
 
-	/**
-	 * This method uses a REST call to save the completed {@link TTopologyTemplate} to the repository.
-	 *
-	 * @param topology
-	 *            the {@link TTopologyTemplate} to be saved
-	 * @param topologyTemplateURL
-	 *            the URL the {@link TTopologyTemplate} is saved to
-	 * @param overwriteTopology
-	 * 			  whether the topology is overwritten or a new topology shall be created
-	 * @param topologyName
-	 * 			  the name of the newly created topology to build the URL if a new topology shall be created
-	 * @param topologyNamespace
-	 * 	 		  the name space of the newly created topology to build the URL if a new topology shall be created
-	 * @param repositoryURL
-	 * 			  the URL to the repository to build the URL if a new topology shall be created
-	 */
-	public static void saveCompleteTopology(TTopologyTemplate topology, String topologyTemplateURL, boolean overwriteTopology, String topologyName, String topologyNamespace, String repositoryURL) {
-		try {
+    /**
+     * This method uses a REST call to save the completed {@link TTopologyTemplate} to the repository.
+     *
+     * @param topology
+     *            the {@link TTopologyTemplate} to be saved
+     * @param topologyTemplateURL
+     *            the URL the {@link TTopologyTemplate} is saved to
+     * @param overwriteTopology
+     *               whether the topology is overwritten or a new topology shall be created
+     * @param topologyName
+     *               the name of the newly created topology to build the URL if a new topology shall be created
+     * @param topologyNamespace
+     *                the name space of the newly created topology to build the URL if a new topology shall be created
+     * @param repositoryURL
+     *               the URL to the repository to build the URL if a new topology shall be created
+     */
+    public static void saveCompleteTopology(TTopologyTemplate topology, String topologyTemplateURL, boolean overwriteTopology, String topologyName, String topologyNamespace, String repositoryURL) {
+        try {
 
-			URL url = null;
+            URL url = null;
 
-			if (overwriteTopology) {
-				url = new URL(topologyTemplateURL);
-			} else {
-				// this is necessary to avoid encoding issues
-				topologyNamespace = Util.DoubleURLencode(topologyNamespace);
-				// build the URL with the repositoryURL, the topology namespace and the topology name
-				url = new URL(repositoryURL + "/servicetemplates/" + topologyNamespace + "/" + topologyName + "/topologytemplate/");
+            if (overwriteTopology) {
+                url = new URL(topologyTemplateURL);
+            } else {
+                // this is necessary to avoid encoding issues
+                topologyNamespace = Util.DoubleURLencode(topologyNamespace);
+                // build the URL with the repositoryURL, the topology namespace and the topology name
+                url = new URL(repositoryURL + "/servicetemplates/" + topologyNamespace + "/" + topologyName + "/topologytemplate/");
 
-				LOGGER.info("The URL the topology is saved to: " + url);
-			}
+                LOGGER.info("The URL the topology is saved to: " + url);
+            }
 
-			// using SSL
-			System.setProperty("javax.net.ssl.trustStore", "jssecacerts.cert");
+            // using SSL
+            System.setProperty("javax.net.ssl.trustStore", "jssecacerts.cert");
 
-			// configure message
-			HttpURLConnection urlConn;
-			urlConn = (HttpURLConnection) url.openConnection();
+            // configure message
+            HttpURLConnection urlConn;
+            urlConn = (HttpURLConnection) url.openConnection();
 
-			LOGGER.info("Sending HTTP request...");
+            LOGGER.info("Sending HTTP request...");
 
-			urlConn.setDoOutput(true);
-			urlConn.setRequestMethod("PUT");
-			urlConn.setRequestProperty("Content-type", "text/xml");
-			OutputStreamWriter out = new OutputStreamWriter(urlConn.getOutputStream());
+            urlConn.setDoOutput(true);
+            urlConn.setRequestMethod("PUT");
+            urlConn.setRequestProperty("Content-type", "text/xml");
+            OutputStreamWriter out = new OutputStreamWriter(urlConn.getOutputStream());
 
-			// build the XML string to be saved
-			TTopologyTemplate outputTopology = JAXBHelper.buildXML(topology);
-			String outputString = JAXBHelper.getXMLAsString(outputTopology.getClass(), outputTopology);
+            // build the XML string to be saved
+            TTopologyTemplate outputTopology = JAXBHelper.buildXML(topology);
+            String outputString = JAXBHelper.getXMLAsString(outputTopology.getClass(), outputTopology);
 
-			LOGGER.info(outputString);
-			LOGGER.info("Sending output to Winery.");
+            LOGGER.info(outputString);
+            LOGGER.info("Sending output to Winery.");
 
-			out.write(outputString);
-			out.close();
-			urlConn.getOutputStream().close();
-			LOGGER.info("Output sent, waiting for response...");
-			urlConn.getInputStream();
+            out.write(outputString);
+            out.close();
+            urlConn.getOutputStream().close();
+            LOGGER.info("Output sent, waiting for response...");
+            urlConn.getInputStream();
 
-			LOGGER.info("HTTP Response Code is: " + urlConn.getResponseCode());
+            LOGGER.info("HTTP Response Code is: " + urlConn.getResponseCode());
 
-		} catch (IOException e) {
-			LOGGER.error(e.getLocalizedMessage());
-		}
-	}
+        } catch (IOException e) {
+            LOGGER.error(e.getLocalizedMessage());
+        }
+    }
 }

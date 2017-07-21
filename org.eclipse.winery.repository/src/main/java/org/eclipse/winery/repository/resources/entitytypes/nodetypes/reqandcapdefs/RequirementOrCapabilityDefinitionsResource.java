@@ -42,89 +42,89 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefResource extends AbstractReqOrCapDefResource<ReqDefOrCapDef>, ReqDefOrCapDef> extends EntityWithIdCollectionResource<ReqDefOrCapDefResource, ReqDefOrCapDef> {
 
-	protected final NodeTypeResource res;
+    protected final NodeTypeResource res;
 
 
-	public RequirementOrCapabilityDefinitionsResource(Class<ReqDefOrCapDefResource> entityResourceTClazz, Class<ReqDefOrCapDef> entityTClazz, List<ReqDefOrCapDef> list, NodeTypeResource res) {
-		super(entityResourceTClazz, entityTClazz, list, res);
-		this.res = res;
-	}
+    public RequirementOrCapabilityDefinitionsResource(Class<ReqDefOrCapDefResource> entityResourceTClazz, Class<ReqDefOrCapDef> entityTClazz, List<ReqDefOrCapDef> list, NodeTypeResource res) {
+        super(entityResourceTClazz, entityTClazz, list, res);
+        this.res = res;
+    }
 
-	@Override
-	public abstract Viewable getHTML();
+    @Override
+    public abstract Viewable getHTML();
 
-	/**
-	 * @return collection of all available types
-	 */
-	public abstract Collection<QName> getAllTypes();
+    /**
+     * @return collection of all available types
+     */
+    public abstract Collection<QName> getAllTypes();
 
-	@POST
-	// As there is no supertype of TCapabilityType and TRequirementType containing the common attributes, we have to rely on unchecked casts
-	@SuppressWarnings("unchecked")
-	public Response onPost(@FormParam("name") String name, @FormParam("type") String type, @FormParam("lowerbound") String lowerBound, @FormParam("upperbound") String upperbound) {
-		if (StringUtils.isEmpty(name)) {
-			return Response.status(Status.BAD_REQUEST).entity("Name has to be provided").build();
-		}
-		if (StringUtils.isEmpty(type)) {
-			return Response.status(Status.BAD_REQUEST).entity("Type has to be provided").build();
-		}
+    @POST
+    // As there is no supertype of TCapabilityType and TRequirementType containing the common attributes, we have to rely on unchecked casts
+    @SuppressWarnings("unchecked")
+    public Response onPost(@FormParam("name") String name, @FormParam("type") String type, @FormParam("lowerbound") String lowerBound, @FormParam("upperbound") String upperbound) {
+        if (StringUtils.isEmpty(name)) {
+            return Response.status(Status.BAD_REQUEST).entity("Name has to be provided").build();
+        }
+        if (StringUtils.isEmpty(type)) {
+            return Response.status(Status.BAD_REQUEST).entity("Type has to be provided").build();
+        }
 
-		int lbound = 1;
-		if (!StringUtils.isEmpty(lowerBound)) {
-			try {
-				lbound = Integer.parseInt(lowerBound);
-			} catch (NumberFormatException e) {
-				return Response.status(Status.BAD_REQUEST).entity("Bad format of lowerbound: " + e.getMessage()).build();
-			}
-		}
+        int lbound = 1;
+        if (!StringUtils.isEmpty(lowerBound)) {
+            try {
+                lbound = Integer.parseInt(lowerBound);
+            } catch (NumberFormatException e) {
+                return Response.status(Status.BAD_REQUEST).entity("Bad format of lowerbound: " + e.getMessage()).build();
+            }
+        }
 
-		String ubound = "1";
-		if (!StringUtils.isEmpty(upperbound)) {
-			ubound = upperbound;
-		}
+        String ubound = "1";
+        if (!StringUtils.isEmpty(upperbound)) {
+            ubound = upperbound;
+        }
 
-		// we also support replacement of existing requirements
-		// therefore, we loop through the existing requirements
-		int idx = -1;
-		boolean found = false;
-		for (ReqDefOrCapDef d : this.list) {
-			idx++;
-			if (this.getId(d).equals(name)) {
-				found = true;
-				break;
-			}
-		}
+        // we also support replacement of existing requirements
+        // therefore, we loop through the existing requirements
+        int idx = -1;
+        boolean found = false;
+        for (ReqDefOrCapDef d : this.list) {
+            idx++;
+            if (this.getId(d).equals(name)) {
+                found = true;
+                break;
+            }
+        }
 
-		QName typeQName = QName.valueOf(type);
-		// Create object and put type in it
-		ReqDefOrCapDef def;
-		if (this instanceof CapabilityDefinitionsResource) {
-			def = (ReqDefOrCapDef) new TCapabilityDefinition();
-			((TCapabilityDefinition) def).setCapabilityType(typeQName);
-		} else {
-			assert (this instanceof RequirementDefinitionsResource);
-			def = (ReqDefOrCapDef) new TRequirementDefinition();
-			((TRequirementDefinition) def).setRequirementType(typeQName);
-		}
+        QName typeQName = QName.valueOf(type);
+        // Create object and put type in it
+        ReqDefOrCapDef def;
+        if (this instanceof CapabilityDefinitionsResource) {
+            def = (ReqDefOrCapDef) new TCapabilityDefinition();
+            ((TCapabilityDefinition) def).setCapabilityType(typeQName);
+        } else {
+            assert (this instanceof RequirementDefinitionsResource);
+            def = (ReqDefOrCapDef) new TRequirementDefinition();
+            ((TRequirementDefinition) def).setRequirementType(typeQName);
+        }
 
-		// copy all other data into object
-		AbstractReqOrCapDefResource.invokeSetter(def, "setName", name);
-		AbstractReqOrCapDefResource.invokeSetter(def, "setLowerBound", lbound);
-		AbstractReqOrCapDefResource.invokeSetter(def, "setUpperBound", ubound);
+        // copy all other data into object
+        AbstractReqOrCapDefResource.invokeSetter(def, "setName", name);
+        AbstractReqOrCapDefResource.invokeSetter(def, "setLowerBound", lbound);
+        AbstractReqOrCapDefResource.invokeSetter(def, "setUpperBound", ubound);
 
-		if (found) {
-			// replace element
-			this.list.set(idx, def);
-		} else {
-			// add new element
-			this.list.add(def);
-		}
+        if (found) {
+            // replace element
+            this.list.set(idx, def);
+        } else {
+            // add new element
+            this.list.add(def);
+        }
 
-		return BackendUtils.persist(this.res);
-	}
+        return BackendUtils.persist(this.res);
+    }
 
-	@Override
-	public String getId(ReqDefOrCapDef reqDefOrCapDef) {
-		return AbstractReqOrCapDefResource.getName(reqDefOrCapDef);
-	}
+    @Override
+    public String getId(ReqDefOrCapDef reqDefOrCapDef) {
+        return AbstractReqOrCapDefResource.getName(reqDefOrCapDef);
+    }
 }

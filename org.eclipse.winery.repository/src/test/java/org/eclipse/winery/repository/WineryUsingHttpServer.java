@@ -19,48 +19,48 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 public class WineryUsingHttpServer {
 
-	public static Server createHttpServer(int port) throws IOException {
+    public static Server createHttpServer(int port) throws IOException {
 
-		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		context.setContextPath("/winery");
-		addServlet(context, "");
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setContextPath("/winery");
+        addServlet(context, "");
 
-		// TODO serve jsp - maybe https://www.eclipse.org/jetty/documentation/current/embedding-jetty.html could be of help
+        // TODO serve jsp - maybe https://www.eclipse.org/jetty/documentation/current/embedding-jetty.html could be of help
 /*
-		String[] subs = {"imports", "servicetemplates", "nodetypes", "nodetypeimplementations", "relationshiptypes", "relationshiptypeimplementations", "requirementtypes", "capabilitytypes", "artifacttypes", "artifacttemplates", "policytypes", "policytempaltes", "admin", "API", "other", "test"};
-		Arrays.stream(subs).forEach(s -> {
-		});
+        String[] subs = {"imports", "servicetemplates", "nodetypes", "nodetypeimplementations", "relationshiptypes", "relationshiptypeimplementations", "requirementtypes", "capabilitytypes", "artifacttypes", "artifacttemplates", "policytypes", "policytempaltes", "admin", "API", "other", "test"};
+        Arrays.stream(subs).forEach(s -> {
+        });
 */
 
-		Server server = new Server(port);
-		server.setHandler(context);
-		return server;
-	}
+        Server server = new Server(port);
+        server.setHandler(context);
+        return server;
+    }
 
-	public static Server createHttpServer() throws IOException {
-		return createHttpServer(8080);
-	}
+    public static Server createHttpServer() throws IOException {
+        return createHttpServer(8080);
+    }
 
-	private static void addServlet(ServletContextHandler context, String s) {
-		ServletHolder h = context.addServlet(com.sun.jersey.spi.container.servlet.ServletContainer.class, "/*");
-		h.setInitParameter("com.sun.jersey.config.property.packages", "org.eclipse.winery.repository.resources");
-		h.setInitParameter("com.sun.jersey.config.feature.FilterForwardOn404", "false");
-		h.setInitParameter("com.sun.jersey.config.feature.CanonicalizeURIPath", "true");
-		h.setInitParameter("com.sun.jersey.config.feature.NormalizeURI", "true");
-		h.setInitParameter("com.sun.jersey.config.feature.Redirect", "true");
-		h.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
-		h.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "com.sun.jersey.api.core.PackagesResourceConfig");
-		h.setInitOrder(1);
-	}
+    private static void addServlet(ServletContextHandler context, String s) {
+        ServletHolder h = context.addServlet(com.sun.jersey.spi.container.servlet.ServletContainer.class, "/*");
+        h.setInitParameter("com.sun.jersey.config.property.packages", "org.eclipse.winery.repository.resources");
+        h.setInitParameter("com.sun.jersey.config.feature.FilterForwardOn404", "false");
+        h.setInitParameter("com.sun.jersey.config.feature.CanonicalizeURIPath", "true");
+        h.setInitParameter("com.sun.jersey.config.feature.NormalizeURI", "true");
+        h.setInitParameter("com.sun.jersey.config.feature.Redirect", "true");
+        h.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
+        h.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "com.sun.jersey.api.core.PackagesResourceConfig");
+        h.setInitOrder(1);
+    }
 
-	public static void main(String[] args) throws Exception {
-		// initialize repository
-		new Prefs(true);
+    public static void main(String[] args) throws Exception {
+        // initialize repository
+        new Prefs(true);
 
-		Server server = createHttpServer();
+        Server server = createHttpServer();
 
-		server.start();
-		server.join();
-	}
+        server.start();
+        server.join();
+    }
 
 }

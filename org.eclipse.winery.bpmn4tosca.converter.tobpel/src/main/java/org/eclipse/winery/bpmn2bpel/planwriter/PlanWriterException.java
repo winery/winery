@@ -13,23 +13,23 @@ package org.eclipse.winery.bpmn2bpel.planwriter;
 
 public class PlanWriterException extends Exception {
 
-	public PlanWriterException() {
-	}
+    public PlanWriterException() {
+    }
 
-	public PlanWriterException(String message) {
-		super(message);
-	}
+    public PlanWriterException(String message) {
+        super(message);
+    }
 
-	public PlanWriterException(Throwable cause) {
-		super(cause);
-	}
+    public PlanWriterException(Throwable cause) {
+        super(cause);
+    }
 
-	public PlanWriterException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public PlanWriterException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public PlanWriterException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
+    public PlanWriterException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 
 }

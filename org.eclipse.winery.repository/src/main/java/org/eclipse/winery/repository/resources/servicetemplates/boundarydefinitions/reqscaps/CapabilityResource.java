@@ -19,8 +19,8 @@ import org.eclipse.winery.repository.resources._support.collections.withoutid.En
 
 public class CapabilityResource extends EntityWithoutIdResource<TCapabilityRef> {
 
-	public CapabilityResource(TCapabilityRef o, int idx, List<TCapabilityRef> list, IPersistable res) {
-		super(o, idx, list, res);
-	}
+    public CapabilityResource(TCapabilityRef o, int idx, List<TCapabilityRef> list, IPersistable res) {
+        super(o, idx, list, res);
+    }
 
 }

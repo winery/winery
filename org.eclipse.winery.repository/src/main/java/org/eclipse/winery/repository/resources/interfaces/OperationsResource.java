@@ -33,37 +33,37 @@ import org.restdoc.annotations.RestDocParam;
 
 public class OperationsResource extends EntityWithIdCollectionResource<OperationResource, TOperation> {
 
-	public OperationsResource(List<TOperation> list, IPersistable res) {
-		super(OperationResource.class, TOperation.class, list, res);
-	}
+    public OperationsResource(List<TOperation> list, IPersistable res) {
+        super(OperationResource.class, TOperation.class, list, res);
+    }
 
-	@Override
-	public String getId(TOperation entity) {
-		return entity.getName();
-	}
+    @Override
+    public String getId(TOperation entity) {
+        return entity.getName();
+    }
 
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet implemented.");
-	}
+    @Override
+    public Viewable getHTML() {
+        throw new IllegalStateException("Not yet implemented.");
+    }
 
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response createOperation(@FormParam("name") @RestDocParam(description = "used as name and id") String operationName) {
-		if (StringUtils.isEmpty(operationName)) {
-			return Response.status(Status.BAD_REQUEST).entity("operationName not provided").build();
-		}
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response createOperation(@FormParam("name") @RestDocParam(description = "used as name and id") String operationName) {
+        if (StringUtils.isEmpty(operationName)) {
+            return Response.status(Status.BAD_REQUEST).entity("operationName not provided").build();
+        }
 
-		operationName = Util.URLdecode(operationName);
+        operationName = Util.URLdecode(operationName);
 
-		// TODO: check for duplicates as in instance states
+        // TODO: check for duplicates as in instance states
 
-		TOperation operation = new TOperation();
-		operation.setName(operationName);
-		this.list.add(operation);
+        TOperation operation = new TOperation();
+        operation.setName(operationName);
+        this.list.add(operation);
 
-		return BackendUtils.persist(this.res);
-	}
+        return BackendUtils.persist(this.res);
+    }
 
 }

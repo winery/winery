@@ -19,70 +19,70 @@ package org.eclipse.winery.common;
  */
 public class StringEncodedAndDecoded implements Comparable<StringEncodedAndDecoded> {
 
-	private String decoded = null;
-	private String encoded = null;
+    private String decoded = null;
+    private String encoded = null;
 
 
-	/**
-	 * @param uri the URI to store
-	 * @param URLencoded true iff the given URI is URLencoded
-	 */
-	public StringEncodedAndDecoded(String uri, boolean URLencoded) {
-		if (URLencoded) {
-			this.encoded = uri;
-		} else {
-			this.decoded = uri;
-		}
-	}
+    /**
+     * @param uri the URI to store
+     * @param URLencoded true iff the given URI is URLencoded
+     */
+    public StringEncodedAndDecoded(String uri, boolean URLencoded) {
+        if (URLencoded) {
+            this.encoded = uri;
+        } else {
+            this.decoded = uri;
+        }
+    }
 
-	public String getDecoded() {
-		if (this.decoded == null) {
-			this.decoded = Util.URLdecode(this.encoded);
-		}
-		return this.decoded;
-	}
+    public String getDecoded() {
+        if (this.decoded == null) {
+            this.decoded = Util.URLdecode(this.encoded);
+        }
+        return this.decoded;
+    }
 
-	public String getEncoded() {
-		if (this.encoded == null) {
-			this.encoded = Util.URLencode(this.decoded);
-		}
-		return this.encoded;
-	}
+    public String getEncoded() {
+        if (this.encoded == null) {
+            this.encoded = Util.URLencode(this.decoded);
+        }
+        return this.encoded;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.getDecoded().hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return this.getDecoded().hashCode();
+    }
 
-	/**
-	 * @return the URL path fragment to be used in an URL
-	 */
-	public String getPathFragment() {
-		return this.getEncoded();
-	}
+    /**
+     * @return the URL path fragment to be used in an URL
+     */
+    public String getPathFragment() {
+        return this.getEncoded();
+    }
 
-	@Override
-	public String toString() {
-		return this.getDecoded();
-	}
+    @Override
+    public String toString() {
+        return this.getDecoded();
+    }
 
-	@Override
-	public int compareTo(StringEncodedAndDecoded o) {
-		return this.getDecoded().compareTo(o.getDecoded());
-	}
+    @Override
+    public int compareTo(StringEncodedAndDecoded o) {
+        return this.getDecoded().compareTo(o.getDecoded());
+    }
 
-	/**
-	 * Compares with the given object <br />
-	 * Equality checking is made based on the decoded String
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof String) {
-			return this.getDecoded().equals(o);
-		} else if (o instanceof StringEncodedAndDecoded) {
-			return ((StringEncodedAndDecoded) o).getDecoded().equals(this.getDecoded());
-		} else {
-			return false;
-		}
-	}
+    /**
+     * Compares with the given object <br />
+     * Equality checking is made based on the decoded String
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof String) {
+            return this.getDecoded().equals(o);
+        } else if (o instanceof StringEncodedAndDecoded) {
+            return ((StringEncodedAndDecoded) o).getDecoded().equals(this.getDecoded());
+        } else {
+            return false;
+        }
+    }
 }

@@ -15,10 +15,10 @@ import java.io.IOException;
 
 public interface IPersistable {
 
-	/**
-	 * @throws IOException if content could not be updated in the repository
-	 * @throws IllegalStateException if an JAXBException occurred. This should
-	 *             never happen.
-	 */
-	void persist() throws IOException;
+    /**
+     * @throws IOException if content could not be updated in the repository
+     * @throws IllegalStateException if an JAXBException occurred. This should
+     *             never happen.
+     */
+    void persist() throws IOException;
 }

@@ -15,34 +15,34 @@ import javax.xml.namespace.QName;
 
 public class ManagementTask extends Task {
 
-	private String interfaceName;;
+    private String interfaceName;;
 
-	private QName nodeTemplateId;
+    private QName nodeTemplateId;
 
-	private String nodeOperation;
+    private String nodeOperation;
 
-	public QName getNodeTemplateId() {
-		return nodeTemplateId;
-	}
+    public QName getNodeTemplateId() {
+        return nodeTemplateId;
+    }
 
-	public void setNodeTemplateId(QName nodeTemplateId) {
-		this.nodeTemplateId = nodeTemplateId;
-	}
+    public void setNodeTemplateId(QName nodeTemplateId) {
+        this.nodeTemplateId = nodeTemplateId;
+    }
 
-	public String getNodeOperation() {
-		return nodeOperation;
-	}
+    public String getNodeOperation() {
+        return nodeOperation;
+    }
 
-	public void setNodeOperation(String nodeOperation) {
-		this.nodeOperation = nodeOperation;
-	}
+    public void setNodeOperation(String nodeOperation) {
+        this.nodeOperation = nodeOperation;
+    }
 
-	public String getInterfaceName() {
-		return interfaceName;
-	}
+    public String getInterfaceName() {
+        return interfaceName;
+    }
 
-	public void setInterfaceName(String interfaceName) {
-		this.interfaceName = interfaceName;
-	}
+    public void setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
+    }
 
 }

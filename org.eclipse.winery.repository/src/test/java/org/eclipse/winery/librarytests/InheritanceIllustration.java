@@ -18,28 +18,28 @@ package org.eclipse.winery.librarytests;
  */
 public class InheritanceIllustration {
 
-	private static class A {
-	}
+    private static class A {
+    }
 
-	private static class B extends A {
-	}
+    private static class B extends A {
+    }
 
-	private static class X {
+    private static class X {
 
-		public static void doSomething(A a) {
-			System.out.println("Doing sth. with a");
-		}
+        public static void doSomething(A a) {
+            System.out.println("Doing sth. with a");
+        }
 
-		public static void doSomething(B b) {
-			System.out.println("Doing sth. with b");
-		}
-	}
+        public static void doSomething(B b) {
+            System.out.println("Doing sth. with b");
+        }
+    }
 
 
-	public static void main(String[] args) {
-		A theObject = new B();
-		X.doSomething(theObject);
-		X.doSomething((B) theObject);
-	}
+    public static void main(String[] args) {
+        A theObject = new B();
+        X.doSomething(theObject);
+        X.doSomething((B) theObject);
+    }
 
 }

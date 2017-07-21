@@ -27,16 +27,16 @@ import org.eclipse.winery.common.ids.elements.TOSCAElementId;
  */
 public abstract class EntityTemplateId extends TOSCAComponentId {
 
-	public EntityTemplateId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
+    public EntityTemplateId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public EntityTemplateId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public EntityTemplateId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public EntityTemplateId(QName qname) {
-		super(qname);
-	}
+    public EntityTemplateId(QName qname) {
+        super(qname);
+    }
 
 }

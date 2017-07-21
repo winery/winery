@@ -51,123 +51,123 @@ import org.slf4j.LoggerFactory;
  */
 public class XSDImportResource extends GenericImportResource {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(XSDImportResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XSDImportResource.class);
 
 
-	public XSDImportResource(XSDImportId id) {
-		super(id);
-	}
+    public XSDImportResource(XSDImportId id) {
+        super(id);
+    }
 
-	@Override
-	protected TExtensibleElements createNewElement() {
-		TImport imp = new TImport();
-		imp.setImportType(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		return imp;
-	}
+    @Override
+    protected TExtensibleElements createNewElement() {
+        TImport imp = new TImport();
+        imp.setImportType(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        return imp;
+    }
 
-	/**
-	 * public required by XSDImportsResource
-	 *
-	 * @return null if XSD file does not exist
-	 */
-	public RepositoryFileReference getXSDFileReference() {
-		String loc = this.getLocation();
-		if (loc == null) {
-			return null;
-		}
-		return new RepositoryFileReference(this.id, loc);
-	}
+    /**
+     * public required by XSDImportsResource
+     *
+     * @return null if XSD file does not exist
+     */
+    public RepositoryFileReference getXSDFileReference() {
+        String loc = this.getLocation();
+        if (loc == null) {
+            return null;
+        }
+        return new RepositoryFileReference(this.id, loc);
+    }
 
-	/**
-	 * @return null if no file is associated
-	 */
-	private XSModel getXSModel() {
-		final RepositoryFileReference ref = this.getXSDFileReference();
-		return BackendUtils.getXSModel(ref);
-	}
+    /**
+     * @return null if no file is associated
+     */
+    private XSModel getXSModel() {
+        final RepositoryFileReference ref = this.getXSDFileReference();
+        return BackendUtils.getXSModel(ref);
+    }
 
-	// we need "unchecked", because of the parsing of the cache
-	@SuppressWarnings("unchecked")
-	public Collection<String> getAllDefinedLocalNames(short type) {
-		RepositoryFileReference ref = this.getXSDFileReference();
-		if (ref == null) {
-			return Collections.emptySet();
-		}
-		Date lastUpdate = Repository.INSTANCE.getLastUpdate(ref);
+    // we need "unchecked", because of the parsing of the cache
+    @SuppressWarnings("unchecked")
+    public Collection<String> getAllDefinedLocalNames(short type) {
+        RepositoryFileReference ref = this.getXSDFileReference();
+        if (ref == null) {
+            return Collections.emptySet();
+        }
+        Date lastUpdate = Repository.INSTANCE.getLastUpdate(ref);
 
-		String cacheFileName = "definedLocalNames " + Integer.toString(type) + ".cache";
-		RepositoryFileReference cacheRef = new RepositoryFileReference(this.id, cacheFileName);
-		boolean cacheNeedsUpdate = true;
-		if (Repository.INSTANCE.exists(cacheRef)) {
-			Date lastUpdateCache = Repository.INSTANCE.getLastUpdate(cacheRef);
-			if (lastUpdate.compareTo(lastUpdateCache) <= 0) {
-				cacheNeedsUpdate = false;
-			}
-		}
+        String cacheFileName = "definedLocalNames " + Integer.toString(type) + ".cache";
+        RepositoryFileReference cacheRef = new RepositoryFileReference(this.id, cacheFileName);
+        boolean cacheNeedsUpdate = true;
+        if (Repository.INSTANCE.exists(cacheRef)) {
+            Date lastUpdateCache = Repository.INSTANCE.getLastUpdate(cacheRef);
+            if (lastUpdate.compareTo(lastUpdateCache) <= 0) {
+                cacheNeedsUpdate = false;
+            }
+        }
 
-		List<String> result;
-		if (cacheNeedsUpdate) {
+        List<String> result;
+        if (cacheNeedsUpdate) {
 
-			XSModel model = this.getXSModel();
-			if (model == null) {
-				return Collections.emptySet();
-			}
-			XSNamedMap components = model.getComponents(type);
-			//@SuppressWarnings("unchecked")
-			int len = components.getLength();
-			result = new ArrayList<>(len);
-			for (int i = 0; i < len; i++) {
-				XSObject item = components.item(i);
-				// if queried for TYPE_DEFINITION, then XSD base types (such as IDREF) are also returned
-				// We want to return only types defined in the namespace of this resource
-				if (item.getNamespace().equals(this.id.getNamespace().getDecoded())) {
-					result.add(item.getName());
-				}
-			}
+            XSModel model = this.getXSModel();
+            if (model == null) {
+                return Collections.emptySet();
+            }
+            XSNamedMap components = model.getComponents(type);
+            //@SuppressWarnings("unchecked")
+            int len = components.getLength();
+            result = new ArrayList<>(len);
+            for (int i = 0; i < len; i++) {
+                XSObject item = components.item(i);
+                // if queried for TYPE_DEFINITION, then XSD base types (such as IDREF) are also returned
+                // We want to return only types defined in the namespace of this resource
+                if (item.getNamespace().equals(this.id.getNamespace().getDecoded())) {
+                    result.add(item.getName());
+                }
+            }
 
-			String cacheContent = null;
-			try {
-				cacheContent = Utils.mapper.writeValueAsString(result);
-			} catch (JsonProcessingException e) {
-				XSDImportResource.LOGGER.error("Could not generate cache content", e);
-			}
-			try {
-				Repository.INSTANCE.putContentToFile(cacheRef, cacheContent, MediaType.APPLICATION_JSON_TYPE);
-			} catch (IOException e) {
-				XSDImportResource.LOGGER.error("Could not update cache", e);
-			}
-		} else {
-			// read content from cache
-			// cache should contain most recent information
-			try (InputStream is = Repository.INSTANCE.newInputStream(cacheRef)) {
-				result = Utils.mapper.readValue(is, java.util.List.class);
-			} catch (IOException e) {
-				XSDImportResource.LOGGER.error("Could not read from cache", e);
-				result = Collections.emptyList();
-			}
-		}
-		return result;
-	}
+            String cacheContent = null;
+            try {
+                cacheContent = Utils.mapper.writeValueAsString(result);
+            } catch (JsonProcessingException e) {
+                XSDImportResource.LOGGER.error("Could not generate cache content", e);
+            }
+            try {
+                Repository.INSTANCE.putContentToFile(cacheRef, cacheContent, MediaType.APPLICATION_JSON_TYPE);
+            } catch (IOException e) {
+                XSDImportResource.LOGGER.error("Could not update cache", e);
+            }
+        } else {
+            // read content from cache
+            // cache should contain most recent information
+            try (InputStream is = Repository.INSTANCE.newInputStream(cacheRef)) {
+                result = Utils.mapper.readValue(is, java.util.List.class);
+            } catch (IOException e) {
+                XSDImportResource.LOGGER.error("Could not read from cache", e);
+                result = Collections.emptyList();
+            }
+        }
+        return result;
+    }
 
-	public Collection<String> getAllDefinedElementsLocalNames() {
-		return this.getAllDefinedLocalNames(XSConstants.ELEMENT_DECLARATION);
-	}
+    public Collection<String> getAllDefinedElementsLocalNames() {
+        return this.getAllDefinedLocalNames(XSConstants.ELEMENT_DECLARATION);
+    }
 
-	public Collection<String> getAllDefinedTypesLocalNames() {
-		return this.getAllDefinedLocalNames(XSConstants.TYPE_DEFINITION);
-	}
+    public Collection<String> getAllDefinedTypesLocalNames() {
+        return this.getAllDefinedLocalNames(XSConstants.TYPE_DEFINITION);
+    }
 
-	@GET
-	@RestDoc(methodDescription = "May be used by the modeler to generate an XML editor based on the XML schema")
-	// we cannot use "MimeTypes.MIMETYPE_XSD" here as the latter is "text/xml" and org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsAsResponse() also produces text/xml
-	@Produces("text/xsd")
-	public Response getXSD() {
-		String location;
-		if ((location = this.getLocation()) == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		RepositoryFileReference ref = new RepositoryFileReference(this.id, location);
-		return BackendUtils.returnRepoPath(ref, null);
-	}
+    @GET
+    @RestDoc(methodDescription = "May be used by the modeler to generate an XML editor based on the XML schema")
+    // we cannot use "MimeTypes.MIMETYPE_XSD" here as the latter is "text/xml" and org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsAsResponse() also produces text/xml
+    @Produces("text/xsd")
+    public Response getXSD() {
+        String location;
+        if ((location = this.getLocation()) == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        RepositoryFileReference ref = new RepositoryFileReference(this.id, location);
+        return BackendUtils.returnRepoPath(ref, null);
+    }
 
 }

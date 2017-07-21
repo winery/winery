@@ -11,28 +11,28 @@
  *******************************************************************************/
 
 function addResourceInstance() {
-	if (highlightRequiredFields()) {
-		vShowError("Please fill in all required fields");
-		return;
-	}
+    if (highlightRequiredFields()) {
+        vShowError("Please fill in all required fields");
+        return;
+    }
 
-	var dataToSend = $('#createResourceForm').serialize();
-	var cr = $('#createResource');
-	$.ajax({
-		type: "POST",
-		async: false,
-		"data": dataToSend,
-		"url": cr.data("url"),
-		dataType: "text",
-		error: function(jqXHR, textStatus, errorThrown) {
-			vShowAJAXError("Could not create resource", jqXHR, errorThrown);
-			cr.modal("hide");
-		},
-		success: function(resData, textStatus, jqXHR) {
-			cr.data("onSuccess")($('#createResourceForm').serializeArray(), resData, textStatus, jqXHR);
-			cr.modal('hide');
-		}
-	});
+    var dataToSend = $('#createResourceForm').serialize();
+    var cr = $('#createResource');
+    $.ajax({
+        type: "POST",
+        async: false,
+        "data": dataToSend,
+        "url": cr.data("url"),
+        dataType: "text",
+        error: function(jqXHR, textStatus, errorThrown) {
+            vShowAJAXError("Could not create resource", jqXHR, errorThrown);
+            cr.modal("hide");
+        },
+        success: function(resData, textStatus, jqXHR) {
+            cr.data("onSuccess")($('#createResourceForm').serializeArray(), resData, textStatus, jqXHR);
+            cr.modal('hide');
+        }
+    });
 }
 
 /**
@@ -48,35 +48,35 @@ function addResourceInstance() {
  * @param onSuccess: function(serializedArray, data, textStatus, jqXHR) to call if adding has been successful. "serializedArray" contains the value of $('#formid').serializeArray()
  */
 function createResource(nameOfResource, fields, url, onSuccess) {
-	var cr = $('#createResource');
-	if (cr.length == 1) {
-		if (cr.data("url") == url) {
-			// the same dialog has been created before. Reuse it
-			cr.modal("show");
-			return;
-		} else {
-			// remove the dialog and thus enable the creation of a new one
-			cr.remove();
-		}
-	}
+    var cr = $('#createResource');
+    if (cr.length == 1) {
+        if (cr.data("url") == url) {
+            // the same dialog has been created before. Reuse it
+            cr.modal("show");
+            return;
+        } else {
+            // remove the dialog and thus enable the creation of a new one
+            cr.remove();
+        }
+    }
 
-	var data  = {
-		nameOfResource: nameOfResource,
-		fields: fields
-	};
-	require(["tmpl"], function(tmpl) {
-		var div = tmpl("template-createresource", data);
+    var data  = {
+        nameOfResource: nameOfResource,
+        fields: fields
+    };
+    require(["tmpl"], function(tmpl) {
+        var div = tmpl("template-createresource", data);
 
-		$("body").append(div);
-		cr = $('#createResource');
-		cr.on("shown.bs.modal", function() {
-			$("#createResourceForm > fieldset > div:first-child > input").focus();
-		});
+        $("body").append(div);
+        cr = $('#createResource');
+        cr.on("shown.bs.modal", function() {
+            $("#createResourceForm > fieldset > div:first-child > input").focus();
+        });
 
-		cr.modal('show');
-		cr.data("url", url);
-		cr.data("onSuccess", onSuccess);
-	});
+        cr.modal('show');
+        cr.data("url", url);
+        cr.data("onSuccess", onSuccess);
+    });
 }
 
 /**
@@ -86,16 +86,16 @@ function createResource(nameOfResource, fields, url, onSuccess) {
  * @param text the text to add
  */
 function addSortedSelectionItem(selection, value, text) {
-	var option = selection.children("option:first-child");
-	while ((option.length == 1) && (option.text() < text)) {
-		option = option.next();
-	}
-	var toAppend = '<option value="' + value + '" selected="selected">' + text + '</option>';
-	if (option.length == 0) {
-		selection.append(toAppend);
-	} else {
-		option.before(toAppend);
-	}
+    var option = selection.children("option:first-child");
+    while ((option.length == 1) && (option.text() < text)) {
+        option = option.next();
+    }
+    var toAppend = '<option value="' + value + '" selected="selected">' + text + '</option>';
+    if (option.length == 0) {
+        selection.append(toAppend);
+    } else {
+        option.before(toAppend);
+    }
 }
 
 /**** begin: for datatable ****/
@@ -114,38 +114,38 @@ function addSortedSelectionItem(selection, value, text) {
  * @param withoutConfirmation (optional) if given, the resource is deleted without any confirmation
 */
 function deleteOnServerAndInTable(tableInfo, nameOfThingToDelete, baseURL, idColumn, nameColumn, namespaceColumn, withoutConfirmation) {
-	if (tableInfo.selectedRow == null) {
-		vShowError("No row selected.");
-	} else {
-		idColumn = idColumn || 0; // default: first column indicates identifier
-		var id = tableInfo.table.fnGetData(tableInfo.selectedRow, idColumn);
-		var name;
-		if (typeof nameColumn === "undefined") {
-			name = id;
-		} else  {
-			name = tableInfo.table.fnGetData(tableInfo.selectedRow, nameColumn);
-		}
+    if (tableInfo.selectedRow == null) {
+        vShowError("No row selected.");
+    } else {
+        idColumn = idColumn || 0; // default: first column indicates identifier
+        var id = tableInfo.table.fnGetData(tableInfo.selectedRow, idColumn);
+        var name;
+        if (typeof nameColumn === "undefined") {
+            name = id;
+        } else  {
+            name = tableInfo.table.fnGetData(tableInfo.selectedRow, nameColumn);
+        }
 
-		var url = baseURL;
-		if (typeof namespaceColumn !== "undefined") {
-			var namespace = tableInfo.table.fnGetData(tableInfo.selectedRow, namespaceColumn);
-			namespace = encodeID(namespace);
-			url = url + namespace + '/';
-		}
-		// append the id
-		// we could add a "/" to be compatible with Jersey's URL rewriting
-		// However, that prevents deleting a thing being a leaf in the URL (e.g. a namespace)
-		url = url + encodeID(id);
+        var url = baseURL;
+        if (typeof namespaceColumn !== "undefined") {
+            var namespace = tableInfo.table.fnGetData(tableInfo.selectedRow, namespaceColumn);
+            namespace = encodeID(namespace);
+            url = url + namespace + '/';
+        }
+        // append the id
+        // we could add a "/" to be compatible with Jersey's URL rewriting
+        // However, that prevents deleting a thing being a leaf in the URL (e.g. a namespace)
+        url = url + encodeID(id);
 
-		// defined in winery-common.js
-		deleteResource(nameOfThingToDelete + " " + name, url,
-			function(data, textSTatus, jqXHR) {
-				tableInfo.table.fnDeleteRow(tableInfo.selectedRow);
-				tableInfo.selectedRow = null;
-				tableInfo.selectedTr = null;
-			}, false, false, withoutConfirmation
-		);
-	}
+        // defined in winery-common.js
+        deleteResource(nameOfThingToDelete + " " + name, url,
+            function(data, textSTatus, jqXHR) {
+                tableInfo.table.fnDeleteRow(tableInfo.selectedRow);
+                tableInfo.selectedRow = null;
+                tableInfo.selectedTr = null;
+            }, false, false, withoutConfirmation
+        );
+    }
 }
 
 /**** end: for datatable ****/
@@ -158,19 +158,19 @@ function deleteOnServerAndInTable(tableInfo, nameOfThingToDelete, baseURL, idCol
  * @param onSuccess: function(XMLHttpRequest) to handle result
  */
 function uploadFile(form, url, onSuccess) {
-	var xhr = new XMLHttpRequest();
-	var fd = new FormData(form);
-	xhr.onreadystatechange = function(e) {
-		if (this.readyState == 4) {
-			if ((xhr.status != 200) && (xhr.status != 201)) {
-				alert("Upload error occurred: " + xhr.status);
-			} else {
-				onSuccess(xhr);
-			}
-		}
-	};
-	xhr.open('post', url, true);
-	xhr.send(fd);
+    var xhr = new XMLHttpRequest();
+    var fd = new FormData(form);
+    xhr.onreadystatechange = function(e) {
+        if (this.readyState == 4) {
+            if ((xhr.status != 200) && (xhr.status != 201)) {
+                alert("Upload error occurred: " + xhr.status);
+            } else {
+                onSuccess(xhr);
+            }
+        }
+    };
+    xhr.open('post', url, true);
+    xhr.send(fd);
 }
 
 /**
@@ -179,20 +179,20 @@ function uploadFile(form, url, onSuccess) {
  * @param thing the thing to send. used as URL and in the error messages
  */
 function updateValue(thing, value) {
-	$.ajax({
-		type: "PUT",
-		async: false,
-		url: thing,
-		"data": value,
-		dataType: "text",
-		processData: false, // leads to a send in the body
-		error: function(jqXHR, textStatus, errorThrown) {
-			vShowAJAXError("Could not set " + thing, jqXHR, errorThrown);
-		},
-		success: function() {
-			vShowSuccess("Successfully updated " + thing);
-		}
-	});
+    $.ajax({
+        type: "PUT",
+        async: false,
+        url: thing,
+        "data": value,
+        dataType: "text",
+        processData: false, // leads to a send in the body
+        error: function(jqXHR, textStatus, errorThrown) {
+            vShowAJAXError("Could not set " + thing, jqXHR, errorThrown);
+        },
+        success: function() {
+            vShowSuccess("Successfully updated " + thing);
+        }
+    });
 }
 
 /**
@@ -203,21 +203,21 @@ function updateValue(thing, value) {
  * @param id
  */
 function putColor(id, hex) {
-	var dataToSend = {
-		"color" : hex
-	};
-	$.ajax({
-		type : "PUT",
-		async : false,
-		url : "visualappearance/" + id,
-		"data" : dataToSend,
-		dataType : "text",
-		error : function(jqXHR, textStatus, errorThrown) {
-			vShowError("Could not set color " + errorThrown);
-		},
-		success: function(data, textStatus, jqXHR) {
-			vShowSuccess("Successfully updated color");
-		}
-	});
+    var dataToSend = {
+        "color" : hex
+    };
+    $.ajax({
+        type : "PUT",
+        async : false,
+        url : "visualappearance/" + id,
+        "data" : dataToSend,
+        dataType : "text",
+        error : function(jqXHR, textStatus, errorThrown) {
+            vShowError("Could not set color " + errorThrown);
+        },
+        success: function(data, textStatus, jqXHR) {
+            vShowSuccess("Successfully updated color");
+        }
+    });
 }
 

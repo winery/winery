@@ -15,8 +15,8 @@ import org.eclipse.winery.common.ids.XMLId;
 
 public abstract class TypesId extends AdminId {
 
-	protected TypesId(XMLId xmlId) {
-		super(xmlId);
-	}
+    protected TypesId(XMLId xmlId) {
+        super(xmlId);
+    }
 
 }

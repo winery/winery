@@ -17,10 +17,10 @@ import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 
 public class TestIds {
 
-	public static final Namespace NS = new Namespace("http://winery.opentosca.org/test/nodetypes", false);
+    public static final Namespace NS = new Namespace("http://winery.opentosca.org/test/nodetypes", false);
 
-	public static final Namespace NS_TEST_FRUITS = new Namespace("http://winery.opentosca.org/test/nodetypes/fruits", false);
+    public static final Namespace NS_TEST_FRUITS = new Namespace("http://winery.opentosca.org/test/nodetypes/fruits", false);
 
-	public static final NodeTypeId ID_FRUIT_BAOBAB = new NodeTypeId(NS_TEST_FRUITS, new XMLId("baobab", false));
+    public static final NodeTypeId ID_FRUIT_BAOBAB = new NodeTypeId(NS_TEST_FRUITS, new XMLId("baobab", false));
 
 }

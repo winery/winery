@@ -30,31 +30,31 @@ import org.slf4j.LoggerFactory;
 
 public class DocumentationsResource extends EntityWithoutIdCollectionResource<DocumentationResource, TDocumentation> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DocumentationResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentationResource.class);
 
 
-	public DocumentationsResource(IPersistable res, List<TDocumentation> documentations) {
-		super(DocumentationResource.class, TDocumentation.class, documentations, res);
-	}
+    public DocumentationsResource(IPersistable res, List<TDocumentation> documentations) {
+        super(DocumentationResource.class, TDocumentation.class, documentations, res);
+    }
 
-	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/documentation.jsp", this.list);
-	}
+    @Override
+    public Viewable getHTML() {
+        return new Viewable("/jsp/documentation.jsp", this.list);
+    }
 
-	/**
-	 * Adds a new documentation
-	 */
-	@POST
-	@Consumes(MediaType.TEXT_HTML)
-	public Response addNewElement(String documentation) {
-		if (documentation == null) {
-			return Response.status(Status.BAD_REQUEST).entity("No content provided").build();
-		}
-		TDocumentation doc = new TDocumentation();
-		doc.getContent().add(documentation);
-		// TODO: check for duplicates as in instance states
-		this.list.add(doc);
-		return CollectionsHelper.persist(this.res, this, doc, true);
-	}
+    /**
+     * Adds a new documentation
+     */
+    @POST
+    @Consumes(MediaType.TEXT_HTML)
+    public Response addNewElement(String documentation) {
+        if (documentation == null) {
+            return Response.status(Status.BAD_REQUEST).entity("No content provided").build();
+        }
+        TDocumentation doc = new TDocumentation();
+        doc.getContent().add(documentation);
+        // TODO: check for duplicates as in instance states
+        this.list.add(doc);
+        return CollectionsHelper.persist(this.res, this, doc, true);
+    }
 }

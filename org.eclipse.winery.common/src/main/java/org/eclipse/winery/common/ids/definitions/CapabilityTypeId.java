@@ -18,16 +18,16 @@ import org.eclipse.winery.common.ids.XMLId;
 
 public final class CapabilityTypeId extends EntityTypeId {
 
-	public CapabilityTypeId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
+    public CapabilityTypeId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public CapabilityTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public CapabilityTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public CapabilityTypeId(QName qname) {
-		super(qname);
-	}
+    public CapabilityTypeId(QName qname) {
+        super(qname);
+    }
 
 }

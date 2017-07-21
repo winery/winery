@@ -16,93 +16,93 @@
 <%@ taglib uri="http://www.eclipse.org/winery/repository/functions" prefix="w" %>
 <script>
 var namespacePrefixesTableInfo = {
-	id : '#namespacePrefixesTable'
+    id : '#namespacePrefixesTable'
 };
 
 $(function() {
-	require(["winery-support"], function(ws) {
-		ws.initTable(namespacePrefixesTableInfo);
-	});
+    require(["winery-support"], function(ws) {
+        ws.initTable(namespacePrefixesTableInfo);
+    });
 });
 
 function addNSprefix() {
-	$.ajax({
-		url: "${pageContext.request.contextPath}/admin/namespaces/",
-		type: "POST",
-		async: false,
-		data: $('#addNamespacePrefixForm').serialize(),
-		error: function(jqXHR, textStatus, errorThrown) {
-			vShowAJAXError("Could not add namespace prefix", jqXHR, errorThrown);
-		},
-		success: function(data, textSTatus, jqXHR) {
-			namespacePrefixesTableInfo.table.fnAddData([$('#nsPrefixAdded').val(), $('#namespaceAdded').val()]);
-			$('#addNamespacePrefixDiag').modal('hide');
-			vShowSuccess("Successfully added namespace prefix.");
-		}
-	});
+    $.ajax({
+        url: "${pageContext.request.contextPath}/admin/namespaces/",
+        type: "POST",
+        async: false,
+        data: $('#addNamespacePrefixForm').serialize(),
+        error: function(jqXHR, textStatus, errorThrown) {
+            vShowAJAXError("Could not add namespace prefix", jqXHR, errorThrown);
+        },
+        success: function(data, textSTatus, jqXHR) {
+            namespacePrefixesTableInfo.table.fnAddData([$('#nsPrefixAdded').val(), $('#namespaceAdded').val()]);
+            $('#addNamespacePrefixDiag').modal('hide');
+            vShowSuccess("Successfully added namespace prefix.");
+        }
+    });
 }
 
 </script>
 
 <div class="modal fade" id="addNamespacePrefixDiag">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Add namespace prefix</h4>
-			</div>
-			<div class="modal-body">
-				<form id="addNamespacePrefixForm" enctype="multipart/form-data">
-					<fieldset>
-						<div class="form-group">
-							<label for="nsPrefixAdded">Prefix</label>
-							<input name="nsPrefix" id="nsPrefixAdded" class="form-control" type="text" />
-						</div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Add namespace prefix</h4>
+            </div>
+            <div class="modal-body">
+                <form id="addNamespacePrefixForm" enctype="multipart/form-data">
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="nsPrefixAdded">Prefix</label>
+                            <input name="nsPrefix" id="nsPrefixAdded" class="form-control" type="text" />
+                        </div>
 
-						<div class="form-group">
-							<label for="namespaceAdded">Namespace</label>
-							<input name="namespace" id="namespaceAdded" class="form-control" type="text" />
-						</div>
-					</fieldset>
-				</form>
-			</div>
+                        <div class="form-group">
+                            <label for="namespaceAdded">Namespace</label>
+                            <input name="namespace" id="namespaceAdded" class="form-control" type="text" />
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
 
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" onclick="addNSprefix()">Add</button>
-			</div>
-		</div>
-	</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="addNSprefix()">Add</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="namespaces">
-	<div class="listheading">
-		<label>Defined Prefixes for Namespaces</label>
-		<button class="rightbutton btn btn-danger btn-xs" type="button" onclick="deleteOnServerAndInTable(namespacePrefixesTableInfo, 'namespace', 'namespaces/', 1);">Remove</button>
-		<button class="rightbutton btn btn-primary btn-xs" type="button" onclick="$('#addNamespacePrefixDiag').modal('show')">Add</button>
-	</div>
-	<table cellpadding="0" cellspacing="0" border="0" class="display" id="namespacePrefixesTable">
-		<thead>
-			<tr>
-				<th>Prefix</th>
-				<th>Namespace</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach var="ns" items="${it.namespacesForJSP}">
-				<tr>
-					<td class="prefix">${w:getPrefix(ns.decoded)}</td>
-					<td>${ns.decoded}</td>
-				</tr>
-			</c:forEach>
-		</tbody>
-	</table>
+    <div class="listheading">
+        <label>Defined Prefixes for Namespaces</label>
+        <button class="rightbutton btn btn-danger btn-xs" type="button" onclick="deleteOnServerAndInTable(namespacePrefixesTableInfo, 'namespace', 'namespaces/', 1);">Remove</button>
+        <button class="rightbutton btn btn-primary btn-xs" type="button" onclick="$('#addNamespacePrefixDiag').modal('show')">Add</button>
+    </div>
+    <table cellpadding="0" cellspacing="0" border="0" class="display" id="namespacePrefixesTable">
+        <thead>
+            <tr>
+                <th>Prefix</th>
+                <th>Namespace</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach var="ns" items="${it.namespacesForJSP}">
+                <tr>
+                    <td class="prefix">${w:getPrefix(ns.decoded)}</td>
+                    <td>${ns.decoded}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
 </div>
 
 <script>
 $(document).on("click", "td.prefix",
-	vCreateTdClickFunction(
-		"${pageContext.request.contextPath}/admin/namespaces/",
-		"nsPrefix",
-		"namespace"));
+    vCreateTdClickFunction(
+        "${pageContext.request.contextPath}/admin/namespaces/",
+        "nsPrefix",
+        "namespace"));
 </script>

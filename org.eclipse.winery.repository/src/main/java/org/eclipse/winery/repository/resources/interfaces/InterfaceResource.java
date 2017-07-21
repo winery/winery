@@ -23,24 +23,24 @@ import org.eclipse.winery.repository.resources._support.collections.withid.Entit
 
 public class InterfaceResource extends EntityWithIdResource<TInterface> {
 
-	private final TInterface iface;
+    private final TInterface iface;
 
 
-	public InterfaceResource(IIdDetermination<TInterface> idDetermination, TInterface o, int idx, List<TInterface> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-		this.iface = o;
-	}
+    public InterfaceResource(IIdDetermination<TInterface> idDetermination, TInterface o, int idx, List<TInterface> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+        this.iface = o;
+    }
 
-	/**
-	 * required by artifacts.jsp
-	 */
-	public String getName() {
-		return this.iface.getName();
-	}
+    /**
+     * required by artifacts.jsp
+     */
+    public String getName() {
+        return this.iface.getName();
+    }
 
-	@Path("operations/")
-	public OperationsResource getOperationsResouce() {
-		List<TOperation> list = this.o.getOperation();
-		return new OperationsResource(list, this.res);
-	}
+    @Path("operations/")
+    public OperationsResource getOperationsResouce() {
+        List<TOperation> list = this.o.getOperation();
+        return new OperationsResource(list, this.res);
+    }
 }

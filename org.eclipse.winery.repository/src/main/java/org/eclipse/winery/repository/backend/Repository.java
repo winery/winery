@@ -15,5 +15,5 @@ import org.eclipse.winery.repository.Prefs;
 
 public class Repository {
 
-	public final static IRepository INSTANCE = Prefs.INSTANCE.getRepository();
+    public final static IRepository INSTANCE = Prefs.INSTANCE.getRepository();
 }

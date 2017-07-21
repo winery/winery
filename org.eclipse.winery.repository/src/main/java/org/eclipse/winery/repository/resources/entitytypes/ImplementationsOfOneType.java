@@ -29,46 +29,46 @@ import com.sun.jersey.api.view.Viewable;
  */
 public abstract class ImplementationsOfOneType {
 
-	private final TopologyGraphElementEntityTypeId typeId;
+    private final TopologyGraphElementEntityTypeId typeId;
 
 
-	public ImplementationsOfOneType(TopologyGraphElementEntityTypeId typeId) {
-		this.typeId = typeId;
-	}
+    public ImplementationsOfOneType(TopologyGraphElementEntityTypeId typeId) {
+        this.typeId = typeId;
+    }
 
-	public TopologyGraphElementEntityTypeId getTypeId() {
-		return this.typeId;
-	}
+    public TopologyGraphElementEntityTypeId getTypeId() {
+        return this.typeId;
+    }
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/entitytypes/implementations.jsp", this);
-		return Response.ok().entity(viewable).build();
-	}
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response getHTML() {
+        Viewable viewable = new Viewable("/jsp/entitytypes/implementations.jsp", this);
+        return Response.ok().entity(viewable).build();
+    }
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public abstract Response getJSON();
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public abstract Response getJSON();
 
-	public Collection<Namespace> getNamespaceAutocompletionList() {
-		return NamespacesResource.getNamespaces();
-	}
+    public Collection<Namespace> getNamespaceAutocompletionList() {
+        return NamespacesResource.getNamespaces();
+    }
 
-	/**
-	 * @return a list of type implementations implementing the associated node
-	 *         type
-	 */
-	public abstract String getImplementationsTableData();
+    /**
+     * @return a list of type implementations implementing the associated node
+     *         type
+     */
+    public abstract String getImplementationsTableData();
 
-	/**
-	 * The string used as URL part
-	 */
-	public abstract String getType();
+    /**
+     * The string used as URL part
+     */
+    public abstract String getType();
 
-	/**
-	 * The string displayed to the user
-	 */
-	public abstract String getTypeStr();
+    /**
+     * The string displayed to the user
+     */
+    public abstract String getTypeStr();
 
 }

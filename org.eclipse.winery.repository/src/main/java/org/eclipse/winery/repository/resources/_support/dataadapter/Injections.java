@@ -20,14 +20,14 @@ import javax.xml.bind.annotation.XmlElement;
 
 public class Injections {
 
-	@XmlElement
-	private List<Injection> injection = new ArrayList<>();
+    @XmlElement
+    private List<Injection> injection = new ArrayList<>();
 
-	public List<Injection> getInjections() {
-		return Collections.unmodifiableList(injection);
-	}
+    public List<Injection> getInjections() {
+        return Collections.unmodifiableList(injection);
+    }
 
-	public void addInjection (Injection in) {
-		injection.add(in);
-	}
+    public void addInjection (Injection in) {
+        injection.add(in);
+    }
 }

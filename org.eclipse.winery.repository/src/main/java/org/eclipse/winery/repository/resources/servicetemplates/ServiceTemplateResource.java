@@ -75,283 +75,283 @@ import org.xml.sax.SAXException;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplateResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplateResource.class);
 
 
-	public ServiceTemplateResource(ServiceTemplateId id) {
-		super(id);
-	}
+    public ServiceTemplateResource(ServiceTemplateId id) {
+        super(id);
+    }
 
-	/** sub-resources **/
+    /** sub-resources **/
 
-	@Path("topologytemplate/")
-	public TopologyTemplateResource getTopologyTemplateResource() {
-		if (this.getServiceTemplate().getTopologyTemplate() == null) {
-			// the main service template resource exists
-			// default topology template: empty template
-			// This eases the JSPs etc. and is valid as a non-existant topology template is equal to an empty one
-			this.getServiceTemplate().setTopologyTemplate(new TTopologyTemplate());
-		}
-		return new TopologyTemplateResource(this);
-	}
+    @Path("topologytemplate/")
+    public TopologyTemplateResource getTopologyTemplateResource() {
+        if (this.getServiceTemplate().getTopologyTemplate() == null) {
+            // the main service template resource exists
+            // default topology template: empty template
+            // This eases the JSPs etc. and is valid as a non-existant topology template is equal to an empty one
+            this.getServiceTemplate().setTopologyTemplate(new TTopologyTemplate());
+        }
+        return new TopologyTemplateResource(this);
+    }
 
-	@Path("plans/")
-	public PlansResource getPlansResource() {
-		TPlans plans = this.getServiceTemplate().getPlans();
-		if (plans == null) {
-			plans = new TPlans();
-			this.getServiceTemplate().setPlans(plans);
-		}
-		return new PlansResource(plans.getPlan(), this);
-	}
+    @Path("plans/")
+    public PlansResource getPlansResource() {
+        TPlans plans = this.getServiceTemplate().getPlans();
+        if (plans == null) {
+            plans = new TPlans();
+            this.getServiceTemplate().setPlans(plans);
+        }
+        return new PlansResource(plans.getPlan(), this);
+    }
 
-	@Path("selfserviceportal/")
-	public SelfServicePortalResource getSelfServicePortalResource() {
-		return new SelfServicePortalResource(this);
-	}
+    @Path("selfserviceportal/")
+    public SelfServicePortalResource getSelfServicePortalResource() {
+        return new SelfServicePortalResource(this);
+    }
 
-	@Path("boundarydefinitions/")
-	public BoundaryDefinitionsResource getBoundaryDefinitionsResource() {
-		TBoundaryDefinitions boundaryDefinitions = this.getServiceTemplate().getBoundaryDefinitions();
-		if (boundaryDefinitions == null) {
-			boundaryDefinitions = new TBoundaryDefinitions();
-			this.getServiceTemplate().setBoundaryDefinitions(boundaryDefinitions);
-		}
-		return new BoundaryDefinitionsResource(this, boundaryDefinitions);
-	}
+    @Path("boundarydefinitions/")
+    public BoundaryDefinitionsResource getBoundaryDefinitionsResource() {
+        TBoundaryDefinitions boundaryDefinitions = this.getServiceTemplate().getBoundaryDefinitions();
+        if (boundaryDefinitions == null) {
+            boundaryDefinitions = new TBoundaryDefinitions();
+            this.getServiceTemplate().setBoundaryDefinitions(boundaryDefinitions);
+        }
+        return new BoundaryDefinitionsResource(this, boundaryDefinitions);
+    }
 
-	@Override
-	public String getName() {
-		String name = this.getServiceTemplate().getName();
-		if (name == null) {
-			// place default
-			name = this.getId().getXmlId().getDecoded();
-		}
-		return name;
-	}
+    @Override
+    public String getName() {
+        String name = this.getServiceTemplate().getName();
+        if (name == null) {
+            // place default
+            name = this.getId().getXmlId().getDecoded();
+        }
+        return name;
+    }
 
-	@Override
-	public Response setName(String name) {
-		this.getServiceTemplate().setName(name);
-		return BackendUtils.persist(this);
-	}
+    @Override
+    public Response setName(String name) {
+        this.getServiceTemplate().setName(name);
+        return BackendUtils.persist(this);
+    }
 
-	// @formatter:off
-	@GET
-	@RestDoc(methodDescription = "Returns the associated node type, which can be substituted by this service template.<br />" +
-	"@return a QName of the form {namespace}localName is returned.")
-	@Path("substitutableNodeType")
-	@Produces(MediaType.TEXT_PLAIN)
-	// @formatter:on
-	public Response getSubstitutableNodeTypeAsResponse() {
-		QName qname = this.getServiceTemplate().getSubstitutableNodeType();
-		if (qname == null) {
-			return Response.status(Status.NOT_FOUND).build();
-		} else {
-			return Response.ok(qname.toString()).build();
-		}
-	}
+    // @formatter:off
+    @GET
+    @RestDoc(methodDescription = "Returns the associated node type, which can be substituted by this service template.<br />" +
+    "@return a QName of the form {namespace}localName is returned.")
+    @Path("substitutableNodeType")
+    @Produces(MediaType.TEXT_PLAIN)
+    // @formatter:on
+    public Response getSubstitutableNodeTypeAsResponse() {
+        QName qname = this.getServiceTemplate().getSubstitutableNodeType();
+        if (qname == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        } else {
+            return Response.ok(qname.toString()).build();
+        }
+    }
 
-	/**
-	 *
-	 * @return null if there is no substitutable node type
-	 */
-	public QName getSubstitutableNodeType() {
-		return this.getServiceTemplate().getSubstitutableNodeType();
-	}
+    /**
+     *
+     * @return null if there is no substitutable node type
+     */
+    public QName getSubstitutableNodeType() {
+        return this.getServiceTemplate().getSubstitutableNodeType();
+    }
 
-	@DELETE
-	@RestDoc(methodDescription = "Removes the association to substitutable node type")
-	@Path("substitutableNodeType")
-	public Response deleteSubstitutableNodeType() {
-		this.getServiceTemplate().setSubstitutableNodeType(null);
-		BackendUtils.persist(this);
-		return Response.noContent().build();
-	}
+    @DELETE
+    @RestDoc(methodDescription = "Removes the association to substitutable node type")
+    @Path("substitutableNodeType")
+    public Response deleteSubstitutableNodeType() {
+        this.getServiceTemplate().setSubstitutableNodeType(null);
+        BackendUtils.persist(this);
+        return Response.noContent().build();
+    }
 
-	@GET
-	@Path("injector/options")
-	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-	public Response getInjectorOptions() {
-		Splitting splitting = new Splitting();
-		TTopologyTemplate topologyTemplate = this.getServiceTemplate().getTopologyTemplate();
-		Map<String, List<TNodeTemplate>> matchingOptions;
-		InjectorReplaceOptions injectionReplaceOptions = new InjectorReplaceOptions();
+    @GET
+    @Path("injector/options")
+    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    public Response getInjectorOptions() {
+        Splitting splitting = new Splitting();
+        TTopologyTemplate topologyTemplate = this.getServiceTemplate().getTopologyTemplate();
+        Map<String, List<TNodeTemplate>> matchingOptions;
+        InjectorReplaceOptions injectionReplaceOptions = new InjectorReplaceOptions();
 
-		try {
-			matchingOptions = splitting.getMatchingOptionsWithDefaultLabeling(topologyTemplate);
-			injectionReplaceOptions.setTopologyTemplate(topologyTemplate);
-			injectionReplaceOptions.setInjectionOptions(matchingOptions);
-		} catch (SplittingException e) {
-			LOGGER.error("Could not get matching options", e);
-			return Response.serverError().entity("Could not get matching options").build();
-		}
-		return Response.ok().entity(injectionReplaceOptions).build();
-	}
+        try {
+            matchingOptions = splitting.getMatchingOptionsWithDefaultLabeling(topologyTemplate);
+            injectionReplaceOptions.setTopologyTemplate(topologyTemplate);
+            injectionReplaceOptions.setInjectionOptions(matchingOptions);
+        } catch (SplittingException e) {
+            LOGGER.error("Could not get matching options", e);
+            return Response.serverError().entity("Could not get matching options").build();
+        }
+        return Response.ok().entity(injectionReplaceOptions).build();
+    }
 
-	@POST
-	@Path("injector/replace")
-	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-	public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws IOException, ParserConfigurationException, SAXException {
-		Collection<TNodeTemplate> injectorNodeTemplates = injectorReplaceData.injections.values();
-		ModelUtilities.patchAnyAttributes(injectorNodeTemplates);
+    @POST
+    @Path("injector/replace")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws IOException, ParserConfigurationException, SAXException {
+        Collection<TNodeTemplate> injectorNodeTemplates = injectorReplaceData.injections.values();
+        ModelUtilities.patchAnyAttributes(injectorNodeTemplates);
 
-		Splitting splitting = new Splitting();
+        Splitting splitting = new Splitting();
 
-		TTopologyTemplate tTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.injections);
-		this.getServiceTemplate().setTopologyTemplate(tTopologyTemplate);
-		LOGGER.debug("Persisting...");
-		this.persist();
-		LOGGER.debug("Persisted.");
+        TTopologyTemplate tTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.injections);
+        this.getServiceTemplate().setTopologyTemplate(tTopologyTemplate);
+        LOGGER.debug("Persisting...");
+        this.persist();
+        LOGGER.debug("Persisted.");
 
-		//No renaming of the Service Template allowed because of the plans
+        //No renaming of the Service Template allowed because of the plans
 
-		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(id));
-		LOGGER.debug("URI of the old and new service template {}", url.toString());
-		return Response.created(url).build();
-	}
+        URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(id));
+        LOGGER.debug("URI of the old and new service template {}", url.toString());
+        return Response.created(url).build();
+    }
 
-	/**
-	 * Used for testing
-	 */
-	@GET
-	@Path("injector/replace")
-	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-	public Response getInjectorReplacement() {
-		//Test data
-		InjectorReplaceData injectorReplaceData = new InjectorReplaceData();
-		TTopologyTemplate tt = new TTopologyTemplate();
-		TNodeTemplate nt1 = new TNodeTemplate();
-		nt1.setId("nt1");
-		TNodeTemplate nt2 = new TNodeTemplate();
-		nt2.setId("nt2");
-		TNodeTemplate nt3 = new TNodeTemplate();
-		nt3.setId("nt3");
-		TNodeTemplate.Requirements r = new TNodeTemplate.Requirements();
-		TRequirement rt = new TRequirement();
-		rt.setName("Requ");
-		r.getRequirement().add(rt);
-		nt3.setRequirements(r);
-		tt.getNodeTemplateOrRelationshipTemplate().add(nt1);
-		//injectorReplaceData.setTopologyTemplate(tt);
-		Map<String, TNodeTemplate> replaceNodes = new HashMap<>();
-		replaceNodes.put("test", nt2);
-		replaceNodes.put("test2", nt3);
-		injectorReplaceData.setInjections(replaceNodes);
+    /**
+     * Used for testing
+     */
+    @GET
+    @Path("injector/replace")
+    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    public Response getInjectorReplacement() {
+        //Test data
+        InjectorReplaceData injectorReplaceData = new InjectorReplaceData();
+        TTopologyTemplate tt = new TTopologyTemplate();
+        TNodeTemplate nt1 = new TNodeTemplate();
+        nt1.setId("nt1");
+        TNodeTemplate nt2 = new TNodeTemplate();
+        nt2.setId("nt2");
+        TNodeTemplate nt3 = new TNodeTemplate();
+        nt3.setId("nt3");
+        TNodeTemplate.Requirements r = new TNodeTemplate.Requirements();
+        TRequirement rt = new TRequirement();
+        rt.setName("Requ");
+        r.getRequirement().add(rt);
+        nt3.setRequirements(r);
+        tt.getNodeTemplateOrRelationshipTemplate().add(nt1);
+        //injectorReplaceData.setTopologyTemplate(tt);
+        Map<String, TNodeTemplate> replaceNodes = new HashMap<>();
+        replaceNodes.put("test", nt2);
+        replaceNodes.put("test2", nt3);
+        injectorReplaceData.setInjections(replaceNodes);
 
-		return Response.ok().entity(injectorReplaceData).build();
-	}
+        return Response.ok().entity(injectorReplaceData).build();
+    }
 
-	public TServiceTemplate getServiceTemplate() {
-		return (TServiceTemplate) this.getElement();
-	}
+    public TServiceTemplate getServiceTemplate() {
+        return (TServiceTemplate) this.getElement();
+    }
 
-	@Override
-	protected TExtensibleElements createNewElement() {
-		return new TServiceTemplate();
-	}
+    @Override
+    protected TExtensibleElements createNewElement() {
+        return new TServiceTemplate();
+    }
 
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		this.getServiceTemplate().setId(id.getXmlId().getDecoded());
-		this.getServiceTemplate().setName(id.getXmlId().getDecoded());
-		this.getServiceTemplate().setTargetNamespace(id.getNamespace().getDecoded());
-	}
+    @Override
+    public void copyIdToFields(TOSCAComponentId id) {
+        this.getServiceTemplate().setId(id.getXmlId().getDecoded());
+        this.getServiceTemplate().setName(id.getXmlId().getDecoded());
+        this.getServiceTemplate().setTargetNamespace(id.getNamespace().getDecoded());
+    }
 
-	/**
-	 * Synchronizes the known plans with the data in the XML. When there is a
-	 * stored file, but no known entry in the XML, we guess "BPEL" as language
-	 * and "build plan" as type.
-	 */
-	@Override
-	public void synchronizeReferences() {
-		// locally stored plans
-		TPlans plans = this.getServiceTemplate().getPlans();
+    /**
+     * Synchronizes the known plans with the data in the XML. When there is a
+     * stored file, but no known entry in the XML, we guess "BPEL" as language
+     * and "build plan" as type.
+     */
+    @Override
+    public void synchronizeReferences() {
+        // locally stored plans
+        TPlans plans = this.getServiceTemplate().getPlans();
 
-		// plans stored in the repository
-		PlansId plansContainerId = new PlansId((ServiceTemplateId) this.getId());
-		SortedSet<PlanId> nestedPlans = Repository.INSTANCE.getNestedIds(plansContainerId, PlanId.class);
+        // plans stored in the repository
+        PlansId plansContainerId = new PlansId((ServiceTemplateId) this.getId());
+        SortedSet<PlanId> nestedPlans = Repository.INSTANCE.getNestedIds(plansContainerId, PlanId.class);
 
-		Set<PlanId> plansToAdd = new HashSet<>();
-		plansToAdd.addAll(nestedPlans);
+        Set<PlanId> plansToAdd = new HashSet<>();
+        plansToAdd.addAll(nestedPlans);
 
-		if (nestedPlans.isEmpty()) {
-			if (plans == null) {
-				// data on the file system equals the data -> no plans
-				return;
-			} else {
-				//noinspection StatementWithEmptyBody
-				// we have to check for equality later
-			}
-		}
+        if (nestedPlans.isEmpty()) {
+            if (plans == null) {
+                // data on the file system equals the data -> no plans
+                return;
+            } else {
+                //noinspection StatementWithEmptyBody
+                // we have to check for equality later
+            }
+        }
 
-		if (plans == null) {
-			plans = new TPlans();
-			this.getServiceTemplate().setPlans(plans);
-		}
+        if (plans == null) {
+            plans = new TPlans();
+            this.getServiceTemplate().setPlans(plans);
+        }
 
-		for (Iterator<TPlan> iterator = plans.getPlan().iterator(); iterator.hasNext();) {
-			TPlan plan = iterator.next();
-			if (plan.getPlanModel() != null) {
-				// in case, a plan is directly contained in a Model element, we do not need to do anything
-				continue;
-			}
-			PlanModelReference planModelReference;
-			if ((planModelReference = plan.getPlanModelReference()) != null) {
-				String ref = planModelReference.getReference();
-				if ((ref == null) || ref.startsWith("../")) {
-					// references to local plans start with "../"
-					// special case (due to errors in the importer): empty PlanModelReference field
-					if (plan.getId() == null) {
-						// invalid plan entry: no id.
-						// we remove the entry
-						iterator.remove();
-						continue;
-					}
-					PlanId planId = new PlanId(plansContainerId, new XMLId(plan.getId(), false));
-					if (nestedPlans.contains(planId)) {
-						// everything allright
-						// we do NOT need to add the plan on the HDD to the XML
-						plansToAdd.remove(planId);
-					} else {
-						// no local storage for the plan, we remove it from the XML
-						iterator.remove();
-					}
-				}
-			}
-		}
+        for (Iterator<TPlan> iterator = plans.getPlan().iterator(); iterator.hasNext();) {
+            TPlan plan = iterator.next();
+            if (plan.getPlanModel() != null) {
+                // in case, a plan is directly contained in a Model element, we do not need to do anything
+                continue;
+            }
+            PlanModelReference planModelReference;
+            if ((planModelReference = plan.getPlanModelReference()) != null) {
+                String ref = planModelReference.getReference();
+                if ((ref == null) || ref.startsWith("../")) {
+                    // references to local plans start with "../"
+                    // special case (due to errors in the importer): empty PlanModelReference field
+                    if (plan.getId() == null) {
+                        // invalid plan entry: no id.
+                        // we remove the entry
+                        iterator.remove();
+                        continue;
+                    }
+                    PlanId planId = new PlanId(plansContainerId, new XMLId(plan.getId(), false));
+                    if (nestedPlans.contains(planId)) {
+                        // everything allright
+                        // we do NOT need to add the plan on the HDD to the XML
+                        plansToAdd.remove(planId);
+                    } else {
+                        // no local storage for the plan, we remove it from the XML
+                        iterator.remove();
+                    }
+                }
+            }
+        }
 
-		// add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
-		List<TPlan> thePlans = plans.getPlan();
-		for (PlanId planId : plansToAdd) {
-			SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(planId);
-			if (files.size() != 1) {
-				throw new IllegalStateException("Currently, only one file per plan is supported.");
-			}
-			RepositoryFileReference ref = files.iterator().next();
+        // add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
+        List<TPlan> thePlans = plans.getPlan();
+        for (PlanId planId : plansToAdd) {
+            SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(planId);
+            if (files.size() != 1) {
+                throw new IllegalStateException("Currently, only one file per plan is supported.");
+            }
+            RepositoryFileReference ref = files.iterator().next();
 
-			TPlan plan = new TPlan();
-			plan.setId(planId.getXmlId().getDecoded());
-			plan.setName(planId.getXmlId().getDecoded());
-			plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
-			plan.setPlanLanguage(org.eclipse.winery.common.constants.Namespaces.URI_BPEL20_EXECUTABLE);
+            TPlan plan = new TPlan();
+            plan.setId(planId.getXmlId().getDecoded());
+            plan.setName(planId.getXmlId().getDecoded());
+            plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
+            plan.setPlanLanguage(org.eclipse.winery.common.constants.Namespaces.URI_BPEL20_EXECUTABLE);
 
-			// create a PlanModelReferenceElement pointing to that file
-			String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
-			// path is relative from the definitions element
-			path = "../" + path;
-			PlanModelReference pref = new PlanModelReference();
-			pref.setReference(path);
+            // create a PlanModelReferenceElement pointing to that file
+            String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
+            // path is relative from the definitions element
+            path = "../" + path;
+            PlanModelReference pref = new PlanModelReference();
+            pref.setReference(path);
 
-			plan.setPlanModelReference(pref);
-			thePlans.add(plan);
-		}
+            plan.setPlanModelReference(pref);
+            thePlans.add(plan);
+        }
 
-		try {
-			this.persist();
-		} catch (IOException e) {
-			throw new IllegalStateException("Could not persist resource", e);
-		}
-	}
+        try {
+            this.persist();
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not persist resource", e);
+        }
+    }
 }

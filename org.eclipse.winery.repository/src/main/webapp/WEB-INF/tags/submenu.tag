@@ -20,7 +20,7 @@
 <%@attribute name="selected" required="true"%>
 
 <a href="${subMenuData.href}" class="styledTabMenuButton styledTabMenuButton2ndlevel<c:if test="${selected}"> selected</c:if>">
-	<div class="left"></div>
-	<div class="center">${subMenuData.text}</div>
-	<div class="right"></div>
+    <div class="left"></div>
+    <div class="center">${subMenuData.text}</div>
+    <div class="right"></div>
 </a>

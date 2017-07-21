@@ -15,5 +15,5 @@ package org.eclipse.winery.highlevelrestapi;
  * This enum is intended to simplify identifying different HTTP-methods
  */
 public enum HttpMethod {
-	PUT, POST, GET, DELETE
+    PUT, POST, GET, DELETE
 }

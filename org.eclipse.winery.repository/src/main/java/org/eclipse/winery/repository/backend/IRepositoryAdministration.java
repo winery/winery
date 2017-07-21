@@ -20,23 +20,23 @@ import java.io.OutputStream;
  */
 public interface IRepositoryAdministration {
 
-	/**
-	 * Dumps the content of the repository to the given output stream
-	 *
-	 * @param out stream to use to dump the data to. Currently, a ZIP output
-	 *            stream is returned.
-	 */
-	void doDump(OutputStream out) throws IOException;
+    /**
+     * Dumps the content of the repository to the given output stream
+     *
+     * @param out stream to use to dump the data to. Currently, a ZIP output
+     *            stream is returned.
+     */
+    void doDump(OutputStream out) throws IOException;
 
-	/**
-	 * Removes all data
-	 */
-	void doClear();
+    /**
+     * Removes all data
+     */
+    void doClear();
 
-	/**
-	 * Imports the content of the given stream into the repsotiry.
-	 *
-	 * @param in the stream to use. Currently, only ZIP input is supported.
-	 */
-	void doImport(InputStream in);
+    /**
+     * Imports the content of the given stream into the repsotiry.
+     *
+     * @param in the stream to use. Currently, only ZIP input is supported.
+     */
+    void doImport(InputStream in);
 }

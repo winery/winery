@@ -28,55 +28,55 @@ import org.eclipse.winery.repository.resources.entitytypeimplementations.EntityT
 
 public class RelationshipTypeImplementationResource extends EntityTypeImplementationResource implements INodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 
-	public RelationshipTypeImplementationResource(RelationshipTypeImplementationId id) {
-		super(id);
-	}
+    public RelationshipTypeImplementationResource(RelationshipTypeImplementationId id) {
+        super(id);
+    }
 
-	public TRelationshipTypeImplementation getRTI() {
-		return (TRelationshipTypeImplementation) this.getElement();
-	}
+    public TRelationshipTypeImplementation getRTI() {
+        return (TRelationshipTypeImplementation) this.getElement();
+    }
 
-	/**
-	 * Even if both node type implementations and relationship type
-	 * implementations have implementation artifacts, there is no common
-	 * supertype. To avoid endless casts, we just implement the method here
-	 */
-	@Path("implementationartifacts/")
-	public ImplementationArtifactsResource getImplementationArtifacts() {
-		TImplementationArtifacts implementationArtifacts;
-		implementationArtifacts = this.getRTI().getImplementationArtifacts();
-		if (implementationArtifacts == null) {
-			implementationArtifacts = new TImplementationArtifacts();
-			this.getRTI().setImplementationArtifacts(implementationArtifacts);
-		}
-		return new ImplementationArtifactsResource(implementationArtifacts.getImplementationArtifact(), this);
-	}
+    /**
+     * Even if both node type implementations and relationship type
+     * implementations have implementation artifacts, there is no common
+     * supertype. To avoid endless casts, we just implement the method here
+     */
+    @Path("implementationartifacts/")
+    public ImplementationArtifactsResource getImplementationArtifacts() {
+        TImplementationArtifacts implementationArtifacts;
+        implementationArtifacts = this.getRTI().getImplementationArtifacts();
+        if (implementationArtifacts == null) {
+            implementationArtifacts = new TImplementationArtifacts();
+            this.getRTI().setImplementationArtifacts(implementationArtifacts);
+        }
+        return new ImplementationArtifactsResource(implementationArtifacts.getImplementationArtifact(), this);
+    }
 
-	@Override
-	protected TExtensibleElements createNewElement() {
-		return new TRelationshipTypeImplementation();
-	}
+    @Override
+    protected TExtensibleElements createNewElement() {
+        return new TRelationshipTypeImplementation();
+    }
 
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		this.getRTI().setTargetNamespace(id.getNamespace().getDecoded());
-		this.getRTI().setName(id.getXmlId().getDecoded());
-	}
+    @Override
+    public void copyIdToFields(TOSCAComponentId id) {
+        this.getRTI().setTargetNamespace(id.getNamespace().getDecoded());
+        this.getRTI().setName(id.getXmlId().getDecoded());
+    }
 
-	@Override
-	public QName getType() {
-		return this.getRTI().getRelationshipType();
-	}
+    @Override
+    public QName getType() {
+        return this.getRTI().getRelationshipType();
+    }
 
-	@Override
-	public Response setType(QName type) {
-		this.getRTI().setRelationshipType(type);
-		return BackendUtils.persist(this);
-	}
+    @Override
+    public Response setType(QName type) {
+        this.getRTI().setRelationshipType(type);
+        return BackendUtils.persist(this);
+    }
 
-	@Override
-	public Response setType(String typeStr) {
-		QName qname = QName.valueOf(typeStr);
-		return this.setType(qname);
-	}
+    @Override
+    public Response setType(String typeStr) {
+        QName qname = QName.valueOf(typeStr);
+        return this.setType(qname);
+    }
 }

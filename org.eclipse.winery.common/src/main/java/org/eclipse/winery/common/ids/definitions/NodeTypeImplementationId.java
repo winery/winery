@@ -16,11 +16,11 @@ import org.eclipse.winery.common.ids.XMLId;
 
 public final class NodeTypeImplementationId extends EntityTypeImplementationId {
 
-	public NodeTypeImplementationId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
+    public NodeTypeImplementationId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public NodeTypeImplementationId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public NodeTypeImplementationId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 }

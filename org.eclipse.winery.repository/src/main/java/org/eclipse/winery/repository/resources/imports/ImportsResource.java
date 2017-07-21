@@ -26,19 +26,19 @@ import org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportsReso
  */
 public class ImportsResource {
 
-	@Path("{id}/")
-	public AbstractComponentsResource getXSDsResource(@PathParam("id") String id) {
-		// once: decoding for browser locations
-		id = Util.URLdecode(id);
-		// once again: real URI
-		id = Util.URLdecode(id);
-		if (id.equals("http://www.w3.org/2001/XMLSchema")) {
-			// Models http://www.w3.org/2001/XMLSchema. We do not use xsd instead of the
-			// encoded namespace, because this induces special cases at many places
-			return new XSDImportsResource();
-		} else {
-			return new GenericImportsResource(id);
-		}
-	}
+    @Path("{id}/")
+    public AbstractComponentsResource getXSDsResource(@PathParam("id") String id) {
+        // once: decoding for browser locations
+        id = Util.URLdecode(id);
+        // once again: real URI
+        id = Util.URLdecode(id);
+        if (id.equals("http://www.w3.org/2001/XMLSchema")) {
+            // Models http://www.w3.org/2001/XMLSchema. We do not use xsd instead of the
+            // encoded namespace, because this induces special cases at many places
+            return new XSDImportsResource();
+        } else {
+            return new GenericImportsResource(id);
+        }
+    }
 
 }

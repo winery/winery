@@ -1,126 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions name="ManagementPlan"
-	targetNamespace="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
-	xmlns:tns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
-	xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
-	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop"
-	xmlns:si="http://siserver.org/wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	>
+    targetNamespace="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
+    xmlns:tns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
+    xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop"
+    xmlns:si="http://siserver.org/wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    >
 
-	<import namespace="http://siserver.org/wsdl" location="invoker.wsdl" />
-	<types>
-		<schema attributeFormDefault="unqualified" elementFormDefault="qualified"
-			targetNamespace="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
-			xmlns="http://www.w3.org/2001/XMLSchema">
-			<element name="planInput">
-				<complexType>
-					<sequence>
-						<element name="containerAPIServiceInstanceURL" type="string" />
-						<element name="csarId" type="xsd:string" />
-						<!-- TODO: Should be derived from serviceTemplateIdNamespaceURI and serviceTemplateIdLocalPart (or vice versa) -->
-						<element name="serviceTemplateId" type="string" />
-						<element name="serviceTemplateIdNamespaceURI" type="string" />
-						<element name="serviceTemplateIdLocalPart" type="string" />
-						<element name="serviceInstanceId" type="string" />
-						<element name="correlationId" type="string" />
-						<element name="planCallbackUrl" type="string" /> <!-- TODO workaround since we cannot obtain the plan EPR with Apache ODE -->
-					</sequence>
-				</complexType>
-			</element>
-			<element name="planOutput">
-				<complexType>
-					<sequence>
-						<element name="correlationId" type="string" />
-						<!-- Relevant if build plan was executed that created a new service 
-							instance -->
-						<element name="serviceInstanceId" type="string" />
-					</sequence>
-				</complexType>
-			</element>
-		</schema>
-	</types>
+    <import namespace="http://siserver.org/wsdl" location="invoker.wsdl" />
+    <types>
+        <schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+            targetNamespace="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
+            xmlns="http://www.w3.org/2001/XMLSchema">
+            <element name="planInput">
+                <complexType>
+                    <sequence>
+                        <element name="containerAPIServiceInstanceURL" type="string" />
+                        <element name="csarId" type="xsd:string" />
+                        <!-- TODO: Should be derived from serviceTemplateIdNamespaceURI and serviceTemplateIdLocalPart (or vice versa) -->
+                        <element name="serviceTemplateId" type="string" />
+                        <element name="serviceTemplateIdNamespaceURI" type="string" />
+                        <element name="serviceTemplateIdLocalPart" type="string" />
+                        <element name="serviceInstanceId" type="string" />
+                        <element name="correlationId" type="string" />
+                        <element name="planCallbackUrl" type="string" /> <!-- TODO workaround since we cannot obtain the plan EPR with Apache ODE -->
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="planOutput">
+                <complexType>
+                    <sequence>
+                        <element name="correlationId" type="string" />
+                        <!-- Relevant if build plan was executed that created a new service 
+                            instance -->
+                        <element name="serviceInstanceId" type="string" />
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </types>
 
-	<message name="planInputMessage">
-		<part name="payload" element="tns:planInput" />
-	</message>
-	<message name="planOutputMessage">
-		<part name="payload" element="tns:planOutput" />
-	</message>
-
-
-	<plnk:partnerLinkType name="ManagementPlanPLT">
-		<plnk:role name="ManagementPlanProvider" portType="tns:ManagementPlanPT" />
-		<plnk:role name="ManagementPlanClient" portType="tns:ManagementPlanClientCallbackPT" />
-	</plnk:partnerLinkType>
-	<plnk:partnerLinkType name="OpenTOSCAServiceInvokerPLT">
-		<plnk:role name="ServiceInvokerClient" portType="si:CallbackPortType" />
-		<plnk:role name="ServiceInvoker" portType="si:InvokePortType" />
-	</plnk:partnerLinkType>
-
-	<vprop:property name="ServiceInvokerRequestProperty"
-		type="xsd:string" />
-
-	<vprop:propertyAlias messageType="si:invokeOperationAsyncMessage"
-		part="invokeOperationAsync" propertyName="tns:ServiceInvokerRequestProperty">
-		<vprop:query><![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
-	</vprop:propertyAlias>
-
-	<vprop:propertyAlias messageType="si:invokeResponse"
-		part="invokeResponse" propertyName="tns:ServiceInvokerRequestProperty">
-		<vprop:query><![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
-	</vprop:propertyAlias>
-
-	<!-- Port type provides the operation to the client for starting the management 
-		plan -->
-	<portType name="ManagementPlanPT">
-		<operation name="initiatePlan">
-			<input message="tns:planInputMessage" />
-		</operation>
-	</portType>
-
-	<portType name="ManagementPlanClientCallbackPT">
-		<operation name="onResult">
-			<input message="tns:planOutputMessage" />
-		</operation>
-	</portType>
+    <message name="planInputMessage">
+        <part name="payload" element="tns:planInput" />
+    </message>
+    <message name="planOutputMessage">
+        <part name="payload" element="tns:planOutput" />
+    </message>
 
 
+    <plnk:partnerLinkType name="ManagementPlanPLT">
+        <plnk:role name="ManagementPlanProvider" portType="tns:ManagementPlanPT" />
+        <plnk:role name="ManagementPlanClient" portType="tns:ManagementPlanClientCallbackPT" />
+    </plnk:partnerLinkType>
+    <plnk:partnerLinkType name="OpenTOSCAServiceInvokerPLT">
+        <plnk:role name="ServiceInvokerClient" portType="si:CallbackPortType" />
+        <plnk:role name="ServiceInvoker" portType="si:InvokePortType" />
+    </plnk:partnerLinkType>
+
+    <vprop:property name="ServiceInvokerRequestProperty"
+        type="xsd:string" />
+
+    <vprop:propertyAlias messageType="si:invokeOperationAsyncMessage"
+        part="invokeOperationAsync" propertyName="tns:ServiceInvokerRequestProperty">
+        <vprop:query><![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+    </vprop:propertyAlias>
+
+    <vprop:propertyAlias messageType="si:invokeResponse"
+        part="invokeResponse" propertyName="tns:ServiceInvokerRequestProperty">
+        <vprop:query><![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
+    </vprop:propertyAlias>
+
+    <!-- Port type provides the operation to the client for starting the management 
+        plan -->
+    <portType name="ManagementPlanPT">
+        <operation name="initiatePlan">
+            <input message="tns:planInputMessage" />
+        </operation>
+    </portType>
+
+    <portType name="ManagementPlanClientCallbackPT">
+        <operation name="onResult">
+            <input message="tns:planOutputMessage" />
+        </operation>
+    </portType>
 
 
-	<binding name="ManagementPlanPTBinding" type="tns:ManagementPlanPT">
-		<soap:binding style="document"
-			transport="http://schemas.xmlsoap.org/soap/http" />
-		<operation name="initiatePlan">
-			<soap:operation
-				soapAction="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/initiate" />
-			<input>
-				<soap:body use="literal" />
-			</input>
-		</operation>
-	</binding>
-	<binding name="ManagementPlanClientPTBinding" type="tns:ManagementPlanClientCallbackPT">
-		<soap:binding style="document"
-			transport="http://schemas.xmlsoap.org/soap/http" />
-		<operation name="onResult">
-			<soap:operation
-				soapAction="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/onResult" />
-			<input>
-				<soap:body use="literal" />
-			</input>
-		</operation>
-	</binding>
 
 
-	<service name="ManagementPlanService">
-		<port name="ManagementPlanPort" binding="tns:ManagementPlanPTBinding">
-			<soap:address location="http://localhost:8080/ManagementPlan" />
-		</port>
-	</service>
+    <binding name="ManagementPlanPTBinding" type="tns:ManagementPlanPT">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="initiatePlan">
+            <soap:operation
+                soapAction="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/initiate" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+        </operation>
+    </binding>
+    <binding name="ManagementPlanClientPTBinding" type="tns:ManagementPlanClientCallbackPT">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="onResult">
+            <soap:operation
+                soapAction="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/onResult" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+        </operation>
+    </binding>
 
-	<service name="ManagementPlanClientService">
-		<port name="ManagementPlanClientPort" binding="tns:ManagementPlanClientPTBinding">
-			<soap:address location="http://localhost:8080/ManagementPlanClient" />
-		</port>
-	</service>
+
+    <service name="ManagementPlanService">
+        <port name="ManagementPlanPort" binding="tns:ManagementPlanPTBinding">
+            <soap:address location="http://localhost:8080/ManagementPlan" />
+        </port>
+    </service>
+
+    <service name="ManagementPlanClientService">
+        <port name="ManagementPlanClientPort" binding="tns:ManagementPlanClientPTBinding">
+            <soap:address location="http://localhost:8080/ManagementPlanClient" />
+        </port>
+    </service>
 
 </definitions>

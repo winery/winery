@@ -18,15 +18,15 @@ import org.eclipse.winery.common.ids.XMLId;
 
 public final class PolicyTemplateId extends EntityTemplateId {
 
-	public PolicyTemplateId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
+    public PolicyTemplateId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public PolicyTemplateId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public PolicyTemplateId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public PolicyTemplateId(QName qname) {
-		super(qname);
-	}
+    public PolicyTemplateId(QName qname) {
+        super(qname);
+    }
 }

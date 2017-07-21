@@ -35,76 +35,76 @@ import org.slf4j.LoggerFactory;
 @XmlRootElement
 public class FileMeta {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FileMeta.class);
-	private static final String deleteType = "DELETE";
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileMeta.class);
+    private static final String deleteType = "DELETE";
 
-	private String name;
-	private long size;
-	private String url;
-	private String deleteUrl;
-	private String thumbnailUrl;
+    private String name;
+    private long size;
+    private String url;
+    private String deleteUrl;
+    private String thumbnailUrl;
 
-	public FileMeta(String filename, long size, String url, String thumbnailUrl) {
-		this.name = filename;
-		this.size = size;
-		this.url = url;
-		this.thumbnailUrl = thumbnailUrl;
-		this.deleteUrl = url;
-	}
+    public FileMeta(String filename, long size, String url, String thumbnailUrl) {
+        this.name = filename;
+        this.size = size;
+        this.url = url;
+        this.thumbnailUrl = thumbnailUrl;
+        this.deleteUrl = url;
+    }
 
-	public FileMeta(RepositoryFileReference ref) {
-		this.name = ref.getFileName();
-		try {
-			this.size = Repository.INSTANCE.getSize(ref);
-		} catch (IOException e) {
-			FileMeta.LOGGER.error(e.getMessage(), e);
-			this.size = 0;
-		}
-		this.url = Utils.getAbsoluteURL(ref);
-		this.deleteUrl = this.url;
-		this.thumbnailUrl = Prefs.INSTANCE.getResourcePath() + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
-	}
+    public FileMeta(RepositoryFileReference ref) {
+        this.name = ref.getFileName();
+        try {
+            this.size = Repository.INSTANCE.getSize(ref);
+        } catch (IOException e) {
+            FileMeta.LOGGER.error(e.getMessage(), e);
+            this.size = 0;
+        }
+        this.url = Utils.getAbsoluteURL(ref);
+        this.deleteUrl = this.url;
+        this.thumbnailUrl = Prefs.INSTANCE.getResourcePath() + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
+    }
 
-	/**
-	 * @param ref the reference to get information from
-	 * @param URLprefix the string which should be prepended the actual URL.
-	 *            Including the "/"
-	 */
-	public FileMeta(RepositoryFileReference ref, String URLprefix) {
-		this(ref);
-		this.url = URLprefix + this.url;
-	}
+    /**
+     * @param ref the reference to get information from
+     * @param URLprefix the string which should be prepended the actual URL.
+     *            Including the "/"
+     */
+    public FileMeta(RepositoryFileReference ref, String URLprefix) {
+        this(ref);
+        this.url = URLprefix + this.url;
+    }
 
-	/**
-	 * The constructor is used for JAX-B only. Therefore, the warning "unused"
-	 * is suppressed
-	 */
-	@SuppressWarnings("unused")
-	private FileMeta() {
-	}
+    /**
+     * The constructor is used for JAX-B only. Therefore, the warning "unused"
+     * is suppressed
+     */
+    @SuppressWarnings("unused")
+    private FileMeta() {
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public long getSize() {
-		return this.size;
-	}
+    public long getSize() {
+        return this.size;
+    }
 
-	public String getUrl() {
-		return this.url;
-	}
+    public String getUrl() {
+        return this.url;
+    }
 
-	public String getDeleteUrl() {
-		return this.deleteUrl;
-	}
+    public String getDeleteUrl() {
+        return this.deleteUrl;
+    }
 
-	public String getDeleteType() {
-		return deleteType;
-	}
+    public String getDeleteType() {
+        return deleteType;
+    }
 
-	public String getThumbnailUrl() {
-		return this.thumbnailUrl;
-	}
+    public String getThumbnailUrl() {
+        return this.thumbnailUrl;
+    }
 
 }

@@ -21,8 +21,8 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
  */
 public class PlansId extends TOSCAElementId {
 
-	public PlansId(ServiceTemplateId parent) {
-		super(parent, new XMLId("plans", true));
-	}
+    public PlansId(ServiceTemplateId parent) {
+        super(parent, new XMLId("plans", true));
+    }
 
 }

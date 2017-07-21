@@ -22,18 +22,18 @@ Symptom: in header.jsp "param.selected" is "XSDImport" instead of "xsdimport"
 --%>
 <t:genericpage windowtitle="XSD Imports" cssClass="mainContentContainer xsdimport" selected="xsdimport">
 
-	<div class="top">
-		<%@ include file="/jsp/componentnaming.jspf" %>
-		<!--
-		<div style="float:right; margin-right:29px; margin-top: -20px; position:relative;">
-			<div style="float:right;">
-				<a href="?definitions" class="btn btn-info">XML</a>
-				<a href="?csar" class="btn btn-info">ZIP</a>
-			</div>
-		</div>  -->
-	</div>
+    <div class="top">
+        <%@ include file="/jsp/componentnaming.jspf" %>
+        <!--
+        <div style="float:right; margin-right:29px; margin-top: -20px; position:relative;">
+            <div style="float:right;">
+                <a href="?definitions" class="btn btn-info">XML</a>
+                <a href="?csar" class="btn btn-info">ZIP</a>
+            </div>
+        </div>  -->
+    </div>
 
-	<div class="middle" id="ccontainer">
+    <div class="middle" id="ccontainer">
 
 Associated file:
 <c:if test="${empty it.location}">none</c:if>
@@ -43,7 +43,7 @@ Associated file:
 
 Modification not yet implemented
 
-	</div>
+    </div>
 
 </t:genericpage>
 

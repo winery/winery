@@ -15,20 +15,20 @@ import org.eclipse.winery.common.ids.Namespace;
 
 public class NamespaceAndCountOfComponentInstances {
 
-	private final Namespace namespace;
-	private final Integer count;
+    private final Namespace namespace;
+    private final Integer count;
 
-	public NamespaceAndCountOfComponentInstances(Namespace namespace, Integer count) {
-		this.namespace = namespace;
-		this.count = count;
-	}
+    public NamespaceAndCountOfComponentInstances(Namespace namespace, Integer count) {
+        this.namespace = namespace;
+        this.count = count;
+    }
 
-	public Namespace getNamespace() {
-		return namespace;
-	}
+    public Namespace getNamespace() {
+        return namespace;
+    }
 
-	public Integer getCount() {
-		return count;
-	}
+    public Integer getCount() {
+        return count;
+    }
 
 }

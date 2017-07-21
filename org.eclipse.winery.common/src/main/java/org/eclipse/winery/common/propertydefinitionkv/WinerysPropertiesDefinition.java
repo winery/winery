@@ -24,53 +24,53 @@ import org.eclipse.winery.common.constants.Namespaces;
 @XmlRootElement(name = "PropertiesDefinition")
 public class WinerysPropertiesDefinition {
 
-	private String namespace;
-	private String elementName;
-	private PropertyDefinitionKVList propertyDefinitionKVList;
-	private Boolean isDerivedFromXSD = Boolean.FALSE;
+    private String namespace;
+    private String elementName;
+    private PropertyDefinitionKVList propertyDefinitionKVList;
+    private Boolean isDerivedFromXSD = Boolean.FALSE;
 
-	@XmlAttribute(name = "namespace")
-	public String getNamespace() {
-		return this.namespace;
-	}
+    @XmlAttribute(name = "namespace")
+    public String getNamespace() {
+        return this.namespace;
+    }
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 
-	@XmlAttribute(name = "elementname")
-	public String getElementName() {
-		return this.elementName;
-	}
+    @XmlAttribute(name = "elementname")
+    public String getElementName() {
+        return this.elementName;
+    }
 
-	public void setElementName(String localName) {
-		this.elementName = localName;
-	}
+    public void setElementName(String localName) {
+        this.elementName = localName;
+    }
 
-	@XmlElement(name = "properties")
-	public PropertyDefinitionKVList getPropertyDefinitionKVList() {
-		return this.propertyDefinitionKVList;
-	}
+    @XmlElement(name = "properties")
+    public PropertyDefinitionKVList getPropertyDefinitionKVList() {
+        return this.propertyDefinitionKVList;
+    }
 
-	public void setPropertyDefinitionKVList(PropertyDefinitionKVList propertyDefinitionKVList) {
-		this.propertyDefinitionKVList = propertyDefinitionKVList;
-	}
+    public void setPropertyDefinitionKVList(PropertyDefinitionKVList propertyDefinitionKVList) {
+        this.propertyDefinitionKVList = propertyDefinitionKVList;
+    }
 
-	/**
-	 * @return null if not derived from XSD, "Boolean.TRUE" otherwise. This
-	 *         leads JAXB to write the attribute only if derivedFromXSD is true
-	 */
-	@XmlAttribute(name = "derivedFromXSD", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
-	public Boolean getIsDerivedFromXSD() {
-		if ((this.isDerivedFromXSD != null) && (this.isDerivedFromXSD)) {
-			return Boolean.TRUE;
-		} else {
-			return null;
-		}
-	}
+    /**
+     * @return null if not derived from XSD, "Boolean.TRUE" otherwise. This
+     *         leads JAXB to write the attribute only if derivedFromXSD is true
+     */
+    @XmlAttribute(name = "derivedFromXSD", namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE)
+    public Boolean getIsDerivedFromXSD() {
+        if ((this.isDerivedFromXSD != null) && (this.isDerivedFromXSD)) {
+            return Boolean.TRUE;
+        } else {
+            return null;
+        }
+    }
 
-	public void setIsDerivedFromXSD(Boolean isDerivedFromXSD) {
-		this.isDerivedFromXSD = isDerivedFromXSD;
-	}
+    public void setIsDerivedFromXSD(Boolean isDerivedFromXSD) {
+        this.isDerivedFromXSD = isDerivedFromXSD;
+    }
 
 }

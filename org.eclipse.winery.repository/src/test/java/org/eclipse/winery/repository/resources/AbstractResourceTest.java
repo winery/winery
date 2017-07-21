@@ -15,15 +15,12 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
+import org.eclipse.winery.repository.AbstractWineryWithRepositoryTest;
 import org.eclipse.winery.repository.WineryUsingHttpServer;
 
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -32,155 +29,141 @@ import org.xmlunit.matchers.CompareMatcher;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.Is.is;
 
-public abstract class AbstractResourceTest {
+public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryTest {
 
-	// with trailing /
-	private static final String PREFIX = "http://localhost:9080/winery/";
+    // with trailing /
+    private static final String PREFIX = "http://localhost:9080/winery/";
 
-	private static Git git;
+    private static Server server;
 
-	private static Server server;
+    @BeforeClass
+    public static void init() throws Exception {
+        AbstractWineryWithRepositoryTest.init();
+        server = WineryUsingHttpServer.createHttpServer(9080);
+        server.start();
+    }
 
-	@BeforeClass
-	public static void init() throws Exception {
-		// enable git-backed repository
-		PrefsTestEnabledGitBackedRepository prefsTestEnabledGitBackedRepository = new PrefsTestEnabledGitBackedRepository();
-		git = prefsTestEnabledGitBackedRepository.git;
-		server = WineryUsingHttpServer.createHttpServer(9080);
-		server.start();
-	}
+    @AfterClass
+    public static void shutdown() throws Exception {
+        server.stop();
+    }
 
-	@AfterClass
-	public static void shutdown() throws Exception {
-		server.stop();
-	}
+    public static String readFromClasspath(String fileName) {
+        final InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
+        if (inputStream == null) {
+            throw new IllegalStateException("Could not find " + fileName + " on classpath");
+        }
+        return new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
+    }
 
-	protected void setRevisionTo(String ref) throws GitAPIException {
-		// TODO: newer JGit version: setForce(true)
-		git.clean().setCleanDirectories(true).call();
+    protected RequestSpecification start() {
+        return given()
+                .log()
+                .ifValidationFails();
+    }
 
-		this.git.reset()
-				.setMode(ResetCommand.ResetType.HARD)
-				.setRef(ref)
-				.call();
-	}
+    protected String callURL(String restURL) {
+        return PREFIX + Util.URLdecode(restURL);
+    }
 
-	public static String readFromClasspath(String fileName) {
-		final InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(fileName);
-		if (inputStream == null) {
-			throw new IllegalStateException("Could not find " + fileName + " on classpath");
-		}
-		return new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
-	}
+    private boolean isXml(String fileName) {
+        return (fileName.endsWith("xml"));
+    }
 
-	protected RequestSpecification start() {
-		return given()
-				.log()
-				.ifValidationFails();
-	}
+    private ContentType getAccept(String fileName) {
+        if (isXml(fileName)) {
+            return ContentType.XML;
+        } else {
+            return ContentType.JSON;
+        }
+    }
 
-	protected String callURL(String restURL) {
-		return PREFIX + Util.URLdecode(restURL);
-	}
+    public void assertNotFound(String restURL) {
+        try {
+            start()
+                    .get(callURL(restURL))
+                    .then()
+                    .statusCode(404);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	private boolean isXml(String fileName) {
-		return (fileName.endsWith("xml"));
-	}
+    public void assertGet(String restURL, String fileName) {
+        try {
+            String expectedStr = readFromClasspath(fileName);
+            final String receivedStr = start()
+                    .accept(getAccept(fileName))
+                    .get(callURL(restURL))
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(200)
+                    .extract()
+                    .response()
+                    .getBody()
+                    .asString();
+            if (isXml(fileName)) {
+                org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
+            } else {
+                JSONAssert.assertEquals(
+                        expectedStr,
+                        receivedStr,
+                        true);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	private ContentType getAccept(String fileName) {
-		if (isXml(fileName)) {
-			return ContentType.XML;
-		} else {
-			return ContentType.JSON;
-		}
-	}
+    public void assertGetSize(String restURL, int size) {
+        start()
+                .get(callURL(restURL))
+                .then()
+                .log()
+                .ifError()
+                .statusCode(200)
+                .body("size()", is(size));
+    }
 
-	public void assertNotFound(String restURL) {
-		try {
-			start()
-					.get(callURL(restURL))
-					.then()
-					.statusCode(404);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public void assertPut(String restURL, String fileName) {
+        String contents = readFromClasspath(fileName);
+        start()
+                .body(contents)
+                .contentType(getAccept(fileName))
+                .put(callURL(restURL))
+                .then()
+                .statusCode(204);
+    }
 
-	public void assertGet(String restURL, String fileName) {
-		try {
-			String expectedStr = readFromClasspath(fileName);
-			final String receivedStr = start()
-					.accept(getAccept(fileName))
-					.get(callURL(restURL))
-					.then()
-					.log()
-					.all()
-					.statusCode(200)
-					.extract()
-					.response()
-					.getBody()
-					.asString();
-			if (isXml(fileName)) {
-				org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
-			} else {
-				JSONAssert.assertEquals(
-						expectedStr,
-						receivedStr,
-						true);
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public void assertPost(String restURL, String fileName) {
+        String contents = readFromClasspath(fileName);
+        start()
+                .body(contents)
+                .contentType(getAccept(fileName))
+                .post(callURL(restURL))
+                .then()
+                .statusCode(201);
+    }
 
-	public void assertGetSize(String restURL, int size) {
-		start()
-				.get(callURL(restURL))
-				.then()
-				.log()
-				.ifError()
-				.statusCode(200)
-				.body("size()", is(size));
-	}
+    public void assertPost(String restURL, String namespace, String name) {
+        start()
+                .formParam("namespace", namespace)
+                .formParam("name", name)
+                .post(callURL(restURL))
+                .then()
+                .statusCode(201);
+    }
 
-	public void assertPut(String restURL, String fileName) {
-		String contents = readFromClasspath(fileName);
-		start()
-				.body(contents)
-				.contentType(getAccept(fileName))
-				.put(callURL(restURL))
-				.then()
-				.statusCode(204);
-	}
-
-	public void assertPost(String restURL, String fileName) {
-		String contents = readFromClasspath(fileName);
-		start()
-				.body(contents)
-				.contentType(getAccept(fileName))
-				.post(callURL(restURL))
-				.then()
-				.statusCode(201);
-	}
-
-	public void assertPost(String restURL, String namespace, String name) {
-		start()
-				.formParam("namespace", namespace)
-				.formParam("name", name)
-				.post(callURL(restURL))
-				.then()
-				.statusCode(201);
-	}
-
-	protected void assertDelete(String restURL) {
-		try {
-			start()
-					.delete(callURL(restURL))
-					.then()
-					.statusCode(204);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    protected void assertDelete(String restURL) {
+        try {
+            start()
+                    .delete(callURL(restURL))
+                    .then()
+                    .statusCode(204);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

@@ -16,41 +16,41 @@
 <%@taglib prefix="ct" tagdir="/WEB-INF/tags/common" %>
 
 <c:choose>
-	<c:when test="${empty it.requirementType.requiredCapabilityType}">
-		<c:set var="selected" value="(none)" />
-	</c:when>
-	<c:otherwise>
-		<c:set var="selected" value="${it.requirementType.requiredCapabilityType}" />
-	</c:otherwise>
+    <c:when test="${empty it.requirementType.requiredCapabilityType}">
+        <c:set var="selected" value="(none)" />
+    </c:when>
+    <c:otherwise>
+        <c:set var="selected" value="${it.requirementType.requiredCapabilityType}" />
+    </c:otherwise>
 </c:choose>
 
 <ct:QNameChooser allQNames="${it.allCapabilityTypes}" idOfSelectField="requiredCapabilityType" labelOfSelectField="" includeNONE="true" selected="${selected}"/>
 
 <script>
 $("#requiredCapabilityType").on("change", function(e) {
-	var val = $("#requiredCapabilityType").val();
-	if (val == "(none)") {
-		// remove required capability type assignment
-		$.ajax({
-			url: 'requiredcapabilitytype',
-			type: "DELETE"
-		}).fail(function(jqXHR, textStatus, errorThrown) {
-			vShowAJAXError("Could not remove required capability type assignment.", jqXHR, errorThrown);
-		}).done(function(data, textStatus, jqXHR) {
-			vShowSuccess("Successfully updated required capability type assignment.");
-		});
-	} else {
-		// put new capability type
-		$.ajax({
-			url: 'requiredcapabilitytype',
-			data: val,
-			contentType: "text/plain",
-			type: "PUT"
-		}).fail(function(jqXHR, textStatus, errorThrown) {
-			vShowAJAXError("Could not update required capability type assignment.", jqXHR, errorThrown);
-		}).done(function(data, textStatus, jqXHR) {
-			vShowSuccess("Successfully updated required capability type assignment.");
-		});
-	}
+    var val = $("#requiredCapabilityType").val();
+    if (val == "(none)") {
+        // remove required capability type assignment
+        $.ajax({
+            url: 'requiredcapabilitytype',
+            type: "DELETE"
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            vShowAJAXError("Could not remove required capability type assignment.", jqXHR, errorThrown);
+        }).done(function(data, textStatus, jqXHR) {
+            vShowSuccess("Successfully updated required capability type assignment.");
+        });
+    } else {
+        // put new capability type
+        $.ajax({
+            url: 'requiredcapabilitytype',
+            data: val,
+            contentType: "text/plain",
+            type: "PUT"
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            vShowAJAXError("Could not update required capability type assignment.", jqXHR, errorThrown);
+        }).done(function(data, textStatus, jqXHR) {
+            vShowSuccess("Successfully updated required capability type assignment.");
+        });
+    }
 });
 </script>

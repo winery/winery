@@ -19,14 +19,14 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 
 public class InjectionOptions {
-	@XmlElement
-	private List<InjectionOption> injectionOption = new ArrayList<>();
+    @XmlElement
+    private List<InjectionOption> injectionOption = new ArrayList<>();
 
-	public List<InjectionOption> getInjectionOption() {
-		return Collections.unmodifiableList(injectionOption);
-	}
+    public List<InjectionOption> getInjectionOption() {
+        return Collections.unmodifiableList(injectionOption);
+    }
 
-	public void addInjectionOptions(InjectionOption in) {
-		injectionOption.add(in);
-	}
+    public void addInjectionOptions(InjectionOption in) {
+        injectionOption.add(in);
+    }
 }

@@ -30,69 +30,69 @@ import org.slf4j.LoggerFactory;
 
 public final class PolicyTemplateResource extends AbstractComponentInstanceResource implements IEntityTemplateResource<TPolicyTemplate>, IHasName {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PolicyTemplateResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PolicyTemplateResource.class);
 
 
-	/**
-	 * Constructor has to be public because of test cases
-	 */
-	public PolicyTemplateResource(PolicyTemplateId id) {
-		super(id);
-	}
+    /**
+     * Constructor has to be public because of test cases
+     */
+    public PolicyTemplateResource(PolicyTemplateId id) {
+        super(id);
+    }
 
-	/**
-	 * Convenience method to avoid casting at the caller's side.
-	 */
-	public TPolicyTemplate getPolicyTemplate() {
-		return (TPolicyTemplate) this.getElement();
-	}
+    /**
+     * Convenience method to avoid casting at the caller's side.
+     */
+    public TPolicyTemplate getPolicyTemplate() {
+        return (TPolicyTemplate) this.getElement();
+    }
 
-	@Override
-	protected TExtensibleElements createNewElement() {
-		return new TPolicyTemplate();
-	}
+    @Override
+    protected TExtensibleElements createNewElement() {
+        return new TPolicyTemplate();
+    }
 
-	@Override
-	public QName getType() {
-		return this.getPolicyTemplate().getType();
-	}
+    @Override
+    public QName getType() {
+        return this.getPolicyTemplate().getType();
+    }
 
-	@Override
-	public Response setType(QName type) {
-		this.getPolicyTemplate().setType(type);
-		return BackendUtils.persist(this);
-	}
+    @Override
+    public Response setType(QName type) {
+        this.getPolicyTemplate().setType(type);
+        return BackendUtils.persist(this);
+    }
 
-	@Override
-	public Response setType(String typeStr) {
-		this.getPolicyTemplate().setType(QName.valueOf(typeStr));
-		return BackendUtils.persist(this);
-	}
+    @Override
+    public Response setType(String typeStr) {
+        this.getPolicyTemplate().setType(QName.valueOf(typeStr));
+        return BackendUtils.persist(this);
+    }
 
-	@Override
-	public PropertiesResource getPropertiesResource() {
-		return new PropertiesResource(this.getPolicyTemplate(), this);
-	}
+    @Override
+    public PropertiesResource getPropertiesResource() {
+        return new PropertiesResource(this.getPolicyTemplate(), this);
+    }
 
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		this.getPolicyTemplate().setId(id.getXmlId().getDecoded());
-	}
+    @Override
+    public void copyIdToFields(TOSCAComponentId id) {
+        this.getPolicyTemplate().setId(id.getXmlId().getDecoded());
+    }
 
-	@Override
-	public String getName() {
-		String name = this.getPolicyTemplate().getName();
-		if (name == null) {
-			return this.getPolicyTemplate().getId();
-		} else {
-			return name;
-		}
-	}
+    @Override
+    public String getName() {
+        String name = this.getPolicyTemplate().getName();
+        if (name == null) {
+            return this.getPolicyTemplate().getId();
+        } else {
+            return name;
+        }
+    }
 
-	@Override
-	public Response setName(String name) {
-		this.getPolicyTemplate().setName(name);
-		return BackendUtils.persist(this);
-	}
+    @Override
+    public Response setName(String name) {
+        this.getPolicyTemplate().setName(name);
+        return BackendUtils.persist(this);
+    }
 
 }
