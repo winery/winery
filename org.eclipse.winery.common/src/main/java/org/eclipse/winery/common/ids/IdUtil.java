@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -26,7 +26,7 @@ public class IdUtil {
      * parent has to be asked for its namespace. The parent, in turn, if it is
      * no TOSCAComponentId has to ask his parent.
      *
-     * @param id the id refering to an element, where the namespace has to be
+     * @param id the id referencing to an element, where the namespace has to be
      *            checked for
      * @return the namespace of the element denoted by id
      */
@@ -35,41 +35,6 @@ public class IdUtil {
             return ((TOSCAComponentId) id).getNamespace();
         } else {
             return IdUtil.getNamespace(id.getParent());
-        }
-    }
-
-    /**
-     * Executes the real conversion to a path fragment
-     *
-     * @param id the id to transform to a path
-     * @param doubleEncode true if each sub fragment should be double encoded,
-     *            false if it should be encoded only once
-     */
-    private static String getPathFragment(final GenericId id, final boolean doubleEncode) {
-        String toInsert;
-        if (id instanceof TOSCAComponentId) {
-            // @return "[ComponentName]s/{namespace}/{id}/"
-            TOSCAComponentId tId = (TOSCAComponentId) id;
-            String res = Util.getRootPathFragment(tId.getClass());
-            toInsert = tId.getNamespace().getEncoded();
-            if (doubleEncode) {
-                toInsert = Util.URLencode(toInsert);
-            }
-            res = res + toInsert + "/";
-            toInsert = tId.getXmlId().getEncoded();
-            if (doubleEncode) {
-                toInsert = Util.URLencode(toInsert);
-            }
-            res = res + toInsert + "/";
-            return res;
-        } else if (id instanceof TOSCAElementId) {
-            toInsert = id.getXmlId().getEncoded();
-            if (doubleEncode) {
-                toInsert = Util.URLencode(toInsert);
-            }
-            return IdUtil.getPathFragment(id.getParent()) + toInsert + "/";
-        } else {
-            throw new IllegalStateException("Unknown subclass of GenericId " + id.getClass());
         }
     }
 
@@ -84,20 +49,22 @@ public class IdUtil {
      *         inside a URL
      */
     public static String getPathFragment(GenericId id) {
-        return IdUtil.getPathFragment(id, false);
-    }
-
-    /**
-     * Returns the fragment of the URL path belonging to the id
-     *
-     * For instance, an Id of type ServiceTemplateId has
-     * <code>servicetemplates/{double encoded ns}/{double encoded name}/</encode>
-     *
-     * @param id the element to return the path fragment for
-     * @return the path fragment to be used inside an URL
-     */
-    public static String getURLPathFragment(GenericId id) {
-        return IdUtil.getPathFragment(id, true);
+        String toInsert;
+        if (id instanceof TOSCAComponentId) {
+            // @return "[ComponentName]s/{namespace}/{id}/"
+            TOSCAComponentId tId = (TOSCAComponentId) id;
+            String res = Util.getRootPathFragment(tId.getClass());
+            toInsert = tId.getNamespace().getEncoded();
+            res = res + toInsert + "/";
+            toInsert = tId.getXmlId().getEncoded();
+            res = res + toInsert + "/";
+            return res;
+        } else if (id instanceof TOSCAElementId) {
+            toInsert = id.getXmlId().getEncoded();
+            return IdUtil.getPathFragment(id.getParent()) + toInsert + "/";
+        } else {
+            throw new IllegalStateException("Unknown subclass of GenericId " + id.getClass());
+        }
     }
 
 }

@@ -179,7 +179,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
      */
     @Path("{namespace}/{id}/")
     public R getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-        return this.getComponentInstaceResource(namespace, id, true);
+        return this.getComponentInstaceResource(namespace, id, false);
     }
 
     /**

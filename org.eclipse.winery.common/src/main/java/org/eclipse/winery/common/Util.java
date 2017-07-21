@@ -98,19 +98,15 @@ public class Util {
         }
     }
 
-    public static String DoubleURLencode(String s) {
-        return Util.URLencode(Util.URLencode(s));
-    }
-
     /**
      * Encodes the namespace and the localname of the given qname, separated by
      * "/"
      *
-     * @return <double encoded namespace>"/"<double encoded localname>
+     * @return <encoded namespace>"/"<encoded localname>
      */
-    public static String DoubleURLencode(QName qname) {
-        String ns = Util.DoubleURLencode(qname.getNamespaceURI());
-        String localName = Util.DoubleURLencode(qname.getLocalPart());
+    public static String URLencode(QName qname) {
+        String ns = Util.URLencode(qname.getNamespaceURI());
+        String localName = Util.URLencode(qname.getLocalPart());
         return ns + "/" + localName;
     }
 
@@ -224,7 +220,7 @@ public class Util {
             return "(none)";
         }
 
-        String absoluteURL = repositoryUrl + "/" + Util.getURLpathFragmentForCollection(element) + "/" + Util.DoubleURLencode(qname.getNamespaceURI()) + "/" + Util.DoubleURLencode(qname.getLocalPart());
+        String absoluteURL = repositoryUrl + "/" + Util.getURLpathFragmentForCollection(element) + "/" + Util.URLencode(qname);
 
         if (name == null) {
             // fallback if no name is given

@@ -358,7 +358,7 @@ public class Utils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(GenericId id) {
-        return Prefs.INSTANCE.getResourcePath() + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(id));
+        return Prefs.INSTANCE.getResourcePath() + "/" + (BackendUtils.getPathInsideRepo(id));
     }
 
     /**
@@ -368,7 +368,7 @@ public class Utils {
      * @return the relative path for the given id
      */
     public static String getRelativeURL(URI baseURI, GenericId id) {
-        String absolutePath = Prefs.INSTANCE.getResourcePath() + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(id));
+        String absolutePath = Prefs.INSTANCE.getResourcePath() + "/" + (BackendUtils.getPathInsideRepo(id));
         return baseURI.relativize(URI.create(absolutePath)).toString();
     }
 
@@ -376,7 +376,7 @@ public class Utils {
      * @return the absolute path for the given id
      */
     public static String getAbsoluteURL(RepositoryFileReference ref) {
-        return Prefs.INSTANCE.getResourcePath() + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
+        return Prefs.INSTANCE.getResourcePath() + "/" + (BackendUtils.getPathInsideRepo(ref));
     }
 
     public static URI getAbsoluteURI(GenericId id) {

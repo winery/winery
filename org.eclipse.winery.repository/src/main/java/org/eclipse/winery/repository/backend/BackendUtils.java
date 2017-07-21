@@ -204,7 +204,7 @@ public class BackendUtils {
                 // relative to the caller
                 // Does not work: String path = Prefs.INSTANCE.getResourcePath()
                 // + "/" +
-                // Utils.getURLforPathInsideRepo(id.getPathInsideRepo());
+                // (id.getPathInsideRepo());
                 // We distinguish between two cases: TOSCAcomponentId and
                 // TOSCAelementId
                 // @formatter:on
@@ -222,7 +222,6 @@ public class BackendUtils {
                     path = id.getXmlId().getEncoded() + "/";
                 }
                 // we have to encode it twice to get correct URIs
-                path = Utils.getURLforPathInsideRepo(path);
                 URI uri = Utils.createURI(path);
                 res.setUri(uri);
                 res.setId(id);
@@ -820,7 +819,6 @@ public class BackendUtils {
     public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
         String loc = BackendUtils.getPathInsideRepo(tcId);
         loc = loc + "propertiesdefinition/";
-        loc = Utils.getURLforPathInsideRepo(loc);
         if (uri == null) {
             loc = loc + wrapperElementLocalName + ".xsd";
             // for the import later, we need "../" in front

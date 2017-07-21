@@ -44,7 +44,6 @@ import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
@@ -141,7 +140,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
             for (RepositoryFileReference ref : files) {
                 // determine path
                 // path relative from the root of the CSAR is ok (COS01, line 2663)
-                String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
+                String path = (BackendUtils.getPathInsideRepo(ref));
 
                 // put path into data structure
                 // we do not use Inlude/Exclude as we directly reference a concrete file

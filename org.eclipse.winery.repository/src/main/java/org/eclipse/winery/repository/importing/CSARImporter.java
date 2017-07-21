@@ -551,7 +551,7 @@ public class CSARImporter {
                     // add import to definitions
 
                     // adapt path - similar to importOtherImport
-                    String newLoc = "../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(fileRef));
+                    String newLoc = "../" + (BackendUtils.getPathInsideRepo(fileRef));
                     imp.setLocation(newLoc);
                     defs.getImport().add(imp);
                 } else {
@@ -694,7 +694,7 @@ public class CSARImporter {
 
                         // file is imported
                         // Adjust the reference
-                        refContainer.setReference("../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(fref)));
+                        refContainer.setReference("../" + (BackendUtils.getPathInsideRepo(fref)));
                     }
                 }
             }
@@ -1089,7 +1089,7 @@ public class CSARImporter {
         // location is relative to Definitions/
         // even if the import already exists, we have to adapt the path
         // URIs are encoded
-        String newLoc = "../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(fileRef));
+        String newLoc = "../" + (BackendUtils.getPathInsideRepo(fileRef));
         imp.setLocation(newLoc);
 
         if (!importDataExistsInRepo || overwrite) {

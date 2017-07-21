@@ -127,8 +127,8 @@ function artifactAddedSuccessfully(artifactInfo) {
                     <td>${a.a.interfaceName}</td>
                     <td>${a.a.operationName}</td>
                     </c:if>
-                    <td><c:if test="${not empty a.a.artifactRef}"><a href="${pageContext.request.contextPath}/artifacttemplates/${v:DoubleURLencode(a.a.artifactRef)}/">${a.a.artifactRef.localPart}</a></c:if></td>
-                    <td><a href="${pageContext.request.contextPath}/artifacttypes/${v:DoubleURLencode(a.a.artifactType)}">${a.a.artifactType.localPart}</a></td>
+                    <td><c:if test="${not empty a.a.artifactRef}"><a href="${pageContext.request.contextPath}/artifacttemplates/${v:URLencodeQName(a.a.artifactRef)}/">${a.a.artifactRef.localPart}</a></c:if></td>
+                    <td><a href="${pageContext.request.contextPath}/artifacttypes/${v:URLencodeQName(a.a.artifactType)}">${a.a.artifactType.localPart}</a></td>
                     <td><c:if test="${not empty a.a.any}">
                         <!--  TODO: convert to bootstrap <a href="javascript: $.msgBox({title: 'Artifact Specific Content', content: '${v:doubleEscapeHTMLAndThenConvertNL2BR(a.a.any)}', type: 'info'});">show</a> -->
                         (exists)

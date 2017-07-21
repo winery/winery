@@ -28,7 +28,7 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
     7. Press "OK"
     8. Press "Close"
     9. Press "OK"
-6. Setup tomcat as usual.
+6. Setup tomcat as usual and additionally add this to `VM Options`: `-Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true`
 
 ## Further Remarks
 

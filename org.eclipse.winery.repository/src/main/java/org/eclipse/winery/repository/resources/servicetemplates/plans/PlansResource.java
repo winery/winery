@@ -190,7 +190,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
     static void setPlanModelReference(TPlan plan, PlanId planId, String fileName) {
         PlanModelReference pref = new PlanModelReference();
         // Set path relative to Definitions/ path inside CSAR.
-        pref.setReference("../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(planId)) + fileName);
+        pref.setReference("../" + (BackendUtils.getPathInsideRepo(planId)) + fileName);
         plan.setPlanModelReference(pref);
     }
 

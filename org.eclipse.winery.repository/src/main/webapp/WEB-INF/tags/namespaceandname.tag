@@ -23,7 +23,7 @@
         <c:when test="${it.namespace != null}">
             <c:choose>
                 <c:when test="${it.namespace == t.namespace}">
-                    <c:set var="uri" value="./${v:URLencode(t.xmlId.encoded)}"></c:set>
+                    <c:set var="uri" value="./${t.xmlId.encoded}"></c:set>
                 </c:when>
                 <c:otherwise>
                     <c:set var="uri" value="null"></c:set>
@@ -31,7 +31,7 @@
             </c:choose>
         </c:when>
         <c:otherwise>
-            <c:set var="uri" value="./${v:URLencode(t.namespace.encoded)}/${v:URLencode(t.xmlId.encoded)}"></c:set>
+            <c:set var="uri" value="./${t.namespace.encoded}/${t.xmlId.encoded}"></c:set>
         </c:otherwise>
     </c:choose>
 

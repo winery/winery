@@ -338,7 +338,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
             plan.setPlanLanguage(org.eclipse.winery.common.constants.Namespaces.URI_BPEL20_EXECUTABLE);
 
             // create a PlanModelReferenceElement pointing to that file
-            String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
+            String path = (BackendUtils.getPathInsideRepo(ref));
             // path is relative from the definitions element
             path = "../" + path;
             PlanModelReference pref = new PlanModelReference();

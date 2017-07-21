@@ -14,14 +14,13 @@
  *******************************************************************************/
 --%>
 <%@page import="org.eclipse.winery.repository.Utils"%>
-<%@page import="org.eclipse.winery.repository.backend.BackendUtils"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="v"  uri="http://www.eclipse.org/winery/repository/functions" %>
 <%@taglib prefix="t"  tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="wc" uri="http://www.eclipse.org/winery/functions" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%-- In English, one can usually form a plural by adding an "s". Therefore, we resue the label to form the window title --%>
 <t:genericpage windowtitle="${it.label}s" selected="${it.type}" cssClass="${it.CSSclass}">
