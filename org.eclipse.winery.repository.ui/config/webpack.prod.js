@@ -7,7 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Michael Wurster - initial API and implementation
+ *     Lukas Harzenetter - adjustmens for webpack 2
  */
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');

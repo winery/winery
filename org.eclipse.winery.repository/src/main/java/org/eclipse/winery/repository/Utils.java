@@ -8,8 +8,8 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Armin Hüneburg - add initial git support
  *     Nicole Keppler, Lukas Balzer - changes for angular frontend
+ *     Armin Hüneburg - add initial git support
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
@@ -107,7 +107,6 @@ import org.apache.xerces.xs.XSConstants;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Element;
-
 
 /**
  * Contains utility functionality concerning with everything that is

@@ -8,7 +8,7 @@
         "lint": "tslint \"src/**/*.ts\"",
         "build": "rimraf dist war && npm run lint && webpack --config config/webpack.prod.js --progress --profile --bail",
         "build:serve": "lite-server --config config/lite-server.json",
-        "start": "webpack-dev-server --inline --progress --devtool eval-cheap-module-source-map",
+        "start": "webpack-dev-server --inline --progress --devtool eval-source-map",
         "postinstall": "typings install",
         "typings": "typings",
         "war": "./war_build_assets/build_war.sh"
@@ -39,7 +39,6 @@
         "reflect-metadata": "0.1.10",
         "rxjs": "5.3.0",
         "spinkit": "1.2.5",
-        "typescript": "2.2.1",
         "zone.js": "0.8.5"
     },
     "devDependencies": {
@@ -66,7 +65,7 @@
         "tslint": "4.5.1",
         "typedoc": "0.5.9",
         "typedoc-webpack-plugin": "1.1.3",
-        "typescript": "2.2.1",
+        "typescript": "2.4.1",
         "typings": "2.1.0",
         "url-loader": "0.5.8",
         "webpack": "2.3.2",
