@@ -17,23 +17,23 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
-public class InjectionDataMapAdapter extends XmlAdapter<Injections, Map<String, TNodeTemplate>> {
+public class InjectionDataMapAdapter extends XmlAdapter<Injections, Map<String, TTopologyTemplate>> {
 
 	@Override
-	public Map<String, TNodeTemplate> unmarshal(Injections injections) throws Exception {
-		Map<String, TNodeTemplate> mapInjections = new HashMap<>();
+	public Map<String, TTopologyTemplate> unmarshal(Injections injections) throws Exception {
+		Map<String, TTopologyTemplate> mapInjections = new HashMap<>();
 		for (Injection injection : injections.getInjections()) {
-			mapInjections.put(injection.hostedNodeID, injection.hostNodeTemplate);
+			mapInjections.put(injection.nodeID, injection.injectedTopologyFragment);
 		}
 		return mapInjections;
 	}
 
 	@Override
-	public Injections marshal(Map<String, TNodeTemplate> mapInjections) throws Exception {
+	public Injections marshal(Map<String, TTopologyTemplate> mapInjections) throws Exception {
 		Injections injections = new Injections();
-		for (Map.Entry<String, TNodeTemplate> entry : mapInjections.entrySet()) {
+		for (Map.Entry<String, TTopologyTemplate> entry : mapInjections.entrySet()) {
 			injections.addInjection(new Injection(entry.getKey(), entry.getValue()));
 		}
 		return injections;

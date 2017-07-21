@@ -685,17 +685,43 @@ public class ModelUtilities {
 		otherAttributes.put(QNAME_LOCATION, targetLabel);
 	}
 
+	public static TNodeTemplate getSourceNodeTemplateOfRelationshipTemplate (TTopologyTemplate topologyTemplate, TRelationshipTemplate relationshipTemplate) {
+		if (relationshipTemplate.getSourceElement().getRef() instanceof TRequirement) {
+			TRequirement requirement = (TRequirement) relationshipTemplate.getSourceElement().getRef();
+			return topologyTemplate.getNodeTemplates().stream()
+					.filter(nt -> nt.getRequirements().getRequirement() != null)
+					.filter(nt -> nt.getRequirements().getRequirement().contains(requirement))
+					.findAny().get();
+		} else {
+			TNodeTemplate sourceNodeTemplate = (TNodeTemplate) relationshipTemplate.getSourceElement().getRef();
+			return sourceNodeTemplate;
+		}
+	}
+
+	public static TNodeTemplate getTargetNodeTemplateOfRelationshipTemplate (TTopologyTemplate topologyTemplate, TRelationshipTemplate relationshipTemplate) {
+		if (relationshipTemplate.getTargetElement().getRef() instanceof TCapability) {
+			TCapability capability = (TCapability) relationshipTemplate.getTargetElement().getRef();
+			return topologyTemplate.getNodeTemplates().stream()
+					.filter(nt -> nt.getRequirements().getRequirement() != null)
+					.filter(nt -> nt.getRequirements().getRequirement().contains(capability))
+					.findAny().get();
+		} else {
+			return (TNodeTemplate) relationshipTemplate.getTargetElement().getRef();
+		}
+	}
+
 	/**
 	 * @return incoming relation ship templates <em>pointing to node templates</em>
 	 */
 	public static List<TRelationshipTemplate> getIncomingRelationshipTemplates(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
 		Objects.requireNonNull(topologyTemplate);
 		Objects.requireNonNull(nodeTemplate);
-
-		return getAllRelationshipTemplates(topologyTemplate)
+		List<TRelationshipTemplate> incomingRelationshipTemplates = topologyTemplate.getRelationshipTemplates()
 				.stream()
-				.filter(rt -> rt.getTargetElement().getRef().equals(nodeTemplate))
+				.filter(rt -> getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, rt).equals(nodeTemplate))
 				.collect(Collectors.toList());
+
+		return incomingRelationshipTemplates;
 	}
 
 	/**
@@ -704,11 +730,13 @@ public class ModelUtilities {
 	public static List<TRelationshipTemplate> getOutgoingRelationshipTemplates(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
 		Objects.requireNonNull(topologyTemplate);
 		Objects.requireNonNull(nodeTemplate);
-
-		return getAllRelationshipTemplates(topologyTemplate)
+		List<TRelationshipTemplate> outgoingRelationshipTemplates = topologyTemplate.getRelationshipTemplates()
 				.stream()
-				.filter(rt -> rt.getSourceElement().getRef().equals(nodeTemplate))
+				.filter(rt -> getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, rt).equals(nodeTemplate))
 				.collect(Collectors.toList());
+
+		return outgoingRelationshipTemplates;
+
 	}
 
 	/**

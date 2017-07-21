@@ -15,21 +15,21 @@ package org.eclipse.winery.repository.resources._support.dataadapter;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.eclipse.winery.common.constants.Namespaces;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 //@XmlType
 public class Injection {
-	@XmlElement(name = "hostedNodeID")
-	protected String hostedNodeID;
-	@XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "NodeTemplate")
-	protected TNodeTemplate hostNodeTemplate;
+	@XmlElement(name = "NodeID")
+	protected String nodeID;
+	@XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
+	protected TTopologyTemplate injectedTopologyFragment;
 
 	public Injection() {
 	}
 
-	public Injection(String hostedNodeID, TNodeTemplate hostNodeTemplate) {
-		this.hostedNodeID = hostedNodeID;
-		this.hostNodeTemplate = hostNodeTemplate;
+	public Injection(String hostedNodeID, TTopologyTemplate injectedTopologyFragment) {
+		this.nodeID = hostedNodeID;
+		this.injectedTopologyFragment = injectedTopologyFragment;
 	}
 
 }

@@ -360,8 +360,9 @@ public class TopologyTemplateResource {
 		return Utils.getXML(TTopologyTemplate.class, this.topologyTemplate);
 	}
 
-	@POST
+	@Path("split/")
 	@Produces(MediaType.TEXT_PLAIN)
+	@POST
 	public Response split(@Context UriInfo uriInfo) {
 		Splitting splitting = new Splitting();
 		ServiceTemplateId splitServiceTemplateId;
@@ -371,6 +372,21 @@ public class TopologyTemplateResource {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not split. " + e.getMessage()).build();
 		}
 		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(splitServiceTemplateId));
+		return Response.created(url).build();
+	}
+
+	@Path("match/")
+	@Produces(MediaType.TEXT_PLAIN)
+	@POST
+	public Response match(@Context UriInfo uriInfo) {
+		Splitting splitting = new Splitting();
+		ServiceTemplateId matchedServiceTemplateId;
+		try {
+			matchedServiceTemplateId = splitting.matchTopologyOfServiceTemplate((ServiceTemplateId) this.serviceTemplateRes.getId());
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not match. " + e.getMessage()).build();
+		}
+		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(matchedServiceTemplateId));
 		return Response.created(url).build();
 	}
 
