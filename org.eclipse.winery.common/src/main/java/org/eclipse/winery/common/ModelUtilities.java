@@ -51,8 +51,7 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceElement;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate.TargetElement;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceOrTargetElement;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
@@ -660,10 +659,10 @@ public class ModelUtilities {
 		relationshipTemplate.setType(new QName(relationshipType.getTargetNamespace(), relationshipType.getName()));
 
 		// connect the NodeTemplates
-		SourceElement source = new SourceElement();
+		SourceOrTargetElement source = new SourceOrTargetElement();
 		source.setRef(sourceNodeTemplate);
 		relationshipTemplate.setSourceElement(source);
-		TargetElement target = new TargetElement();
+		SourceOrTargetElement target = new SourceOrTargetElement();
 		target.setRef(targetNodeTemplate);
 		relationshipTemplate.setTargetElement(target);
 

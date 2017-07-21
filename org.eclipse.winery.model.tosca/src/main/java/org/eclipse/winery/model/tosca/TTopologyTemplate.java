@@ -14,6 +14,7 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -105,6 +106,17 @@ public class TTopologyTemplate
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * @return node template having the given id. null if not found
+	 */
+	public TNodeTemplate getNodeTemplate(String id) {
+		Objects.requireNonNull(id);
+		return this.getNodeTemplates().stream()
+				.filter(x -> id.equals(x.getId()))
+				.findAny()
+				.orElse(null);
+	}
+
 	public void setNodeTemplates(List<TNodeTemplate> nodeTemplates) {
 		this.nodeTemplateOrRelationshipTemplate = Stream.concat(
 				nodeTemplates.stream().map(TEntityTemplate.class::cast),
@@ -123,11 +135,30 @@ public class TTopologyTemplate
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * @return relationship template having the given id. null if not found
+	 */
+	public TRelationshipTemplate getRelationshipTemplate(String id) {
+		Objects.requireNonNull(id);
+		return this.getRelationshipTemplates().stream()
+				.filter(x -> id.equals(x.getId()))
+				.findAny()
+				.orElse(null);
+	}
+
 	public void setRelationshipTemplates(List<TRelationshipTemplate> relationshipTemplates) {
 		this.nodeTemplateOrRelationshipTemplate = Stream.concat(
 				this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
 				relationshipTemplates.stream().map(TEntityTemplate.class::cast))
 				.collect(Collectors.toList());
+	}
+
+	public void addNodeTemplate(TNodeTemplate nt) {
+		this.getNodeTemplateOrRelationshipTemplate().add(nt);
+	}
+
+	public void addRelationshipTemplate(TRelationshipTemplate rt) {
+		this.getNodeTemplateOrRelationshipTemplate().add(rt);
 	}
 
 }

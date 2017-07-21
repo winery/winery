@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -18,10 +18,15 @@ import java.nio.file.Paths;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PrefsTestEnabledGitBackedRepository extends PrefsTestEnabled {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PrefsTestEnabledGitBackedRepository.class);
 
 	public final Git git;
 
@@ -44,7 +49,12 @@ public class PrefsTestEnabledGitBackedRepository extends PrefsTestEnabled {
 		} else {
 			Repository gitRepo = builder.setWorkTree(repositoryPath.toFile()).setMustExist(false).build();
 			this.git = new Git(gitRepo);
-			this.git.fetch().call();
+			try {
+				this.git.fetch().call();
+			} catch (TransportException e) {
+				// we ignore it to enable offline testing
+				LOGGER.debug("Working in offline mode", e);
+			}
 		}
 
 		this.repository = new GitBasedRepository(repositoryPath.toString());

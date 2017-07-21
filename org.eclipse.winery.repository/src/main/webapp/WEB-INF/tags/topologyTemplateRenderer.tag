@@ -17,19 +17,12 @@
 <%@tag import="java.lang.Math"%>
 <%@tag import="java.util.ArrayList"%>
 <%@tag import="java.util.Collection"%>
-<%@tag import="java.util.Map"%>
-<%@tag import="java.util.HashMap"%>
-<%@tag import="java.util.UUID"%>
-<%@tag import="javax.xml.namespace.QName"%>
 <%@tag import="org.eclipse.winery.common.ModelUtilities"%>
 <%@tag import="org.eclipse.winery.model.tosca.TEntityTemplate"%>
 <%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate"%>
 <%@tag import="org.eclipse.winery.model.tosca.TNodeType"%>
 <%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceElement"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate.TargetElement"%>
 <%@tag import="org.eclipse.winery.model.tosca.TRelationshipType"%>
-<%@tag import="org.eclipse.winery.model.tosca.TTopologyTemplate"%>
 <%@tag import="org.eclipse.winery.repository.Utils"%>
 
 <%@attribute name="topology" required="true" description="the topology template to be rendered" type="org.eclipse.winery.model.tosca.TTopologyTemplate" %>

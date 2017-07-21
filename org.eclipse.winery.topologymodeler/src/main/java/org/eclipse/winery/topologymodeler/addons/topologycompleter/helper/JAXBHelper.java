@@ -31,7 +31,6 @@ import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceElement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
@@ -232,7 +231,7 @@ public class JAXBHelper {
 										TRelationshipTemplate relationshipTemplate = (TRelationshipTemplate) entity;
 										if (relationshipTemplate.getSourceElement().getRef() == null) {
 											// connect to the added NodeTemplate
-											SourceElement sourceElement = new SourceElement();
+											TRelationshipTemplate.SourceOrTargetElement sourceElement = new TRelationshipTemplate.SourceOrTargetElement();
 											sourceElement.setRef(nodeTemplate);
 											relationshipTemplate.setSourceElement(sourceElement);
 										}

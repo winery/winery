@@ -19,7 +19,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 public class WineryUsingHttpServer {
 
-	public static Server createHttpServer() throws IOException {
+	public static Server createHttpServer(int port) throws IOException {
 
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/winery");
@@ -32,9 +32,13 @@ public class WineryUsingHttpServer {
 		});
 */
 
-		Server server = new Server(8080);
+		Server server = new Server(port);
 		server.setHandler(context);
 		return server;
+	}
+
+	public static Server createHttpServer() throws IOException {
+		return createHttpServer(8080);
 	}
 
 	private static void addServlet(ServletContextHandler context, String s) {

@@ -1,6 +1,6 @@
 <%--
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
+ *    Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 <%@tag description="Dialog to change a req or cap. Offers function showEditDiagFor${shortName}(id)" pageEncoding="UTF-8"%>
@@ -41,7 +42,7 @@
 
 						<div class="form-group">
 							<label for="${shortName}NameChooser" class="control-label">Definition Name:</label>
-							<input  id="${shortName}NameChooser" class="form-control" type="text" required="required" />
+							<select  id="${shortName}NameChooser" class="form-control" type="text" required="required"> </select>
 						</div>
 
 						<div class="form-group">
@@ -88,16 +89,18 @@ function update${shortName}PropertiesContainerWithClone(propertiesContainerToClo
 }
 
 function update${shortName}PropertiesFromSelectedType() {
-	var data = $("#${shortName}NameChooser").select2("data");
-	var name = data.text;
-	var type = data.id;
+	var data = $("#${shortName}NameChooser :selected");
+	var name = data.text();
+	var type = data.val();
 
 	// fill in type
 	// TODO: use qname2href and store QName in data-qname for later consumption -- possibly qname2href should always store the qname in data-qname
 	$("#${shortName}TypeDisplay").val(type);
 
 	// fill in properties (derived from type)
-	var propertiesContainer= $(".skelettonPropertyEditorFor${shortName} > span:contains('" + type + "')").parent().children("div");
+	var propertiesContainer= $(".skelettonPropertyEditorFor${shortName} > span").filter(function(){
+	    return $(this).text() === "" + type;
+	}).parent().children("div");
 	update${shortName}PropertiesContainerWithClone(propertiesContainer);
 }
 
@@ -156,10 +159,10 @@ function showAddOrUpdateDiagFor${shortName}(nodeTemplateId, reqOrCapIdToUpdate) 
 					select2Data.push(item);
 				});
 			});
-
-			$("#${shortName}NameChooser").select2({
-				placeholder: "Select name",
-				data: select2Data
+			$("#${shortName}NameChooser").empty();
+			<%--$("#${shortName}NameChooser").append("<option selected disabled>Select Name</option>");--%>
+			$.each(select2Data, function(index, element){
+				$("#${shortName}NameChooser").append("<option value='" + element.id + "'>" + element.text + "</option>")
 			});
 
 			if (update) {
@@ -173,7 +176,6 @@ function showAddOrUpdateDiagFor${shortName}(nodeTemplateId, reqOrCapIdToUpdate) 
 				var name = nodeTemplateEditedReqOrCap.children(".name").text();
 				var type = nodeTemplateEditedReqOrCap.children(".type").children("a").data("qname");
 				var propertiesContainer = nodeTemplateEditedReqOrCap.children(".propertiesContainer");
-
 				// update displays
 
 				// id
@@ -181,9 +183,9 @@ function showAddOrUpdateDiagFor${shortName}(nodeTemplateId, reqOrCapIdToUpdate) 
 
 				// name
 				// we use the type as key at NameChooser. We hope that there are no duplicates. Otherwise, update won't work.
-				$("#${shortName}NameChooser").select2("val", type);
+				$("#${shortName}NameChooser").val(type);
 				// make consistency check
-				var data = $("#${shortName}NameChooser").select2("data");
+				var data = {id: $("#${shortName}NameChooser :selected").val(), text: $("#${shortName}NameChooser :selected").text()};
 				if (data == null) {
 					vShowError("type " + type + " could not be selected.")
 				} else if (name != (data.text)) {
@@ -202,8 +204,8 @@ function showAddOrUpdateDiagFor${shortName}(nodeTemplateId, reqOrCapIdToUpdate) 
 				$("#headerAddOrUpdate").text("Add");
 
 				// QUICK HACK if dialog has been shown before -> show properties of selected type
-				if ($("#${shortName}NameChooser").select2("data") != null) {
-					update${shortName}PropertiesFromSelectedType();
+				if ($("#${shortName}NameChooser :selected").val() != []) {
+					<%--update${shortName}PropertiesFromSelectedType();--%>
 				}
 			}
 
@@ -222,12 +224,12 @@ function addOrUpdate${shortName}(update) {
 	}
 	require(["tmpl"], function(tmpl) {
 		// Generate skeletton div
-		var sel2data = $("#${shortName}NameChooser").select2("data");
+		var sel2data = { id: $("#${shortName}NameChooser :selected").val(), text: $("#${shortName}NameChooser :selected").text()};
 		var data = {
 			id: $("#${shortName}Id").val(),
 			name: sel2data.text,
 			type: sel2data.id
-		}
+		};
 		// tmpl-${shortName} is defined in reqsorcaps.tag
 		var div = tmpl("tmpl-${shortName}", data);
 
