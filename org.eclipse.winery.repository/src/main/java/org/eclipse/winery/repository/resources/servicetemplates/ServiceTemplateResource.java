@@ -14,7 +14,6 @@
 package org.eclipse.winery.repository.resources.servicetemplates;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,10 +36,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
@@ -48,7 +46,6 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPlan;
@@ -74,8 +71,6 @@ import org.eclipse.winery.repository.splitting.SplittingException;
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
@@ -199,34 +194,11 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
 	public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws IOException, ParserConfigurationException, SAXException {
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+		Collection<TNodeTemplate> injectorNodeTemplates = injectorReplaceData.injections.values();
+		ModelUtilities.patchAnyAttributes(injectorNodeTemplates);
 
 		Splitting splitting = new Splitting();
-		Collection<TNodeTemplate> injectorNodeTemplates = injectorReplaceData.injections.values();
-		Map<QName, String> tempConvertedOtherAttributes = new HashMap<>();
 
-		for (TNodeTemplate injectorNodeTemplate : injectorNodeTemplates) {
-
-			//Convert the wrong QName created by the JSON serialization back to a right QName
-			for (Map.Entry<QName, String> otherAttribute : injectorNodeTemplate.getOtherAttributes().entrySet()) {
-				QName qName = QName.valueOf(otherAttribute.getKey().getLocalPart());
-				tempConvertedOtherAttributes.put(qName, otherAttribute.getValue());
-			}
-			injectorNodeTemplate.getOtherAttributes().clear();
-			injectorNodeTemplate.getOtherAttributes().putAll(tempConvertedOtherAttributes);
-			tempConvertedOtherAttributes.clear();
-
-			// Convert the String created by the JSON serialization back to a XML dom document
-			TEntityTemplate.Properties properties = injectorNodeTemplate.getProperties();
-			if (properties != null) {
-				Object any = properties.getAny();
-				if (any instanceof String) {
-					Document doc = documentBuilder.parse(new InputSource(new StringReader((String) any)));
-					injectorNodeTemplate.getProperties().setAny(doc.getDocumentElement());
-				}
-			}
-		}
 		TTopologyTemplate tTopologyTemplate = splitting.injectNodeTemplates(this.getServiceTemplate().getTopologyTemplate(), injectorReplaceData.injections);
 		this.getServiceTemplate().setTopologyTemplate(tTopologyTemplate);
 		LOGGER.debug("Persisting...");

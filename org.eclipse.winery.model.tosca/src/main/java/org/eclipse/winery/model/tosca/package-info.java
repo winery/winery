@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2013-2017 University of Stuttgart
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,18 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Oliver Kopp - initial API and implementation
+ *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
  *******************************************************************************/
-package org.eclipse.winery.common.json;
-
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-
-import com.fasterxml.jackson.databind.module.SimpleModule;
-
-@SuppressWarnings("serial")
-public class TopologyTemplateModule extends SimpleModule {
-
-	public TopologyTemplateModule() {
-		this.addSerializer(TTopologyTemplate.class, new TTopologyTemplateSerializer());
-	}
-}
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://docs.oasis-open.org/tosca/ns/2011/12", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+package org.eclipse.winery.model.tosca;

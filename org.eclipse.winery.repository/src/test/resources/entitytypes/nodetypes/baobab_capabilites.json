@@ -8,8 +8,6 @@
   "otherAttributes": {
 
   },
-  "extensions": null,
-  "types": null,
   "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
 	{
 	  "documentation": [
@@ -47,15 +45,12 @@
 	  "otherAttributes": {
 		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}bordercolor": "#89ee01"
 	  },
-	  "tags": null,
-	  "derivedFrom": null,
 	  "propertiesDefinition": {
 		"element": null,
 		"type": "{http://winery.opentosca.org/test/nodetypes/fruits}BaobabProperties"
 	  },
 	  "name": "baobab",
 	  "targetNamespace": "http://winery.opentosca.org/test/nodetypes/fruits",
-	  "requirementDefinitions": null,
 	  "capabilityDefinitions": {
 		"capabilityDefinition": [
 		  {
@@ -83,14 +78,11 @@
 		  }
 		]
 	  },
-	  "instanceStates": null,
-	  "interfaces": null,
-	  "abstract": "NO",
-	  "final": "NO"
+	  "final": "NO",
+	  "abstract": "NO"
 	}
   ],
   "id": "winery-defs-for_ns0-baobab",
-  "name": null,
   "targetNamespace": "http://winery.opentosca.org/test/nodetypes/fruits",
   "import": [
 	{
