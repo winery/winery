@@ -19,6 +19,7 @@
 <%-- template and palette --%>
 <%@attribute name="client" required="true" description="IWineryRepository" type="org.eclipse.winery.common.interfaces.IWineryRepository"%>
 <%@attribute name="repositoryURL" required="true" type="java.lang.String" description="The URL of winery's repository"%>
+<%@attribute name="uiURL" required="true" type="java.lang.String" description="The URL of winery's UI"%>
 <%@attribute name="topologyModelerURI" required="false" type="java.lang.String" description="The URL of winery topology modeler's URI - required for images/. Has to end with '/'. Can be left blank."%>
 <%@attribute name="relationshipTypes" description="the known relationship types" required="true" type="java.util.Collection"%>
 
@@ -121,7 +122,7 @@
 			</div>
 			<div class="id nodetemplate"><%=visualElementId%></div>
 			<div class="name nodetemplate"><%=name%></div>
-			<div class="type nodetemplate"><%=Util.qname2hrefWithName(repositoryURL, TNodeType.class, nodeTypeQName, nodeType.getName())%></div>
+			<div class="type nodetemplate"><%=Util.qname2hrefWithName(uiURL, TNodeType.class, nodeTypeQName, nodeType.getName())%></div>
 			<span class="typeQName hidden"><%=nodeTypeQName%></span>
 			<span class="typeNamespace hidden"><%=nodeTypeQName.getNamespaceURI()%></span>
 		</div>
