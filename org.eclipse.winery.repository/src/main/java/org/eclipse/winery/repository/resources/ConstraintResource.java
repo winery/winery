@@ -27,43 +27,43 @@ import org.eclipse.winery.repository.resources._support.collections.withoutid.En
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 
 public class ConstraintResource extends EntityWithoutIdResource<TConstraint> {
-	
-	/**
-	 * 
-	 * @param constraint the current constraint value
-	 * @param list the list this constraint belongs to
-	 * @param res the node type resource this constraint belongs to. Required
-	 *            for saving
-	 */
-	public ConstraintResource(TConstraint constraint, int idx, List<TConstraint> list, NodeTypeResource res) {
-		super(constraint, idx, list, res);
-	}
-	
-	/**
-	 * Required for collectionResource
-	 * 
-	 * @throws ClassCastException of !(res instanceof NodeTypeResource)
-	 */
-	public ConstraintResource(TConstraint constraint, int idx, List<TConstraint> list, AbstractComponentInstanceResource res) {
-		this(constraint, idx, list, (NodeTypeResource) res);
-	}
-	
-	private TConstraint getConstraint() {
-		return this.o;
-	}
-	
-	@GET
-	@Path("type")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getConstraintType() {
-		return this.getConstraint().getConstraintType();
-	}
-	
-	@PUT
-	@Path("type")
-	@Consumes(MediaType.TEXT_PLAIN)
-	public Response putConstraintType(String constraintType) {
-		this.getConstraint().setConstraintType(constraintType);
-		return BackendUtils.persist(this.res);
-	}
+
+    /**
+     *
+     * @param constraint the current constraint value
+     * @param list the list this constraint belongs to
+     * @param res the node type resource this constraint belongs to. Required
+     *            for saving
+     */
+    public ConstraintResource(TConstraint constraint, int idx, List<TConstraint> list, NodeTypeResource res) {
+        super(constraint, idx, list, res);
+    }
+
+    /**
+     * Required for collectionResource
+     *
+     * @throws ClassCastException of !(res instanceof NodeTypeResource)
+     */
+    public ConstraintResource(TConstraint constraint, int idx, List<TConstraint> list, AbstractComponentInstanceResource res) {
+        this(constraint, idx, list, (NodeTypeResource) res);
+    }
+
+    private TConstraint getConstraint() {
+        return this.o;
+    }
+
+    @GET
+    @Path("type")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getConstraintType() {
+        return this.getConstraint().getConstraintType();
+    }
+
+    @PUT
+    @Path("type")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response putConstraintType(String constraintType) {
+        this.getConstraint().setConstraintType(constraintType);
+        return BackendUtils.persist(this.res);
+    }
 }

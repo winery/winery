@@ -16,24 +16,24 @@ import java.util.List;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
+
+import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.view.Viewable;
-
 public class ConstraintsResource extends EntityWithoutIdCollectionResource<ConstraintResource, TConstraint> {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ConstraintsResource.class);
-	
-	
-	public ConstraintsResource(List<TConstraint> constraints, NodeTypeResource res) {
-		super(ConstraintResource.class, TConstraint.class, constraints, res);
-	}
-	
-	@Override
-	public Viewable getHTML() {
-		// TODO Auto-generated method stub
-		throw new IllegalStateException("Not yet implemented.");
-	}
-	
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConstraintsResource.class);
+
+
+    public ConstraintsResource(List<TConstraint> constraints, NodeTypeResource res) {
+        super(ConstraintResource.class, TConstraint.class, constraints, res);
+    }
+
+    @Override
+    public Viewable getHTML() {
+        // TODO Auto-generated method stub
+        throw new IllegalStateException("Not yet implemented.");
+    }
+
 }

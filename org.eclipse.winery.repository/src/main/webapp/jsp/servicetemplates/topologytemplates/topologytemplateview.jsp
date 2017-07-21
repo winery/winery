@@ -26,41 +26,42 @@
 
 <html>
 <head>
-	<meta name="application-name" content="Winery" />
-	<meta charset="UTF-8">
-	<link rel="icon" href="${w:topologyModelerURI()}/favicon.png" type="image/png">
+    <meta name="application-name" content="Winery" />
+    <meta charset="UTF-8">
+    <link rel="icon" href="${w:topologyModelerURI()}/favicon.png" type="image/png">
 
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap.css" />
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap-theme.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap-theme.css" />
 
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/requirejs/require.js'></script>
+    <script type='text/javascript' src='${pageContext.request.contextPath}/components/requirejs/require.js'></script>
 
-	<!-- jquery and jquery UI have to be loaded using the old fashioned way to avoid incompatibilities with bootstrap v3 -->
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery/jquery.js'></script>
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery-ui/ui/js/jquery-ui.js'></script>
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap/dist/js/bootstrap.js'></script>
-	<script>
-		require.config({
-			baseUrl: "${pageContext.request.contextPath}/js",
-			paths: {
-				"datatables": "../components/datatables/media/js/jquery.dataTables",
-				"jquery": "../components/jquery/jquery",
+    <!-- jquery and jquery UI have to be loaded using the old fashioned way to avoid incompatibilities with bootstrap v3 -->
+    <script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery/jquery.js'></script>
+    <script type='text/javascript' src='${pageContext.request.contextPath}/3rdparty/jquery-ui/js/jquery-ui.js'></script>
+    <script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap/dist/js/bootstrap.js'></script>
+    <script>
+        require.config({
+            baseUrl: "${pageContext.request.contextPath}/js",
+            paths: {
+                "datatables": "../components/datatables/media/js/jquery.dataTables",
+                "jquery": "../components/jquery/jquery",
 
-				// required for jsplumb
-				"jquery.ui": "../components/jquery-ui/js/jquery-ui",
+                // required for jsplumb
+                "jquery.ui": "../3rdparty/jquery-ui/js/jquery-ui",
 
-				"jsplumb": "../components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4",
+                "jsplumb": "../components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4",
 
-				"winery-sugiyamaLayouter": "${w:topologyModelerURI()}/js/winery-sugiyamaLayouter"
-			}
-		});
-	</script>
-	<c:if test="${not empty it.additionalScript}">
-	<script type='text/javascript' src='${it.additionalScript}'></script>
-	</c:if>
+                "winery-sugiyamaLayouter": "${w:topologyModelerURI()}/js/winery-sugiyamaLayouter"
+            }
+        });
+    </script>
+    <c:if test="${not empty it.additionalScript}">
+    <script type='text/javascript' src='${it.additionalScript}'></script>
+    </c:if>
 </head>
 <body>
 
 <t:topologyTemplateRenderer topology="${it.topologyTemplate}" repositoryURL="<%=Prefs.INSTANCE.getResourcePath()%>" client="${it.client}" fullscreen="true" additonalCSS="${it.additonalCSS}" autoLayoutOnLoad="${it.autoLayoutOnLoad}"/>
+
 </body>
 </html>

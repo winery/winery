@@ -1,3 +1,4 @@
+winery-debug.log
 .classpath
 /.gradle
 .project
@@ -16,8 +17,10 @@
 /build
 /conf/valesca.properties
 sonar-project.properties
-/src/main/resources/rebel.xml
+/src/main/resources/rebel*.xml
 /src/main/webapp/components
 /src/main/webapp/valesca.properties
 /src/main/webapp/META-INF/MANIFEST.MF
 /target
+/node
+/node_modules

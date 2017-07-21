@@ -15,13 +15,17 @@ import java.io.IOException;
 
 import org.junit.BeforeClass;
 
+/**
+ * @deprecated Switch to AbstractResourceTest
+ */
+@Deprecated
 public abstract class TestWithRepositoryConnection {
-	
-	@BeforeClass
-	public static void connectToProvider() throws IOException {
-		// Initialize preferences
-		// We do not need them, but constructing them has the side effect that Repository.INSTANCE is != null
-		new PrefsTestEnabledUsingConfiguredRepository();
-	}
-	
+
+    @BeforeClass
+    public static void connectToProvider() throws IOException {
+        // Initialize preferences
+        // We do not need them, but constructing them has the side effect that Repository.INSTANCE is != null
+        new PrefsTestEnabledUsingConfiguredRepository();
+    }
+
 }

@@ -20,19 +20,19 @@ import org.eclipse.winery.repository.resources._support.collections.withid.Entit
 import com.sun.jersey.api.view.Viewable;
 
 public class ExportedOperationsResource extends EntityWithIdCollectionResource<ExportedOperationResource, TExportedOperation> {
-	
-	public ExportedOperationsResource(List<TExportedOperation> list, IPersistable res) {
-		super(ExportedOperationResource.class, TExportedOperation.class, list, res);
-	}
-	
-	@Override
-	public String getId(TExportedOperation entity) {
-		return entity.getName();
-	}
-	
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("No implementation required: boundarydefinitions.jsp contains all required html.");
-	}
-	
+
+    public ExportedOperationsResource(List<TExportedOperation> list, IPersistable res) {
+        super(ExportedOperationResource.class, TExportedOperation.class, list, res);
+    }
+
+    @Override
+    public String getId(TExportedOperation entity) {
+        return entity.getName();
+    }
+
+    @Override
+    public Viewable getHTML() {
+        throw new IllegalStateException("No implementation required: boundarydefinitions.jsp contains all required html.");
+    }
+
 }

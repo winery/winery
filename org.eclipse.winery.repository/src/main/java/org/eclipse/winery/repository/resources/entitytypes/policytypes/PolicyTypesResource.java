@@ -17,6 +17,6 @@ import org.eclipse.winery.repository.resources.AbstractComponentsResource;
  * Manages all policy types in all available namespaces <br />
  * The actual implementation is done in the AbstractComponentsResource
  */
-public class PolicyTypesResource extends AbstractComponentsResource {
-	
+public class PolicyTypesResource extends AbstractComponentsResource<PolicyTypeResource> {
+
 }

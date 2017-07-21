@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+/**
+ * Copyright (c) 2012-2013, 2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,31 +8,65 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Kálmán Képes - refined tag suport
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.tags;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.List;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.repository.resources._support.IPersistable;
+import org.eclipse.winery.repository.resources._support.collections.CollectionsHelper;
+import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
+
+import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.view.Viewable;
+public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag> {
 
-public class TagsResource {
-	
-	private static final Logger logger = LoggerFactory.getLogger(TagsResource.class);
-	
-	
-	public TagsResource(TOSCAComponentId parentId) {
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/tags/tags.jsp", this);
-	}
-	
+    private static final Logger LOGGER = LoggerFactory.getLogger(TagsResource.class);
+
+    public TagsResource(IPersistable res, List<TTag> list) {
+        super(TagResource.class, TTag.class, list, res);
+    }
+
+    public Viewable getHTML() {
+        return new Viewable("/jsp/tags/tags.jsp", this);
+    }
+
+
+    /**
+     * Adds an element using form-encoding
+     *
+     * FIXME: This is necessary as TRequirementRef contains an IDREF and the XML snippet itself does not contain the target id
+     *
+     * TODO: Why can't just addNewElement be used? Why do we need form-based updates?
+     *
+     * @param id ignored (TODO - see above - addNewElement?)
+     * @param name the  name of the tag
+     * @param value the value of the tag
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addNewElement(
+            @FormParam("id") String id,
+            @FormParam("name") String name,
+            @FormParam("value") String value) {
+
+        TTag tag = new TTag();
+
+        tag.setName(name);
+        tag.setValue(value);
+
+        this.list.add(tag);
+        return CollectionsHelper.persist(this.res, this, tag, true);
+    }
+
 }

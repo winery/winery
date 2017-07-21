@@ -15,14 +15,14 @@
 JavaScript snippet binding the delete button to a trigger of the "Remove" button in case there is only one such button and that no input field is selected
 --%>
 
-	var removeButtons = $("button:contains('Remove')");
-	if (removeButtons.length == 1) {
-		requirejs(["keyboardjs"], function(KeyboardJS) {
-			KeyboardJS.on("del", function() {
-				if ($(document.activeElement).is("body")) {
-					// we are not in an input field etc.
-					removeButtons.trigger("click");
-				}
-			});
-		});
-	}
+    var removeButtons = $("button:contains('Remove')");
+    if (removeButtons.length == 1) {
+        requirejs(["keyboardjs"], function(KeyboardJS) {
+            KeyboardJS.on("del", function() {
+                if ($(document.activeElement).is("body")) {
+                    // we are not in an input field etc.
+                    removeButtons.trigger("click");
+                }
+            });
+        });
+    }

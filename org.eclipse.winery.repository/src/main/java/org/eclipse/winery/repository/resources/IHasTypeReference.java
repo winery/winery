@@ -15,25 +15,25 @@ import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
 public interface IHasTypeReference {
-	
-	/**
-	 * @return the QName of the type with full namespace, never null (according
-	 *         to spec)
-	 */
-	public QName getType();
-	
-	/**
-	 * Sets the type and directly persists the resource
-	 */
-	public Response setType(QName type);
-	
-	/**
-	 * Calls setType(QName) with QName.valueOf(typeStr)
-	 * 
-	 * Directly persists the resource
-	 * 
-	 * @param typeStr a textual representation of a QName
-	 */
-	public Response setType(String typeStr);
-	
+
+    /**
+     * @return the QName of the type with full namespace, never null (according
+     *         to spec)
+     */
+    QName getType();
+
+    /**
+     * Sets the type and directly persists the resource
+     */
+    Response setType(QName type);
+
+    /**
+     * Calls setType(QName) with QName.valueOf(typeStr)
+     *
+     * Directly persists the resource
+     *
+     * @param typeStr a textual representation of a QName
+     */
+    Response setType(String typeStr);
+
 }

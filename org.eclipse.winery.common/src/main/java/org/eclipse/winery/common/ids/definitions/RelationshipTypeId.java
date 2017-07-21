@@ -17,16 +17,16 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 
 public final class RelationshipTypeId extends TopologyGraphElementEntityTypeId {
-	
-	public RelationshipTypeId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
-	
-	public RelationshipTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
-	public RelationshipTypeId(QName qname) {
-		super(qname);
-	}
-	
+
+    public RelationshipTypeId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
+
+    public RelationshipTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
+    public RelationshipTypeId(QName qname) {
+        super(qname);
+    }
+
 }

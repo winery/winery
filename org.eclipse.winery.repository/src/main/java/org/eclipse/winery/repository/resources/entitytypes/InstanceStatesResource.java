@@ -27,107 +27,107 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates.InstanceState;
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.backend.BackendUtils;
 
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Resource for instance states <br />
  * Used by relationship types and node types
  */
 public class InstanceStatesResource {
-	
-	private TopologyGraphElementEntityTypeResource typeResource;
-	private TTopologyElementInstanceStates instanceStates;
-	
-	
-	/**
-	 * 
-	 * @param instanceStates the instanceStates to manage
-	 * @param typeResource the type resource, where the instance states are
-	 *            managed. This reference is required to fire "persist()" in
-	 *            case of updates
-	 */
-	public InstanceStatesResource(TTopologyElementInstanceStates instanceStates, TopologyGraphElementEntityTypeResource typeResource) {
-		this.instanceStates = instanceStates;
-		this.typeResource = typeResource;
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/instancestates.jsp", this);
-	}
-	
-	public List<String> getInstanceStates() {
-		List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
-		ArrayList<String> states = new ArrayList<String>(instanceStates.size());
-		for (InstanceState instanceState : instanceStates) {
-			states.add(instanceState.getState());
-		}
-		return states;
-	}
-	
-	@DELETE
-	@Path("{instanceState}")
-	public Response deleteInstanceState(@PathParam("instanceState") String instanceStateToRemove) {
-		if (StringUtils.isEmpty(instanceStateToRemove)) {
-			return Response.status(Status.BAD_REQUEST).entity("null instance to remove").build();
-		}
-		instanceStateToRemove = Util.URLdecode(instanceStateToRemove);
-		
-		// InstanceState does not override "equals()", therefore we have to manually remove it
-		
-		List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
-		Iterator<InstanceState> iterator = instanceStates.iterator();
-		boolean found = false;
-		while (iterator.hasNext() && !found) {
-			if (iterator.next().getState().equals(instanceStateToRemove)) {
-				found = true;
-			}
-		}
-		
-		if (!found) {
-			return Response.status(Status.NOT_FOUND).build();
-		}
-		
-		iterator.remove();
-		
-		return BackendUtils.persist(this.typeResource);
-	}
-	
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addInstanceState(@FormParam("state") String state) {
-		if (StringUtils.isEmpty(state)) {
-			return Response.notAcceptable(null).build();
-		}
-		
-		// InstanceState does not override "equals()", therefore we have to manually check for existance
-		
-		List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
-		Iterator<InstanceState> iterator = instanceStates.iterator();
-		boolean found = false;
-		while (iterator.hasNext() && !found) {
-			if (iterator.next().getState().equals(state)) {
-				found = true;
-			}
-		}
-		
-		if (found) {
-			// no error, just return
-			return Response.noContent().build();
-		}
-		
-		InstanceState instanceState = new InstanceState();
-		instanceState.setState(state);
-		instanceStates.add(instanceState);
-		
-		return BackendUtils.persist(this.typeResource);
-	}
-	
+
+    private TopologyGraphElementEntityTypeResource typeResource;
+    private TTopologyElementInstanceStates instanceStates;
+
+
+    /**
+     *
+     * @param instanceStates the instanceStates to manage
+     * @param typeResource the type resource, where the instance states are
+     *            managed. This reference is required to fire "persist()" in
+     *            case of updates
+     */
+    public InstanceStatesResource(TTopologyElementInstanceStates instanceStates, TopologyGraphElementEntityTypeResource typeResource) {
+        this.instanceStates = instanceStates;
+        this.typeResource = typeResource;
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getHTML() {
+        return new Viewable("/jsp/entitytypes/instancestates.jsp", this);
+    }
+
+    public List<String> getInstanceStates() {
+        List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
+        ArrayList<String> states = new ArrayList<>(instanceStates.size());
+        for (InstanceState instanceState : instanceStates) {
+            states.add(instanceState.getState());
+        }
+        return states;
+    }
+
+    @DELETE
+    @Path("{instanceState}")
+    public Response deleteInstanceState(@PathParam("instanceState") String instanceStateToRemove) {
+        if (StringUtils.isEmpty(instanceStateToRemove)) {
+            return Response.status(Status.BAD_REQUEST).entity("null instance to remove").build();
+        }
+        instanceStateToRemove = Util.URLdecode(instanceStateToRemove);
+
+        // InstanceState does not override "equals()", therefore we have to manually remove it
+
+        List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
+        Iterator<InstanceState> iterator = instanceStates.iterator();
+        boolean found = false;
+        while (iterator.hasNext() && !found) {
+            if (iterator.next().getState().equals(instanceStateToRemove)) {
+                found = true;
+            }
+        }
+
+        if (!found) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+
+        iterator.remove();
+
+        return BackendUtils.persist(this.typeResource);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addInstanceState(@FormParam("state") String state) {
+        if (StringUtils.isEmpty(state)) {
+            return Response.notAcceptable(null).build();
+        }
+
+        // InstanceState does not override "equals()", therefore we have to manually check for existance
+
+        List<InstanceState> instanceStates = this.instanceStates.getInstanceState();
+        Iterator<InstanceState> iterator = instanceStates.iterator();
+        boolean found = false;
+        while (iterator.hasNext() && !found) {
+            if (iterator.next().getState().equals(state)) {
+                found = true;
+            }
+        }
+
+        if (found) {
+            // no error, just return
+            return Response.noContent().build();
+        }
+
+        InstanceState instanceState = new InstanceState();
+        instanceState.setState(state);
+        instanceStates.add(instanceState);
+
+        return BackendUtils.persist(this.typeResource);
+    }
+
 }

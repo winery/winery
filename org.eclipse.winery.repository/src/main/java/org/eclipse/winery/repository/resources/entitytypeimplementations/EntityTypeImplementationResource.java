@@ -14,16 +14,17 @@ package org.eclipse.winery.repository.resources.entitytypeimplementations;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 import org.eclipse.winery.repository.resources.IHasTypeReference;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class EntityTypeImplementationResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal implements IHasTypeReference {
-	
-	private static final Logger logger = LoggerFactory.getLogger(EntityTypeImplementationResource.class);
-	
-	
-	protected EntityTypeImplementationResource(TOSCAComponentId id) {
-		super(id);
-	}
-	
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeImplementationResource.class);
+
+
+    protected EntityTypeImplementationResource(TOSCAComponentId id) {
+        super(id);
+    }
+
 }

@@ -35,42 +35,42 @@ import com.sun.jersey.api.view.Viewable;
  * {@link org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps.RequirementsResource}
  */
 public class CapabilitiesResource extends EntityWithoutIdCollectionResource<CapabilityResource, TCapabilityRef> {
-	
-	public CapabilitiesResource(IPersistable res, List<TCapabilityRef> refs) {
-		super(CapabilityResource.class, TCapabilityRef.class, refs, res);
-	}
-	
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet required: boundarydefinitions.jsp renders all tab content.");
-	}
-	
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addNewElement(@FormParam("name") String name, @FormParam("ref") String reference) {
-		// Implementation adapted from super addNewElement
-		
-		if (reference == null) {
-			return Response.status(Status.BAD_REQUEST).entity("A reference has to be provided").build();
-		}
-		
-		TCapabilityRef ref = new TCapabilityRef();
-		ref.setName(name); // may also be null
-		
-		// The XML model fordces us to put a reference to the object and not just the string
-		ServiceTemplateResource rs = (ServiceTemplateResource) this.res;
-		TCapability resolved = ModelUtilities.resolveCapability(rs.getServiceTemplate(), reference);
-		// In case nothing was found: report back to the user
-		if (resolved == null) {
-			return Response.status(Status.BAD_REQUEST).entity("Reference could not be resolved").build();
-		}
-		
-		ref.setRef(resolved);
-		
-		// "this.alreadyContains(ref)" cannot be called as this leads to a mappable exception: The data does not contain an id where the given ref attribute may point to
-		
-		this.list.add(ref);
-		return CollectionsHelper.persist(this.res, this, ref);
-	}
-	
+
+    public CapabilitiesResource(IPersistable res, List<TCapabilityRef> refs) {
+        super(CapabilityResource.class, TCapabilityRef.class, refs, res);
+    }
+
+    @Override
+    public Viewable getHTML() {
+        throw new IllegalStateException("Not yet required: boundarydefinitions.jsp renders all tab content.");
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response addNewElement(@FormParam("name") String name, @FormParam("ref") String reference) {
+        // Implementation adapted from super addNewElement
+
+        if (reference == null) {
+            return Response.status(Status.BAD_REQUEST).entity("A reference has to be provided").build();
+        }
+
+        TCapabilityRef ref = new TCapabilityRef();
+        ref.setName(name); // may also be null
+
+        // The XML model fordces us to put a reference to the object and not just the string
+        ServiceTemplateResource rs = (ServiceTemplateResource) this.res;
+        TCapability resolved = ModelUtilities.resolveCapability(rs.getServiceTemplate(), reference);
+        // In case nothing was found: report back to the user
+        if (resolved == null) {
+            return Response.status(Status.BAD_REQUEST).entity("Reference could not be resolved").build();
+        }
+
+        ref.setRef(resolved);
+
+        // "this.alreadyContains(ref)" cannot be called as this leads to a mappable exception: The data does not contain an id where the given ref attribute may point to
+
+        this.list.add(ref);
+        return CollectionsHelper.persist(this.res, this, ref, true);
+    }
+
 }

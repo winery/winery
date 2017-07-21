@@ -11,12 +11,12 @@
  *******************************************************************************/
 
 #templateDrawingArea {
-	height: 100%;
-	background: white;
+    height: 100%;
+    background: white;
 }
 
 #templateEditorArea {
-	margin-top: 0px;
+    margin-top: 0;
 }
 
 /*
@@ -25,6 +25,6 @@
  * not globally defined
  */
 .hidden {
-	display: none;
+    display: none;
 }
 

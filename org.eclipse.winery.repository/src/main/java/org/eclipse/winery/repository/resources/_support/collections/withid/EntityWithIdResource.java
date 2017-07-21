@@ -18,12 +18,12 @@ import org.eclipse.winery.repository.resources._support.collections.EntityResour
 import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 
 public class EntityWithIdResource<EntityT> extends EntityResource<EntityT> {
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public EntityWithIdResource(IIdDetermination<EntityT> idDetermination, EntityT o, int idx, List<EntityT> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
-	
+
+    /**
+     * {@inheritDoc}
+     */
+    public EntityWithIdResource(IIdDetermination<EntityT> idDetermination, EntityT o, int idx, List<EntityT> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
+
 }

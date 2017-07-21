@@ -13,5 +13,5 @@ package org.eclipse.winery.repository.resources.entitytypes.relationshiptypes;
 
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
-public class RelationshipTypesResource extends AbstractComponentsResource {
+public class RelationshipTypesResource extends AbstractComponentsResource<RelationshipTypeResource> {
 }

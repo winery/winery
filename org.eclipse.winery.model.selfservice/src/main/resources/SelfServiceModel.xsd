@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013,2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -10,62 +10,75 @@
  *
  * Contributors:
  *    Tobias Binz and Uwe Breitenbücher - initial API and implementation and/or initial documentation
+ *    Oliver Kopp - addition of csarName, version, authors
  *******************************************************************************/
 -->
 <xs:schema xmlns="http://www.eclipse.org/winery/model/selfservice" targetNamespace="http://www.eclipse.org/winery/model/selfservice"
-	xmlns:tns="http://www.eclipse.org/winery/model/selfservice" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	elementFormDefault="qualified" attributeFormDefault="unqualified">
+    xmlns:tns="http://www.eclipse.org/winery/model/selfservice" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified" attributeFormDefault="unqualified">
 
-	<xs:element name="Application">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="displayName" type="xs:string" />
+    <xs:element name="Application">
+        <xs:complexType>
+            <xs:sequence>
+                <!-- Winery does not write the name of the CSAR. This is used by the UI only -->
+                <xs:element name="csarName" type="xs:string" minOccurs="0" />
 
-				<xs:element name="description" type="xs:string" />
+                <xs:element name="displayName" type="xs:string" />
 
-				<xs:element name="iconUrl" type="xs:string">
-					<xs:annotation>
-						<xs:documentation>Absolute or relative (with respect to the SELFSERVICE-Metadata folder root in the CSAR) URL to load the application icon.</xs:documentation>
-					</xs:annotation>
-				</xs:element>
-				<xs:element name="imageUrl" type="xs:string">
-					<xs:annotation>
-						<xs:documentation>Absolute or relative (with respect to the SELFSERVICE-Metadata folder root in the CSAR) URL to load the application image for the application's offering details.</xs:documentation>
-					</xs:annotation>
-				</xs:element>
+                <xs:element name="version" type="xs:string" minOccurs="0" />
 
-				<xs:element name="options">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="option" type="ApplicationOption" minOccurs="0" maxOccurs="unbounded" />
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
+                <xs:element name="authors" minOccurs="0">
+                    <xs:simpleType>
+                        <!-- be aware that spaces are used as separators. Future versions have to use sub elements and then a proper mapping to data.json -->
+                        <xs:list itemType="xs:string"/>
+                    </xs:simpleType>
+                </xs:element>
 
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+                <xs:element name="description" type="xs:string" />
 
-	<xs:complexType name="ApplicationOption">
-		<xs:sequence>
-			<xs:element name="description" type="xs:string" />
+                <xs:element name="iconUrl" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Absolute or relative (with respect to the SELFSERVICE-Metadata folder root in the CSAR) URL to load the application icon.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="imageUrl" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Absolute or relative (with respect to the SELFSERVICE-Metadata folder root in the CSAR) URL to load the application image for the application's offering details.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
 
-			<xs:element name="iconUrl" type="xs:anyURI">
-				<xs:annotation>
-					<xs:documentation>Absolute or relative (with respect to the SELFSERVICE-Metadata folder root in the CSAR) URL to load the application icon.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
+                <xs:element name="options">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="option" type="ApplicationOption" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
 
-			<xs:element name="planServiceName" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
-			<xs:element name="planInputMessageUrl" type="xs:string">
-				<xs:annotation>
-					<xs:documentation>Absolute or relative (with respect to the SELFSERVICE-Metadata folder root in the CSAR) URL to load the plan input message to start the build plan.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-		</xs:sequence>
+    <xs:complexType name="ApplicationOption">
+        <xs:sequence>
+            <xs:element name="description" type="xs:string" />
 
-		<xs:attribute name="id" type="xs:string" use="required" />
-		<xs:attribute name="name" type="xs:string" use="required" />
-	</xs:complexType>
+            <xs:element name="iconUrl" type="xs:anyURI">
+                <xs:annotation>
+                    <xs:documentation>Absolute or relative (with respect to the SELFSERVICE-Metadata folder root in the CSAR) URL to load the application icon.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element name="planServiceName" type="xs:string" />
+
+            <xs:element name="planInputMessageUrl" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Absolute or relative (with respect to the SELFSERVICE-Metadata folder root in the CSAR) URL to load the plan input message to start the build plan.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
 </xs:schema>

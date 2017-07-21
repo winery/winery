@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.requirementtypes;
 
@@ -19,39 +18,26 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 
-import com.theoryinpractise.halbuilder.api.Representation;
-
 public class RequirementTypeResource extends EntityTypeResource {
-	
-	public RequirementTypeResource(RequirementTypeId id) {
-		super(id);
-	}
-	
-	/**
-	 * Convenience method to avoid casting at the caller's side.
-	 */
-	public TRequirementType getRequirementType() {
-		return (TRequirementType) this.getElement();
-	}
-	
-	@Override
-	protected TExtensibleElements createNewElement() {
-		return new TRequirementType();
-	}
-	
-	@Path("requiredcapabilitytype/")
-	public RequiredCapabilityTypeResource getRequiredCapabilityTypeResource() {
-		return new RequiredCapabilityTypeResource(this);
-	}
-	
-	@Override
-	protected Representation fillHALRepresentation(Representation res) {
-		//@formatter:off
 
-		res = res.withLink("requiredcapabilitytype/", "requiredcapabilitytype/");
+    public RequirementTypeResource(RequirementTypeId id) {
+        super(id);
+    }
 
-		//@formatter:on
-		
-		return res;
-	}
+    /**
+     * Convenience method to avoid casting at the caller's side.
+     */
+    public TRequirementType getRequirementType() {
+        return (TRequirementType) this.getElement();
+    }
+
+    @Override
+    protected TExtensibleElements createNewElement() {
+        return new TRequirementType();
+    }
+
+    @Path("requiredcapabilitytype/")
+    public RequiredCapabilityTypeResource getRequiredCapabilityTypeResource() {
+        return new RequiredCapabilityTypeResource(this);
+    }
 }

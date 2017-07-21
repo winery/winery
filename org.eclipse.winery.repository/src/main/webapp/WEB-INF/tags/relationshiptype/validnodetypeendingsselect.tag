@@ -21,23 +21,23 @@
 
 
 <select name="valid${shortName}" onchange="updateValue('valid${shortName}', this.options[this.selectedIndex].value);">
-	<c:choose>
-		<c:when test="${empty currentSelection}">
-			<option value="" selected="selected">(all)</option>
-		</c:when>
-		<c:otherwise>
-			<option value="">(all)</option>
-		</c:otherwise>
-	</c:choose>
-	<c:forEach var="typeId" items="${possibleValidEndings}">
-		<c:choose>
-			<c:when test="${currentSelection eq typeId.QName}">
-				<c:set var="selected" value=" selected=\"selected\"" />
-			</c:when>
-			<c:otherwise>
-				<c:set var="selected" value="" />
-			</c:otherwise>
-		</c:choose>
-		<option value="${typeId.QName}"${selected}>${typeId.xmlId.decoded} (${typeId.namespace.decoded})</option>
-	</c:forEach>
+    <c:choose>
+        <c:when test="${empty currentSelection}">
+            <option value="" selected="selected">(all)</option>
+        </c:when>
+        <c:otherwise>
+            <option value="">(all)</option>
+        </c:otherwise>
+    </c:choose>
+    <c:forEach var="typeId" items="${possibleValidEndings}">
+        <c:choose>
+            <c:when test="${currentSelection eq typeId.QName}">
+                <c:set var="selected" value=" selected=\"selected\"" />
+            </c:when>
+            <c:otherwise>
+                <c:set var="selected" value="" />
+            </c:otherwise>
+        </c:choose>
+        <option value="${typeId.QName}"${selected}>${typeId.xmlId.decoded} (${typeId.namespace.decoded})</option>
+    </c:forEach>
 </select>

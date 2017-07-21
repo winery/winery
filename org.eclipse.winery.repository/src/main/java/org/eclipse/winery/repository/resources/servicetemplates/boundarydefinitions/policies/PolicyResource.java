@@ -18,9 +18,9 @@ import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdResource;
 
 public class PolicyResource extends EntityWithoutIdResource<TPolicy> {
-	
-	public PolicyResource(TPolicy o, int idx, List<TPolicy> list, IPersistable res) {
-		super(o, idx, list, res);
-	}
-	
+
+    public PolicyResource(TPolicy o, int idx, List<TPolicy> list, IPersistable res) {
+        super(o, idx, list, res);
+    }
+
 }

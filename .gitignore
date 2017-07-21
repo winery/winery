@@ -10,3 +10,4 @@ release.properties
 **/pom.xml.*
 **/rebel.xml
 target/
+node_modules/

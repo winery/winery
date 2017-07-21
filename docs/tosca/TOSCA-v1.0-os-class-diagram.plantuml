@@ -1,0 +1,470 @@
+/***********************************************************************
+ * Copyright (c) 2013-2014 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Apache License v2.0 which accompanies this distribution.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html
+ * and the Apache License v2.0 is available at
+ * http://www.opensource.org/licenses/apache2.0.php.
+ * You may elect to redistribute this code under either of these licenses.
+ * Contributors:
+ *    Oliver Kopp - initial implementation
+ *************************************************************************
+
+This model describes the XSD of TOSCA-v1.0.xsd as released by TOSCA v1.0 cos01.
+URL: http://docs.oasis-open.org/tosca/TOSCA/v1.0/os/schemas/TOSCA-v1.0.xsd
+Specification: http://docs.oasis-open.org/tosca/TOSCA/v1.0/TOSCA-v1.0.html
+
+@startuml
+
+'skinparam monochrome true
+'Chooses LightGray as background color
+'We're better off with manual setting
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+    LegendBackgroundColor White
+}
+
+skinparam stereotypeCBackgroundColor LightGray
+
+skinparam noteBackgroundColor White
+skinparam noteBorderColor Black
+
+'required for SVG
+skinparam defaultFontName sans-serif
+
+
+Title <size:33>TOSCA v1.0 as UML class diagram. This is not an official OASIS document. No warranty. (c) University of Stuttgart. Dual-licensed under EPL and ASLv2. Version 2014-01-29.
+
+legend right
+== Note on the model
+The model stays close to the XSD with following exceptions:
+* Containers such as tTags are ignored: A class is then wired using a 1:n relation to the elements nested in the container
+* Relations to TOSCA artifacts are encoded.
+** E.g., a QName modelling a substitutable Node Type is modeled as reference to a Node Type
+** *Ref elements are not modeled, the association is drawn directly
+*** E.g., tCapabilityRef is not contained in the model
+* xsd types are presented more relaxed. E.g., xsd:string becomes String
+
+== Conventions
+* green: required (+ prefix)
+* all others: optional
+endlegend
+
+
+
+'OS line 19
+class tExtensibleElements {
+  documentation
+  contents of other namespaces
+}
+
+'OS line 26
+tExtensibleElements <|-- tImport
+class tImport {
+  anyURI namespace
+  anyURI location
+  +(anyURI) importType
+}
+
+'OS line 42
+tExtensibleElements <|-- tDefinitions
+class tDefinitions {
+  +ID id
+  String name
+  anyURI targetNamespace
+  List<Object> Types
+}
+tDefinitions *-- "*" tExtension
+tDefinitions *-- "*" tImport
+
+'OS line 61
+tDefinitions *-- "*" tServiceTemplate
+tDefinitions *-- "*" tNodeType
+tDefinitions *-- "*" tNodeTypeImplementation
+tDefinitions *-- "*" tRelationshipType
+tDefinitions *-- "*" tRelationshipTypeImplementation
+tDefinitions *-- "*" tCapabilityType
+tDefinitions *-- "*" tArtifactType
+tDefinitions *-- "*" tArtifactTemplate
+tDefinitions *-- "*" tPolicyType
+tDefinitions *-- "*" tPolicyTemplate
+
+'OS line 81
+tExtensibleElements <|-- tServiceTemplate
+class tServiceTemplate {
+  +ID id
+  String name
+  anyURI targetNamespace
+}
+tServiceTemplate *-- "*" tTag
+tServiceTemplate *-- "*" tBoundaryDefinitions
+tServiceTemplate *-- tTopologyTemplate
+tServiceTemplate *-- "*" tPlan
+tServiceTemplate --> "0..1" tNodeType : substitutable
+
+'OS line 102
+class tTag {
+  +String name
+  +String value
+}
+
+'OS line 106
+class tBoundaryDefinitions {
+  Properties
+}
+tBoundaryDefinitions *-- "*" tPropertyMapping
+tBoundaryDefinitions *-- "*" tPropertyConstraint
+tBoundaryDefinitions --> "*" tRequirement
+tBoundaryDefinitions --> "*" tCapability
+tBoundaryDefinitions *-- "*" tPolicy
+tBoundaryDefinitions *-- "*" tExportedInterface
+
+'OS line 159
+class tPropertyMapping {
+ +String serviceTemplatePropertyRef
+ +String targetPropertyRef
+}
+tPropertyMapping --> "0..1" tNodeTemplate
+tPropertyMapping --> "0..1" tRelationshipTemplate
+tPropertyMapping --> "0..1" tRequirement
+tPropertyMapping --> "0..1" tCapability
+
+'OS lines 164 to 171 define tRequiermentRef and tCapabilityRef
+'to enable referencing requirements and capabilities
+'We directly point to the elements
+
+'OS line 172
+abstract class tEntityType
+tExtensibleElements <|-- tEntityType
+class tEntityType {
+'  DerivedFrom is rendered as self-association in all subclasses
+'  DerivedFrom
+  PropertiesDefinition
+  +NCName name
+  Boolean abstract [no]
+  Boolean final [no]
+  anyURI targetNamespace
+}
+tEntityType *-- "*" tTag
+
+'OS line 196
+abstract class tEntityTemplate
+tExtensibleElements <|-- tEntityTemplate
+class tEntityTemplate {
+  Properties
+  +xs:ID id
+  +QName type
+}
+tEntityTemplate *-- "*" tPropertyConstraint
+
+'OS line 219
+tEntityTemplate <|-- tNodeTemplate
+class tNodeTemplate #DDDDDD/EEEEEE {
+  String name
+  int minInstances [1]
+  int|unbounded maxInstances [1]
+}
+tNodeTemplate *-- "*" tRequirement
+tNodeTemplate *-- "*" tCapability
+tNodeTemplate *-- "*" tPolicy
+tNodeTemplate *-- "*" tDeploymentArtifact
+'due to the subclassing of tEntityTemplate
+'There, the type attribute references the parent class
+tNodeTemplate --> tNodeType : type
+
+'OS line 268
+tExtensibleElements <|-- tTopologyTemplate
+class tTopologyTemplate
+'no attributes exist
+tTopologyTemplate *-- "*" tNodeTemplate
+tTopologyTemplate *-- "*" tRelationshipTemplate
+
+'OS line 278
+tEntityType <|-- tRelationshipType
+class tRelationshipType #DDDDDD/EEEEEE
+'no attributes
+'InstanceStates
+tRelationshipType *-- "*" tTopologyElementInstanceState
+'SourceInterfaces
+tRelationshipType *-- "*" tInterface : SourceInterface
+'TargetInterfaces 
+tRelationshipType *-- "*" tInterface : TargetInterface
+'ValidSource
+tRelationshipType --> "0..1" tNodeType : ValidSource
+tRelationshipType --> "0..1" tRequirementType : ValidSource
+'ValidTarget
+tRelationshipType --> "0..1" tNodeType : ValidTarget
+tRelationshipType --> "0..1" tCapabilityType : ValidTarget
+'DerivedFrom
+tRelationshipType --> "0..1" tRelationshipType : DerivedFrom
+
+
+'OS line 311
+tExtensibleElements <|-- tRelationshipTypeImplementation
+class tRelationshipTypeImplementation {
+   +NCName name
+   anyURI targetNamespace
+   Boolean abstract
+   Boolean final
+}
+tRelationshipTypeImplementation --> tRelationshipType
+tRelationshipTypeImplementation *-- "*" tTag
+tRelationshipTypeImplementation --> "0..1" tRelationshipTypeImplementation : DerivedFrom
+tRelationshipTypeImplementation *-- "*" tRequiredContainerFeature
+tRelationshipTypeImplementation *-- "*" tImplementationArtifact
+
+'OS line 332
+tEntityTemplate <|-- tRelationshipTemplate
+class tRelationshipTemplate #DDDDDD/EEEEEE {
+  String name
+}
+'SourceElement
+tRelationshipTemplate --> "0..1" tNodeTemplate : SourceElement
+tRelationshipTemplate --> "0..1" tRequirement : SourceElement
+'TargetElement
+tRelationshipTemplate --> "0..1" tNodeTemplate : TargetElement
+tRelationshipTemplate --> "0..1" tCapability : TargetElement
+'
+tRelationshipTemplate *-- "*" tRelationshipConstraint
+'due to the subclassing of tEntityTemplate
+tRelationshipTemplate --> tRelationshipType
+
+'OS line 349
+'not modeled as t, but directly nested in tRelationshipTemplate
+'We model it as t to be consistent with the other definitions
+class tRelationshipConstraint {
+  +anyURI constraintType
+}
+
+'OS line 365
+tEntityType <|-- tNodeType
+class tNodeType #DDDDDD/EEEEEE
+'No new attributes
+'
+tNodeType *-- "*" tRequirementDefinition
+tNodeType *-- "*" tCapabilityDefinition
+tNodeType *-- "*" tTopologyElementInstanceState
+tNodeType *-- "*" tInterface
+'DerivedFrom
+tNodeType --> "0..1" tNodeType : DerivedFrom
+
+'OS line 395
+tExtensibleElements <|-- tNodeTypeImplementation
+class tNodeTypeImplementation {
+  +NCname name
+  anyURI targetNamespace
+  Boolean abstract
+  Boolean final
+}
+tNodeTypeImplementation --> tNodeType
+tNodeTypeImplementation *-- "*" tTag
+tNodeTypeImplementation --> "0..1" tNodeTypeImplementation : DerivedFrom
+tNodeTypeImplementation *-- "*" tRequiredContainerFeature
+tNodeTypeImplementation *-- "*" tDeploymentArtifact
+tNodeTypeImplementation *-- "*" tImplementationArtifact
+
+'OS line 417
+tEntityType <|-- tRequirementType
+class tRequirementType
+tRequirementType --> "0..1" tCapabilityType : requiredCapabilityType
+'DerivedFrom
+tRequirementType --> "0..1" tRequirementType : DerivedFrom
+
+'OS line 424
+tExtensibleElements <|-- tRequirementDefinition
+class tRequirementDefinition {
+  +String name
+  int lowerBound [1]
+  int|unbounded upperBound [1]
+}
+tRequirementDefinition *-- "*" tConstraint
+tRequirementDefinition --> tRequirementType
+
+'OS line 458
+tEntityTemplate <|-- tRequirement
+class tRequirement {
+  +String name
+}
+'"name" is also used to point to tRequirementDefinition
+tRequirement --> tRequirementDefinition : name
+'due to the subclassing of tEntityTemplate
+tRequirement --> tRequirementType
+
+'OS line 465
+tEntityType <|-- tCapabilityType
+'DerivedFrom
+tCapabilityType --> "0..1" tCapabilityType : DerivedFrom
+
+'OS line 470
+tExtensibleElements <|-- tCapabilityDefinition
+class tCapabilityDefinition {
+  +String name
+  int lowerBound [1]
+  int|unbounded upperBound [1]
+}
+tCapabilityDefinition *-- "*" tConstraint
+tCapabilityDefinition --> tCapabilityType
+
+'OS line 504
+tEntityTemplate <|-- tCapability
+class tCapability {
+  +String name
+}
+'"name" is also used to point to tCapabilityDefinition
+tCapability --> tCapabilityDefinition : name
+'due to the subclassing of tEntityTemplate
+tCapability --> tCapabilityType
+
+'OS line 511
+tEntityType <|-- tArtifactType
+tArtifactType --> "0..1" tArtifactType : DerivedFrom
+
+'OS line 516
+tEntityTemplate <|-- tArtifactTemplate
+'PDF line 2607
+class tArtifactTemplate {
+  String name
+}
+tArtifactTemplate *-- "*" tArtifactReference
+'due to the subclassing of tEntityTemplate
+tArtifactTemplate --> tArtifactType
+
+'OS line 537
+tExtensibleElements <|-- tDeploymentArtifact
+class tDeploymentArtifact {
+  +String Name
+}
+tDeploymentArtifact --> tArtifactType
+tDeploymentArtifact --> "0..1" tArtifactTemplate
+
+'OS line 557
+tExtensibleElements <|-- tImplementationArtifact
+class tImplementationArtifact {
+  anyURI interfaceName
+  String operationName
+}
+tImplementationArtifact --> tArtifactType
+tImplementationArtifact --> "0..1" tArtifactTemplate
+
+'OS line 573
+tExtensibleElements <|-- tPlan
+class tPlan {
+  +ID id
+  String name
+  +anyURI planType
+  +anyURI languageUsed
+  PlanModel | PlanModelReference
+}
+tPlan *-- "0..1" tCondition : Precondition
+tPlan *-- "*" tParameter : InputParamter
+tPlan *-- "*" tParameter : OutputParamter
+
+'OS line 614
+tEntityType <|-- tPolicyType
+class tPolicyType {
+  anyURI policyLanguage
+}
+'AppliesTo/NodeTypeReference: CS02 line 631
+tPolicyType --> "*" tNodeType : tAppliesTo/NodeTypeReference
+'DerivedFrom
+tPolicyType --> "0..1" tPolicyType : DerivedFrom
+
+'OS line 624
+tEntityTemplate <|-- tPolicyTemplate
+class tPolicyTemplate {
+  String name
+}
+'due to inheritance of tEntityTemplate
+tPolicyTemplate --> tPolicyType
+
+'OS line 640
+tExtensibleElements <|-- tPolicy
+class tPolicy {
+  String name
+}
+tPolicy --> tPolicyType
+tPolicy --> "0..1" tPolicyTemplate
+
+'OS line 649
+class tConstraint {
+  +anyURI constraintType
+}
+
+'OS line 655
+tConstraint <|-- tPropertyConstraint
+class tPropertyConstraint {
+  +String property
+}
+
+'OS line 671
+tExtensibleElements <|-- tExtension
+class tExtension {
+  +anyURI namespace
+  Boolean mustUnderstand [yes]
+}
+
+'OS line 679
+class tParameter {
+  +String name
+  +String type
+  Boolean required [yes]
+}
+
+'OS line 684
+class tInterface {
+  +anyURI name 'NCName is a subset of anyURI
+}
+tInterface *-- tOperation
+
+'OS line 690
+class tExportedInterface {
+  +anyURI name
+}
+tExportedInterface --> "1..*" tExportedOperation
+
+'OS line 696
+tExtensibleElements <|-- tOperation
+class tOperation {
+  +NCName name
+}
+tOperation *-- "*" tParameter : InputParameters
+tOperation *-- "*" tParameter : OutputParamters
+
+'OS line 719
+class tExportedOperation {
+  +NCName name
+  +anyURI interfaceName
+  +NCName operationName
+}
+tExportedOperation --> "0..1" tNodeTemplate
+tExportedOperation --> "0..1" tRelationshipTemplate
+tExportedOperation --> "0..1" tPlan
+
+
+'OS line 743
+class tCondition {
+  +anyURI expressionLanguage
+}
+
+'OS line 751
+'tTopologyElementInstanceState does not exist directly, but to be consistent with the others, we introduce it
+class tTopologyElementInstanceState {
+  anyURI state
+}
+
+'OS line 758
+class tArtifactReference {
+  Include
+  Exclude
+  +anyURI reference
+}
+
+'OS line 773
+class tRequiredContainerFeature {
+  +anyURI feature
+}
+@enduml

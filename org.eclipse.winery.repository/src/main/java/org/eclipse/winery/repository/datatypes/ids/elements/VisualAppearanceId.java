@@ -20,9 +20,9 @@ import org.eclipse.winery.common.ids.elements.TOSCAElementId;
  * (e.g., icons for node types)
  */
 public class VisualAppearanceId extends TOSCAElementId {
-	
-	public VisualAppearanceId(TopologyGraphElementEntityTypeId parent) {
-		super(parent, new XMLId("appearance", true));
-	}
-	
+
+    public VisualAppearanceId(TopologyGraphElementEntityTypeId parent) {
+        super(parent, new XMLId("appearance", true));
+    }
+
 }

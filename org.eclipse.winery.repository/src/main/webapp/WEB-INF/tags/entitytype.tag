@@ -31,7 +31,7 @@
 <%
 
 if (subMenus == null) {
-	subMenus = new ArrayList<SubMenuData>(2);
+    subMenus = new ArrayList<SubMenuData>(2);
 }
 
 SubMenuData data;

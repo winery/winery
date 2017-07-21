@@ -1,0 +1,74 @@
+<!--
+
+    /*******************************************************************************
+     * Copyright (c) 2017 ZTE Corporation.
+     * All rights reserved. This program and the accompanying materials
+     * are made available under the terms of the Eclipse Public License v1.0
+     * and the Apache License 2.0 which both accompany this distribution,
+     * and are available at http://www.eclipse.org/legal/epl-v10.html
+     * and http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Contributors:
+     *     ZTE - support of more gateways
+     *******************************************************************************/
+
+-->
+
+#set( $taskName = $mngmtTask.getName() )
+
+
+<!-- ExclusiveGateway  -->
+
+#set( $branchList = $mngmtTask.getBranchList() )
+#set( $branch_size = $branchList.size() )
+<scope name="${taskName}" xmlns:pp="http://opentosca.org/api/pp"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <sequence name="${taskName}_Sequence">
+        <if>
+        #foreach($branch in $branchList)
+            #set( $tasks = $branch.getNodeList() )
+            #if( $velocityCount==1 )
+            <condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+                $branch.getCondition()
+            </condition>
+            <sequence name="${taskName}_Branch${velocityCount}_Sequence">
+                #foreach( $task in $tasks)
+                #set( $mngmtTask = $task )
+                        #parse(
+                        "/src/main/resources/templates/bpel_management_node_scope_template.xml"
+                        )
+                #end
+            </sequence>
+
+            #elseif( $velocityCount==$branch_size && $branch.getCondition() == "" )
+            <else>
+                <sequence name="${taskName}_Branch${velocityCount}_Sequence">
+                    #foreach( $task in $tasks)
+                    #set( $mngmtTask = $task )
+                            #parse(
+                            "/src/main/resources/templates/bpel_management_node_scope_template.xml"
+                            )
+                    #end
+                </sequence>
+            </else>
+            #else
+            <elseif>
+                <condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">
+                    $branch.getCondition()
+                </condition>
+                <sequence name="${taskName}_Branch${velocityCount}_Sequence">
+                    #foreach( $task in $tasks)
+                    #set( $mngmtTask = $task )
+                            #parse(
+                            "/src/main/resources/templates/bpel_management_node_scope_template.xml"
+                            )
+                    #end
+                </sequence>
+            </elseif>
+            #end
+        #end
+        </if>
+    </sequence>
+</scope>
+
+

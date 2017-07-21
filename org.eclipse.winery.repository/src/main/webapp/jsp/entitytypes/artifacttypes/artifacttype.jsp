@@ -17,9 +17,9 @@
 TODO: implement update / subresource "file extension"
 <div class="center">Associated File Extension</div>
 
-	<div class="middle" id="ccontainer">
-		<input name="fileextension" type="text" onblur="updateValue('fileextension', this.value)" <c:if test="${not empty it.associatedFileExtension}"> value="${it.associatedFileExtension}" </c:if> />
-	</div>
+    <div class="middle" id="ccontainer">
+        <input name="fileextension" type="text" onblur="updateValue('fileextension', this.value)" <c:if test="${not empty it.associatedFileExtension}"> value="${it.associatedFileExtension}" </c:if> />
+    </div>
 --%>
 
 <t:entitytype cssClass="artifactType" selected="ArtifactType">

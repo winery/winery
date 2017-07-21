@@ -15,9 +15,9 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 
 public abstract class TopologyGraphElementEntityTypeResource extends EntityTypeResource {
-	
-	protected TopologyGraphElementEntityTypeResource(TOSCAComponentId id) {
-		super(id);
-	}
-	
+
+    protected TopologyGraphElementEntityTypeResource(TOSCAComponentId id) {
+        super(id);
+    }
+
 }

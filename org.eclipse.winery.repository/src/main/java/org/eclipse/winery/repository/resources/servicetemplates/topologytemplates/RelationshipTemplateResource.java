@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2014 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -14,17 +14,13 @@ package org.eclipse.winery.repository.resources.servicetemplates.topologytemplat
 import java.util.List;
 
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.repository.resources._support.IPersistable;
+import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.resources.entitytemplates.TEntityTemplateResource;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
 public class RelationshipTemplateResource extends TEntityTemplateResource<TRelationshipTemplate> {
-	
-	private final TRelationshipTemplate relationshipTemplate;
-	
-	
-	public RelationshipTemplateResource(TRelationshipTemplate relationshipTemplate, List<TRelationshipTemplate> list, int idx, ServiceTemplateResource res) {
-		super(relationshipTemplate, list, idx, res);
-		this.relationshipTemplate = relationshipTemplate;
-	}
-	
+
+    public RelationshipTemplateResource(IIdDetermination<TRelationshipTemplate> idDetermination, TRelationshipTemplate o, int idx, List<TRelationshipTemplate> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
 }

@@ -12,28 +12,27 @@
 package org.eclipse.winery.repository.resources.imports.genericimports;
 
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 /**
  * Manages a certain kind of imports without special treatments
  */
-public class GenericImportsResource extends AbstractComponentsResource {
-	
-	private String type;
-	
-	
-	/**
-	 * @param id the (decoded) id, e.g., http://schemas.xmlsoap.org/wsdl/
-	 */
-	public GenericImportsResource(String id) {
-		this.type = id;
-	}
-	
-	@Override
-	public AbstractComponentInstanceResource getComponentInstaceResource(String namespace, String id, boolean encoded) {
-		GenericImportId iId = new GenericImportId(namespace, id, encoded, this.type);
-		return new GenericImportResource(iId);
-	}
-	
+public class GenericImportsResource extends AbstractComponentsResource<GenericImportResource> {
+
+    private String type;
+
+
+    /**
+     * @param id the (decoded) id, e.g., http://schemas.xmlsoap.org/wsdl/
+     */
+    public GenericImportsResource(String id) {
+        this.type = id;
+    }
+
+    @Override
+    public GenericImportResource getComponentInstaceResource(String namespace, String id, boolean encoded) {
+        GenericImportId iId = new GenericImportId(namespace, id, encoded, this.type);
+        return new GenericImportResource(iId);
+    }
+
 }

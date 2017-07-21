@@ -7,6 +7,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import javax.xml.bind.annotation.XmlElement;
 
 @WebService
 public class IA_CLASS_NAME extends AbstractIAService {

@@ -16,9 +16,9 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 
 public class SelfServiceMetaDataId extends TOSCAElementId {
-	
-	public SelfServiceMetaDataId(ServiceTemplateId parent) {
-		super(parent, new XMLId("SELFSERVICE-Metadata", true));
-	}
-	
+
+    public SelfServiceMetaDataId(ServiceTemplateId parent) {
+        super(parent, new XMLId("SELFSERVICE-Metadata", true));
+    }
+
 }

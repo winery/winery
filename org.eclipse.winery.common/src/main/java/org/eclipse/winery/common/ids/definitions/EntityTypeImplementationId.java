@@ -15,12 +15,12 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 
 public abstract class EntityTypeImplementationId extends TOSCAComponentId {
-	
-	public EntityTypeImplementationId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
-	
-	public EntityTypeImplementationId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+
+    public EntityTypeImplementationId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
+
+    public EntityTypeImplementationId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 }

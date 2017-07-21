@@ -23,11 +23,11 @@ import org.eclipse.winery.repository.Constants;
  * Constants.SUFFIX_MIMETYPE
  */
 public class OnlyNonHiddenFiles implements DirectoryStream.Filter<Path> {
-	
-	@Override
-	public boolean accept(Path entry) throws IOException {
-		// we return only non-hidden files
-		// and we do not return the file "FN.mimetype", which are used to store the mimetype of FN
-		return !Files.isDirectory(entry) && !Files.isHidden(entry) && (!entry.getFileName().toString().endsWith(Constants.SUFFIX_MIMETYPE));
-	}
+
+    @Override
+    public boolean accept(Path entry) throws IOException {
+        // we return only non-hidden files
+        // and we do not return the file "FN.mimetype", which are used to store the mimetype of FN
+        return !Files.isDirectory(entry) && !Files.isHidden(entry) && (!entry.getFileName().toString().endsWith(Constants.SUFFIX_MIMETYPE));
+    }
 }

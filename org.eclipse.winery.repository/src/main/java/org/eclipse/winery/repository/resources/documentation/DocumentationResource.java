@@ -25,19 +25,19 @@ import org.eclipse.winery.repository.resources._support.collections.CollectionsH
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdResource;
 
 public class DocumentationResource extends EntityWithoutIdResource<TDocumentation> {
-	
-	public DocumentationResource(TDocumentation o, int idx, List<TDocumentation> list, IPersistable res) {
-		super(o, idx, list, res);
-	}
-	
-	@PUT
-	@Consumes(MediaType.TEXT_HTML)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response setValue(String documentation) {
-		this.o.getContent().clear();
-		this.o.getContent().add(documentation);
-		this.list.set(this.idx, this.o);
-		return CollectionsHelper.persist(this.res, this.idDetermination, this.o);
-	}
-	
+
+    public DocumentationResource(TDocumentation o, int idx, List<TDocumentation> list, IPersistable res) {
+        super(o, idx, list, res);
+    }
+
+    @PUT
+    @Consumes(MediaType.TEXT_HTML)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response setValue(String documentation) {
+        this.o.getContent().clear();
+        this.o.getContent().add(documentation);
+        this.list.set(this.idx, this.o);
+        return CollectionsHelper.persist(this.res, this.idDetermination, this.o, false);
+    }
+
 }

@@ -25,42 +25,42 @@ import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource
 import com.sun.jersey.api.view.Viewable;
 
 public class PropertiesResource {
-	
-	private AbstractComponentInstanceResource res;
-	private TEntityTemplate template;
-	
-	
-	/**
-	 * @param template the template to store the definitions at
-	 * @param res the resource to save after modifications
-	 */
-	public PropertiesResource(TEntityTemplate template, AbstractComponentInstanceResource res) {
-		this.template = template;
-		this.res = res;
-	}
-	
-	/**
-	 * Currently, properties can only be updated as a whole XML fragment
-	 * 
-	 * Getting/setting a fragment of properties is not possible yet
-	 */
-	@PUT
-	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-	public Response setProperties(TEntityTemplate.Properties properties) {
-		this.getTemplate().setProperties(properties);
-		return BackendUtils.persist(this.res);
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytemplates/properties.jsp", this);
-	}
-	
-	/** data for the JSP **/
-	
-	public TEntityTemplate getTemplate() {
-		return this.template;
-	}
-	
+
+    private AbstractComponentInstanceResource res;
+    private TEntityTemplate template;
+
+
+    /**
+     * @param template the template to store the definitions at
+     * @param res the resource to save after modifications
+     */
+    public PropertiesResource(TEntityTemplate template, AbstractComponentInstanceResource res) {
+        this.template = template;
+        this.res = res;
+    }
+
+    /**
+     * Currently, properties can only be updated as a whole XML fragment
+     *
+     * Getting/setting a fragment of properties is not possible yet
+     */
+    @PUT
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    public Response setProperties(TEntityTemplate.Properties properties) {
+        this.getTemplate().setProperties(properties);
+        return BackendUtils.persist(this.res);
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getHTML() {
+        return new Viewable("/jsp/entitytemplates/properties.jsp", this);
+    }
+
+    /** data for the JSP **/
+
+    public TEntityTemplate getTemplate() {
+        return this.template;
+    }
+
 }

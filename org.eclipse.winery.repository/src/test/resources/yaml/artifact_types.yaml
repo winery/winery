@@ -1,0 +1,100 @@
+#
+# Copyright 2017 ZTE Corporation.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# and the Apache License 2.0 which both accompany this distribution,
+# and are available at http://www.eclipse.org/legal/epl-v10.html
+# and http://www.apache.org/licenses/LICENSE-2.0
+#
+
+##########################################################################
+# TOSCA Namespacing keyword specifies the TOSCA Namespace Alias value which 
+# all TOSCA Service Templates MUST always have.
+##########################################################################
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+##########################################################################
+# TOSCA Artifacts Types represent the types of packages and files used by 
+# the orchestrator when deploying  TOSCA Node or Relationship Types or 
+# invoking their interfaces. 
+##########################################################################    
+artifact_types:
+
+  ##########################################################################
+  # This is the default (root) TOSCA Artifact Type definition that all other 
+  # TOSCA base Artifact Types derive from. 
+  ##########################################################################
+  tosca.artifacts.Root:
+    description: The TOSCA Artifact Type all other TOSCA Artifact Types derive from
+
+  ##########################################################################
+  # This artifact type is used when an artifact definition needs to have its 
+  # associated file simply treated as a file and no special handling/handlers 
+  # are invoked (i.e., it is not treated as either an implementation or 
+  # deployment artifact type).
+  ##########################################################################
+  tosca.artifacts.File:
+    derived_from: tosca.artifacts.Root
+
+
+  ##########################################################################
+  # This artifact type represents the parent type for all deployment artifacts 
+  # in TOSCA. This class of artifacts typically represents a binary packaging 
+  # of an application or service that is used to install/create or deploy it 
+  # as part of a node’s lifecycle.
+  ##########################################################################
+  tosca.artifacts.Deployment:
+    derived_from: tosca.artifacts.Root
+    description: TOSCA base type for deployment artifacts
+  
+  
+  ##########################################################################
+  # This artifact type represents a parent type for any “image” which is an 
+  # opaque packaging of a TOSCA Node’s deployment (whether real or virtual) 
+  # whose contents are typically already installed and pre-configured 
+  # (i.e., “stateful”) and prepared to be run on a known target container.
+  ##########################################################################  
+  tosca.artifacts.Deployment.Image:
+    derived_from: tosca.artifacts.Deployment
+  
+  
+  ##########################################################################
+  # This artifact represents the parent type for all Virtual Machine (VM) image 
+  # and container formatted deployment artifacts. These images contain a stateful 
+  # capture of a machine (e.g., server) including operating system and installed 
+  # software along with any configurations and can be run on another machine using 
+  # a hypervisor which virtualizes typical server (i.e., hardware) resources.
+  ##########################################################################
+  tosca.artifacts.Deployment.Image.VM:
+    derived_from: tosca.artifacts.Deployment.Image
+    description: Virtual Machine (VM) Image
+  
+  ##########################################################################
+  # This artifact type represents the parent type for all implementation 
+  # artifacts in TOSCA. These artifacts are used to implement operations of 
+  # TOSCA interfaces either directly (e.g., scripts) or indirectly (e.g., config. files).
+  ##########################################################################
+  tosca.artifacts.Implementation:
+    derived_from: tosca.artifacts.Root
+    description: TOSCA base type for implementation artifacts 
+
+  ##########################################################################
+  # This artifact type represents a Bash script type that contains Bash commands 
+  # that can be executed on the Unix Bash shell.  
+  ##########################################################################
+  tosca.artifacts.Implementation.Bash:
+    derived_from: tosca.artifacts.Implementation
+    description: Script artifact for the Unix Bash shell   
+    mime_type: application/x-sh
+    file_ext: [ sh ]  
+
+  ##########################################################################
+  # This artifact type represents a Python file that contains Python language 
+  # constructs that can be executed within a Python interpreter.   
+  ##########################################################################
+  tosca.artifacts.Implementation.Python:
+    derived_from: tosca.artifacts.Implementation
+    description: Artifact for the interpreted Python language
+    mime_type: application/x-python
+    file_ext: [ py ]   

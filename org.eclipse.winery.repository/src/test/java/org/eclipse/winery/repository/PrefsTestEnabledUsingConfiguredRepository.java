@@ -15,14 +15,14 @@ import java.io.IOException;
 
 /**
  * Initializes the preferences with the repository given in winery.preferences
- * 
+ *
  * FIXME: no test should use this one. Each test should configure the repository
  * by itself.
  */
 public class PrefsTestEnabledUsingConfiguredRepository extends PrefsTestEnabled {
-	
-	public PrefsTestEnabledUsingConfiguredRepository() throws IOException {
-		super(true);
-	}
-	
+
+    public PrefsTestEnabledUsingConfiguredRepository() throws IOException {
+        super(true);
+    }
+
 }

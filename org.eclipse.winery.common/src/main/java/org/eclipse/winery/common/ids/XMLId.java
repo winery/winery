@@ -15,18 +15,18 @@ import org.eclipse.winery.common.StringEncodedAndDecoded;
 
 /**
  * Handles an ID given in the XML
- * 
+ *
  * We need to have this class as IDs are also passed at URIs at requests. To
  * ease handling, we use StringEncodedAndDecoded
- * 
+ *
  * There is no check for valid XMLids (AKA allowed NCname characters). This is
  * OK as, for instance, properties make use of this fact and store the name as
  * ID
  */
 public class XMLId extends StringEncodedAndDecoded {
-	
-	public XMLId(String id, boolean URLencoded) {
-		super(id, URLencoded);
-	}
-	
+
+    public XMLId(String id, boolean URLencoded) {
+        super(id, URLencoded);
+    }
+
 }

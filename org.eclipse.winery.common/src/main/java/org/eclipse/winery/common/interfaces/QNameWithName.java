@@ -18,7 +18,7 @@ import javax.xml.namespace.QName;
  * format
  */
 public class QNameWithName {
-	
-	public QName qname;
-	public String name;
+
+    public QName qname;
+    public String name;
 }

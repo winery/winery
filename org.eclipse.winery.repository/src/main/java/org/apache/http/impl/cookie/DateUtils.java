@@ -32,10 +32,10 @@
 package org.apache.http.impl.cookie;
 
 /**
- * A utility class for parsing and formatting HTTP dates as used in cookies and 
- * other headers.  This class handles dates as defined by RFC 2616 section 
+ * A utility class for parsing and formatting HTTP dates as used in cookies and
+ * other headers.  This class handles dates as defined by RFC 2616 section
  * 3.3.1 as well as some other common non-standard formats.
- * 
+ *
  * @author Christopher Brown
  * @author Michael Becke
  *
@@ -54,14 +54,14 @@ public final class DateUtils {
     public static final String PATTERN_RFC1036 = "EEEE, dd-MMM-yy HH:mm:ss zzz";
 
     /**
-     * Date format pattern used to parse HTTP date headers in ANSI C 
+     * Date format pattern used to parse HTTP date headers in ANSI C
      * <code>asctime()</code> format.
      */
     public static final String PATTERN_ASCTIME = "EEE MMM d HH:mm:ss yyyy";
 
     public static final String[] DEFAULT_PATTERNS = new String[] {
-    	PATTERN_RFC1036,
-    	PATTERN_RFC1123,
+        PATTERN_RFC1036,
+        PATTERN_RFC1123,
         PATTERN_ASCTIME
     };
 

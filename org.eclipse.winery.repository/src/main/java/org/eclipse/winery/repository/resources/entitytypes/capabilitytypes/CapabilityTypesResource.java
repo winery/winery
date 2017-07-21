@@ -17,6 +17,6 @@ import org.eclipse.winery.repository.resources.AbstractComponentsResource;
  * Manages all capability types in all available namespaces <br />
  * The actual implementation is done in the AbstractComponentsResource
  */
-public class CapabilityTypesResource extends AbstractComponentsResource {
-	
+public class CapabilityTypesResource extends AbstractComponentsResource<CapabilityTypeResource> {
+
 }

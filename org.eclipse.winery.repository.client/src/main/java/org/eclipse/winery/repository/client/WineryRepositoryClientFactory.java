@@ -12,9 +12,9 @@
 package org.eclipse.winery.repository.client;
 
 public class WineryRepositoryClientFactory {
-	
-	public static IWineryRepositoryClient getWineryRepositoryClient() {
-		return new WineryRepositoryClient();
-	}
-	
+
+    public static IWineryRepositoryClient getWineryRepositoryClient() {
+        return new WineryRepositoryClient();
+    }
+
 }

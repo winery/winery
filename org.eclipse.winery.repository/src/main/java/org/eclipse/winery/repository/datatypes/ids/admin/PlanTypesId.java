@@ -15,12 +15,12 @@ import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
 public class PlanTypesId extends TypesId {
-	
-	private final static XMLId xmlId = new XMLId(IdNames.PLANTYPES, false);
-	
-	
-	public PlanTypesId() {
-		super(PlanTypesId.xmlId);
-	}
-	
+
+    private final static XMLId xmlId = new XMLId(IdNames.PLANTYPES, false);
+
+
+    public PlanTypesId() {
+        super(PlanTypesId.xmlId);
+    }
+
 }

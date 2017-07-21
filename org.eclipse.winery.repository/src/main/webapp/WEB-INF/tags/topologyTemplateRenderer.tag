@@ -17,19 +17,12 @@
 <%@tag import="java.lang.Math"%>
 <%@tag import="java.util.ArrayList"%>
 <%@tag import="java.util.Collection"%>
-<%@tag import="java.util.Map"%>
-<%@tag import="java.util.HashMap"%>
-<%@tag import="java.util.UUID"%>
-<%@tag import="javax.xml.namespace.QName"%>
 <%@tag import="org.eclipse.winery.common.ModelUtilities"%>
 <%@tag import="org.eclipse.winery.model.tosca.TEntityTemplate"%>
 <%@tag import="org.eclipse.winery.model.tosca.TNodeTemplate"%>
 <%@tag import="org.eclipse.winery.model.tosca.TNodeType"%>
 <%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceElement"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRelationshipTemplate.TargetElement"%>
 <%@tag import="org.eclipse.winery.model.tosca.TRelationshipType"%>
-<%@tag import="org.eclipse.winery.model.tosca.TTopologyTemplate"%>
 <%@tag import="org.eclipse.winery.repository.Utils"%>
 
 <%@attribute name="topology" required="true" description="the topology template to be rendered" type="org.eclipse.winery.model.tosca.TTopologyTemplate" %>
@@ -60,11 +53,11 @@
 <c:if test="${not empty additonalCSS}"><link rel="stylesheet" href="${additonalCSS}" /></c:if>
 
 <%
-	Collection<TRelationshipType> relationshipTypes = client.getAllTypes(TRelationshipType.class);
+    Collection<TRelationshipType> relationshipTypes = client.getAllTypes(TRelationshipType.class);
 
-	// quick hack
-	// better would be to collect all types used in the curren topoloy template
-	Collection<TNodeType> nodeTypes = client.getAllTypes(TNodeType.class);
+    // quick hack
+    // better would be to collect all types used in the curren topoloy template
+    Collection<TNodeType> nodeTypes = client.getAllTypes(TNodeType.class);
 %>
 
 <tmpl:CSSForTypes nodeTypes="<%=nodeTypes%>" relationshipTypes="<%=relationshipTypes%>"/>
@@ -79,28 +72,28 @@ jQuery.ajaxSetup({cache:true});
 
 //configuration for pnotify
 require(["jquery", "pnotify"], function() {
-	$.pnotify.defaults.styling = "bootstrap3";
+    $.pnotify.defaults.styling = "bootstrap3";
 });
 </script>
 
 <%
-	// used for the position of the NodeTemplates
-	int topCounter = 0;
+    // used for the position of the NodeTemplates
+    int topCounter = 0;
 %>
 <script>
 function doLayout() {
-	var editor = $("#editorArea");
-	var nodeTemplates = editor.find(".NodeTemplateShape");
-	require(["winery-sugiyamaLayouter"], function(layouter) {
-		layouter.layout(nodeTemplates);
-	});
+    var editor = $("#editorArea");
+    var nodeTemplates = editor.find(".NodeTemplateShape");
+    require(["winery-sugiyamaLayouter"], function(layouter) {
+        layouter.layout(nodeTemplates);
+    });
 }
 </script>
 <div class="topbar">
-	<div class="topbarbuttons">
-		<button class="btn btn-default" onclick="doLayout();">Layout</button>
-		<tmpl:toggleButtons />
-	</div>
+    <div class="topbarbuttons">
+        <button class="btn btn-default" onclick="doLayout();">Layout</button>
+        <tmpl:toggleButtons />
+    </div>
 </div>
 <%-- div #editorArea required for layouter --%>
 <div id="editorArea">
@@ -109,98 +102,98 @@ function doLayout() {
 <tmpl:defineCreateConnectorEndpointsFunction relationshipTypes="<%=relationshipTypes%>"/>
 
 <%
-	// can be used later to call a doLayout()
-	boolean somethingWithoutPosition = false;
+    // can be used later to call a doLayout()
+    boolean somethingWithoutPosition = false;
 
-	Collection<TRelationshipTemplate> relationshipTemplates = new ArrayList<TRelationshipTemplate>();
-	Collection<TNodeTemplate> nodeTemplates = new ArrayList<TNodeTemplate>();
+    Collection<TRelationshipTemplate> relationshipTemplates = new ArrayList<>();
+    Collection<TNodeTemplate> nodeTemplates = new ArrayList<>();
 
-	// the minimum x/y coordinates.
-	// used to move the content to the top left corner
-	int minTop = Integer.MAX_VALUE;
-	int minLeft = Integer.MAX_VALUE;
+    // the minimum x/y coordinates.
+    // used to move the content to the top left corner
+    int minTop = Integer.MAX_VALUE;
+    int minLeft = Integer.MAX_VALUE;
 
-	for (TEntityTemplate entity: topology.getNodeTemplateOrRelationshipTemplate()) {
-		if (entity instanceof TNodeTemplate) {
-			TNodeTemplate nodeTemplate = (TNodeTemplate) entity;
-			nodeTemplates.add(nodeTemplate);
+    for (TEntityTemplate entity: topology.getNodeTemplateOrRelationshipTemplate()) {
+        if (entity instanceof TNodeTemplate) {
+            TNodeTemplate nodeTemplate = (TNodeTemplate) entity;
+            nodeTemplates.add(nodeTemplate);
 
-			// determine minTop and minLeft
-			String top = ModelUtilities.getTop(nodeTemplate);
-			if (top != null) {
-				int intTop = Utils.convertStringToInt(top);
-				if (intTop != 0) {
-					minTop = Math.min(minTop, intTop);
-				}
-			}
+            // determine minTop and minLeft
+            String top = ModelUtilities.getTop(nodeTemplate);
+            if (top != null) {
+                int intTop = Utils.convertStringToInt(top);
+                if (intTop != 0) {
+                    minTop = Math.min(minTop, intTop);
+                }
+            }
 
-			String left = ModelUtilities.getLeft(nodeTemplate);
-			if (left != null) {
-				int intLeft = Utils.convertStringToInt(left);
-				if (intLeft != 0) {
-					minLeft = Math.min(minLeft, intLeft);
-				}
-			}
+            String left = ModelUtilities.getLeft(nodeTemplate);
+            if (left != null) {
+                int intLeft = Utils.convertStringToInt(left);
+                if (intLeft != 0) {
+                    minLeft = Math.min(minLeft, intLeft);
+                }
+            }
 
-		} else {
-			assert(entity instanceof TRelationshipTemplate);
-			relationshipTemplates.add((TRelationshipTemplate) entity);
-		}
-	}
+        } else {
+            assert(entity instanceof TRelationshipTemplate);
+            relationshipTemplates.add((TRelationshipTemplate) entity);
+        }
+    }
 
-	for (TNodeTemplate nodeTemplate: nodeTemplates) {
-		// assuming the topology can be displayed as a stack, else call doLayout() afterwards
-		topCounter = topCounter + 150;
+    for (TNodeTemplate nodeTemplate: nodeTemplates) {
+        // assuming the topology can be displayed as a stack, else call doLayout() afterwards
+        topCounter = topCounter + 150;
 
-		String left = ModelUtilities.getLeft(nodeTemplate);
-		if (left == null) {
-			left = "0";
-			somethingWithoutPosition = true;
-		} else {
-			// calulate offset
-			// we could hash the coordinate in the loop before
-			// but that would obfuscate the code and currently, we don't have speed issues here
-			left = Integer.toString(Utils.convertStringToInt(left) - minLeft);
-		}
-		String top = ModelUtilities.getTop(nodeTemplate);
-		if (top == null) {
-			top = Integer.toString(topCounter);
-			somethingWithoutPosition = true;
-		} else {
-			// calulate offset
-			top = Integer.toString(Utils.convertStringToInt(top) - minTop);
-		}
+        String left = ModelUtilities.getLeft(nodeTemplate);
+        if (left == null) {
+            left = "0";
+            somethingWithoutPosition = true;
+        } else {
+            // calulate offset
+            // we could hash the coordinate in the loop before
+            // but that would obfuscate the code and currently, we don't have speed issues here
+            left = Integer.toString(Utils.convertStringToInt(left) - minLeft);
+        }
+        String top = ModelUtilities.getTop(nodeTemplate);
+        if (top == null) {
+            top = Integer.toString(topCounter);
+            somethingWithoutPosition = true;
+        } else {
+            // calulate offset
+            top = Integer.toString(Utils.convertStringToInt(top) - minTop);
+        }
 %>
-		<nt:nodeTemplateRenderer top="<%=top%>" left="<%=left%>" nodeTemplate="<%=nodeTemplate%>" repositoryURL="${repositoryURL}" client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" topologyModelerURI="${w:topologyModelerURI()}/" />
+        <nt:nodeTemplateRenderer top="<%=top%>" left="<%=left%>" nodeTemplate="<%=nodeTemplate%>" repositoryURL="${repositoryURL}" client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" topologyModelerURI="${w:topologyModelerURI()}/" />
 <%
-	}
-	if (somethingWithoutPosition) {
-		autoLayoutOnLoad = true;
-	}
+    }
+    if (somethingWithoutPosition) {
+        autoLayoutOnLoad = true;
+    }
 %>
 
 <script>
 function onDoneRendering() {
-	<c:if test="${autoLayoutOnLoad}">
-	doLayout();
-	</c:if>
+    <c:if test="${autoLayoutOnLoad}">
+    doLayout();
+    </c:if>
 
-	// copied from index.jsp -> togglePrintView
+    // copied from index.jsp -> togglePrintView
 
-	// move labels 10 px up
-	// we have to do it here as jsPlumb currently paints the label on the line instead of above of it
-	// See https://groups.google.com/d/msg/jsplumb/zdyAdWcRta0/K6F2MrHBH1AJ
-	$(".relationshipTypeLabel").each(function(i, e) {
-		var pos = $(e).offset();
-		pos.top = pos.top - 10;
-		$(e).offset(pos);
-	});
+    // move labels 10 px up
+    // we have to do it here as jsPlumb currently paints the label on the line instead of above of it
+    // See https://groups.google.com/d/msg/jsplumb/zdyAdWcRta0/K6F2MrHBH1AJ
+    $(".relationshipTypeLabel").each(function(i, e) {
+        var pos = $(e).offset();
+        pos.top = pos.top - 10;
+        $(e).offset(pos);
+    });
 
-	// The user can pass an additional script to the topologyTemplateResource via the script query parameter
-	// In that script, he can define the function wineryViewExternalScriptOnLoad which is called here
-	if (typeof wineryViewExternalScriptOnLoad === "function") {
-		wineryViewExternalScriptOnLoad();
-	}
+    // The user can pass an additional script to the topologyTemplateResource via the script query parameter
+    // In that script, he can define the function wineryViewExternalScriptOnLoad which is called here
+    if (typeof wineryViewExternalScriptOnLoad === "function") {
+        wineryViewExternalScriptOnLoad();
+    }
 }
 </script>
 <tmpl:registerConnectionTypesAndConnectNodeTemplates repositoryURL="${repositoryURL}" relationshipTypes="<%=relationshipTypes%>" relationshipTemplates="<%=relationshipTemplates%>" ondone="onDoneRendering();" readOnly="true"/>

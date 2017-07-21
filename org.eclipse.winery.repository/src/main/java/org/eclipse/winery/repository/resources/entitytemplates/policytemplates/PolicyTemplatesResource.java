@@ -18,6 +18,6 @@ import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferen
  * The actual implementation is done in the
  * AbstractComponentsWithTypeReferenceResource
  */
-public class PolicyTemplatesResource extends AbstractComponentsWithTypeReferenceResource {
-	
+public class PolicyTemplatesResource extends AbstractComponentsWithTypeReferenceResource<PolicyTemplateResource> {
+
 }

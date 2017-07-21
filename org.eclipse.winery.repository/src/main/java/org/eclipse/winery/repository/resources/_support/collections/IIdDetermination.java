@@ -12,9 +12,9 @@
 package org.eclipse.winery.repository.resources._support.collections;
 
 public interface IIdDetermination<EntityT> {
-	
-	/**
-	 * @return the id of the given entity
-	 */
-	public String getId(EntityT e);
+
+    /**
+     * @return the id of the given entity
+     */
+    String getId(EntityT e);
 }

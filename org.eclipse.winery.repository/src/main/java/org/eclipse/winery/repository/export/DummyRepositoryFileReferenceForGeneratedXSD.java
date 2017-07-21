@@ -12,27 +12,28 @@
 package org.eclipse.winery.repository.export;
 
 import org.eclipse.winery.common.RepositoryFileReference;
+
 import org.w3c.dom.Document;
 
 /**
  * Class used to indicate reference to a generated XSD
  */
 public class DummyRepositoryFileReferenceForGeneratedXSD extends RepositoryFileReference {
-	
-	private final Document document;
-	
-	
-	/**
-	 * @param document the W3C DOM Document holding the generated XSD
-	 */
-	public DummyRepositoryFileReferenceForGeneratedXSD(Document document) {
-		// we have to create a unique filename in the case two different XSDs are exported
-		// document.hashCode should be unique enough for us
-		super(new DummyParentForGeneratedXSDRef(), Integer.toString(document.hashCode()));
-		this.document = document;
-	}
-	
-	public Document getDocument() {
-		return this.document;
-	}
+
+    private final Document document;
+
+
+    /**
+     * @param document the W3C DOM Document holding the generated XSD
+     */
+    public DummyRepositoryFileReferenceForGeneratedXSD(Document document) {
+        // we have to create a unique filename in the case two different XSDs are exported
+        // document.hashCode should be unique enough for us
+        super(new DummyParentForGeneratedXSDRef(), Integer.toString(document.hashCode()));
+        this.document = document;
+    }
+
+    public Document getDocument() {
+        return this.document;
+    }
 }

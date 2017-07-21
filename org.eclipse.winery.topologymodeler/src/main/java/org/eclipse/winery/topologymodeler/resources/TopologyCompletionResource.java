@@ -34,6 +34,9 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.JAXBHelper;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.RESTHelper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class contains resources used for the topology completion.
  *
@@ -41,96 +44,98 @@ import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.RESTHe
 @Path("/")
 public class TopologyCompletionResource {
 
-	/**
-	 * Adds selected {@link TNodeTemplate}s and {@link TRelationshipTemplate}s
-	 * to a topology.
-	 *
-	 * @param topology
-	 *            the {@link TTopologyTemplate} as XML string
-	 * @param allChoices
-	 *            all possible choices as XML
-	 * @param selectedNodeTemplates
-	 *            the selected {@link TNodeTemplate}s as JSON array
-	 * @param selectedRelationshipTemplates
-	 *            the selected {@link TRelationshipTemplate}s as JSON array
-	 * @return the enhanced {@link TTopologyTemplate}
-	 */
-	@Path("selectionhandler/")
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response handleSelection(
-			@QueryParam(value = "topology") String topology,
-			@QueryParam(value = "allChoices") String allChoices,
-			@QueryParam(value = "selectedNodeTemplates") String selectedNodeTemplates,
-			@QueryParam(value = "selectedRelationshipTemplates") String selectedRelationshipTemplates) {
-		return Response
-				.ok()
-				.entity(JAXBHelper.addTemplatesToTopology(topology, allChoices,
-						selectedNodeTemplates, selectedRelationshipTemplates))
-				.build();
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(TopologyCompletionResource.class);
 
-	/**
-	 * This resource is used to save a {@link TTopologyTemplate} to the repository.
-	 *
-	 * @param topology
-	 *            the topology to be saved
-	 * @param templateURL
-	 * 			  the URL the {@link TTopologyTemplate} of the topology template
-	 * @param repositoryURL
-	 * 			  the URL of the repository
-	 * @param topologyName
-	 * 			  the name of the saved {@link TTopologyTemplate}
-	 * @param topologyNamespace
-	 * 			  the namespace of the saved {@link TTopologyTemplate}
-	 * @param overwriteTopology
-	 * 			  whether the {@link TTopologyTemplate} should be overwritten or not
-	 *
-	 * @return whether the save operation has been successful or not
-	 */
-	@Path("topologysaver/")
-	@POST
-	public Response saveTopology(@FormParam("topology") String topology,
-			@FormParam(value = "templateURL") String templateURL,
-			@FormParam(value = "repositoryURL") String repositoryURL,
-			@FormParam(value = "topologyName") String topologyName,
-			@FormParam(value = "topologyNamespace") String topologyNamespace,
-			@FormParam(value = "overwriteTopology") String overwriteTopology) {
-		try {
+    /**
+     * Adds selected {@link TNodeTemplate}s and {@link TRelationshipTemplate}s
+     * to a topology.
+     *
+     * @param topology
+     *            the {@link TTopologyTemplate} as XML string
+     * @param allChoices
+     *            all possible choices as XML
+     * @param selectedNodeTemplates
+     *            the selected {@link TNodeTemplate}s as JSON array
+     * @param selectedRelationshipTemplates
+     *            the selected {@link TRelationshipTemplate}s as JSON array
+     * @return the enhanced {@link TTopologyTemplate}
+     */
+    @Path("selectionhandler/")
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response handleSelection(
+            @QueryParam(value = "topology") String topology,
+            @QueryParam(value = "allChoices") String allChoices,
+            @QueryParam(value = "selectedNodeTemplates") String selectedNodeTemplates,
+            @QueryParam(value = "selectedRelationshipTemplates") String selectedRelationshipTemplates) {
+        return Response
+                .ok()
+                .entity(JAXBHelper.addTemplatesToTopology(topology, allChoices,
+                        selectedNodeTemplates, selectedRelationshipTemplates))
+                .build();
+    }
 
-			boolean overwrite = Boolean.parseBoolean(overwriteTopology);
+    /**
+     * This resource is used to save a {@link TTopologyTemplate} to the repository.
+     *
+     * @param topology
+     *            the topology to be saved
+     * @param templateURL
+     *               the URL the {@link TTopologyTemplate} of the topology template
+     * @param repositoryURL
+     *               the URL of the repository
+     * @param topologyName
+     *               the name of the saved {@link TTopologyTemplate}
+     * @param topologyNamespace
+     *               the namespace of the saved {@link TTopologyTemplate}
+     * @param overwriteTopology
+     *               whether the {@link TTopologyTemplate} should be overwritten or not
+     *
+     * @return whether the save operation has been successful or not
+     */
+    @Path("topologysaver/")
+    @POST
+    public Response saveTopology(@FormParam("topology") String topology,
+            @FormParam(value = "templateURL") String templateURL,
+            @FormParam(value = "repositoryURL") String repositoryURL,
+            @FormParam(value = "topologyName") String topologyName,
+            @FormParam(value = "topologyNamespace") String topologyNamespace,
+            @FormParam(value = "overwriteTopology") String overwriteTopology) {
+        try {
 
-			// initiate JaxB context
-			JAXBContext context;
-			context = JAXBContext.newInstance(Definitions.class);
-			StringReader reader = new StringReader(topology);
+            boolean overwrite = Boolean.parseBoolean(overwriteTopology);
 
-			// unmarshall the topology XML string
-			Unmarshaller um;
+            // initiate JaxB context
+            JAXBContext context;
+            context = JAXBContext.newInstance(Definitions.class);
+            StringReader reader = new StringReader(topology);
 
-			um = context.createUnmarshaller();
+            // unmarshall the topology XML string
+            Unmarshaller um;
 
-			Definitions jaxBDefinitions = (Definitions) um.unmarshal(reader);
-			TServiceTemplate st = (TServiceTemplate) jaxBDefinitions
-					.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()
-					.get(0);
-			TTopologyTemplate toBeSaved = st.getTopologyTemplate();
+            um = context.createUnmarshaller();
 
-			// depending on the selected save method (overwrite or create new)
-			// the save method is called
-			if (overwrite) {
-				RESTHelper.saveCompleteTopology(toBeSaved, templateURL, true,
-						"", "", repositoryURL);
-			} else {
-				RESTHelper.saveCompleteTopology(toBeSaved, templateURL, false,
-						topologyName, topologyNamespace, repositoryURL);
-			}
+            Definitions jaxBDefinitions = (Definitions) um.unmarshal(reader);
+            TServiceTemplate st = (TServiceTemplate) jaxBDefinitions
+                    .getServiceTemplateOrNodeTypeOrNodeTypeImplementation()
+                    .get(0);
+            TTopologyTemplate toBeSaved = st.getTopologyTemplate();
 
-			return Response.ok().build();
+            // depending on the selected save method (overwrite or create new)
+            // the save method is called
+            if (overwrite) {
+                RESTHelper.saveCompleteTopology(toBeSaved, templateURL, true,
+                        "", "", repositoryURL);
+            } else {
+                RESTHelper.saveCompleteTopology(toBeSaved, templateURL, false,
+                        topologyName, topologyNamespace, repositoryURL);
+            }
 
-		} catch (JAXBException e) {
-			e.printStackTrace();
-			return Response.serverError().build();
-		}
-	}
+            return Response.ok().build();
+
+        } catch (JAXBException e) {
+            LOGGER.error("Could not save topology", e);
+            return Response.serverError().build();
+        }
+    }
 }

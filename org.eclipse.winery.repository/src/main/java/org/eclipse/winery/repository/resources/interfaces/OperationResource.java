@@ -22,50 +22,51 @@ import org.eclipse.winery.model.tosca.TOperation.OutputParameters;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperationResource extends EntityWithIdResource<TOperation> {
-	
-	private static final Logger logger = LoggerFactory.getLogger(OperationResource.class);
-	
-	
-	public OperationResource(IIdDetermination<TOperation> idDetermination, TOperation o, int idx, List<TOperation> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
-	
-	/**
-	 * @return TOperation object for the corresponding object of operationName
-	 *         in the operation list contained in the given interface. null if
-	 *         interface could not be found in list
-	 */
-	public static TOperation getTOperation(String operationName, TInterface iface) {
-		List<TOperation> operationList = iface.getOperation();
-		for (TOperation op : operationList) {
-			if (op.getName().equals(operationName)) {
-				return op;
-			}
-		}
-		return null;
-	}
-	
-	@Path("inputparameters/")
-	public ParametersResource getInputparameters() {
-		InputParameters inputParameters = this.o.getInputParameters();
-		if (inputParameters == null) {
-			inputParameters = new InputParameters();
-			this.o.setInputParameters(inputParameters);
-		}
-		return new ParametersResource(inputParameters.getInputParameter(), this.res);
-	}
-	
-	@Path("outputparameters/")
-	public ParametersResource getOutputparameters() {
-		OutputParameters outputParameters = this.o.getOutputParameters();
-		if (outputParameters == null) {
-			outputParameters = new OutputParameters();
-			this.o.setOutputParameters(outputParameters);
-		}
-		return new ParametersResource(outputParameters.getOutputParameter(), this.res);
-	}
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OperationResource.class);
+
+
+    public OperationResource(IIdDetermination<TOperation> idDetermination, TOperation o, int idx, List<TOperation> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
+
+    /**
+     * @return TOperation object for the corresponding object of operationName
+     *         in the operation list contained in the given interface. null if
+     *         interface could not be found in list
+     */
+    public static TOperation getTOperation(String operationName, TInterface iface) {
+        List<TOperation> operationList = iface.getOperation();
+        for (TOperation op : operationList) {
+            if (op.getName().equals(operationName)) {
+                return op;
+            }
+        }
+        return null;
+    }
+
+    @Path("inputparameters/")
+    public ParametersResource getInputparameters() {
+        InputParameters inputParameters = this.o.getInputParameters();
+        if (inputParameters == null) {
+            inputParameters = new InputParameters();
+            this.o.setInputParameters(inputParameters);
+        }
+        return new ParametersResource(inputParameters.getInputParameter(), this.res);
+    }
+
+    @Path("outputparameters/")
+    public ParametersResource getOutputparameters() {
+        OutputParameters outputParameters = this.o.getOutputParameters();
+        if (outputParameters == null) {
+            outputParameters = new OutputParameters();
+            this.o.setOutputParameters(outputParameters);
+        }
+        return new ParametersResource(outputParameters.getOutputParameter(), this.res);
+    }
 }

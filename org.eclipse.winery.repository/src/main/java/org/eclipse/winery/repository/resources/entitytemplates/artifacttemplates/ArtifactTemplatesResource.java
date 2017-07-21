@@ -17,6 +17,5 @@ import org.eclipse.winery.repository.resources.AbstractComponentsWithTypeReferen
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate>
  * as these templates are directly nested in a TDefinitionsElement
  */
-public class ArtifactTemplatesResource extends AbstractComponentsWithTypeReferenceResource {
-	
+public class ArtifactTemplatesResource extends AbstractComponentsWithTypeReferenceResource<ArtifactTemplateResource> {
 }

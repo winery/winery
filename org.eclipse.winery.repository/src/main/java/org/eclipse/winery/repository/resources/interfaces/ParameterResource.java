@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -27,36 +27,36 @@ import org.eclipse.winery.repository.resources._support.collections.IIdDetermina
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdResource;
 
 public class ParameterResource extends EntityWithIdResource<TParameter> {
-	
-	public ParameterResource(IIdDetermination<TParameter> idDetermination, TParameter o, int idx, List<TParameter> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
-	
-	@GET
-	@Path("type")
-	public String getType() {
-		return this.o.getType();
-	}
-	
-	@PUT
-	@Path("type")
-	public Response putType(@FormParam(value = "type") String type) {
-		this.o.setType(type);
-		return BackendUtils.persist(this.res);
-	}
-	
-	@GET
-	@Path("required")
-	public String getRequired() {
-		return this.o.getRequired().toString();
-	}
-	
-	@PUT
-	@Path("required")
-	public Response putRequired(@FormParam(value = "required") String required) {
-		TBoolean tb = TBoolean.valueOf(required);
-		this.o.setRequired(tb);
-		return BackendUtils.persist(this.res);
-	}
-	
+
+    public ParameterResource(IIdDetermination<TParameter> idDetermination, TParameter o, int idx, List<TParameter> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
+
+    @GET
+    @Path("type")
+    public String getType() {
+        return this.o.getType();
+    }
+
+    @PUT
+    @Path("type")
+    public Response putType(@FormParam(value = "type") String type) {
+        this.o.setType(type);
+        return BackendUtils.persist(this.res);
+    }
+
+    @GET
+    @Path("required")
+    public String getRequired() {
+        return this.o.getRequired().toString();
+    }
+
+    @PUT
+    @Path("required")
+    public Response putRequired(@FormParam(value = "required") String required) {
+        TBoolean tb = TBoolean.valueOf(required);
+        this.o.setRequired(tb);
+        return BackendUtils.persist(this.res);
+    }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,12 +8,10 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.relationshiptypes;
 
 import java.util.Collection;
-import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -38,147 +36,127 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.entitytypes.InstanceStatesResource;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.resources.interfaces.InterfacesResource;
+
+import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.jersey.api.view.Viewable;
-import com.theoryinpractise.halbuilder.api.Representation;
-
 public class RelationshipTypeResource extends TopologyGraphElementEntityTypeResource {
-	
-	private static final Logger logger = LoggerFactory.getLogger(RelationshipTypeResource.class);
-	
-	
-	public RelationshipTypeResource(RelationshipTypeId id) {
-		super(id);
-	}
-	
-	@Path("implementations/")
-	public ImplementationsOfOneRelationshipTypeResource getImplementations() {
-		return new ImplementationsOfOneRelationshipTypeResource((RelationshipTypeId) this.id);
-	}
-	
-	@Path("visualappearance/")
-	public VisualAppearanceResource getVisualAppearanceResource() {
-		return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), (RelationshipTypeId) this.id);
-	}
-	
-	@Path("instancestates/")
-	public InstanceStatesResource getInstanceStatesResource() {
-		TTopologyElementInstanceStates instanceStates = this.getRelationshipType().getInstanceStates();
-		if (instanceStates == null) {
-			// if an explicit (empty) list does not exist, create it
-			instanceStates = new TTopologyElementInstanceStates();
-			this.getRelationshipType().setInstanceStates(instanceStates);
-		}
-		return new InstanceStatesResource(this.getRelationshipType().getInstanceStates(), this);
-	}
-	
-	@Path("sourceinterfaces/")
-	public InterfacesResource getSourceInterfaces() {
-		SourceInterfaces interfaces = this.getRelationshipType().getSourceInterfaces();
-		if (interfaces == null) {
-			interfaces = new SourceInterfaces();
-			this.getRelationshipType().setSourceInterfaces(interfaces);
-		}
-		return new InterfacesResource("source", interfaces.getInterface(), this);
-	}
-	
-	@Path("targetinterfaces/")
-	public InterfacesResource getTargetInterfaces() {
-		TargetInterfaces interfaces = this.getRelationshipType().getTargetInterfaces();
-		if (interfaces == null) {
-			interfaces = new TargetInterfaces();
-			this.getRelationshipType().setTargetInterfaces(interfaces);
-		}
-		return new InterfacesResource("target", interfaces.getInterface(), this);
-	}
-	
-	@Path("validendings/")
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/entitytypes/relationshiptypes/validendings.jsp", this);
-		return Response.ok().entity(viewable).build();
-	}
-	
-	@Path("validsource")
-	@GET
-	public String getValidSource() {
-		ValidSource validSource;
-		if (((validSource = this.getRelationshipType().getValidSource()) == null) || (validSource.getTypeRef() == null)) {
-			return null;
-		}
-		return this.getRelationshipType().getValidSource().getTypeRef().toString();
-	}
-	
-	@Path("validsource")
-	@PUT
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response setValidSource(String typeRef) {
-		ValidSource vs = new ValidSource();
-		QName qname = QName.valueOf(typeRef);
-		vs.setTypeRef(qname);
-		this.getRelationshipType().setValidSource(vs);
-		return BackendUtils.persist(this);
-	}
-	
-	@Path("validtarget")
-	@GET
-	public String getValidTarget() {
-		ValidTarget validTarget;
-		if (((validTarget = this.getRelationshipType().getValidTarget()) == null) || (validTarget.getTypeRef() == null)) {
-			return null;
-		}
-		return this.getRelationshipType().getValidTarget().getTypeRef().toString();
-	}
-	
-	@Path("validtarget")
-	@PUT
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response setValidTarget(String typeRef) {
-		ValidTarget vt = new ValidTarget();
-		QName qname = QName.valueOf(typeRef);
-		vt.setTypeRef(qname);
-		this.getRelationshipType().setValidTarget(vt);
-		return BackendUtils.persist(this);
-	}
-	
-	/**
-	 * Required for validendings.jsp
-	 */
-	public Collection<NodeTypeId> getPossibleValidEndings() {
-		SortedSet<NodeTypeId> allNodeTypeIds = Repository.INSTANCE.getAllTOSCAComponentIds(NodeTypeId.class);
-		return allNodeTypeIds;
-	}
-	
-	/**
-	 * Convenience method to avoid casting at the caller's side.
-	 */
-	public TRelationshipType getRelationshipType() {
-		return (TRelationshipType) this.getElement();
-	}
-	
-	@Override
-	protected TExtensibleElements createNewElement() {
-		return new TRelationshipType();
-	}
-	
-	@Override
-	protected Representation fillHALRepresentation(Representation res) {
-		res = super.fillHALRepresentation(res);
-		//@formatter:off
 
-		res = res.withLink("implementations/", "implementations/")
-				.withLink("visualappearance/", "visualappearance/")
-				.withLink("instancestates/", "instancestates/")
-				.withLink("sourceinterfaces/", "sourceinterfaces/")
-				.withLink("targetinterfaces/", "targetinterfaces/")
-				.withLink("validendings/", "validendings/")
-				.withLink("validsource", "validsource")
-				.withLink("validtarget", "validtarget");
+    private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipTypeResource.class);
 
-		//@formatter:on
-		return res;
-	}
+
+    public RelationshipTypeResource(RelationshipTypeId id) {
+        super(id);
+    }
+
+    @Path("implementations/")
+    public ImplementationsOfOneRelationshipTypeResource getImplementations() {
+        return new ImplementationsOfOneRelationshipTypeResource((RelationshipTypeId) this.id);
+    }
+
+    @Path("visualappearance/")
+    public VisualAppearanceResource getVisualAppearanceResource() {
+        return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), (RelationshipTypeId) this.id);
+    }
+
+    @Path("instancestates/")
+    public InstanceStatesResource getInstanceStatesResource() {
+        TTopologyElementInstanceStates instanceStates = this.getRelationshipType().getInstanceStates();
+        if (instanceStates == null) {
+            // if an explicit (empty) list does not exist, create it
+            instanceStates = new TTopologyElementInstanceStates();
+            this.getRelationshipType().setInstanceStates(instanceStates);
+        }
+        return new InstanceStatesResource(this.getRelationshipType().getInstanceStates(), this);
+    }
+
+    @Path("sourceinterfaces/")
+    public InterfacesResource getSourceInterfaces() {
+        SourceInterfaces interfaces = this.getRelationshipType().getSourceInterfaces();
+        if (interfaces == null) {
+            interfaces = new SourceInterfaces();
+            this.getRelationshipType().setSourceInterfaces(interfaces);
+        }
+        return new InterfacesResource("source", interfaces.getInterface(), this);
+    }
+
+    @Path("targetinterfaces/")
+    public InterfacesResource getTargetInterfaces() {
+        TargetInterfaces interfaces = this.getRelationshipType().getTargetInterfaces();
+        if (interfaces == null) {
+            interfaces = new TargetInterfaces();
+            this.getRelationshipType().setTargetInterfaces(interfaces);
+        }
+        return new InterfacesResource("target", interfaces.getInterface(), this);
+    }
+
+    @Path("validendings/")
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response getHTML() {
+        Viewable viewable = new Viewable("/jsp/entitytypes/relationshiptypes/validendings.jsp", this);
+        return Response.ok().entity(viewable).build();
+    }
+
+    @Path("validsource")
+    @GET
+    public String getValidSource() {
+        ValidSource validSource;
+        if (((validSource = this.getRelationshipType().getValidSource()) == null) || (validSource.getTypeRef() == null)) {
+            return null;
+        }
+        return this.getRelationshipType().getValidSource().getTypeRef().toString();
+    }
+
+    @Path("validsource")
+    @PUT
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response setValidSource(String typeRef) {
+        ValidSource vs = new ValidSource();
+        QName qname = QName.valueOf(typeRef);
+        vs.setTypeRef(qname);
+        this.getRelationshipType().setValidSource(vs);
+        return BackendUtils.persist(this);
+    }
+
+    @Path("validtarget")
+    @GET
+    public String getValidTarget() {
+        ValidTarget validTarget;
+        if (((validTarget = this.getRelationshipType().getValidTarget()) == null) || (validTarget.getTypeRef() == null)) {
+            return null;
+        }
+        return this.getRelationshipType().getValidTarget().getTypeRef().toString();
+    }
+
+    @Path("validtarget")
+    @PUT
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response setValidTarget(String typeRef) {
+        ValidTarget vt = new ValidTarget();
+        QName qname = QName.valueOf(typeRef);
+        vt.setTypeRef(qname);
+        this.getRelationshipType().setValidTarget(vt);
+        return BackendUtils.persist(this);
+    }
+
+    /**
+     * Required for validendings.jsp
+     */
+    public Collection<NodeTypeId> getPossibleValidEndings() {
+        return Repository.INSTANCE.getAllTOSCAComponentIds(NodeTypeId.class);
+    }
+
+    /**
+     * Convenience method to avoid casting at the caller's side.
+     */
+    public TRelationshipType getRelationshipType() {
+        return (TRelationshipType) this.getElement();
+    }
+
+    @Override
+    protected TExtensibleElements createNewElement() {
+        return new TRelationshipType();
+    }
 }

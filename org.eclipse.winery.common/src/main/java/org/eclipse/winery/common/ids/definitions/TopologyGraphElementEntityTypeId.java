@@ -20,17 +20,17 @@ import org.eclipse.winery.common.ids.XMLId;
  * An instance of this class is either a NodeTypeId or a RelationShipTypeId
  */
 public abstract class TopologyGraphElementEntityTypeId extends EntityTypeId {
-	
-	public TopologyGraphElementEntityTypeId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
-	
-	public TopologyGraphElementEntityTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
-	
-	public TopologyGraphElementEntityTypeId(QName type) {
-		super(type);
-	}
-	
+
+    public TopologyGraphElementEntityTypeId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
+
+    public TopologyGraphElementEntityTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
+
+    public TopologyGraphElementEntityTypeId(QName type) {
+        super(type);
+    }
+
 }

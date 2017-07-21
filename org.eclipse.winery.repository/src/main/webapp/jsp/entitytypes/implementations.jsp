@@ -18,33 +18,33 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:addComponentInstance
-	label="${it.typeStr} Implementation"
-	URL="${pageContext.request.contextPath}/${it.type}implementations/"
-	onSuccess="implementationsTableInfo.table.fnAddData([$(\"#addComponentInstanceForm :input[name='namespace']\").val(), $(\"#addComponentInstanceForm :input[name='name']\").val()]);"
-	type="${it.typeId.QName}"
-	openinnewwindow="false"
-	/>
+    label="${it.typeStr} Implementation"
+    URL="${pageContext.request.contextPath}/${it.type}implementations/"
+    onSuccess="implementationsTableInfo.table.fnAddData([$(\"#addComponentInstanceForm :input[name='namespace']\").val(), $(\"#addComponentInstanceForm :input[name='name']\").val()]);"
+    type="${it.typeId.QName}"
+    openinnewwindow="false"
+    />
 
 <script>
 var implementationsTableInfo = {
-	id: '#implementationsTable'
+    id: '#implementationsTable'
 };
 
 require(["winery-support"], function(ws) {
-	ws.initTable(implementationsTableInfo, {
-		"aoColumns": [
-						{ "sTitle": "namespace" },
-						{ "sTitle": "name" }
-					],
-		"aaData" : ${it.implementationsTableData}
-	});
+    ws.initTable(implementationsTableInfo, {
+        "aoColumns": [
+                        { "sTitle": "namespace" },
+                        { "sTitle": "name" }
+                    ],
+        "aaData" : ${it.implementationsTableData}
+    });
 });
 
-	function openImplementationEditor() {
-		var namespace = implementationsTableInfo.table.fnGetData(implementationsTableInfo.selectedRow,0);
-		var id = implementationsTableInfo.table.fnGetData(implementationsTableInfo.selectedRow,1);
-		window.open("${pageContext.request.contextPath}/${it.type}implementations/" + encodeID(namespace) + "/" + encodeID(id), "_self");
-	}
+    function openImplementationEditor() {
+        var namespace = implementationsTableInfo.table.fnGetData(implementationsTableInfo.selectedRow,0);
+        var id = implementationsTableInfo.table.fnGetData(implementationsTableInfo.selectedRow,1);
+        window.open("${pageContext.request.contextPath}/${it.type}implementations/" + encodeID(namespace) + "/" + encodeID(id), "_self");
+    }
 
 </script>
 
@@ -53,11 +53,11 @@ This page shows implementations available for this type.
 Go to <a href="${pageContext.request.contextPath}/other/">Other Elements</a> to get an overview on all implementations stored in this repository.
 </p>
 
-	<div id="implementations">
+    <div id="implementations">
 
-		<button class="rightbutton btn btn-danger btn-xs" type="button" onclick="deleteOnServerAndInTable(implementationsTableInfo, '${it.typeStr} Implementation', '${pageContext.request.contextPath}/${it.type}implementations/', 1, 1, 0);">Remove</button>
-		<button class="rightbutton btn btn-primary btn-xs" type="button" onclick="openNewCIdiag();">Add</button>
-		<button class="rightbutton btn btn-default btn-xs" type="button" onclick="openImplementationEditor();">Edit</button>
+        <button class="rightbutton btn btn-danger btn-xs" type="button" onclick="deleteOnServerAndInTable(implementationsTableInfo, '${it.typeStr} Implementation', '${pageContext.request.contextPath}/${it.type}implementations/', 1, 1, 0);">Remove</button>
+        <button class="rightbutton btn btn-primary btn-xs" type="button" onclick="openNewCIdiag();">Add</button>
+        <button class="rightbutton btn btn-default btn-xs" type="button" onclick="openImplementationEditor();">Edit</button>
 
-		<table cellpadding="0" cellspacing="0" border="0" class="display" id="implementationsTable"></table>
-	</div>
+        <table cellpadding="0" cellspacing="0" border="0" class="display" id="implementationsTable"></table>
+    </div>

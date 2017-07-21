@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03"
+    xmlns:tns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
+    xmlns:si="http://siserver.org/wsdl">
+    <process name="tns:ManagementPlan">
+        <active>true</active>
+        <retired>false</retired>
+        <process-events generate="all" />
+        <provide partnerLink="clientPL">
+            <service name="tns:ManagementPlanService" port="ManagementPlanPort" />
+        </provide>
+         <provide partnerLink="serviceInvokerPL">
+            <service name="si:CallbackService" port="CallbackPort" />
+        </provide>    
+        <invoke partnerLink="clientPL">
+            <service name="tns:ManagementPlanClientService" port="ManagementPlanClientPort" />
+        </invoke>
+        <invoke partnerLink="serviceInvokerPL">
+            <service name="si:InvokerService" port="InvokePort" />
+        </invoke>
+    </process>
+</deploy>

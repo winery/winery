@@ -14,4 +14,4 @@
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags/entitytypes/nodetypes/reqandcapdefs" %>
 
-<t:reqandcapdefs allTypes="${it.allTypes}" allSubResources="${it.allEntityResources}" url="capabilitydefinitions/" labelForSingleItem="Capability Definition" typeClass="<%=org.eclipse.winery.model.tosca.TRequirementType.class%>"/>
+<t:reqandcapdefs allTypes="${it.allTypes}" allSubResources="${it.allEntityResources}" url="capabilitydefinitions/" labelForSingleItem="Capability Definition" typeClass="<%=org.eclipse.winery.model.tosca.TCapabilityType.class%>"/>

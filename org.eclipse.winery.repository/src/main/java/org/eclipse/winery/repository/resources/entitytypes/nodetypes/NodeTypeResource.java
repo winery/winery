@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,7 +8,6 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *     Nico Rusam and Alexander Stifel - HAL support
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.nodetypes;
 
@@ -26,97 +25,82 @@ import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementE
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.reqandcapdefs.CapabilityDefinitionsResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.reqandcapdefs.RequirementDefinitionsResource;
 import org.eclipse.winery.repository.resources.interfaces.InterfacesResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.theoryinpractise.halbuilder.api.Representation;
-
 public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
-	
-	private static final Logger logger = LoggerFactory.getLogger(NodeTypeResource.class);
-	
-	
-	public NodeTypeResource(NodeTypeId id) {
-		super(id);
-	}
-	
-	/**
-	 * Convenience method to avoid casting at the caller's side.
-	 */
-	public TNodeType getNodeType() {
-		return (TNodeType) this.getElement();
-	}
-	
-	/** sub-resources **/
-	
-	@Path("implementations/")
-	public ImplementationsOfOneNodeTypeResource getImplementations() {
-		return new ImplementationsOfOneNodeTypeResource((NodeTypeId) this.id);
-	}
-	
-	@Path("instancestates/")
-	public InstanceStatesResource getInstanceStatesResource() {
-		TTopologyElementInstanceStates instanceStates = this.getNodeType().getInstanceStates();
-		if (instanceStates == null) {
-			// if an explicit (empty) list does not exist, create it
-			instanceStates = new TTopologyElementInstanceStates();
-			this.getNodeType().setInstanceStates(instanceStates);
-		}
-		return new InstanceStatesResource(instanceStates, this);
-	}
-	
-	@Path("interfaces/")
-	public InterfacesResource getInterfaces() {
-		Interfaces interfaces = this.getNodeType().getInterfaces();
-		if (interfaces == null) {
-			interfaces = new Interfaces();
-			this.getNodeType().setInterfaces(interfaces);
-		}
-		return new InterfacesResource(null, interfaces.getInterface(), this);
-	}
-	
-	@Path("requirementdefinitions/")
-	public RequirementDefinitionsResource getRequirementDefinitions() {
-		RequirementDefinitions definitions = this.getNodeType().getRequirementDefinitions();
-		if (definitions == null) {
-			definitions = new RequirementDefinitions();
-			this.getNodeType().setRequirementDefinitions(definitions);
-		}
-		return new RequirementDefinitionsResource(this, definitions.getRequirementDefinition());
-	}
-	
-	@Path("capabilitydefinitions/")
-	public CapabilityDefinitionsResource getCapabilityDefinitions() {
-		CapabilityDefinitions definitions = this.getNodeType().getCapabilityDefinitions();
-		if (definitions == null) {
-			definitions = new CapabilityDefinitions();
-			this.getNodeType().setCapabilityDefinitions(definitions);
-		}
-		return new CapabilityDefinitionsResource(this, definitions.getCapabilityDefinition());
-	}
-	
-	@Path("visualappearance/")
-	public VisualAppearanceResource getVisualAppearanceResource() {
-		return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), (NodeTypeId) this.id);
-	}
-	
-	@Override
-	protected TExtensibleElements createNewElement() {
-		return new TNodeType();
-	}
-	
-	@Override
-	protected Representation fillHALRepresentation(Representation res) {
-		res = super.fillHALRepresentation(res);
-		//@formatter:off
 
-		res = res.withLink("implementations/", "implementations/")
-				.withLink("instancestates/", "instancestates/")
-				.withLink("interfaces/", "interfaces/")
-				.withLink("requirementdefinitions/", "requirementdefinitions/")
-				.withLink("capabilitydefinitions/", "capabilitydefinitions/")
-				.withLink("visualappearance/", "visualappearance/");
-		//@formatter:on
-		return res;
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeTypeResource.class);
+
+
+    public NodeTypeResource(NodeTypeId id) {
+        super(id);
+    }
+
+    /**
+     * Convenience method to avoid casting at the caller's side.
+     */
+    public TNodeType getNodeType() {
+        return (TNodeType) this.getElement();
+    }
+
+    /** sub-resources **/
+
+    @Path("implementations/")
+    public ImplementationsOfOneNodeTypeResource getImplementations() {
+        return new ImplementationsOfOneNodeTypeResource((NodeTypeId) this.id);
+    }
+
+    @Path("instancestates/")
+    public InstanceStatesResource getInstanceStatesResource() {
+        TTopologyElementInstanceStates instanceStates = this.getNodeType().getInstanceStates();
+        if (instanceStates == null) {
+            // if an explicit (empty) list does not exist, create it
+            instanceStates = new TTopologyElementInstanceStates();
+            this.getNodeType().setInstanceStates(instanceStates);
+        }
+        return new InstanceStatesResource(instanceStates, this);
+    }
+
+    @Path("interfaces/")
+    public InterfacesResource getInterfaces() {
+        Interfaces interfaces = this.getNodeType().getInterfaces();
+        if (interfaces == null) {
+            interfaces = new Interfaces();
+            this.getNodeType().setInterfaces(interfaces);
+        }
+        return new InterfacesResource(null, interfaces.getInterface(), this);
+    }
+
+    @Path("requirementdefinitions/")
+    public RequirementDefinitionsResource getRequirementDefinitions() {
+        RequirementDefinitions definitions = this.getNodeType().getRequirementDefinitions();
+        if (definitions == null) {
+            definitions = new RequirementDefinitions();
+            this.getNodeType().setRequirementDefinitions(definitions);
+        }
+        return new RequirementDefinitionsResource(this, definitions.getRequirementDefinition());
+    }
+
+    @Path("capabilitydefinitions/")
+    public CapabilityDefinitionsResource getCapabilityDefinitions() {
+        CapabilityDefinitions definitions = this.getNodeType().getCapabilityDefinitions();
+        if (definitions == null) {
+            definitions = new CapabilityDefinitions();
+            this.getNodeType().setCapabilityDefinitions(definitions);
+        }
+        return new CapabilityDefinitionsResource(this, definitions.getCapabilityDefinition());
+    }
+
+    @Path("visualappearance/")
+    public VisualAppearanceResource getVisualAppearanceResource() {
+        return new VisualAppearanceResource(this, this.getElement().getOtherAttributes(), (NodeTypeId) this.id);
+    }
+
+    @Override
+    protected TExtensibleElements createNewElement() {
+        return new TNodeType();
+    }
+
 }

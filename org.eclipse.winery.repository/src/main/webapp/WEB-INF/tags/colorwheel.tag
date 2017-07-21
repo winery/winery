@@ -19,18 +19,18 @@
 <%@attribute name="label" required="true" description="the label"%>
 
 <div id="${id}" class="form-group" style="height:175px;">
-	<label for="${id}Div">${label}</label>
-	<div id="${id}Div" style="width:100%">
-		<div class="colorwheel" style="float:left; margin-right:20px; width:300px; text-align:left;"></div>
-		<div style="float:left; width:50%">
-			<input id="${id}Input" name="input_example" value="${color}" size="7" style="background-color: ${color}">
-			<p class="text-info">Enter the hex value above</p>
-			<button type="button" class="btn btn-default btn-primary btn-sm" onclick="putColor('${url}', $('#${id}Input').val());">Save</button>
-		</div>
-	</div>
+    <label for="${id}Div">${label}</label>
+    <div id="${id}Div" style="width:100%">
+        <div class="colorwheel" style="float:left; margin-right:20px; width:300px; text-align:left;"></div>
+        <div style="float:left; width:50%">
+            <input id="${id}Input" name="input_example" value="${color}" size="7" style="background-color: ${color}">
+            <p class="text-info">Enter the hex value above</p>
+            <button type="button" class="btn btn-default btn-primary btn-sm" onclick="putColor('${url}', $('#${id}Input').val());">Save</button>
+        </div>
+    </div>
 </div>
 
 <script>
-	var cw = Raphael.colorwheel($("#${id} div.colorwheel")[0],150);
-	cw.input($("#${id} input")[0]);
+    var cw = Raphael.colorwheel($("#${id} div.colorwheel")[0],150);
+    cw.input($("#${id} input")[0]);
 </script>

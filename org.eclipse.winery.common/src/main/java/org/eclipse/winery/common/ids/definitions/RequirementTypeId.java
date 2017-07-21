@@ -17,16 +17,16 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 
 public final class RequirementTypeId extends EntityTypeId {
-	
-	public RequirementTypeId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
-	
-	public RequirementTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
-	
-	public RequirementTypeId(QName qname) {
-		super(qname);
-	}
+
+    public RequirementTypeId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
+
+    public RequirementTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
+
+    public RequirementTypeId(QName qname) {
+        super(qname);
+    }
 }

@@ -22,7 +22,7 @@
 <br/>
 <input type="radio" name="SourceKind">Requirement Type:</input>
 <select>
-	<option>Not yet implemented. Please edit in the XML view</option>
+    <option>Not yet implemented. Please edit in the XML view</option>
 </select>
 
 
@@ -35,5 +35,5 @@
 <br/>
 <input type="radio" name="TargetKind">Capability Type:</input>
 <select>
-	<option>Not yet implemented. Please edit in the XML view</option>
+    <option>Not yet implemented. Please edit in the XML view</option>
 </select>

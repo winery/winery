@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -32,52 +31,55 @@ import org.eclipse.winery.repository.backend.Repository;
 
 import com.sun.jersey.api.NotFoundException;
 import com.sun.jersey.api.view.Viewable;
+import org.apache.commons.lang3.StringUtils;
 
 public class RequiredCapabilityTypeResource {
-	
-	private RequirementTypeResource requirementTypeResource;
-	
-	
-	public RequiredCapabilityTypeResource(RequirementTypeResource requirementTypeResource) {
-		this.requirementTypeResource = requirementTypeResource;
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/requirementtypes/requiredcapabilitytype.jsp", this);
-	}
-	
-	public TRequirementType getRequirementType() {
-		return this.requirementTypeResource.getRequirementType();
-	}
-	
-	@PUT
-	@Consumes(MediaType.TEXT_PLAIN)
-	public Response putRequiredCapabilityType(String type) {
-		if (StringUtils.isEmpty(type)) {
-			return Response.status(Status.BAD_REQUEST).entity("type must not be empty").build();
-		}
-		QName qname = QName.valueOf(type);
-		CapabilityTypeId id = new CapabilityTypeId(qname);
-		if (Repository.INSTANCE.exists(id)) {
-			// everything allright. Store new reference
-			this.getRequirementType().setRequiredCapabilityType(qname);
-			return BackendUtils.persist(this.requirementTypeResource);
-		} else {
-			throw new NotFoundException("Given QName could not be resolved to an existing capability type");
-		}
-	}
-	
-	@DELETE
-	public Response deleteRequiredCapabilityType() {
-		this.getRequirementType().setRequiredCapabilityType(null);
-		return BackendUtils.persist(this.requirementTypeResource);
-	}
-	
-	/** required for jsp **/
-	public Collection<QName> getAllCapabilityTypes() {
-		SortedSet<CapabilityTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(CapabilityTypeId.class);
-		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
-	}
+
+    private RequirementTypeResource requirementTypeResource;
+
+
+    public RequiredCapabilityTypeResource(RequirementTypeResource requirementTypeResource) {
+        this.requirementTypeResource = requirementTypeResource;
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getHTML() {
+        return new Viewable("/jsp/entitytypes/requirementtypes/requiredcapabilitytype.jsp", this);
+    }
+
+    public TRequirementType getRequirementType() {
+        return this.requirementTypeResource.getRequirementType();
+    }
+
+    @PUT
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response putRequiredCapabilityType(String type) {
+        if (StringUtils.isEmpty(type)) {
+            return Response.status(Status.BAD_REQUEST).entity("type must not be empty").build();
+        }
+        QName qname = QName.valueOf(type);
+        CapabilityTypeId id = new CapabilityTypeId(qname);
+        if (Repository.INSTANCE.exists(id)) {
+            // everything allright. Store new reference
+            this.getRequirementType().setRequiredCapabilityType(qname);
+            return BackendUtils.persist(this.requirementTypeResource);
+        } else {
+            throw new NotFoundException("Given QName could not be resolved to an existing capability type");
+        }
+    }
+
+    @DELETE
+    public Response deleteRequiredCapabilityType() {
+        this.getRequirementType().setRequiredCapabilityType(null);
+        return BackendUtils.persist(this.requirementTypeResource);
+    }
+
+    /**
+     * required for jsp
+     **/
+    public Collection<QName> getAllCapabilityTypes() {
+        SortedSet<CapabilityTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(CapabilityTypeId.class);
+        return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
+    }
 }

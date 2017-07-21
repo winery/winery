@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -28,43 +28,47 @@ import com.sun.jersey.api.view.Viewable;
  * specifies the methods required by implementations.jsp
  */
 public abstract class ImplementationsOfOneType {
-	
-	private final TopologyGraphElementEntityTypeId typeId;
-	
-	
-	public ImplementationsOfOneType(TopologyGraphElementEntityTypeId typeId) {
-		this.typeId = typeId;
-	}
-	
-	public TopologyGraphElementEntityTypeId getTypeId() {
-		return this.typeId;
-	}
-	
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/entitytypes/implementations.jsp", this);
-		return Response.ok().entity(viewable).build();
-	}
-	
-	public Collection<Namespace> getNamespaceAutocompletionList() {
-		return NamespacesResource.getNamespaces();
-	}
-	
-	/**
-	 * @return a list of type implementations implementing the associated node
-	 *         type
-	 */
-	public abstract String getImplementationsTableData();
-	
-	/**
-	 * The string used as URL part
-	 */
-	public abstract String getType();
-	
-	/**
-	 * The string displayed to the user
-	 */
-	public abstract String getTypeStr();
-	
+
+    private final TopologyGraphElementEntityTypeId typeId;
+
+
+    public ImplementationsOfOneType(TopologyGraphElementEntityTypeId typeId) {
+        this.typeId = typeId;
+    }
+
+    public TopologyGraphElementEntityTypeId getTypeId() {
+        return this.typeId;
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response getHTML() {
+        Viewable viewable = new Viewable("/jsp/entitytypes/implementations.jsp", this);
+        return Response.ok().entity(viewable).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public abstract Response getJSON();
+
+    public Collection<Namespace> getNamespaceAutocompletionList() {
+        return NamespacesResource.getNamespaces();
+    }
+
+    /**
+     * @return a list of type implementations implementing the associated node
+     *         type
+     */
+    public abstract String getImplementationsTableData();
+
+    /**
+     * The string used as URL part
+     */
+    public abstract String getType();
+
+    /**
+     * The string displayed to the user
+     */
+    public abstract String getTypeStr();
+
 }

@@ -37,44 +37,44 @@ Palette
 </div>
 
 <%
-	Collection<TNodeType> allNodeTypes = client.getAllTypes(TNodeType.class);
-	if (allNodeTypes.isEmpty()) {
+    Collection<TNodeType> allNodeTypes = client.getAllTypes(TNodeType.class);
+    if (allNodeTypes.isEmpty()) {
 %>
-		<script>
-			vShowError("No node types exist. Please add node types in the repository.");
-		</script>
-	<%
-	}
-	for (TNodeType nodeType: allNodeTypes) {
-		if (nodeType.getName() == null) {
-			System.err.println("Invalid nodetype in ns " + nodeType.getTargetNamespace());
-			continue;
-		}
+        <script>
+            vShowError("No node types exist. Please add node types in the repository.");
+        </script>
+    <%
+    }
+    for (TNodeType nodeType: allNodeTypes) {
+        if (nodeType.getName() == null) {
+            System.err.println("Invalid nodetype in ns " + nodeType.getTargetNamespace());
+            continue;
+        }
 %>
-		<div class="paletteEntry">
-			<div class="iconContainer">
-				<img class="icon" onerror="var that=this; require(['winery-common-topologyrendering'], function(wct){wct.imageError(that);});" src="<%= repositoryURL %>/nodetypes/<%= Util.DoubleURLencode(nodeType.getTargetNamespace()) %>/<%=Util.DoubleURLencode(nodeType.getName())%>/visualappearance/50x50" />
-			</div>
-			<div class="typeContainer">
-				<div class="typeContainerMiddle">
-					<div class="typeContainerInner">
-					<%= nodeType.getName() %>
-					</div>
-				</div>
-			</div>
+        <div class="paletteEntry">
+            <div class="iconContainer">
+                <img class="icon" onerror="var that=this; require(['winery-common-topologyrendering'], function(wct){wct.imageError(that);});" src="<%= repositoryURL %>/nodetypes/<%= Util.DoubleURLencode(nodeType.getTargetNamespace()) %>/<%=Util.DoubleURLencode(nodeType.getName())%>/visualappearance/50x50" />
+            </div>
+            <div class="typeContainer">
+                <div class="typeContainerMiddle">
+                    <div class="typeContainerInner">
+                    <%= nodeType.getName() %>
+                    </div>
+                </div>
+            </div>
 
-			<div class="hidden">
-				<nt:nodeTemplateRenderer
-					repositoryURL="${repositoryURL}"
-					client="${client}"
-					relationshipTypes="${relationshipTypes}"
-					nodeTypeQName="<%=new QName(nodeType.getTargetNamespace(), nodeType.getName())%>"
-					nodeType="<%=nodeType%>" />
-			</div>
-		</div>
+            <div class="hidden">
+                <nt:nodeTemplateRenderer
+                    repositoryURL="${repositoryURL}"
+                    client="${client}"
+                    relationshipTypes="${relationshipTypes}"
+                    nodeTypeQName="<%=new QName(nodeType.getTargetNamespace(), nodeType.getName())%>"
+                    nodeType="<%=nodeType%>" />
+            </div>
+        </div>
 
 <%
-	}
+    }
 %>
 
 </div>
@@ -82,124 +82,124 @@ Palette
 
 <script>
 
-	//$("#palette").css("width","20px");
-	//$("div.paletteEntry").hide();
+    //$("#palette").css("width","20px");
+    //$("div.paletteEntry").hide();
 
-	$("#palette").click (function() {
-		showPalette();
-		winery.events.fire(winery.events.name.command.UNSELECT_ALL_NODETEMPLATES);
-	});
+    $("#palette").click (function() {
+        showPalette();
+        winery.events.fire(winery.events.name.command.UNSELECT_ALL_NODETEMPLATES);
+    });
 
-	function showPalette() {
-		// reset width to original CSS width
-		$("#palette").removeClass("shrunk");
-		// show all palette entries
-		$("div.paletteEntry").show();
-		$("#paletteLabel").hide();
-	}
+    function showPalette() {
+        // reset width to original CSS width
+        $("#palette").removeClass("shrunk");
+        // show all palette entries
+        $("div.paletteEntry").show();
+        $("#paletteLabel").hide();
+    }
 
-	function hidePalette() {
-		$("#palette").addClass("shrunk");
-		// hide all palette entries
-		$("div.paletteEntry").hide();
-		$("#paletteLabel").show();
-	}
+    function hidePalette() {
+        $("#palette").addClass("shrunk");
+        // hide all palette entries
+        $("div.paletteEntry").hide();
+        $("#paletteLabel").show();
+    }
 
-	$(function() {
-		$( "div.paletteEntry" ).draggable({
-			cursor: "move",
-			cursorAt: { top: 40, left: 112 },
-			helper: function( event ) {
-				var newObj = $(this).find("div.NodeTemplateShape").clone();
-				newObj.removeClass("hidden");
-				newObj.css("z-index", "2000");
-				newObj.find ("div.endpointContainer").remove();
+    $(function() {
+        $( "div.paletteEntry" ).draggable({
+            cursor: "move",
+            cursorAt: { top: 40, left: 112 },
+            helper: function( event ) {
+                var newObj = $(this).find("div.NodeTemplateShape").clone();
+                newObj.removeClass("hidden");
+                newObj.css("z-index", "2000");
+                newObj.find ("div.endpointContainer").remove();
 
-				// Ensure that obj is appended to drawingarea and not to palette
-				// Consequence: the dragged object is always under the cursor and not paintet with an offset equal to the scrollheight
-				$("#drawingarea").append(newObj);
+                // Ensure that obj is appended to drawingarea and not to palette
+                // Consequence: the dragged object is always under the cursor and not paintet with an offset equal to the scrollheight
+                $("#drawingarea").append(newObj);
 
-				return newObj;
-			},
-			start: function( event, ui ) {
-				winery.events.fire(winery.events.name.command.UNSELECT_ALL_NODETEMPLATES);
-				// The palette is kept visible after a drag start,
-				// therefore no action
-				// hidePalette();
-			},
-			appendTo: '#drawingarea'
-		});
+                return newObj;
+            },
+            start: function( event, ui ) {
+                winery.events.fire(winery.events.name.command.UNSELECT_ALL_NODETEMPLATES);
+                // The palette is kept visible after a drag start,
+                // therefore no action
+                // hidePalette();
+            },
+            appendTo: '#drawingarea'
+        });
 
 
-	$( "div#drawingarea" ).droppable({
-		accept: function(d) {
-			if (d.hasClass("paletteEntry")) {
-				return true;
-			}
-		},
-		drop: function( event, ui ) {
+    $( "div#drawingarea" ).droppable({
+        accept: function(d) {
+            if (d.hasClass("paletteEntry")) {
+                return true;
+            }
+        },
+        drop: function( event, ui ) {
 
-			var palEntry = ui.draggable;
-			var templateCode = palEntry.find("div.NodeTemplateShape").clone().wrap("<div></div>").parent().html();
+            var palEntry = ui.draggable;
+            var templateCode = palEntry.find("div.NodeTemplateShape").clone().wrap("<div></div>").parent().html();
 
-			var newObj = $(templateCode);
+            var newObj = $(templateCode);
 
-			newObj.removeClass("ui-draggable");
-			newObj.removeClass("ui-droppable");
-			newObj.removeClass("hidden");
+            newObj.removeClass("ui-draggable");
+            newObj.removeClass("ui-droppable");
+            newObj.removeClass("hidden");
 
-			// generate and set id
-			var type = newObj.find("div.type.nodetemplate").text();
-			var id = type;
-			// we cannot use the id as the initial name, because we want to preserve special characters in the name, but not in the id.
-			var name = type;
+            // generate and set id
+            var type = newObj.find("div.type.nodetemplate").text();
+            var id = type;
+            // we cannot use the id as the initial name, because we want to preserve special characters in the name, but not in the id.
+            var name = type;
 
-			// quick hack to make id valid
-			// currently, only spaces and dots cause problems
-			id = id.replace(" ", "_");
-			id = id.replace(".", "_");
+            // quick hack to make id valid
+            // currently, only spaces and dots cause problems
+            id = id.replace(" ", "_");
+            id = id.replace(".", "_");
 
-			if ($("#" + id).length != 0) {
-				var count = 2;
-				var idprefix = id + "_";
-				do {
-					id = idprefix + count;
-					count++;
-				} while ($("#" + id).length != 0);
-				// also adjust name
-				name = name + "_" + count;
-			}
-			newObj.attr("id", id);
-			newObj.children("div.headerContainer").children("div.id").text(id);
+            if ($("#" + id).length != 0) {
+                var count = 2;
+                var idprefix = id + "_";
+                do {
+                    id = idprefix + count;
+                    count++;
+                } while ($("#" + id).length != 0);
+                // also adjust name
+                name = name + "_" + count;
+            }
+            newObj.attr("id", id);
+            newObj.children("div.headerContainer").children("div.id").text(id);
 
-			// initial name has been generated based on the id
-			newObj.children("div.headerContainer").children("div.name").text(name);
+            // initial name has been generated based on the id
+            newObj.children("div.headerContainer").children("div.name").text(name);
 
-			// fix main.css -> #editorArea -> margin-top: 45px;
-			var top = Math.max(event.pageY-45, 0);
+            // fix main.css -> #editorArea -> margin-top: 45px;
+            var top = Math.max(event.pageY-45, 0);
 
-			// drag cursor is at 112/40
-			// fix that
-			top = Math.max(top-40, 0);
-			var left = Math.max(event.pageX-112, 0);
+            // drag cursor is at 112/40
+            // fix that
+            top = Math.max(top-40, 0);
+            var left = Math.max(event.pageX-112, 0);
 
-			newObj.css("top", top);
-			newObj.css("left", left);
+            newObj.css("top", top);
+            newObj.css("left", left);
 
-			newObj.addClass("selected");
+            newObj.addClass("selected");
 
-			// insert into sheet
-			newObj.appendTo( $( "div#drawingarea" ) );
+            // insert into sheet
+            newObj.appendTo( $( "div#drawingarea" ) );
 
-			// initialization works only for displayed objects
-			require(["winery-common-topologyrendering"], function(wct) {
-				wct.initNodeTemplate(newObj, true);
+            // initialization works only for displayed objects
+            require(["winery-common-topologyrendering"], function(wct) {
+                wct.initNodeTemplate(newObj, true);
 
-				// handle menus
-				winery.events.fire(winery.events.name.SELECTION_CHANGED);
-			});
-		}
-	})
+                // handle menus
+                winery.events.fire(winery.events.name.SELECTION_CHANGED);
+            });
+        }
+    })
 
 
 });

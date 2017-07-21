@@ -1,0 +1,117 @@
+{
+  "documentation": [
+
+  ],
+  "any": [
+
+  ],
+  "otherAttributes": {
+
+  },
+  "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+    {
+      "documentation": [
+
+      ],
+      "any": [
+        {
+          "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+          "elementName": "BaobabProperties",
+          "propertyDefinitionKVList": [
+            {
+              "key": "Antioxidants",
+              "type": "xsd:string"
+            },
+            {
+              "key": "VitaminC",
+              "type": "xsd:decimal"
+            },
+            {
+              "key": "Potassium",
+              "type": "xsd:float"
+            },
+            {
+              "key": "Superfood",
+              "type": "xsd:boolean"
+            },
+            {
+              "key": "HarvestedAt",
+              "type": "xsd:anyURI"
+            }
+          ],
+          "isDerivedFromXSD": null
+        }
+      ],
+      "otherAttributes": {
+        "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}bordercolor": "#89ee01"
+      },
+      "propertiesDefinition": {
+        "element": null,
+        "type": "{http://winery.opentosca.org/test/nodetypes/fruits}BaobabProperties"
+      },
+      "name": "baobab",
+      "targetNamespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+      "capabilityDefinitions": {
+        "capabilityDefinition": [
+          {
+            "documentation": [
+
+            ],
+            "any": [
+
+            ],
+            "otherAttributes": {
+
+            },
+            "constraints": {
+              "constraint": [
+                {
+                  "any": null,
+                  "constraintType": "http://winery.opentosca.org/test/constrainttypes/fruits/healthy"
+                }
+              ]
+            },
+            "name": "ImportConstraintsHealthy",
+            "capabilityType": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Healthy",
+            "lowerBound": 1,
+            "upperBound": "1"
+          }
+        ]
+      },
+      "final": "NO",
+      "abstract": "NO"
+    }
+  ],
+  "id": "winery-defs-for_ns0-baobab",
+  "targetNamespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+  "import": [
+    {
+      "documentation": [
+
+      ],
+      "any": [
+
+      ],
+      "otherAttributes": {
+
+      },
+      "namespace": "http://winery.opentosca.org/test/capabilitytypes/fruits",
+      "location": "ns0__Healthy.tosca",
+      "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+    },
+    {
+      "documentation": [
+
+      ],
+      "any": [
+
+      ],
+      "otherAttributes": {
+        "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}wpd": "true"
+      },
+      "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+      "location": "../nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/propertiesdefinition/BaobabProperties.xsd",
+      "importType": "http://www.w3.org/2001/XMLSchema"
+    }
+  ]
+}

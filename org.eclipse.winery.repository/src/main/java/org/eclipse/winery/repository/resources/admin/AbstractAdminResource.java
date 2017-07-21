@@ -14,30 +14,33 @@ package org.eclipse.winery.repository.resources.admin;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.configuration.Configuration;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
 
+import org.apache.commons.configuration.Configuration;
+
 /**
  * Instance of one admin resource
+ *
+ * Offers a configuration object to store data
  */
 public abstract class AbstractAdminResource {
-	
-	protected final AdminId id;
-	protected Configuration configuration;
-	
-	
-	/**
-	 * @param id the id of the element rendered by this resource
-	 */
-	public AbstractAdminResource(AdminId id) {
-		this.id = id;
-		this.configuration = Repository.INSTANCE.getConfiguration(id);
-	}
-	
-	@DELETE
-	public Response onDelete() {
-		return BackendUtils.delete(this.id);
-	}
+
+    protected final Configuration configuration;
+
+    private final AdminId id;
+
+    /**
+     * @param id the id of the element rendered by this resource
+     */
+    protected AbstractAdminResource(AdminId id) {
+        this.id = id;
+        this.configuration = Repository.INSTANCE.getConfiguration(id);
+    }
+
+    @DELETE
+    public Response onDelete() {
+        return BackendUtils.delete(this.id);
+    }
 }

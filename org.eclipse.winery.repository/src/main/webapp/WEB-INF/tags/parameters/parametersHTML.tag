@@ -19,20 +19,20 @@
 <%@attribute name="baseURL" required="true" description="JavaScript expression for determining the baseURL"%>
 
 <div class="row">
-	<div class="row listheading">
-		<button class="rightbutton btn btn-danger btn-xs" type="button" onclick="delete${inOrOut}putParameter(${baseURL});" id="remove${inOrOut}ParBtn">Remove</button>
-		<button class="rightbutton btn btn-primary btn-xs" type="button" onclick="create${inOrOut}putParameter(${baseURL});" id="add${inOrOut}ParBtn">Add</button>
-		<label>${label}</label>
-	</div>
-	<table class="row" id="${tableId}">
-		<thead>
-			<tr>
-			<th>Name</th>
-			<th>Type</th>
-			<th>Required</th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
+    <div class="row listheading">
+        <button class="rightbutton btn btn-danger btn-xs" type="button" onclick="delete${inOrOut}putParameter(${baseURL});" id="remove${inOrOut}ParBtn">Remove</button>
+        <button class="rightbutton btn btn-primary btn-xs" type="button" onclick="create${inOrOut}putParameter(${baseURL});" id="add${inOrOut}ParBtn">Add</button>
+        <label>${label}</label>
+    </div>
+    <table class="row" id="${tableId}">
+        <thead>
+            <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Required</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
