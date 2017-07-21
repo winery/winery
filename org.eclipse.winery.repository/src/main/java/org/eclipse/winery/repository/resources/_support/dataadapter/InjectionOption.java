@@ -18,21 +18,21 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.eclipse.winery.common.constants.Namespaces;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 public class InjectionOption {
-	@XmlElement(name = "hostedNodeID")
-	protected String hostedNodeID;
+	@XmlElement(name = "NodeID")
+	protected String nodeID;
 
-	@XmlElementWrapper (name = "hostOptions")
-	@XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "NodeTemplate")
-	protected List<TNodeTemplate> hostNodeTemplateOptions;
+	@XmlElementWrapper (name = "InjectionOptions")
+	@XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
+	protected List<TTopologyTemplate> injectionOptions;
 
 	public InjectionOption() {
 	}
 
-	public InjectionOption(String hostedNodeID, List<TNodeTemplate> hostNodeTemplateOptions) {
-		this.hostedNodeID = hostedNodeID;
-		this.hostNodeTemplateOptions = hostNodeTemplateOptions;
+	public InjectionOption(String nodeID, List<TTopologyTemplate> injectionOptions) {
+		this.nodeID = nodeID;
+		this.injectionOptions = injectionOptions;
 	}
 }

@@ -14,7 +14,7 @@
  *    Niko Stadelmaier - removal of select2 library
  *    Philipp Meyer - removal of select2 library
  *    Lukas Balzer, Nicole Keppler - switch to bootstrap-touchspin
- *    Karoline Saatkamp - maintenance
+ *    Karoline Saatkamp - add matching and maintenance
  *******************************************************************************/
 --%>
 
@@ -447,6 +447,8 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 
 		<button class="btn btn-default" onclick="winery.events.fire(winery.events.name.command.SPLIT);" id="splitBtn" data-loading-text="Splitting...">Split</button>
 
+		<button class="btn btn-default" onclick="winery.events.fire(winery.events.name.command.MATCH);" id="matchBtn" data-loading-text="Matching...">Match</button>
+
 		<button class="btn btn-default topbutton" onclick="winery.events.fire(winery.events.name.command.IMPORT_TOPOLOGY);" id="importBtn">Import Topology</button>
 
 		<div class="btn-group">
@@ -650,6 +652,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 		winery.events.register(winery.events.name.command.IMPORT_TOPOLOGY, wt.openChooseTopologyToImportDiag);
 		winery.events.register(winery.events.name.command.SAVE, wt.save);
 		winery.events.register(winery.events.name.command.SPLIT, wt.split);
+		winery.events.register(winery.events.name.command.MATCH, wt.match);
 		wt.setTopologyTemplateURL("<%=topologyTemplateURL%>");
 	});
 </script>

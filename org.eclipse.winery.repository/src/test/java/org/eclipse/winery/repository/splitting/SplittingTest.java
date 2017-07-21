@@ -292,7 +292,7 @@ public class SplittingTest {
 		TTopologyTemplate topologyTemplateMatching = resource.getServiceTemplate().getTopologyTemplate();
 
 		List<String> expectedIds = Arrays.asList("PHP-5-WebApplication", "Java7", "MySQL-DB", "PHP-5-Module", "Apache-2.4", "Ubuntu-14.04-VM-OnPremiseIAAS", "OpenStack-Liberty-12-OnPremiseIAAS", "AmazonBeanstalk", "AmazonRDS");
-		List<TNodeTemplate> NodeTemplates = splitting.matchingWithDefaultHostSelection(topologyTemplateMatching).getNodeTemplateOrRelationshipTemplate().stream().filter(t -> t instanceof TNodeTemplate).map(TNodeTemplate.class::cast).collect(Collectors.toList());
+		List<TNodeTemplate> NodeTemplates = splitting.hostMatchingWithDefaultHostSelection(topologyTemplateMatching).getNodeTemplateOrRelationshipTemplate().stream().filter(t -> t instanceof TNodeTemplate).map(TNodeTemplate.class::cast).collect(Collectors.toList());
 
 		List<String> Ids = new ArrayList<>();
 		for (TNodeTemplate nodeTemplate : NodeTemplates) {
