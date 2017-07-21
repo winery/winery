@@ -22,10 +22,10 @@
 <%@taglib prefix="t"  tagdir="/WEB-INF/tags" %>
 
 <c:forEach var="d" items="${w:countOfInstancesInEachNamespace(it.TOSCAComponentId)}">
-    <div class="entityContainer ${it.CSSclass}" id="${v:URLencode(d.namespace.encoded)}">
+    <div class="entityContainer ${it.CSSclass}" id="${d.namespace.encoded}">
         <div class="left">
             <c:if test="${it.type eq 'NodeType'}">
-                <a href="./${v:URLencode(d.namespace.encoded)}/"></a>
+                <a href="./${d.namespace.encoded}/"></a>
             </c:if>
         </div>
         <div class="center">
@@ -41,8 +41,7 @@
                 </div>
 
             <div class="buttonContainer" >
-                    <%-- we need double encoding of the URL as the passing to javascript: decodes the given string once --%>
-                <a type="button" class="deleteButton" onclick="deleteNamespace('${d.namespace}', '${v:URLencode(d.namespace.encoded)}')"></a>
+                <a type="button" class="deleteButton" onclick="deleteNamespace('${d.namespace}', '${d.namespace.encoded}')"></a>
             </div>
         </div>
         <div class="right"></div>

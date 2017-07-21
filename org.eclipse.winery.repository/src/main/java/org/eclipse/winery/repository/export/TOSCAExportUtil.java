@@ -80,7 +80,6 @@ import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.Filename;
@@ -426,10 +425,11 @@ public class TOSCAExportUtil {
             // all Definitions are contained in "Definitions" directory, therefore, we provide the filename only
             // references are resolved relatively from a definitions element (COS01, line 425)
             String fn = CSARExporter.getDefinitionsFileName(id);
+            // URL fragments should be decoded when interpreting (https://tools.ietf.org/html/rfc3986#section-2.4), thus, we encode each fragment
             fn = Util.URLencode(fn);
             imp.setLocation(fn);
         } else {
-            String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(id));
+            String path = (BackendUtils.getPathInsideRepo(id));
             path = path + "?definitions";
             URI absoluteURI = uri.resolve(path);
             imp.setLocation(absoluteURI.toString());

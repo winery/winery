@@ -357,7 +357,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
         String name = null;
         for (WebResource wr : this.repositoryResources) {
-            String pathFragment = IdUtil.getURLPathFragment(id);
+            String pathFragment = IdUtil.getPathFragment(id);
             WebResource resource = wr.path(pathFragment).path("name");
             ClientResponse response = resource.accept(MediaType.TEXT_PLAIN_TYPE).get(ClientResponse.class);
             if (response.getClientResponseStatus() == ClientResponse.Status.OK) {
@@ -480,8 +480,8 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     }
 
     private static WebResource getTopologyTemplateWebResource(WebResource base, QName serviceTemplate) {
-        String nsEncoded = Util.DoubleURLencode(serviceTemplate.getNamespaceURI());
-        String idEncoded = Util.DoubleURLencode(serviceTemplate.getLocalPart());
+        String nsEncoded = Util.URLencode(serviceTemplate.getNamespaceURI());
+        String idEncoded = Util.URLencode(serviceTemplate.getLocalPart());
         WebResource res = base.path("servicetemplates").path(nsEncoded).path(idEncoded).path("topologytemplate");
         return res;
     }
@@ -570,8 +570,8 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
      */
     private static TDefinitions getDefinitions(WebResource componentListResource, String ns, String localPart) {
         // we need double encoding as the client decodes the URL once
-        String nsEncoded = Util.DoubleURLencode(ns);
-        String idEncoded = Util.DoubleURLencode(localPart);
+        String nsEncoded = Util.URLencode(ns);
+        String idEncoded = Util.URLencode(localPart);
 
         WebResource instanceResource = componentListResource.path(nsEncoded).path(idEncoded);
 
@@ -728,7 +728,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
     @Override
     public void forceDelete(GenericId id) throws IOException {
-        String pathFragment = IdUtil.getURLPathFragment(id);
+        String pathFragment = IdUtil.getPathFragment(id);
         for (WebResource wr : this.repositoryResources) {
             ClientResponse response = wr.path(pathFragment).delete(ClientResponse.class);
             if ((response.getClientResponseStatus() != ClientResponse.Status.NO_CONTENT) || (response.getClientResponseStatus() != ClientResponse.Status.NOT_FOUND)) {
@@ -748,7 +748,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
      */
     @Override
     public void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException {
-        String pathFragment = IdUtil.getURLPathFragment(oldId);
+        String pathFragment = IdUtil.getPathFragment(oldId);
         NamespaceAndIdAsString namespaceAndIdAsString = new NamespaceAndIdAsString();
         namespaceAndIdAsString.namespace = newId.getNamespace().getDecoded();
         namespaceAndIdAsString.id = newId.getXmlId().getDecoded();

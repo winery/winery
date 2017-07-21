@@ -53,7 +53,7 @@ Palette
 %>
         <div class="paletteEntry">
             <div class="iconContainer">
-                <img class="icon" onerror="var that=this; require(['winery-common-topologyrendering'], function(wct){wct.imageError(that);});" src="<%= repositoryURL %>/nodetypes/<%= Util.DoubleURLencode(nodeType.getTargetNamespace()) %>/<%=Util.DoubleURLencode(nodeType.getName())%>/visualappearance/50x50" />
+                <img class="icon" onerror="var that=this; require(['winery-common-topologyrendering'], function(wct){wct.imageError(that);});" src="<%= repositoryURL %>/nodetypes/<%= Util.URLencode(nodeType.getTargetNamespace()) %>/<%=Util.URLencode(nodeType.getName())%>/visualappearance/50x50" />
             </div>
             <div class="typeContainer">
                 <div class="typeContainerMiddle">

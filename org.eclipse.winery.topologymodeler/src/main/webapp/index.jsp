@@ -129,7 +129,7 @@
         return;
     }
 
-    String topologyTemplateURL = repositoryURL + "/servicetemplates/" + Util.DoubleURLencode(serviceTemplateQName) + "/topologytemplate/";
+    String topologyTemplateURL = repositoryURL + "/servicetemplates/" + Util.URLencode(serviceTemplateQName) + "/topologytemplate/";
     String serviceTemplateName = client.getName(new ServiceTemplateId(serviceTemplateQName));
 %>
 <!DOCTYPE html>

@@ -14,10 +14,10 @@ package org.eclipse.winery.repository.resources;
 import java.io.InputStream;
 import java.util.Scanner;
 
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.AbstractWineryWithRepositoryTest;
 import org.eclipse.winery.repository.WineryUsingHttpServer;
 
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
@@ -41,6 +41,7 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
         AbstractWineryWithRepositoryTest.init();
         server = WineryUsingHttpServer.createHttpServer(9080);
         server.start();
+        RestAssured.urlEncodingEnabled = false;
     }
 
     @AfterClass
@@ -63,7 +64,7 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
     }
 
     protected String callURL(String restURL) {
-        return PREFIX + Util.URLdecode(restURL);
+        return PREFIX + restURL;
     }
 
     private boolean isXml(String fileName) {

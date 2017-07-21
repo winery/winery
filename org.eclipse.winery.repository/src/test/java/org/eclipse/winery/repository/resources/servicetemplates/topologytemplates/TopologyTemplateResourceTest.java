@@ -24,32 +24,32 @@ public class TopologyTemplateResourceTest  extends AbstractResourceTest {
     @Test
     public void getComponentInstanceJSON() throws Exception {
         this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate.json");
+        this.assertGet("servicetemplates/http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fservicetemplates%2Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate.json");
     }
 
     @Test
     public void getComponentInstanceXML() throws Exception {
         this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate.xml");
+        this.assertGet("servicetemplates/http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fservicetemplates%2Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate.xml");
     }
 
     @Test
     public void topologyTemplateUpdate() throws Exception {
         this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
-        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate_v2.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate_v2.json");
+        this.assertPut("servicetemplates/http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fservicetemplates%2Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate_v2.json");
+        this.assertGet("servicetemplates/http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fservicetemplates%2Ffruits/baobab_serviceTemplate/topologytemplate/", "servicetemplates/baobab_topologytemplate_v2.json");
     }
 
     @Test
     public void farmTopologyTemplateIsCorrectlyReturnAsJson() throws Exception {
         this.setRevisionTo("2d35f0d3c15b384c53df10967164d97e4a7dd6f2");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/farm/topologytemplate/", "servicetemplates/farm_topologytemplate.json");
+        this.assertGet("servicetemplates/http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fservicetemplates%2Ffruits/farm/topologytemplate/", "servicetemplates/farm_topologytemplate.json");
     }
 
     @Test
     public void farmTopologyTemplateIsCorrectlyReturnedAsXml() throws Exception {
         this.setRevisionTo("2d35f0d3c15b384c53df10967164d97e4a7dd6f2");
-        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/farm/topologytemplate/", "servicetemplates/farm_topologytemplate.xml");
+        this.assertGet("servicetemplates/http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fservicetemplates%2Ffruits/farm/topologytemplate/", "servicetemplates/farm_topologytemplate.xml");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class TopologyTemplateResourceTest  extends AbstractResourceTest {
         ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/fruits", "farm", false);
         Repository.INSTANCE.flagAsExisting(id);
 
-        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/farm/topologytemplate/", "servicetemplates/farm_topologytemplate.json");
+        this.assertPut("servicetemplates/http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fservicetemplates%2Ffruits/farm/topologytemplate/", "servicetemplates/farm_topologytemplate.json");
     }
 
     @Test

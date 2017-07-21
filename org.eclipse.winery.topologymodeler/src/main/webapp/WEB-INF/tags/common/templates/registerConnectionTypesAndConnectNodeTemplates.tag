@@ -75,7 +75,7 @@ require(["jquery", "jsplumb", "winery-common-topologyrendering"], function(globa
             whenRes = whenRes + fnName + ", ";
 %>
             function <%=fnName%>() { return $.ajax({
-                url: "<%=repositoryURL%>/relationshiptypes/<%=Util.DoubleURLencode(relationshipType.getTargetNamespace())%>/<%=Util.DoubleURLencode(relationshipType.getName())%>/visualappearance/",
+                url: "<%=repositoryURL%>/relationshiptypes/<%=Util.URLencode(relationshipType.getTargetNamespace())%>/<%=Util.URLencode(relationshipType.getName())%>/visualappearance/",
                 dataType: "json",
                 success: function(data, textStatus, jqXHR) {
                     jsPlumb.registerConnectionType(

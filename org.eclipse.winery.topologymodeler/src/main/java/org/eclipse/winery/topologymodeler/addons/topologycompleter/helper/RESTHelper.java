@@ -54,7 +54,7 @@ public class RESTHelper {
                 url = new URL(topologyTemplateURL);
             } else {
                 // this is necessary to avoid encoding issues
-                topologyNamespace = Util.DoubleURLencode(topologyNamespace);
+                topologyNamespace = Util.URLencode(topologyNamespace);
                 // build the URL with the repositoryURL, the topology namespace and the topology name
                 url = new URL(repositoryURL + "/servicetemplates/" + topologyNamespace + "/" + topologyName + "/topologytemplate/");
 

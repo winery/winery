@@ -95,7 +95,7 @@
 
     <div class="NodeTemplateShape unselectable <%=nodeTypeCSSName%> <%if (paletteMode){%> hidden<%}%>" id="<%=visualElementId%>" style="left: <%=left%>px; top: <%=top%>px">
         <div class="headerContainer">
-            <img class="icon" onerror="var that=this; require(['winery-common-topologyrendering'], function(wct){wct.imageError(that);});" src="<%=repositoryURL%>/nodetypes/<%=Util.DoubleURLencode(nodeTypeQName)%>/visualappearance/50x50" />
+            <img class="icon" onerror="var that=this; require(['winery-common-topologyrendering'], function(wct){wct.imageError(that);});" src="<%=repositoryURL%>/nodetypes/<%=Util.URLencode(nodeTypeQName)%>/visualappearance/50x50" />
             <%
                 String name;
                 if (paletteMode) {

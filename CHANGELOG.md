@@ -10,7 +10,12 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ## [unreleased]
 
+### Changed
+
+* **BREAKING** URL fragments are now single encoded only. The double encoding is not necessary, as each hosting component (Tomcat, ...) can be configured to let `%2F` pass through.
+
 ### Removed
+
 * `csarname` is empty at all CSAR exports
 * `data.json` is not exported any more
 

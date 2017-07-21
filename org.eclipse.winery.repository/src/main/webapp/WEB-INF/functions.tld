@@ -30,9 +30,9 @@
         <function-signature>java.lang.String URLencode(java.lang.String)</function-signature>
     </function>
     <function>
-        <name>DoubleURLencode</name>
+        <name>URLencodeQName</name>
         <function-class>org.eclipse.winery.common.Util</function-class>
-        <function-signature>java.lang.String DoubleURLencode(javax.xml.namespace.QName)</function-signature>
+        <function-signature>java.lang.String URLencode(javax.xml.namespace.QName)</function-signature>
     </function>
     <function>
         <name>absoluteURL</name>

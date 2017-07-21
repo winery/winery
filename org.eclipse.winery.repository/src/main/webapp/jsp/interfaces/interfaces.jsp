@@ -253,7 +253,7 @@ $(function() {
     $("#generateiamodal").on("show.bs.modal", function() {
         // check whether the required artifact type exists
         $.ajax({
-            url: "${pageContext.request.contextPath}/artifacttypes/<%=Util.DoubleURLencode(Constants.NAMESPACE_ARTIFACTTYPE_WAR)%>/<%=Util.DoubleURLencode(Constants.LOCALNAME_ARTIFACTTYPE_WAR)%>/",
+            url: "${pageContext.request.contextPath}/artifacttypes/<%=Util.URLencode(Constants.NAMESPACE_ARTIFACTTYPE_WAR)%>/<%=Util.URLencode(Constants.LOCALNAME_ARTIFACTTYPE_WAR)%>/",
             type: "HEAD"
         }).fail(function(jqXHR, textStatus, errorThrown) {
             if (jqXHR.status == 404) {
@@ -428,7 +428,7 @@ function generateLifeCycleInterface() {
 
                     <div class="form-group">
                         <label for="artifacttype">Artifact Type</label>
-                        <a class="form-control" target="_blank" href="${pageContext.request.contextPath}/artifacttypes/<%=Util.DoubleURLencode(Constants.NAMESPACE_ARTIFACTTYPE_WAR)%>/<%=Util.DoubleURLencode(Constants.LOCALNAME_ARTIFACTTYPE_WAR)%>/">WAR</a>
+                        <a class="form-control" target="_blank" href="${pageContext.request.contextPath}/artifacttypes/<%=Util.URLencode(Constants.NAMESPACE_ARTIFACTTYPE_WAR)%>/<%=Util.URLencode(Constants.LOCALNAME_ARTIFACTTYPE_WAR)%>/">WAR</a>
                         <input type="hidden" name="artifactType" id="artifactType" value="{<%=Constants.NAMESPACE_ARTIFACTTYPE_WAR%>}<%=Constants.LOCALNAME_ARTIFACTTYPE_WAR%>">
                     </div>
 

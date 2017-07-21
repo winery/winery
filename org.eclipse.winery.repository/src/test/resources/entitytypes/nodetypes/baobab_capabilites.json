@@ -78,8 +78,8 @@
           }
         ]
       },
-      "final": "NO",
-      "abstract": "NO"
+      "abstract": "NO",
+      "final": "NO"
     }
   ],
   "id": "winery-defs-for_ns0-baobab",
@@ -110,7 +110,7 @@
         "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}wpd": "true"
       },
       "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
-      "location": "../nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/propertiesdefinition/BaobabProperties.xsd",
+      "location": "../nodetypes/http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fnodetypes%2Ffruits/baobab/propertiesdefinition/BaobabProperties.xsd",
       "importType": "http://www.w3.org/2001/XMLSchema"
     }
   ]
