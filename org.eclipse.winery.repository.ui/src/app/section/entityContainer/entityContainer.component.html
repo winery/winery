@@ -13,7 +13,7 @@
 -->
 <div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
      class="entityContainer {{ resourceType }}"
-     routerLink="/{{ resourceType.toLowerCase() }}s/{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}">
+     routerLink="{{url}}">
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     <div class="left">
     </div>
@@ -24,12 +24,25 @@
         </div>
         <div *ngIf="!data.id" class="badge numberOfComponentInstances">{{ data.count }}</div>
         <div *ngIf="data.id" class="buttonContainer">
-            <a href="" class="exportButton"></a>
-            <a href="" class="editButton"></a>
-            <a href="" class="deleteButton"></a>
+            <a class="exportButton" (click)="exportComponent($event)"></a>
+            <a class="editButton" (click)="editComponent($event)"></a>
+            <a class="deleteButton" (click)="showRemoveDialog($event)"></a>
         </div>
     </div>
     <div class="right">
-
     </div>
 </div>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete Property'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Do you want to delete <span style="font-weight:bold;">{{ data.id }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="deleteConfirmed()"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>

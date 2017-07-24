@@ -9,32 +9,43 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { backendBaseURL } from '../../configuration';
 import { SectionData } from '../sectionData';
 import { ExistService } from '../../wineryUtils/existService';
+import { ModalDirective } from 'ngx-bootstrap';
+import { Router } from '@angular/router';
+import { EntityContainterService } from './entityContainter.service';
 
 @Component({
     selector: 'winery-entity-container',
     templateUrl: './entityContainer.component.html',
-    styleUrls: ['./entityContainer.component.css']
+    styleUrls: ['./entityContainer.component.css'],
+    providers: [
+        EntityContainterService
+    ]
 })
 export class EntityContainerComponent implements OnInit {
+
     @Input() data: SectionData;
     @Input() resourceType: string;
+    @Output() deleted = new EventEmitter<string>();
 
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+
+    url: string;
     imageUrl: string;
+    backendLink: string;
 
-    constructor(private existService: ExistService) {
+    constructor(private existService: ExistService, private router: Router, private service: EntityContainterService) {
     }
 
     ngOnInit(): void {
+        this.url = '/' + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/' + this.data.id;
+        this.backendLink = backendBaseURL + '/' + this.resourceType.toLowerCase() + 's/' + this.url;
+
         if (this.resourceType === 'nodeType' && this.data.id) {
-            const img = backendBaseURL + '/'
-                + this.resourceType.toLowerCase() + 's/'
-                + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/'
-                + this.data.id
-                + '/visualappearance/50x50';
+            const img = this.backendLink + '/visualappearance/50x50';
 
             this.existService.check(img)
                 .subscribe(
@@ -46,5 +57,40 @@ export class EntityContainerComponent implements OnInit {
                     },
                 );
         }
+    }
+
+    exportComponent(event: MouseEvent) {
+        event.stopPropagation();
+        if (event.ctrlKey) {
+            window.open(this.backendLink + '?definitions', '_blank');
+        } else {
+            window.open(this.backendLink + '?csar', '_blank');
+        }
+    }
+
+    editComponent(event: MouseEvent) {
+        event.stopPropagation();
+        if (this.router.url.includes('servicetemplates') && event.ctrlKey) {
+            const topologyModeler = backendBaseURL + '-topologymodeler/'
+            + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
+            + '&uiURL=' + encodeURIComponent(window.location.origin)
+            + '&ns=' + encodeURIComponent(this.data.namespace)
+            + '&id=' + this.data.id;
+            window.open(topologyModeler, '_blank');
+        } else {
+            this.router.navigateByUrl('/' + this.resourceType.toLocaleLowerCase() + 's/' +
+            encodeURIComponent(encodeURIComponent(encodeURIComponent(this.data.namespace))) + '/'
+            + this.data.id);
+        }
+    }
+
+    showRemoveDialog(event: MouseEvent) {
+        this.confirmDeleteModal.show();
+        event.stopPropagation();
+    }
+
+    deleteConfirmed() {
+        this.service.deleteComponent(this.backendLink, this.data.id);
+        this.deleted.emit(this.data.id);
     }
 }

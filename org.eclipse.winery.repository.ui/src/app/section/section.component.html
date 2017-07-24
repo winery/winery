@@ -25,7 +25,8 @@
                 | filterSections: { showNamespaces: showNamespace, filterString: filterString }
                 | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }"
                 [resourceType]="selectedResource"
-                [data]="item">
+                [data]="item"
+                (deleted)="getSectionsData()">
             </winery-entity-container>
         </div>
         <div class="sidebar">
