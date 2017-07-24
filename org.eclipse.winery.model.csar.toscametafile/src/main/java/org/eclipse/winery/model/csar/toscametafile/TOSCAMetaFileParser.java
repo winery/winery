@@ -18,10 +18,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import com.springsource.util.parser.manifest.ManifestContents;
-import com.springsource.util.parser.manifest.ManifestParser;
-import com.springsource.util.parser.manifest.ManifestProblem;
-import com.springsource.util.parser.manifest.RecoveringManifestParser;
+import org.eclipse.virgo.util.parser.manifest.ManifestContents;
+import org.eclipse.virgo.util.parser.manifest.ManifestParser;
+import org.eclipse.virgo.util.parser.manifest.ManifestProblem;
+import org.eclipse.virgo.util.parser.manifest.RecoveringManifestParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

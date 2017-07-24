@@ -9,6 +9,12 @@
 #
 
 ##########################################################################
+# TOSCA Namespacing keyword specifies the TOSCA Namespace Alias value which 
+# all TOSCA Service Templates MUST always have.
+##########################################################################
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+##########################################################################
 # Interfaces are reusable entities that define a set of operations that that 
 # can be included as part of a Node type or Relationship Type definition. 
 # Each named operations may have code or scripts associated with them that 
