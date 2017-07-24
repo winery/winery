@@ -16,6 +16,7 @@ import { InstanceStateApiData } from './InstanceStateApiData';
 import { Response } from '@angular/http';
 import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     templateUrl: 'instanceStates.component.html',
@@ -32,8 +33,8 @@ export class InstanceStatesComponent implements OnInit {
         {title: 'Name', name: 'state', sort: false},
     ];
 
-    @ViewChild('confirmDeleteModal') deleteStateModal: any;
-    @ViewChild('addModal') addStateModal: any;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private service: InstanceStateService, private notify: WineryNotificationService) {
     }
@@ -54,12 +55,12 @@ export class InstanceStatesComponent implements OnInit {
             return;
         } else {
             this.elementToRemove = new InstanceStateApiData(data.state);
-            this.deleteStateModal.show();
+            this.confirmDeleteModal.show();
         }
     }
 
     removeConfirmed() {
-        this.deleteStateModal.hide();
+        this.confirmDeleteModal.hide();
         this.service.deleteState(this.elementToRemove)
             .subscribe(
                 data => this.handleDeleteResponse(data),
@@ -72,7 +73,7 @@ export class InstanceStatesComponent implements OnInit {
     // region ######## event handler ########
     onAddClick() {
         this.newStateData = new InstanceStateApiData('');
-        this.addStateModal.show();
+        this.addModal.show();
     }
 
     addProperty() {

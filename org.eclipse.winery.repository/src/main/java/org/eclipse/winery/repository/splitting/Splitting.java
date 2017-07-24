@@ -189,7 +189,8 @@ public class Splitting {
 					// Otherwise, duplicate the considered node for each target label
 					for (String targetLabel: predecessorsTargetLabel) {
 						TNodeTemplate duplicatedNode = BackendUtils.clone(currentNode);
-						duplicatedNode = BackendUtils.checkId(duplicatedNode, currentNode, targetLabel);
+						duplicatedNode.setId(Util.makeNCName(currentNode.getId() + "-" + targetLabel));
+						duplicatedNode.setName(Util.makeNCName(currentNode.getName() + "-" + targetLabel));
 						topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
 						topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
 						ModelUtilities.setTargetLabel(duplicatedNode, targetLabel);

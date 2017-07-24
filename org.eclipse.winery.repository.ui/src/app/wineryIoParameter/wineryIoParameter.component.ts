@@ -15,6 +15,8 @@ import { InterfaceParameter } from '../wineryInterfaces/parameters';
 import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
 import { YesNoEnum } from '../wineryInterfaces/enums';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { NgForm } from '@angular/forms';
+import { ModalDirective } from 'ngx-bootstrap';
 
 /**
  * This component provides two tables for adding and removing input and output parameters as they are used for example
@@ -66,9 +68,9 @@ export class WineryIoParameterComponent {
     @Output() inputParameterRemoved = new EventEmitter<InterfaceParameter>();
     @Output() outputParameterRemoved = new EventEmitter<InterfaceParameter>();
 
-    @ViewChild('addIntParametersModal') addParametersModal: any;
-    @ViewChild('removeElementModal') removeElementModal: any;
-    @ViewChild('parameterForm') parameterForm: any;
+    @ViewChild('addIntParametersModal') addIntParametersModal: ModalDirective;
+    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
+    @ViewChild('parameterForm') parameterForm: NgForm;
 
     selectedInputParameter: InterfaceParameter;
     selectedOutputParameter: InterfaceParameter;
@@ -91,7 +93,7 @@ export class WineryIoParameterComponent {
         this.modalTitle = 'Input Parameter';
         this.validatorObject = new WineryValidatorObject(this.inputParameters, 'name');
         this.parameterForm.reset();
-        this.addParametersModal.show();
+        this.addIntParametersModal.show();
     }
 
     onAddInputParam(name: string, type: string, required: boolean) {
@@ -123,7 +125,7 @@ export class WineryIoParameterComponent {
         this.modalTitle = 'Output Parameter';
         this.validatorObject = new WineryValidatorObject(this.outputParameters, 'name');
         this.parameterForm.reset();
-        this.addParametersModal.show();
+        this.addIntParametersModal.show();
     }
 
     onAddOutputParam(name: string, type: string, required: boolean) {

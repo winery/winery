@@ -24,7 +24,7 @@ import { PropertyMappingsComponent } from './propertyMappings/propertyMappings.c
 import { PropertyConstraintsComponent } from './propertyConstraints/propertyConstraints.component';
 import { RequirementsComponent } from './requirements/requirements.component';
 import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
-import { RequirementsOrCapabilitesComponent } from './requirementsOrCapabilites/requirementsOrCapabilites.component';
+import { RequirementsOrCapabilitiesComponent } from './requirementsOrCapabilities/requirementsOrCapabilities.component';
 import { CapabilitiesComponent } from './capabilities/capabilities.component';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
 import { WineryDuplicateValidatorModule } from '../../../wineryValidators/wineryDuplicateValidator.module';
@@ -68,7 +68,7 @@ export const boundaryDefinitionsRoutes = [
         PropertyMappingsComponent,
         RequirementsComponent,
         CapabilitiesComponent,
-        RequirementsOrCapabilitesComponent,
+        RequirementsOrCapabilitiesComponent,
     ],
     providers: [InstanceService]
 })

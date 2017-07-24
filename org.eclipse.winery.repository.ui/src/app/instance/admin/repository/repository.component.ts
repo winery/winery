@@ -9,10 +9,11 @@
  * Contributors:
  *     Niko Stadelmaier - initial API and implementation
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RepositoryService } from './repository.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { backendBaseURL } from '../../../configuration';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-repository',
@@ -20,6 +21,7 @@ import { backendBaseURL } from '../../../configuration';
 })
 export class RepositoryComponent implements OnInit {
 
+    @ViewChild('uploaderModal') uploaderModal: ModalDirective;
     path: string;
 
     constructor(private service: RepositoryService,

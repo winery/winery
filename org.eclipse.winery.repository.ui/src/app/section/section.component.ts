@@ -44,9 +44,11 @@ export class SectionComponent implements OnInit, OnDestroy {
     routeSub: Subscription;
     filterString = '';
     itemsPerPage = 10;
+    currentPage = 1;
     showNamespace = 'all';
     changeViewButtonTitle: string = showGrouped;
     componentData: SectionData[];
+    elementToRemove: SectionData;
     types: SelectData[];
 
     newComponentName: string;
@@ -57,6 +59,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     fileUploadUrl = backendBaseURL + '/';
 
     @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addComponentForm') addComponentForm: NgForm;
     @ViewChild('addCsarModal') addCsarModal: ModalDirective;
 
@@ -132,6 +135,13 @@ export class SectionComponent implements OnInit, OnDestroy {
                 res => this.handleData(res),
                 error => this.handleError(error)
             );
+    }
+
+    onPageChange(page: number) {
+        this.currentPage = page;
+    }
+
+    onRemoveElement() {
     }
 
     /**

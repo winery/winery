@@ -87,14 +87,14 @@
 
     <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelBtnClicked()">Cancel</button>
-        <button *ngIf="!edit" type="button" [disabled]="!addReqOrCapForm?.form.valid || noneSelected"
+        <button *ngIf="!edit" type="button" [disabled]="!addReqOrCapForm?.form.valid"
                 class="btn btn-primary"
                 (click)="addConfirmed()">Add
         </button>
         <button *ngIf="edit" type="button" class="btn btn-danger"
                 (click)="onDeleteClick()">Delete
         </button>
-        <button *ngIf="edit" type="button" [disabled]="!addReqOrCapForm?.form.valid || noneSelected"
+        <button *ngIf="edit" type="button" [disabled]="!addReqOrCapForm?.form.valid"
                 class="btn btn-primary"
                 (click)="updateConfirmed()">Update
         </button>

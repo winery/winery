@@ -61,7 +61,7 @@ export class PlansComponent implements OnInit {
     fileToUpload: any;
     uploaderUrl: string;
 
-    @ViewChild('addPlanModal') addModal: any;
+    @ViewChild('addPlanModal') addPlanModal: any;
     @ViewChild('uploader') uploader: WineryUploaderComponent;
 
     @ViewChild('ioModal') ioModal: any;
@@ -193,18 +193,17 @@ export class PlansComponent implements OnInit {
             );
     }
 
-    // endregion
-    // endregion
-
-    // region ########## Private Methods ##########
-    private getPlanTypesData() {
+    getPlanTypesData() {
         this.service.getPlansData()
             .subscribe(
                 data => this.handleData(data),
                 error => this.handleError(error)
             );
     }
+    // endregion
+    // endregion
 
+    // region ########## Private Methods ##########
     private handleData(data: PlansApiData[]) {
         this.plansApiData = data;
         this.loading = false;
@@ -216,7 +215,7 @@ export class PlansComponent implements OnInit {
 
         if (!isNullOrUndefined(this.planLanguages)) {
             this.loading = false;
-            this.addModal.show();
+            this.addPlanModal.show();
         }
     }
 
@@ -226,7 +225,7 @@ export class PlansComponent implements OnInit {
 
         if (!isNullOrUndefined(this.planTypes)) {
             this.loading = false;
-            this.addModal.show();
+            this.addPlanModal.show();
         }
     }
 

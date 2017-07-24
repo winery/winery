@@ -71,7 +71,7 @@ export class WineryUploaderComponent implements OnInit {
     @Output() onSucces = new EventEmitter();
     @Output() onError = new EventEmitter();
 
-    constructor(private service: WineryUploaderService,
+    constructor(public service: WineryUploaderService,
                 private notify: WineryNotificationService) {
     }
 

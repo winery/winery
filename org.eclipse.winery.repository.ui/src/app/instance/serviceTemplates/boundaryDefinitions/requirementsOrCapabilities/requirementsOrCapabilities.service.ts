@@ -14,7 +14,7 @@ import {Http, RequestOptions, Headers} from '@angular/http';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {backendBaseURL} from '../../../../configuration';
-import {RequirementOrCapability} from './requirementsOrCapabilitesApiData';
+import {RequirementOrCapability} from './requirementsOrCapabilitiesApiData';
 
 @Injectable()
 export class RequirementsOrCapabilitiesService {

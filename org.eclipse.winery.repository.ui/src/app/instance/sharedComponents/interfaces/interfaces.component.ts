@@ -20,6 +20,8 @@ import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesService } from './interfaces.service';
 import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
 import { InputParameters, OutputParameters } from '../../../wineryInterfaces/parameters';
+import { ModalDirective } from 'ngx-bootstrap';
+import { NgForm } from '@angular/forms';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -46,11 +48,11 @@ export class InterfacesComponent implements OnInit {
     modalTitle: string;
     elementToRemove: string;
     validatorObject: WineryValidatorObject;
-    @ViewChild('addIntOpModal') addInterfaceOrPropertyModal: any;
-    @ViewChild('removeElementModal') removeElementModal: any;
-    @ViewChild('addElementForm') addElementForm: any;
+    @ViewChild('addIntOpModal') addIntOpModal: ModalDirective;
+    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
+    @ViewChild('addElementForm') addElementForm: NgForm;
 
-    @ViewChild('generateImplModal') generateImplModal: any;
+    @ViewChild('generateImplModal') generateImplModal: ModalDirective;
     generateArtifactApiData = new GenerateArtifactApiData();
     selectedResource: string;
     createImplementation = true;
@@ -77,7 +79,7 @@ export class InterfacesComponent implements OnInit {
         this.modalTitle = 'Interface';
         this.validatorObject = new WineryValidatorObject(this.interfacesData, 'name');
         this.addElementForm.reset();
-        this.addInterfaceOrPropertyModal.show();
+        this.addIntOpModal.show();
     }
 
     onAddInterface(name: string) {
@@ -116,7 +118,7 @@ export class InterfacesComponent implements OnInit {
         this.modalTitle = 'Operation';
         this.validatorObject = new WineryValidatorObject(this.operations, 'name');
         this.addElementForm.reset();
-        this.addInterfaceOrPropertyModal.show();
+        this.addIntOpModal.show();
     }
 
     onAddOperation(name: string) {
@@ -215,6 +217,34 @@ export class InterfacesComponent implements OnInit {
 
     // endregion
 
+    // region ######### Checker ##########
+    checkImplementationExists(): void {
+        if (!this.implementationNamespace.endsWith('/')) {
+            this.existService.check(backendBaseURL + '/'
+                + this.selectedResource.replace(' ', '').toLowerCase() + 'implementations/'
+                + encodeURIComponent(encodeURIComponent(this.implementationNamespace)) + '/'
+                + this.implementationName + '/'
+            ).subscribe(
+                data => this.createImplementation = false,
+                error => this.createImplementation = true
+            );
+        }
+    }
+
+    checkArtifactTemplateExists(): void {
+        if (!this.generateArtifactApiData.artifactTemplateNamespace.endsWith('/')) {
+            this.existService.check(backendBaseURL + '/artifacttemplates/'
+                + encodeURIComponent(encodeURIComponent(this.generateArtifactApiData.artifactTemplateNamespace)) + '/'
+                + this.generateArtifactApiData.artifactTemplateName + '/'
+            ).subscribe(
+                data => this.createArtifactTemplate = false,
+                error => this.createArtifactTemplate = true
+            );
+        }
+    }
+
+    // endregion
+
     onRemoveElement() {
         switch (this.modalTitle) {
             case 'Remove Operation':
@@ -273,31 +303,6 @@ export class InterfacesComponent implements OnInit {
         }
 
         return javaPackage;
-    }
-
-    private checkImplementationExists(): void {
-        if (!this.implementationNamespace.endsWith('/')) {
-            this.existService.check(backendBaseURL + '/'
-                + this.selectedResource.replace(' ', '').toLowerCase() + 'implementations/'
-                + encodeURIComponent(encodeURIComponent(this.implementationNamespace)) + '/'
-                + this.implementationName + '/'
-            ).subscribe(
-                data => this.createImplementation = false,
-                error => this.createImplementation = true
-            );
-        }
-    }
-
-    private checkArtifactTemplateExists(): void {
-        if (!this.generateArtifactApiData.artifactTemplateNamespace.endsWith('/')) {
-            this.existService.check(backendBaseURL + '/artifacttemplates/'
-                + encodeURIComponent(encodeURIComponent(this.generateArtifactApiData.artifactTemplateNamespace)) + '/'
-                + this.generateArtifactApiData.artifactTemplateName + '/'
-            ).subscribe(
-                data => this.createArtifactTemplate = false,
-                error => this.createArtifactTemplate = true
-            );
-        }
     }
 
     private handleGeneratedImplementation(data?: any) {

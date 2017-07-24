@@ -24,12 +24,10 @@
             <input id="xsdelementradio" type="radio" name="kind" (click)="onXmlElementSelected()"
                    [checked]="resourceApiData.selectedValue === propertiesEnum.Element">
             <label for="xsdelementradio" class="cursorpointer">XML element</label>
-            <a id="xsdelement" class="editable editable-click editable-empty">{{ xsdElement }}</a>
             <br>
             <input id="xsdtyperadio" type="radio" name="kind" (click)="onXmlTypeSelected()"
                    [checked]="resourceApiData.selectedValue === propertiesEnum.Type">
             <label for="xsdtyperadio" class="cursorpointer">XML type</label>
-            <a id="xsdtype" class="editable editable-click editable-empty">{{ xsdType }}</a>
             <br>
             <input id="customkv" type="radio" name="kind" (click)="onCustomKeyValuePairSelected()"
                    [checked]="resourceApiData.selectedValue === propertiesEnum.Custom">

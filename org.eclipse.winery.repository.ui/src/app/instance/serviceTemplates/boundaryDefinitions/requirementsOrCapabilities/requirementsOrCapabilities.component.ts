@@ -10,25 +10,26 @@
  *     Tino Stadelmaier - initial API and implementation
  */
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { RequirementOrCapability } from './requirementsOrCapabilitesApiData';
+import { RequirementOrCapability } from './requirementsOrCapabilitiesApiData';
 import { RequirementsOrCapabilitiesService } from './requirementsOrCapabilities.service';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
 import { isNullOrUndefined } from 'util';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-requirements-or-capabilities',
-    templateUrl: 'requirementsOrCapabilites.component.html',
+    templateUrl: 'requirementsOrCapabilities.component.html',
     providers: [
         RequirementsOrCapabilitiesService
     ]
 })
-export class RequirementsOrCapabilitesComponent implements OnInit {
+export class RequirementsOrCapabilitiesComponent implements OnInit {
 
     @Input() singleItem = '';
     @Input() title = '';
 
-    @ViewChild('addReqOrCapModal') addModal: any;
-    @ViewChild('confirmDeleteModal') deleteReqOrCapModal: any;
+    @ViewChild('addReqOrCapModal') addReqOrCapModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
 
     columns: Array<any> = [
         {title: 'Name', name: 'name', sort: true},
@@ -59,7 +60,7 @@ export class RequirementsOrCapabilitesComponent implements OnInit {
     onAddClick() {
         this.addOrChange = 'Add ';
         this.currentSelected = null;
-        this.addModal.show();
+        this.addReqOrCapModal.show();
     }
 
     onEditClick(reqOrCap: RequirementOrCapability) {
@@ -69,7 +70,7 @@ export class RequirementsOrCapabilitesComponent implements OnInit {
             this.reqOrCapToBeAdded.name = reqOrCap.name;
             this.reqOrCapToBeAdded.ref = reqOrCap.ref;
             this.currentSelected = reqOrCap;
-            this.addModal.show();
+            this.addReqOrCapModal.show();
         } else {
             return;
         }
@@ -77,7 +78,7 @@ export class RequirementsOrCapabilitesComponent implements OnInit {
 
     onDeleteClick() {
         if (!isNullOrUndefined(this.currentSelected)) {
-            this.deleteReqOrCapModal.show();
+            this.confirmDeleteModal.show();
         } else {
             return;
         }
@@ -86,31 +87,31 @@ export class RequirementsOrCapabilitesComponent implements OnInit {
     onRemoveClick(reqOrCap: RequirementOrCapability) {
         if (!isNullOrUndefined(reqOrCap)) {
             this.currentSelected = reqOrCap;
-            this.deleteReqOrCapModal.show();
+            this.confirmDeleteModal.show();
         } else {
             return;
         }
     }
 
     cancelBtnClicked() {
-        this.addModal.hide();
+        this.addReqOrCapModal.hide();
         this.edit = false;
     }
 
     removeConfirmed() {
         this.edit = false;
-        this.addModal.hide();
-        this.deleteReqOrCapModal.hide();
+        this.addReqOrCapModal.hide();
+        this.confirmDeleteModal.hide();
         this.deleteReqOrCap(this.currentSelected.id);
     }
 
     addConfirmed() {
-        this.addModal.hide();
+        this.addReqOrCapModal.hide();
         this.addNewRequirementOrCapability();
     }
 
     updateConfirmed() {
-        this.addModal.hide();
+        this.addReqOrCapModal.hide();
         this.addNewRequirementOrCapability();
 
     }

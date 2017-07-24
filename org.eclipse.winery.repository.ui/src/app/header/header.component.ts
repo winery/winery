@@ -9,10 +9,11 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { sections } from '../configuration';
 import { isNullOrUndefined } from 'util';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-header',
@@ -22,8 +23,9 @@ import { isNullOrUndefined } from 'util';
 export class HeaderComponent implements OnInit {
 
     selectedOtherComponent = '';
+    @ViewChild('aboutModal') aboutModal: ModalDirective;
 
-    constructor(private router: Router) {
+    constructor(public router: Router) {
     }
 
     ngOnInit(): void {

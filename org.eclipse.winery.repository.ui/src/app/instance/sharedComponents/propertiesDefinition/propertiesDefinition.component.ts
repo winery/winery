@@ -25,6 +25,7 @@ import { Response } from '@angular/http';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     templateUrl: 'propertiesDefinition.component.html',
@@ -52,8 +53,8 @@ export class PropertiesDefinitionComponent implements OnInit {
     newProperty: PropertiesDefinitionKVList = new PropertiesDefinitionKVList();
 
     validatorObject: WineryValidatorObject;
-    @ViewChild('confirmDeleteModal') deletePropModal: any;
-    @ViewChild('addModal') addPropModal: any;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private sharedData: InstanceService, private service: PropertiesDefinitionService,
                 private notify: WineryNotificationService) {
@@ -188,7 +189,7 @@ export class PropertiesDefinitionComponent implements OnInit {
             return;
         } else {
             this.elementToRemove = data;
-            this.deletePropModal.show();
+            this.confirmDeleteModal.show();
         }
     }
 
@@ -198,7 +199,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     onAddClick() {
         this.newProperty = new PropertiesDefinitionKVList();
         this.validatorObject = new WineryValidatorObject(this.resourceApiData.winerysPropertiesDefinition.propertyDefinitionKVList, 'key');
-        this.addPropModal.show();
+        this.addModal.show();
     }
 
     // endregion
@@ -234,11 +235,11 @@ export class PropertiesDefinitionComponent implements OnInit {
             key: propName,
             type: propType
         });
-        this.addPropModal.hide();
+        this.addModal.hide();
     }
 
     removeConfirmed() {
-        this.deletePropModal.hide();
+        this.confirmDeleteModal.hide();
         this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
         this.elementToRemove = null;
     }

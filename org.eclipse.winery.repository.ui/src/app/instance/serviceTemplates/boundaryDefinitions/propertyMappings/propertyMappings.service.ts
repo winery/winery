@@ -9,11 +9,12 @@
  * Contributors:
  *     Niko Stadelmaier - initial API and implementation
  */
-import { Injectable } from '@angular/core';
+import { Injectable, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../../configuration';
+import { ModalDirective } from 'ngx-bootstrap';
 
 export interface Property {
     serviceTemplatePropertyRef: string;
@@ -32,6 +33,7 @@ export interface PropertyMappingsApiData {
 @Injectable()
 export class PropertyMappingService {
 
+    @ViewChild('browseForServiceTemplatePropertyDiag') browseForServiceTemplatePropertyDiag: ModalDirective;
     private path: string;
 
     constructor(private http: Http,

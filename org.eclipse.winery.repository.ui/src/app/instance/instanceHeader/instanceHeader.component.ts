@@ -9,11 +9,12 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { backendBaseURL } from '../../configuration';
 import { RemoveWhiteSpacesPipe } from '../../wineryPipes/removeWhiteSpaces.pipe';
 import { InstanceService } from '../instance.service';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-header',
@@ -38,11 +39,14 @@ export class InstanceHeaderComponent implements OnInit {
     @Input() imageUrl: string;
     @Output() deleteConfirmed: EventEmitter<any> = new EventEmitter();
 
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+
     needTwoLines = false;
     selectedTab: string;
     backendLink: string;
 
-    constructor(private router: Router, private sharedData: InstanceService) {}
+    constructor(private router: Router, private sharedData: InstanceService) {
+    }
 
     ngOnInit(): void {
         if (this.subMenu.length > 7) {

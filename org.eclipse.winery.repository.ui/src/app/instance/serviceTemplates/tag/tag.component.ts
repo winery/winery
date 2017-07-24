@@ -34,8 +34,8 @@ export class TagComponent implements OnInit {
         {title: 'name', name: 'name', sort: true},
         {title: 'value', name: 'value', sort: true},
     ];
-    @ViewChild('confirmDeleteModal') deleteTagModal: ModalDirective;
-    @ViewChild('addModal') addTagModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     public constructor(private service: TagService,
                        private noteService: WineryNotificationService) {
@@ -53,14 +53,14 @@ export class TagComponent implements OnInit {
         if (isNullOrUndefined(this.selectedCell)) {
             this.noteService.error('no cell selected!');
         } else {
-          this.deleteTagModal.show();
+          this.confirmDeleteModal.show();
         }
     }
 
     onAddClick() {
         this.validatorObject = new WineryValidatorObject(this.tagsData, 'name');
         this.newTag = new TagsAPIData();
-        this.addTagModal.show();
+        this.addModal.show();
     }
 
     getTagsData() {

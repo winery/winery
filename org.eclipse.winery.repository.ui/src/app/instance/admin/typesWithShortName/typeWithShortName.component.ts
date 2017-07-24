@@ -40,8 +40,8 @@ export class TypeWithShortNameComponent implements OnInit {
      */
     @Input() title = '';
 
-    @ViewChild('confirmDeleteModal') deleteNamespaceModal: ModalDirective;
-    @ViewChild('addModal') addNamespaceModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private service: TypeWithShortNameService,
                 private notify: WineryNotificationService) {
@@ -81,7 +81,7 @@ export class TypeWithShortNameComponent implements OnInit {
         //     return;
         // } else {
         //     this.elementToRemove = data;
-        //     this.deleteNamespaceModal.show();
+        //     this.confirmDeleteModal.show();
         // }
     }
 
@@ -89,11 +89,11 @@ export class TypeWithShortNameComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
-        this.addNamespaceModal.show();
+        this.addModal.show();
     }
 
     deleteType() {
-        this.deleteNamespaceModal.hide();
+        this.confirmDeleteModal.hide();
         this.deleteItemFromTypesWithShortNameList(this.elementToRemove);
         this.elementToRemove = null;
     }

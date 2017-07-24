@@ -58,7 +58,6 @@ and http://www.apache.org/licenses/LICENSE-2.0
 
 Contributors:
 * Oliver Kopp - initial API and implementation
-* Lukas Harzenetter, Niko Stadelmaier, Tino Stadelmaier, Nicole Keppler, Philipp Meyer, Lukas Balzer, Huixin Lui - Angular 2 frontend & JSON backend
 
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
  [bug421284]: https://bugs.eclipse.org/bugs/show_bug.cgi?id=421284

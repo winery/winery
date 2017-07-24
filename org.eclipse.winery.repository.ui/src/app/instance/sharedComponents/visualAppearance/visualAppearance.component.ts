@@ -24,11 +24,13 @@ import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
     providers: [VisualAppearanceService]
 })
 export class VisualAppearanceComponent implements OnInit {
+
     relationshipData: RelationshipTypesVisualsApiData;
     nodeTypeData: NodeTypesVisualsApiData;
     loading = true;
     img16Path: string;
     img50Path: string;
+    isNodeType = true;
 
     constructor(private service: VisualAppearanceService,
                 private notify: WineryNotificationService) {
@@ -38,7 +40,12 @@ export class VisualAppearanceComponent implements OnInit {
         this.loading = true;
         this.img16Path = this.service.getImg16x16Path();
         this.img50Path = this.service.getImg50x50Path();
-        if (this.service.isNodeType) {
+
+        if (this.service.path.includes('relationshiptypes')) {
+            this.isNodeType = false;
+        }
+
+        if (this.isNodeType) {
             this.getNodeTypeData();
         } else {
             this.getRelationshipData();
@@ -88,7 +95,7 @@ export class VisualAppearanceComponent implements OnInit {
     }
 
     saveToServer() {
-        if (this.service.isNodeType) {
+        if (this.isNodeType) {
             this.service.saveVisuals(new NodeTypesVisualsApiData(this.nodeTypeData)).subscribe(
                 data => this.handleResponse(data),
                 error => this.handleError(error)
@@ -127,7 +134,7 @@ export class VisualAppearanceComponent implements OnInit {
 
     onUploadSuccess() {
         this.loading = true;
-        if (this.service.isNodeType) {
+        if (this.isNodeType) {
             this.getNodeTypeData();
         } else {
             this.getRelationshipData();

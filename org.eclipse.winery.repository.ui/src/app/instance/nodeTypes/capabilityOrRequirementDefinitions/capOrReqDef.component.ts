@@ -21,6 +21,8 @@ import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.compon
 import { TypeWithShortName } from '../../admin/typesWithShortName/typeWithShortName.service';
 import { SelectData } from '../../../wineryInterfaces/selectData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { ModalDirective } from 'ngx-bootstrap';
+import { SpinnerWithInfinityComponent } from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';
 
 @Component({
     selector: 'winery-instance-cap-or-req-definitions',
@@ -72,12 +74,12 @@ export class CapOrReqDefComponent implements OnInit {
     @Input() types = '';
     addCapOrRegModalTitle = '';
 
-    @ViewChild('confirmDeleteModal') deleteCapModal: any;
-    @ViewChild('addModal') addCapModal: any;
-    @ViewChild('editConModal') showConstraintListModal: any;
-    @ViewChild('editNewConModal') editConstraintModal: any;
-    @ViewChild('lowerBoundSpinner') lowerBoundSpinner: any;
-    @ViewChild('upperBoundSpinner') upperBoundSpinner: any;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('editConModal') editConModal: ModalDirective;
+    @ViewChild('editNewConModal') editNewConModal: ModalDirective;
+    @ViewChild('lowerBoundSpinner') lowerBoundSpinner: SpinnerWithInfinityComponent;
+    @ViewChild('upperBoundSpinner') upperBoundSpinner: SpinnerWithInfinityComponent;
     @ViewChild('editor') editor: any;
 
     constructor(private service: CapabilityOrRequirementDefinitionsService,
@@ -193,7 +195,7 @@ export class CapOrReqDefComponent implements OnInit {
             this.noConstraintsExistingFlag = false;
             this.activeCapOrRegDefinition = capDefinition;
         }
-        this.showConstraintListModal.show();
+        this.editConModal.show();
     }
 
     /**
@@ -213,7 +215,7 @@ export class CapOrReqDefComponent implements OnInit {
             return;
         } else {
             this.elementToRemove = capOrReqDefinition;
-            this.deleteCapModal.show();
+            this.confirmDeleteModal.show();
         }
     }
 
@@ -221,7 +223,7 @@ export class CapOrReqDefComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
-        this.addCapModal.show();
+        this.addModal.show();
     }
 
     // endregion
@@ -233,7 +235,7 @@ export class CapOrReqDefComponent implements OnInit {
      *
      */
     addCapability() {
-        this.addCapModal.hide();
+        this.addModal.hide();
         this.capOrReqDefToBeAdded.lowerBound = this.lowerBoundSpinner.value;
         if (this.upperBoundSpinner.value === '∞') {
             this.capOrReqDefToBeAdded.upperBound = 'unbounded';
@@ -244,7 +246,7 @@ export class CapOrReqDefComponent implements OnInit {
     }
 
     removeConfirmed() {
-        this.deleteCapModal.hide();
+        this.confirmDeleteModal.hide();
         this.deleteCapOrReqDef(this.elementToRemove);
         this.elementToRemove = null;
     }
@@ -282,7 +284,7 @@ export class CapOrReqDefComponent implements OnInit {
 
         this.constraintDataModel = constraintEditorContent;
         this.activeTypeElement = constraintTypeElement;
-        this.editConstraintModal.show();
+        this.editNewConModal.show();
     }
 
     /**
@@ -382,15 +384,15 @@ export class CapOrReqDefComponent implements OnInit {
     private handleUpdateConstraint(data: string): void {
         this.notify.success('Constraint Updated!');
         this.activeConstraint.id = data;
-        this.editConstraintModal.hide();
+        this.editNewConModal.hide();
     }
 
     private handleCreateConstraint(data: string): void {
         this.notify.success('Constraint Created!');
         this.activeConstraint.id = data;
-        this.editConstraintModal.hide();
+        this.editNewConModal.hide();
         this.getConstraints(this.activeCapOrRegDefinition);
-        this.showConstraintListModal.show();
+        this.editConModal.show();
     }
 
     private handleGetConstraints(data: Constraint[]): void {

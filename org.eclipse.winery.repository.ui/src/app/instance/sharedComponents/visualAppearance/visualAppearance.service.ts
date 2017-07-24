@@ -11,42 +11,42 @@
  */
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Headers, RequestOptions, Http, Response } from '@angular/http';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { backendBaseURL } from '../../../configuration';
 import { Router } from '@angular/router';
-import { FileUploader } from 'ng2-file-upload';
 
 @Injectable()
 export class VisualAppearanceService {
-    isNodeType = true;
-    private path: string;
+
+    private url: string;
 
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
-        if (this.path.includes('relationshiptypes')) {
-            this.isNodeType = false;
-        }
+        this.url = decodeURIComponent(this.route.url);
     }
 
     getImg16x16Path(): string {
-        return backendBaseURL + this.path + '/16x16';
+        return backendBaseURL + this.url + '/16x16';
     }
 
     getImg50x50Path(): string {
-        return backendBaseURL + this.path + '/50x50';
+        return backendBaseURL + this.url + '/50x50';
     }
 
     getData() {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.path + '/', options)
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
+        return this.http.get(backendBaseURL + this.url + '/', options)
             .map(res => res.json());
     }
 
     saveVisuals(data: any): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.put(backendBaseURL + this.path + '/', JSON.stringify(data), options);
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
+        return this.http.put(backendBaseURL + this.url + '/', JSON.stringify(data), options);
+    }
+
+    get path(): string {
+        return this.url;
     }
 }

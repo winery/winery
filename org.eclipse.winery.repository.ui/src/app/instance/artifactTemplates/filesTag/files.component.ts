@@ -30,7 +30,7 @@ export class FilesComponent implements OnInit {
     filesList: FilesApiData[];
     baseUrl = hostURL;
 
-    @ViewChild('removeElementModal') removeModal: any;
+    @ViewChild('removeElementModal') removeElementModal: any;
     fileToRemove: FilesApiData;
 
     constructor(private service: FilesService, private notify: WineryNotificationService) {
@@ -51,7 +51,7 @@ export class FilesComponent implements OnInit {
 
     deleteFile(file: FilesApiData) {
         this.fileToRemove = file;
-        this.removeModal.show();
+        this.removeElementModal.show();
     }
 
     onRemoveElement() {

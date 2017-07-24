@@ -86,15 +86,15 @@ export class ValidSourcesAndTargetsComponent implements OnInit {
         }
     }
 
-    private onSelectedTrgValueChanged(event: SelectItem) {
+    public onSelectedTrgValueChanged(event: SelectItem) {
         this.validEndingsData.validTarget.validDataSet = {id: event.id, text: event.text};
     }
 
-    private onSelectedSrcValueChanged(event: SelectItem) {
+    public onSelectedSrcValueChanged(event: SelectItem) {
         this.validEndingsData.validSource.validDataSet = {id: event.id, text: event.text};
     }
 
-    private onValidSourceSelected(event: ValidEndingsSelectionEnum) {
+    public onValidSourceSelected(event: ValidEndingsSelectionEnum) {
         switch (event) {
             case ValidEndingsSelectionEnum.NODETYPE:
                 this.validEndingsData.validSource.validEndingsSelectionType = this.selectedEnum.NODETYPE;
@@ -108,7 +108,7 @@ export class ValidSourcesAndTargetsComponent implements OnInit {
         }
     }
 
-    private onValidTargetSelected(event: ValidEndingsSelectionEnum) {
+    public onValidTargetSelected(event: ValidEndingsSelectionEnum) {
         switch (event) {
             case ValidEndingsSelectionEnum.CAPTYPE:
                 this.validEndingsData.validTarget.validEndingsSelectionType = this.selectedEnum.CAPTYPE;
@@ -122,7 +122,7 @@ export class ValidSourcesAndTargetsComponent implements OnInit {
         }
     }
 
-    private saveToServer() {
+    public saveToServer() {
         this.loading = true;
 
         if (this.validEndingsData.validSource.validEndingsSelectionType === this.selectedEnum.EVERYTHING ||

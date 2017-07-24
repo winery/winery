@@ -20,8 +20,14 @@ export class SelfServicePortalOptionsComponent {
 
     options: ApplicationOption[] = [];
     columns = [
-        {title: 'Name', name: 'name'},
-        {title: 'Icon', name: 'icon'},
-        {title: 'Plan Service Name', name: 'planServiceName'}
+        { title: 'Name', name: 'name' },
+        { title: 'Icon', name: 'icon' },
+        { title: 'Plan Service Name', name: 'planServiceName' }
     ];
+
+    onRemoveClick(event: any) {
+    }
+
+    onAddClick() {
+    }
 }

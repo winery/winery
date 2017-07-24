@@ -160,7 +160,6 @@
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Generate'"
         [disableOkButton]="!(createImplementation || createArtifactTemplate)"
-        (onOk)="generateImplementationArtifact()"
-        (onCancel)="show = false">
+        (onOk)="generateImplementationArtifact()">
     </winery-modal-footer>
 </winery-modal>

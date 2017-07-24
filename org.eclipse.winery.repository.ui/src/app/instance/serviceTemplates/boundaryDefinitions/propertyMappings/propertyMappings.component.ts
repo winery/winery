@@ -15,6 +15,7 @@ import { WineryTableColumn } from '../../../../wineryTableModule/wineryTable.com
 import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
+import { NgForm } from '@angular/forms';
 
 @Component({
     selector: 'winery-instance-boundary-property-mappings',
@@ -32,7 +33,8 @@ export class PropertyMappingsComponent implements OnInit {
     ];
     @ViewChild('addPropertyMappingModal') addPropertyMappingModal: ModalDirective;
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('propertyMappingForm') propertyMappingForm: any;
+    @ViewChild('browseForServiceTemplatePropertyDiag') browseForServiceTemplatePropertyDiag: ModalDirective;
+    @ViewChild('propertyMappingForm') propertyMappingForm: NgForm;
     currentSelectedItem: Property;
     addOrUpdateBtnTxt = 'Add';
 

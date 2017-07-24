@@ -16,6 +16,7 @@ import { PropertyConstraintApiData } from './propertyConstraintApiData';
 import { ConstraintTypeApiData } from './constraintTypesApiData';
 import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplicateValidator.directive';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-boundary-properties',
@@ -32,12 +33,12 @@ export class PropertyConstraintsComponent implements OnInit {
     selectedCell: PropertyConstraintApiData;
     constraintTypes: ConstraintTypeApiData[] = [];
     columns: Array<any> = [
-        {title: 'Service Template Property', name: 'property', sort: true},
-        {title: 'Constraint Type', name: 'constraintType', sort: true},
-        {title: 'Constraint', name: 'fragments', sort: true}
+        { title: 'Service Template Property', name: 'property', sort: true },
+        { title: 'Constraint Type', name: 'constraintType', sort: true },
+        { title: 'Constraint', name: 'fragments', sort: true }
     ];
-    @ViewChild('confirmDeleteModal') deleteModal: any;
-    @ViewChild('addModal') addModal: any;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
     validatorObject: WineryValidatorObject;
 
     constructor(private service: PropertyConstraintsService,
@@ -74,15 +75,23 @@ export class PropertyConstraintsComponent implements OnInit {
         if (isNullOrUndefined(data)) {
             return;
         } else {
-            this.deleteModal.show();
+            this.confirmDeleteModal.show();
         }
     }
 
     removeConfirmed() {
-        this.deleteModal.hide();
+        this.confirmDeleteModal.hide();
         this.addLoad();
         this.service.deleteConstraints(this.selectedCell).subscribe(
             data => this.handleDeleteResponse(data),
+            error => this.handleError(error)
+        );
+    }
+
+    getConstraintTypes() {
+        this.addLoad();
+        this.service.getConstraintTypes().subscribe(
+            data => this.handleConstraintsData(data),
             error => this.handleError(error)
         );
     }
@@ -91,14 +100,6 @@ export class PropertyConstraintsComponent implements OnInit {
         this.addLoad();
         this.service.getConstraints().subscribe(
             data => this.handleData(data),
-            error => this.handleError(error)
-        );
-    }
-
-    private getConstraintTypes() {
-        this.addLoad();
-        this.service.getConstraintTypes().subscribe(
-            data => this.handleConstraintsData(data),
             error => this.handleError(error)
         );
     }

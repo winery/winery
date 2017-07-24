@@ -23,7 +23,7 @@
             <winery-entity-container
                 *ngFor="let item of componentData
                 | filterSections: { showNamespaces: showNamespace, filterString: filterString }
-                | paginate: { itemsPerPage: itemsPerPage, currentPage: page }"
+                | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }"
                 [resourceType]="selectedResource"
                 [data]="item">
             </winery-entity-container>
@@ -44,7 +44,7 @@
             <option value="25">25</option>
             <option value="50">50</option>
         </select>
-        <pagination-controls (pageChange)="page = $event"></pagination-controls>
+        <pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>
     </div>
 </div>
 

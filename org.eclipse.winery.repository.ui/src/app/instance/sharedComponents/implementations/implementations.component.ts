@@ -18,6 +18,7 @@ import { InstanceService } from '../../instance.service';
 import { ImplementationAPIData } from './implementationAPIData';
 import { ImplementationService } from './implementations.service';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -34,11 +35,11 @@ export class ImplementationsComponent implements OnInit {
     selectedNamespace = '';
     validatorObject: WineryValidatorObject;
     columns: Array<any> = [
-        {title: 'Namespace', name: 'namespace', sort: true},
-        {title: 'Name', name: 'localname', sort: true},
+        { title: 'Namespace', name: 'namespace', sort: true },
+        { title: 'Name', name: 'localname', sort: true },
     ];
-    @ViewChild('confirmDeleteModal') deleteImplModal: any;
-    @ViewChild('addModal') addImplModal: any;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private sharedData: InstanceService,
                 private service: ImplementationService,
@@ -60,7 +61,21 @@ export class ImplementationsComponent implements OnInit {
     onAddClick() {
         this.validatorObject = new WineryValidatorObject(this.implementationData, 'localname');
         this.newImplementation = new ImplementationAPIData('', '');
-        this.addImplModal.show();
+        this.addModal.show();
+    }
+
+    addNewImplementation(localname: string) {
+        this.loading = true;
+        const typeNamespace = this.sharedData.selectedNamespace;
+        const typeName = this.sharedData.selectedComponentId;
+        const type = '{' + typeNamespace + '}' + typeName;
+        const resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
+            localname,
+            type);
+        this.service.postImplementation(resource).subscribe(
+            data => this.handlePostResponse(data),
+            error => this.handleError(error)
+        );
     }
 
     onRemoveClick(data: any) {
@@ -68,12 +83,12 @@ export class ImplementationsComponent implements OnInit {
             return;
         } else {
             this.elementToRemove = new ImplementationAPIData(data.namespace, data.localname);
-            this.deleteImplModal.show();
+            this.confirmDeleteModal.show();
         }
     }
 
     removeConfirmed() {
-        this.deleteImplModal.hide();
+        this.confirmDeleteModal.hide();
         this.loading = true;
         this.service.deleteImplementations(this.elementToRemove)
             .subscribe(
@@ -102,20 +117,6 @@ export class ImplementationsComponent implements OnInit {
     private handleError(error: any): void {
         this.loading = false;
         this.notificationService.error('Action caused an error:\n', error);
-    }
-
-    private addNewImplementation(localname: string) {
-        this.loading = true;
-        const typeNamespace = this.sharedData.selectedNamespace;
-        const typeName = this.sharedData.selectedComponentId;
-        const type = '{' + typeNamespace + '}' + typeName;
-        const resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
-            localname,
-            type);
-        this.service.postImplementation(resource).subscribe(
-            data => this.handlePostResponse(data),
-            error => this.handleError(error)
-        );
     }
 
     private handlePostResponse(data: Response) {

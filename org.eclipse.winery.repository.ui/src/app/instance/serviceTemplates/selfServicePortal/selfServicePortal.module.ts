@@ -18,7 +18,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ImageUploadComponent } from './imageUpload.component';
 import { SelfServicePortalImagesComponent } from './selfServicePortalImages.component';
-import { SelfServicePortalOptionsComponent } from './selfServciePortalOptions.component';
+import { SelfServicePortalOptionsComponent } from './selfServicePortalOptions.component';
 import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
 import { WineryUploaderModule } from '../../../wineryUploader/wineryUploader.module';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';

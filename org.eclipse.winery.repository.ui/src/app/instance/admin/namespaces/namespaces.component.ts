@@ -28,18 +28,18 @@ export class NamespacesComponent implements OnInit {
 
     loading = true;
     adminNamespaces: Array<any> = [];
-    newNamespace: any = {namespace: '', prefix: ''};
+    newNamespace: any = { namespace: '', prefix: '' };
     validatorObjectPrefix: WineryValidatorObject;
     validatorObjectNamespace: WineryValidatorObject;
-    itemToDelete: NamespaceWithPrefix = null;
+
     columns = [
-        {title: 'Prefix', name: 'prefix'},
-        {title: 'Namespace', name: 'namespace'}
+        { title: 'Prefix', name: 'prefix' },
+        { title: 'Namespace', name: 'namespace' }
     ];
     elementToRemove: any;
 
-    @ViewChild('confirmDeleteModal') deleteNamespaceModal: ModalDirective;
-    @ViewChild('addModal') addNamespaceModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private service: NamespacesService,
                 private notify: WineryNotificationService) {
@@ -78,7 +78,7 @@ export class NamespacesComponent implements OnInit {
             return;
         } else {
             this.elementToRemove = data;
-            this.deleteNamespaceModal.show();
+            this.confirmDeleteModal.show();
         }
     }
 
@@ -86,11 +86,11 @@ export class NamespacesComponent implements OnInit {
      * handler for clicks on the add button
      */
     onAddClick() {
-        this.addNamespaceModal.show();
+        this.addModal.show();
     }
 
     deleteNamespace() {
-        this.deleteNamespaceModal.hide();
+        this.confirmDeleteModal.hide();
         this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
         this.elementToRemove = null;
         this.save();

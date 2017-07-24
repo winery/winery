@@ -45,7 +45,7 @@
                          (onSucces)="onUploadSuccess()">
         </winery-uploader>
         <br/>
-        <div *ngIf="service.isNodeType">
+        <div *ngIf="isNodeType">
             <b>Icon (50x50) used in the node template shapes</b><br/>
             <div class="typeIcon"><img src="{{img50Path}}" height="50" width="50"></div>
             <winery-uploader #uploader50 id="uploader50"

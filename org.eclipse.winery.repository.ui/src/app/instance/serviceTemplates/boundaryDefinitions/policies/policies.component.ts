@@ -43,7 +43,7 @@ export class PoliciesComponent implements OnInit {
     ];
     selectedCell: WineryPolicy;
     validator: WineryValidatorObject;
-    @ViewChild('confirmDeleteModal') deleteModal: ModalDirective;
+    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
     @ViewChild('xmlEditor') xmlEditor: EditXMLComponent;
 
@@ -88,7 +88,7 @@ export class PoliciesComponent implements OnInit {
 
     remove() {
         if (!isNullOrUndefined(this.selectedCell)) {
-            this.deleteModal.show();
+            this.confirmDeleteModal.show();
         } else {
             this.notify.warning('You need to select a row to remove!', 'Nothing selected');
         }

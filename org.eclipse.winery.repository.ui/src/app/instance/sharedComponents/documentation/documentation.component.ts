@@ -38,18 +38,18 @@ export class DocumentationComponent implements OnInit {
             );
     }
 
-    private handleData(docu: string) {
-        this.documentationData = docu;
-        this.loading = false;
-    }
-
-    private saveToServer() {
+    saveToServer() {
         this.loading = true;
         this.service.saveDocumentationData(this.documentationData)
             .subscribe(
                 data => this.handleResponse(data),
                 error => this.handleError(error)
             );
+    }
+
+    private handleData(docu: string) {
+        this.documentationData = docu;
+        this.loading = false;
     }
 
     private handleResponse(response: any) {
