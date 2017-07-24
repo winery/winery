@@ -30,37 +30,38 @@ import static org.junit.Assert.*;
 
 
 public class BPMN4Tosca2BpelTest {
+ private String timeStamp;
+	protected static String RESOURCES_DIR = "src/test/resources/bpmn4tosca";
 
-    protected static String RESOURCES_DIR = "src/test/resources/bpmn4tosca";
 
+	@Before
+	public void setUp() throws Exception {
+		timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 
-    @Before
-    public void setUp() throws Exception {
+	}
 
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@Test
+	public void testTransform() throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.json").toUri();
+		URI targetUri = Paths.get(RESOURCES_DIR, timeStamp + "managementplan.zip").toUri();
+		BPMN4Tosca2BpelTest.class.getResource(".");
+		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+		transformer.transform(srcUri, targetUri);
+	}
 
-    @Test
-    public void testTransform() throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
-        URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.json").toUri();
-        URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.zip").toUri();
-        BPMN4Tosca2BpelTest.class.getResource(".");
-        Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
-        transformer.transform(srcUri, targetUri);
-    }
-
-    @Test
-    public void testTransformGateway()
-            throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
-        URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.exclusivegateway.json").toUri();
-        URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.exclusivegateway.zip").toUri();
-        BPMN4Tosca2BpelTest.class.getResource(".");
-        Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
-        transformer.transform(srcUri, targetUri);
-    }
+	@Test
+	public void testTransformGateway()
+			throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.exclusivegateway.json").toUri();
+		URI targetUri = Paths.get(RESOURCES_DIR, timeStamp + "managementplan.exclusivegateway.zip").toUri();
+		BPMN4Tosca2BpelTest.class.getResource(".");
+		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+		transformer.transform(srcUri, targetUri);
+	}
 
 
 	@Test
