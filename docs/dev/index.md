@@ -4,9 +4,10 @@ This document provides (i) guides about development and (ii) design ideas of Win
 
 Other sources of information:
 
-- [ToolChain](ToolChain) - GitHub workflow
 - [CodeHeaders](CodeHeaders) - documentation about required code headers
+- [Encoding](Encoding) - information about how percent-encoding is used at Winery
 - [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
+- [ToolChain](ToolChain) - GitHub workflow
 - [TOSCA](../tosca/) - notes on OASIS TOSCA
 
 Table of contents:
@@ -250,6 +251,7 @@ An online URL-encoder may be found at: <http://www.albinoresearch.com/misc/urlen
 For instance, the NodeType "NT1" in the namespace `http://www.example.com/NodeTypes` is found at the URL `nodetypes/http%253A%252F%252Fexample.com%252FNodeTypes/NT1/`.
 As the browser decodes the URL, the namespace and the id are double encoded. 
 Note the additional encoding of the symbol `%` in comparison to the encoding at the filesystem.
+This is due to security decisions to disallow `%2F` in URLs.
 
 The part until `<componenttype>s` is realized by ["AbstractComponentsResource" and its subclasses](#collections-of-components).
 The resource specific part is realized by [subclasses of AbstractComponentInstanceResource](#component-instances).
@@ -456,19 +458,19 @@ http://localhost:8080/winery as URL, and enable LiveReload in the browser.
 
 ### Faster Redeployment
 
-It takes a few seconds until the whole application is redeployed.
-You can use [JRebel](http://www.jrebel.com) for hot code replacement in the Tomcat in Eclipse.
+It takes a few seconds until the whole application is redeployed. You can use JRebel ( http://www.jrebel.com )
+for hot code replacement in the Tomcat in Eclipse.
 
 ## Miscellaneous Hints
 
 ### Generating the Right Output
 
-* If necessary, set the content type of the JSP: `<%@page contentType="image/svg+xml; charset=utf-8" %>`
-  * Otherwise, answer is plain text (and not XML)
+*  If necessary, set the content type of the JSP: <%@page contentType="image/svg+xml; charset=utf-8" %>
+  *    Otherwise, answer is plain text (and not XML)
 
-* XML documents have to contain the header `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`
- * `standalone=yes` means that there is no external DTD
- * eleminates parsing errors in FireFox
+*  XML documents have to contain the header <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  *    standalone=yes means that there is no external DTD
+  *    eleminates parsing errors in firefox
 
 ### Trouble shooting IntelliJ
 
@@ -524,7 +526,6 @@ Implementation Artifacts (IAs) may be attached at
 * NodeTemplate
 
 Deployment Artifacts (DAs) may be attached at
-
 * NodeType
 * NodeTemplate
 

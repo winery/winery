@@ -9,6 +9,7 @@
  * Contributors:
  *     Niko Stadelmaier - initial API and implementation
  *     Oliver Kopp - test of create instance
+ *     Karoline Saatkamp - test injector
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates;
 
@@ -20,26 +21,60 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServiceTemplateResourceTest extends AbstractResourceTest {
+	
+	@Test
+	@Ignore
+	public void addServicetemplate() throws Exception {
+		this.setRevisionTo("337119ea2e694e70b994bcb3d97295856c0ab0f6");
+		this.assertPost("servicetemplates/", "entitytypes/servicetemplates/baobab_create_servicetemplate.json");
+		this.assertGet("servicetemplates/","entitytypes/servicetemplates/baobab_inital.json");
+	}
 
-    @Test
-    @Ignore
-    public void addServicetemplate() throws Exception {
-        this.setRevisionTo("337119ea2e694e70b994bcb3d97295856c0ab0f6");
-        this.assertPost("servicetemplates/", "entitytypes/servicetemplates/baobab_create_servicetemplate.json");
-        this.assertGet("servicetemplates/","entitytypes/servicetemplates/baobab_inital.json");
-    }
+	@Test
+	public void addTopologyTemplate() throws Exception {
+		this.setRevisionTo("84d064a2f7390b3274ca8b3641a5902ba4c822d7");
+		this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/", "entitytypes/servicetemplates/straw-stall.json");
+		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/topologytemplate/", "entitytypes/servicetemplates/straw-stall.json");
+	}
 
-    @Test
-    public void getServicetemplate() throws Exception {
-        this.setRevisionTo("a5fd2da6845e9599138b7c20c1fd9d727c1df66f");
-        this.assertGet("servicetemplates/","entitytypes/servicetemplates/baobab_inital.json");
-    }
+	@Test
+	public void getServicetemplate() throws Exception {
+		this.setRevisionTo("a5fd2da6845e9599138b7c20c1fd9d727c1df66f");
+		this.assertGet("servicetemplates/","entitytypes/servicetemplates/baobab_inital.json");
+	}
 
-    @Test
-    public void createInstance() throws Exception {
-        this.setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
-        ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/fruits", "farm", false);
-        ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-        Assert.assertNotNull(serviceTemplateResource);
-    }
+	@Test
+	public void updateTopology() throws Exception {
+		this.setRevisionTo("a5fd2da6845e9599138b7c20c1fd9d727c1df66f");
+		this.assertGet("servicetemplates/","entitytypes/servicetemplates/baobab_inital.json");
+	}
+
+	@Test
+	public void createInstance() throws Exception {
+		this.setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
+		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/fruits", "farm", false);
+		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
+		Assert.assertNotNull(serviceTemplateResource);
+	}
+
+	@Test
+	public void getInjectorOptions() throws Exception {
+		this.setRevisionTo("84d064a2f7390b3274ca8b3641a5902ba4c822d7");
+		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/options", "servicetemplates/ServiceTemplateResource-getInjectionOptions.json");
+	}
+
+	@Test
+	public void getInjectorOptionsWithoutOpenRequirementsBadRequest() throws Exception {
+		this.setRevisionTo("black");
+		//this.assertGetExpectBadRequestResponse("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options", "servicetemplates/pony.json");
+		this.assertGetExpectBadRequestResponse("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options", "servicetemplates/ServiceTemplateResource-getInjectorOptionsWithoutOpenRequirements-badrequest.txt");
+	}
+
+	@Test
+	public void injectNodeTemplates() throws Exception {
+		this.setRevisionTo("d535f69bf50b2c4eda437be46b7ba1f85c4ff3bc");
+		this.assertPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Finjector/FoodandHouseInjectionTest/injector/replace", "servicetemplates/ServiceTemplateResource-injectNodeTemplates-input2.json");
+
+	}
+
 }

@@ -15,278 +15,300 @@
  * This file contains supporting functions for the topoplogy modeler
  */
 define(
-    // although XMLWriter ist not an AMD module, requirejs does not complain when loading it
-    ["winery-support-common", "XMLWriter"],
-    function (w) {
-        // has to be consistent with {@link org.eclipse.winery.common.constants.Namespaces}
-        var TOSCA_NAMESPACE = "http://docs.oasis-open.org/tosca/ns/2011/12";
-        var TOSCA_WINERY_EXTENSIONS_NAMESPACE ="http://www.opentosca.org/winery/extensions/tosca/2013/02/12";
+	// although XMLWriter ist not an AMD module, requirejs does not complain when loading it
+	["winery-support-common", "XMLWriter"],
+	function (w) {
+		// has to be consistent with {@link org.eclipse.winery.common.constants.Namespaces}
+		var TOSCA_NAMESPACE = "http://docs.oasis-open.org/tosca/ns/2011/12";
+		var TOSCA_WINERY_EXTENSIONS_NAMESPACE ="http://www.opentosca.org/winery/extensions/tosca/2013/02/12";
 
-        var topologyTemplateURL;
+		var topologyTemplateURL;
 
-        return {
-            openChooseTopologyToImportDiag: openChooseTopologyToImportDiag,
-            importTopology: importTopology,
-            save: save,
-            split: split,
-            setTopologyTemplateURL: function (url) {
-                topologyTemplateURL = url;
-            },
-            getTopologyTemplateAsXML: getTopologyTemplateAsXML,
+		return {
+			openChooseTopologyToImportDiag: openChooseTopologyToImportDiag,
+			importTopology: importTopology,
+			save: save,
+			split: split,
+			match: match,
+			setTopologyTemplateURL: function (url) {
+				topologyTemplateURL = url;
+			},
+			getTopologyTemplateAsXML: getTopologyTemplateAsXML,
 
-            TOSCA_NAMESPACE: TOSCA_NAMESPACE,
-            TOSCA_WINERY_EXTENSIONS_NAMESPACE: TOSCA_WINERY_EXTENSIONS_NAMESPACE
-        };
+			TOSCA_NAMESPACE: TOSCA_NAMESPACE,
+			TOSCA_WINERY_EXTENSIONS_NAMESPACE: TOSCA_WINERY_EXTENSIONS_NAMESPACE
+		};
 
-        function writeReqOrCaps(elements, xmlw, globalWrapperElementName, singleElementWrapperName) {
-            if (elements.length != 0) {
-                xmlw.writeStartElement(globalWrapperElementName);
+		function writeReqOrCaps(elements, xmlw, globalWrapperElementName, singleElementWrapperName) {
+			if (elements.length != 0) {
+				xmlw.writeStartElement(globalWrapperElementName);
 
-                $.each(elements, function(i,e) {
-                    xmlw.writeStartElement(singleElementWrapperName);
-                    e = $(e);
-                    xmlw.writeAttributeString("id",   e.children(".id").text());
-                    xmlw.writeAttributeString("name", e.children(".name").text());
-                    writeType(xmlw, e.children(".type").children("a").data("qname"));
-                    savePropertiesFromDivToXMLWriter(e.children("div.propertiesContainer"), xmlw);
-                    xmlw.writeEndElement();
-                });
+				$.each(elements, function(i,e) {
+					xmlw.writeStartElement(singleElementWrapperName);
+					e = $(e);
+					xmlw.writeAttributeString("id",   e.children(".id").text());
+					xmlw.writeAttributeString("name", e.children(".name").text());
+					writeType(xmlw, e.children(".type").children("a").data("qname"));
+					savePropertiesFromDivToXMLWriter(e.children("div.propertiesContainer"), xmlw);
+					xmlw.writeEndElement();
+				});
 
-                xmlw.writeEndElement();
-            }
+				xmlw.writeEndElement();
+			}
 
-        }
+		}
 
-        function openChooseTopologyToImportDiag() {
-            $("#chooseTopologyToImportDiag").modal("show");
-        }
+		function openChooseTopologyToImportDiag() {
+			$("#chooseTopologyToImportDiag").modal("show");
+		}
 
-        function importTopology(urlPrefix, serviceTemplateQName) {
-            $("#importButon").button("loading");
-            $.ajax({
-                url: topologyTemplateURL + "merge",
-                type: "POST",
-                contentType: 'text/plain',
-                data: serviceTemplateQName,
-                success: function(data, textStatus, jqXHR) {
-                    $("#importButon").button("reset");
-                    vShowSuccess("successfully saved. Reloading page...");
-                    window.location.reload(true);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    $("#importButon").button("reset");
-                    vShowAJAXError("Could not import", jqXHR, errorThrown);
-                }
-            });
+		function importTopology(urlPrefix, serviceTemplateQName) {
+			$("#importButon").button("loading");
+			$.ajax({
+				url: topologyTemplateURL + "merge",
+				type: "POST",
+				contentType: 'text/plain',
+				data: serviceTemplateQName,
+				success: function(data, textStatus, jqXHR) {
+					$("#importButon").button("reset");
+					vShowSuccess("successfully saved. Reloading page...");
+					window.location.reload(true);
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#importButon").button("reset");
+					vShowAJAXError("Could not import", jqXHR, errorThrown);
+				}
+			});
 
-            // currently does not work as we do not support rendering based on JSON data
+			// currently does not work as we do not support rendering based on JSON data
 
-            // var topologyTemplateURL = urlPrefix + w.getURLFragmentOutOfFullQName(serviceTemplateQName) + "/" + "topologytemplate/";
-            // $.getJSON(topologyTemplateURL, function(topologyTemplate) {
-            //     console.log(topologyTemplate);
-            // });
-        }
+			// var topologyTemplateURL = urlPrefix + w.getURLFragmentOutOfFullQName(serviceTemplateQName) + "/" + "topologytemplate/";
+			// $.getJSON(topologyTemplateURL, function(topologyTemplate) {
+			// 	console.log(topologyTemplate);
+			// });
+		}
 
-        /**
-         * "doSave"
-         */
-        function save() {
-            $("#saveBtn").button("loading");
+		/**
+		 * "doSave"
+		 */
+		function save() {
+			$("#saveBtn").button("loading");
 
-            $.ajax({
-                url: topologyTemplateURL,
-                type: "PUT",
-                contentType: 'text/xml',
-                data: getTopologyTemplateAsXML(false),
-                success: function(data, textStatus, jqXHR) {
-                    $("#saveBtn").button("reset");
-                    vShowSuccess("successfully saved.");
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    $("#saveBtn").button("reset");
-                    vShowAJAXError("Could not save", jqXHR, errorThrown);
-                }
-            });
-        }
+			$.ajax({
+				url: topologyTemplateURL,
+				type: "PUT",
+				contentType: 'text/xml',
+				data: getTopologyTemplateAsXML(false),
+				success: function(data, textStatus, jqXHR) {
+					$("#saveBtn").button("reset");
+					vShowSuccess("successfully saved.");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#saveBtn").button("reset");
+					vShowAJAXError("Could not save", jqXHR, errorThrown);
+				}
+			});
+		}
 
-        /**
-         * "doSplit"
-         */
-        function split() {
-            $("#splitBtn").button("loading");
+		/**
+		 * "doSplit"
+		 */
+		function split() {
+			$("#splitBtn").button("loading");
 
-            $.ajax({
-                url: topologyTemplateURL,
-                type: "POST",
-                success: function(data, textStatus, jqXHR) {
-                    $("#splitBtn").button("reset");
-                    var location = jqXHR.getResponseHeader("Location");
-                    vShowSuccess("Successfully split. <a target=\"_blank\" href=\"" + location + "\">Open split service template</a>");
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    $("#splitBtn").button("reset");
-                    vShowAJAXError("Could not split", jqXHR, errorThrown);
-                }
-            });
-        }
+			$.ajax({
+				url: topologyTemplateURL + 'split',
+				type: "POST",
+				success: function(data, textStatus, jqXHR) {
+					$("#splitBtn").button("reset");
+					var location = jqXHR.getResponseHeader("Location");
+					vShowSuccess("Successfully split. <a target=\"_blank\" href=\"" + location + "\">Open split service template</a>");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#splitBtn").button("reset");
+					vShowAJAXError("Could not split", jqXHR, errorThrown);
+				}
+			});
+		}
 
-        /**
-         * Creates an XML String of the modelled topology template.
-         */
-        function getTopologyTemplateAsXML(needsDefinitionsTag) {
+		/**
+		 * "doMatch"
+		 */
+		function match() {
+			$("#matchBtn").button("loading");
 
-            var xmlw = new XMLWriter("utf-8");
-            xmlw.writeStartDocument();
+			$.ajax({
+				url: topologyTemplateURL + 'match',
+				type: "POST",
+				success: function(data, textStatus, jqXHR) {
+					$("#matchBtn").button("reset");
+					var location = jqXHR.getResponseHeader("Location");
+					vShowSuccess("Successfully matched. <a target=\"_blank\" href=\"" + location + "\">Open matched service template</a>");
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#matchBtn").button("reset");
+					vShowAJAXError("Could not match", jqXHR, errorThrown);
+				}
+			});
+		}
 
-            if (needsDefinitionsTag) {
-                xmlw.writeStartElement("Definitions");
-                xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
-                xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
+		/**
+		 * Creates an XML String of the modelled topology template.
+		 */
+		function getTopologyTemplateAsXML(needsDefinitionsTag) {
 
-                xmlw.writeStartElement("ServiceTemplate");
-                xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
-                xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
-            }
-            xmlw.writeStartElement("TopologyTemplate");
-            xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
-            xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
-            $("div.NodeTemplateShape").not(".hidden").each (function() {
-                xmlw.writeStartElement("NodeTemplate");
+			var xmlw = new XMLWriter("utf-8");
+			xmlw.writeStartDocument();
 
-                var id = $(this).attr("id");
+			if (needsDefinitionsTag) {
+				xmlw.writeStartElement("Definitions");
+				xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
+				xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
 
-                var headerContainer = $(this).children("div.headerContainer");
-                var name = headerContainer.children("div.name").text();
-                var typeQNameStr = headerContainer.children("span.typeQName").text();
-                var minmaxdiv = headerContainer.children("div.minMaxInstances");
-                var min = minmaxdiv.children("span.minInstances").text();
-                var max = minmaxdiv.children("span.maxInstances").text();
-                if (max == "∞") {
-                    max = "unbounded";
-                }
-                var x = $(this).css("left");
-                x = x.substring(0, x.indexOf("px"));
-                var y = $(this).css("top");
-                y = y.substring(0, y.indexOf("px"));
+				xmlw.writeStartElement("ServiceTemplate");
+				xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
+				xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
+			}
+			xmlw.writeStartElement("TopologyTemplate");
+			xmlw.writeAttributeString("xmlns", TOSCA_NAMESPACE);
+			xmlw.writeAttributeString("xmlns:winery", TOSCA_WINERY_EXTENSIONS_NAMESPACE);
+			$("div.NodeTemplateShape").not(".hidden").each (function() {
+				xmlw.writeStartElement("NodeTemplate");
 
-                xmlw.writeAttributeString("id", id);
-                if (name != "") {
-                    xmlw.writeAttributeString("name", name);
-                }
-                writeType(xmlw, typeQNameStr);
-                if (min != "") {
-                    xmlw.writeAttributeString("minInstances", min);
-                }
-                if (max != "") {
-                    xmlw.writeAttributeString("maxInstances", max);
-                }
-                xmlw.writeAttributeString("winery:x", x);
-                xmlw.writeAttributeString("winery:y", y);
-                var targetLocation = $(this).find("div.targetLocationContainer > div.content > .thetargetlocation").editable("getValue").undefined;
-                if (targetLocation !== "") {
-                    xmlw.writeAttributeString("winery:location", targetLocation);
-                }
+				var id = $(this).attr("id");
 
-                /** Properties **/
-                savePropertiesFromDivToXMLWriter($(this).children("div.propertiesContainer"), xmlw);
+				var headerContainer = $(this).children("div.headerContainer");
+				var name = headerContainer.children("div.name").text();
+				var typeQNameStr = headerContainer.children("span.typeQName").text();
+				var minmaxdiv = headerContainer.children("div.minMaxInstances");
+				var min = minmaxdiv.children("span.minInstances").text();
+				var max = minmaxdiv.children("span.maxInstances").text();
+				if (max == "∞") {
+					max = "unbounded";
+				}
+				var x = $(this).css("left");
+				x = x.substring(0, x.indexOf("px"));
+				var y = $(this).css("top");
+				y = y.substring(0, y.indexOf("px"));
 
-                /** Requirements **/
-                writeReqOrCaps(
-                    $(this).children("div.requirementsContainer").children("div.content").children("div.reqorcap"),
-                    xmlw,
-                    "Requirements",
-                    "Requirement");
+				xmlw.writeAttributeString("id", id);
+				if (name != "") {
+					xmlw.writeAttributeString("name", name);
+				}
+				writeType(xmlw, typeQNameStr);
+				if (min != "") {
+					xmlw.writeAttributeString("minInstances", min);
+				}
+				if (max != "") {
+					xmlw.writeAttributeString("maxInstances", max);
+				}
+				xmlw.writeAttributeString("winery:x", x);
+				xmlw.writeAttributeString("winery:y", y);
+				var targetLocation = $(this).find("div.targetLocationContainer > div.content > .thetargetlocation").editable("getValue").undefined;
+				if (targetLocation !== "") {
+					xmlw.writeAttributeString("winery:location", targetLocation);
+				}
 
-                /** Capabilities **/
-                writeReqOrCaps(
-                    $(this).children("div.capabilitiesContainer").children("div.content").children("div.reqorcap"),
-                    xmlw,
-                    "Capabilities",
-                    "Capability");
+				/** Properties **/
+				savePropertiesFromDivToXMLWriter($(this).children("div.propertiesContainer"), xmlw);
 
-                /** Policies **/
-                w.writeCollectionDefinedByATextArea(xmlw,
-                        $(this).children("div.policiesContainer").children("div.content").children("div.policy"),
-                        "Policies");
+				/** Requirements **/
+				writeReqOrCaps(
+					$(this).children("div.requirementsContainer").children("div.content").children("div.reqorcap"),
+					xmlw,
+					"Requirements",
+					"Requirement");
 
-                /** Deployment Artifacts **/
-                var das = $(this).children("div.deploymentArtifactsContainer").children("div.content").children("div.deploymentArtifact");
-                if (das.length != 0) {
-                    xmlw.writeStartElement("DeploymentArtifacts");
-                    das.each(function(i,e) {
-                        // the textarea contains a valid deployment artifact xml
-                        var xml = $(e).children("textarea").val();
-                        xmlw.writeXML(xml);
-                    });
-                    xmlw.writeEndElement();
-                }
+				/** Capabilities **/
+				writeReqOrCaps(
+					$(this).children("div.capabilitiesContainer").children("div.content").children("div.reqorcap"),
+					xmlw,
+					"Capabilities",
+					"Capability");
 
-                // End: Nodetemplate
-                xmlw.writeEndElement();
-            });
-            jsPlumb.select().each(function(connection) {
-                xmlw.writeStartElement("RelationshipTemplate");
-                var id = connection.id;
-                var typeQNameStr = connection.getType()[0];
+				/** Policies **/
+				w.writeCollectionDefinedByATextArea(xmlw,
+						$(this).children("div.policiesContainer").children("div.content").children("div.policy"),
+						"Policies");
 
-                var connData = winery.connections[id];
-                if (!connData) {
-                    vShowError("Error in the internal data structure: Id " + id + " not found");
-                    return;
-                }
+				/** Deployment Artifacts **/
+				var das = $(this).children("div.deploymentArtifactsContainer").children("div.content").children("div.deploymentArtifact");
+				if (das.length != 0) {
+					xmlw.writeStartElement("DeploymentArtifacts");
+					das.each(function(i,e) {
+						// the textarea contains a valid deployment artifact xml
+						var xml = $(e).children("textarea").val();
+						xmlw.writeXML(xml);
+					});
+					xmlw.writeEndElement();
+				}
 
-                xmlw.writeAttributeString("id", connData.id);
-                if (connData.name != "") {
-                    xmlw.writeAttributeString("name", connData.name);
-                }
-                writeType(xmlw, typeQNameStr);
+				// End: Nodetemplate
+				xmlw.writeEndElement();
+			});
+			jsPlumb.select().each(function(connection) {
+				xmlw.writeStartElement("RelationshipTemplate");
+				var id = connection.id;
+				var typeQNameStr = connection.getType()[0];
 
-                if (typeof connData.propertiesContainer !== "undefined") {
-                    savePropertiesFromDivToXMLWriter(connData.propertiesContainer, xmlw);
-                }
+				var connData = winery.connections[id];
+				if (!connData) {
+					vShowError("Error in the internal data structure: Id " + id + " not found");
+					return;
+				}
 
-                xmlw.writeStartElement("SourceElement");
-                if (connData.req) {
-                    // conn starts at a requirement
-                    xmlw.writeAttributeString("ref", connData.req);
-                } else {
-                    // conn starts at a node template
-                    xmlw.writeAttributeString("ref", connection.sourceId);
-                }
-                xmlw.writeEndElement();
-                xmlw.writeStartElement("TargetElement");
-                if (connData.cap) {
-                    // conn ends at a capability
-                    xmlw.writeAttributeString("ref", connData.cap);
-                } else {
-                    // conn ends at a node template
-                    xmlw.writeAttributeString("ref", connection.targetId);
-                }
-                xmlw.writeEndElement();
+				xmlw.writeAttributeString("id", connData.id);
+				if (connData.name != "") {
+					xmlw.writeAttributeString("name", connData.name);
+				}
+				writeType(xmlw, typeQNameStr);
 
-                xmlw.writeEndElement();
-            });
+				if (typeof connData.propertiesContainer !== "undefined") {
+					savePropertiesFromDivToXMLWriter(connData.propertiesContainer, xmlw);
+				}
 
-            if (needsDefinitionsTag) {
-                xmlw.writeEndElement();
-                xmlw.writeEndElement();
-            }
+				xmlw.writeStartElement("SourceElement");
+				if (connData.req) {
+					// conn starts at a requirement
+					xmlw.writeAttributeString("ref", connData.req);
+				} else {
+					// conn starts at a node template
+					xmlw.writeAttributeString("ref", connection.sourceId);
+				}
+				xmlw.writeEndElement();
+				xmlw.writeStartElement("TargetElement");
+				if (connData.cap) {
+					// conn ends at a capability
+					xmlw.writeAttributeString("ref", connData.cap);
+				} else {
+					// conn ends at a node template
+					xmlw.writeAttributeString("ref", connection.targetId);
+				}
+				xmlw.writeEndElement();
 
-            xmlw.writeEndDocument();
+				xmlw.writeEndElement();
+			});
 
-            return xmlw.flush();
-        }
+			if (needsDefinitionsTag) {
+				xmlw.writeEndElement();
+				xmlw.writeEndElement();
+			}
 
-        function writeQNameAttribute(w, nsPrefix, qnameStr) {
-            var qname = getQName(qnameStr);
-            w.writeAttributeString("xmlns:" + nsPrefix, qname.namespace);
-            w.writeAttributeString("type", nsPrefix + ":" + qname.localName);
-        }
+			xmlw.writeEndDocument();
 
-        function writeType(w, typeQNameStr) {
-            writeQNameAttribute(w, "ty", typeQNameStr);
-        }
+			return xmlw.flush();
+		}
 
-    }
+		function writeQNameAttribute(w, nsPrefix, qnameStr) {
+			var qname = getQName(qnameStr);
+			w.writeAttributeString("xmlns:" + nsPrefix, qname.namespace);
+			w.writeAttributeString("type", nsPrefix + ":" + qname.localName);
+		}
+
+		function writeType(w, typeQNameStr) {
+			writeQNameAttribute(w, "ty", typeQNameStr);
+		}
+
+	}
 );
 

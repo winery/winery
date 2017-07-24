@@ -20,18 +20,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "InjectorReplaceData")
 public class InjectorReplaceData {
 
-    @XmlJavaTypeAdapter(value = InjectionDataMapAdapter.class)
-    public Map<String, TNodeTemplate> injections;
+	@XmlJavaTypeAdapter(value = InjectionDataMapAdapter.class)
+    public Map<String, TTopologyTemplate> hostInjections;
 
-    public void setInjections (Map<String, TNodeTemplate> injections) {
-        this.injections = injections;
-    }
+	@XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
+	public Map<String, TTopologyTemplate> connectionInjections;
+
+	public void setHostInjections (Map<String, TTopologyTemplate> hostInjections) {
+		this.hostInjections = hostInjections;
+	}
+
+	public void setConnectionInjections (Map<String, TTopologyTemplate> connectionInjections) {
+		this.connectionInjections = connectionInjections;
+	}
 
 }

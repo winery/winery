@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Karoline Saatkamp - add test
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates.topologytemplates;
 
@@ -68,5 +69,11 @@ public class TopologyTemplateResourceTest  extends AbstractResourceTest {
         final String jsonStr = AbstractResourceTest.readFromClasspath("servicetemplates/farm_topologytemplate.json");
         final TTopologyTemplate topologyTemplate = Utils.mapper.readValue(jsonStr, TTopologyTemplate.class);
     }
+
+	@Test
+	public void strawStallTopologyTemplateJsonCanBeParsed() throws Exception {
+		final String jsonStr = AbstractResourceTest.readFromClasspath("entitytypes/servicetemplates/straw-stall.json");
+		final TTopologyTemplate topologyTemplate = Utils.mapper.readValue(jsonStr, TTopologyTemplate.class);
+	}
 
 }

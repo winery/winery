@@ -315,3 +315,4 @@ winery.events.name.command.MOVE_RIGHT = "moveRight";
 
 winery.events.name.command.SAVE = "save";
 winery.events.name.command.SPLIT = "split";
+winery.events.name.command.MATCH = "match";

@@ -16,18 +16,18 @@ These contents need to be shared.
 
 ### Filesystem
 
-* + Easy to manually change values
-* + No need to educate students on a certain database system
-* + Allows to use git as distributed version control system
-* - Consistency check is hard to implement
-* - Not transaction safe (concurrency)
+* `+` Easy to manually change values
+* `+` No need to educate students on a certain database system
+* `+` Allows to use git as distributed version control system
+* `-` Consistency check is hard to implement
+* `-` Not transaction safe (concurrency)
 
 ### Database
 
-* + Transaction safety
-* + Scalability
-* - Not (directly) possible to use git as distributed version control system
-* - Higher skills required
+* `+` Transaction safety
+* `+` Scalability
+* `-` Not (directly) possible to use git as distributed version control system
+* `-` Higher skills required
 
 ## License
 
