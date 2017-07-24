@@ -4,9 +4,10 @@ This document provides (i) guides about development and (ii) design ideas of Win
 
 Other sources of information:
 
-- [ToolChain](ToolChain) - GitHub workflow
 - [CodeHeaders](CodeHeaders) - documentation about required code headers
+- [Encoding](Encoding) - information about how percent-encoding is used at Winery
 - [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
+- [ToolChain](ToolChain) - GitHub workflow
 - [TOSCA](../tosca/) - notes on OASIS TOSCA
 
 Table of contents:
