@@ -18,7 +18,6 @@ import { WineryModalModule } from '../../../wineryModalModule/winery.modal.modul
 import { BoundaryDefinitionsComponent } from './boundaryDefinitions.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { RouterModule } from '@angular/router';
-import { PlaceholderComponent } from './placeholder/placeholder.component';
 import { InstanceService } from '../../instance.service';
 import { PropertyMappingsComponent } from './propertyMappings/propertyMappings.component';
 import { PropertyConstraintsComponent } from './propertyConstraints/propertyConstraints.component';
@@ -32,6 +31,8 @@ import { PoliciesComponent } from './policies/policies.component';
 import { SelectModule } from 'ng2-select';
 import { EditXMLComponent } from '../../sharedComponents/editXML/editXML.component';
 import { WineryEditXMLModule } from '../../sharedComponents/editXML/editXML.module';
+import { InterfacesComponent } from '../../sharedComponents/interfaces/interfaces.component';
+import { InterfacesModule } from '../../sharedComponents/interfaces/interfaces.module';
 
 export const boundaryDefinitionsRoutes = [
     { path: 'properties', component: EditXMLComponent },
@@ -40,9 +41,9 @@ export const boundaryDefinitionsRoutes = [
     { path: 'requirements', component: RequirementsComponent },
     { path: 'capabilities', component: CapabilitiesComponent },
     { path: 'policies', component: PoliciesComponent },
-    { path: 'interfaces', component: PlaceholderComponent },
+    { path: 'interfaces', component: InterfacesComponent },
     { path: 'xml', component: EditXMLComponent },
-    { path: '', redirectTo: 'properties', pathMatch: 'full'}
+    { path: '', redirectTo: 'properties', pathMatch: 'full' }
 ];
 
 @NgModule({
@@ -55,6 +56,7 @@ export const boundaryDefinitionsRoutes = [
         WineryModalModule,
         FileUploadModule,
         SelectModule,
+        InterfacesModule,
         WineryTableModule,
         WineryDuplicateValidatorModule,
         WineryEditXMLModule
@@ -62,7 +64,6 @@ export const boundaryDefinitionsRoutes = [
     exports: [],
     declarations: [
         BoundaryDefinitionsComponent,
-        PlaceholderComponent,
         PoliciesComponent,
         PropertyConstraintsComponent,
         PropertyMappingsComponent,
@@ -70,7 +71,7 @@ export const boundaryDefinitionsRoutes = [
         CapabilitiesComponent,
         RequirementsOrCapabilitiesComponent,
     ],
-    providers: [InstanceService]
+    providers: [ InstanceService ]
 })
 export class BoundaryDefinitionsModule {
 }

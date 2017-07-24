@@ -19,7 +19,7 @@ import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesService } from './interfaces.service';
 import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
-import { InputParameters, OutputParameters } from '../../../wineryInterfaces/parameters';
+import { InputParameters, InterfaceParameter, OutputParameters } from '../../../wineryInterfaces/parameters';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
 
@@ -37,11 +37,12 @@ export class InterfacesComponent implements OnInit {
 
     loading = true;
     generating = false;
+    isServiceTemplate = false;
     interfacesData: InterfacesApiData[];
 
-    operations: any[] = null;
-    inputParameters: Array<any> = null;
-    outputParameters: Array<any> = null;
+    operations: InterfaceOperationApiData[] = null;
+    inputParameters: InterfaceParameter[] = null;
+    outputParameters: InterfaceParameter[] = null;
     selectedInterface: InterfacesApiData = null;
     selectedOperation: InterfaceOperationApiData = null;
 
@@ -71,6 +72,7 @@ export class InterfacesComponent implements OnInit {
                 error => this.handleError(error)
             );
         this.selectedResource = this.sharedData.selectedResource.charAt(0).toUpperCase() + this.sharedData.selectedResource.slice(1);
+        this.isServiceTemplate = this.selectedResource === 'ServiceTemplate';
     }
 
     // region ########### Template Callbacks ##########
@@ -83,7 +85,9 @@ export class InterfacesComponent implements OnInit {
     }
 
     onAddInterface(name: string) {
-        this.interfacesData.push(new InterfacesApiData(name));
+        const tmp = new InterfacesApiData(name);
+        this.interfacesData.push(tmp);
+        this.onInterfaceSelect(tmp);
         name = null;
     }
 
@@ -94,6 +98,7 @@ export class InterfacesComponent implements OnInit {
         }
         this.selectedInterface = selectedInterface;
         this.operations = selectedInterface.operation;
+        this.selectedOperation = null;
     }
 
     removeInterface() {
@@ -123,22 +128,37 @@ export class InterfacesComponent implements OnInit {
 
     onAddOperation(name: string) {
         if (!isNullOrUndefined(this.selectedInterface)) {
-            this.selectedInterface.operation.push(new InterfaceOperationApiData(name));
+            const tmp = new InterfaceOperationApiData(name);
+
+            // if we are working on a target interface in servicetemplates, delete unnecessary attributes to
+            // ensure data consistency with the backend.
+            if (this.isServiceTemplate) {
+                delete tmp.outputParameters;
+                delete tmp.inputParameters;
+                delete tmp.any;
+                delete tmp.documentation;
+                delete tmp.otherAttributes;
+            }
+
+            this.selectedInterface.operation.push(tmp);
+            this.onOperationSelected(tmp);
         }
     }
 
     onOperationSelected(selectedOperation: InterfaceOperationApiData) {
         this.selectedOperation = selectedOperation;
 
-        if (isNullOrUndefined(selectedOperation.inputParameters)) {
-            selectedOperation.inputParameters = new InputParameters();
-        }
-        if (isNullOrUndefined(selectedOperation.outputParameters)) {
-            selectedOperation.outputParameters = new OutputParameters();
-        }
+        if (!this.isServiceTemplate) {
+            if (isNullOrUndefined(selectedOperation.inputParameters)) {
+                selectedOperation.inputParameters = new InputParameters();
+            }
+            if (isNullOrUndefined(selectedOperation.outputParameters)) {
+                selectedOperation.outputParameters = new OutputParameters();
+            }
 
-        this.inputParameters = selectedOperation.inputParameters.inputParameter;
-        this.outputParameters = selectedOperation.outputParameters.outputParameter;
+            this.inputParameters = selectedOperation.inputParameters.inputParameter;
+            this.outputParameters = selectedOperation.outputParameters.outputParameter;
+        }
     }
 
     removeOperation() {
@@ -199,7 +219,7 @@ export class InterfacesComponent implements OnInit {
         lifecycle.operation.push(new InterfaceOperationApiData('configure'));
         lifecycle.operation.push(new InterfaceOperationApiData('start'));
         lifecycle.operation.push(new InterfaceOperationApiData('stop'));
-        lifecycle.operation.push(new InterfaceOperationApiData('unistall'));
+        lifecycle.operation.push(new InterfaceOperationApiData('uninstall'));
         this.interfacesData.push(lifecycle);
     }
 

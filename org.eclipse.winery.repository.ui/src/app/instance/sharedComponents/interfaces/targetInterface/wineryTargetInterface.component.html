@@ -1,0 +1,80 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzenetter - initial API and implementation
+ */
+-->
+<form *ngIf="operation">
+    <div>
+        <br>
+        <h4>Target</h4>
+        <div>
+            <input type="radio" name="kind" value="nodeTemplate" id="nodeTemplate" [checked]="operation.nodeOperation"
+                   (click)="onNodeSelected()">
+            <label for="nodeTemplate"> Node Template</label>
+
+            <input type="radio" name="kind" value="relationshipTemplate" id="relationshipTemplate"
+                   [checked]="operation.relationshipOperation" (click)="onRelationshipSelected()">
+            <label for="relationshipTemplate"> Relationship Template</label>
+
+            <input type="radio" name="kind" value="plan" id="plan" [checked]="operation.plan"
+                   (click)="onPlanSelected()">
+            <label for="plan"> Plan</label>
+        </div>
+        <br>
+        <div *ngIf="referenceData?.length > 0; else noReferences">
+            <label class="control-label" for="reference">Reference</label>
+            <ng-select id="reference"
+                       [items]="referenceData"
+                       [textField]="'id'"
+                       [active]="[activeReference]"
+                       (selected)="onReferenceSelected($event)">
+            </ng-select>
+            <button class="btn btn-default btn-sm" disabled>Browse</button>
+            <br>
+            <div *ngIf="operation.nodeOperation || operation.relationshipOperation">
+                <h4>Target Interface and Operation</h4>
+
+                <div *ngIf="!loading; else loadingBlock">
+                    <div *ngIf="interfaces?.length > 0; else noInterfaces">
+                        <label for="operationInterface">Interface</label>
+                        <ng-select id="operationInterface"
+                                   [items]="interfaces"
+                                   [textField]="'name'"
+                                   [idField]="'name'"
+                                   [active]="[activeInterface]"
+                                   (selected)="onInterfaceSelected($event)">
+                        </ng-select>
+                        <br>
+                        <div *ngIf="activeInterface.operation">
+                            <label for="operationOperation">Operation</label>
+                            <ng-select id="operationOperation"
+                                       [items]="activeInterface.operation"
+                                       [active]="[activeOperation]"
+                                       [textField]="'name'"
+                                       [idField]="'name'"
+                                       (selected)="onOperationSelected($event)">
+                            </ng-select>
+                        </div>
+                    </div>
+                    <ng-template #noInterfaces>
+                        This type does not have an interface!
+                    </ng-template>
+                </div>
+                <ng-template #loadingBlock>
+                    <winery-loader></winery-loader>
+                </ng-template>
+            </div>
+        </div>
+        <ng-template #noReferences>
+            This servicetemplate does not have {{currentSelected}}!
+        </ng-template>
+    </div>
+</form>

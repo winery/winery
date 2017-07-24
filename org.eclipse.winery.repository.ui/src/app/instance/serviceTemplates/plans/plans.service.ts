@@ -27,8 +27,8 @@ export class PlansService {
         this.path = backendBaseURL + decodeURIComponent(this.route.url) + '/';
     }
 
-    getPlansData(): Observable<PlansApiData[]> {
-        return this.getJson(this.path);
+    getPlansData(url?: string): Observable<PlansApiData[]> {
+        return this.getJson(url ? backendBaseURL + url : this.path);
     }
 
     getPlanTypes(): Observable<SelectData[]> {

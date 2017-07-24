@@ -11,6 +11,7 @@
  */
 import { InputParameters, OutputParameters } from '../../../wineryInterfaces/parameters';
 import { WineryComponent } from '../../../wineryInterfaces/wineryComponent';
+import { NodeOperation, PlanOperation, RelationshipOperation } from './targetInterface/operations';
 
 export class InterfacesApiData {
     operation: InterfaceOperationApiData[] = [];
@@ -24,4 +25,7 @@ export class InterfacesApiData {
 export class InterfaceOperationApiData extends WineryComponent {
     inputParameters: InputParameters = new InputParameters();
     outputParameters: OutputParameters = new OutputParameters();
+    nodeOperation: NodeOperation;
+    relationshipOperation: RelationshipOperation;
+    plan: PlanOperation;
 }

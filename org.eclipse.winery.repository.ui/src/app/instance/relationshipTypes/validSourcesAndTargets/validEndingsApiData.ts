@@ -22,8 +22,8 @@ export class ValidEndingsApiDataSet {
 }
 
 export enum ValidEndingsSelectionEnum {
-    EVERYTHING = <any> 'EVERYTHING',
-    NODETYPE = <any> 'NODETYPE',
-    REQTYPE = <any> 'REQUIREMENTTYPE',
-    CAPTYPE = <any> 'CAPABILITYTYPE'
+    EVERYTHING = 'EVERYTHING',
+    NODETYPE = 'NODETYPE',
+    REQTYPE = 'REQUIREMENTTYPE',
+    CAPTYPE = 'CAPABILITYTYPE'
 }

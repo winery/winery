@@ -432,7 +432,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 %>
 
 <div id="winery">
-	<ncnt:propertiesOfOneNodeTemplate repositoryURL="<%=repositoryURL%>"/>
+	<ncnt:propertiesOfOneNodeTemplate uiURL="<%=uiURL%>" repositoryURL="<%=repositoryURL%>"/>
 	<ncrt:propertiesOfOneRelationshipTemplate relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>"/>
 
 	<div id="topbar">

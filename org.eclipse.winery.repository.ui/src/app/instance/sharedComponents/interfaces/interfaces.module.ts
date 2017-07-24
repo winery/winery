@@ -22,6 +22,7 @@ import { InterfacesComponent } from './interfaces.component';
 import { SelectableListModule } from './selectableList/selectableList.module';
 import { ExistService } from '../../../wineryUtils/existService';
 import { WineryIoParameterModule } from '../../../wineryIoParameter/wineryIoParameters.module';
+import { WineryTargetInterfaceModule } from './targetInterface/wineryTargetInterface.module';
 
 @NgModule({
     imports: [
@@ -32,6 +33,7 @@ import { WineryIoParameterModule } from '../../../wineryIoParameter/wineryIoPara
         WineryModalModule,
         WineryTableModule,
         SelectableListModule,
+        WineryTargetInterfaceModule,
         WineryDuplicateValidatorModule,
         WineryNamespaceSelectorModule,
         WineryIoParameterModule

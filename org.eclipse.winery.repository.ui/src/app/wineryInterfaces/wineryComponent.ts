@@ -1,3 +1,4 @@
+import { PlansApiData } from '../instance/serviceTemplates/plans/plansApiData';
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -20,11 +21,19 @@ export class WineryComponent {
     }
 }
 
-export class WineryTemplateOrImplementationComponent extends WineryComponent {
-    properties: any;
-    propertyConstraints: any;
+export class WineryTemplate extends WineryComponent {
     id: string;
     type?: string;
+    properties: Object = null;
+    propertyConstraints: Object = null;
+
+    setValuesFromPlan(plan: PlansApiData) {
+        this.name = plan.name;
+        this.id = plan.id;
+    }
+}
+
+export class WineryTemplateOrImplementationComponent extends WineryTemplate {
     nodeType?: string;
     relationshipType?: string;
 }
@@ -37,3 +46,26 @@ export class WineryInstance extends WineryComponent {
     serviceTemplateOrNodeTypeOrNodeTypeImplementation: Array<WineryTemplateOrImplementationComponent>;
 }
 
+export class WineryTopologyTemplate extends WineryComponent {
+    nodeTemplates: NodeTemplate[];
+    relationshipTemplates: RelationshipTemplates[];
+}
+
+export class NodeTemplate extends WineryTemplate {
+    requirements: Object = null;
+    capabilities: Object = null;
+    policies: Object = null;
+    deploymentArtifacts: Object = null;
+    minInstances: number;
+    maxInstances: string;
+}
+
+export class RelationshipTemplates extends WineryTemplate {
+    relationshipConstraing: Object = null;
+    sourceElement: RelationshipElement;
+    targetElement: RelationshipElement;
+}
+
+export class RelationshipElement {
+    ref: NodeTemplate;
+}

@@ -21,6 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -89,13 +90,14 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAllEntityResources() {
+	public String getAllEntityResources(@QueryParam(value = "noId") boolean noId) {
 		List<String> listOfAllSubResources = this.getListOfAllEntityIdsAsList();
 		List<EntityResourceT> resources = new ArrayList<>(listOfAllSubResources.size());
 		for (String id : listOfAllSubResources) {
 			resources.add(this.getEntityResourceFromDecodedId(id));
 		}
-		return resources.stream().map(res -> {
+		
+		return resources.stream().map((EntityResourceT res) -> {
 			String id = this.getId(res.o);
 			// some objects already have an id field
 			// we set it nevertheless, because it might happen that the name of the id field is not "id", but something else (such as "name")
@@ -107,7 +109,9 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 			// (note: can also use more specific type, like ArrayNode or
 			// ObjectNode!)
 			JsonNode jsonNode = mapper.valueToTree(res.o);
-			((ObjectNode) jsonNode).put("id", id);
+			if (!noId) {
+				((ObjectNode) jsonNode).put("id", id);
+			}
 			try {
 				return mapper.writeValueAsString(jsonNode);
 			} catch (JsonProcessingException e) {

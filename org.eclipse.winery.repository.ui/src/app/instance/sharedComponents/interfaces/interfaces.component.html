@@ -35,16 +35,24 @@
         </winery-selectable-list>
     </div>
 
-    <div class="generateButtons">
-        <button class="btn btn-default btn-sm"
-                [disabled]="!selectedInterface" (click)="showGenerateImplementationModal();">
-            Generate Implementation Artifact
-        </button>
-        <button class="btn btn-default btn-sm"
-                [disabled]="containsDefaultLifecycle()" (click)="generateLifecycleInterface()">
-            Generate lifecycle interface
-        </button>
+    <div *ngIf="isServiceTemplate; else inOutParameters">
+        <winery-service-templates-target-interface [operation]="selectedOperation"></winery-service-templates-target-interface>
     </div>
+    <ng-template #inOutParameters>
+        <div class="generateButtons">
+            <button class="btn btn-default btn-sm"
+                    [disabled]="!selectedInterface" (click)="showGenerateImplementationModal();">
+                Generate Implementation Artifact
+            </button>
+            <button class="btn btn-default btn-sm"
+                    [disabled]="containsDefaultLifecycle()" (click)="generateLifecycleInterface()">
+                Generate Lifecycle Interface
+            </button>
+        </div>
+
+        <winery-io-parameter [inputParameters]="inputParameters" [outputParameters]="outputParameters">
+        </winery-io-parameter>
+    </ng-template>
 </div>
 
 <winery-modal bsModal #addIntOpModal="bs-modal" [modalRef]="addIntOpModal">
@@ -91,9 +99,6 @@
     <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
                         (onOk)="onRemoveElement()"></winery-modal-footer>
 </winery-modal>
-
-<winery-io-parameter [inputParameters]="inputParameters" [outputParameters]="outputParameters">
-</winery-io-parameter>
 
 <winery-modal bsModal #generateImplModal="bs-modal" [modalRef]="generateImplModal">
     <winery-modal-header [title]="'Generate Implementation Artifact'"></winery-modal-header>

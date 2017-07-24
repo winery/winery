@@ -15,7 +15,7 @@ import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../configuration';
-import { WineryInstance } from '../wineryInterfaces/wineryComponent';
+import { WineryInstance, WineryTopologyTemplate } from '../wineryInterfaces/wineryComponent';
 
 @Injectable()
 export class InstanceService {
@@ -23,6 +23,7 @@ export class InstanceService {
     selectedResource: string;
     selectedComponentId: string;
     selectedNamespace: string;
+    topologyTemplate: WineryTopologyTemplate = null;
     path: string;
 
     constructor(private http: Http) {
@@ -112,6 +113,14 @@ export class InstanceService {
         this.path = '/' + this.selectedResource.toLowerCase() + 's/'
             + encodeURIComponent(encodeURIComponent(this.selectedNamespace)) + '/'
             + this.selectedComponentId;
+
+        if (this.selectedResource === 'serviceTemplate') {
+            this.getTopologyTemplate()
+                .subscribe(
+                    data => this.topologyTemplate = data,
+                    error => this.topologyTemplate = null
+                );
+        }
     }
 
     public deleteComponent(): Observable<any> {
@@ -122,6 +131,13 @@ export class InstanceService {
         const headers = new Headers({'Content-Type': 'application/xml'});
         const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseURL + this.path + '/', options)
+            .map(res => res.json());
+    }
+
+    private getTopologyTemplate(): Observable<WineryTopologyTemplate> {
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
+        return this.http.get(backendBaseURL + this.path + '/topologytemplate/', options)
             .map(res => res.json());
     }
 }

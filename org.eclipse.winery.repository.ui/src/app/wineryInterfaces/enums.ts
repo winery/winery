@@ -11,6 +11,6 @@
  */
 
 export enum YesNoEnum {
-    YES = <any> 'YES',
-    NO = <any> 'NO'
+    YES = 'YES',
+    NO = 'NO'
 }

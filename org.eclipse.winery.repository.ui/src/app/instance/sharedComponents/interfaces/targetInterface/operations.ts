@@ -1,4 +1,3 @@
-<!--
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -8,7 +7,21 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Balzer - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
--->
-(Not implemented yet)
+export class TargetInterfaceOperation {
+    interfaceName = '';
+    operationName = '';
+}
+
+export class NodeOperation extends TargetInterfaceOperation {
+    nodeRef = '';
+}
+
+export class RelationshipOperation extends TargetInterfaceOperation {
+    relationshipRef = '';
+}
+
+export class PlanOperation {
+    planRef = '';
+}

@@ -34,6 +34,7 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.resources._support.collections.EntityCollectionResource;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
@@ -54,6 +55,10 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		super(PlanResource.class, TPlan.class, plans, res);
 	}
 
+	/**
+	 * This overrides {@link EntityCollectionResource#addNewElement(java.lang.Object)}.
+	 * A special handling for Plans is required as a special validation is in place
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

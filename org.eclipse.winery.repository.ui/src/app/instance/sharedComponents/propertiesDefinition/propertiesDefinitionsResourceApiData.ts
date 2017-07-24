@@ -11,10 +11,10 @@
  */
 
 export enum PropertiesDefinitionEnum {
-    Custom = <any> 'Custom',
-    Element = <any> 'Element',
-    Type = <any> 'Type',
-    None = <any> 'None'
+    Custom = 'Custom',
+    Element = 'Element',
+    Type = 'Type',
+    None = 'None'
 }
 
 export class PropertiesDefinitionKVList {

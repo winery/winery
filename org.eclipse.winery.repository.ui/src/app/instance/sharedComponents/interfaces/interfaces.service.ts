@@ -10,43 +10,47 @@
  *     Niko Stadelmaier - initial API and implementation
  */
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesApiData } from './interfacesApiData';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class InterfacesService {
 
     private path: string;
-    private interfaceType: string;
 
     constructor(private http: Http,
                 private route: Router, private sharedData: InstanceService) {
         this.path = decodeURIComponent(this.route.url);
     }
 
-    getInterfaces(): Observable<InterfacesApiData[]> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.get(backendBaseURL + this.path + '/', options)
-            .map(res => res.json());
+    getInterfaces(url?: string, relationshipInterfaces = false): Observable<InterfacesApiData[]> {
+        if (isNullOrUndefined(url)) {
+            return this.get(this.path + '/?noId=true')
+                .map(res => res.json());
+        } else if (relationshipInterfaces) {
+            return this.getRelationshipInterfaces(url);
+        } else {
+            return this.get(url + '/interfaces/')
+                .map(res => res.json());
+        }
     }
 
-    save(interfacesData: InterfacesApiData[]): Observable<any> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+    save(interfacesData: InterfacesApiData[]): Observable<Response> {
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(interfacesData), options);
     }
 
     createImplementation(resourceType: string, implementationName: string, implementationNamespace: string): Observable<any> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.post(backendBaseURL + '/' + resourceType + 'implementations/',
             JSON.stringify({
@@ -59,12 +63,32 @@ export class InterfacesService {
 
     createImplementationArtifact(resourceType: string, implementationName: string, implementationNamespace: string,
                                  generateArtifactApiData: GenerateArtifactApiData) {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.post(backendBaseURL + '/' + resourceType + 'implementations/'
             + encodeURIComponent(encodeURIComponent(implementationNamespace)) + '/'
             + implementationName + '/implementationartifacts/',
             JSON.stringify(generateArtifactApiData), options);
+    }
+
+    getRelationshipInterfaces(url: string): Observable<InterfacesApiData[]> {
+        return Observable
+            .forkJoin(
+                this.get(url + '/targetinterfaces/').map(res => res.json()),
+                this.get(url + '/sourceinterfaces/').map(res => res.json())
+            ).map(res => {
+                for (const i of res[1]) {
+                    res[0].push(i);
+                }
+                return res[0];
+            });
+    }
+
+    private get(url: string): Observable<any> {
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
+
+        return this.http.get(backendBaseURL + url, options);
     }
 }
