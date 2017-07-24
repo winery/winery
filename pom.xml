@@ -70,6 +70,7 @@
 		<module>org.eclipse.winery.model.tosca</module>
 		<module>org.eclipse.winery.repository</module>
 		<module>org.eclipse.winery.repository.client</module>
+		<module>org.eclipse.winery.repository.configuration</module>
 		<module>org.eclipse.winery.repository.ui</module>
 		<module>org.eclipse.winery.topologymodeler</module>
 	</modules>

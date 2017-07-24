@@ -18,12 +18,9 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
 import org.eclipse.winery.repository.WineryUsingHttpServer;
 
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataMultiPart;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.MultiPartInputStreamParser;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -183,7 +180,6 @@ public abstract class AbstractResourceTest {
 	/**
 	 * Because some methods don't respond with a "created" status.
 	 * TODO: fix all methods which return "noContent" status so that this method can be deleted.
-	 *
 	 */
 	public void assertNoContentPost(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);
@@ -214,5 +210,4 @@ public abstract class AbstractResourceTest {
 			throw new RuntimeException(e);
 		}
 	}
-
 }

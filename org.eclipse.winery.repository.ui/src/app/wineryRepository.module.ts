@@ -28,6 +28,7 @@ import { WineryModalModule } from './wineryModalModule/winery.modal.module';
 import { WineryRepositoryComponent } from './wineryRepository.component';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
 import { ExistService } from './wineryUtils/existService';
+import { WineryOAuthComponent } from './header/wineryOauth/wineryOAuth.component';
 
 @NgModule({
     imports: [
@@ -49,6 +50,7 @@ import { ExistService } from './wineryUtils/existService';
         NotFoundComponent,
         OtherComponent,
         WineryRepositoryComponent,
+        WineryOAuthComponent,
     ],
     providers: [
         {provide: ToastOptions, useClass: WineryCustomOption},
