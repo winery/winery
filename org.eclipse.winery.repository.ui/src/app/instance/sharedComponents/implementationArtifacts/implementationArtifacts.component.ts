@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Tino Stadelmaier - initial API and implementation
  */
 import { Component, OnInit } from '@angular/core';
 
@@ -15,6 +15,9 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: 'implementationArtifacts.component.html'
 })
 export class ImplementationArtifactsComponent implements OnInit {
+
+    data = <any>[];
+
     constructor() {
     }
 

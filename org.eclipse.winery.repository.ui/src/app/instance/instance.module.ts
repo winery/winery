@@ -59,6 +59,7 @@ import { SelfServicePortalModule } from './serviceTemplates/selfServicePortal/se
 import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
 import { WineryIoParameterModule } from '../wineryIoParameter/wineryIoParameters.module';
 import { WineryQNameSelectorModule } from '../wineryQNameSelector/wineryQNameSelector.module';
+import { WineryArtifactModule } from '../wineryArtifacts/artifact.module';
 import { WineryEditXMLModule } from './sharedComponents/editXML/editXML.module';
 
 @NgModule({
@@ -86,7 +87,9 @@ import { WineryEditXMLModule } from './sharedComponents/editXML/editXML.module';
         WineryUploaderModule,
         WineryIoParameterModule,
         BoundaryDefinitionsModule,
-        WineryEditXMLModule
+        WineryEditXMLModule,
+        BoundaryDefinitionsModule,
+        WineryArtifactModule,
     ],
     exports: [],
     declarations: [
