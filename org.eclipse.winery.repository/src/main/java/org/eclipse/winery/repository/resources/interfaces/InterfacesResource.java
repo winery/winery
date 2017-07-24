@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.interfaces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -26,6 +28,7 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.resources.apiData.InterfacesSelectApiData;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
@@ -101,8 +104,21 @@ public class InterfacesResource {
 
 	@GET
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public List<TInterface> onGet() {
-		return this.interfaces;
+	public List<?> onGet(@QueryParam("selectData") String selectData) {
+		if (selectData == null) {
+			return this.interfaces;
+		}
+
+		List<InterfacesSelectApiData> list = new ArrayList<>();
+		for (TInterface item : this.interfaces) {
+			List<String> ops = new ArrayList<>();
+			for (TOperation op : item.getOperation()) {
+				ops.add(op.getName());
+			}
+			list.add(new InterfacesSelectApiData(item.getName(), ops));
+		}
+
+		return list;
 	}
 
 }

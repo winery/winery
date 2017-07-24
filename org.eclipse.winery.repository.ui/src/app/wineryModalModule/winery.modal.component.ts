@@ -13,6 +13,7 @@ import { AfterContentInit, AfterViewInit, Component, ContentChild, HostBinding, 
 import { isNullOrUndefined } from 'util';
 import { WineryModalFooterComponent } from './winery.modal.footer.component';
 import { WineryModalHeaderComponent } from './winery.modal.header.component';
+import { ModalDirective } from 'ngx-bootstrap';
 
 const SMALL = 'sm';
 const LARGE = 'lg';
@@ -61,10 +62,10 @@ const LARGE = 'lg';
 })
 export class WineryModalComponent implements AfterViewInit, AfterContentInit {
 
-    @Input() modalRef: any;
+    @Input() modalRef: ModalDirective;
     @Input() size: string;
     @Input() keyboard = true;
-    @Input() backdrop: string | boolean = true;
+    @Input() backdrop = true;
 
     @HostBinding('class') hostClass = 'modal fade';
     @HostBinding('attr.role') hostRole = 'dialog';

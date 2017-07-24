@@ -16,6 +16,8 @@ import { NodeOperation, PlanOperation, RelationshipOperation } from './targetInt
 export class InterfacesApiData {
     operation: InterfaceOperationApiData[] = [];
     name: string;
+    id: string;
+    text: string;
 
     constructor(name = '') {
         this.name = name;

@@ -23,6 +23,7 @@ import { SelectableListModule } from './selectableList/selectableList.module';
 import { ExistService } from '../../../wineryUtils/existService';
 import { WineryIoParameterModule } from '../../../wineryIoParameter/wineryIoParameters.module';
 import { WineryTargetInterfaceModule } from './targetInterface/wineryTargetInterface.module';
+import { WineryComponentExistsModule } from '../../../wineryComponentExists/wineryComponentExists.module';
 
 @NgModule({
     imports: [
@@ -30,6 +31,7 @@ import { WineryTargetInterfaceModule } from './targetInterface/wineryTargetInter
         FormsModule,
         WineryLoaderModule,
         CommonModule,
+        WineryComponentExistsModule,
         WineryModalModule,
         WineryTableModule,
         SelectableListModule,

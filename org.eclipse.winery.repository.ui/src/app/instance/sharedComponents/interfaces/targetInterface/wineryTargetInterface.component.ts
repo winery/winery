@@ -44,7 +44,7 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
     activeInterface: InterfacesApiData;
     activeOperation: InterfaceOperationApiData;
 
-    private currentSelected: CurrentSelectedEnum;
+    currentSelected: CurrentSelectedEnum;
 
     constructor(private sharedData: InstanceService,
                 private interfacesService: InterfacesService,

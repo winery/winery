@@ -13,20 +13,22 @@ import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../configuration';
-import { InstanceService } from '../../instance.service';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesApiData } from './interfacesApiData';
+import { InstanceService } from '../../instance.service';
+import { backendBaseURL } from '../../../configuration';
 import { isNullOrUndefined } from 'util';
 
 @Injectable()
 export class InterfacesService {
 
     private path: string;
+    private implementationsUrl: string;
 
     constructor(private http: Http,
                 private route: Router, private sharedData: InstanceService) {
         this.path = decodeURIComponent(this.route.url);
+        this.implementationsUrl = this.sharedData.selectedResource.replace(' ', '').toLowerCase() + 'implementations/';
     }
 
     getInterfaces(url?: string, relationshipInterfaces = false): Observable<InterfacesApiData[]> {
@@ -48,11 +50,11 @@ export class InterfacesService {
         return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(interfacesData), options);
     }
 
-    createImplementation(resourceType: string, implementationName: string, implementationNamespace: string): Observable<any> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+    createImplementation(implementationName: string, implementationNamespace: string): Observable<any> {
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
-        return this.http.post(backendBaseURL + '/' + resourceType + 'implementations/',
+        return this.http.post(backendBaseURL + '/' + this.implementationsUrl,
             JSON.stringify({
                 localname: implementationName,
                 namespace: implementationNamespace,
@@ -61,12 +63,12 @@ export class InterfacesService {
             options);
     }
 
-    createImplementationArtifact(resourceType: string, implementationName: string, implementationNamespace: string,
+    createArtifactTemplate(implementationName: string, implementationNamespace: string,
                                  generateArtifactApiData: GenerateArtifactApiData) {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 
-        return this.http.post(backendBaseURL + '/' + resourceType + 'implementations/'
+        return this.http.post(backendBaseURL + '/' + this.implementationsUrl
             + encodeURIComponent(encodeURIComponent(implementationNamespace)) + '/'
             + implementationName + '/implementationartifacts/',
             JSON.stringify(generateArtifactApiData), options);

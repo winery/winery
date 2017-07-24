@@ -15,7 +15,7 @@
     <winery-loader></winery-loader>
 </div>
 
-<div *ngIf="!loading && interfacesData">
+<div *ngIf="!loading">
     <div class="right">
         <button class="btn btn-primary" name="save" (click)="save()">Save</button>
     </div>
@@ -110,52 +110,14 @@
                        required id="javaPackage"
                        class="form-control">
             </div>
-            <div class="form-group-grouping typeimplementation">
-                <div class="form-group">
-                    <label for="implName" class="control-label">
-                        {{ selectedResource }} Implementation Name
-                    </label>
-                    <input type="text" name="implementationName" [(ngModel)]="implementationName"
-                           class="form-control" (input)="checkImplementationExists();"
-                           id="implName" required>
-                    <div *ngIf="createImplementation; else reuseImplementation" class="alert alert-success">
-                        Will be created.
-                    </div>
-                    <ng-template #reuseImplementation>
-                        <div class="alert alert-info">Will be reused.</div>
-                    </ng-template>
-                    <winery-namespace-selector
-                        name="implementationNamespace"
-                        [(ngModel)]="implementationNamespace"
-                        (onChange)="checkImplementationExists();">
-                    </winery-namespace-selector>
-                </div>
-            </div>
+            <winery-component-exists [generateData]="implementation" [modalRef]="generateImplModal">
+            </winery-component-exists>
             <p>
                 There is no check for the name of the implementation artifact. The artifact template name will be reused
                 as implementation artifact name without any further check.
             </p>
-            <div class="form-group-grouping typeimplementation">
-                <div class="form-group">
-                    <label for="artName" class="control-label">
-                        Artifact Template Name
-                    </label>
-                    <input type="text" name="artName" [(ngModel)]="generateArtifactApiData.artifactTemplateName"
-                           class="form-control" (input)="checkArtifactTemplateExists();"
-                           id="artName" required>
-                    <div *ngIf="createArtifactTemplate; else artifactExists" class="alert alert-success">
-                        Will be created.
-                    </div>
-                    <ng-template #artifactExists>
-                        <div class="alert alert-info">Artifact Template already exists!</div>
-                    </ng-template>
-                    <winery-namespace-selector
-                        name="artifactNamespace"
-                        [(ngModel)]="generateArtifactApiData.artifactTemplateNamespace"
-                        (onChange)="checkArtifactTemplateExists();">
-                    </winery-namespace-selector>
-                </div>
-            </div>
+            <winery-component-exists [generateData]="artifactTemplate" [modalRef]="generateImplModal">
+            </winery-component-exists>
         </form>
         <ng-template #loadingGeneration>
             <winery-loader></winery-loader>
@@ -164,7 +126,7 @@
     <winery-modal-footer
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Generate'"
-        [disableOkButton]="!(createImplementation || createArtifactTemplate)"
+        [disableOkButton]="!(implementation.createComponent || artifactTemplate.createComponent)"
         (onOk)="generateImplementationArtifact()">
     </winery-modal-footer>
 </winery-modal>

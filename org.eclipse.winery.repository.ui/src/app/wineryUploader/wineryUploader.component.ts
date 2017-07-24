@@ -10,7 +10,7 @@
  *     Lukas Harzenetter - initial API and implementation
  *     Niko Stadelmaier - module refactoring
  */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnChanges } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { WineryUploaderService } from './wineryUploader.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
@@ -55,7 +55,7 @@ import { WineryNotificationService } from '../wineryNotificationModule/wineryNot
     ],
     providers: [WineryUploaderService],
 })
-export class WineryUploaderComponent implements OnInit {
+export class WineryUploaderComponent implements OnInit, OnChanges {
 
     fileOver = false;
     loading = false;
@@ -80,6 +80,10 @@ export class WineryUploaderComponent implements OnInit {
         this.service.uploadUrl = this.uploadUrl;
     }
 
+    ngOnChanges() {
+        this.service.uploadUrl = this.uploadUrl;
+    }
+
     dropFile(event?: any) {
         if (!isNullOrUndefined(event) && isNullOrUndefined(this.service.uploader.queue[0])) {
             this.fileOver = event;
@@ -96,7 +100,9 @@ export class WineryUploaderComponent implements OnInit {
         this.loading = true;
         if (!isNullOrUndefined(uploadTo) && uploadTo !== this.uploadUrl) {
             this.service.uploadUrl = uploadTo;
+
         }
+        console.log('upload url: ' + this.uploadUrl);
 
         this.service.uploader.onCompleteItem = (item: any, response: string, status: number, headers: any) => {
             this.loading = false;

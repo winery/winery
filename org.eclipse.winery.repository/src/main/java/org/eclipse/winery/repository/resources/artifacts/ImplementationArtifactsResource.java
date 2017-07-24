@@ -15,10 +15,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.repository.resources.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
+import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypesResource;
+import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
+import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
 
 /**
  * ImplementationArtifact instead of TImplementationArtifact has to be used
@@ -59,6 +69,30 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
 			res.add(r);
 		}
 		return res;
+	}
+
+	/**
+	 * Method to get all interfaces associated to a nodetype or relationshiptype
+	 * @return a list of TInterface
+	 */
+	@Path("interfaces/")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<?> getInterfacesOfAssociatedType() {
+		boolean isNodeTypeImplementation = this.res instanceof NodeTypeImplementationResource;
+		QName type;
+		List<Object> interfaces = new ArrayList<>();
+		if (isNodeTypeImplementation) {
+			type = this.getNTI().getType();
+			NodeTypeResource typeResource = (NodeTypeResource) new NodeTypesResource().getComponentInstaceResource(type);
+			interfaces.addAll(typeResource.getInterfaces().onGet("true"));
+		} else {
+			type = this.getRTI().getType();
+			RelationshipTypeResource typeResource = (RelationshipTypeResource) new RelationshipTypesResource().getComponentInstaceResource(type);
+			interfaces.addAll(typeResource.getSourceInterfaces().onGet("true"));
+			interfaces.addAll(typeResource.getTargetInterfaces().onGet("true"));
+		}
+		return interfaces;
 	}
 
 	@Override

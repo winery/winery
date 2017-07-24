@@ -22,6 +22,7 @@ import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiDat
 import { InputParameters, InterfaceParameter, OutputParameters } from '../../../wineryInterfaces/parameters';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
+import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -35,7 +36,7 @@ import { NgForm } from '@angular/forms';
 })
 export class InterfacesComponent implements OnInit {
 
-    loading = true;
+    loading = false;
     generating = false;
     isServiceTemplate = false;
     interfacesData: InterfacesApiData[];
@@ -60,6 +61,8 @@ export class InterfacesComponent implements OnInit {
     createArtifactTemplate = true;
     implementationName: string = null;
     implementationNamespace: string = null;
+    implementation: GenerateData = new GenerateData();
+    artifactTemplate: GenerateData = new GenerateData();
 
     constructor(private service: InterfacesService, private notify: WineryNotificationService,
                 private sharedData: InstanceService, private existService: ExistService) {
@@ -178,19 +181,22 @@ export class InterfacesComponent implements OnInit {
 
     // region ########## Generate Implementation ##########
     showGenerateImplementationModal(): void {
+        this.artifactTemplate.name =
+            this.sharedData.selectedComponentId + '_' + this.selectedInterface.name.replace(/\W/g, '_') + '_IA';
+        this.artifactTemplate.namespace = this.sharedData.selectedNamespace;
+        this.artifactTemplate.selectedResource = 'Artifact';
+        this.artifactTemplate.selectedResourceType = 'Template';
+
         this.generateArtifactApiData = new GenerateArtifactApiData();
         this.generateArtifactApiData.javaPackage = this.getPackageNameFromNamespace();
-        this.generateArtifactApiData.artifactTemplateName =
-            this.sharedData.selectedComponentId + '_' + this.selectedInterface.name.replace(/\W/g, '_') + '_IA';
-        this.generateArtifactApiData.artifactTemplateNamespace = this.sharedData.selectedNamespace;
+
         this.generateArtifactApiData.autoCreateArtifactTemplate = 'yes';
         this.generateArtifactApiData.interfaceName = this.selectedInterface.name;
 
-        this.implementationName = this.sharedData.selectedComponentId + '_impl';
-        this.implementationNamespace = this.sharedData.selectedNamespace;
-
-        this.checkImplementationExists();
-        this.checkArtifactTemplateExists();
+        this.implementation.name = this.sharedData.selectedComponentId + '_impl';
+        this.implementation.namespace = this.sharedData.selectedNamespace;
+        this.implementation.selectedResource = this.sharedData.selectedResource;
+        this.implementation.selectedResourceType = 'Implementation';
 
         this.generateImplModal.show();
     }
@@ -198,14 +204,13 @@ export class InterfacesComponent implements OnInit {
     generateImplementationArtifact(): void {
         this.generating = true;
         this.generateArtifactApiData.artifactName = this.generateArtifactApiData.artifactTemplateName;
-        if (this.createImplementation) {
-            this.service.createImplementation(this.selectedResource.replace(' ', '').toLowerCase(),
-                this.implementationName, this.implementationNamespace)
+        if (this.implementation.createComponent) {
+            this.service.createImplementation(this.implementation.name, this.implementation.namespace)
                 .subscribe(
                     data => this.handleGeneratedImplementation(data),
                     error => this.handleError(error)
                 );
-        } else if (!this.createImplementation && this.createArtifactTemplate) {
+        } else if (!this.implementation.createComponent && this.artifactTemplate.createComponent) {
             this.handleGeneratedImplementation();
         }
     }
@@ -326,9 +331,10 @@ export class InterfacesComponent implements OnInit {
     }
 
     private handleGeneratedImplementation(data?: any) {
-        if (this.createArtifactTemplate) {
-            this.service.createImplementationArtifact(this.selectedResource.replace(' ', '').toLowerCase(), this.implementationName,
-                this.implementationNamespace, this.generateArtifactApiData)
+        if (this.artifactTemplate.createComponent) {
+            this.generateArtifactApiData.artifactTemplateName = this.generateArtifactApiData.artifactName =  this.artifactTemplate.name;
+            this.generateArtifactApiData.artifactTemplateNamespace = this.artifactTemplate.namespace;
+            this.service.createArtifactTemplate(this.implementation.name, this.implementation.namespace, this.generateArtifactApiData)
                 .subscribe(
                     () => this.handleGeneratedArtifact(),
                     error => this.handleError(error)

@@ -10,7 +10,7 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 export class GenerateArtifactApiData {
-    // artifactName = artifactTemplateName; MUST be set
+    // implementationName = artifactTemplateName; MUST be set
     artifactName: string;
     artifactTemplate: string;
     artifactTemplateName: string;

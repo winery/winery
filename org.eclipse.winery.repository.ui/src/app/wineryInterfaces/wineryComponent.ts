@@ -1,4 +1,3 @@
-import { PlansApiData } from '../instance/serviceTemplates/plans/plansApiData';
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
@@ -10,6 +9,8 @@ import { PlansApiData } from '../instance/serviceTemplates/plans/plansApiData';
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
+import { PlansApiData } from '../instance/serviceTemplates/plans/plansApiData';
+
 export class WineryComponent {
     documentation: Array<any> = null;
     any: Array<any> = null;
@@ -44,6 +45,17 @@ export class WineryInstance extends WineryComponent {
     targetNamespace: string;
     import: any;
     serviceTemplateOrNodeTypeOrNodeTypeImplementation: Array<WineryTemplateOrImplementationComponent>;
+}
+
+export class ArtifactApiData extends WineryComponent {
+    interfaceName: string;
+    operationName: string;
+    artifactType: string;
+    artifactRef: string;
+    id: string;
+    artifactTypeLocalName: string;
+    artifactRefLocalName: string;
+    anyText: string;
 }
 
 export class WineryTopologyTemplate extends WineryComponent {
