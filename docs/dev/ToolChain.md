@@ -5,11 +5,10 @@
 - [IntelliJ](#intellij)
 - [Git and GitHub](#git-and-github)
   * [GitHub - Start](#github---start)
-  * [GitHub - Preparation First pull Request](#github---preparation-first-pull-request)
-  * [GitHub - Pull Request](#github---pull-request)
-  * [GitHub - Pull Request](#github---pull-request-1)
+  * [GitHub - Preparation First Pull Request](#github---preparation-first-pull-request)
+  * [GitHub - Prepare Pull Request](#github---prepare-pull-request)
+  * [GitHub - Create Pull Request](#github---create-pull-request)
   * [GitHub - Change Pull Request](#github---change-pull-request)
-  * [GitHub - change Pull Request](#github---change-pull-request)
   * [Excursus: Git](#excursus-git)
 
 <!-- tocstop -->
@@ -49,15 +48,15 @@
   5. Commit. Don't forget to sign the commit (Ctrl+S in Git Gui)
   6. Push the changes to origin: git push
 
-### GitHub - Preparation First pull Request
+### GitHub - Preparation First Pull Request
 
 * Check winery/CONTRIBUTING.md and carefully read the instruction
 * http://wiki.eclipse.org/Development_Resources/Contributing_via_Git --> Create an account WITH THE SAME EMAIL THEN USED FOR THE COMMITS (can also be checked in Gitk)
 * Sign the Contributor Agreement electronically
 
-### GitHub - Pull Request
+### GitHub - Prepare Pull Request
 
-* Check [CONTRIBUTING.MD(https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md)
+* Check [CONTRIBUTING.MD](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md)
 * Steps to prepare Pull Request:
   1. `git fetch upstream`
   2. `git merge upstream/master`
@@ -70,13 +69,13 @@
   9. Sign the Commit Message (<kbd>Ctrl</kbd>+<kbd>S</kbd>)
   10. Commit & Push with "force overwrite" since you changed the branch: `git push -f`
 
-### GitHub - Pull Request
+### GitHub - Create Pull Request
 
 Attention: Commits on the same branch done after the Pull Request is sent are still part of the Pull Request (!)
 
 * Go to eclipse/winery --> Pull Request
-* Fill in the title of the Pull Request and give a more detailed description of the changes/ added functionality
-* In case of UI changes - Add Screenshots
+* Fill in the title of the Pull Request and give a more detailed description of the changes or added functionality
+* In case of UI changes: Add Screenshots
 * Add `[x]` to the items listed in the write field
 * Check the description in the Preview and send the Pull Request
 
@@ -88,8 +87,6 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
 ![GitAutoCheck](graphics/autoCheckGit.png)
 
 * If there is a red cross, click in repective "Details" and fix them (see next slide)
-
-### GitHub - change Pull Request
 
 * In case of missing code quality,...
 * Changes are requested by the Commiter (person controlling the pull request process)

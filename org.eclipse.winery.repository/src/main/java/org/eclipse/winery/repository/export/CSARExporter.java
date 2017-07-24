@@ -56,6 +56,7 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
 import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 
@@ -115,83 +116,73 @@ public class CSARExporter {
 	 * @param out the outputstream to write to
 	 * @throws JAXBException
 	 */
-	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, JAXBException {
+	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, JAXBException, RepositoryCorruptException {
 		CSARExporter.LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
 		Map<RepositoryFileReference, String> refMap = new HashMap<>();
 		Collection<String> definitionNames = new ArrayList<>();
 
-		final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out);
+		try (final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out)) {
+			TOSCAExportUtil exporter = new TOSCAExportUtil();
+			Map<String, Object> conf = new HashMap<>();
 
-		TOSCAExportUtil exporter = new TOSCAExportUtil();
-		Map<String, Object> conf = new HashMap<>();
+			ExportedState exportedState = new ExportedState();
 
-		ExportedState exportedState = new ExportedState();
+			TOSCAComponentId currentId = entryId;
+			do {
+				String defName = CSARExporter.getDefinitionsPathInsideCSAR(currentId);
+				definitionNames.add(defName);
 
-		TOSCAComponentId currentId = entryId;
-		do {
-			String defName = CSARExporter.getDefinitionsPathInsideCSAR(currentId);
-			definitionNames.add(defName);
-
-			zos.putArchiveEntry(new ZipArchiveEntry(defName));
-			Collection<TOSCAComponentId> referencedIds;
-			try {
+				zos.putArchiveEntry(new ZipArchiveEntry(defName));
+				Collection<TOSCAComponentId> referencedIds;
 				referencedIds = exporter.exportTOSCA(currentId, zos, refMap, conf);
-			} catch (IllegalStateException e) {
-				// thrown if something went wrong inside the repo
-				out.close();
-				// we just rethrow as there currently is no error stream.
-				throw e;
+				zos.closeArchiveEntry();
+
+				exportedState.flagAsExported(currentId);
+				exportedState.flagAsExportRequired(referencedIds);
+
+				currentId = exportedState.pop();
+			} while (currentId != null);
+
+			// if we export a ServiceTemplate, data for the self-service portal might exist
+			if (entryId instanceof ServiceTemplateId) {
+				ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
+				this.addSelfServiceMetaData(serviceTemplateId, refMap, zos);
 			}
-			zos.closeArchiveEntry();
 
-			exportedState.flagAsExported(currentId);
-			exportedState.flagAsExportRequired(referencedIds);
+			// now, refMap contains all files to be added to the CSAR
 
-			currentId = exportedState.pop();
-		} while (currentId != null);
+			// write manifest directly after the definitions to have it more at the beginning of the ZIP rather than having it at the very end
+			this.addManifest(entryId, definitionNames, refMap, zos);
 
-		// if we export a ServiceTemplate, data for the self-service portal might exist
-		if (entryId instanceof ServiceTemplateId) {
-			ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
-			this.addSelfServiceMetaData(serviceTemplateId, refMap, zos);
-		}
+			// used for generated XSD schemas
+			TransformerFactory tFactory = TransformerFactory.newInstance();
+			Transformer transformer;
+			try {
+				transformer = tFactory.newTransformer();
+			} catch (TransformerConfigurationException e1) {
+				CSARExporter.LOGGER.debug(e1.getMessage(), e1);
+				throw new IllegalStateException("Could not instantiate transformer", e1);
+			}
 
-		// now, refMap contains all files to be added to the CSAR
-
-		// write manifest directly after the definitions to have it more at the beginning of the ZIP rather than having it at the very end
-		this.addManifest(entryId, definitionNames, refMap, zos);
-
-		// used for generated XSD schemas
-		TransformerFactory tFactory = TransformerFactory.newInstance();
-		Transformer transformer;
-		try {
-			transformer = tFactory.newTransformer();
-		} catch (TransformerConfigurationException e1) {
-			CSARExporter.LOGGER.debug(e1.getMessage(), e1);
-			throw new IllegalStateException("Could not instantiate transformer", e1);
-		}
-
-		// write all referenced files
-		for (RepositoryFileReference ref : refMap.keySet()) {
-			String archivePath = refMap.get(ref);
-			CSARExporter.LOGGER.trace("Creating {}", archivePath);
-			if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
-				addDummyRepositoryFileReferenceForGeneratedXSD(zos, transformer, (DummyRepositoryFileReferenceForGeneratedXSD) ref, archivePath);
-			} else {
-				if (ref.getParent() instanceof ArtifactTemplateDirectoryId) {
-					addArtifactTemplateToZipFile(zos, ref, archivePath);
+			// write all referenced files
+			for (RepositoryFileReference ref : refMap.keySet()) {
+				String archivePath = refMap.get(ref);
+				CSARExporter.LOGGER.trace("Creating {}", archivePath);
+				if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
+					addDummyRepositoryFileReferenceForGeneratedXSD(zos, transformer, (DummyRepositoryFileReferenceForGeneratedXSD) ref, archivePath);
 				} else {
-					addFileToZipArchive(zos, ref, archivePath);
-					zos.closeArchiveEntry();
+					if (ref.getParent() instanceof ArtifactTemplateDirectoryId) {
+						addArtifactTemplateToZipFile(zos, ref, archivePath);
+					} else {
+						addFileToZipArchive(zos, ref, archivePath);
+						zos.closeArchiveEntry();
+					}
 				}
 			}
+
+			this.addNamespacePrefixes(zos);
 		}
-
-		this.addNamespacePrefixes(zos);
-
-		zos.finish();
-		zos.close();
 	}
 
 	/**
