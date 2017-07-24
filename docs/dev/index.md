@@ -166,7 +166,8 @@ configured in order to use them locally!
 ### Project org.eclipse.winery.repository.ui
 
 This project contains the Angular ui for the repository. Here, the whole repository can be managed and
-configured.
+configured. The repository-ui documentation is generated during `npm run build` process and can be found in
+`org.eclipse.winery.repository.ui/dist/doc/` folder.
 
 ### Project org.eclipse.winery.topologymodeler
 
