@@ -44,7 +44,7 @@ This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 ## Acknowledgements
 
 The initial code contribution has been supported by the [Federal Ministry for Economic Affairs and Energy] as part of the [CloudCycle] project (01MD11023).
-Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the [SmartOrchestra] project (01MD16001F).
+Current development is supported by the Federal Ministry for Economic Affairs and Energy as part of the projects [SmartOrchestra] (01MD16001F) and [SePiA.Pro] (01MD16013F).
 
 ## License
 
@@ -74,4 +74,5 @@ Contributors:
  [nodejs]: http://nodejs.org/download/
  [Scalable JavaScript Application Architecture]: http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012
  [SmartOrchestra]: http://smartorchestra.de/en/
+	[SePiA.Pro]: http://projekt-sepiapro.de/en/
  [TerrificJS]: http://terrifically.org/

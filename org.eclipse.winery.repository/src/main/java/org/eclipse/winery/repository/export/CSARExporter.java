@@ -57,10 +57,8 @@ import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
@@ -432,8 +430,8 @@ public class CSARExporter {
 
 		Application application = res.getApplication();
 
-		// hack for the OpenTOSCA container to contain the CSAR name also in data.json
-		application.setCsarName(entryId.getXmlId().getDecoded() + ".csar");
+		// clear CSAR name as this may change.
+		application.setCsarName(null);
 
 		// hack for the OpenTOSCA container to display something
 		application.setVersion("1.0");
@@ -481,19 +479,6 @@ public class CSARExporter {
 		// add everything in the root of the CSAR
 		String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
 		addSelfServiceMetaData(serviceTemplateId, targetDir, refMap);
-		this.addSelfServiceMetaDataAsJSON(serviceTemplateId, zos);
-	}
-
-	private void addSelfServiceMetaDataAsJSON(ServiceTemplateId serviceTemplateId, ArchiveOutputStream zos) throws IOException {
-		ArchiveEntry archiveEntry = new ZipArchiveEntry(Constants.DIRNAME_SELF_SERVICE_METADATA + "/data.json");
-		zos.putArchiveEntry(archiveEntry);
-		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
-		Application application = serviceTemplateResource.getSelfServicePortalResource().getApplication();
-		ObjectMapper om = new ObjectMapper();
-		// using om.writeValue(zos, application) causes trouble with the zos, so we write it into a byte array first
-		byte[] bytes = om.writeValueAsBytes(application);
-		zos.write(bytes);
-		zos.closeArchiveEntry();
 	}
 
 	private void addManifest(TOSCAComponentId id, Collection<String> definitionNames, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream out) throws IOException {

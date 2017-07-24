@@ -10,6 +10,10 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ## [unreleased]
 
+### Removed
+* `csarname` is empty at all CSAR exports
+* `data.json` is not exported any more
+
 ## [v2.0.0-M1] - 2017-07-03
 
 ### Changed
@@ -18,7 +22,7 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 * `csarName`, `version`, and `authors` are now contained in `data.xml` and `data.json`, too.
 * Enfore `LF` line endings in the repository
 * Add splitting functionality based on target labels
-* BREAKING: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
+* **BREAKING**: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
 * Fix: If there are only XaaS packages without an infrastructure node defined the XaasPackager dialog  sends an undefined QName, got fixed by adding a check
 
 ### Fixed
