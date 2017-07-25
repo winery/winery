@@ -12,37 +12,56 @@
 
 <!-- tocstop -->
 
-The general structure is ROOT/<componenttype>s/<encoded-namespace>/<encoded-id>/<resource-specific-part>.
-Encoding is done following RFC 3986. This makes the structure to the URL structure (cf. Section 7).
+Related architectural decision records are
+[ADR-0001](../adr/0001-use-filesystem-as-backend)
+[ADR-0002](../adr/0002-filesystem-folder-structure-using-type-namespace-id-structure)
+.
 
-The resource-specific part typically is a file named <componenttype>.tosca . It contains the Definitions
-XML file where all the data is stored. Files may be added to artifact templates. Therefore, a subdirectory "files"
-is created in ROOT/artifacttemplates/<encoded-namespace>/<encoded-id>/. There, the files are stored.
+The general structure is `ROOT/<componenttype>s/<encoded-namespace>/<encoded-id>/<resource-specific-part>`.
+Encoding is explained below.
 
-For instance, the NodeType "NT1" in the namespace "http://www.example.com/NodeTypes" is found behind the URL
-"nodetypes/http%3A%2F%2Fexample.com%2FNodeTypes/NT1/". As the browser decodes the URL, the namespace and the
-id are double encoded. The content of the Definitions is stored in "NodeType.tosca".
-
-The URL encoding is necessary as some letter allowed in namespaces (e.g. ".", ":", ";", "/") and IDs are not allowed
-on all operating systems. IDs are NCNames, which are based on XML 1.0 Names, which in turn allows nearly all
-unicode characters. Therefore, each namespace and ID is URLencoded when written to the filesystem and URLdecoded
-when read from the filesystem.
-
-Figure 5 shows the root directory of the filesystem and the directory layout for the NodeType NT1.
+Figure 1 shows the root directory of the filesystem and the directory layout for the NodeType NT1.
 
 ![Filesystem Directory Layout](graphics/FilesystemDirectoryLayout.png)
-**Figure 5: Filesystem directory layout**
+**Figure 1: Filesystem directory layout**
+
+## Encoding
+
+Encoding of directory and file names is done following [RFC 3986](https://tools.ietf.org/html/rfc3986#section-2.1).
+This makes the structure consistent to the URL structure (cf. [URL structure in the developer guide](./#url-structure)).
+
+The URL encoding is necessary as some letter allowed in namespaces (e.g. `.`, `:`, `;`, `/`) and IDs are not allowed on all operating systems.
+IDs are [NCNames](https://www.w3.org/TR/xmlschema-2/#NCName), which are based on [XML 1.0 Names](https://www.w3.org/TR/2000/WD-xml-2e-20000814#NT-Name), which in turn allows [nearly all unicode characters](https://www.w3.org/TR/2000/WD-xml-2e-20000814#NT-Letter).
+Therefore, each namespace and ID is URL encoded when written to the filesystem and URL decoded when read from the filesystem.
+
+More information on encoding is given at [Encoding](Encoding).
 
 ## Typical layout
 
 Typically, all TOSCA components have the path `componenttype/ns/id`.
+
+The `component type` is nodetypes, relationshiptypes, servicetemplates, ...
+`ns` is the namespace.
+It is stored encoded (see above).
+`id` is the XML id of the component.
+It is stored encoded (see above).
+
+For instance, the NodeType "NT1" in the namespace "http://www.example.com/NodeTypes" is found in the directory
+"nodetypes/http%3A%2F%2Fexample.com%2FNodeTypes/NT1/".
+The content of the Definitions is stored in `NodeType.tosca`.
+
+The resource-specific part typically is a file named <componenttype>.tosca .
+It contains the Definitions XML file where all the data is stored.
+Files may be added to artifact templates.
+Therefore, a subdirectory "files" is created in ROOT/artifacttemplates/<encoded-namespace>/<encoded-id>/.
+There, the files are stored.
 
 ## Directory `imports`
 
 This directory stores files belonging to a CSAR.
 That means, when a definitions points to an external reference, the file has to be stored at the external location and not inside the repository
 
-### Directory layout
+### Directory layout of the imports directory
 
 `imports/<encoded importtype>/<encoded namespace>/<id>/`
 
@@ -81,7 +100,7 @@ Currently, all contained XSDs are queried for their defined local names and this
 The following is an implementation idea:
 
 Each namespace may contain multiple definitions.
-Therefore, each folder `<enocded namespace>` contains a file `import.properties`,
+Therefore, each folder `<enocoded namespace>` contains a file `import.properties`,
 which provides a mapping of local names to id.
 For instance, if `theElement`is defined in `myxmldefs.xsd` (being the human-readable id of the folder),
 `index.properties` contains `theElement = myxmldefs.xsd`.
@@ -91,11 +110,7 @@ The local name is sufficient as the namespace is given by the parent directory.
 
 Copyright (c) 2013-2017 University of Stuttgart.
 
-All rights reserved. This program and the accompanying materials
-are made available under the terms of the [Eclipse Public License v1.0]
-and the [Apache License v2.0] which both accompany this distribution,
-and are available at http://www.eclipse.org/legal/epl-v10.html
-and http://www.apache.org/licenses/LICENSE-2.0
+All rights reserved. Made available under the terms of the [Eclipse Public License v1.0] and the [Apache License v2.0] which both accompany this distribution.
 
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html

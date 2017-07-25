@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.winery.common.constants.Namespaces;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -36,14 +35,21 @@ public class InjectorReplaceOptions {
 	public TTopologyTemplate topologyTemplate;
 
 	@XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
-	public Map<String, List<TNodeTemplate>> injections = new HashMap<>();
+	public Map<String, List<TTopologyTemplate>> hostInjections = new HashMap<>();
+
+	@XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
+	public Map<String, List<TTopologyTemplate>> connectionInjections = new HashMap<>();
 
 	public void setTopologyTemplate (TTopologyTemplate topologyTemplate) {
 		this.topologyTemplate = topologyTemplate;
 	}
 
-	public void setInjectionOptions(Map<String, List<TNodeTemplate>> injectionOptions) {
-		this.injections = injectionOptions;
+	public void setHostInjectionOptions(Map<String, List<TTopologyTemplate>> hostInjectionOptions) {
+		this.hostInjections = hostInjectionOptions;
+	}
+
+	public void setConnectionInjectionOptions(Map<String, List<TTopologyTemplate>> connectionInjectionOptions) {
+		this.connectionInjections = connectionInjectionOptions;
 	}
 
 }
