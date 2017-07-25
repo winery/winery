@@ -63,8 +63,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -128,26 +126,12 @@ public class ModelUtilities {
 	 * @param template the node template to get the associated properties
 	 */
 	public static Properties getPropertiesKV(TEntityTemplate template) {
-		Properties properties = new Properties();
-		org.eclipse.winery.model.tosca.TEntityTemplate.Properties tprops = template.getProperties();
-		if (tprops != null) {
-			// no checking for validity, just reading
-			Element el = (Element) tprops.getAny();
-			if (el == null) {
-				// somehow invalid .tosca. We return empty properties instead of throwing a NPE
-				return properties;
-			}
-			NodeList childNodes = el.getChildNodes();
-			for (int i = 0; i < childNodes.getLength(); i++) {
-				Node item = childNodes.item(i);
-				if (item instanceof Element) {
-					String key = item.getLocalName();
-					String value = item.getTextContent();
-					properties.put(key, value);
-				}
-			}
+		if (template.getProperties() != null) {
+			return template.getProperties().getProperties();
+		} else {
+			return null;
 		}
-		return properties;
+		
 	}
 
 	/**
