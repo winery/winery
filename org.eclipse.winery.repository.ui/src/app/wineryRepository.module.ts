@@ -29,6 +29,7 @@ import { WineryRepositoryComponent } from './wineryRepository.component';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
 import { ExistService } from './wineryUtils/existService';
 import { WineryOAuthComponent } from './header/wineryOauth/wineryOAuth.component';
+import { TooltipModule } from 'ngx-bootstrap';
 
 @NgModule({
     imports: [
@@ -44,6 +45,7 @@ import { WineryOAuthComponent } from './header/wineryOauth/wineryOAuth.component
         SectionModule,
         WineryModalModule,
         WineryRepositoryRoutingModule,
+        TooltipModule.forRoot(),
     ],
     declarations: [
         HeaderComponent,

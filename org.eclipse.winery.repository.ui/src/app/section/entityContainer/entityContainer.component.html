@@ -13,7 +13,7 @@
 -->
 <div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
      class="entityContainer {{ resourceType }}"
-     routerLink="{{url}}">
+     (click)="onClick()">
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     <div class="left">
     </div>
@@ -24,9 +24,11 @@
         </div>
         <div *ngIf="!data.id" class="badge numberOfComponentInstances">{{ data.count }}</div>
         <div *ngIf="data.id" class="buttonContainer">
-            <a class="exportButton" (click)="exportComponent($event)"></a>
-            <a class="editButton" (click)="editComponent($event)"></a>
-            <a class="deleteButton" (click)="showRemoveDialog($event)"></a>
+            <a class="exportButton" (click)="exportComponent($event)"
+               tooltip="Export CSAR. Hold CTRL to export XML."></a>
+            <a class="editButton" (click)="editComponent($event)"
+               tooltip="{{editButtonToolTip}}" ></a>
+            <a class="deleteButton" (click)="showRemoveDialog($event)" tooltip="Delete"></a>
         </div>
     </div>
     <div class="right">

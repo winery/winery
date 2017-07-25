@@ -26,6 +26,7 @@ import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { SectionComponent } from './section.component';
 import { SectionPipe } from './section.pipe';
 import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
+import { TooltipModule } from 'ngx-bootstrap';
 
 @NgModule({
     imports: [
@@ -39,7 +40,8 @@ import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
         WineryModalModule,
         RouterModule,
         SelectModule,
-        WineryUploaderModule
+        WineryUploaderModule,
+        TooltipModule
     ],
     exports: [SectionComponent],
     declarations: [

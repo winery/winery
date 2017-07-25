@@ -33,16 +33,16 @@ export class EntityContainerComponent implements OnInit {
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
 
-    url: string;
     imageUrl: string;
     backendLink: string;
+    editButtonToolTip = 'Edit.';
 
     constructor(private existService: ExistService, private router: Router, private service: EntityContainterService) {
     }
 
     ngOnInit(): void {
-        this.url = '/' + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/' + this.data.id;
-        this.backendLink = backendBaseURL + '/' + this.resourceType.toLowerCase() + 's/' + this.url;
+        this.backendLink = backendBaseURL + '/' + this.resourceType.toLowerCase() + 's/'
+            + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/' + this.data.id;
 
         if (this.resourceType === 'nodeType' && this.data.id) {
             const img = this.backendLink + '/visualappearance/50x50';
@@ -57,6 +57,19 @@ export class EntityContainerComponent implements OnInit {
                     },
                 );
         }
+
+        if (this.resourceType === 'serviceTemplate') {
+            this.editButtonToolTip += ' Hold CTRL to directly edit the topology template.';
+        }
+    }
+
+    onClick() {
+        let url = '/' + this.resourceType.toLocaleLowerCase() + 's/' +
+            encodeURIComponent(encodeURIComponent(encodeURIComponent(this.data.namespace)));
+        if (this.data.id) {
+            url +=  '/' + this.data.id;
+        }
+        this.router.navigateByUrl(url);
     }
 
     exportComponent(event: MouseEvent) {
@@ -70,7 +83,7 @@ export class EntityContainerComponent implements OnInit {
 
     editComponent(event: MouseEvent) {
         event.stopPropagation();
-        if (this.router.url.includes('servicetemplates') && event.ctrlKey) {
+        if (this.resourceType === 'serviceTemplate' && event.ctrlKey) {
             const topologyModeler = backendBaseURL + '-topologymodeler/'
             + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
             + '&uiURL=' + encodeURIComponent(window.location.origin)
