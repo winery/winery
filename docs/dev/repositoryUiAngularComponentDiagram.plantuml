@@ -1,0 +1,148 @@
+Onlineeditor: https://www.planttext.com/
+
+Copyright (c) 2017 University of Stuttgart.
+
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License v1.0
+and the Apache License 2.0 which both accompany this distribution,
+and are available at http://www.eclipse.org/legal/epl-v10.html
+ and http://www.apache.org/licenses/LICENSE-2.0
+
+Contributors:
+     Lukas Harzenetter - initial API and implementation
+
+@startuml
+'skinparam monochrome true
+'Chooses LightGray as background color
+'We're better off with manual setting
+
+skinparam class {
+	BackgroundColor White
+	ArrowColor Black
+	BorderColor Black
+	LegendBackgroundColor White
+}
+
+skinparam stereotypeCBackgroundColor LightGray
+
+skinparam noteBackgroundColor White
+skinparam noteBorderColor Black
+
+'required for SVG
+skinparam defaultFontName sans-serif
+
+Title  <size:33> Repository UI: Angular Component Tree
+
+class WineryRepositoryComponent
+class InstanceComponent
+
+package admin {
+	class TypesWithShortNameComponent
+	class LoggerComponent
+	class NamespacesComponent
+	class RepositoryComponent
+}
+
+package artifactTemplates {
+	class FilesComponent
+}
+
+package nodeTypes {
+	class CapOrReqDefComponent
+}
+
+package policyTypes {
+	class AppliesToComponent
+	class LanguageComponent
+}
+
+package relationshipTypes { 
+	class ValidSourcesAndTargetsComponent
+}
+
+package requirementTypes {
+	class RequiredCapabilityType
+}
+
+package serviceTemplates {
+	package boundaryDefinitions {
+		class CapabilitiesComponent
+		class PoliciesComponent
+		class PropertyConstraintsComponent
+		class PropertyMappingsComponent
+		class RequirementsComponent
+		class RequirementsOrCapabilityComponent
+	}
+	
+	package selfServicePortal {
+	}
+	
+	class PlansComponent
+	class TagComponent
+	class TopologyTemplateComponent
+	
+	class BoundaryDefinitionsComponent
+	class SelfServicePortalComponent
+}
+
+package sharedComponents {
+	class DocumentationComponent
+	class EditXmlComponent
+	class ImplementationsComponent
+	class InheritanceComponent
+	class InstanceStatesComponent
+	class PropertiesComponent
+	class PropertiesDefinition
+	class VisualAppearanceComponent
+	class WineryArtifactComponent
+}
+
+WineryRepositoryComponent *-left- WineryHeaderComponent
+WineryRepositoryComponent -> SectionComponent : /:section
+WineryRepositoryComponent --> OtherComponent : /other
+WineryRepositoryComponent ----> InstanceComponent
+
+BoundaryDefinitionsComponent --> boundaryDefinitions
+SelfServicePortalComponent --> selfServicePortal
+
+InstanceComponent ---> requirementTypes : /requirementtypes/:namespce/:id
+InstanceComponent *-up- InstanceHeaderComponent
+InstanceComponent ---> admin : /admin
+InstanceComponent ---> artifactTemplates : /artifacttemplates/:namespce/:id
+InstanceComponent -----> nodeTypes : /nodetypes/:namespce/:id
+InstanceComponent ----> policyTypes : /policytypes/:namespce/:id
+InstanceComponent ------> relationshipTypes : /relationshiptypes/:namespce/:id
+InstanceComponent -----> serviceTemplates : /servicetemplates/:namespce/:id
+InstanceComponent ---------> sharedComponents
+
+admin -> LoggerComponent
+admin -> RepositoryComponent
+admin -> NamespacesComponent
+admin -> TypesWithShortNameComponent
+
+serviceTemplates -> SelfServicePortalComponent
+serviceTemplates -> BoundaryDefinitionsComponent
+serviceTemplates -> PlansComponent
+serviceTemplates -> TopologyTemplateComponent
+serviceTemplates -> TagComponent
+
+nodeTypes -> CapOrReqDefComponent
+
+policyTypes -> LanguageComponent
+policyTypes -> AppliesToComponent
+
+artifactTemplates -> FilesComponent
+
+relationshipTypes -> ValidSourcesAndTargetsComponent
+
+requirementTypes -> RequiredCapabilityType
+
+relationshipTypes ------> sharedComponents
+requirementTypes ----> sharedComponents
+serviceTemplates ---> sharedComponents
+artifactTemplates ---> sharedComponents
+nodeTypes -----> sharedComponents
+policyTypes --> sharedComponents
+
+
+@enduml

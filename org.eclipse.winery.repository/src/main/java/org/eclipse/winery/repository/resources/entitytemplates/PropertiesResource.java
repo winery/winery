@@ -8,8 +8,11 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - JSON
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates;
+
+import java.util.Properties;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,11 +21,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.winery.common.ModelUtilities;
+import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
+import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
-
-import com.sun.jersey.api.view.Viewable;
 
 public class PropertiesResource {
 
@@ -32,7 +38,7 @@ public class PropertiesResource {
 
 	/**
 	 * @param template the template to store the definitions at
-	 * @param res the resource to save after modifications
+	 * @param res      the resource to save after modifications
 	 */
 	public PropertiesResource(TEntityTemplate template, AbstractComponentInstanceResource res) {
 		this.template = template;
@@ -47,20 +53,27 @@ public class PropertiesResource {
 	@PUT
 	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
 	public Response setProperties(TEntityTemplate.Properties properties) {
-		this.getTemplate().setProperties(properties);
+		this.template.setProperties(properties);
 		return BackendUtils.persist(this.res);
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytemplates/properties.jsp", this);
+	@Produces(MediaType.APPLICATION_JSON)
+	public Properties getJson() {
+		Properties properties = ModelUtilities.getPropertiesKV(this.template);
+		TEntityType tempType = Utils.getTypeForTemplate(this.template);
+		WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(tempType);
+
+		if (wpd != null) {
+			// iterate on all defined properties and add them if necessary
+			for (PropertyDefinitionKV propdef : wpd.getPropertyDefinitionKVList()) {
+				String key = propdef.getKey();
+				if (properties.getProperty(key) == null) {
+					properties.put(key, "");
+				}
+			}
+		}
+
+		return properties;
 	}
-
-	/** data for the JSP **/
-
-	public TEntityTemplate getTemplate() {
-		return this.template;
-	}
-
 }

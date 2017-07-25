@@ -16,8 +16,6 @@ import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.repository.resources.EntityTypeResource;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
 
-import com.sun.jersey.api.view.Viewable;
-
 /**
  * Supports Winery's k/v properties introducing sub resources
  * "PropertyDefinition", which defines <em>one</em> property
@@ -32,10 +30,4 @@ public class PropertyDefinitionKVListResource extends EntityWithIdCollectionReso
 	public String getId(PropertyDefinitionKV entity) {
 		return entity.getKey();
 	}
-
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet implemented.");
-	}
-
 }

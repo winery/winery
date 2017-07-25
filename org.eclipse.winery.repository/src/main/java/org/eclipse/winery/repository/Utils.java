@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Nicole Keppler, Lukas Balzer - changes for angular frontend
  *     Armin Hüneburg - add initial git support
  *******************************************************************************/
 package org.eclipse.winery.repository;
@@ -79,6 +80,7 @@ import org.eclipse.winery.repository.export.CSARExporter;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.apiData.QNameWithTypeApiData;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
@@ -105,7 +107,6 @@ import org.apache.xerces.xs.XSConstants;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Element;
-
 
 /**
  * Contains utility functionality concerning with everything that is
@@ -590,7 +591,16 @@ public class Utils {
 		}
 	}
 
+	// TODO: maybe not necessary if everything is working with angular
 	public static String getAllXSDefinitionsForTypeAheadSelection(short type) {
+		try {
+			return Utils.mapper.writeValueAsString(Utils.getAllXSDefinitionsForTypeAheadSelectionRaw(type));
+		} catch (JsonProcessingException e) {
+			throw new IllegalStateException("Could not create JSON", e);
+		}
+	}
+
+	public static ArrayNode getAllXSDefinitionsForTypeAheadSelectionRaw(short type) {
 		SortedSet<XSDImportId> allImports = Repository.INSTANCE.getAllTOSCAComponentIds(XSDImportId.class);
 
 		Map<Namespace, Collection<String>> data = new HashMap<>();
@@ -619,6 +629,7 @@ public class Utils {
 			if (!localNames.isEmpty()) {
 				ObjectNode groupEntry = Utils.mapper.createObjectNode();
 				rootNode.add(groupEntry);
+				groupEntry.put("id", ns.getEncoded());
 				groupEntry.put("text", ns.getDecoded());
 				ArrayNode children = Utils.mapper.createArrayNode();
 				groupEntry.put("children", children);
@@ -630,17 +641,13 @@ public class Utils {
 					String text = localName;
 					ObjectNode o = Utils.mapper.createObjectNode();
 					o.put("text", text);
-					o.put("value", value);
+					o.put("id", value);
 					children.add(o);
 				}
 			}
 		}
 
-		try {
-			return Utils.mapper.writeValueAsString(rootNode);
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("Could not create JSON", e);
-		}
+		return rootNode;
 	}
 
 	public static Response getResponseForException(Exception e) {
@@ -942,7 +949,11 @@ public class Utils {
 	public static ArtifactTemplateId createArtifactTemplate(InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body, QName artifactType, UriInfo uriInfo) {
 
 		ArtifactTemplatesResource templateResource = new ArtifactTemplatesResource();
-		templateResource.onPost("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), artifactType.toString());
+		QNameWithTypeApiData qNameApiData = new QNameWithTypeApiData();
+		qNameApiData.localname = "xaasPackager_" + fileDetail.getFileName();
+		qNameApiData.namespace = "http://opentosca.org/xaaspackager";
+		qNameApiData.type = artifactType.toString();
+		templateResource.onJsonPost(qNameApiData);
 
 		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://opentosca.org/xaaspackager", "xaasPackager_" + fileDetail.getFileName(), false);
 

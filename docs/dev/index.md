@@ -27,8 +27,10 @@ Table of contents:
   * [Project org.eclipse.winery.model.csar.toscametafile](#project-orgeclipsewinerymodelcsartoscametafile)
   * [Project org.eclipse.winery.model.selfservice](#project-orgeclipsewinerymodelselfservice)
   * [Project org.eclipse.winery.model.tosca](#project-orgeclipsewinerymodeltosca)
-  * [Project org.eclipse.winery.repository.client](#project-orgeclipsewineryrepositoryclient)
   * [Project org.eclipse.winery.repository](#project-orgeclipsewineryrepository)
+  * [Project org.eclipse.winery.repository.client](#project-orgeclipsewineryrepositoryclient)
+  * [Project org.eclipse.winery.repository.configuration](#project-orgeclipsewineryrepositoryconfiguration)
+  * [Project org.eclipse.winery.repository.ui](#project-orgeclipsewineryrepositoryui)
   * [Project org.eclipse.winery.topologymodeler](#project-orgeclipsewinerytopologymodeler)
 - [TOSCA Definitions in Winery](#tosca-definitions-in-winery)
 - [Uniqueness of QNames](#uniqueness-of-qnames)
@@ -148,15 +150,26 @@ This project contains a JAX B generated model of the XSD of OASIS TOSCA v1.0. Th
 enable proper referencing and use. An Implementation Artifactmay carry a "name" attribute. The contents of
 properties of Boundary Definitions are processed in "lax" mode.
 
+### Project org.eclipse.winery.repository
+
+This is the heart of Winery. This project hosts the repository, where all entities of TOSCA are stored and
+managed. It realizes the components "Type, Template, and Artifact Management" and "Repository" (Figure 1).
+
 ### Project org.eclipse.winery.repository.client
 
 Whis project hosts a client using the REST API of the repository and offering a Java object based client to the
 Winery repository.
 
-### Project org.eclipse.winery.repository
+### Project org.eclipse.winery.repository.configuration
 
-This is the heart of Winery. This project hosts the repository, where all entities of TOSCA are stored and
-managed. It realizes the components "Type, Template, and Artifact Management" and "Repository" (Figure 1).
+This project contains configurations used in the repository. Example are GitHub OAuth credentials. They must be 
+configured in order to use them locally!
+
+### Project org.eclipse.winery.repository.ui
+
+This project contains the Angular ui for the repository. Here, the whole repository can be managed and
+configured. The repository-ui documentation is generated during `npm run build` process and can be found in
+`org.eclipse.winery.repository.ui/dist/doc/` folder.
 
 ### Project org.eclipse.winery.topologymodeler
 

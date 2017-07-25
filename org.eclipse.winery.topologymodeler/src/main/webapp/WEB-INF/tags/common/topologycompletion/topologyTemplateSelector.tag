@@ -19,6 +19,7 @@
 <%@attribute name="topologyName" type="java.lang.String"%>
 <%@attribute name="topologyNamespace" type="java.lang.String"%>
 <%@attribute name="repositoryURL" type="java.lang.String" %>
+<%@attribute name="uiURL" type="java.lang.String" %>
 <%@attribute name="solutionTopologies" type="java.util.List<org.eclipse.winery.model.tosca.TTopologyTemplate>"%>
 
 <%@tag import="java.io.StringWriter"%>
@@ -91,7 +92,7 @@
 					TNodeTemplate nodeTemplate = (TNodeTemplate) entity;
 
 					%>
-						<nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=client.getAllTypes(TRelationshipType.class)%>" repositoryURL='<%=repositoryURL%>' nodeTemplate="<%=nodeTemplate%>" top="<%=Integer.toString(topCounter)%>" left='<%="0"%>'/>
+						<nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=client.getAllTypes(TRelationshipType.class)%>" repositoryURL='<%=repositoryURL%>' uiURL="<%=uiURL%>" nodeTemplate="<%=nodeTemplate%>" top="<%=Integer.toString(topCounter)%>" left='<%="0"%>'/>
 
 						<%
 							String randomId = UUID.randomUUID().toString();

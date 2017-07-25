@@ -1,0 +1,16 @@
+[
+  {
+	"id": "http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Fpolicytemplates%2Ffruits",
+	"text": "http://winery.opentosca.org/test/policytemplates/fruits",
+	"children": [
+	  {
+		"id": "{http://winery.opentosca.org/test/policytemplates/fruits}german",
+		"text": "german"
+	  },
+	  {
+		"id": "{http://winery.opentosca.org/test/policytemplates/fruits}italian",
+		"text": "italian"
+	  }
+	]
+  }
+]

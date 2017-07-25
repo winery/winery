@@ -19,6 +19,7 @@
 
 <%@attribute name="name" required="true" description="Implementation | Deployment"%>
 <%@attribute name="repositoryURL" required="true" description="the URL of Winery's repository"%>
+<%@attribute name="uiURL" required="true" description="the URL of Winery's repository"%>
 <%@attribute name="onSuccessfulArtifactCreationFunction" required="true" description="javascript code to be executed when the artifact has been successfully created. Parameter: artifactInfo"%>
 <%@attribute name="allArtifactTypes" required="true" type="java.util.Collection" description="All available artifact types"%>
 <%@attribute name="allNamespaces" required="true" type="java.util.Collection" description="All known namespaces"%>
@@ -103,23 +104,40 @@ function addArtifact() {
 	}
 	</c:if>
 
+	// Because of the new API, we need to convert the data to a JSON-string.
+	data = data.split('&');
+	var jsonData = '{';
+	for (var i = 0; i < data.length; i++) {
+		var tmp = data[i].split("=");
+		if (tmp[0] == 'artifactTemplateNS') {
+		    tmp[0] = 'artifactTemplateNamespace';
+		}
+		jsonData += '"' + tmp[0] + '": "' + decodeURIComponent(tmp[1]) + '",';
+	}
+	jsonData = jsonData.substr(0, jsonData.length-1);
+	jsonData += '}';
+
+	console.log(jsonData);
+
 	// We assume that the artifact type exists
 	// i.e., that it was not deleted during loading of the dialog
 
 	// The deployment artifact resource allows auto creation of the artifact template
 	// We do not need to do that manually using a separate POST call
 	// TODO: In a future version, this might be better have a clean way to create additional content for an artifact template
-
 	// do the addCall
 	$.ajax({
 		url: ${URL},
 		type: "POST",
 		async: false,
-		"data": data,
+		"data": jsonData,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
 		error: function(jqXHR, textStatus, errorThrown) {
 			vShowAJAXError("Could not create ${name} Artifact", jqXHR, errorThrown);
 		},
 		success: function(data, textStatus, jqXHR) {
+		    vShowSuccess("Successfully added ${name} Artifact!", "Success");
 			// prepare data for onSuccessfulArtifactCreationFunction
 			// even though interaceName and operationName do not exist at DA, accessing it via jQuery works: then "undefined" is returned, which is OK
 			var artifactInfo = {
@@ -170,7 +188,9 @@ function addArtifact() {
 			$('#add${name}ArtifactDiag').modal('hide');
 			vShowSuccess("Artifact added successfully");
 
-			if (autoCreateArtifactTemplate) {
+			// Do not show add files modal because of the new backend API
+			vShowNotification("To add files, please use the Winery for now.", "File upload");
+			/*if (autoCreateArtifactTemplate) {
 				var aritfactTemplateNS = $("#artifactTemplateNS").val();
 				var artifactTemplateName = $("#artifactTemplateName").val();
 				var artifactTemplateURL = makeArtifactTemplateURL("${repositoryURL}", aritfactTemplateNS, artifactTemplateName);
@@ -178,7 +198,7 @@ function addArtifact() {
 				var url = artifactTemplateURL + "files/";
 				$('#fileupload').fileupload('option', 'url', url);
 				$("#addFilesToArtifactTemplate").modal('show');
-			}
+			}*/
 		}
 	});
 
@@ -327,7 +347,7 @@ function openAdd${name}ArtifactDiag() {
 					// first element
 					// this is the selected element
 					// we put it as href to the "view" button
-					$("#viewArtifactTemplateToLink").attr("href", makeArtifactTemplateURL("${repositoryURL}", this.namespace, this.id));
+					$("#viewArtifactTemplateToLink").attr("href", makeArtifactTemplateURL("${uiURL}", this.namespace, this.id));
 				}
 			});
 			select.trigger("change");
@@ -408,7 +428,7 @@ $(function(){
 			// TODO: possibly use makeArtifactTemplateURL("${repositoryURL}", this.namespace, this.id)) here
 			require(["winery-support-common"], function(w) {
 				var fragment = w.getURLFragmentOutOfFullQName(evt.val);
-				var url = "${repositoryURL}/artifacttemplates/" + fragment + "/";
+				var url = "${uiURL}/artifacttemplates/" + fragment + "/";
 				$("#viewArtifactTemplateToLink").attr("href", url);
 			});
 		}

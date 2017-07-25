@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -12,12 +12,12 @@
 package org.eclipse.winery.repository.resources.imports.genericimports;
 
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 /**
  * Manages a certain kind of imports without special treatments
  */
-public class GenericImportsResource extends AbstractComponentsResource<GenericImportResource> {
+public class GenericImportsResource extends AbstractComponentsWithoutTypeReferenceResource<GenericImportResource> {
 
 	private String type;
 

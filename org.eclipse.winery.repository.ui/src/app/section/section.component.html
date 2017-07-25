@@ -1,0 +1,115 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzenetter - initial API and implementation
+ */
+-->
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <div id="contentContainer">
+        <div id="searchBoxContainer">
+            <input type="text" id="searchBox" [(ngModel)]="filterString">
+        </div>
+        <div id="componentContainer">
+            <winery-entity-container
+                *ngFor="let item of componentData
+                | filterSections: { showNamespaces: showNamespace, filterString: filterString }
+                | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }"
+                [resourceType]="selectedResource"
+                [data]="item"
+                (deleted)="getSectionsData()">
+            </winery-entity-container>
+        </div>
+        <div class="sidebar">
+            <button class="btn btn-default sidebar-btn" (click)="onAdd();">Add new</button>
+            <button class="btn btn-default sidebar-btn" (click)="addCsarModal.show();">Import CSAR</button>
+            <button class="btn btn-default sidebar-btn" (click)="onChangeView()"
+                    [disabled]="showSpecificNamespaceOnly()">
+                {{ changeViewButtonTitle }}
+            </button>
+        </div>
+    </div>
+    <div class="footerContainer">
+        <label for="selectItemsPerPage">Items per Page:</label>
+        <select id="selectItemsPerPage" [(ngModel)]="itemsPerPage">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+        </select>
+        <pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>
+    </div>
+</div>
+
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <winery-modal-header [title]="'Add component'"></winery-modal-header>
+    <winery-modal-body>
+        <form #addComponentForm="ngForm">
+            <div class="form-group">
+                <label for="componentName" class="control-label">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="componentName"
+                       name="componentName"
+                       #newName="ngModel"
+                       [(ngModel)]="newComponentName"
+                       required
+                       [wineryDuplicateValidator]="validatorObject">
+                <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!newName.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!newName.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+            <winery-namespace-selector
+                name="namespace"
+                required
+                [(ngModel)]="newComponentNamespace"
+                [isRequired]="true">
+            </winery-namespace-selector>
+            <div class="form-group" *ngIf="types">
+                <label for="typeSelect" class="control-label">Type</label>
+                <ng-select id="typeSelect" [items]="types" (selected)="typeSelected($event)" [active]="[newComponentSelectedType]"></ng-select>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer
+        (onOk)="addComponent()"
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Add'"
+        [disableOkButton]="!(addComponentForm?.form.valid && newComponentNamespace?.length > 0)">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #addCsarModal="bs-modal" [modalRef]="addCsarModal">
+    <winery-modal-header [title]="'Add CSAR'"></winery-modal-header>
+    <winery-modal-body>
+        <winery-uploader [modalRef]="addCsarModal" [uploadUrl]="fileUploadUrl" (onSucces)="getSectionsData();"></winery-uploader>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" (click)="addCsarModal.hide()">Cancel</button>
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
+    <winery-modal-header [title]="'Remove component'"></winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'No'" [okButtonLabel]="'Yes'"
+                        (onOk)="onRemoveElement()"></winery-modal-footer>
+</winery-modal>

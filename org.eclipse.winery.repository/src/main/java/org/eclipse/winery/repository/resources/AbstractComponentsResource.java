@@ -24,17 +24,12 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
@@ -48,12 +43,10 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
-import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.sun.jersey.api.NotFoundException;
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,12 +63,6 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentsResource.class);
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML(@DefaultValue("false") @QueryParam("full") boolean full) {
-		return Response.ok().entity(new Viewable("/jsp/genericcomponentpage.jsp", new GenericComponentPageData(this.getClass(), full))).build();
-	}
-
 	@Path("{namespace}/")
 	public ComponentsOfOneNamespaceResource getAllResourcesInNamespaceResource(@PathParam("namespace") String namespace) {
 		return new ComponentsOfOneNamespaceResource(this.getClass(), namespace);
@@ -85,7 +72,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * Creates a new component instance in the given namespace
 	 *
 	 * @param namespace plain namespace
-	 * @param name the name; used as id
+	 * @param name      the name; used as id
 	 */
 	protected ResourceCreationResult onPost(String namespace, String name) {
 		ResourceCreationResult res;
@@ -115,23 +102,6 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	}
 
 	/**
-	 * Creates a new component instance in the given namespace
-	 *
-	 * @param namespace plain namespace
-	 * @param name plain id
-	 * @param ignored this parameter is ignored, but necessary for
-	 *            {@link ArtifactTemplatesResource} to be able to accept the
-	 *            artifact type at a post
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response onPost(@FormParam("namespace") String namespace, @FormParam("name") String name, String ignored) {
-		ResourceCreationResult res = this.onPost(namespace, name);
-		return res.getResponse();
-	}
-
-	/**
 	 * Creates a TOSCAcomponentId for the given namespace / id combination
 	 *
 	 * Uses reflection to create a new instance
@@ -144,11 +114,8 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	/**
 	 * Creates a new instance of the current component
 	 *
-	 * @return <ul>
-	 *         <li>Status.CREATED (201) if the resource has been created,</li>
-	 *         <li>Status.CONFLICT if the resource already exists,</li>
-	 *         <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li>
-	 *         </ul>
+	 * @return <ul> <li>Status.CREATED (201) if the resource has been created,</li> <li>Status.CONFLICT if the resource
+	 * already exists,</li> <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li> </ul>
 	 */
 	protected ResourceCreationResult createComponentInstance(TOSCAComponentId tcId) {
 		return BackendUtils.create(tcId);
@@ -172,9 +139,8 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	}
 
 	/**
-	 *
 	 * @param namespace encoded namespace
-	 * @param id encoded id
+	 * @param id        encoded id
 	 * @return an instance of the requested resource
 	 */
 	@Path("{namespace}/{id}/")
@@ -250,12 +216,10 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * the UI
 	 *
 	 * @param grouped if given, the JSON output is grouped by namespace
-	 *
-	 * @return A list of all ids of all instances of this component type. If the
-	 *         "name" attribute is required, that name is used as id <br />
-	 *         Format:
-	 *         <code>[({"namespace": "<namespace>", "id": "<id>"},)* ]</code>. A
-	 *         <code>name<code> field is added if the model allows an additional name attribute
+	 * @return A list of all ids of all instances of this component type. <br /> Format: <code>[({"namespace":
+	 * "[namespace]", "id": "[id]"},)* ]</code>. <br /><br /> If grouped is set, the list will be grouped by namespace.
+	 * <br /> <code>[{"id": "[namsepace encoded]", "test": "[namespace decoded]", "children":[{"id": "[qName]", "text":
+	 * "[id]"}]}]</code>
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -279,37 +243,48 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 						AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
 						String name = ((IHasName) componentInstaceResource).getName();
 						jg.writeStringField("name", name);
+					} else {
+						// used for winery-qNameSelector to avoid an if there
+						jg.writeStringField("name", id.getXmlId().getDecoded());
 					}
+					jg.writeStringField("qName", id.getQName().toString());
 					jg.writeEndObject();
 				}
 				jg.writeEndArray();
 			} else {
-				jg.writeStartObject();
+				jg.writeStartArray();
 				Map<Namespace, ? extends List<? extends TOSCAComponentId>> groupedIds = allTOSCAcomponentIds.stream().collect(Collectors.groupingBy(id -> id.getNamespace()));
 				groupedIds.keySet().stream().sorted().forEach(namespace -> {
 					try {
-						jg.writeFieldName(namespace.getDecoded());
+						jg.writeStartObject();
+						jg.writeStringField("id", namespace.getEncoded());
+						jg.writeStringField("text", namespace.getDecoded());
+						jg.writeFieldName("children");
 						jg.writeStartArray();
 						groupedIds.get(namespace).forEach(id -> {
 							try {
 								jg.writeStartObject();
-								jg.writeStringField("id", id.getXmlId().getDecoded());
+								String text;
 								if (supportsNameAttribute) {
 									AbstractComponentInstanceResource componentInstaceResource = AbstractComponentsResource.getComponentInstaceResource(id);
-									String name = ((IHasName) componentInstaceResource).getName();
-									jg.writeStringField("name", name);
+									text = ((IHasName) componentInstaceResource).getName();
+								} else {
+									text = id.getXmlId().getDecoded();
 								}
+								jg.writeStringField("id", id.getQName().toString());
+								jg.writeStringField("text", text);
 								jg.writeEndObject();
 							} catch (IOException e) {
 								AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
 							}
 						});
 						jg.writeEndArray();
+						jg.writeEndObject();
 					} catch (IOException e) {
 						AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
 					}
 				});
-				jg.writeEndObject();
+				jg.writeEndArray();
 			}
 			jg.close();
 		} catch (Exception e) {

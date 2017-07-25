@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - add id to groups
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.select2;
 
@@ -16,17 +17,23 @@ import java.util.TreeSet;
 
 public class Select2OptGroup implements Comparable<Select2OptGroup> {
 
+	private final String id;
 	private final String text;
 	private final SortedSet<Select2DataItem> children;
 
 
-	public Select2OptGroup(String text) {
+	public Select2OptGroup(String id, String text) {
 		this.text = text;
-		this.children = new TreeSet<Select2DataItem>();
+		this.id = id;
+		this.children = new TreeSet<>();
 	}
 
 	public String getText() {
 		return this.text;
+	}
+
+	public String getId() {
+		return this.id;
 	}
 
 	/**
@@ -61,5 +68,4 @@ public class Select2OptGroup implements Comparable<Select2OptGroup> {
 	public int compareTo(Select2OptGroup o) {
 		return this.getText().compareTo(o.getText());
 	}
-
 }

@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Niko Stadelmaier - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions;
 
 import java.net.URI;
@@ -31,13 +42,9 @@ public class BoundaryDefinitionsJSPData {
 	private final TBoundaryDefinitions defs;
 	private final URI baseURI;
 
-
 	/**
-	 *
-	 * @param ste the service template of the boundary definitions. Required to
-	 *            get a list of all plans
-	 * @param baseURI the base URI of the service. Requried for rendering the
-	 *            topology template for the selections
+	 * @param ste     the service template of the boundary definitions. Required to get a list of all plans
+	 * @param baseURI the base URI of the service. Requried for rendering the topology template for the selections
 	 */
 	public BoundaryDefinitionsJSPData(TServiceTemplate ste, URI baseURI) {
 		this.ste = ste;
@@ -55,6 +62,10 @@ public class BoundaryDefinitionsJSPData {
 			// something stored --> return that
 			return Utils.getXMLAsString(p.getAny());
 		}
+	}
+
+	public String getPropertiesAsXMLString() {
+		return this.getDefinedProperties();
 	}
 
 	/**
@@ -81,6 +92,11 @@ public class BoundaryDefinitionsJSPData {
 	public String getBoundaryDefinitionsAsXMLStringEncoded() {
 		String res = Utils.getXMLAsString(this.defs);
 		return Functions.escapeXml(res);
+	}
+
+	public String getBoundaryDefinitionsAsXMLString() {
+		String res = Utils.getXMLAsString(this.defs);
+		return res;
 	}
 
 	public Collection<TypeWithShortName> getConstraintTypes() {

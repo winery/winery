@@ -89,5 +89,4 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 		Response res = Response.status(Status.INTERNAL_SERVER_ERROR).entity("not yet implemented").build();
 		throw new WebApplicationException(res);
 	}
-
 }

@@ -1,0 +1,15 @@
+{
+  "capabilityTypeList": {
+	"classes": [
+	  {
+		"name": "Healthy",
+		"qName": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Healthy"
+	  },
+	  {
+		"name": "Saturating",
+		"qName": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Saturating"
+	  }
+	]
+  },
+  "currentRequiredCapabilityType": null
+}

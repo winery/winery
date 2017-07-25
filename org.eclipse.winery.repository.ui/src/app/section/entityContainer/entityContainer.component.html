@@ -1,0 +1,50 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzenetter - initial API and implementation
+ */
+-->
+<div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
+     class="entityContainer {{ resourceType }}"
+     (click)="onClick()">
+    <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
+    <div class="left">
+    </div>
+    <div class="center">
+        <div class="informationContainer">
+            <div *ngIf="data.id" class="name">{{ data.id }}</div>
+            <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
+        </div>
+        <div *ngIf="!data.id" class="badge numberOfComponentInstances">{{ data.count }}</div>
+        <div *ngIf="data.id" class="buttonContainer">
+            <a class="exportButton" (click)="exportComponent($event)"
+               tooltip="Export CSAR. Hold CTRL to export XML."></a>
+            <a class="editButton" (click)="editComponent($event)"
+               tooltip="{{editButtonToolTip}}" ></a>
+            <a class="deleteButton" (click)="showRemoveDialog($event)" tooltip="Delete"></a>
+        </div>
+    </div>
+    <div class="right">
+    </div>
+</div>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete Property'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Do you want to delete <span style="font-weight:bold;">{{ data.id }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="deleteConfirmed()"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>

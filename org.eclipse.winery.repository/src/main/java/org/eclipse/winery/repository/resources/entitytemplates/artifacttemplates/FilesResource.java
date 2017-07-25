@@ -41,7 +41,6 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.FileMeta;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 
-import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
@@ -72,13 +71,12 @@ public class FilesResource {
 	 *
 	 * If the file already exists, is it <em>overridden</em>
 	 *
-	 * @return JSON with data required by JQuery-File-Upload (see
-	 *         https://github.com/blueimp/jQuery-File-Upload/wiki/Setup)
+	 * @return JSON with data required by JQuery-File-Upload (see https://github.com/blueimp/jQuery-File-Upload/wiki/Setup)
 	 */
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response onPost(@FormDataParam("files[]") InputStream uploadedInputStream, @FormDataParam("files[]") FormDataContentDisposition fileDetail, @FormDataParam("files[]") FormDataBodyPart body, @Context UriInfo uriInfo) {
+	public Response onPost(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo) {
 		// existence check not required as instantiation of the resource ensures that the object only exists if the resource exists
 		FilesResource.LOGGER.debug("Beginning with file upload");
 
@@ -140,12 +138,6 @@ public class FilesResource {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytemplates/artifacttemplates/files.jsp");
-	}
-
-	@GET
 	@Path("/{fileName}")
 	public Response getFile(@PathParam("fileName") String fileName, @HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
@@ -158,5 +150,4 @@ public class FilesResource {
 		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
 		return BackendUtils.delete(ref);
 	}
-
 }
