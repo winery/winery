@@ -49,7 +49,7 @@ Please follow <http://eclipse.github.io/winery/> to setup a git hook, which ensu
 
 ## Configuring GitHub
 
-Please ensure that the Email-Adress you use at Eclipse is the same as the "Public email" configured at https://github.com/settings/profile.
+Please ensure that the email address you use at Eclipse is the same as the "Public email" configured at https://github.com/settings/profile.
 
 ## Making the Commit
 
