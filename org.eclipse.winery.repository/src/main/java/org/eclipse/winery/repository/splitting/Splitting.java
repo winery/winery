@@ -412,17 +412,19 @@ public class Splitting {
 				for (TNodeTemplate predecessor : predecessorsOfReplacementCandidate) {
 					// Check if a compatible node for the predecessor from the right provider is available
 					if (predecessor.getRequirements() == null) {
-						throw new SplittingException("The Node Template with the ID " + predecessor.getId() + " has no requirement assigned and the injected can't be processed");
-					}
-					List<TRequirement> openHostedOnRequirements = predecessor.getRequirements().getRequirement().stream()
-							.filter(req -> getBasisCapabilityType(getRequiredCapabilityTypeQNameOfRequirement(req)).getName().equalsIgnoreCase("Container")).collect(Collectors.toList());
-
-					List<TTopologyTemplate> compatibleTopologyFragments = repository
-							.getAllTopologyFragmentsForLocationAndOfferingCapability(targetLabel, openHostedOnRequirements.get(0));
-					//Add compatible nodes to the injectionOptions to host the considered lowest level node
-					if (!compatibleTopologyFragments.isEmpty()) {
-						injectionOptions.put(predecessor.getId(), compatibleTopologyFragments);
 						nodesForWhichHostsFound.add(predecessor);
+						//throw new SplittingException("The Node Template with the ID " + predecessor.getId() + " has no requirement assigned and the injected can't be processed");
+					} else {
+						List<TRequirement> openHostedOnRequirements = predecessor.getRequirements().getRequirement().stream()
+								.filter(req -> getBasisCapabilityType(getRequiredCapabilityTypeQNameOfRequirement(req)).getName().equalsIgnoreCase("Container")).collect(Collectors.toList());
+
+						List<TTopologyTemplate> compatibleTopologyFragments = repository
+								.getAllTopologyFragmentsForLocationAndOfferingCapability(targetLabel, openHostedOnRequirements.get(0));
+						//Add compatible nodes to the injectionOptions to host the considered lowest level node
+						if (!compatibleTopologyFragments.isEmpty()) {
+							injectionOptions.put(predecessor.getId(), compatibleTopologyFragments);
+							nodesForWhichHostsFound.add(predecessor);
+						}	
 					}
 				}
 			}
@@ -798,7 +800,8 @@ public class Splitting {
 
 		/* If the property "requiredRelationshipType" is defined for the requirement and the capability this relationship type
 		   has to be taken - if the specified relationship type is not available, no relationship type is chosen */
-		if (requirementProperties.containsKey("requiredRelationshipType") && capabilityProperties.containsKey("requiredRelationshipType")
+		if (requirementProperties != null && capabilityProperties != null && 
+				requirementProperties.containsKey("requiredRelationshipType") && capabilityProperties.containsKey("requiredRelationshipType")
 				&& requirementProperties.get("requiredRelationshipType").equals(capabilityProperties.get("requiredRelationshipType"))
 				&& requirementProperties.get("requiredRelationshipType") != null) {
 			QName referencedRelationshipType = (QName) requirementProperties.get("requiredRelationshipType");
