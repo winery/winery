@@ -2,6 +2,17 @@
 
 # Contributing Patches
 
+<!-- toc -->
+
+- [Sign a Eclipse Contributor Agreement (ECA)](#sign-a-eclipse-contributor-agreement-eca)
+- [Configuring Git](#configuring-git)
+- [Configuring GitHub](#configuring-github)
+- [Making the Commit](#making-the-commit)
+- [Contributing via GitHub PullRequests](#contributing-via-github-pullrequests)
+- [Background Information](#background-information)
+
+<!-- tocstop -->
+
 We love seeing people contribute patches to the Winery project and the process is relatively simple.
 In general, we follow [GitHub's fork & pull request model](https://help.github.com/articles/fork-a-repo/).
 Since we are an Eclipse project, we have requirements on commits.
