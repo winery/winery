@@ -72,6 +72,9 @@ You can check out [the guide at GitHub](https://help.github.com/articles/signing
 One way to think of this is that when you sign the CLA you are indicating that you are free to contribute to eclipse, but that does not mean everything you ever do can be contributed.
 Using the commit signing mechanism indicates that your commit is under the auspices of your agreement.
 
+In the case of multiple authors, plese add `Also-by: Some Bodyelse <somebodyelse@nowhere.com>` for each additional author.
+For more information, see <https://www.eclipse.org/projects/handbook/#resources-commit>.
+
 ## Contributing via GitHub PullRequests
 
 Pull requests are very much a GitHub process so best [explained by GitHub](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
