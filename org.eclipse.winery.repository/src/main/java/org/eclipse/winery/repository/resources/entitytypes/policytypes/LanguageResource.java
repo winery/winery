@@ -8,21 +8,21 @@ import com.sun.jersey.api.view.Viewable;
 
 public class LanguageResource {
 
-	private PolicyTypeResource policyTypeResource;
+    private PolicyTypeResource policyTypeResource;
 
 
-	public LanguageResource(PolicyTypeResource policyTypeResource) {
-		this.policyTypeResource = policyTypeResource;
-	}
+    public LanguageResource(PolicyTypeResource policyTypeResource) {
+        this.policyTypeResource = policyTypeResource;
+    }
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/policytypes/language.jsp", this);
-	}
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getHTML() {
+        return new Viewable("/jsp/entitytypes/policytypes/language.jsp", this);
+    }
 
-	public String getLanguage() {
-		return this.policyTypeResource.getPolicyType().getPolicyLanguage();
-	}
+    public String getLanguage() {
+        return this.policyTypeResource.getPolicyType().getPolicyLanguage();
+    }
 
 }

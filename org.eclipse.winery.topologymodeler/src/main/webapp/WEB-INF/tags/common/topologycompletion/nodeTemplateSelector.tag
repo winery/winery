@@ -39,192 +39,192 @@
 <%@taglib prefix="nt"   tagdir="/WEB-INF/tags/common/templates/nodetemplates" %>
 
 <div id="nodeTemplateSelector">
-	<p> There are several possible Node Templates to be inserted. <br> Please select your desired NodeTemplate: </p>
+    <p> There are several possible Node Templates to be inserted. <br> Please select your desired NodeTemplate: </p>
 
-	<%
-		// the pixel distance between the displayed NodeTemplates
-		final int NODE_TEMPLATE_DISTANCE = 150;
+    <%
+        // the pixel distance between the displayed NodeTemplates
+        final int NODE_TEMPLATE_DISTANCE = 150;
 
-		IWineryRepositoryClient client = WineryRepositoryClientFactory.getWineryRepositoryClient();
-		client.addRepository(repositoryURL);
+        IWineryRepositoryClient client = WineryRepositoryClientFactory.getWineryRepositoryClient();
+        client.addRepository(repositoryURL);
 
-		// instantiate  variables
-		Map<String, String> idMap = new HashMap<String, String>();
-		List<TRelationshipTemplate> possibleConnections = new ArrayList<TRelationshipTemplate>();
-		String sourceId = "";
-		String randomId = "";
-		String id = "";
+        // instantiate  variables
+        Map<String, String> idMap = new HashMap<String, String>();
+        List<TRelationshipTemplate> possibleConnections = new ArrayList<TRelationshipTemplate>();
+        String sourceId = "";
+        String randomId = "";
+        String id = "";
 
-		// a counter used for an ID
-		int counter = 0;
+        // a counter used for an ID
+        int counter = 0;
 
-		// used for the position of the NodeTemplate in the EditorArea
-		int topCounter = 0;
-	%>
-	<script>
-		// array to collect the created IDs
-		IDs = new Array();
+        // used for the position of the NodeTemplate in the EditorArea
+        int topCounter = 0;
+    %>
+    <script>
+        // array to collect the created IDs
+        IDs = new Array();
 
-		// save all created connections in an array to be able to detach them after the selection
-		Connections = new Array();
-	</script>
-	<%
-		// render a topology for every choice to be displayed in the dialog
-		for (TNodeTemplate nt: choices.keySet()) {
+        // save all created connections in an array to be able to detach them after the selection
+        Connections = new Array();
+    </script>
+    <%
+        // render a topology for every choice to be displayed in the dialog
+        for (TNodeTemplate nt: choices.keySet()) {
 
-			Map<TNodeTemplate, List<TEntityTemplate>> entityTemplates = choices.get(nt);
+            Map<TNodeTemplate, List<TEntityTemplate>> entityTemplates = choices.get(nt);
 
-			for (TNodeTemplate choice: entityTemplates.keySet()) {
-				id = "choice" + Integer.toString(counter);
+            for (TNodeTemplate choice: entityTemplates.keySet()) {
+                id = "choice" + Integer.toString(counter);
 
-				%>
-				<div id="proposalEditorArea">
-				<div id="proposaldrawingarea">
-				<%
+                %>
+                <div id="proposalEditorArea">
+                <div id="proposaldrawingarea">
+                <%
 
-				topCounter = 0;
-			%>
-			<nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=client.getAllTypes(TRelationshipType.class)%>" repositoryURL='<%=repositoryURL%>' nodeTemplate="<%=nt%>" top="<%=Integer.toString(topCounter)%>" left='<%="0"%>'/>
-			<script>
+                topCounter = 0;
+            %>
+            <nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=client.getAllTypes(TRelationshipType.class)%>" repositoryURL='<%=repositoryURL%>' nodeTemplate="<%=nt%>" top="<%=Integer.toString(topCounter)%>" left='<%="0"%>'/>
+            <script>
 
-				//Map IDs here. ID mapping is necessary to avoid conflict with the modelled NodeTemplates in the background.
-				<%
-					randomId = UUID.randomUUID().toString();
-				%>
-					document.getElementById("<%=nt.getId()%>").id = "<%=randomId%>";
-					IDs.push("<%=randomId%>");
-				<%
-					idMap.put(nt.getId(), randomId);
-				%>
-			</script>
-			<%
+                //Map IDs here. ID mapping is necessary to avoid conflict with the modelled NodeTemplates in the background.
+                <%
+                    randomId = UUID.randomUUID().toString();
+                %>
+                    document.getElementById("<%=nt.getId()%>").id = "<%=randomId%>";
+                    IDs.push("<%=randomId%>");
+                <%
+                    idMap.put(nt.getId(), randomId);
+                %>
+            </script>
+            <%
 
-			topCounter = topCounter + NODE_TEMPLATE_DISTANCE;
-			%>
-			<!-- use the nodeTemplateRenderer tag to render NodeTemplates-->
-			<nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=client.getAllTypes(TRelationshipType.class)%>" repositoryURL='<%=repositoryURL%>' nodeTemplate="<%=choice%>" top="<%=Integer.toString(topCounter)%>" left='<%="0"%>'/>
-			<script>
-			    //Map IDs here
-				<%
-					randomId = UUID.randomUUID().toString();
-				%>
-					document.getElementById("<%=choice.getId()%>").id = "<%=randomId%>";
-					IDs.push("<%=randomId%>");
-				<%
-					idMap.put(choice.getId(), randomId);
-				%>
-			</script>
-			</div>
-			</div>
-			<% if (entityTemplates.get(choice).size() > 1) { %>
-				<p> There are several possible Relationship Templates to connect the Node Templates <%=nt.getName()%> and <%=choice.getName()%>. Please choose at least one connection: </p>
-			<%}
-			for (TEntityTemplate rtChoice: entityTemplates.get(choice)) {
+            topCounter = topCounter + NODE_TEMPLATE_DISTANCE;
+            %>
+            <!-- use the nodeTemplateRenderer tag to render NodeTemplates-->
+            <nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=client.getAllTypes(TRelationshipType.class)%>" repositoryURL='<%=repositoryURL%>' nodeTemplate="<%=choice%>" top="<%=Integer.toString(topCounter)%>" left='<%="0"%>'/>
+            <script>
+                //Map IDs here
+                <%
+                    randomId = UUID.randomUUID().toString();
+                %>
+                    document.getElementById("<%=choice.getId()%>").id = "<%=randomId%>";
+                    IDs.push("<%=randomId%>");
+                <%
+                    idMap.put(choice.getId(), randomId);
+                %>
+            </script>
+            </div>
+            </div>
+            <% if (entityTemplates.get(choice).size() > 1) { %>
+                <p> There are several possible Relationship Templates to connect the Node Templates <%=nt.getName()%> and <%=choice.getName()%>. Please choose at least one connection: </p>
+            <%}
+            for (TEntityTemplate rtChoice: entityTemplates.get(choice)) {
 
-				TRelationshipTemplate connector = (TRelationshipTemplate) rtChoice;
-				if (entityTemplates.get(choice).size() > 1) {
-				%>
-					<input checked="checked" id="<%=connector.getName()%>" name="<%=connector.getName()%>" type="checkbox" value="<%=connector.getName()%>">	<%=connector.getName()%> <br/>
-				<%
-				}
-				sourceId = ((TNodeTemplate) connector.getSourceElement().getRef()).getId();
-				String targetId = ((TNodeTemplate) connector.getTargetElement().getRef()).getId();
-				QName type = connector.getType();
-				String visualSourceId = idMap.get(sourceId);
-				String visualTargetId = idMap.get(targetId);
-				%>
-				<script>
-					// connect the rendered NodeTemplates
-					require(["winery-common-topologyrendering"], function(wct) {
-						wct.initNodeTemplate(jsPlumb.getSelector(".NodeTemplateShape:not('.hidden')"), true);
-					});
-					var c;
-					require(["jsplumb"], function(_jsPlumb) {
-						_jsPlumb.ready(function() {
-							c = _jsPlumb.connect({
-								source:"<%=visualSourceId%>",
-								target:"<%=visualTargetId%>",
-								endpoint:"Blank",
-								type: "<%=type%>"
-							});
-							Connections.push(c);
-						})
-					});
+                TRelationshipTemplate connector = (TRelationshipTemplate) rtChoice;
+                if (entityTemplates.get(choice).size() > 1) {
+                %>
+                    <input checked="checked" id="<%=connector.getName()%>" name="<%=connector.getName()%>" type="checkbox" value="<%=connector.getName()%>">    <%=connector.getName()%> <br/>
+                <%
+                }
+                sourceId = ((TNodeTemplate) connector.getSourceElement().getRef()).getId();
+                String targetId = ((TNodeTemplate) connector.getTargetElement().getRef()).getId();
+                QName type = connector.getType();
+                String visualSourceId = idMap.get(sourceId);
+                String visualTargetId = idMap.get(targetId);
+                %>
+                <script>
+                    // connect the rendered NodeTemplates
+                    require(["winery-common-topologyrendering"], function(wct) {
+                        wct.initNodeTemplate(jsPlumb.getSelector(".NodeTemplateShape:not('.hidden')"), true);
+                    });
+                    var c;
+                    require(["jsplumb"], function(_jsPlumb) {
+                        _jsPlumb.ready(function() {
+                            c = _jsPlumb.connect({
+                                source:"<%=visualSourceId%>",
+                                target:"<%=visualTargetId%>",
+                                endpoint:"Blank",
+                                type: "<%=type%>"
+                            });
+                            Connections.push(c);
+                        })
+                    });
 
-				</script>
-			<%}
-		%>
-		<br>
-		<button type="button" class="btn btn-primary btn-default" data-dismiss="modal" id="<%=id%>" value='<%=choice.getName()%>' onclick="onSelected<%=choice.getName()%>()">Use Template: <%=choice.getName()%></button>
-		<script>
+                </script>
+            <%}
+        %>
+        <br>
+        <button type="button" class="btn btn-primary btn-default" data-dismiss="modal" id="<%=id%>" value='<%=choice.getName()%>' onclick="onSelected<%=choice.getName()%>()">Use Template: <%=choice.getName()%></button>
+        <script>
 
-			/**
-			 * Handles a click on the "Select" button.
-			 *
-			 * This selection handler method is created for every NodeTemplate that can be chosen by the user.
-			 * This is realized by inserting the unique names of the NodeTemplate choices in the method name via JSP scriptlet.
-			 */
-			function onSelected<%=choice.getName()%>() {
+            /**
+             * Handles a click on the "Select" button.
+             *
+             * This selection handler method is created for every NodeTemplate that can be chosen by the user.
+             * This is realized by inserting the unique names of the NodeTemplate choices in the method name via JSP scriptlet.
+             */
+            function onSelected<%=choice.getName()%>() {
 
-				SelectedRTs = new Array();
+                SelectedRTs = new Array();
 
-				for (var i = 0; i < Connections.length; i++) {
-					jsPlumb.detach(Connections[i]);
-				}
+                for (var i = 0; i < Connections.length; i++) {
+                    jsPlumb.detach(Connections[i]);
+                }
 
-				<%
-				if (entityTemplates.get(choice).size() == 1) {
-				%>
-					SelectedRTs.push("<%=((TRelationshipTemplate) entityTemplates.get(choice).get(0)).getName()%>");
-				<%
-				} else if (entityTemplates.get(choice).size() > 1) {
-					for (TEntityTemplate rtChoice: entityTemplates.get(choice)) {
-					TRelationshipTemplate connector = (TRelationshipTemplate) rtChoice;
-					%>
-					if (document.getElementById("<%=connector.getName()%>").checked) {
-						SelectedRTs.push(document.getElementById("<%=connector.getName()%>").value);
-					}
-				<%
-				}}
-				%>
-				SelectedItems = new Array();
-				SelectedItems.push(document.getElementById("<%=id%>").value);
+                <%
+                if (entityTemplates.get(choice).size() == 1) {
+                %>
+                    SelectedRTs.push("<%=((TRelationshipTemplate) entityTemplates.get(choice).get(0)).getName()%>");
+                <%
+                } else if (entityTemplates.get(choice).size() > 1) {
+                    for (TEntityTemplate rtChoice: entityTemplates.get(choice)) {
+                    TRelationshipTemplate connector = (TRelationshipTemplate) rtChoice;
+                    %>
+                    if (document.getElementById("<%=connector.getName()%>").checked) {
+                        SelectedRTs.push(document.getElementById("<%=connector.getName()%>").value);
+                    }
+                <%
+                }}
+                %>
+                SelectedItems = new Array();
+                SelectedItems.push(document.getElementById("<%=id%>").value);
 
-				if (SelectedItems.length == 0) {
-					vShowError("Please selected at least one Relationship Template.");
-				} else {
-					// add the selected Templates to the topology and restart the completion
-					var selectedNodeTemplates = JSON.stringify(SelectedItems);
-					var selectedRelationshipTemplates = JSON.stringify(SelectedRTs);
-					$.post("jsp/topologyCompletion/selectionHandler.jsp", {topology: topology, allChoices: choices, selectedNodeTemplates: selectedNodeTemplates, selectedRelationshipTemplates: selectedRelationshipTemplates},
-						function(data){
-							require(["winery-topologycompletion"], function(completer) {
-								completer.restartCompletion(data, document.getElementById('overwriteTopology').checked,document.getElementById('openInNewWindow').checked,
-									document.getElementById('topologyName').value, document.getElementById('topologyNamespace').value, true, "<%=stName%>",
-									"<%=templateURL%>", "<%=repositoryURL%>");
-							});
-						}
-					);
-				}
-			}
-		</script>
-		<%
-		counter++;
-		}
-	}%>
-	<br>
-	<br>
-	<br>
-	<button type="button" class="btn btn-primary btn-default" data-dismiss="modal" id="cancel" onclick="onSelectedCancel()">Cancel Automatic Completion</button>
-	<p><i> Press this button if you want to continue the completion manually.</i> </p>
-	<script>
-		// save topology and refresh the page
-		function onSelectedCancel() {
-			$.post("jsp/topologyCompletion/topologySaver.jsp", {topology: topology, templateURL: "<%=templateURL%>", repositoryURL: "<%=repositoryURL%>", topologyName: "<%=topologyName%>", topologyNamespace: "<%=topologyNamespace%>", overwriteTopology: "true"},
-				function(callback){
-					document.location.reload(true);
-				}
-			);
-		}
-	</script>
+                if (SelectedItems.length == 0) {
+                    vShowError("Please selected at least one Relationship Template.");
+                } else {
+                    // add the selected Templates to the topology and restart the completion
+                    var selectedNodeTemplates = JSON.stringify(SelectedItems);
+                    var selectedRelationshipTemplates = JSON.stringify(SelectedRTs);
+                    $.post("jsp/topologyCompletion/selectionHandler.jsp", {topology: topology, allChoices: choices, selectedNodeTemplates: selectedNodeTemplates, selectedRelationshipTemplates: selectedRelationshipTemplates},
+                        function(data){
+                            require(["winery-topologycompletion"], function(completer) {
+                                completer.restartCompletion(data, document.getElementById('overwriteTopology').checked,document.getElementById('openInNewWindow').checked,
+                                    document.getElementById('topologyName').value, document.getElementById('topologyNamespace').value, true, "<%=stName%>",
+                                    "<%=templateURL%>", "<%=repositoryURL%>");
+                            });
+                        }
+                    );
+                }
+            }
+        </script>
+        <%
+        counter++;
+        }
+    }%>
+    <br>
+    <br>
+    <br>
+    <button type="button" class="btn btn-primary btn-default" data-dismiss="modal" id="cancel" onclick="onSelectedCancel()">Cancel Automatic Completion</button>
+    <p><i> Press this button if you want to continue the completion manually.</i> </p>
+    <script>
+        // save topology and refresh the page
+        function onSelectedCancel() {
+            $.post("jsp/topologyCompletion/topologySaver.jsp", {topology: topology, templateURL: "<%=templateURL%>", repositoryURL: "<%=repositoryURL%>", topologyName: "<%=topologyName%>", topologyNamespace: "<%=topologyNamespace%>", overwriteTopology: "true"},
+                function(callback){
+                    document.location.reload(true);
+                }
+            );
+        }
+    </script>
 </div>

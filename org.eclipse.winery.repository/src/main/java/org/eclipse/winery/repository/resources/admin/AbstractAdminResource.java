@@ -27,20 +27,20 @@ import org.apache.commons.configuration.Configuration;
  */
 public abstract class AbstractAdminResource {
 
-	protected final Configuration configuration;
+    protected final Configuration configuration;
 
-	private final AdminId id;
+    private final AdminId id;
 
-	/**
-	 * @param id the id of the element rendered by this resource
-	 */
-	protected AbstractAdminResource(AdminId id) {
-		this.id = id;
-		this.configuration = Repository.INSTANCE.getConfiguration(id);
-	}
+    /**
+     * @param id the id of the element rendered by this resource
+     */
+    protected AbstractAdminResource(AdminId id) {
+        this.id = id;
+        this.configuration = Repository.INSTANCE.getConfiguration(id);
+    }
 
-	@DELETE
-	public Response onDelete() {
-		return BackendUtils.delete(this.id);
-	}
+    @DELETE
+    public Response onDelete() {
+        return BackendUtils.delete(this.id);
+    }
 }

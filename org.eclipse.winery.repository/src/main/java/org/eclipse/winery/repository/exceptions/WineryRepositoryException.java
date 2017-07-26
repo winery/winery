@@ -17,12 +17,12 @@ import org.eclipse.winery.common.exceptions.WineryException;
  * Base exception for all repository exceptions
  */
 public abstract class WineryRepositoryException extends WineryException {
-	
-	public WineryRepositoryException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    
+    public WineryRepositoryException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public WineryRepositoryException(String message) {
-		super(message);
-	}
+    public WineryRepositoryException(String message) {
+        super(message);
+    }
 }

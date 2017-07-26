@@ -21,13 +21,13 @@ import org.junit.Test;
 @Ignore("not finished - CSARExporterTest is currently the way to go")
 public class TOSCAExportUtilTest {
 
-	@Test
-	public void exportTOSCA() throws Exception {
-		TOSCAExportUtil exporter = new TOSCAExportUtil();
-		// we include everything related
-		Map<String, Object> conf = new HashMap<>();
-		NullOutputStream out = new NullOutputStream();
-		// exporter.exportTOSCA(TestToscaExporter.serviceTemplateId, out, conf);
-	}
+    @Test
+    public void exportTOSCA() throws Exception {
+        TOSCAExportUtil exporter = new TOSCAExportUtil();
+        // we include everything related
+        Map<String, Object> conf = new HashMap<>();
+        NullOutputStream out = new NullOutputStream();
+        // exporter.exportTOSCA(TestToscaExporter.serviceTemplateId, out, conf);
+    }
 
 }

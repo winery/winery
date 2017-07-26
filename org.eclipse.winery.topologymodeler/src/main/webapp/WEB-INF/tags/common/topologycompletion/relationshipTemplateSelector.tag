@@ -43,116 +43,116 @@
 <div id="relationshipTemplateSelector">
 <p> There are several possible Relationship Templates for a connection. <br> Please select your desired connection(s): </p>
 <script>
-	// save all created connections in an array to be able to detach them after the selection
-	Connections = new Array();
+    // save all created connections in an array to be able to detach them after the selection
+    Connections = new Array();
 </script>
 <%
-	// the pixel distance between the displayed NodeTemplates
-	final int NODE_TEMPLATE_DISTANCE = 150;
+    // the pixel distance between the displayed NodeTemplates
+    final int NODE_TEMPLATE_DISTANCE = 150;
 
-	IWineryRepositoryClient client = WineryRepositoryClientFactory.getWineryRepositoryClient();
-	client.addRepository(repositoryURL);
+    IWineryRepositoryClient client = WineryRepositoryClientFactory.getWineryRepositoryClient();
+    client.addRepository(repositoryURL);
 
-	Map<String, String> idMap = new HashMap<String, String>();
-	String sourceId = "";
-	String id = "choice";
+    Map<String, String> idMap = new HashMap<String, String>();
+    String sourceId = "";
+    String id = "choice";
 
-	// used for the position of the NodeTemplate in the EditorArea
-	int topCounter = 0;
+    // used for the position of the NodeTemplate in the EditorArea
+    int topCounter = 0;
 
-	List<TRelationshipTemplate> possibleConnections = new ArrayList<TRelationshipTemplate>();
+    List<TRelationshipTemplate> possibleConnections = new ArrayList<TRelationshipTemplate>();
 
-	for (TEntityTemplate choice: choices) {
-		if (choice instanceof TRelationshipTemplate) {
-			possibleConnections.add((TRelationshipTemplate) choice);
-		}
-	}
-	for (TRelationshipTemplate connector: possibleConnections) { %>
-		<div id="proposalEditorArea">
-		<div id="proposaldrawingarea">
-		<div id="allRelationships">
-		<%
-		topCounter = 0;
+    for (TEntityTemplate choice: choices) {
+        if (choice instanceof TRelationshipTemplate) {
+            possibleConnections.add((TRelationshipTemplate) choice);
+        }
+    }
+    for (TRelationshipTemplate connector: possibleConnections) { %>
+        <div id="proposalEditorArea">
+        <div id="proposaldrawingarea">
+        <div id="allRelationships">
+        <%
+        topCounter = 0;
 
-		for (TEntityTemplate choice: choices) {
-			if (choice instanceof TNodeTemplate) {
-				TNodeTemplate nodeTemplate = (TNodeTemplate) choice;
+        for (TEntityTemplate choice: choices) {
+            if (choice instanceof TNodeTemplate) {
+                TNodeTemplate nodeTemplate = (TNodeTemplate) choice;
 
-				topCounter = topCounter + NODE_TEMPLATE_DISTANCE;
-				%>
-				<nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=client.getAllTypes(TRelationshipType.class)%>" repositoryURL='<%=repositoryURL%>' nodeTemplate="<%=nodeTemplate%>" top="<%=Integer.toString(topCounter)%>" left='<%="0"%>'/>
-				<script>
-					//Map IDs here
-					<%
-						String randomId = UUID.randomUUID().toString();
-					%>
-						document.getElementById("<%=nodeTemplate.getId()%>").id = "<%=randomId%>";
-					<%
-						idMap.put(nodeTemplate.getId(), randomId);
-					%>
-				</script>
-				<%
-			}
-		}
+                topCounter = topCounter + NODE_TEMPLATE_DISTANCE;
+                %>
+                <nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=client.getAllTypes(TRelationshipType.class)%>" repositoryURL='<%=repositoryURL%>' nodeTemplate="<%=nodeTemplate%>" top="<%=Integer.toString(topCounter)%>" left='<%="0"%>'/>
+                <script>
+                    //Map IDs here
+                    <%
+                        String randomId = UUID.randomUUID().toString();
+                    %>
+                        document.getElementById("<%=nodeTemplate.getId()%>").id = "<%=randomId%>";
+                    <%
+                        idMap.put(nodeTemplate.getId(), randomId);
+                    %>
+                </script>
+                <%
+            }
+        }
 
-		sourceId = ((TNodeTemplate) connector.getSourceElement().getRef()).getId();
-		String targetId = ((TNodeTemplate) connector.getTargetElement().getRef()).getId();
-		QName type = connector.getType();
+        sourceId = ((TNodeTemplate) connector.getSourceElement().getRef()).getId();
+        String targetId = ((TNodeTemplate) connector.getTargetElement().getRef()).getId();
+        QName type = connector.getType();
 
-		String visualSourceId = idMap.get(sourceId);
-		String visualTargetId = idMap.get(targetId);
-		%>
-		<script>
-			// connect the rendered NodeTemplates
-			require(["winery-common-topologyrendering"], function(wct) {
-				wct.initNodeTemplate(jsPlumb.getSelector(".NodeTemplateShape:not('.hidden')"), true);
-			});
-			var c;
-			require(["jsplumb"], function(_jsPlumb) {
-				_jsPlumb.ready(function() {
-					c = _jsPlumb.connect({
-						source:"<%=visualSourceId%>",
-						target:"<%=visualTargetId%>",
-						endpoint:"Blank",
-						type: "<%=type%>"
-					});
-					Connections.push(c);
-				})
-			});
-		</script>
-		</div>
-		</div>
-		</div>
-		<input id="<%=id%>" name="<%=id%>" type="checkbox" value="<%=connector.getName()%>"> <%=connector.getName()%> <br>
+        String visualSourceId = idMap.get(sourceId);
+        String visualTargetId = idMap.get(targetId);
+        %>
+        <script>
+            // connect the rendered NodeTemplates
+            require(["winery-common-topologyrendering"], function(wct) {
+                wct.initNodeTemplate(jsPlumb.getSelector(".NodeTemplateShape:not('.hidden')"), true);
+            });
+            var c;
+            require(["jsplumb"], function(_jsPlumb) {
+                _jsPlumb.ready(function() {
+                    c = _jsPlumb.connect({
+                        source:"<%=visualSourceId%>",
+                        target:"<%=visualTargetId%>",
+                        endpoint:"Blank",
+                        type: "<%=type%>"
+                    });
+                    Connections.push(c);
+                })
+            });
+        </script>
+        </div>
+        </div>
+        </div>
+        <input id="<%=id%>" name="<%=id%>" type="checkbox" value="<%=connector.getName()%>"> <%=connector.getName()%> <br>
 
-	<%}%>
-	<button type="button" class="btn btn-primary btn-default" id="btnUseSelection" onclick="useRelationshipTemplateSelection()">Use Selection</button>
-	<script>
-		function useRelationshipTemplateSelection() {
-			// add the selected RelationshipTemplates to the topology and restart the completion
-			SelectedItems = new Array();
-			for (var i= 0; i < document.getElementById("rtchoices").children[0].choice.length; i++) {
-				if (document.getElementById("rtchoices").children[0].choice[i].checked == true) {
-					SelectedItems.push(document.getElementById("rtchoices").children[0].choice[i].value);
-				}
-			}
+    <%}%>
+    <button type="button" class="btn btn-primary btn-default" id="btnUseSelection" onclick="useRelationshipTemplateSelection()">Use Selection</button>
+    <script>
+        function useRelationshipTemplateSelection() {
+            // add the selected RelationshipTemplates to the topology and restart the completion
+            SelectedItems = new Array();
+            for (var i= 0; i < document.getElementById("rtchoices").children[0].choice.length; i++) {
+                if (document.getElementById("rtchoices").children[0].choice[i].checked == true) {
+                    SelectedItems.push(document.getElementById("rtchoices").children[0].choice[i].value);
+                }
+            }
 
-			if (SelectedItems.length == 0) {
-				vShowError("Please selected at least one Relationship Template.");
-			} else {
-				$('#chooseRelationshipTemplateDiag').modal('hide');
-				var selectedRelationshipTemplates = JSON.stringify(SelectedItems);
-				// add selected RelationshipTemplate(s) to the topology
-				$.post("jsp/topologyCompletion/selectionHandler.jsp", {topology: topology, allChoices: choices, selectedRelationshipTemplates: selectedRelationshipTemplates},
-					function(data) {
-						require(["winery-topologycompletion"], function(completer) {
-							completer.restartCompletion(data, document.getElementById('overwriteTopology').checked,document.getElementById('openInNewWindow').checked,
-								topologyName, topologyNamespace, true, "<%=stName%>",
-								"<%=templateURL%>", "<%=repositoryURL%>");
-						});
-					}
-				);
-			}
-		}
-	</script>
+            if (SelectedItems.length == 0) {
+                vShowError("Please selected at least one Relationship Template.");
+            } else {
+                $('#chooseRelationshipTemplateDiag').modal('hide');
+                var selectedRelationshipTemplates = JSON.stringify(SelectedItems);
+                // add selected RelationshipTemplate(s) to the topology
+                $.post("jsp/topologyCompletion/selectionHandler.jsp", {topology: topology, allChoices: choices, selectedRelationshipTemplates: selectedRelationshipTemplates},
+                    function(data) {
+                        require(["winery-topologycompletion"], function(completer) {
+                            completer.restartCompletion(data, document.getElementById('overwriteTopology').checked,document.getElementById('openInNewWindow').checked,
+                                topologyName, topologyNamespace, true, "<%=stName%>",
+                                "<%=templateURL%>", "<%=repositoryURL%>");
+                        });
+                    }
+                );
+            }
+        }
+    </script>
 </div>

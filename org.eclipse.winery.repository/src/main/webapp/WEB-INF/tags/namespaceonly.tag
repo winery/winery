@@ -32,7 +32,7 @@
                 <div class="informationContainer">
                     <div class="namespace" alt="${d.namespace}">
                         <div class="namespaceOnly" data-original-title="${d.namespace}">
-                        	${d.namespace}
+                            ${d.namespace}
                         </div>
                         <div class="badge numberOfComponentInstances">
                             ${d.count}
@@ -60,8 +60,8 @@
     }
 
     $(".namespaceOnly").tooltip({
-		classes: {
-			"ui-tooltip": "namespaceTooltip"
-		}
-	});
+        classes: {
+            "ui-tooltip": "namespaceTooltip"
+        }
+    });
 </script>

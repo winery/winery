@@ -25,6 +25,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class MockXMLElement {
 
-	@XmlElement
-	public String mock = "mock";
+    @XmlElement
+    public String mock = "mock";
 }

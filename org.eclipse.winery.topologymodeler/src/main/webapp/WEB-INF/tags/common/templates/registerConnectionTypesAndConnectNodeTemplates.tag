@@ -39,166 +39,166 @@ Collection<TRelationshipTemplate> relationshipTemplatesCasted = (Collection<TRel
 // we should load jquery and jquery.ui to have it available at jsPlumb
 // however, jquery.ui cannot be loaded as it conflicts with bootstrap (when using toogle buttons)
 require(["jquery", "jsplumb", "winery-common-topologyrendering"], function(globallyavailablea, jsPlumb, wct) {
-	jsPlumb.bind("ready", function() {
-		/**
-		 * Shows error if req or cap does not exist
-		 */
-		function getNodeTemplateIdForReqOrCapId(id) {
-			var reqOrCap = $("#" + id);
-			if (reqOrCap.length == 0) {
-				vShowError("Requirement/Capability with id " + id + " not found");
-			}
-			var res = reqOrCap.parent().parent().parent().attr("id");
-			return res;
-		}
+    jsPlumb.bind("ready", function() {
+        /**
+         * Shows error if req or cap does not exist
+         */
+        function getNodeTemplateIdForReqOrCapId(id) {
+            var reqOrCap = $("#" + id);
+            if (reqOrCap.length == 0) {
+                vShowError("Requirement/Capability with id " + id + " not found");
+            }
+            var res = reqOrCap.parent().parent().parent().attr("id");
+            return res;
+        }
 
-		// register the "selected" type to enable selection of arrows
-		jsPlumb.registerConnectionTypes({
-			"selected":{
-				paintStyle:{ strokeStyle:"red", lineWidth:5 },
-				hoverPaintStyle:{ lineWidth: 7 }
-			}
-		});
+        // register the "selected" type to enable selection of arrows
+        jsPlumb.registerConnectionTypes({
+            "selected":{
+                paintStyle:{ strokeStyle:"red", lineWidth:5 },
+                hoverPaintStyle:{ lineWidth: 7 }
+            }
+        });
 
 <%
-		int i=0;
-		String when = "";
-		String whenRes = "";
-		if (relationshipTypesCasted.isEmpty()) {
+        int i=0;
+        String when = "";
+        String whenRes = "";
+        if (relationshipTypesCasted.isEmpty()) {
 %>
-			vShowError("No relationship types exist. Please add relationship types to the repository");
+            vShowError("No relationship types exist. Please add relationship types to the repository");
 <%
-		}
-		for (TRelationshipType relationshipType: relationshipTypesCasted) {
-			String fnName = "ajaxRTdata" + i;
-			when = when + fnName + "(), ";
-			whenRes = whenRes + fnName + ", ";
+        }
+        for (TRelationshipType relationshipType: relationshipTypesCasted) {
+            String fnName = "ajaxRTdata" + i;
+            when = when + fnName + "(), ";
+            whenRes = whenRes + fnName + ", ";
 %>
-			function <%=fnName%>() { return $.ajax({
-				url: "<%=repositoryURL%>/relationshiptypes/<%=Util.DoubleURLencode(relationshipType.getTargetNamespace())%>/<%=Util.DoubleURLencode(relationshipType.getName())%>/visualappearance/",
-				dataType: "json",
-				success: function(data, textStatus, jqXHR) {
-					jsPlumb.registerConnectionType(
-						"{<%=relationshipType.getTargetNamespace()%>}<%=relationshipType.getName()%>",
-						data);
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					vShowAJAXError("Could not load relationship type {<%=relationshipType.getTargetNamespace()%>}<%=relationshipType.getName()%>", jqXHR, errorThrown);
-				}
-			});};
+            function <%=fnName%>() { return $.ajax({
+                url: "<%=repositoryURL%>/relationshiptypes/<%=Util.DoubleURLencode(relationshipType.getTargetNamespace())%>/<%=Util.DoubleURLencode(relationshipType.getName())%>/visualappearance/",
+                dataType: "json",
+                success: function(data, textStatus, jqXHR) {
+                    jsPlumb.registerConnectionType(
+                        "{<%=relationshipType.getTargetNamespace()%>}<%=relationshipType.getName()%>",
+                        data);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    vShowAJAXError("Could not load relationship type {<%=relationshipType.getTargetNamespace()%>}<%=relationshipType.getName()%>", jqXHR, errorThrown);
+                }
+            });};
 <%
-			i++;
-		}
+            i++;
+        }
 
-		if (!relationshipTypesCasted.isEmpty()) {
-			// strip last comma
-			when = when.substring(0, when.length()-2);
-			whenRes = whenRes.substring(0, whenRes.length()-2);
-		}
+        if (!relationshipTypesCasted.isEmpty()) {
+            // strip last comma
+            when = when.substring(0, when.length()-2);
+            whenRes = whenRes.substring(0, whenRes.length()-2);
+        }
 %>
-		// as soon as all relationship types are registered as jsPlumb object,
-		// create connection end points and connect the nodes
-		$.when(<%=when%>).done(function(<%=whenRes%>){
-			require(["winery-common-topologyrendering"], function(wct) {
-				// A NodeTemplateShape also appears in the palette. There, it is hidden.
-				// These should not be initialized as the template will be initialized later on
+        // as soon as all relationship types are registered as jsPlumb object,
+        // create connection end points and connect the nodes
+        $.when(<%=when%>).done(function(<%=whenRes%>){
+            require(["winery-common-topologyrendering"], function(wct) {
+                // A NodeTemplateShape also appears in the palette. There, it is hidden.
+                // These should not be initialized as the template will be initialized later on
 
-				<c:if test="${readOnly}">wct.setReadOnly();</c:if>
+                <c:if test="${readOnly}">wct.setReadOnly();</c:if>
 
-				// Quick hack: All node templates are draggable, even in the readonly view
-				wct.initNodeTemplate(jsPlumb.getSelector(".NodeTemplateShape:not('.hidden')"), true);
+                // Quick hack: All node templates are draggable, even in the readonly view
+                wct.initNodeTemplate(jsPlumb.getSelector(".NodeTemplateShape:not('.hidden')"), true);
 
-				var sourceId;
-				var targetId;
+                var sourceId;
+                var targetId;
 <%
-				for (TRelationshipTemplate relationshipTemplate : relationshipTemplatesCasted) {
+                for (TRelationshipTemplate relationshipTemplate : relationshipTemplatesCasted) {
 %>
-					var req = undefined;
-					var cap = undefined;
+                    var req = undefined;
+                    var cap = undefined;
 <%
-					// Source: Either NodeTemplate or Requirement
-					SourceOrTargetElement sourceElement = relationshipTemplate.getSourceElement();
-					if (sourceElement == null) {
-						%>vShowError("sourceElement is null for <%=relationshipTemplate.getId()%>");<%
-						continue;
-					}
-					Object source = sourceElement.getRef();
-					if (source instanceof TRequirement) {
+                    // Source: Either NodeTemplate or Requirement
+                    SourceOrTargetElement sourceElement = relationshipTemplate.getSourceElement();
+                    if (sourceElement == null) {
+                        %>vShowError("sourceElement is null for <%=relationshipTemplate.getId()%>");<%
+                        continue;
+                    }
+                    Object source = sourceElement.getRef();
+                    if (source instanceof TRequirement) {
 %>
-						req = "<%=((TRequirement)source).getId()%>";
-						sourceId = getNodeTemplateIdForReqOrCapId(req);
+                        req = "<%=((TRequirement)source).getId()%>";
+                        sourceId = getNodeTemplateIdForReqOrCapId(req);
 <%
-					} else {
-						TNodeTemplate sourceT = (TNodeTemplate) source;
-						if (sourceT == null) {
-							%>vShowError("sourceElement.getRef() is null for <%=relationshipTemplate.getId()%>");<%
-							continue;
-						}
+                    } else {
+                        TNodeTemplate sourceT = (TNodeTemplate) source;
+                        if (sourceT == null) {
+                            %>vShowError("sourceElement.getRef() is null for <%=relationshipTemplate.getId()%>");<%
+                            continue;
+                        }
 %>
-						sourceId = "<%=sourceT.getId()%>";
+                        sourceId = "<%=sourceT.getId()%>";
 <%
-					}
+                    }
 
-					// Target: Either NodeTemplate or Requirement
-					SourceOrTargetElement targetElement = relationshipTemplate.getTargetElement();
-					if (targetElement == null) {
-						%>vShowError("targetElement is null for <%=relationshipTemplate.getId()%>");<%
-						continue;
-					}
-					Object target = targetElement.getRef();
-					if (target instanceof TCapability) {
+                    // Target: Either NodeTemplate or Requirement
+                    SourceOrTargetElement targetElement = relationshipTemplate.getTargetElement();
+                    if (targetElement == null) {
+                        %>vShowError("targetElement is null for <%=relationshipTemplate.getId()%>");<%
+                        continue;
+                    }
+                    Object target = targetElement.getRef();
+                    if (target instanceof TCapability) {
 %>
-						cap = "<%=((TCapability)target).getId()%>";
-						targetId = getNodeTemplateIdForReqOrCapId(cap);
+                        cap = "<%=((TCapability)target).getId()%>";
+                        targetId = getNodeTemplateIdForReqOrCapId(cap);
 <%
-					} else {
-						TNodeTemplate targetT = (TNodeTemplate) target;
-						if (targetT == null) {
-							%>vShowError("targetElement.getRef() is null for <%=relationshipTemplate.getId()%>");<%
-							continue;
-						}
+                    } else {
+                        TNodeTemplate targetT = (TNodeTemplate) target;
+                        if (targetT == null) {
+                            %>vShowError("targetElement.getRef() is null for <%=relationshipTemplate.getId()%>");<%
+                            continue;
+                        }
 %>
-						targetId = "<%=targetT.getId()%>";
+                        targetId = "<%=targetT.getId()%>";
 <%
-					}
+                    }
 %>
-					var c = jsPlumb.connect({
-						source: sourceId,
-						target: targetId,
-						type:"<%=relationshipTemplate.getType()%>"
-					});
-					wct.handleConnectionCreated(c);
-					// we have to store the TOSCA id as jsPlumb does not allow to pass ids from user's side
-					// we could overwrite c.id, but we are not aware the side effects...
-					winery.connections[c.id].id = "<%=relationshipTemplate.getId()%>";
-					if (req) {
-						winery.connections[c.id].req = req;
-					}
-					if (cap) {
-						winery.connections[c.id].cap = cap;
-					}
+                    var c = jsPlumb.connect({
+                        source: sourceId,
+                        target: targetId,
+                        type:"<%=relationshipTemplate.getType()%>"
+                    });
+                    wct.handleConnectionCreated(c);
+                    // we have to store the TOSCA id as jsPlumb does not allow to pass ids from user's side
+                    // we could overwrite c.id, but we are not aware the side effects...
+                    winery.connections[c.id].id = "<%=relationshipTemplate.getId()%>";
+                    if (req) {
+                        winery.connections[c.id].req = req;
+                    }
+                    if (cap) {
+                        winery.connections[c.id].cap = cap;
+                    }
 <%
-					if (relationshipTemplate.getName() != null) {
+                    if (relationshipTemplate.getName() != null) {
 %>
-						winery.connections[c.id].name = "<%=relationshipTemplate.getName()%>";
+                        winery.connections[c.id].name = "<%=relationshipTemplate.getName()%>";
 <%
-					}
-				}
+                    }
+                }
 %>
 
-				// all connections are there
-				// we can register the events now
+                // all connections are there
+                // we can register the events now
 
-				jsPlumb.bind("connection", wct.handleConnectionCreated);
+                jsPlumb.bind("connection", wct.handleConnectionCreated);
 
-				${ondone}
+                ${ondone}
 
-			// end of the when waiting for all relationship types
-			});
-		// end of require binding
-		});
-	// jsPlumb.ready
-	});
+            // end of the when waiting for all relationship types
+            });
+        // end of require binding
+        });
+    // jsPlumb.ready
+    });
 // requirejs
 });
 </script>

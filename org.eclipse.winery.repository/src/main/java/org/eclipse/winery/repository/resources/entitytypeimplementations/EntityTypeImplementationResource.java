@@ -20,11 +20,11 @@ import org.slf4j.LoggerFactory;
 
 public abstract class EntityTypeImplementationResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal implements IHasTypeReference {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeImplementationResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeImplementationResource.class);
 
 
-	protected EntityTypeImplementationResource(TOSCAComponentId id) {
-		super(id);
-	}
+    protected EntityTypeImplementationResource(TOSCAComponentId id) {
+        super(id);
+    }
 
 }

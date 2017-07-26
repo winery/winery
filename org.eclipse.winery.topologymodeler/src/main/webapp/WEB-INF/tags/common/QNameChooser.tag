@@ -9,7 +9,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
- *	  Niko Stadelmaier - removal of select2 library
+ *      Niko Stadelmaier - removal of select2 library
  *******************************************************************************/
 --%>
 <%@tag description="Dialog parts for choosing a QName" pageEncoding="UTF-8"%>
@@ -24,23 +24,23 @@
 <%@attribute name="idOfSelectField" required="true"%>
 
 <div class="form-group">
-	<c:if test="${not empty labelOfSelectField}"><label for="${idOfSelectField}" class="control-label">${labelOfSelectField}:</label></c:if>
-	<select id="${idOfSelectField}" name="${idOfSelectField}" class="form-control">
-		<c:if test="${includeNONE}"><option value="(none)">(none)</option></c:if>
-		<c:forEach var="namespaceEntry" items="${wc:convertQNameListToNamespaceToLocalNameList(allQNames)}">
-			<optgroup label="${namespaceEntry.key}">
-				<c:forEach var="localName" items="${namespaceEntry.value}">
-					<option value="{${namespaceEntry.key}}${localName}">${localName}</option>
-				</c:forEach>
-			</optgroup>
-		</c:forEach>
-	</select>
+    <c:if test="${not empty labelOfSelectField}"><label for="${idOfSelectField}" class="control-label">${labelOfSelectField}:</label></c:if>
+    <select id="${idOfSelectField}" name="${idOfSelectField}" class="form-control">
+        <c:if test="${includeNONE}"><option value="(none)">(none)</option></c:if>
+        <c:forEach var="namespaceEntry" items="${wc:convertQNameListToNamespaceToLocalNameList(allQNames)}">
+            <optgroup label="${namespaceEntry.key}">
+                <c:forEach var="localName" items="${namespaceEntry.value}">
+                    <option value="{${namespaceEntry.key}}${localName}">${localName}</option>
+                </c:forEach>
+            </optgroup>
+        </c:forEach>
+    </select>
 </div>
 
 <script>
 $(function(){
-	<c:if test="${not empty selected}">
-		$("#${idOfSelectField}").val(${selected});
-	</c:if>
+    <c:if test="${not empty selected}">
+        $("#${idOfSelectField}").val(${selected});
+    </c:if>
 });
 </script>

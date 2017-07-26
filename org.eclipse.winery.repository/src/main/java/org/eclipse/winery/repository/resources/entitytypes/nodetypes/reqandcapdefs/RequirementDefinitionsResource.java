@@ -27,19 +27,19 @@ import com.sun.jersey.api.view.Viewable;
 
 public class RequirementDefinitionsResource extends RequirementOrCapabilityDefinitionsResource<RequirementDefinitionResource, TRequirementDefinition> {
 
-	public RequirementDefinitionsResource(NodeTypeResource res, List<TRequirementDefinition> defs) {
-		super(RequirementDefinitionResource.class, TRequirementDefinition.class, defs, res);
-	}
+    public RequirementDefinitionsResource(NodeTypeResource res, List<TRequirementDefinition> defs) {
+        super(RequirementDefinitionResource.class, TRequirementDefinition.class, defs, res);
+    }
 
-	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/nodetypes/reqandcapdefs/reqdefs.jsp", this);
-	}
+    @Override
+    public Viewable getHTML() {
+        return new Viewable("/jsp/entitytypes/nodetypes/reqandcapdefs/reqdefs.jsp", this);
+    }
 
-	@Override
-	public Collection<QName> getAllTypes() {
-		SortedSet<RequirementTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(RequirementTypeId.class);
-		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
-	}
+    @Override
+    public Collection<QName> getAllTypes() {
+        SortedSet<RequirementTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(RequirementTypeId.class);
+        return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
+    }
 
 }

@@ -20,7 +20,7 @@ import org.eclipse.winery.repository.resources.entitytemplates.TEntityTemplateRe
 
 public class RelationshipTemplateResource extends TEntityTemplateResource<TRelationshipTemplate> {
 
-	public RelationshipTemplateResource(IIdDetermination<TRelationshipTemplate> idDetermination, TRelationshipTemplate o, int idx, List<TRelationshipTemplate> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
+    public RelationshipTemplateResource(IIdDetermination<TRelationshipTemplate> idDetermination, TRelationshipTemplate o, int idx, List<TRelationshipTemplate> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
 }

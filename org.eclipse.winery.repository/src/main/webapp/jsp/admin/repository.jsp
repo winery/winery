@@ -18,25 +18,25 @@
 
 <h4>General Repository Commands</h4>
 <div>
-	<a href="repository/?dump" class="btn btn-primary">Dump Repository</a>
-	<button class="btn btn-danger" onclick="clearRepository();" id="btnclearrepository" data-loading-text="Deleting...">Clear Repository</button>
-	<button class="btn btn-default" onclick="$('#upRepoZipDiag').modal('show');">Import Repository</button>
+    <a href="repository/?dump" class="btn btn-primary">Dump Repository</a>
+    <button class="btn btn-danger" onclick="clearRepository();" id="btnclearrepository" data-loading-text="Deleting...">Clear Repository</button>
+    <button class="btn btn-default" onclick="$('#upRepoZipDiag').modal('show');">Import Repository</button>
 </div>
 
 <t:simpleSingleFileUpload
-	title="Upload Repository Content"
-	text="Repository dump file"
-	URL="repository/"
-	type="POST"
-	id="upRepoZip"
-	accept="application/zip" />
+    title="Upload Repository Content"
+    text="Repository dump file"
+    URL="repository/"
+    type="POST"
+    id="upRepoZip"
+    accept="application/zip" />
 
 <script>
 function clearRepository() {
-	deleteResource('the complete repository', 'repository/',
-			function() {$("#btnclearrepository").button("reset");},
-			function() {$("#btnclearrepository").button("reset");},
-			function() {$("#btnclearrepository").button("loading");}
-	);
+    deleteResource('the complete repository', 'repository/',
+            function() {$("#btnclearrepository").button("reset");},
+            function() {$("#btnclearrepository").button("reset");},
+            function() {$("#btnclearrepository").button("loading");}
+    );
 }
 </script>

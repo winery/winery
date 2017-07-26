@@ -15,15 +15,15 @@ import org.eclipse.winery.repository.datatypes.ids.admin.PlanLanguagesId;
 
 public class PlanLanguagesManager extends AbstractTypesManager {
 
-	public final static PlanLanguagesManager INSTANCE = new PlanLanguagesManager();
+    public final static PlanLanguagesManager INSTANCE = new PlanLanguagesManager();
 
 
-	private PlanLanguagesManager() {
-		super(new PlanLanguagesId());
-		// add data without rendering in the plan languages file
-		this.addData(org.eclipse.winery.common.constants.Namespaces.URI_BPEL20_EXECUTABLE, "BPEL 2.0 (executable)");
-		this.addData(org.eclipse.winery.common.constants.Namespaces.URI_BPMN20_MODEL, "BPMN 2.0");
-		this.addData(org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20, "BPMN4TOSCA 2.0");
-	}
+    private PlanLanguagesManager() {
+        super(new PlanLanguagesId());
+        // add data without rendering in the plan languages file
+        this.addData(org.eclipse.winery.common.constants.Namespaces.URI_BPEL20_EXECUTABLE, "BPEL 2.0 (executable)");
+        this.addData(org.eclipse.winery.common.constants.Namespaces.URI_BPMN20_MODEL, "BPMN 2.0");
+        this.addData(org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20, "BPMN4TOSCA 2.0");
+    }
 
 }

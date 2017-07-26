@@ -26,17 +26,17 @@ import org.eclipse.winery.repository.resources._support.collections.withid.Entit
  */
 public abstract class GenericArtifactResource<ArtifactT> extends EntityWithIdResource<ArtifactT> {
 
-	public GenericArtifactResource(IIdDetermination<ArtifactT> idDetermination, ArtifactT o, int idx, List<ArtifactT> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
+    public GenericArtifactResource(IIdDetermination<ArtifactT> idDetermination, ArtifactT o, int idx, List<ArtifactT> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
 
-	public abstract void setArtifactType(ArtifactTypeId artifactTypeId);
+    public abstract void setArtifactType(ArtifactTypeId artifactTypeId);
 
-	public abstract void setArtifactTemplate(ArtifactTemplateId artifactTemplateId);
+    public abstract void setArtifactTemplate(ArtifactTemplateId artifactTemplateId);
 
-	/**
-	 * required by artifacts.jsp
-	 */
-	public abstract ArtifactT getA();
+    /**
+     * required by artifacts.jsp
+     */
+    public abstract ArtifactT getA();
 
 }

@@ -2,6 +2,6 @@
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
-	<!-- max(int) (=2 GB) is the upload size -->
-	<Set name="maxFormContentSize">2147483640</Set>
+    <!-- max(int) (=2 GB) is the upload size -->
+    <Set name="maxFormContentSize">2147483640</Set>
 </Configure>

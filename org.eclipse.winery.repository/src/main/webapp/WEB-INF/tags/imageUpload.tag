@@ -23,20 +23,20 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:simpleSingleFileUpload
-	title="Upload ${label}"
-	text="File"
-	additionalDropZone="#${id}FormGroup"
-	URL="${URL}"
-	type="PUT"
-	id="${id}"
-	accept="${accept}"/>
+    title="Upload ${label}"
+    text="File"
+    additionalDropZone="#${id}FormGroup"
+    URL="${URL}"
+    type="PUT"
+    id="${id}"
+    accept="${accept}"/>
 
 <div id="${id}FormGroup" class="form-group">
-	<label for="${id}DisplayDiv">${label}</label>
-	<div id="${id}DisplayDiv" style="width:100%">
-		<div class="col-md-2">
-			<a href="${URL}" target="_blank"><img id="${id}Img" style="width:${width};" src="${URL}" alt="n/a" /></a>
-		</div>
-		<button class="btn btn-default btn-xs" type="button" onClick="$('#${id}Diag').modal('show');">Upload...</button> or drop the image in this area.
-	</div>
+    <label for="${id}DisplayDiv">${label}</label>
+    <div id="${id}DisplayDiv" style="width:100%">
+        <div class="col-md-2">
+            <a href="${URL}" target="_blank"><img id="${id}Img" style="width:${width};" src="${URL}" alt="n/a" /></a>
+        </div>
+        <button class="btn btn-default btn-xs" type="button" onClick="$('#${id}Diag').modal('show');">Upload...</button> or drop the image in this area.
+    </div>
 </div>

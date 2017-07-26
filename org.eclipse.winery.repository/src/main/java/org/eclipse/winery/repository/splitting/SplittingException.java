@@ -14,7 +14,7 @@ package org.eclipse.winery.repository.splitting;
 
 public class SplittingException extends Exception {
 
-	public SplittingException(String s) {
-		super(s);
-	}
+    public SplittingException(String s) {
+        super(s);
+    }
 }

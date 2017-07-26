@@ -21,19 +21,19 @@ import com.sun.jersey.api.view.Viewable;
 
 public class RelationshipTemplatesResource extends TEntityTemplatesResource<RelationshipTemplateResource, TRelationshipTemplate> {
 
-	public RelationshipTemplatesResource(List<TRelationshipTemplate> list, IPersistable res) {
-		super(RelationshipTemplateResource.class, TRelationshipTemplate.class, list, res);
-	}
+    public RelationshipTemplatesResource(List<TRelationshipTemplate> list, IPersistable res) {
+        super(RelationshipTemplateResource.class, TRelationshipTemplate.class, list, res);
+    }
 
-	@Override
-	public String getId(TRelationshipTemplate entity) {
-		return entity.getId();
-	}
+    @Override
+    public String getId(TRelationshipTemplate entity) {
+        return entity.getId();
+    }
 
-	@Override
-	public Viewable getHTML() {
-		// TODO Auto-generated method stub
-		throw new IllegalStateException("Not yet implemented.");
-	}
+    @Override
+    public Viewable getHTML() {
+        // TODO Auto-generated method stub
+        throw new IllegalStateException("Not yet implemented.");
+    }
 
 }

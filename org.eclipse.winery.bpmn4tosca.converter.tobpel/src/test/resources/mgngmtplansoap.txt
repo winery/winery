@@ -4,8 +4,8 @@
       <containerAPIServiceInstanceURL xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">http://localhost:1337/containerapi/instancedata</containerAPIServiceInstanceURL>
       <!--Exactly 1 occurrence-->
       <csarId xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">ToscaManagementTopology.csar</csarId>
-	  <!--Exactly 1 occurrence-->
-	  <serviceTemplateId xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">{http://tempuri.org}ToscaManagementTopology</serviceTemplateId>
+      <!--Exactly 1 occurrence-->
+      <serviceTemplateId xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">{http://tempuri.org}ToscaManagementTopology</serviceTemplateId>
       <!--Exactly 1 occurrence-->
       <serviceTemplateIdNamespaceURI xmlns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/">http://tempuri.org</serviceTemplateIdNamespaceURI>
       <!--Exactly 1 occurrence-->

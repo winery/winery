@@ -24,18 +24,18 @@ import com.sun.jersey.api.view.Viewable;
  */
 public class PropertyDefinitionKVListResource extends EntityWithIdCollectionResource<PropertyDefinitionKVResource, PropertyDefinitionKV> {
 
-	public PropertyDefinitionKVListResource(EntityTypeResource res, PropertyDefinitionKVList list) {
-		super(PropertyDefinitionKVResource.class, PropertyDefinitionKV.class, list, res);
-	}
+    public PropertyDefinitionKVListResource(EntityTypeResource res, PropertyDefinitionKVList list) {
+        super(PropertyDefinitionKVResource.class, PropertyDefinitionKV.class, list, res);
+    }
 
-	@Override
-	public String getId(PropertyDefinitionKV entity) {
-		return entity.getKey();
-	}
+    @Override
+    public String getId(PropertyDefinitionKV entity) {
+        return entity.getKey();
+    }
 
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet implemented.");
-	}
+    @Override
+    public Viewable getHTML() {
+        throw new IllegalStateException("Not yet implemented.");
+    }
 
 }

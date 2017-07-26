@@ -28,65 +28,65 @@ import org.eclipse.winery.repository.resources._support.collections.withid.Entit
 
 public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWithIdResource<E> implements IEntityTemplateResource<E>, IHasTypeReference {
 
-	/**
-	 * This constructor is used for both entity templates nested in an component
-	 * instance as well as for entity templates being component instances
-	 * itself.
-	 *
-	 * As Java does not support multi-inheritance, we implemented a quick hack
-	 * to re-use this class as inner implementation at templates extending
-	 * AbstractComponentInstanceResourceDefinitionsBacked
-	 */
-	public TEntityTemplateResource(IIdDetermination<E> idDetermination, E o, int idx, List<E> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
+    /**
+     * This constructor is used for both entity templates nested in an component
+     * instance as well as for entity templates being component instances
+     * itself.
+     *
+     * As Java does not support multi-inheritance, we implemented a quick hack
+     * to re-use this class as inner implementation at templates extending
+     * AbstractComponentInstanceResourceDefinitionsBacked
+     */
+    public TEntityTemplateResource(IIdDetermination<E> idDetermination, E o, int idx, List<E> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
 
-	//	public String getId() {
-	//		return this.template.getId();
-	//	}
-	//
-	//	public void setId(String id) {
-	//		// TODO: There is no check for uniqueness of the given id
-	//		this.template.setId(id);
-	//	}
+    //    public String getId() {
+    //        return this.template.getId();
+    //    }
+    //
+    //    public void setId(String id) {
+    //        // TODO: There is no check for uniqueness of the given id
+    //        this.template.setId(id);
+    //    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public QName getType() {
-		return this.o.getType();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public QName getType() {
+        return this.o.getType();
+    }
 
-	@Path("type")
-	@GET
-	public String getTypeAsQNameString() {
-		return this.getType().toString();
-	}
+    @Path("type")
+    @GET
+    public String getTypeAsQNameString() {
+        return this.getType().toString();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Response setType(QName type) {
-		this.o.setType(type);
-		return BackendUtils.persist(this.res);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Response setType(QName type) {
+        this.o.setType(type);
+        return BackendUtils.persist(this.res);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Response setType(String typeStr) {
-		return this.setType(QName.valueOf(typeStr));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Response setType(String typeStr) {
+        return this.setType(QName.valueOf(typeStr));
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PropertiesResource getPropertiesResource() {
-		return new PropertiesResource(this.o, (AbstractComponentInstanceResource) this.res);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PropertiesResource getPropertiesResource() {
+        return new PropertiesResource(this.o, (AbstractComponentInstanceResource) this.res);
+    }
 
 }

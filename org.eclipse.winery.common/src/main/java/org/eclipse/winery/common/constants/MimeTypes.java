@@ -16,11 +16,11 @@ package org.eclipse.winery.common.constants;
  */
 public class MimeTypes {
 
-	public static final String MIMETYPE_TOSCA_DEFINITIONS = "application/vnd.oasis.tosca.definitions";
+    public static final String MIMETYPE_TOSCA_DEFINITIONS = "application/vnd.oasis.tosca.definitions";
 
-	// text/xsd is NOT used for XSD as text/xml is rendered correctly in browsers
-	public static final String MIMETYPE_XSD = "text/xml";
+    // text/xsd is NOT used for XSD as text/xml is rendered correctly in browsers
+    public static final String MIMETYPE_XSD = "text/xml";
 
-	public static final String MIMETYPE_ZIP = "application/zip";
+    public static final String MIMETYPE_ZIP = "application/zip";
 
 }

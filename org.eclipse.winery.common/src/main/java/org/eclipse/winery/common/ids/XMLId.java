@@ -25,8 +25,8 @@ import org.eclipse.winery.common.StringEncodedAndDecoded;
  */
 public class XMLId extends StringEncodedAndDecoded {
 
-	public XMLId(String id, boolean URLencoded) {
-		super(id, URLencoded);
-	}
+    public XMLId(String id, boolean URLencoded) {
+        super(id, URLencoded);
+    }
 
 }

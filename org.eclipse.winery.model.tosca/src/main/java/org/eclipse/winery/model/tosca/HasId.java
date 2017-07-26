@@ -19,25 +19,25 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public abstract class HasId extends TExtensibleElements {
 
-	@XmlAttribute(name = "id", required = true)
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	@XmlID
-	@XmlSchemaType(name = "ID")
-	private String id;
+    @XmlAttribute(name = "id", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlID
+    @XmlSchemaType(name = "ID")
+    private String id;
 
-	public HasId() {
-	}
+    public HasId() {
+    }
 
-	public HasId(String id) {
-		this.setId(id);
-	}
+    public HasId(String id) {
+        this.setId(id);
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String value) {
-		this.id = value;
-	}
+    public void setId(String value) {
+        this.id = value;
+    }
 
 }

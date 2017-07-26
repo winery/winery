@@ -30,60 +30,60 @@ import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeRes
 
 public final class RequirementDefinitionResource extends AbstractReqOrCapDefResource<TRequirementDefinition> {
 
-	private TRequirementDefinition reqDef;
+    private TRequirementDefinition reqDef;
 
 
-	/**
-	 * Constructor has to follow the pattern of EnetityTResource as the
-	 * constructor is invoked by reflection in EntityWithIdcollectionResource
-	 *
-	 * @param res the resource this req def is nested in. Has to be of Type
-	 *            "NodeTypeResource". Due to the implementation of
-	 *            org.eclipse.winery .repository.resources._support.collections.
-	 *            withid.EntityWithIdCollectionResource
-	 *            .getEntityResourceInstance(EntityT, int), we have to use
-	 *            "AbstractComponentInstanceResource" as type
-	 */
-	public RequirementDefinitionResource(IIdDetermination<TRequirementDefinition> idDetermination, TRequirementDefinition reqDef, int idx, List<TRequirementDefinition> list, AbstractComponentInstanceResource res) {
-		super(idDetermination, reqDef, idx, list, (NodeTypeResource) res, RequirementDefinitionResource.getConstraints(reqDef));
-		this.reqDef = reqDef;
-	}
+    /**
+     * Constructor has to follow the pattern of EnetityTResource as the
+     * constructor is invoked by reflection in EntityWithIdcollectionResource
+     *
+     * @param res the resource this req def is nested in. Has to be of Type
+     *            "NodeTypeResource". Due to the implementation of
+     *            org.eclipse.winery .repository.resources._support.collections.
+     *            withid.EntityWithIdCollectionResource
+     *            .getEntityResourceInstance(EntityT, int), we have to use
+     *            "AbstractComponentInstanceResource" as type
+     */
+    public RequirementDefinitionResource(IIdDetermination<TRequirementDefinition> idDetermination, TRequirementDefinition reqDef, int idx, List<TRequirementDefinition> list, AbstractComponentInstanceResource res) {
+        super(idDetermination, reqDef, idx, list, (NodeTypeResource) res, RequirementDefinitionResource.getConstraints(reqDef));
+        this.reqDef = reqDef;
+    }
 
-	/**
-	 * Quick fix to avoid internal server error when opening
-	 * RequirementDefinitions Tab
-	 */
-	public RequirementDefinitionResource(IIdDetermination<TRequirementDefinition> idDetermination, TRequirementDefinition reqDef, int idx, List<TRequirementDefinition> list, IPersistable res) {
-		this(idDetermination, reqDef, idx, list, (AbstractComponentInstanceResource) res);
-	}
+    /**
+     * Quick fix to avoid internal server error when opening
+     * RequirementDefinitions Tab
+     */
+    public RequirementDefinitionResource(IIdDetermination<TRequirementDefinition> idDetermination, TRequirementDefinition reqDef, int idx, List<TRequirementDefinition> list, IPersistable res) {
+        this(idDetermination, reqDef, idx, list, (AbstractComponentInstanceResource) res);
+    }
 
-	/**
-	 * Fetch the list of constraints from the given definition. If the list does
-	 * not exist, the list is created an stored in the given def
-	 */
-	public static List<TConstraint> getConstraints(TRequirementDefinition def) {
-		Constraints constraints = def.getConstraints();
-		if (constraints == null) {
-			constraints = new Constraints();
-			def.setConstraints(constraints);
-		}
-		return constraints.getConstraint();
-	}
+    /**
+     * Fetch the list of constraints from the given definition. If the list does
+     * not exist, the list is created an stored in the given def
+     */
+    public static List<TConstraint> getConstraints(TRequirementDefinition def) {
+        Constraints constraints = def.getConstraints();
+        if (constraints == null) {
+            constraints = new Constraints();
+            def.setConstraints(constraints);
+        }
+        return constraints.getConstraint();
+    }
 
-	public QName getType() {
-		return this.reqDef.getRequirementType();
-	}
+    public QName getType() {
+        return this.reqDef.getRequirementType();
+    }
 
-	@PUT
-	@Path("type")
-	public Response setType(@FormParam(value = "type") String value) {
-		QName qname = QName.valueOf(value);
-		this.reqDef.setRequirementType(qname);
-		return BackendUtils.persist(this.parent);
-	}
+    @PUT
+    @Path("type")
+    public Response setType(@FormParam(value = "type") String value) {
+        QName qname = QName.valueOf(value);
+        this.reqDef.setRequirementType(qname);
+        return BackendUtils.persist(this.parent);
+    }
 
-	@Override
-	public String getId(TRequirementDefinition e) {
-		return e.getName();
-	}
+    @Override
+    public String getId(TRequirementDefinition e) {
+        return e.getName();
+    }
 }

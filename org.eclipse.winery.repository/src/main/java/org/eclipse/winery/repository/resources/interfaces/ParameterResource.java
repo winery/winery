@@ -28,35 +28,35 @@ import org.eclipse.winery.repository.resources._support.collections.withid.Entit
 
 public class ParameterResource extends EntityWithIdResource<TParameter> {
 
-	public ParameterResource(IIdDetermination<TParameter> idDetermination, TParameter o, int idx, List<TParameter> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
+    public ParameterResource(IIdDetermination<TParameter> idDetermination, TParameter o, int idx, List<TParameter> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
 
-	@GET
-	@Path("type")
-	public String getType() {
-		return this.o.getType();
-	}
+    @GET
+    @Path("type")
+    public String getType() {
+        return this.o.getType();
+    }
 
-	@PUT
-	@Path("type")
-	public Response putType(@FormParam(value = "type") String type) {
-		this.o.setType(type);
-		return BackendUtils.persist(this.res);
-	}
+    @PUT
+    @Path("type")
+    public Response putType(@FormParam(value = "type") String type) {
+        this.o.setType(type);
+        return BackendUtils.persist(this.res);
+    }
 
-	@GET
-	@Path("required")
-	public String getRequired() {
-		return this.o.getRequired().toString();
-	}
+    @GET
+    @Path("required")
+    public String getRequired() {
+        return this.o.getRequired().toString();
+    }
 
-	@PUT
-	@Path("required")
-	public Response putRequired(@FormParam(value = "required") String required) {
-		TBoolean tb = TBoolean.valueOf(required);
-		this.o.setRequired(tb);
-		return BackendUtils.persist(this.res);
-	}
+    @PUT
+    @Path("required")
+    public Response putRequired(@FormParam(value = "required") String required) {
+        TBoolean tb = TBoolean.valueOf(required);
+        this.o.setRequired(tb);
+        return BackendUtils.persist(this.res);
+    }
 
 }

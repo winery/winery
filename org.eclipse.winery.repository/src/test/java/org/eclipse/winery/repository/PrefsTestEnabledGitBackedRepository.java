@@ -26,38 +26,38 @@ import org.slf4j.LoggerFactory;
 
 public class PrefsTestEnabledGitBackedRepository extends PrefsTestEnabled {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PrefsTestEnabledGitBackedRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrefsTestEnabledGitBackedRepository.class);
 
-	public final Git git;
+    public final Git git;
 
-	public PrefsTestEnabledGitBackedRepository() throws Exception {
-		super(false);
+    public PrefsTestEnabledGitBackedRepository() throws Exception {
+        super(false);
 
-		Path repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
-		if (!Files.exists(repositoryPath)) {
-			Files.createDirectory(repositoryPath);
-		}
+        Path repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
+        if (!Files.exists(repositoryPath)) {
+            Files.createDirectory(repositoryPath);
+        }
 
-		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		if (!Files.exists(repositoryPath.resolve(".git"))) {
-			this.git = Git.cloneRepository()
-					.setURI("https://github.com/winery/test-repository.git")
-					.setBare(false)
-					.setCloneAllBranches(true)
-					.setDirectory(repositoryPath.toFile())
-					.call();
-		} else {
-			Repository gitRepo = builder.setWorkTree(repositoryPath.toFile()).setMustExist(false).build();
-			this.git = new Git(gitRepo);
-			try {
-				this.git.fetch().call();
-			} catch (TransportException e) {
-				// we ignore it to enable offline testing
-				LOGGER.debug("Working in offline mode", e);
-			}
-		}
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        if (!Files.exists(repositoryPath.resolve(".git"))) {
+            this.git = Git.cloneRepository()
+                    .setURI("https://github.com/winery/test-repository.git")
+                    .setBare(false)
+                    .setCloneAllBranches(true)
+                    .setDirectory(repositoryPath.toFile())
+                    .call();
+        } else {
+            Repository gitRepo = builder.setWorkTree(repositoryPath.toFile()).setMustExist(false).build();
+            this.git = new Git(gitRepo);
+            try {
+                this.git.fetch().call();
+            } catch (TransportException e) {
+                // we ignore it to enable offline testing
+                LOGGER.debug("Working in offline mode", e);
+            }
+        }
 
-		this.repository = new GitBasedRepository(repositoryPath.toString());
-	}
+        this.repository = new GitBasedRepository(repositoryPath.toString());
+    }
 
 }

@@ -31,43 +31,43 @@ import org.xml.sax.SAXException;
  */
 public class TOSCADocumentBuilderFactory {
 
-	public static final TOSCADocumentBuilderFactory INSTANCE = new TOSCADocumentBuilderFactory();
+    public static final TOSCADocumentBuilderFactory INSTANCE = new TOSCADocumentBuilderFactory();
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
-	private final DocumentBuilderFactory factory;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
+    private final DocumentBuilderFactory factory;
 
 
-	public TOSCADocumentBuilderFactory() {
-		this.factory = DocumentBuilderFactory.newInstance();
+    public TOSCADocumentBuilderFactory() {
+        this.factory = DocumentBuilderFactory.newInstance();
 
-		this.factory.setNamespaceAware(true);
+        this.factory.setNamespaceAware(true);
 
-		// we do not need DTD validation
-		this.factory.setValidating(false);
+        // we do not need DTD validation
+        this.factory.setValidating(false);
 
-		// we do XSD validation
-		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		Schema schema;
-		URL resource = this.getClass().getResource("/TOSCA-v1.0.xsd");
-		try {
-			// takes a few seconds to load
-			schema = schemaFactory.newSchema(resource);
-			this.factory.setSchema(schema);
-		} catch (SAXException e) {
-			// TODO: load xml.xsd in offline mode
-			TOSCADocumentBuilderFactory.LOGGER.error("Schema could not be initalized", e);
-			TOSCADocumentBuilderFactory.LOGGER.debug("We continue nevertheless to enable offline usage");
-		}
-	}
+        // we do XSD validation
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Schema schema;
+        URL resource = this.getClass().getResource("/TOSCA-v1.0.xsd");
+        try {
+            // takes a few seconds to load
+            schema = schemaFactory.newSchema(resource);
+            this.factory.setSchema(schema);
+        } catch (SAXException e) {
+            // TODO: load xml.xsd in offline mode
+            TOSCADocumentBuilderFactory.LOGGER.error("Schema could not be initalized", e);
+            TOSCADocumentBuilderFactory.LOGGER.debug("We continue nevertheless to enable offline usage");
+        }
+    }
 
-	public DocumentBuilder getTOSCADocumentBuilder() {
-		DocumentBuilder db;
-		try {
-			db = this.factory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			throw new IllegalStateException("document builder could not be initalized", e);
-		}
-		return db;
-	}
+    public DocumentBuilder getTOSCADocumentBuilder() {
+        DocumentBuilder db;
+        try {
+            db = this.factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException("document builder could not be initalized", e);
+        }
+        return db;
+    }
 
 }

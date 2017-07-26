@@ -16,11 +16,11 @@ import org.eclipse.winery.common.ids.XMLId;
 
 public final class RelationshipTypeImplementationId extends EntityTypeImplementationId {
 
-	public RelationshipTypeImplementationId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
+    public RelationshipTypeImplementationId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public RelationshipTypeImplementationId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public RelationshipTypeImplementationId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 }

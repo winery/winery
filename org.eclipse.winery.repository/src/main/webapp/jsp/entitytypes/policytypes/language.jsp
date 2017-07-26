@@ -14,8 +14,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <c:choose>
-	<c:when test="${empty it.language}">&ndash;</c:when>
-	<c:otherwise>${it.language}</c:otherwise>
+    <c:when test="${empty it.language}">&ndash;</c:when>
+    <c:otherwise>${it.language}</c:otherwise>
 </c:choose>
 
 Update not yet implemented.

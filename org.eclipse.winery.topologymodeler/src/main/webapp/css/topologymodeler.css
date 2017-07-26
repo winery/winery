@@ -14,67 +14,67 @@
 
 /* used if elements should be hidden forever. Cannot be undone with $(...).show() */
 .hidden {
-	display: none;
+    display: none;
 }
 
 .fileupload {
-	display: none;
+    display: none;
 }
 
 .overflowhidden {
-	overflow: hidden;
-	text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
 body {
-	background-color: white;
-	margin: 0px;
+    background-color: white;
+    margin: 0px;
 }
 
 #loading {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	height: 100%;
-	width: 100%; z-index: 200;
-	background-color: white;
-	z-index: 2000;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%; z-index: 200;
+    background-color: white;
+    z-index: 2000;
 }
 
 #topbar {
-	padding: 5px;
-	width: 100%;
-	position: fixed;
-	top: 0px;
-	z-index: 600;
-	background-color: white;
+    padding: 5px;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    z-index: 600;
+    background-color: white;
 }
 
 /* override jquery-ui.css */
 .ui-widget {
-	font-size: 1.0em;
-	font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.0em;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 a:hover {
-	color:#1b911b;
-	background-color:#f0f0f0;
+    color:#1b911b;
+    background-color:#f0f0f0;
 }
 
 #drawingarea {
-	height: 80em;
-	position: relative;
+    height: 80em;
+    position: relative;
 }
 
 #drawingarea.editview {
-	background: rgb(240, 246, 255);
-	background-image: -ms-linear-gradient(top, #FFFFFF 0%, rgb(243, 243, 243) 100%);
-	background-image: -moz-linear-gradient(top, #FFFFFF 0%, rgb(243, 243, 243) 100%);
-	background-image: -o-linear-gradient(top, #FFFFFF 0%, rgb(243, 243, 243) 100%);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, rgb(243, 243, 243)));
-	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, rgb(243, 243, 243) 100%);
-	background-image: linear-gradient(to bottom, #FFFFFF 0%, rgb(243, 243, 243) 100%);
+    background: rgb(240, 246, 255);
+    background-image: -ms-linear-gradient(top, #FFFFFF 0%, rgb(243, 243, 243) 100%);
+    background-image: -moz-linear-gradient(top, #FFFFFF 0%, rgb(243, 243, 243) 100%);
+    background-image: -o-linear-gradient(top, #FFFFFF 0%, rgb(243, 243, 243) 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, rgb(243, 243, 243)));
+    background-image: -webkit-linear-gradient(top, #FFFFFF 0%, rgb(243, 243, 243) 100%);
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, rgb(243, 243, 243) 100%);
 }
 
 #drawingarea.printview {
@@ -82,205 +82,205 @@ a:hover {
 
 /* currently not used */
 div.focusedElement {
-	border: 3px dotted rgb(0, 152, 255);
+    border: 3px dotted rgb(0, 152, 255);
 
-	/* IE10 Consumer Preview */
-	background-image: -ms-linear-gradient(top, #FFFFFF 0%, rgb(153, 243, 255) 100%);
+    /* IE10 Consumer Preview */
+    background-image: -ms-linear-gradient(top, #FFFFFF 0%, rgb(153, 243, 255) 100%);
 
-	/* Mozilla Firefox */
-	background-image: -moz-linear-gradient(top, #FFFFFF 0%, rgb(153, 243, 255) 100%);
+    /* Mozilla Firefox */
+    background-image: -moz-linear-gradient(top, #FFFFFF 0%, rgb(153, 243, 255) 100%);
 
-	/* Opera */
-	background-image: -o-linear-gradient(top, #FFFFFF 0%, rgb(153, 243, 255) 100%);
+    /* Opera */
+    background-image: -o-linear-gradient(top, #FFFFFF 0%, rgb(153, 243, 255) 100%);
 
-	/* Webkit (Safari/Chrome 10) */
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, rgb(153, 243, 255)));
+    /* Webkit (Safari/Chrome 10) */
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, rgb(153, 243, 255)));
 
-	/* Webkit (Chrome 11+) */
-	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, rgb(153, 243, 255) 100%);
+    /* Webkit (Chrome 11+) */
+    background-image: -webkit-linear-gradient(top, #FFFFFF 0%, rgb(153, 243, 255) 100%);
 
-	/* W3C Markup, IE10 Release Preview */
-	background-image: linear-gradient(to bottom, #FFFFFF 0%, rgb(153, 243, 255) 100%);
+    /* W3C Markup, IE10 Release Preview */
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, rgb(153, 243, 255) 100%);
 }
 
 
 div.NodeTemplateShape.selected {
-	background: rgb(216, 238, 255);
-	border: 2px solid rgb(255, 127, 26);
+    background: rgb(216, 238, 255);
+    border: 2px solid rgb(255, 127, 26);
 
 
-	/* IE10 Consumer Preview */
-	background-image: -ms-linear-gradient(top, #FFFFFF 0%, #FFD391 100%);
+    /* IE10 Consumer Preview */
+    background-image: -ms-linear-gradient(top, #FFFFFF 0%, #FFD391 100%);
 
-	/* Mozilla Firefox */
-	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #FFD391 100%);
+    /* Mozilla Firefox */
+    background-image: -moz-linear-gradient(top, #FFFFFF 0%, #FFD391 100%);
 
-	/* Opera */
-	background-image: -o-linear-gradient(top, #FFFFFF 0%, #FFD391 100%);
+    /* Opera */
+    background-image: -o-linear-gradient(top, #FFFFFF 0%, #FFD391 100%);
 
-	/* Webkit (Safari/Chrome 10) */
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #FFD391));
+    /* Webkit (Safari/Chrome 10) */
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #FFD391));
 
-	/* Webkit (Chrome 11+) */
-	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #FFD391 100%);
+    /* Webkit (Chrome 11+) */
+    background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #FFD391 100%);
 
-	/* W3C Markup, IE10 Release Preview */
-	background-image: linear-gradient(to bottom, #FFFFFF 0%, #FFD391 100%);
+    /* W3C Markup, IE10 Release Preview */
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, #FFD391 100%);
 }
 
 div.content {
-	overflow: hidden;
-	width: 100%;
+    overflow: hidden;
+    width: 100%;
 }
 
 .renderMode.ui-draggable {
-	display:none;
+    display:none;
 }
 
 div.menu {
-	display:none;
+    display:none;
 }
 
 ._jsPlumb_overlay {
-	z-index: 5000;
+    z-index: 5000;
 }
 
 /* overriding dimensions.css to overcome problems with non-standard fonts and breaking cells */
 .u-size3of5,
 .u-size6of10 {
-	width: 59%;
+    width: 59%;
 }
 .u-size4of5 {
-	width: 79%;
+    width: 79%;
 }
 
 .breakword {
-	overflow-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 a.topbutton {
-	margin-right: 10px;
+    margin-right: 10px;
 }
 
 #selectionbox {
-	position: absolute;
-	border-style: dashed;
-	border-width: 3px;
-	border-color: black;
-	background-color: cyan;
-	opacity: 0.15;
-	z-index: 30;
-	display: none;
+    position: absolute;
+    border-style: dashed;
+    border-width: 3px;
+    border-color: black;
+    background-color: cyan;
+    opacity: 0.15;
+    z-index: 30;
+    display: none;
 }
 
 #editorArea {
-	width: 100%;
-	height: 100%;
-	margin-top: 45px;
+    width: 100%;
+    height: 100%;
+    margin-top: 45px;
 }
 
 #nodeTemplateInformationSection > label {
-	display: inline-block;
-	width: 47px;
+    display: inline-block;
+    width: 47px;
 }
 
 .form-horizontal .controls > span {
-	margin-top: 5px;
-	display: inline-block;
+    margin-top: 5px;
+    display: inline-block;
 }
 
 /* reset editable style */
 .editable-click {
-	border-bottom: none;
+    border-bottom: none;
 }
 
 a.editable-click {
-	border-bottom: none;
+    border-bottom: none;
 }
 
 a.editable-click:hover {
-	border-bottom: none;
+    border-bottom: none;
 }
 
 
 /* adding a req/cap */
 
 div.modal-body > form.addReqForm > div.propertiesContainer {
-	border: 1px solid #aeaeae;
-	background: #ffffff;
-	margin: 7px;
-	width: 198px;
-	border-radius: 7px;
-	padding: 5px;
-	float: left;
-	overflow-x: hidden;
-	display: none;
+    border: 1px solid #aeaeae;
+    background: #ffffff;
+    margin: 7px;
+    width: 198px;
+    border-radius: 7px;
+    padding: 5px;
+    float: left;
+    overflow-x: hidden;
+    display: none;
 }
 
 div.modal-body > form.addReqForm > div.propertiesContainer > div.header {
-	background: rgb(241, 241, 241);
-	border-bottom: 1px solid #aeaeae;
-	float: left;
-	width: 198px;
-	padding: 5px;
-	margin-top: -5px;
-	margin-left: -5px;
-	margin-bottom: 6px;
+    background: rgb(241, 241, 241);
+    border-bottom: 1px solid #aeaeae;
+    float: left;
+    width: 198px;
+    padding: 5px;
+    margin-top: -5px;
+    margin-left: -5px;
+    margin-bottom: 6px;
 }
 
 div.modal-body > form.addReqForm > div.propertiesContainer > div.header > a {
-	float: right;
-	height: 6px;
+    float: right;
+    height: 6px;
 }
 
 div.modal-body > form.addReqForm > div.propertiesContainer > div.content > span.namespace {
-	display: none;
+    display: none;
 }
 
 div.modal-body > form.addReqForm > div.propertiesContainer > div.content > span.elementName {
-	display: none;
+    display: none;
 }
 
 div.modal-body > form.addReqForm > div.propertiesContainer > div.content table {
-	float: left;
+    float: left;
 }
 
 div.modal-body > form.addCapForm > div.propertiesContainer {
-	border: 1px solid #aeaeae;
-	background: #ffffff;
-	margin: 7px;
-	width: 198px;
-	border-radius: 7px;
-	padding: 5px;
-	float: left;
-	overflow-x: hidden;
-	display: none;
+    border: 1px solid #aeaeae;
+    background: #ffffff;
+    margin: 7px;
+    width: 198px;
+    border-radius: 7px;
+    padding: 5px;
+    float: left;
+    overflow-x: hidden;
+    display: none;
 }
 
 div.modal-body > form.addCapForm > div.propertiesContainer > div.header {
-	background: rgb(241, 241, 241);
-	border-bottom: 1px solid #aeaeae;
-	float: left;
-	width: 198px;
-	padding: 5px;
-	margin-top: -5px;
-	margin-left: -5px;
-	margin-bottom: 6px;
+    background: rgb(241, 241, 241);
+    border-bottom: 1px solid #aeaeae;
+    float: left;
+    width: 198px;
+    padding: 5px;
+    margin-top: -5px;
+    margin-left: -5px;
+    margin-bottom: 6px;
 }
 
 div.modal-body > form.addCapForm > div.propertiesContainer > div.header > a {
-	float: right;
-	height: 6px;
+    float: right;
+    height: 6px;
 }
 
 div.modal-body > form.addCapForm > div.propertiesContainer > div.content > span.namespace {
-	display: none;
+    display: none;
 }
 
 div.modal-body > form.addCapForm > div.propertiesContainer > div.content > span.elementName {
-	display: none;
+    display: none;
 }
 
 div.modal-body > form.addCapForm > div.propertiesContainer > div.content table {
-	float: left;
+    float: left;
 }

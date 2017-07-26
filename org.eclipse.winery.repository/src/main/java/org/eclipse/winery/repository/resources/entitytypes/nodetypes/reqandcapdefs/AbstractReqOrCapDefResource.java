@@ -44,135 +44,135 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWithIdResource<ReqOrCapDef> implements IIdDetermination<ReqOrCapDef> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReqOrCapDefResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReqOrCapDefResource.class);
 
-	protected NodeTypeResource parent;
+    protected NodeTypeResource parent;
 
-	// the capability or the requirement
-	private Object reqOrCapDef;
+    // the capability or the requirement
+    private Object reqOrCapDef;
 
-	private List<TConstraint> constraints;
+    private List<TConstraint> constraints;
 
 
-	/**
-	 * @param constraints additional parameter (in comparison to the constructor
-	 *            of EntityWithIdResource) as we require that sublist for the
-	 *            constrinats sub resource
-	 */
-	public AbstractReqOrCapDefResource(IIdDetermination<ReqOrCapDef> idDetermination, ReqOrCapDef reqOrCapDef, int idx, List<ReqOrCapDef> list, NodeTypeResource res, List<TConstraint> constraints) {
-		super(idDetermination, reqOrCapDef, idx, list, res);
-		assert ((reqOrCapDef instanceof TRequirementDefinition) || (reqOrCapDef instanceof TCapabilityDefinition));
-		this.parent = res;
-		this.reqOrCapDef = reqOrCapDef;
-		this.constraints = constraints;
-	}
+    /**
+     * @param constraints additional parameter (in comparison to the constructor
+     *            of EntityWithIdResource) as we require that sublist for the
+     *            constrinats sub resource
+     */
+    public AbstractReqOrCapDefResource(IIdDetermination<ReqOrCapDef> idDetermination, ReqOrCapDef reqOrCapDef, int idx, List<ReqOrCapDef> list, NodeTypeResource res, List<TConstraint> constraints) {
+        super(idDetermination, reqOrCapDef, idx, list, res);
+        assert ((reqOrCapDef instanceof TRequirementDefinition) || (reqOrCapDef instanceof TCapabilityDefinition));
+        this.parent = res;
+        this.reqOrCapDef = reqOrCapDef;
+        this.constraints = constraints;
+    }
 
-	@GET
-	@Path("name")
-	public String getName() {
-		return (String) this.invokeGetter("getName");
-	}
+    @GET
+    @Path("name")
+    public String getName() {
+        return (String) this.invokeGetter("getName");
+    }
 
-	static String getName(Object reqOrCapDef) {
-		return (String) AbstractReqOrCapDefResource.invokeGetter(reqOrCapDef, "getName");
-	}
+    static String getName(Object reqOrCapDef) {
+        return (String) AbstractReqOrCapDefResource.invokeGetter(reqOrCapDef, "getName");
+    }
 
-	@GET
-	@Path("lowerbound")
-	public int getLowerBound() {
-		return (int) this.invokeGetter("getLowerBound");
-	}
+    @GET
+    @Path("lowerbound")
+    public int getLowerBound() {
+        return (int) this.invokeGetter("getLowerBound");
+    }
 
-	@GET
-	@Path("upperbound")
-	public String getUpperBound() {
-		return (String) this.invokeGetter("getUpperBound");
-	}
+    @GET
+    @Path("upperbound")
+    public String getUpperBound() {
+        return (String) this.invokeGetter("getUpperBound");
+    }
 
-	@PUT
-	@Path("name")
-	public Response setName(@FormParam(value = "name") String name) {
-		// TODO: type check - see also min/max Instance of a node template
-		this.invokeSetter("setName", name);
-		return BackendUtils.persist(this.parent);
-	}
+    @PUT
+    @Path("name")
+    public Response setName(@FormParam(value = "name") String name) {
+        // TODO: type check - see also min/max Instance of a node template
+        this.invokeSetter("setName", name);
+        return BackendUtils.persist(this.parent);
+    }
 
-	@PUT
-	@Path("lowerbound")
-	public Response setLowerBound(@FormParam(value = "lowerbound") String value) {
-		// TODO: type check
-		this.invokeSetter("setLowerBound", value);
-		return BackendUtils.persist(this.parent);
-	}
+    @PUT
+    @Path("lowerbound")
+    public Response setLowerBound(@FormParam(value = "lowerbound") String value) {
+        // TODO: type check
+        this.invokeSetter("setLowerBound", value);
+        return BackendUtils.persist(this.parent);
+    }
 
-	@PUT
-	@Path("upperbound")
-	public Response setUpperBound(@FormParam(value = "upperbound") String value) {
-		// TODO: type check
-		this.invokeSetter("setUpperBound", value);
-		return BackendUtils.persist(this.parent);
-	}
+    @PUT
+    @Path("upperbound")
+    public Response setUpperBound(@FormParam(value = "upperbound") String value) {
+        // TODO: type check
+        this.invokeSetter("setUpperBound", value);
+        return BackendUtils.persist(this.parent);
+    }
 
-	@Path("constraints/")
-	public ConstraintsResource getConstraintsResource() {
-		return new ConstraintsResource(this.constraints, this.parent);
-	}
+    @Path("constraints/")
+    public ConstraintsResource getConstraintsResource() {
+        return new ConstraintsResource(this.constraints, this.parent);
+    }
 
-	private static Object invokeGetter(Object reqOrCapDef, String getterName) {
-		Method method;
-		Object res;
-		try {
-			method = reqOrCapDef.getClass().getMethod(getterName);
-			res = method.invoke(reqOrCapDef);
-		} catch (Exception e) {
-			AbstractReqOrCapDefResource.LOGGER.error("Could not invoke getter {}", getterName, e);
-			throw new IllegalStateException(e);
-		}
-		return res;
-	}
+    private static Object invokeGetter(Object reqOrCapDef, String getterName) {
+        Method method;
+        Object res;
+        try {
+            method = reqOrCapDef.getClass().getMethod(getterName);
+            res = method.invoke(reqOrCapDef);
+        } catch (Exception e) {
+            AbstractReqOrCapDefResource.LOGGER.error("Could not invoke getter {}", getterName, e);
+            throw new IllegalStateException(e);
+        }
+        return res;
+    }
 
-	private Object invokeGetter(String getterName) {
-		return AbstractReqOrCapDefResource.invokeGetter(this.reqOrCapDef, getterName);
-	}
+    private Object invokeGetter(String getterName) {
+        return AbstractReqOrCapDefResource.invokeGetter(this.reqOrCapDef, getterName);
+    }
 
-	/**
-	 * Quick hack method for RequirementOrCapabilityDefinitionsResource
-	 */
-	static void invokeSetter(Object reqOrCapDef, String setterName, Object value) {
-		Method method;
-		try {
-			method = reqOrCapDef.getClass().getMethod(setterName, value.getClass());
-			method.invoke(reqOrCapDef, value);
-		} catch (Exception e) {
-			AbstractReqOrCapDefResource.LOGGER.error("Could not invoke setter {}", setterName, e);
-			throw new IllegalStateException(e);
-		}
-	}
+    /**
+     * Quick hack method for RequirementOrCapabilityDefinitionsResource
+     */
+    static void invokeSetter(Object reqOrCapDef, String setterName, Object value) {
+        Method method;
+        try {
+            method = reqOrCapDef.getClass().getMethod(setterName, value.getClass());
+            method.invoke(reqOrCapDef, value);
+        } catch (Exception e) {
+            AbstractReqOrCapDefResource.LOGGER.error("Could not invoke setter {}", setterName, e);
+            throw new IllegalStateException(e);
+        }
+    }
 
-	private void invokeSetter(String setterName, Object value) {
-		AbstractReqOrCapDefResource.invokeSetter(this.reqOrCapDef, setterName, value);
-	}
+    private void invokeSetter(String setterName, Object value) {
+        AbstractReqOrCapDefResource.invokeSetter(this.reqOrCapDef, setterName, value);
+    }
 
-	@GET
-	@Path("type")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getTypeAsString() {
-		return this.getType().toString();
-	}
+    @GET
+    @Path("type")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getTypeAsString() {
+        return this.getType().toString();
+    }
 
-	/**
-	 * required by the JSP.
-	 *
-	 * Therefore, we have two getters for the type: QName for the JSP and String
-	 * for REST clients
-	 */
-	public abstract QName getType();
+    /**
+     * required by the JSP.
+     *
+     * Therefore, we have two getters for the type: QName for the JSP and String
+     * for REST clients
+     */
+    public abstract QName getType();
 
-	/**
-	 * Required by reqandcapdefs.jsp
-	 */
-	public Object getDef() {
-		return this.reqOrCapDef;
-	}
+    /**
+     * Required by reqandcapdefs.jsp
+     */
+    public Object getDef() {
+        return this.reqOrCapDef;
+    }
 
 }

@@ -21,16 +21,16 @@ import org.eclipse.winery.common.ids.XMLId;
  */
 public abstract class TopologyGraphElementEntityTypeId extends EntityTypeId {
 
-	public TopologyGraphElementEntityTypeId(Namespace namespace, XMLId xmlId) {
-		super(namespace, xmlId);
-	}
+    public TopologyGraphElementEntityTypeId(Namespace namespace, XMLId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public TopologyGraphElementEntityTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public TopologyGraphElementEntityTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public TopologyGraphElementEntityTypeId(QName type) {
-		super(type);
-	}
+    public TopologyGraphElementEntityTypeId(QName type) {
+        super(type);
+    }
 
 }

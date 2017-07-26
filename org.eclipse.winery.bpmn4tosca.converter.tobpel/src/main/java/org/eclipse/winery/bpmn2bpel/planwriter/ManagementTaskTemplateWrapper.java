@@ -32,63 +32,63 @@ import org.eclipse.winery.bpmn2bpel.model.param.Parameter;
  */
 public class ManagementTaskTemplateWrapper extends ManagementTask {
 
-	public ManagementTaskTemplateWrapper(ManagementTask task) {
-		super();
-		setId(task.getId());
-		setName(task.getName());
-		setType(task.getType());
-		setInterfaceName(task.getInterfaceName());
-		setNodeTemplateId(task.getNodeTemplateId());
-		setNodeOperation(task.getNodeOperation());
-		setInputParameters(task.getInputParameters());
-		setOutputParameters(task.getOutputParameters());
-	}
+    public ManagementTaskTemplateWrapper(ManagementTask task) {
+        super();
+        setId(task.getId());
+        setName(task.getName());
+        setType(task.getType());
+        setInterfaceName(task.getInterfaceName());
+        setNodeTemplateId(task.getNodeTemplateId());
+        setNodeOperation(task.getNodeOperation());
+        setInputParameters(task.getInputParameters());
+        setOutputParameters(task.getOutputParameters());
+    }
 
 
 
 
-	public List<QName> getInputNodeTemplateIds() {
-		// Velocity does just support java lists in templates but not sets;
-		return new ArrayList<QName>(getNodeTemplateIds(getInputParameters()));
-	}
+    public List<QName> getInputNodeTemplateIds() {
+        // Velocity does just support java lists in templates but not sets;
+        return new ArrayList<QName>(getNodeTemplateIds(getInputParameters()));
+    }
 
 
 
-	public List<QName> getOutputNodeTemplateIds() {
-		// Velocity does just support java lists in templates but not sets;
-				return new ArrayList<QName>(getNodeTemplateIds(getOutputParameters()));
-	}
+    public List<QName> getOutputNodeTemplateIds() {
+        // Velocity does just support java lists in templates but not sets;
+                return new ArrayList<QName>(getNodeTemplateIds(getOutputParameters()));
+    }
 
 
-	/**
-	 * @return The set union of all ids of node templates used by the task.
-	 */
-	public List<QName> getAllNodeTemplateIds() {
-		Set<QName> allNodeTemplates = getNodeTemplateIds(getInputParameters());
-		allNodeTemplates.addAll(getNodeTemplateIds(getOutputParameters()));
-		return new ArrayList<QName>(allNodeTemplates);
-	}
+    /**
+     * @return The set union of all ids of node templates used by the task.
+     */
+    public List<QName> getAllNodeTemplateIds() {
+        Set<QName> allNodeTemplates = getNodeTemplateIds(getInputParameters());
+        allNodeTemplates.addAll(getNodeTemplateIds(getOutputParameters()));
+        return new ArrayList<QName>(allNodeTemplates);
+    }
 
-	/**
-	 * Helper that returns a set of ids of the node templates used by the parameters.
-	 * @param parameters
-	 * @return Set of node template ids as QNames
-	 */
-	private Set<QName> getNodeTemplateIds(List<Parameter> parameters) {
-		Set<QName> nodeTemplateIds = new HashSet<QName>();
+    /**
+     * Helper that returns a set of ids of the node templates used by the parameters.
+     * @param parameters
+     * @return Set of node template ids as QNames
+     */
+    private Set<QName> getNodeTemplateIds(List<Parameter> parameters) {
+        Set<QName> nodeTemplateIds = new HashSet<QName>();
 
-		Iterator<Parameter> iter = parameters.iterator();
-		while (iter.hasNext()) {
-			Parameter parameter = (Parameter) iter.next();
-			/* Just topology parameter refer to node templates */
-			if (parameter instanceof TopologyParameter) {
-				nodeTemplateIds.add(((TopologyParameter) parameter).getNodeTemplateId());
+        Iterator<Parameter> iter = parameters.iterator();
+        while (iter.hasNext()) {
+            Parameter parameter = (Parameter) iter.next();
+            /* Just topology parameter refer to node templates */
+            if (parameter instanceof TopologyParameter) {
+                nodeTemplateIds.add(((TopologyParameter) parameter).getNodeTemplateId());
 
-			}
+            }
 
-		}
-		return nodeTemplateIds;
+        }
+        return nodeTemplateIds;
 
-	}
+    }
 
 }

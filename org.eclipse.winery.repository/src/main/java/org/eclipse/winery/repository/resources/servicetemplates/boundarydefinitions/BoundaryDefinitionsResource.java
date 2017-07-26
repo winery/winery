@@ -47,98 +47,98 @@ import org.w3c.dom.Document;
 
 public class BoundaryDefinitionsResource {
 
-	private final ServiceTemplateResource serviceTemplateResource;
-	private final TBoundaryDefinitions boundaryDefinitions;
+    private final ServiceTemplateResource serviceTemplateResource;
+    private final TBoundaryDefinitions boundaryDefinitions;
 
 
-	public BoundaryDefinitionsResource(ServiceTemplateResource serviceTemplateResource, TBoundaryDefinitions boundaryDefinitions) {
-		this.serviceTemplateResource = serviceTemplateResource;
-		this.boundaryDefinitions = boundaryDefinitions;
-	}
+    public BoundaryDefinitionsResource(ServiceTemplateResource serviceTemplateResource, TBoundaryDefinitions boundaryDefinitions) {
+        this.serviceTemplateResource = serviceTemplateResource;
+        this.boundaryDefinitions = boundaryDefinitions;
+    }
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML(@Context UriInfo uriInfo) {
-		return new Viewable("/jsp/servicetemplates/boundarydefinitions/boundarydefinitions.jsp", new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()));
-	}
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Viewable getHTML(@Context UriInfo uriInfo) {
+        return new Viewable("/jsp/servicetemplates/boundarydefinitions/boundarydefinitions.jsp", new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()));
+    }
 
-	@PUT
-	@RestDoc(methodDescription = "Replaces the boundary definitions by the information given in the XML")
-	@Consumes(MediaType.TEXT_XML)
-	public Response setModel(TBoundaryDefinitions boundaryDefinitions) {
-		this.serviceTemplateResource.getServiceTemplate().setBoundaryDefinitions(boundaryDefinitions);
-		return BackendUtils.persist(this.serviceTemplateResource);
-	}
+    @PUT
+    @RestDoc(methodDescription = "Replaces the boundary definitions by the information given in the XML")
+    @Consumes(MediaType.TEXT_XML)
+    public Response setModel(TBoundaryDefinitions boundaryDefinitions) {
+        this.serviceTemplateResource.getServiceTemplate().setBoundaryDefinitions(boundaryDefinitions);
+        return BackendUtils.persist(this.serviceTemplateResource);
+    }
 
-	@Path("properties/")
-	@PUT
-	@Consumes(MediaType.TEXT_XML)
-	@RestDoc(resourceDescription = "Models the user-defined properties. The property mappings go into a separate resource propertymappings.")
-	public Response putProperties(@RestDocParam(description = "Stored properties. The XSD allows a single element only. Therefore, we go for the contained element") Document doc) {
-		org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties properties = ModelUtilities.getProperties(this.boundaryDefinitions);
-		properties.setAny(doc.getDocumentElement());
-		return BackendUtils.persist(this.serviceTemplateResource);
-	}
+    @Path("properties/")
+    @PUT
+    @Consumes(MediaType.TEXT_XML)
+    @RestDoc(resourceDescription = "Models the user-defined properties. The property mappings go into a separate resource propertymappings.")
+    public Response putProperties(@RestDocParam(description = "Stored properties. The XSD allows a single element only. Therefore, we go for the contained element") Document doc) {
+        org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties properties = ModelUtilities.getProperties(this.boundaryDefinitions);
+        properties.setAny(doc.getDocumentElement());
+        return BackendUtils.persist(this.serviceTemplateResource);
+    }
 
-	@Path("requirements/")
-	public RequirementsResource getRequiremensResource() {
-		Requirements requirements = this.boundaryDefinitions.getRequirements();
-		if (requirements == null) {
-			requirements = new Requirements();
-			this.boundaryDefinitions.setRequirements(requirements);
-		}
-		List<TRequirementRef> refs = requirements.getRequirement();
-		return new RequirementsResource(this.serviceTemplateResource, refs);
-	}
+    @Path("requirements/")
+    public RequirementsResource getRequiremensResource() {
+        Requirements requirements = this.boundaryDefinitions.getRequirements();
+        if (requirements == null) {
+            requirements = new Requirements();
+            this.boundaryDefinitions.setRequirements(requirements);
+        }
+        List<TRequirementRef> refs = requirements.getRequirement();
+        return new RequirementsResource(this.serviceTemplateResource, refs);
+    }
 
-	@Path("capabilities/")
-	public CapabilitiesResource getCapabilitiesResource() {
-		Capabilities caps = this.boundaryDefinitions.getCapabilities();
-		if (caps == null) {
-			caps = new Capabilities();
-			this.boundaryDefinitions.setCapabilities(caps);
-		}
-		List<TCapabilityRef> refs = caps.getCapability();
-		return new CapabilitiesResource(this.serviceTemplateResource, refs);
-	}
+    @Path("capabilities/")
+    public CapabilitiesResource getCapabilitiesResource() {
+        Capabilities caps = this.boundaryDefinitions.getCapabilities();
+        if (caps == null) {
+            caps = new Capabilities();
+            this.boundaryDefinitions.setCapabilities(caps);
+        }
+        List<TCapabilityRef> refs = caps.getCapability();
+        return new CapabilitiesResource(this.serviceTemplateResource, refs);
+    }
 
-	@Path("policies/")
-	public PoliciesResource getPoliciesResource() {
-		Policies policies = this.boundaryDefinitions.getPolicies();
-		if (policies == null) {
-			policies = new Policies();
-			this.boundaryDefinitions.setPolicies(policies);
-		}
-		return new PoliciesResource(policies.getPolicy(), this.serviceTemplateResource);
-	}
+    @Path("policies/")
+    public PoliciesResource getPoliciesResource() {
+        Policies policies = this.boundaryDefinitions.getPolicies();
+        if (policies == null) {
+            policies = new Policies();
+            this.boundaryDefinitions.setPolicies(policies);
+        }
+        return new PoliciesResource(policies.getPolicy(), this.serviceTemplateResource);
+    }
 
-	/**
-	 * This path is below "boundary definitions" to ease implementation If it
-	 * was modeled following the XSD, it would have been nested below
-	 * "properties". We did not do that
-	 */
-	@Path("propertymappings/")
-	public PropertyMappingsResource getPropertyMappings() {
-		Properties properties = this.boundaryDefinitions.getProperties();
-		if (properties == null) {
-			properties = new Properties();
-			this.boundaryDefinitions.setProperties(properties);
-		}
-		PropertyMappings propertyMappings = properties.getPropertyMappings();
-		if (propertyMappings == null) {
-			propertyMappings = new PropertyMappings();
-			properties.setPropertyMappings(propertyMappings);
-		}
-		return new PropertyMappingsResource(propertyMappings, this.serviceTemplateResource);
-	}
+    /**
+     * This path is below "boundary definitions" to ease implementation If it
+     * was modeled following the XSD, it would have been nested below
+     * "properties". We did not do that
+     */
+    @Path("propertymappings/")
+    public PropertyMappingsResource getPropertyMappings() {
+        Properties properties = this.boundaryDefinitions.getProperties();
+        if (properties == null) {
+            properties = new Properties();
+            this.boundaryDefinitions.setProperties(properties);
+        }
+        PropertyMappings propertyMappings = properties.getPropertyMappings();
+        if (propertyMappings == null) {
+            propertyMappings = new PropertyMappings();
+            properties.setPropertyMappings(propertyMappings);
+        }
+        return new PropertyMappingsResource(propertyMappings, this.serviceTemplateResource);
+    }
 
-	@Path("interfaces/")
-	public InterfacesResource getInterfacesResource() {
-		Interfaces interfaces = this.boundaryDefinitions.getInterfaces();
-		if (interfaces == null) {
-			interfaces = new Interfaces();
-			this.boundaryDefinitions.setInterfaces(interfaces);
-		}
-		return new InterfacesResource(interfaces.getInterface(), this.serviceTemplateResource);
-	}
+    @Path("interfaces/")
+    public InterfacesResource getInterfacesResource() {
+        Interfaces interfaces = this.boundaryDefinitions.getInterfaces();
+        if (interfaces == null) {
+            interfaces = new Interfaces();
+            this.boundaryDefinitions.setInterfaces(interfaces);
+        }
+        return new InterfacesResource(interfaces.getInterface(), this.serviceTemplateResource);
+    }
 }

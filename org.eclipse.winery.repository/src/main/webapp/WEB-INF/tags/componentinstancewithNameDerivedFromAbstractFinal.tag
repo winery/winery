@@ -32,7 +32,7 @@
 <%
 
 if (subMenus == null) {
-	subMenus = new ArrayList(1);
+    subMenus = new ArrayList(1);
 }
 
 SubMenuData data;

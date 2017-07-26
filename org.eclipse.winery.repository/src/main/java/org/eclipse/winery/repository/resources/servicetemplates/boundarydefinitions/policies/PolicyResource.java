@@ -19,8 +19,8 @@ import org.eclipse.winery.repository.resources._support.collections.withoutid.En
 
 public class PolicyResource extends EntityWithoutIdResource<TPolicy> {
 
-	public PolicyResource(TPolicy o, int idx, List<TPolicy> list, IPersistable res) {
-		super(o, idx, list, res);
-	}
+    public PolicyResource(TPolicy o, int idx, List<TPolicy> list, IPersistable res) {
+        super(o, idx, list, res);
+    }
 
 }

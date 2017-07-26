@@ -47,76 +47,76 @@ import com.sun.jersey.multipart.FormDataParam;
  */
 public abstract class GenericVisualAppearanceResource {
 
-	protected final Map<QName, String> otherAttributes;
-	protected final TopologyGraphElementEntityTypeResource res;
-	protected final TOSCAElementId id;
+    protected final Map<QName, String> otherAttributes;
+    protected final TopologyGraphElementEntityTypeResource res;
+    protected final TOSCAElementId id;
 
 
-	/**
-	 * @param otherAttributes the other attributes of the node/relationship type
-	 * @param id the id of this subresource required for storing the images
-	 */
-	public GenericVisualAppearanceResource(TopologyGraphElementEntityTypeResource res, Map<QName, String> otherAttributes, VisualAppearanceId id) {
-		this.id = id;
-		this.res = res;
-		this.otherAttributes = otherAttributes;
-	}
+    /**
+     * @param otherAttributes the other attributes of the node/relationship type
+     * @param id the id of this subresource required for storing the images
+     */
+    public GenericVisualAppearanceResource(TopologyGraphElementEntityTypeResource res, Map<QName, String> otherAttributes, VisualAppearanceId id) {
+        this.id = id;
+        this.res = res;
+        this.otherAttributes = otherAttributes;
+    }
 
-	@DELETE
-	public Response onDelete() {
-		return BackendUtils.delete(this.id);
-	}
+    @DELETE
+    public Response onDelete() {
+        return BackendUtils.delete(this.id);
+    }
 
-	/**
-	 * Used for GUI when accessing the resource as data E.g., for topology
-	 * template
-	 */
-	//@JsonIgnore
-	public URI getAbsoluteURL() {
-		String URI = Prefs.INSTANCE.getResourcePath();
-		URI = URI + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(this.id));
-		return Utils.createURI(URI);
-	}
+    /**
+     * Used for GUI when accessing the resource as data E.g., for topology
+     * template
+     */
+    //@JsonIgnore
+    public URI getAbsoluteURL() {
+        String URI = Prefs.INSTANCE.getResourcePath();
+        URI = URI + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(this.id));
+        return Utils.createURI(URI);
+    }
 
-	//@JsonIgnore
-	public TOSCAElementId getId() {
-		return this.id;
-	}
+    //@JsonIgnore
+    public TOSCAElementId getId() {
+        return this.id;
+    }
 
-	/**
-	 * Determines repository reference to file in repo
-	 */
-	protected RepositoryFileReference getRepoFileRef(String name) {
-		return new RepositoryFileReference(this.id, name);
-	}
+    /**
+     * Determines repository reference to file in repo
+     */
+    protected RepositoryFileReference getRepoFileRef(String name) {
+        return new RepositoryFileReference(this.id, name);
+    }
 
-	protected Response getImage(String name, String modified) {
-		RepositoryFileReference target = this.getRepoFileRef(name);
-		return BackendUtils.returnRepoPath(target, modified);
-	}
+    protected Response getImage(String name, String modified) {
+        RepositoryFileReference target = this.getRepoFileRef(name);
+        return BackendUtils.returnRepoPath(target, modified);
+    }
 
-	/**
-	 * Arbitrary images are supported. There currently is no check for valid
-	 * image media types
-	 */
-	protected Response putImage(String name, InputStream uploadedInputStream, MediaType mediaType) {
-		RepositoryFileReference target = this.getRepoFileRef(name);
-		return BackendUtils.putContentToFile(target, uploadedInputStream, mediaType);
-	}
+    /**
+     * Arbitrary images are supported. There currently is no check for valid
+     * image media types
+     */
+    protected Response putImage(String name, InputStream uploadedInputStream, MediaType mediaType) {
+        RepositoryFileReference target = this.getRepoFileRef(name);
+        return BackendUtils.putContentToFile(target, uploadedInputStream, mediaType);
+    }
 
-	@GET
-	@Path("16x16")
-	public Response get16x16Image(@HeaderParam("If-Modified-Since") String modified) {
-		// Even if the extension is "png", it might contain a jpg, too
-		// We keep the file extension as the windows explorer can display previews even if the content is not a png
-		return this.getImage(Filename.FILENAME_SMALL_ICON, modified);
-	}
+    @GET
+    @Path("16x16")
+    public Response get16x16Image(@HeaderParam("If-Modified-Since") String modified) {
+        // Even if the extension is "png", it might contain a jpg, too
+        // We keep the file extension as the windows explorer can display previews even if the content is not a png
+        return this.getImage(Filename.FILENAME_SMALL_ICON, modified);
+    }
 
-	@PUT
-	@Path("16x16")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response post16x16Image(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
-		return this.putImage(Filename.FILENAME_SMALL_ICON, uploadedInputStream, body.getMediaType());
-	}
+    @PUT
+    @Path("16x16")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response post16x16Image(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
+        return this.putImage(Filename.FILENAME_SMALL_ICON, uploadedInputStream, body.getMediaType());
+    }
 
 }

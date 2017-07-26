@@ -32,62 +32,62 @@ import org.eclipse.winery.repository.resources.entitytypes.properties.Properties
 
 public abstract class EntityTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
 
-	protected EntityTypeResource(TOSCAComponentId id) {
-		super(id);
-	}
+    protected EntityTypeResource(TOSCAComponentId id) {
+        super(id);
+    }
 
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		TEntityType entityType = this.getEntityType();
-		entityType.setTargetNamespace(id.getNamespace().getDecoded());
-		entityType.setName(id.getXmlId().getDecoded());
-	}
+    @Override
+    public void copyIdToFields(TOSCAComponentId id) {
+        TEntityType entityType = this.getEntityType();
+        entityType.setTargetNamespace(id.getNamespace().getDecoded());
+        entityType.setName(id.getXmlId().getDecoded());
+    }
 
-	/**
-	 * Convenience method to avoid casting. Required by
-	 * PropertiesDefinitionResource's jsp
-	 */
-	public TEntityType getEntityType() {
-		return (TEntityType) this.element;
-	}
+    /**
+     * Convenience method to avoid casting. Required by
+     * PropertiesDefinitionResource's jsp
+     */
+    public TEntityType getEntityType() {
+        return (TEntityType) this.element;
+    }
 
-	/**
-	 * Models PropertiesDefinition
-	 */
-	@Path("propertiesdefinition/")
-	public PropertiesDefinitionResource getPropertiesDefinitionResource() {
-		return new PropertiesDefinitionResource(this);
-	}
+    /**
+     * Models PropertiesDefinition
+     */
+    @Path("propertiesdefinition/")
+    public PropertiesDefinitionResource getPropertiesDefinitionResource() {
+        return new PropertiesDefinitionResource(this);
+    }
 
-	/**
-	 * Used by children to implement getListOfAllInstances()
-	 */
-	protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends TOSCAComponentId> clazz) {
-		Select2DataWithOptGroups data = new Select2DataWithOptGroups();
+    /**
+     * Used by children to implement getListOfAllInstances()
+     */
+    protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends TOSCAComponentId> clazz) {
+        Select2DataWithOptGroups data = new Select2DataWithOptGroups();
 
-		Collection<? extends TOSCAComponentId> instanceIds = BackendUtils.getAllElementsRelatedWithATypeAttribute(clazz, this.id.getQName());
+        Collection<? extends TOSCAComponentId> instanceIds = BackendUtils.getAllElementsRelatedWithATypeAttribute(clazz, this.id.getQName());
 
-		for (TOSCAComponentId instanceId : instanceIds) {
-			String groupText = instanceId.getNamespace().getDecoded();
-			String text = BackendUtils.getName(instanceId);
-			data.add(groupText, instanceId.getQName().toString(), text);
-		}
+        for (TOSCAComponentId instanceId : instanceIds) {
+            String groupText = instanceId.getNamespace().getDecoded();
+            String text = BackendUtils.getName(instanceId);
+            data.add(groupText, instanceId.getQName().toString(), text);
+        }
 
-		return data.asSortedSet();
-	}
+        return data.asSortedSet();
+    }
 
-	/**
-	 * Returns an array suitable for processing in a {@code select2} field See
-	 * <a href="http://ivaynberg.github.io/select2">http://ivaynberg.github.io/select2</a>
-	 *
-	 * Each element: {id: "{ns}localname", text: "name/id"}
-	 */
-	@Path("instances/")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public SortedSet<Select2OptGroup> getListOfAllInstances() {
-		Response res = Response.status(Status.INTERNAL_SERVER_ERROR).entity("not yet implemented").build();
-		throw new WebApplicationException(res);
-	}
+    /**
+     * Returns an array suitable for processing in a {@code select2} field See
+     * <a href="http://ivaynberg.github.io/select2">http://ivaynberg.github.io/select2</a>
+     *
+     * Each element: {id: "{ns}localname", text: "name/id"}
+     */
+    @Path("instances/")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public SortedSet<Select2OptGroup> getListOfAllInstances() {
+        Response res = Response.status(Status.INTERNAL_SERVER_ERROR).entity("not yet implemented").build();
+        throw new WebApplicationException(res);
+    }
 
 }

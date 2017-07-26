@@ -16,10 +16,10 @@ Specififcation:  http://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.0
 @startuml
 
 skinparam class {
-	BackgroundColor White
-	ArrowColor Black
-	BorderColor Black
-	LegendBackgroundColor White
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+    LegendBackgroundColor White
 }
 
 skinparam stereotypeCBackgroundColor LightGray
@@ -39,8 +39,8 @@ Title <size:33>TOSCA Simple Profile in YAML Version 1.0 as UML class diagram. Th
 class tServiceTemplate {
     +String tosca_definition_version
     String description
-	Map<String,String> metadata
-	Map<String,ObjectValue> dsl_definition
+    Map<String,String> metadata
+    Map<String,ObjectValue> dsl_definition
 }
 tServiceTemplate *-- "*" tRepositoryDefinition
 tServiceTemplate *-- "*" tImportDefinition
@@ -58,38 +58,38 @@ tServiceTemplate *-- "0..1" tTopologyTemplateDefinition
 ' Definition classes
 '*************************************************************
 class tRepositoryDefinition {
-	String description
-	+String url
+    String description
+    +String url
 }
 tRepositoryDefinition *-- "0..1" toscaDatatypesCredential
 
 class tImportDefinition {
-	String file
-	String namespace_uri
-	String namespace_prefix
+    String file
+    String namespace_uri
+    String namespace_prefix
 }
 tImportDefinition *-- "0..1" tRepositoryDefinition : repository
 
 class tPropertyDefinition {
-	String description
-	Boolean required
-	ObjectValue default
-	StatusValue status
+    String description
+    Boolean required
+    ObjectValue default
+    StatusValue status
 }
 tPropertyDefinition --> tDataType : type
 tPropertyDefinition *-- "*" tConstraintClause : constraints
 tPropertyDefinition *-- "0..1" tEntrySchema : entry_schema
 
 class tAttributeDefinition {
-	String description
-	ANY default
-	StatusValue status
+    String description
+    ANY default
+    StatusValue status
 }
 tAttributeDefinition --> tDataType : type
 tAttributeDefinition *-- "0..1" tEntrySchema : entry_schema
 
 class tOperationDefinition {
-	String description
+    String description
 }
 tOperationDefinition *-- "*" tPropertyDefinition : inputs
 tOperationDefinition *-- "*" tPropertyAssignment : inputs
@@ -106,8 +106,8 @@ tInterfaceDefinition *-- "*" tPropertyDefinition : inputs
 tInterfaceDefinition *-- "*" tOperationDefinition
 
 class tRequirementDefinition {
-	String Description
-	List<String> occurrences
+    String Description
+    List<String> occurrences
 } 
 tRequirementDefinition *-- "1" tCapabilityType : capability
 tRequirementDefinition *-- "0..1" tNodeType : node
@@ -116,32 +116,32 @@ tRequirementDefinition *-- "0..1" tRelationshipType : relationship.type
 tRequirementDefinition *-- "*" tRelationshipType : relationship.interfaces
 
 class tCapabilityDefinition {
-	String description
-	List<String> occurrences
-	List<String> valid_source_types
+    String description
+    List<String> occurrences
+    List<String> valid_source_types
 }
 tCapabilityDefinition --> tCapabilityType : type
 tCapabilityDefinition *-- tPropertyDefinition : properties
 tCapabilityDefinition *-- tAttributeDefinition : attributes
 
 class tArtifactDefinition {
-	String description
-	+String file
-	String deploy_path
+    String description
+    +String file
+    String deploy_path
 }
 tArtifactDefinition --> tArtifactType : type
 tArtifactDefinition *-- "0..1" tRepositoryDefinition : repository
 
 class tGroupDefinition {
-	String description
-	List<String> members
+    String description
+    List<String> members
 }
 tGroupDefinition --> tGroupType : type
 tGroupDefinition *-- "*" tPropertyAssignment : properties
 tGroupDefinition *-- "*" tInterfaceDefinition : interfaces
 
 class tPolicyDefinition {
-	String description
+    String description
 }
 tPolicyDefinition --> tPolicyType : type
 tPolicyDefinition *-- "*" tPropertyAssignment : properties
@@ -150,7 +150,7 @@ tPolicyDefinition *-- "*" tGroupDefinition : targets
 
 tPropertyDefinition <|-- tParameterDefinition : extends
 class tParameterDefinition {
-	ObjectValue value
+    ObjectValue value
 }
 tParameterDefinition --> tDataType : type
 
@@ -158,16 +158,16 @@ tParameterDefinition --> tDataType : type
 ' Type classes
 '*************************************************************
 class tEntityType {
-	String description
-	Version version
+    String description
+    Version version
 }
 tEntityType --> "0..1" tEntityType : derived_from
 tEntityType *-- "*" tPropertyDefinition
 
 tEntityType <|-- tArtifactType
 class tArtifactType {
-	String mime_type
-	List<String> file_ext
+    String mime_type
+    List<String> file_ext
 }
 
 tEntityType <|-- tDataType
@@ -177,7 +177,7 @@ tDataType *-- "*" tConstraintClause : constraints
 
 tEntityType <|-- tCapabilityType
 class tCapabilityType {
-	List<String> valid_source_types
+    List<String> valid_source_types
 } 
 tCapabilityType *-- "*" tAttributeDefinition : attributes
 
@@ -188,7 +188,7 @@ tInterfaceType *-- "*" tOperationDefinition
 
 tEntityType <|-- tRelationshipType
 class tRelationshipType {
-	List<String> valid_target_types
+    List<String> valid_target_types
 }
 tRelationshipType *-- "*" tAttributeDefinition : attributes
 tRelationshipType *-- "*" tInterfaceDefinition : interfaces
@@ -219,7 +219,7 @@ tPolicyType *-- "*" tGroupType : targets
 '*************************************************************
 
 class tTopologyTemplateDefinition {
-	String description
+    String description
 }
 tTopologyTemplateDefinition *-- "*" tParameterDefinition : inputs
 tTopologyTemplateDefinition *-- "*" tNodeTemplate : node_templates
@@ -230,9 +230,9 @@ tTopologyTemplateDefinition *-- "*" tParameterDefinition : outputs
 tTopologyTemplateDefinition *-- "*" tSubstitutionMapping : substitution_mappings
 
 class tNodeTemplate {
-	String description
-	String directives
-	String copy
+    String description
+    String directives
+    String copy
 }
 tNodeTemplate --> tNodeType : type
 tNodeTemplate *-- "*" tPropertyAssignment : properties
@@ -244,8 +244,8 @@ tNodeTemplate *-- "*" tArtifactDefinition : artifacts
 tNodeTemplate *-- "0..1" tNodeFilterDefinition : node_filter
 
 class tRelationshipTemplate {
-	String description
-	String copy
+    String description
+    String copy
 } 
 tRelationshipTemplate --> tRelationshipType : type
 tRelationshipTemplate *-- "*" tPropertyAssignment : properties
@@ -256,16 +256,16 @@ tRelationshipTemplate *-- "*" tInterfaceDefinition : interfaces
 ' Assignment classes
 '*************************************************************
 class tPropertyAssignment {
-	ObjectValue value
+    ObjectValue value
 }
 
 class tAttributeAssignment {
-	String description
-	ObjectValue value
+    String description
+    ObjectValue value
 }
 
 class tRequirementAssignment {
-	List<String> occurrences
+    List<String> occurrences
 }
 tRequirementAssignment *-- "0..1" tCapabilityDefinition : capability
 tRequirementAssignment *-- "0..1" tCapabilityType : capability
@@ -288,15 +288,15 @@ tCapabilityAssignment *-- "*" tAttributeAssignment : attributes
 ' Other classes
 '*************************************************************
 class tConstraintClause {
-	ObjectValue equal
-	ObjectValue greater_or_equal
-	ObjectValue less_than
-	List<ObjectValue> in_range
-	List<ObjectValue> valid_values
-	ObjectValue length
-	ObjectValue min_length
-	ObjectValue max_length
-	ObjectValue pattern
+    ObjectValue equal
+    ObjectValue greater_or_equal
+    ObjectValue less_than
+    List<ObjectValue> in_range
+    List<ObjectValue> valid_values
+    ObjectValue length
+    ObjectValue min_length
+    ObjectValue max_length
+    ObjectValue pattern
 }
 
 class tNodeFilterDefinition {
@@ -312,14 +312,14 @@ class tPropertyFilterDefinition {
 tPropertyFilterDefinition *-- "*" tConstraintClause
 
 class tSubstitutionMapping {
-	
+    
 } 
 tSubstitutionMapping --> tNodeType : node_type
 tSubstitutionMapping *-- "*" tCapabilityDefinition : capabilities
 tSubstitutionMapping *-- "*" tRequirementDefinition : requirements
 
 class tEntrySchema {
-	String description
+    String description
 }
 tEntrySchema --> tDataType : type
 tEntrySchema *-- "*" tConstraintClause : constraints
@@ -328,11 +328,11 @@ tEntrySchema *-- "*" tConstraintClause : constraints
 ' Default data types
 '*************************************************************
 class toscaDatatypesCredential {
-	String protocol
-	String token_type
-	String token
-	MapOfStrings keys
-	String user
+    String protocol
+    String token_type
+    String token
+    MapOfStrings keys
+    String user
 }
 
 class toscaArtifactImplementation {

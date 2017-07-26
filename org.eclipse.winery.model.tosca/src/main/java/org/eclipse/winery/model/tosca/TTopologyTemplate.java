@@ -87,7 +87,7 @@ public class TTopologyTemplate
      *
      *
      */
-	@JsonIgnore
+    @JsonIgnore
     public List<TEntityTemplate> getNodeTemplateOrRelationshipTemplate() {
         if (nodeTemplateOrRelationshipTemplate == null) {
             nodeTemplateOrRelationshipTemplate = new ArrayList<TEntityTemplate>();
@@ -95,70 +95,70 @@ public class TTopologyTemplate
         return this.nodeTemplateOrRelationshipTemplate;
     }
 
-	/**
-	 * @return all nodes templates of the topologyTemplate
-	 */
-	public List<TNodeTemplate> getNodeTemplates() {
-		return this.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.collect(Collectors.toList());
-	}
+    /**
+     * @return all nodes templates of the topologyTemplate
+     */
+    public List<TNodeTemplate> getNodeTemplates() {
+        return this.getNodeTemplateOrRelationshipTemplate()
+                .stream()
+                .filter(x -> x instanceof TNodeTemplate)
+                .map(TNodeTemplate.class::cast)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 * @return node template having the given id. null if not found
-	 */
-	public TNodeTemplate getNodeTemplate(String id) {
-		Objects.requireNonNull(id);
-		return this.getNodeTemplates().stream()
-				.filter(x -> id.equals(x.getId()))
-				.findAny()
-				.orElse(null);
-	}
+    /**
+     * @return node template having the given id. null if not found
+     */
+    public TNodeTemplate getNodeTemplate(String id) {
+        Objects.requireNonNull(id);
+        return this.getNodeTemplates().stream()
+                .filter(x -> id.equals(x.getId()))
+                .findAny()
+                .orElse(null);
+    }
 
-	public void setNodeTemplates(List<TNodeTemplate> nodeTemplates) {
-		this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-				nodeTemplates.stream().map(TEntityTemplate.class::cast),
-				this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
-				.collect(Collectors.toList());
-	}
+    public void setNodeTemplates(List<TNodeTemplate> nodeTemplates) {
+        this.nodeTemplateOrRelationshipTemplate = Stream.concat(
+                nodeTemplates.stream().map(TEntityTemplate.class::cast),
+                this.getRelationshipTemplates().stream().map(TEntityTemplate.class::cast))
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 * @return all relationship templates of the topologyTemplate
-	 */
-	public List<TRelationshipTemplate> getRelationshipTemplates() {
-		return this.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TRelationshipTemplate)
-				.map(TRelationshipTemplate.class::cast)
-				.collect(Collectors.toList());
-	}
+    /**
+     * @return all relationship templates of the topologyTemplate
+     */
+    public List<TRelationshipTemplate> getRelationshipTemplates() {
+        return this.getNodeTemplateOrRelationshipTemplate()
+                .stream()
+                .filter(x -> x instanceof TRelationshipTemplate)
+                .map(TRelationshipTemplate.class::cast)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 * @return relationship template having the given id. null if not found
-	 */
-	public TRelationshipTemplate getRelationshipTemplate(String id) {
-		Objects.requireNonNull(id);
-		return this.getRelationshipTemplates().stream()
-				.filter(x -> id.equals(x.getId()))
-				.findAny()
-				.orElse(null);
-	}
+    /**
+     * @return relationship template having the given id. null if not found
+     */
+    public TRelationshipTemplate getRelationshipTemplate(String id) {
+        Objects.requireNonNull(id);
+        return this.getRelationshipTemplates().stream()
+                .filter(x -> id.equals(x.getId()))
+                .findAny()
+                .orElse(null);
+    }
 
-	public void setRelationshipTemplates(List<TRelationshipTemplate> relationshipTemplates) {
-		this.nodeTemplateOrRelationshipTemplate = Stream.concat(
-				this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
-				relationshipTemplates.stream().map(TEntityTemplate.class::cast))
-				.collect(Collectors.toList());
-	}
+    public void setRelationshipTemplates(List<TRelationshipTemplate> relationshipTemplates) {
+        this.nodeTemplateOrRelationshipTemplate = Stream.concat(
+                this.getNodeTemplates().stream().map(TEntityTemplate.class::cast),
+                relationshipTemplates.stream().map(TEntityTemplate.class::cast))
+                .collect(Collectors.toList());
+    }
 
-	public void addNodeTemplate(TNodeTemplate nt) {
-		this.getNodeTemplateOrRelationshipTemplate().add(nt);
-	}
+    public void addNodeTemplate(TNodeTemplate nt) {
+        this.getNodeTemplateOrRelationshipTemplate().add(nt);
+    }
 
-	public void addRelationshipTemplate(TRelationshipTemplate rt) {
-		this.getNodeTemplateOrRelationshipTemplate().add(rt);
-	}
+    public void addRelationshipTemplate(TRelationshipTemplate rt) {
+        this.getNodeTemplateOrRelationshipTemplate().add(rt);
+    }
 
 }

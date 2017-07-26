@@ -13,4 +13,4 @@ package org.eclipse.winery.bpmn2bpel.model;
 
 public class OrGatewayMerge extends Gateway {
 
-}	
+}    

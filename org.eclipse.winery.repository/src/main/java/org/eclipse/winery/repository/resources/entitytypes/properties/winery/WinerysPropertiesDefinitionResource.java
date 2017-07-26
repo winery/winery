@@ -33,100 +33,100 @@ import org.restdoc.annotations.RestDoc;
 
 public class WinerysPropertiesDefinitionResource {
 
-	private final EntityTypeResource res;
-	private final WinerysPropertiesDefinition wpd;
+    private final EntityTypeResource res;
+    private final WinerysPropertiesDefinition wpd;
 
 
-	/**
-	 * @param res the resource where winery's k/v properties are defined
-	 * @param wpd winery's properties definition object, MAY be null
-	 */
-	public WinerysPropertiesDefinitionResource(EntityTypeResource res, WinerysPropertiesDefinition wpd) {
-		this.res = res;
-		this.wpd = wpd;
-	}
+    /**
+     * @param res the resource where winery's k/v properties are defined
+     * @param wpd winery's properties definition object, MAY be null
+     */
+    public WinerysPropertiesDefinitionResource(EntityTypeResource res, WinerysPropertiesDefinition wpd) {
+        this.res = res;
+        this.wpd = wpd;
+    }
 
-	@POST
-	@RestDoc(methodDescription = "switches the mode to winery properties instead of element/type properties")
-	public Response onPost() {
-		TEntityType et = this.res.getEntityType();
+    @POST
+    @RestDoc(methodDescription = "switches the mode to winery properties instead of element/type properties")
+    public Response onPost() {
+        TEntityType et = this.res.getEntityType();
 
-		// clear current properties definition
-		et.setPropertiesDefinition(null);
+        // clear current properties definition
+        et.setPropertiesDefinition(null);
 
-		// create empty winery properties definition and persist it
-		WinerysPropertiesDefinition wpd = new WinerysPropertiesDefinition();
-		ModelUtilities.replaceWinerysPropertiesDefinition(et, wpd);
-		return BackendUtils.persist(this.res);
-	}
+        // create empty winery properties definition and persist it
+        WinerysPropertiesDefinition wpd = new WinerysPropertiesDefinition();
+        ModelUtilities.replaceWinerysPropertiesDefinition(et, wpd);
+        return BackendUtils.persist(this.res);
+    }
 
-	@Path("namespace")
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getNamespace() {
-		if (this.wpd == null) {
-			throw new NotFoundException();
-		}
-		return this.wpd.getNamespace();
-	}
+    @Path("namespace")
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getNamespace() {
+        if (this.wpd == null) {
+            throw new NotFoundException();
+        }
+        return this.wpd.getNamespace();
+    }
 
-	@Path("namespace")
-	@PUT
-	@Consumes(MediaType.TEXT_PLAIN)
-	public Response setNamespace(String namespace) {
-		if (this.wpd == null) {
-			throw new NotFoundException();
-		}
-		this.wpd.setNamespace(namespace);
-		return BackendUtils.persist(this.res);
-	}
+    @Path("namespace")
+    @PUT
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response setNamespace(String namespace) {
+        if (this.wpd == null) {
+            throw new NotFoundException();
+        }
+        this.wpd.setNamespace(namespace);
+        return BackendUtils.persist(this.res);
+    }
 
-	@Path("elementname")
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public String getElementName() {
-		if (this.wpd == null) {
-			throw new NotFoundException();
-		}
-		return this.wpd.getElementName();
-	}
+    @Path("elementname")
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getElementName() {
+        if (this.wpd == null) {
+            throw new NotFoundException();
+        }
+        return this.wpd.getElementName();
+    }
 
-	@Path("elementname")
-	@PUT
-	@Consumes(MediaType.TEXT_PLAIN)
-	public Response setLocalname(String elementName) {
-		if (this.wpd == null) {
-			throw new NotFoundException();
-		}
-		this.wpd.setElementName(elementName);
-		return BackendUtils.persist(this.res);
-	}
+    @Path("elementname")
+    @PUT
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response setLocalname(String elementName) {
+        if (this.wpd == null) {
+            throw new NotFoundException();
+        }
+        this.wpd.setElementName(elementName);
+        return BackendUtils.persist(this.res);
+    }
 
-	@Path("elementname")
-	@PUT
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response setLocalnameViaWebUI(@FormParam(value = "name") String elementName) {
-		if (this.wpd == null) {
-			throw new NotFoundException();
-		}
-		this.wpd.setElementName(elementName);
-		return BackendUtils.persist(this.res);
-	}
+    @Path("elementname")
+    @PUT
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response setLocalnameViaWebUI(@FormParam(value = "name") String elementName) {
+        if (this.wpd == null) {
+            throw new NotFoundException();
+        }
+        this.wpd.setElementName(elementName);
+        return BackendUtils.persist(this.res);
+    }
 
-	/**
-	 * Here, also the addition of k/v properties is handled.
-	 */
-	@Path("list/")
-	public PropertyDefinitionKVListResource getListResource() {
-		if (this.wpd == null) {
-			throw new NotFoundException();
-		}
-		PropertyDefinitionKVList list = this.wpd.getPropertyDefinitionKVList();
-		if (list == null) {
-			list = new PropertyDefinitionKVList();
-			this.wpd.setPropertyDefinitionKVList(list);
-		}
-		return new PropertyDefinitionKVListResource(this.res, list);
-	}
+    /**
+     * Here, also the addition of k/v properties is handled.
+     */
+    @Path("list/")
+    public PropertyDefinitionKVListResource getListResource() {
+        if (this.wpd == null) {
+            throw new NotFoundException();
+        }
+        PropertyDefinitionKVList list = this.wpd.getPropertyDefinitionKVList();
+        if (list == null) {
+            list = new PropertyDefinitionKVList();
+            this.wpd.setPropertyDefinitionKVList(list);
+        }
+        return new PropertyDefinitionKVListResource(this.res, list);
+    }
 
 }

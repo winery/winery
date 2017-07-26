@@ -22,10 +22,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirement")
 @JsonTypeInfo(
-		defaultImpl = TRequirement.class,
-		use = JsonTypeInfo.Id.NAME,
-		include = JsonTypeInfo.As.EXISTING_PROPERTY,
-		property = "fakeJacksonType")
+        defaultImpl = TRequirement.class,
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "fakeJacksonType")
 public class TRequirement extends RelationshipSourceOrTarget {
 
     @XmlAttribute(name = "name", required = true)
@@ -55,8 +55,8 @@ public class TRequirement extends RelationshipSourceOrTarget {
         this.name = value;
     }
 
-	@Override
-	public String getFakeJacksonType() {
-		return "requirement";
-	}
+    @Override
+    public String getFakeJacksonType() {
+        return "requirement";
+    }
 }

@@ -16,11 +16,11 @@ import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
 public class ConstraintTypesId extends TypesId {
 
-	private final static XMLId xmlId = new XMLId(IdNames.CONSTRAINTTYPES, false);
+    private final static XMLId xmlId = new XMLId(IdNames.CONSTRAINTTYPES, false);
 
 
-	public ConstraintTypesId() {
-		super(ConstraintTypesId.xmlId);
-	}
+    public ConstraintTypesId() {
+        super(ConstraintTypesId.xmlId);
+    }
 
 }

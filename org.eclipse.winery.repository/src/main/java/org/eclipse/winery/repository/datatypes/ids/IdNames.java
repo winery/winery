@@ -18,13 +18,13 @@ package org.eclipse.winery.repository.datatypes.ids;
  */
 public class IdNames {
 
-	// the files belonging to one artifact template are nested in the sub
-	// directory "files"
-	public static final String ARTIFACTTEMPLATEDIRECTORY = "files";
+    // the files belonging to one artifact template are nested in the sub
+    // directory "files"
+    public static final String ARTIFACTTEMPLATEDIRECTORY = "files";
 
-	public static final String CONSTRAINTTYPES = "constrainttypes";
-	public static final String NAMESPACES = "namespaces";
-	public static final String PLANLANGUAGES = "planlanguages";
-	public static final String PLANTYPES = "plantypes";
+    public static final String CONSTRAINTTYPES = "constrainttypes";
+    public static final String NAMESPACES = "namespaces";
+    public static final String PLANLANGUAGES = "planlanguages";
+    public static final String PLANTYPES = "plantypes";
 
 }

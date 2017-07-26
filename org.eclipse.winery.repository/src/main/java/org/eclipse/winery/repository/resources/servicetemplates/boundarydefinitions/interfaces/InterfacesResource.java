@@ -21,18 +21,18 @@ import com.sun.jersey.api.view.Viewable;
 
 public class InterfacesResource extends EntityWithIdCollectionResource<ExportedInterfaceResource, TExportedInterface> {
 
-	public InterfacesResource(List<TExportedInterface> list, IPersistable res) {
-		super(ExportedInterfaceResource.class, TExportedInterface.class, list, res);
-	}
+    public InterfacesResource(List<TExportedInterface> list, IPersistable res) {
+        super(ExportedInterfaceResource.class, TExportedInterface.class, list, res);
+    }
 
-	@Override
-	public String getId(TExportedInterface entity) {
-		return entity.getName();
-	}
+    @Override
+    public String getId(TExportedInterface entity) {
+        return entity.getName();
+    }
 
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("No implementation required: boundarydefinitions.jsp contains all required html.");
-	}
+    @Override
+    public Viewable getHTML() {
+        throw new IllegalStateException("No implementation required: boundarydefinitions.jsp contains all required html.");
+    }
 
 }

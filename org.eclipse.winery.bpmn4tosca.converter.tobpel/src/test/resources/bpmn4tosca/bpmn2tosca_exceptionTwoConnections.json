@@ -1,0 +1,82 @@
+[
+  {
+    "connections": [],
+    "type": "",
+    "id": "element4"
+  },
+  {
+    "name": "StartEvent",
+    "position": {
+      "left": 91,
+      "top": 360
+    },
+    "type": "StartEvent",
+    "connections": [
+      "element10",
+	  "element10"
+	],
+    "id": "element6",
+    "output": {
+      "SSHUserInput": {
+        "type": "topology",
+        "value": "StartEvent.SSHUserInput"
+      }
+    }
+  },
+  {
+    "name": "CreateAmazonEC2Task",
+    "position": {
+      "left": 302,
+      "top": 346
+    },
+    "type": "ToscaNodeManagementTask",
+    "node_template": "AmazonEC2NodeTemplate",
+    "interface": "ec2Interface",
+    "connections": [
+      "element38"
+    ]
+  },
+  {
+    "name": "InstallUbuntutTask",
+    "position": {
+      "left": 597,
+      "top": 347
+    },
+    "type": "ToscaNodeManagementTask",
+    "interface": "ubunutuInterface",
+    "node_template": "UbuntuNodeTemplate",
+    "connections": [
+      "element45"
+    ],
+    "id": "element38",
+    "node_operation": "installUbuntu",
+    "input": {
+      "script": {
+        "type": "implementation_artifact",
+        "value": "{http://www.opentosca.org}ApacheWebserverInstallImplementation"
+      }
+    },
+    "output": {
+      "result": {
+        "type": "string",
+        "value": ""
+      }
+    }
+  },
+  {
+    "name": "EndEvent",
+    "position": {
+      "left": 853,
+      "top": 343
+    },
+    "type": "EndEvent",
+    "connections": [],
+    "id": "element45",
+    "input": {
+      "AppURL": {
+        "type": "concat",
+        "value": "http://,UbuntuVM.IPAddress,:8080/,PHPApplication.ID"
+      }
+    }
+  }
+]

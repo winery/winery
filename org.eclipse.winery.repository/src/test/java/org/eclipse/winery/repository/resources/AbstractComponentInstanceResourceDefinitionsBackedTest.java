@@ -25,32 +25,32 @@ import org.junit.Test;
 @Ignore("Working on old test repository")
 public class AbstractComponentInstanceResourceDefinitionsBackedTest extends ResourceTest {
 
-	private static final CapabilityTypeId id = new CapabilityTypeId(TestIds.NS, new XMLId("testCapabilityType", false));
+    private static final CapabilityTypeId id = new CapabilityTypeId(TestIds.NS, new XMLId("testCapabilityType", false));
 
 
-	@Test
-	public void testPlainPersist() throws IOException {
-		// ensure that no test object exists
-		Repository.INSTANCE.forceDelete(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
+    @Test
+    public void testPlainPersist() throws IOException {
+        // ensure that no test object exists
+        Repository.INSTANCE.forceDelete(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
 
-		CapabilityTypeResource res = new CapabilityTypeResource(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
-		res.persist();
-		Assert.assertTrue("Element has to exist", Repository.INSTANCE.exists(AbstractComponentInstanceResourceDefinitionsBackedTest.id));
-	}
+        CapabilityTypeResource res = new CapabilityTypeResource(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
+        res.persist();
+        Assert.assertTrue("Element has to exist", Repository.INSTANCE.exists(AbstractComponentInstanceResourceDefinitionsBackedTest.id));
+    }
 
-	@Test
-	public void testPersistWithData() throws IOException {
-		// ensure that no test object exists
-		Repository.INSTANCE.forceDelete(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
+    @Test
+    public void testPersistWithData() throws IOException {
+        // ensure that no test object exists
+        Repository.INSTANCE.forceDelete(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
 
-		CapabilityTypeResource res = new CapabilityTypeResource(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
-		res.getElement().getAny().add(new MockXMLElement());
-		res.persist();
-		Assert.assertTrue("Element has to exist", Repository.INSTANCE.exists(AbstractComponentInstanceResourceDefinitionsBackedTest.id));
+        CapabilityTypeResource res = new CapabilityTypeResource(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
+        res.getElement().getAny().add(new MockXMLElement());
+        res.persist();
+        Assert.assertTrue("Element has to exist", Repository.INSTANCE.exists(AbstractComponentInstanceResourceDefinitionsBackedTest.id));
 
-		// reload data
-		res = new CapabilityTypeResource(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
+        // reload data
+        res = new CapabilityTypeResource(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
 
-		Assert.assertEquals(1, res.getElement().getAny().size());
-	}
+        Assert.assertEquals(1, res.getElement().getAny().size());
+    }
 }

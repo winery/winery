@@ -13,9 +13,9 @@ package org.eclipse.winery.bpmn2bpel.model.param;
 
 public class StringParameter extends Parameter {
 
-	@Override
-	public ParamType getType() {
-		return ParamType.STRING;
-	}
+    @Override
+    public ParamType getType() {
+        return ParamType.STRING;
+    }
 
 }
