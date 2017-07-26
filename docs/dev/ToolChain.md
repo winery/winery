@@ -1,4 +1,4 @@
-# Winery Toolchain
+# Eclipse Winery™ Toolchain
 
 <!-- toc -->
 
@@ -17,10 +17,10 @@ For setup the IDE, please go to the [DevGuide](./).
 
 ## GitHub - Start
 
-* To contribute to the winery you need a github account and access to https://github.com/opentosca/winery
+* To contribute to Eclipse Winery development you need a GitHub account and access to <https://github.com/opentosca/winery>
 * First steps:
-  1. Clone opentosca/winery (automatically it becomes the origin)
-  2. git remote add upstream [https://github.com/eclipse/winery.git]
+  1. Clone https://github.com/opentosca/winery (automatically it becomes the `origin`)
+  2. `git remote add upstream https://github.com/eclipse/winery.git`
 * Steps for working on a topic
   1. Create a new branch for each topic (fix a bug, add functionality) and name it accordingly.
   2. Sync with latest upstream/master: `git fetch upstream`
@@ -32,15 +32,18 @@ For setup the IDE, please go to the [DevGuide](./).
   5. Commit. Don't forget to sign the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui)
   6. Push the changes to origin: `git push`
 
-## GitHub - Preparation First Pull Request
+You keep working and discuss with your supervisor how things go.
+For that, create a pull request to https://github.com/opentosca/winery to enable internal reviewing.
 
-* Check winery/CONTRIBUTING.md and carefully read the instruction
-* http://wiki.eclipse.org/Development_Resources/Contributing_via_Git --> Create an account WITH THE SAME EMAIL THEN USED FOR THE COMMITS (can also be checked in Gitk)
+## GitHub - Preparation First Pull Request to offical Eclipse Winery™ repository
+
+* Check http://eclipse.github.io/winery/CONTRIBUTING and carefully read the instructions
+* http://wiki.eclipse.org/Development_Resources/Contributing_via_Git --> Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
 * Sign the Contributor Agreement electronically
 
 ## GitHub - Prepare Pull Request
 
-* Check [CONTRIBUTING.MD](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md)
+* Check <http://eclipse.github.io/winery/CONTRIBUTING>.
 * Steps to prepare Pull Request:
   1. `git fetch upstream`
   2. `git merge upstream/master`
@@ -57,7 +60,7 @@ For setup the IDE, please go to the [DevGuide](./).
 
 Attention: Commits on the same branch done after the Pull Request is sent are still part of the Pull Request (!)
 
-* Go to eclipse/winery --> Pull Request
+* Go to https://github.com/eclipse/winery --> Pull Request
 * Fill in the title of the Pull Request and give a more detailed description of the changes or added functionality
 * In case of UI changes: Add screenshots
 * Add `[x]` to the items listed in the write field
@@ -69,10 +72,9 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
 
 ![GitAutoCheck](graphics/autoCheckGit.png)
 
-* If there is a red cross, click in repective "Details" and fix them (see next slide)
+* If there is a red cross, click in repective "Details" and fix them
 
-* In case of missing code quality,...
-* Changes are requested by the Commiter (person controlling the pull request process)
+* In case of missing code quality, ... changes are requested by a commiter (person controlling the pull request process)
 * FOR WINERY THE FOLLOWING APPLY:
   - Open Git Gui
   - Make requested changes in your code (don't forget to RESCAN)
@@ -82,3 +84,5 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
 ## Excursus: Git
 
 ![ExcursusGit](graphics/ExcursusGit.png)
+
+  [gitk]: https://lostechies.com/joshuaflanagan/2010/09/03/use-gitk-to-understand-git/
