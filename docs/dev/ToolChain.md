@@ -38,7 +38,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
 ## GitHub - Preparation First Pull Request to offical Eclipse Winery™ repository
 
 * Check [CONTRIBUTING.md](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md) and carefully read the instructions
-* http://wiki.eclipse.org/Development_Resources/Contributing_via_Git --> Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
+* http://wiki.eclipse.org/Development_Resources/Contributing_via_Git 🡒 Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
 * Sign the Contributor Agreement electronically
 
 ## GitHub - Prepare Pull Request
@@ -60,7 +60,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
      - Check again the style (!)
      - (Don't forget RESCAN to see the current changes)
   7. Add Changes/Fixed to `CHANGELOG.md` and add description to `docs/index.md` (if helpful)
-  8. Stage To Commit --> All Changes are staged to Commit
+  8. Press "Stage to Commit" 🡒 all changes are staged to Commit
   9. Sign the Commit Message (<kbd>Ctrl</kbd>+<kbd>S</kbd>)
   10. Commit & Push with "force overwrite" since you changed the branch: `git push -f`
 
@@ -68,7 +68,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
 
 Attention: Commits on the same branch done after the Pull Request is sent are still part of the Pull Request (!)
 
-* Go to https://github.com/eclipse/winery --> Pull Request
+* Go to https://github.com/eclipse/winery 🡒 Pull Request
 * Fill in the title of the Pull Request and give a more detailed description of the changes or added functionality
 * In case of UI changes: Add screenshots
 * Add `[x]` to the items listed in the write field
@@ -82,12 +82,16 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
 
 * If there is a red cross, click in repective "Details" and fix them
 
-* In case of missing code quality, ... changes are requested by a commiter (person controlling the pull request process)
+* In case of missing code quality, ... changes are requested by a committer (person controlling the pull request process)
 * FOR WINERY THE FOLLOWING APPLY:
   - Open Git Gui
   - Make requested changes in your code (don't forget to RESCAN)
   - Commit
   - Push
+  - Wait for a second review
+  - In case everything is fine, squash the commits into one.
+    See [GitHub - Prepare Pull Request](#github---prepare-pull-request).
+    Then, do a force push (`git push -f`)
 
 ## Excursus: Git
 
