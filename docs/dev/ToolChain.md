@@ -45,13 +45,21 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
 
 * Check <http://eclipse.github.io/winery/CONTRIBUTING>.
 * Steps to prepare Pull Request:
-  1. `git fetch upstream`
-  2. `git merge upstream/master`
-  3. (Resolve merge conflicts)
-  4. Commit & Push with signed commit message (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui)
-  5. `git reset upstream/master` (to achieve that all commits are squashed together)
-  6. Check changes in Git Gui & adapt the Copyright information in the changed files & Check again the style (!) (Don't forget RESCAN to see the current changes)
-  7. Add Changes/Fixed to the CHANGELOG.md and add description to docs/index (if helpful)
+  1. `git fetch upstream` - fetches all updates from https://github.com/eclipse/winery ("upstream") to the local git storage
+  2. `git merge upstream/master` - merges all updates from upstream to the local branch
+  3. (Resolve merge conflicts) - required if there are confilicting changes
+  4. Commit & Push with signed commit message (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui) - this ensures that you have the changes backuped in case something goes wrong at the next steps 
+  5. `git reset upstream/master` - this prepares that all commits can be squashed together:
+     The local checkout ("working tree") is left untouched, but the "pointer" of the current branch is reset to `upstream/master`.
+     Now, Git Gui shows the difference between `upstream/master` and your changes.
+  6. Check changes in Git Gui:
+     - Each change you wanted: Is it recognized?
+     - At each file: Is the copyright information in the header OK?
+     - Are there too much changed lines? 🡒 Do not stage spurious lines to the commit (e.g., tab 2 spaces, ...)
+     - Are there too much changed files? 🡒 Do not stage files you did not intend to change (e.g., `build.gradle` if you did not touch `build.gradle` at all)
+     - Check again the style (!)
+     - (Don't forget RESCAN to see the current changes)
+  7. Add Changes/Fixed to `CHANGELOG.md` and add description to `docs/index.md` (if helpful)
   8. Stage To Commit --> All Changes are staged to Commit
   9. Sign the Commit Message (<kbd>Ctrl</kbd>+<kbd>S</kbd>)
   10. Commit & Push with "force overwrite" since you changed the branch: `git push -f`
