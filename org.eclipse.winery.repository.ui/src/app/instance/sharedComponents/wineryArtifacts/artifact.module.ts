@@ -13,13 +13,13 @@ import { NgModule } from '@angular/core';
 import { WineryArtifactComponent } from './artifact.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
-import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
-import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
+import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
+import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
+import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
 import { FormsModule } from '@angular/forms';
-import { WineryQNameSelectorModule } from '../wineryQNameSelector/wineryQNameSelector.module';
-import { WineryComponentExistsModule } from '../wineryComponentExists/wineryComponentExists.module';
-import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
+import { WineryQNameSelectorModule } from '../../../wineryQNameSelector/wineryQNameSelector.module';
+import { WineryComponentExistsModule } from '../../../wineryComponentExists/wineryComponentExists.module';
+import { WineryUploaderModule } from '../../../wineryUploader/wineryUploader.module';
 
 @NgModule({
     imports: [

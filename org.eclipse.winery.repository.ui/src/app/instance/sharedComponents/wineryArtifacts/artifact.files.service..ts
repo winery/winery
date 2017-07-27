@@ -12,8 +12,8 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { InstanceService } from '../instance/instance.service';
-import { hostURL } from '../configuration';
+import { InstanceService } from '../../instance.service';
+import { hostURL } from '../../../configuration';
 
 @Injectable()
 export class WineryArtifactFilesService {

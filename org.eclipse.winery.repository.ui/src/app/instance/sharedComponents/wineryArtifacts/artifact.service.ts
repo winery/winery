@@ -12,12 +12,12 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Router } from '@angular/router';
-import { backendBaseURL } from '../configuration';
+import { backendBaseURL } from '../../../configuration';
 import { Observable } from 'rxjs';
-import { GenerateArtifactApiData } from '../instance/sharedComponents/interfaces/generateArtifactApiData';
-import { InterfacesApiData } from '../instance/sharedComponents/interfaces/interfacesApiData';
-import { NameAndQNameApiData } from '../wineryQNameSelector/wineryNameAndQNameApiData';
-import { ArtifactApiData } from '../wineryInterfaces/wineryComponent';
+import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
+import { InterfacesApiData } from '../interfaces/interfacesApiData';
+import { NameAndQNameApiData } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
+import { ArtifactApiData } from '../../../wineryInterfaces/wineryComponent';
 
 @Injectable()
 export class WineryArtifactService {

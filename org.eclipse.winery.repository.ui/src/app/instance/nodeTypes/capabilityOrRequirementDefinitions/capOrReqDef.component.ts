@@ -96,13 +96,16 @@ export class CapOrReqDefComponent implements OnInit {
 
     ngOnInit() {
         this.getCapOrReqDefinitionsResourceApiData();
-        this.getAllCapOrReqTypes(this.types);
-
-        if (this.types === 'capabilitytypes') {
+        if (this.router.url.includes('capabilitydefinitions')) {
+            this.types = 'capabilitytypes';
             this.addCapOrRegModalTitle = 'Add Capability Definition';
         } else {
+            this.types = 'requirementtypes';
             this.addCapOrRegModalTitle = 'Add Requirement Definition';
         }
+
+        this.getAllCapOrReqTypes(this.types);
+
     }
 
     // endregion

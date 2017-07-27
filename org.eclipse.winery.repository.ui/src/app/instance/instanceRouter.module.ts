@@ -19,9 +19,7 @@ import { DocumentationComponent } from './sharedComponents/documentation/documen
 import { InheritanceComponent } from './sharedComponents/inheritance/inheritance.component';
 import { InterfacesComponent } from './sharedComponents/interfaces/interfaces.component';
 import { ImplementationsComponent } from './sharedComponents/implementations/implementations.component';
-import { RequirementDefinitionsComponent } from './nodeTypes/requirementDefinitions/requirementDefinitions.component';
 import { InstanceStatesComponent } from './sharedComponents/instanceStates/instanceStates.component';
-import { CapabilityDefinitionsComponent } from './nodeTypes/capabilityDefinitions/capabilityDefinitions.component';
 import { PropertiesDefinitionComponent } from './sharedComponents/propertiesDefinition/propertiesDefinition.component';
 import { InstanceResolver } from './instance.resolver';
 import { AppliesToComponent } from './policyTypes/appliesTo/appliesTo.component';
@@ -34,18 +32,16 @@ import { ValidSourcesAndTargetsComponent } from './relationshipTypes/validSource
 import { FilesComponent } from './artifactTemplates/filesTag/files.component';
 import { PropertiesComponent } from './sharedComponents/properties/properties.component';
 import { RequiredCapabilityTypeComponent } from './requirementTypes/requiredCapabilityType/requiredCapabilityType.component';
-import { ImplementationArtifactsComponent } from './sharedComponents/implementationArtifacts/implementationArtifacts.component';
-import { DeploymentArtifactsComponent } from './nodeTypeImplementations/deploymentArtifacts/deploymentArtifacts.component';
 import { LoggerComponent } from './admin/logger/logger.component';
-import { PlanLanguagesComponent } from './admin/planLanguages/planLanguages.component';
 import { NamespacesComponent } from './admin/namespaces/namespaces.component';
 import { RepositoryComponent } from './admin/repository/repository.component';
-import { ConstraintTypesComponent } from './admin/constraintTypes/constraintTypes.component';
-import { PlanTypesComponent } from './admin/planTypes/planTypes.component';
 import { TagComponent } from './serviceTemplates/tag/tag.component';
 import { RouterModule } from '@angular/router';
 import { selfServiceRoutes } from './serviceTemplates/selfServicePortal/selfServicePortalRouter.module';
 import { SelfServicePortalComponent } from './serviceTemplates/selfServicePortal/selfServicePortal.component';
+import { CapOrReqDefComponent } from './nodeTypes/capabilityOrRequirementDefinitions/capOrReqDef.component';
+import { WineryArtifactComponent } from './sharedComponents/wineryArtifacts/artifact.component';
+import { TypeWithShortNameComponent } from './admin/typesWithShortName/typeWithShortName.component';
 
 const instanceRoutes = [
     {
@@ -55,11 +51,11 @@ const instanceRoutes = [
         children: [
             { path: 'namespaces', component: NamespacesComponent },
             { path: 'repository', component: RepositoryComponent },
-            { path: 'planlanguages', component: PlanLanguagesComponent },
-            { path: 'plantypes', component: PlanTypesComponent },
-            { path: 'constrainttypes', component: ConstraintTypesComponent },
+            { path: 'planlanguages', component: TypeWithShortNameComponent },
+            { path: 'plantypes', component: TypeWithShortNameComponent },
+            { path: 'constrainttypes', component: TypeWithShortNameComponent },
             { path: 'log', component: LoggerComponent },
-            { path: '', redirectTo: 'namespaces', pathMatch: 'full'}
+            { path: '', redirectTo: 'namespaces', pathMatch: 'full' }
         ]
     },
     {
@@ -73,11 +69,11 @@ const instanceRoutes = [
                 component: BoundaryDefinitionsComponent,
                 children: boundaryDefinitionsRoutes
             },
-            { path: 'capabilitydefinitions', component: CapabilityDefinitionsComponent },
-            { path: 'deploymentartifacts', component: DeploymentArtifactsComponent },
+            { path: 'capabilitydefinitions', component: CapOrReqDefComponent },
+            { path: 'deploymentartifacts', component: WineryArtifactComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'files', component: FilesComponent },
-            { path: 'implementationartifacts', component: ImplementationArtifactsComponent },
+            { path: 'implementationartifacts', component: WineryArtifactComponent },
             { path: 'implementations', component: ImplementationsComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'instancestates', component: InstanceStatesComponent },
@@ -87,11 +83,11 @@ const instanceRoutes = [
             { path: 'properties', component: PropertiesComponent },
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'requiredcapabilitytype', component: RequiredCapabilityTypeComponent },
-            { path: 'requirementdefinitions', component: RequirementDefinitionsComponent },
+            { path: 'requirementdefinitions', component: CapOrReqDefComponent },
             { path: 'selfserviceportal', component: SelfServicePortalComponent, children: selfServiceRoutes },
             { path: 'sourceinterfaces', component: InterfacesComponent },
             { path: 'targetinterfaces', component: InterfacesComponent },
-            { path: 'tags', component: TagComponent},
+            { path: 'tags', component: TagComponent },
             { path: 'topologytemplate', component: TopologyTemplateComponent },
             { path: 'validsourcesandtargets', component: ValidSourcesAndTargetsComponent },
             { path: 'visualappearance', component: VisualAppearanceComponent },

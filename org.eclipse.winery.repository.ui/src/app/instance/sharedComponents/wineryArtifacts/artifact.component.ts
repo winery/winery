@@ -10,19 +10,19 @@
  *     Niko Stadelmaier, Tino Stadelmaier - initial API and implementation
  */
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { WineryTableColumn } from '../wineryTableModule/wineryTable.component';
+import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { WineryArtifactService } from './artifact.service';
 import { isNullOrUndefined } from 'util';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { NameAndQNameApiData, NameAndQNameApiDataList } from '../wineryQNameSelector/wineryNameAndQNameApiData';
-import { InstanceService } from '../instance/instance.service';
-import { ExistService } from '../wineryUtils/existService';
-import { InterfacesApiData } from '../instance/sharedComponents/interfaces/interfacesApiData';
-import { GenerateArtifactApiData } from '../instance/sharedComponents/interfaces/generateArtifactApiData';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
+import { InstanceService } from '../../instance.service';
+import { InterfacesApiData } from '../interfaces/interfacesApiData';
+import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
 import { ModalDirective } from 'ngx-bootstrap';
-import { ArtifactApiData } from '../wineryInterfaces/wineryComponent';
-import { backendBaseURL, hostURL } from '../configuration';
+import { ArtifactApiData } from '../../../wineryInterfaces/wineryComponent';
+import { backendBaseURL, hostURL } from '../../../configuration';
 import { FilesApiData, WineryArtifactFilesService } from './artifact.files.service.';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'winery-artifact',
@@ -53,22 +53,7 @@ export class WineryArtifactComponent implements OnInit {
     baseUrl = hostURL;
     fileToRemove: FilesApiData;
     noneSelected = true;
-    _isDeploymentArtifact = false;
-
-    @Input()
-    set isDeploymentArtifact(pIsDeploymentArtifact: boolean) {
-        this.columns = this.columns.concat(this.commonColumns);
-        this._isDeploymentArtifact = pIsDeploymentArtifact;
-        if (!pIsDeploymentArtifact) {
-            this.columns.splice(1, 0, this.implementationArtifactColumns[0]);
-            this.columns.splice(2, 0, this.implementationArtifactColumns[1]);
-            this.URL = 'implementationartifacts/';
-            this.name = 'Implementation';
-        } else {
-            this.URL = 'deploymentartifacts/';
-            this.name = 'Deployment';
-        }
-    };
+    isDeploymentArtifact = false;
 
     @Input() title: string;
     @Input() artifactresources = {};
@@ -96,16 +81,23 @@ export class WineryArtifactComponent implements OnInit {
     constructor(private service: WineryArtifactService,
                 private sharedData: InstanceService,
                 private notify: WineryNotificationService,
-                private existService: ExistService,
-                private fileService: WineryArtifactFilesService) {
+                private fileService: WineryArtifactFilesService,
+                private router: Router) {
     }
 
     ngOnInit() {
+        this.columns = this.columns.concat(this.commonColumns);
+
         this.getArtifacts();
         this.getArtifactTemplates();
         this.getArtifactTypes();
         this.newArtifact.artifactType = '';
-        if (!this.isDeploymentArtifact) {
+
+        if (this.router.url.includes('deploymentartifacts')) {
+            this.isDeploymentArtifact = true;
+            this.columns.splice(1, 0, this.implementationArtifactColumns[0]);
+            this.columns.splice(2, 0, this.implementationArtifactColumns[1]);
+        } else {
             this.getInterfacesOfAssociatedType();
         }
 
@@ -117,9 +109,10 @@ export class WineryArtifactComponent implements OnInit {
         } else {
             this.artifact.namespace = this.sharedData.selectedNamespace;
         }
+        const deployment = this.isDeploymentArtifact ? 'Deployment' : '';
+        this.artifact.name = this.sharedData.selectedComponentId + deployment + 'Artifact';
         this.artifact.selectedResource = 'Artifact';
         this.artifact.selectedResourceType = 'Template';
-        this.artifact.name = this.sharedData.selectedComponentId + 'Artifact';
         this.addClicked.emit();
         this.addArtifactModal.show();
     }

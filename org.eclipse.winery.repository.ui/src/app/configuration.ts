@@ -25,5 +25,5 @@ export const sections = {
     imports: 'xSDImport',
 };
 
-export const hostURL = 'http://localhost:8080';
+export const hostURL = location.protocol + '//' + location.hostname + ':8080';
 export const backendBaseURL = hostURL + '/winery';

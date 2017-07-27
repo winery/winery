@@ -20,8 +20,6 @@ import { InstanceHeaderComponent } from './instanceHeader/instanceHeader.compone
 import { InstanceRouterModule } from './instanceRouter.module';
 import { DocumentationComponent } from './sharedComponents/documentation/documentation.component';
 import { InheritanceComponent } from './sharedComponents/inheritance/inheritance.component';
-import { RequirementDefinitionsComponent } from './nodeTypes/requirementDefinitions/requirementDefinitions.component';
-import { CapabilityDefinitionsComponent } from './nodeTypes/capabilityDefinitions/capabilityDefinitions.component';
 import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
 import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
 import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
@@ -38,15 +36,10 @@ import { BoundaryDefinitionsModule } from './serviceTemplates/boundaryDefinition
 import { ValidSourcesAndTargetsComponent } from './relationshipTypes/validSourcesAndTargets/validSourcesAndTargets.component';
 import { FilesComponent } from './artifactTemplates/filesTag/files.component';
 import { RequiredCapabilityTypeComponent } from './requirementTypes/requiredCapabilityType/requiredCapabilityType.component';
-import { ConstraintTypesComponent } from './admin/constraintTypes/constraintTypes.component';
-import { ImplementationArtifactsComponent } from './sharedComponents/implementationArtifacts/implementationArtifacts.component';
-import { DeploymentArtifactsComponent } from './nodeTypeImplementations/deploymentArtifacts/deploymentArtifacts.component';
 import { ImplementationsModule } from './sharedComponents/implementations/implementations.module';
 import { InstanceStatesComponent } from './sharedComponents/instanceStates/instanceStates.component';
 import { LoggerComponent } from './admin/logger/logger.component';
 import { NamespacesComponent } from './admin/namespaces/namespaces.component';
-import { PlanLanguagesComponent } from './admin/planLanguages/planLanguages.component';
-import { PlanTypesComponent } from './admin/planTypes/planTypes.component';
 import { PropertiesComponent } from './sharedComponents/properties/properties.component';
 import { PropertiesDefinitionModule } from './sharedComponents/propertiesDefinition/propertiesDefinition.module';
 import { RepositoryModule } from './admin/repository/repository.module';
@@ -59,7 +52,7 @@ import { SelfServicePortalModule } from './serviceTemplates/selfServicePortal/se
 import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
 import { WineryIoParameterModule } from '../wineryIoParameter/wineryIoParameters.module';
 import { WineryQNameSelectorModule } from '../wineryQNameSelector/wineryQNameSelector.module';
-import { WineryArtifactModule } from '../wineryArtifacts/artifact.module';
+import { WineryArtifactModule } from './sharedComponents/wineryArtifacts/artifact.module';
 import { WineryEditXMLModule } from './sharedComponents/editXML/editXML.module';
 
 @NgModule({
@@ -100,25 +93,17 @@ import { WineryEditXMLModule } from './sharedComponents/editXML/editXML.module';
         InstanceHeaderComponent,
         LanguageComponent,
         RemoveWhiteSpacesPipe,
-        RequirementDefinitionsComponent,
         TopologyTemplateComponent,
         PlansComponent,
         ValidSourcesAndTargetsComponent,
         FilesComponent,
         PropertiesComponent,
         RequiredCapabilityTypeComponent,
-        ImplementationArtifactsComponent,
-        DeploymentArtifactsComponent,
         InstanceStatesComponent,
         LoggerComponent,
-        PlanTypesComponent,
-        ConstraintTypesComponent,
-        PlanLanguagesComponent,
         NamespacesComponent,
         TypeWithShortNameComponent,
         CapOrReqDefComponent,
-        CapabilityDefinitionsComponent,
-        RequirementDefinitionsComponent
     ],
     providers: [],
 })

@@ -4,11 +4,17 @@
 1. Install [git](https://git-scm.com)
 2. Install and setup [Node.js](https://nodejs.org/en/) and [NPM](https://www.npmjs.com) for [Angular4](https://angular.io/docs/ts/latest/quickstart.html)
 
+### Backend
+The frontend assumes that the backend server is running on the same host, using the same protocol on port `8080`. It further
+assumes, that all requests have to be prefixed with `/winery`. Therefore an example request to the backend, if it runs locally,
+looks like this: `http://localhost:8080/winery/servicetemplates`.
+
 ## Setup Local Development Server
 1. `npm install`
 2. `npm start` 
     - be sure that no other application is listening on port 3000
     - if you need to switch to another port adapt config/webpack.dev.js
+3. Now the server is running on `http://localhost:3000`
     
 ## Setup Debugging Environment
 1. Make sure to use IntelliJ/Webstorm Ultimate in the version 2017.1 or higher

@@ -9,13 +9,14 @@
  * Contributors:
  *     Niko Stadelmaier - initial API and implementation
  */
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { Response } from '@angular/http';
 import { TypeWithShortName, TypeWithShortNameService } from './typeWithShortName.service';
 import { ModalDirective } from 'ngx-bootstrap';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'winery-instance-type-with-short-name',
@@ -30,21 +31,18 @@ export class TypeWithShortNameComponent implements OnInit {
     validatorObjectShortName: WineryValidatorObject;
     validatorObjectType: WineryValidatorObject;
     columns = [
-        {title: 'Short Name', name: 'shortName'},
-        {title: 'Long Name', name: 'type'}
+        { title: 'Short Name', name: 'shortName' },
+        { title: 'Long Name', name: 'type' }
     ];
     elementToRemove: TypeWithShortName = null;
-    /**
-     * sets the title of the component
-     * @type {string}
-     */
-    @Input() title = '';
+    title: string;
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
 
     constructor(private service: TypeWithShortNameService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                private router: Router) {
     }
 
     getTypes() {
@@ -60,11 +58,19 @@ export class TypeWithShortNameComponent implements OnInit {
     }
 
     ngOnInit() {
+        if (this.router.url.includes('planlanguages')) {
+            this.title = 'Plan Languages';
+        } else if (this.router.url.includes('plantypes')) {
+            this.title = 'Plan Types';
+        } else {
+            this.title = 'Constraint Types';
+        }
+
         this.getTypes();
     }
 
     addType(type: string, shortName: string) {
-        this.types.push({type: type, shortName: shortName});
+        this.types.push({ type: type, shortName: shortName });
         this.saveType();
     }
 

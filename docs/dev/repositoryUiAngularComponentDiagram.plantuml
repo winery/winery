@@ -38,11 +38,8 @@ class InstanceComponent
 
 package admin {
 	class TypesWithShortNameComponent
-	class ConstraintTypesComponent
 	class LoggerComponent
 	class NamespacesComponent
-	class PlanLanguagesComponent
-	class PlanTypesComponent
 	class RepositoryComponent
 }
 
@@ -50,14 +47,8 @@ package artifactTemplates {
 	class FilesComponent
 }
 
-package nodeTypeImplementations {
-	class DeploymentArtifactsComponent
-}
-
 package nodeTypes {
 	class CapOrReqDefComponent
-	class CapabilityDefinitionsComponent
-	class RequirementDefinitionsComponent
 }
 
 package policyTypes {
@@ -103,6 +94,7 @@ package sharedComponents {
 	class PropertiesComponent
 	class PropertiesDefinition
 	class VisualAppearanceComponent
+	class WineryArtifactComponent
 }
 
 WineryRepositoryComponent *-left- WineryHeaderComponent
@@ -110,32 +102,23 @@ WineryRepositoryComponent -> SectionComponent : /:section
 WineryRepositoryComponent --> OtherComponent : /other
 WineryRepositoryComponent ----> InstanceComponent
 
-ConstraintTypesComponent --> TypesWithShortNameComponent
-PlanLanguagesComponent --> TypesWithShortNameComponent
-PlanTypesComponent --> TypesWithShortNameComponent
-
-CapabilityDefinitionsComponent --> CapOrReqDefComponent
-RequirementDefinitionsComponent --> CapOrReqDefComponent
-
 BoundaryDefinitionsComponent --> boundaryDefinitions
 SelfServicePortalComponent --> selfServicePortal
 
 InstanceComponent ---> requirementTypes : /requirementtypes/:namespce/:id
 InstanceComponent *-up- InstanceHeaderComponent
-InstanceComponent -left-> admin : /admin
-InstanceComponent ------> artifactTemplates : /artifacttemplates/:namespce/:id
-InstanceComponent ---> nodeTypeImplementations : /nodetypeimplementations/:namespce/:id
-InstanceComponent ------> nodeTypes : /nodetypes/:namespce/:id
-InstanceComponent ---> policyTypes : /policytypes/:namespce/:id
-InstanceComponent ---> relationshipTypes : /relationshiptypes/:namespce/:id
-InstanceComponent -------> serviceTemplates : /servicetemplates/:namespce/:id
+InstanceComponent ---> admin : /admin
+InstanceComponent ---> artifactTemplates : /artifacttemplates/:namespce/:id
+InstanceComponent -----> nodeTypes : /nodetypes/:namespce/:id
+InstanceComponent ----> policyTypes : /policytypes/:namespce/:id
+InstanceComponent ------> relationshipTypes : /relationshiptypes/:namespce/:id
+InstanceComponent -----> serviceTemplates : /servicetemplates/:namespce/:id
+InstanceComponent ---------> sharedComponents
 
-admin -> PlanLanguagesComponent
-admin -> PlanTypesComponent
-admin -> ConstraintTypesComponent
 admin -> LoggerComponent
 admin -> RepositoryComponent
 admin -> NamespacesComponent
+admin -> TypesWithShortNameComponent
 
 serviceTemplates -> SelfServicePortalComponent
 serviceTemplates -> BoundaryDefinitionsComponent
@@ -143,10 +126,7 @@ serviceTemplates -> PlansComponent
 serviceTemplates -> TopologyTemplateComponent
 serviceTemplates -> TagComponent
 
-nodeTypes -> RequirementDefinitionsComponent
-nodeTypes -> CapabilityDefinitionsComponent
-
-nodeTypeImplementations -> DeploymentArtifactsComponent
+nodeTypes -> CapOrReqDefComponent
 
 policyTypes -> LanguageComponent
 policyTypes -> AppliesToComponent
@@ -157,12 +137,11 @@ relationshipTypes -> ValidSourcesAndTargetsComponent
 
 requirementTypes -> RequiredCapabilityType
 
-relationshipTypes ----> sharedComponents
+relationshipTypes ------> sharedComponents
 requirementTypes ----> sharedComponents
 serviceTemplates ---> sharedComponents
 artifactTemplates ---> sharedComponents
 nodeTypes -----> sharedComponents
-nodeTypeImplementations ----> sharedComponents
 policyTypes --> sharedComponents
 
 

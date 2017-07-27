@@ -22,7 +22,6 @@ export class InstanceResolver implements Resolve<InstanceResolverData> {
     }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): InstanceResolverData {
-        // TODO: get the instance from the server, only return it, when it's valid
         const section = sections[route.params['section']];
         const namespace = route.params['namespace'];
         const instanceId = route.params['instanceId'];

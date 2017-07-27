@@ -23,7 +23,6 @@ export class SectionResolver implements Resolve<SectionResolverData> {
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): SectionResolverData {
         const section = sections[route.params['section']];
         const namespace = decodeURIComponent(decodeURIComponent(route.params['namespace']));
-        // TODO: get the namespace from the server, only return it, when it's valid
 
         if (!isNullOrUndefined(section)) {
             return {section: section, namespace: namespace, path: route.params['section']};
