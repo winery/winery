@@ -16,7 +16,6 @@ import javax.ws.rs.Path;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TNodeType.CapabilityDefinitions;
 import org.eclipse.winery.model.tosca.TNodeType.Interfaces;
 import org.eclipse.winery.model.tosca.TNodeType.RequirementDefinitions;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
@@ -45,7 +44,9 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 		return (TNodeType) this.getElement();
 	}
 
-	/** sub-resources **/
+	/**
+	 * sub-resources
+	 **/
 
 	@Path("implementations/")
 	public ImplementationsOfOneNodeTypeResource getImplementations() {
@@ -70,7 +71,7 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 			interfaces = new Interfaces();
 			this.getNodeType().setInterfaces(interfaces);
 		}
-		return new InterfacesResource(null, interfaces.getInterface(), this);
+		return new InterfacesResource(this, interfaces.getInterface(), "nodeType");
 	}
 
 	@Path("requirementdefinitions/")
@@ -85,9 +86,9 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 
 	@Path("capabilitydefinitions/")
 	public CapabilityDefinitionsResource getCapabilityDefinitions() {
-		CapabilityDefinitions definitions = this.getNodeType().getCapabilityDefinitions();
+		TNodeType.CapabilityDefinitions definitions = this.getNodeType().getCapabilityDefinitions();
 		if (definitions == null) {
-			definitions = new CapabilityDefinitions();
+			definitions = new TNodeType.CapabilityDefinitions();
 			this.getNodeType().setCapabilityDefinitions(definitions);
 		}
 		return new CapabilityDefinitionsResource(this, definitions.getCapabilityDefinition());
@@ -102,5 +103,4 @@ public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 	protected TExtensibleElements createNewElement() {
 		return new TNodeType();
 	}
-
 }

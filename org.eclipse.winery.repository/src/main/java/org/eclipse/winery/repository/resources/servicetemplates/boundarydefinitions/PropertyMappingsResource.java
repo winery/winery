@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Niko Stadelmaier - change api to consume and produce JSON
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions;
 
@@ -15,13 +16,16 @@ import java.util.Iterator;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.Util;
@@ -29,6 +33,8 @@ import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties.PropertyMa
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.resources.apiData.boundarydefinitions.PropertyMapping;
+import org.eclipse.winery.repository.resources.apiData.boundarydefinitions.PropertyMappingsApi;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +49,12 @@ public class PropertyMappingsResource {
 	public PropertyMappingsResource(PropertyMappings propertyMappings, ServiceTemplateResource res) {
 		this.propertyMappings = propertyMappings;
 		this.res = res;
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public PropertyMappingsApi getJSON(@Context UriInfo uriInfo) {
+		return new PropertyMappingsApi(this.res.getServiceTemplate());
 	}
 
 	@Path("{serviceTemplatePropertyRef}")
@@ -70,35 +82,31 @@ public class PropertyMappingsResource {
 
 	@RestDoc(methodDescription = "Creates or updates a property mapping with the given fields")
 	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Consumes(MediaType.APPLICATION_JSON)
 	// @formatter:off
-	public Response onPost(
-		@FormParam("serviceTemplatePropertyRef") String serviceTemplatePropertyRef,
-		@FormParam("targetObjectRef") String targetObjectRef,
-		@FormParam("targetPropertyRef") String targetPropertyRef
-	) {
-	// @formatter:on
-		if (StringUtils.isEmpty(serviceTemplatePropertyRef)) {
+	public Response onPost(PropertyMapping apiPropertyMapping) {
+		// @formatter:on
+		if (StringUtils.isEmpty(apiPropertyMapping.serviceTemplatePropertyRef)) {
 			return Response.status(Status.BAD_REQUEST).entity("serviceTemplatePropertyRef must not be empty").build();
 		}
-		if (StringUtils.isEmpty(targetObjectRef)) {
+		if (StringUtils.isEmpty(apiPropertyMapping.targetObjectRef)) {
 			return Response.status(Status.BAD_REQUEST).entity("targetObjectRef must not be empty").build();
 		}
-		if (StringUtils.isEmpty(targetPropertyRef)) {
+		if (StringUtils.isEmpty(apiPropertyMapping.targetPropertyRef)) {
 			return Response.status(Status.BAD_REQUEST).entity("targetPropertyRef must not be empty").build();
 		}
 
-		TEntityTemplate template = ModelUtilities.findNodeTemplateOrRequirementOfNodeTemplateOrCapabilityOfNodeTemplateOrRelationshipTemplate(this.res.getServiceTemplate().getTopologyTemplate(), targetObjectRef);
+		TEntityTemplate template = ModelUtilities.findNodeTemplateOrRequirementOfNodeTemplateOrCapabilityOfNodeTemplateOrRelationshipTemplate(this.res.getServiceTemplate().getTopologyTemplate(), apiPropertyMapping.targetObjectRef);
 		if (template == null) {
-			return Response.status(Status.BAD_REQUEST).entity("targetObjectRef " + targetObjectRef + " could not be resolved.").build();
+			return Response.status(Status.BAD_REQUEST).entity("targetObjectRef " + apiPropertyMapping.targetObjectRef + " could not be resolved.").build();
 		}
 
 		// replace propertyMapping if it exists
 		for (TPropertyMapping propertyMapping : this.propertyMappings.getPropertyMapping()) {
-			if (propertyMapping.getServiceTemplatePropertyRef().equals(serviceTemplatePropertyRef)) {
+			if (propertyMapping.getServiceTemplatePropertyRef().equals(apiPropertyMapping.serviceTemplatePropertyRef)) {
 				// we found a property with the same mapping
 				// just update it ...
-				this.updatePropertyMapping(propertyMapping, serviceTemplatePropertyRef, template, targetPropertyRef);
+				this.updatePropertyMapping(propertyMapping, apiPropertyMapping.serviceTemplatePropertyRef, template, apiPropertyMapping.targetPropertyRef);
 				// ... and finish processing
 				return BackendUtils.persist(this.res);
 			}
@@ -107,9 +115,8 @@ public class PropertyMappingsResource {
 		// the property mapping didn't exist,
 		// we create a new one
 		TPropertyMapping newPropertyMapping = new TPropertyMapping();
-		this.updatePropertyMapping(newPropertyMapping, serviceTemplatePropertyRef, template, targetPropertyRef);
+		this.updatePropertyMapping(newPropertyMapping, apiPropertyMapping.serviceTemplatePropertyRef, template, apiPropertyMapping.targetPropertyRef);
 		this.propertyMappings.getPropertyMapping().add(newPropertyMapping);
 		return BackendUtils.persist(this.res);
 	}
-
 }

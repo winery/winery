@@ -13,7 +13,6 @@ package org.eclipse.winery.repository.resources.servicetemplates.plans;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -35,20 +34,13 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.resources._support.collections.EntityCollectionResource;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
-import org.eclipse.winery.repository.resources.admin.types.PlanLanguagesManager;
-import org.eclipse.winery.repository.resources.admin.types.PlanTypesManager;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
 import org.apache.commons.lang3.StringUtils;
-import org.restdoc.annotations.RestDoc;
-import org.restdoc.annotations.RestDocParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,46 +51,26 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PlansResource.class);
 
-
 	public PlansResource(List<TPlan> plans, ServiceTemplateResource res) {
 		super(PlanResource.class, TPlan.class, plans, res);
 	}
 
-	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/servicetemplates/plans/plans.jsp", new PlansResourceData(this.list));
-	}
-
+	/**
+	 * This overrides {@link EntityCollectionResource#addNewElement(java.lang.Object)}.
+	 * A special handling for Plans is required as a special validation is in place
+	 */
 	@POST
-	@RestDoc(methodDescription = "<p>Linked plans are currently not supported. Existing plans with the same id are overwritten</p> <p>@return JSON with .tableData: Array with row data for dataTable</p>")
-	@Consumes({MediaType.MULTIPART_FORM_DATA})
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	// the supertype consumes JSON and XML at org.eclipse.winery.repository.resources._support.collections.EntityCollectionResource.addNewElement(EntityT)
-	// @formatter:off
-	public Response onPost(
-		@FormDataParam("planName") String name,
-		@FormDataParam("planType") String type,
-		@FormDataParam("planLanguage") @RestDocParam(description = "the plan language (e..g, BPMN or BPEL). Full URL.") String language,
-		@FormDataParam("file") @RestDocParam(description = "(optional in the case of BPMN4TOSCA) file containing the plan.") InputStream uploadedInputStream,
-		@FormDataParam("file") FormDataContentDisposition fileDetail,
-		@FormDataParam("file") FormDataBodyPart body
-	) {
-	// @formatter:on
-		if (StringUtils.isEmpty(name)) {
+	public Response onPost(TPlan newPlan) {
+		if (StringUtils.isEmpty(newPlan.getName())) {
 			return Response.status(Status.BAD_REQUEST).entity("planName must be given").build();
 		}
-		if (StringUtils.isEmpty(type)) {
+		if (StringUtils.isEmpty(newPlan.getPlanType())) {
 			return Response.status(Status.BAD_REQUEST).entity("planType must be given").build();
 		}
-		if (StringUtils.isEmpty(language)) {
+		if (StringUtils.isEmpty(newPlan.getPlanLanguage())) {
 			return Response.status(Status.BAD_REQUEST).entity("planLanguage must be given").build();
-		}
-
-		boolean bpmn4toscaMode = org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20.equals(language);
-		if (!bpmn4toscaMode) {
-			if (uploadedInputStream == null) {
-				return Response.status(Status.BAD_REQUEST).entity("file must be given").build();
-			}
 		}
 
 		// A plan carries both a name and an ID
@@ -106,85 +78,17 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		// the drawback is, that we do not allow two plans with the same name
 		// during creation, but allow renaming plans to the same name (as we do
 		// not allow ID renaming)
-		String xmlId = Utils.createXMLidAsString(name);
+		String xmlId = Utils.createXMLidAsString(newPlan.getName());
+		newPlan.setId(xmlId);
 
-		// BEGIN: Store plan file
+		this.list.add(newPlan);
 
-		// Determine Id
-		PlansId plansId = new PlansId((ServiceTemplateId) ((ServiceTemplateResource) this.res).getId());
-		PlanId planId = new PlanId(plansId, new XMLId(xmlId, false));
-		// Ensure overwriting
-		if (Repository.INSTANCE.exists(planId)) {
-			try {
-				Repository.INSTANCE.forceDelete(planId);
-				// Quick hack to remove the deleted plan from the plans element
-				((ServiceTemplateResource) this.res).synchronizeReferences();
-			} catch (IOException e) {
-				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-			}
+		Response response = this.saveFile(newPlan, null, null, null);
+		if (response.getStatus() == 204) {
+			return Response.created(Utils.createURI(Util.URLencode(xmlId))).entity(newPlan).build();
 		}
 
-		String fileName;
-		if (bpmn4toscaMode) {
-			fileName = xmlId + Constants.SUFFIX_BPMN4TOSCA;
-			RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
-			try {
-				Repository.INSTANCE.putContentToFile(ref, "{}", MediaType.APPLICATION_JSON_TYPE);
-			} catch (IOException e1) {
-				return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create empty plan. " + e1.getMessage()).build();
-			}
-		} else {
-			// We use the filename also as local file name. Alternatively, we could use the xml id
-			// With URL encoding, this should not be an issue
-			fileName = Util.URLencode(fileDetail.getFileName());
-
-			// Really store it
-			RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
-			try {
-				Repository.INSTANCE.putContentToFile(ref, uploadedInputStream, body.getMediaType());
-			} catch (IOException e1) {
-				return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
-			}
-		}
-		// END: Store plan file
-
-		TPlan plan = new TPlan();
-		plan.setId(xmlId);
-		plan.setName(name);
-		plan.setPlanType(type);
-		plan.setPlanLanguage(language);
-		PlansResource.setPlanModelReference(plan, planId, fileName);
-		this.list.add(plan);
-
-		// prepare result
-		JsonFactory jsonFactory = new JsonFactory();
-		StringWriter sw = new StringWriter();
-		try {
-			JsonGenerator jGenerator = jsonFactory.createGenerator(sw);
-			jGenerator.writeStartObject();
-			jGenerator.writeFieldName("tableData");
-			jGenerator.writeStartArray();
-			jGenerator.writeString(xmlId);
-			jGenerator.writeString(""); // precondition
-			jGenerator.writeString(name);
-			jGenerator.writeString(PlanTypesManager.INSTANCE.getShortName(type));
-			jGenerator.writeString(PlanLanguagesManager.INSTANCE.getShortName(language));
-			jGenerator.writeEndArray();
-			jGenerator.writeEndObject();
-			jGenerator.close();
-			sw.close();
-		} catch (IOException e) {
-			PlansResource.LOGGER.error(e.getMessage(), e);
-			return Response.serverError().build();
-		}
-
-		Response res = BackendUtils.persist(this.res);
-		if (res.getStatus() == 204) {
-			// everything OK, return created
-			return Response.created(Utils.createURI(Util.URLencode(xmlId))).entity(sw.toString()).build();
-		} else {
-			return res;
-		}
+		return response;
 	}
 
 	static void setPlanModelReference(TPlan plan, PlanId planId, String fileName) {
@@ -197,5 +101,62 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 	@Override
 	public String getId(TPlan plan) {
 		return plan.getId();
+	}
+
+	private TPlan getPlanInList(String id) {
+		final TPlan[] plan = new TPlan[1];
+		this.list.forEach(tPlan -> {
+			if (tPlan.getId().equalsIgnoreCase(id)) {
+				plan[0] = tPlan;
+			}
+		});
+		return plan[0];
+	}
+
+	private Response saveFile(TPlan tPlan, InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body) {
+		boolean bpmn4toscaMode = org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20.equals(tPlan.getPlanLanguage());
+
+		if (uploadedInputStream != null || bpmn4toscaMode) {
+			// Determine Id
+			PlansId plansId = new PlansId((ServiceTemplateId) ((ServiceTemplateResource) this.res).getId());
+			PlanId planId = new PlanId(plansId, new XMLId(tPlan.getId(), false));
+			// Ensure overwriting
+			if (Repository.INSTANCE.exists(planId)) {
+				try {
+					Repository.INSTANCE.forceDelete(planId);
+					// Quick hack to remove the deleted plan from the plans element
+					((ServiceTemplateResource) this.res).synchronizeReferences();
+				} catch (IOException e) {
+					return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+				}
+			}
+
+			String fileName;
+			if (bpmn4toscaMode) {
+				fileName = tPlan.getId() + Constants.SUFFIX_BPMN4TOSCA;
+				RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
+				try {
+					Repository.INSTANCE.putContentToFile(ref, "{}", MediaType.APPLICATION_JSON_TYPE);
+				} catch (IOException e1) {
+					return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create empty plan. " + e1.getMessage()).build();
+				}
+			} else {
+				// We use the filename also as local file name. Alternatively, we could use the xml id
+				// With URL encoding, this should not be an issue
+				fileName = Util.URLencode(fileDetail.getFileName());
+
+				// Really store it
+				RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
+				try {
+					Repository.INSTANCE.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+				} catch (IOException e1) {
+					return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
+				}
+			}
+
+			PlansResource.setPlanModelReference(tPlan, planId, fileName);
+		}
+
+		return BackendUtils.persist(this.res);
 	}
 }

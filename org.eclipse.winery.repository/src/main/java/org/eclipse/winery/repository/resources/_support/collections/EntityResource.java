@@ -102,7 +102,7 @@ public abstract class EntityResource<EntityT> {
 	 * @return the new id.
 	 */
 	@PUT
-	@Consumes(MediaType.TEXT_XML)
+	@Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response setValue(EntityT o) {
 		this.list.set(this.idx, o);

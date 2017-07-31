@@ -144,17 +144,17 @@ function showAddOrUpdateDiagFor${shortName}(nodeTemplateId, reqOrCapIdToUpdate) 
 			var select2Data = [];
 
 			$.each(data, function(i,e) {
-				var rqDefURL = url + e + "/type";
+				var rqDefURL = url + e.id + "/type";
 				$.ajax({
 					url: rqDefURL,
 					async: false,
 					dataType: "text"
 				}).fail(function(jqXHR, textStatus, errorThrown) {
-					vShowAJAXError("Could not fetch type for " + e, jqXHR, errorThrown);
+					vShowAJAXError("Could not fetch type for " + e.id, jqXHR, errorThrown);
 				}).done(function(data) {
 					var item = {
 						id: data,
-						text: e
+						text: e.id
 					};
 					select2Data.push(item);
 				});

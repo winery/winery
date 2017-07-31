@@ -1,4 +1,4 @@
-<code_scheme name="Project">
+<code_scheme name="Winery">
   <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
   <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
   <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
@@ -22,7 +22,18 @@
   <option name="JD_KEEP_EMPTY_EXCEPTION" value="false" />
   <option name="JD_KEEP_EMPTY_RETURN" value="false" />
   <option name="WRAP_COMMENTS" value="true" />
+  <TypeScriptCodeStyleSettings>
+    <option name="USE_DOUBLE_QUOTES" value="false" />
+    <option name="OBJECT_LITERAL_WRAP" value="1" />
+    <option name="IMPORTS_WRAP" value="1" />
+    <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
+    <option name="SPACES_WITHIN_IMPORTS" value="true" />
+  </TypeScriptCodeStyleSettings>
   <codeStyleSettings language="JAVA">
     <option name="KEEP_BLANK_LINES_BEFORE_RBRACE" value="0" />
+  </codeStyleSettings>
+  <codeStyleSettings language="TypeScript">
+    <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
+    <option name="WRAP_COMMENTS" value="true" />
   </codeStyleSettings>
 </code_scheme>

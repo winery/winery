@@ -467,21 +467,7 @@ public class TOSCAExportUtil {
 		}
 
 		// IAs
-		TImplementationArtifacts implementationArtifacts = res.getNTI().getImplementationArtifacts();
-		if (implementationArtifacts != null) {
-			for (TImplementationArtifact ia : implementationArtifacts.getImplementationArtifact()) {
-				QName qname;
-				if ((qname = ia.getArtifactRef()) != null) {
-					ids.add(new ArtifactTemplateId(qname));
-				}
-				ids.add(new ArtifactTypeId(ia.getArtifactType()));
-			}
-		}
-
-		// inheritance
-		ids.addAll(this.getReferencedTOSCAComponentIdOfParentForAnAbstractComponentsWithTypeReferenceResource(id));
-
-		return ids;
+		return this.getReferencedTOSCAComponentImplementationArtifactIds(ids, res.getNTI().getImplementationArtifacts(), id);
 	}
 
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(RelationshipTypeImplementationId id) {
@@ -492,12 +478,18 @@ public class TOSCAExportUtil {
 		RelationshipTypeImplementationResource res = new RelationshipTypeImplementationResource(id);
 
 		// IAs
-		for (TImplementationArtifact ia : res.getRTI().getImplementationArtifacts().getImplementationArtifact()) {
-			QName qname;
-			if ((qname = ia.getArtifactRef()) != null) {
-				ids.add(new ArtifactTemplateId(qname));
+		return this.getReferencedTOSCAComponentImplementationArtifactIds(ids, res.getRTI().getImplementationArtifacts(), id);
+	}
+
+	private Collection<TOSCAComponentId> getReferencedTOSCAComponentImplementationArtifactIds(Collection<TOSCAComponentId> ids, TImplementationArtifacts implementationArtifacts, TOSCAComponentId id) {
+		if (implementationArtifacts != null) {
+			for (TImplementationArtifact ia : implementationArtifacts.getImplementationArtifact()) {
+				QName qname;
+				if ((qname = ia.getArtifactRef()) != null) {
+					ids.add(new ArtifactTemplateId(qname));
+				}
+				ids.add(new ArtifactTypeId(ia.getArtifactType()));
 			}
-			ids.add(new ArtifactTypeId(ia.getArtifactType()));
 		}
 
 		// inheritance

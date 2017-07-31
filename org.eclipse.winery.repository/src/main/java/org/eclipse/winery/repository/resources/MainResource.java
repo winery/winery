@@ -48,7 +48,6 @@ import org.eclipse.winery.repository.resources.entitytypes.requirementtypes.Requ
 import org.eclipse.winery.repository.resources.imports.ImportsResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplatesResource;
 
-import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 import org.apache.commons.io.FileUtils;
@@ -102,13 +101,6 @@ public class MainResource {
 		return new NodeTypeImplementationsResource();
 	}
 
-	@Path("other/")
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getOtherElements() {
-		return new Viewable("/jsp/otherElements.jsp");
-	}
-
 	@Path("policytemplates/")
 	public PolicyTemplatesResource policytemplates() {
 		return new PolicyTemplatesResource();
@@ -154,9 +146,9 @@ public class MainResource {
 	@RestDocReturnCode(code = "200", description = "If the CSAR could be partially imported, the points where it failed are returned in the body")
 	// @formatter:off
 	public Response importCSAR(
-		@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
-		@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
-		@Context UriInfo uriInfo) {
+			@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
+			@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
+			@Context UriInfo uriInfo) {
 		// @formatter:on
 		CSARImporter importer = new CSARImporter();
 		boolean ow;
@@ -196,5 +188,4 @@ public class MainResource {
 			return Response.status(Status.BAD_REQUEST).entity(errors).build();
 		}
 	}
-
 }

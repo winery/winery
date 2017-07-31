@@ -15,6 +15,7 @@
 <%@tag language="java" pageEncoding="UTF-8" description="Renders the palette on the left"%>
 
 <%@attribute name="repositoryURL" required="true" type="java.lang.String"%>
+<%@attribute name="uiURL" required="true" type="java.lang.String"%>
 <%@attribute name="client" required="true" description="IWineryRepository" type="org.eclipse.winery.common.interfaces.IWineryRepository"%>
 <%@attribute name="relationshipTypes" description="the known relationship types" required="true" type="java.util.Collection"%>
 
@@ -65,6 +66,7 @@ Palette
 
 			<div class="hidden">
 				<nt:nodeTemplateRenderer
+					uiURL="${uiURL}"
 					repositoryURL="${repositoryURL}"
 					client="${client}"
 					relationshipTypes="${relationshipTypes}"

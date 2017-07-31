@@ -1,0 +1,7 @@
+# This directories and files are generated via mvn generate-sources
+# The content is copied from org.eclipse.winery.topologymodeler
+/jsp/shared
+/WEB-INF/tags/common
+/WEB-INF/common-functions.tld
+/js/winery-common-topologyrendering.js
+/js/winery-support-common.js

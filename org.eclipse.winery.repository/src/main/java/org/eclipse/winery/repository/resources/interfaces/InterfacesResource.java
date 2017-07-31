@@ -8,132 +8,117 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - cleanup for angular
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.interfaces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.tosca.TInterface;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TOperation;
+import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.resources._support.IPersistable;
-import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
+import org.eclipse.winery.repository.resources.apiData.InterfacesSelectApiData;
 import org.eclipse.winery.repository.resources.entitytypes.TopologyGraphElementEntityTypeResource;
+import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
 
-import com.sun.jersey.api.view.Viewable;
-import org.apache.commons.lang3.StringUtils;
-import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InterfacesResource extends EntityWithIdCollectionResource<InterfaceResource, TInterface> {
+public class InterfacesResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(InterfacesResource.class);
 
-	private TopologyGraphElementEntityTypeResource typeResource;
+	private TopologyGraphElementEntityTypeResource res;
+	private List<TInterface> interfaces;
+	private String interfaceType;
 
-	private String urlPrefix;
-
-
-	public InterfacesResource(IPersistable res, List<TInterface> list) {
-		super(InterfaceResource.class, TInterface.class, list, res);
+	public InterfacesResource(TopologyGraphElementEntityTypeResource res, List<TInterface> interfaces, String interfaceType) {
+		this.res = res;
+		this.interfaces = interfaces;
+		this.interfaceType = interfaceType;
 	}
 
-	/**
-	 * @param urlPrefix prefix to be prepended to the URL.
-	 *            "source"|"target"|null. E.g., "source" for "sourceinterfaces"
-	 */
-	public InterfacesResource(String urlPrefix, List<TInterface> list, IPersistable typeResource) {
-		super(InterfaceResource.class, TInterface.class, list, typeResource);
-		this.urlPrefix = urlPrefix;
-		this.typeResource = (TopologyGraphElementEntityTypeResource) typeResource;
-	}
-
-	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/interfaces/interfaces.jsp", this);
-	}
-
-	/**
-	 * Implementation base: <br />
-	 * {@link AbstractComponentsResource#onPost(java.lang.String, java.lang.String)}
-	 *
-	 * @return entity: id of the stored interface
-	 */
 	@POST
-	@RestDoc(methodDescription = "Creates a new interface. Returns conflict if interface already exists")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response onPost(@FormParam("interfaceName") String interfaceName) {
-		if (StringUtils.isEmpty(interfaceName)) {
-			return Response.status(Status.BAD_REQUEST).entity("null interfaceName").build();
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response onPost(List<TInterface> interfaceApiData) {
+		if (!interfaceApiData.isEmpty()) {
+			for (TInterface tInt: interfaceApiData) {
+				if (!tInt.getOperation().isEmpty()) {
+					for (TOperation tOp: tInt.getOperation()) {
+						if (tOp.getInputParameters() == null || tOp.getInputParameters().getInputParameter().isEmpty()) {
+							tOp.setInputParameters(null);
+						}
+						if (tOp.getOutputParameters() == null || tOp.getOutputParameters().getOutputParameter().isEmpty()) {
+							tOp.setOutputParameters(null);
+						}
+					}
+				} else {
+					return Response.status(Response.Status.BAD_REQUEST).entity("No operation provided!").build();
+				}
+			}
+		} else {
+			return Response.status(Response.Status.BAD_REQUEST).entity("No interface provided!").build();
 		}
 
-		TInterface iface = new TInterface();
-		iface.setName(interfaceName);
-
-		// check for duplicates
-		// return "conflict" if interface already exists
-		if (this.alreadyContains(iface)) {
-			return Response.status(Status.CONFLICT).build();
+		if (this.res instanceof RelationshipTypeResource) {
+			TRelationshipType relationshipType = (TRelationshipType) this.res.getElement();
+			switch (this.interfaceType) {
+				case "source":
+					TRelationshipType.SourceInterfaces sourceInterfaces = new TRelationshipType.SourceInterfaces();
+					sourceInterfaces.getInterface().clear();
+					sourceInterfaces.getInterface().addAll(interfaceApiData);
+					relationshipType.setSourceInterfaces(sourceInterfaces);
+					break;
+				default:
+					// it will be target
+					TRelationshipType.TargetInterfaces targetInterfaces = new TRelationshipType.TargetInterfaces();
+					targetInterfaces.getInterface().clear();
+					targetInterfaces.getInterface().addAll(interfaceApiData);
+					relationshipType.setTargetInterfaces(targetInterfaces);
+					break;
+			}
+		} else if (this.res instanceof NodeTypeResource) {
+			TNodeType nodeType = (TNodeType) this.res.getElement();
+			TNodeType.Interfaces interfaces = new TNodeType.Interfaces();
+			interfaces.getInterface().clear();
+			interfaces.getInterface().addAll(interfaceApiData);
+			nodeType.setInterfaces(interfaces);
+		} else {
+			throw new IllegalStateException("Interfaces are not supported for this element type!");
 		}
 
-		this.list.add(iface);
 		return BackendUtils.persist(this.res);
 	}
 
-	/**
-	 * Required by interfaces.jsp
-	 */
-	public String getUrlPrefix() {
-		return this.urlPrefix;
-	}
-
-	@Override
-	public String getId(TInterface entity) {
-		return entity.getName();
-	}
-
-	/**
-	 * @return the namespace of the node/relationship type
-	 */
-	public String getNamespace() {
-		return this.typeResource.getId().getNamespace().getDecoded();
-	}
-
-	/**
-	 * @return the name of the node/relationship type
-	 */
-	public String getName() {
-		return this.typeResource.getName();
-	}
-
-	public String getRelationshipTypeOrNodeTypeURLFragment() {
-		if (this.typeResource instanceof RelationshipTypeResource) {
-			return "relationshiptype";
-		} else {
-			return "nodetype";
+	@GET
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public List<?> onGet(@QueryParam("selectData") String selectData) {
+		if (selectData == null) {
+			return this.interfaces;
 		}
-	}
 
-	public String getRelationshipTypeOrNodeType() {
-		if (this.typeResource instanceof RelationshipTypeResource) {
-			return "Relationship Type";
-		} else {
-			return "Node Type";
+		List<InterfacesSelectApiData> list = new ArrayList<>();
+		for (TInterface item : this.interfaces) {
+			List<String> ops = new ArrayList<>();
+			for (TOperation op : item.getOperation()) {
+				ops.add(op.getName());
+			}
+			list.add(new InterfacesSelectApiData(item.getName(), ops));
 		}
+
+		return list;
 	}
 
-	public String getTypeQName() {
-		return this.typeResource.getId().getQName().toString();
-	}
 }

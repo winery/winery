@@ -1,0 +1,47 @@
+[
+  {
+	"documentation": [
+
+	],
+	"any": [
+
+	],
+	"otherAttributes": {
+
+	},
+	"constraints": {
+	  "constraint": [
+		{
+		  "any": null,
+		  "constraintType": "http://winery.opentosca.org/test/constrainttypes/fruits/healthy"
+		}
+	  ]
+	},
+	"name": "ImportConstraintsHealthy",
+	"requirementType": "{http://winery.opentosca.org/test/requirementtypes/fruits}MinimumWeight",
+	"lowerBound": 1,
+	"upperBound": "1",
+	"id": "ImportConstraintsHealthy"
+  },
+  {
+	"documentation": [
+
+	],
+	"any": [
+
+	],
+	"otherAttributes": {
+
+	},
+	"constraints": {
+	  "constraint": [
+
+	  ]
+	},
+	"name": "ImportConstraintsMaximumWeight",
+	"requirementType": "{http://winery.opentosca.org/test/requirementtypes/fruits}MaximumWeight",
+	"lowerBound": 1,
+	"upperBound": "1",
+	"id": "ImportConstraintsMaximumWeight"
+  }
+]

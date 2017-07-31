@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
-import javax.ws.rs.core.Response;
-
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
 
@@ -20,15 +18,6 @@ public abstract class AbstractComponentInstanceWithReferencesResource extends Ab
 
 	protected AbstractComponentInstanceWithReferencesResource(TOSCAComponentId id) {
 		super(id);
-	}
-
-	/**
-	 * Ensures that the presented XML is in line with the stored files
-	 */
-	@Override
-	public Response getXML() {
-		this.synchronizeReferences();
-		return super.getXML();
 	}
 
 	@Override

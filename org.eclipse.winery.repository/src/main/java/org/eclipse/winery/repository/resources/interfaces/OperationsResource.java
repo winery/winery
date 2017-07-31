@@ -27,7 +27,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
 
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDocParam;
 
@@ -40,11 +39,6 @@ public class OperationsResource extends EntityWithIdCollectionResource<Operation
 	@Override
 	public String getId(TOperation entity) {
 		return entity.getName();
-	}
-
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet implemented.");
 	}
 
 	@POST
@@ -65,5 +59,4 @@ public class OperationsResource extends EntityWithIdCollectionResource<Operation
 
 		return BackendUtils.persist(this.res);
 	}
-
 }

@@ -29,7 +29,6 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
 
-import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
@@ -52,25 +51,20 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 		return entity.getId();
 	}
 
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet implemented.");
-	}
-
 	@POST
 	@RestDoc(methodDescription = "Adds a new option<p>TODO: @return JSON with .tableData: Array with row data for dataTable</p>")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	// @formatter:off
 	public Response onPost(
-		@FormDataParam("name") String name,
-		@FormDataParam("description") String description,
-		@FormDataParam("planServiceName") String planServiceName,
-		@FormDataParam("planInputMessage") String planInputMessage,
-		@FormDataParam("file") InputStream uploadedInputStream,
-		@FormDataParam("file") FormDataContentDisposition fileDetail,
-		@FormDataParam("file") FormDataBodyPart body
+			@FormDataParam("name") String name,
+			@FormDataParam("description") String description,
+			@FormDataParam("planServiceName") String planServiceName,
+			@FormDataParam("planInputMessage") String planInputMessage,
+			@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail,
+			@FormDataParam("file") FormDataBodyPart body
 	) {
-	// @formatter:on
+		// @formatter:on
 		if (StringUtils.isEmpty(name)) {
 			return Response.status(Status.BAD_REQUEST).entity("planName must be given").build();
 		}
