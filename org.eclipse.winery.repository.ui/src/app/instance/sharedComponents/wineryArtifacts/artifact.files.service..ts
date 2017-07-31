@@ -7,21 +7,20 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter - initial API and implementation
+ *     Tino Stadelmaier - initial API and implementation
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { InstanceService } from '../../instance.service';
 import { hostURL } from '../../../configuration';
+import { FilesApiData } from '../../artifactTemplates/filesTag/files.service.';
 
 @Injectable()
 export class WineryArtifactFilesService {
 
     private path: string;
 
-    constructor(private http: Http,
-                private sharedData: InstanceService) {
+    constructor(private http: Http) {
     }
 
     getFiles(templateUrl: string): Observable<{files: FilesApiData[]}> {
@@ -39,13 +38,4 @@ export class WineryArtifactFilesService {
     delete(fileToRemove: FilesApiData) {
         return this.http.delete(hostURL + fileToRemove.deleteUrl);
     }
-}
-
-export interface FilesApiData {
-    deleteType: string;
-    deleteUrl: string;
-    name: string;
-    size: number;
-    thumbnailUrl: string;
-    url: string;
 }
