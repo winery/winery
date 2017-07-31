@@ -233,7 +233,7 @@ export class InterfacesComponent implements OnInit {
             return false;
         }
 
-        const lifecycleId = this.interfacesData.findIndex((value, index, obj) => {
+        const lifecycleId = this.interfacesData.findIndex((value) => {
             return value.name.endsWith('http://www.example.com/interfaces/lifecycle');
         });
 

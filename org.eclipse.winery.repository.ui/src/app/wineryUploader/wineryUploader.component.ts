@@ -102,8 +102,6 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
             this.service.uploadUrl = uploadTo;
 
         }
-        console.log('upload url: ' + this.uploadUrl);
-
         this.service.uploader.onCompleteItem = (item: any, response: string, status: number, headers: any) => {
             this.loading = false;
 

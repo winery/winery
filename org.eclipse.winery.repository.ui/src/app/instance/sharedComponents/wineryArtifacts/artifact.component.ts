@@ -21,18 +21,19 @@ import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
 import { ModalDirective } from 'ngx-bootstrap';
 import { ArtifactApiData } from '../../../wineryInterfaces/wineryComponent';
 import { backendBaseURL, hostURL } from '../../../configuration';
-import { FilesApiData, WineryArtifactFilesService } from './artifact.files.service.';
+import { WineryArtifactFilesService } from './artifact.files.service.';
 import { Router } from '@angular/router';
+import { FilesApiData } from '../../artifactTemplates/filesTag/files.service.';
 
 @Component({
     selector: 'winery-artifact',
     templateUrl: 'artifact.component.html',
+    styleUrls: ['artifact.component.css'],
     providers: [WineryArtifactService, WineryArtifactFilesService]
 })
 export class WineryArtifactComponent implements OnInit {
 
     columns: WineryTableColumn[] = [];
-    URL: string;
     uploadUrl: string;
     name: string;
     loading = true;
@@ -56,10 +57,6 @@ export class WineryArtifactComponent implements OnInit {
     isDeploymentArtifact = false;
 
     @Input() title: string;
-    @Input() artifactresources = {};
-
-    @Output() addClicked = new EventEmitter();
-    @Output() removeClicked = new EventEmitter();
 
     commonColumns = [
         { title: 'Name', name: 'name' },
@@ -104,6 +101,7 @@ export class WineryArtifactComponent implements OnInit {
     }
 
     onAddClick() {
+        this.resetArtifactCreationData();
         if (this.sharedData.selectedNamespace.endsWith('/')) {
             this.artifact.namespace = this.sharedData.selectedNamespace.slice(0, this.sharedData.selectedNamespace.length - 1);
         } else {
@@ -113,7 +111,6 @@ export class WineryArtifactComponent implements OnInit {
         this.artifact.name = this.sharedData.selectedComponentId + deployment + 'Artifact';
         this.artifact.selectedResource = 'Artifact';
         this.artifact.selectedResourceType = 'Template';
-        this.addClicked.emit();
         this.addArtifactModal.show();
     }
 
@@ -158,20 +155,13 @@ export class WineryArtifactComponent implements OnInit {
         this.newArtifact.autoCreateArtifactTemplate = 'true';
     }
 
-    cancelBtnClicked() {
-        this.addArtifactModal.hide();
-    }
-
     addConfirmed() {
         if (this.selectedOperation === '(none)' || isNullOrUndefined(this.selectedOperation)) {
             this.selectedOperation = '';
-            console.log('this.selectedOperation = ' + this.selectedOperation);
         }
         if (isNullOrUndefined(this.selectedInterface)) {
-            console.log('selectedInterface is NULL or undefined');
             this.selectedInterface = new InterfacesApiData();
             this.selectedInterface.text = '';
-            console.log('selectedInterface.text = ' + this.selectedInterface.text);
         }
 
         if (this.selectedRadioButton === 'createArtifactTemplate') {
@@ -181,7 +171,6 @@ export class WineryArtifactComponent implements OnInit {
             this.makeArtifactUrl();
         } else if (this.selectedRadioButton === 'linkArtifactTemplate') {
             this.newArtifact.autoCreateArtifactTemplate = '';
-
         } else if (this.selectedRadioButton === 'skipArtifactTemplate') {
             this.newArtifact.autoCreateArtifactTemplate = '';
 
@@ -204,7 +193,7 @@ export class WineryArtifactComponent implements OnInit {
     getArtifacts() {
         this.service.getAllArtifacts().subscribe(
             data => {
-                this.handleData(data);
+                this.handleArtifactsData(data);
             },
             error => this.showError(error)
         );
@@ -231,12 +220,22 @@ export class WineryArtifactComponent implements OnInit {
         );
     }
 
-    handleData(data: ArtifactApiData[]) {
+    handleArtifactsData(data: ArtifactApiData[]) {
         this.artifactsData = data;
         this.artifactsData = this.artifactsData.map(
             obj => {
-                obj.artifactTypeLocalName = this.getLocalName(obj.artifactType);
-                obj.artifactRefLocalName = this.getLocalName(obj.artifactRef);
+                if (!isNullOrUndefined(obj.artifactType)) {
+                    obj.artifactTypeLocalName = '<a target="_blank"' + ' href="' + this.createArtifactTypeUrl(obj.artifactType) +
+                        '">' + this.getLocalName(obj.artifactType) + '</a>';
+                } else {
+                    obj.artifactTypeLocalName = '';
+                }
+                if (!isNullOrUndefined(obj.artifactRef)) {
+                    obj.artifactRefLocalName = '<a target="_blank"' + ' href="' + this.createArtifactTemplateUrl(obj.artifactRef) +
+                        '">' + this.getLocalName(obj.artifactRef) + '</a>';
+                } else {
+                    obj.artifactRefLocalName = '';
+                }
                 if (!isNullOrUndefined(obj.any)) {
                     obj.anyText = '';
                 }
@@ -265,7 +264,7 @@ export class WineryArtifactComponent implements OnInit {
         this.fileService.getFiles(templateUrl)
             .subscribe(
                 data => this.filesList = data.files,
-                error => this.notify.error(error.toString() + 'error from loadfiles()')
+                error => this.notify.error(error.toString() + 'error while loading files!')
             );
     }
 
@@ -304,12 +303,27 @@ export class WineryArtifactComponent implements OnInit {
     }
 
     private handlePostResponse() {
-        this.getArtifacts();
-        this.loadFiles(this.uploadUrl);
         this.loading = false;
+        this.notify.success('successfully created ' + this.name + ' Artifact ' + this.newArtifact.artifactName);
         if (this.selectedRadioButton === 'createArtifactTemplate') {
+            this.loadFiles(this.uploadUrl);
             this.uploadFileModal.show();
         }
+        this.getArtifacts();
+    }
+
+    private resetArtifactCreationData() {
+        this.newArtifact = new GenerateArtifactApiData();
+        this.newArtifact.artifactType = '';
+        this.selectedRadioButton = 'createArtifactTemplate';
+        this.selectedInterface = null;
+        this.selectedOperation = '';
+        this.selectedArtifactType = '';
+        this.selectedArtifactTemplate = '';
+        this.artifactUrl = '';
+        this.uploadUrl = '';
+        this.artifact.name = '';
+
     }
 
     private handleDelete() {
@@ -329,6 +343,30 @@ export class WineryArtifactComponent implements OnInit {
             this.newArtifact.artifactTemplateNamespace)) + '/' + this.newArtifact.artifactTemplateName + '/';
         this.uploadUrl = this.artifactUrl + 'files/';
     }
+
+    private getNamespaceAndLocalNameFromQName(qname: string): { namespace: string; localname: string; } {
+        const i = qname.indexOf('}');
+        const res = {
+            namespace: qname.substr(1, i - 1),
+            localname: qname.substr(i + 1)
+        };
+        return res;
+    }
+
+    private createArtifactTemplateUrl(qname: string): string {
+        const nameAndNamespace = this.getNamespaceAndLocalNameFromQName(qname);
+        return '/artifacttemplates/' + encodeURIComponent(encodeURIComponent(nameAndNamespace.namespace))
+            + '/' + nameAndNamespace.localname + '/';
+
+    }
+
+    private createArtifactTypeUrl(qname: string): string {
+        const nameAndNamespace = this.getNamespaceAndLocalNameFromQName(qname);
+        return '/artifacttypes/' + encodeURIComponent(encodeURIComponent(nameAndNamespace.namespace))
+            + '/' + nameAndNamespace.localname + '/';
+
+    }
+
 }
 
 export class GenerateData {
