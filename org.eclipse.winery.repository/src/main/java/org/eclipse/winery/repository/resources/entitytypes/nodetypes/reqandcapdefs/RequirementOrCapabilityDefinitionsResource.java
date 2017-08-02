@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,14 +8,16 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
- *******************************************************************************/
+ *     Tino Stadelmaier - change post method to accept json
+ */
 package org.eclipse.winery.repository.resources.entitytypes.nodetypes.reqandcapdefs;
 
 import java.util.Collection;
 import java.util.List;
 
-import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
@@ -24,10 +26,10 @@ import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources._support.collections.withid.EntityWithIdCollectionResource;
+import org.eclipse.winery.repository.resources.apiData.CapabilityDefinitionPostData;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 
-import com.sun.jersey.api.view.Viewable;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This superclass has only a few methods as we cannot easily abstract from the
@@ -50,9 +52,6 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 		this.res = res;
 	}
 
-	@Override
-	public abstract Viewable getHTML();
-
 	/**
 	 * @return collection of all available types
 	 */
@@ -61,26 +60,27 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 	@POST
 	// As there is no supertype of TCapabilityType and TRequirementType containing the common attributes, we have to rely on unchecked casts
 	@SuppressWarnings("unchecked")
-	public Response onPost(@FormParam("name") String name, @FormParam("type") String type, @FormParam("lowerbound") String lowerBound, @FormParam("upperbound") String upperbound) {
-		if (StringUtils.isEmpty(name)) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response onPost(CapabilityDefinitionPostData postData ) {
+		if (StringUtils.isEmpty(postData.name)) {
 			return Response.status(Status.BAD_REQUEST).entity("Name has to be provided").build();
 		}
-		if (StringUtils.isEmpty(type)) {
+		if (StringUtils.isEmpty(postData.type)) {
 			return Response.status(Status.BAD_REQUEST).entity("Type has to be provided").build();
 		}
 
 		int lbound = 1;
-		if (!StringUtils.isEmpty(lowerBound)) {
+		if (!StringUtils.isEmpty(postData.lowerBound)) {
 			try {
-				lbound = Integer.parseInt(lowerBound);
+				lbound = Integer.parseInt(postData.lowerBound);
 			} catch (NumberFormatException e) {
 				return Response.status(Status.BAD_REQUEST).entity("Bad format of lowerbound: " + e.getMessage()).build();
 			}
 		}
 
 		String ubound = "1";
-		if (!StringUtils.isEmpty(upperbound)) {
-			ubound = upperbound;
+		if (!StringUtils.isEmpty(postData.upperBound)) {
+			ubound = postData.upperBound;
 		}
 
 		// we also support replacement of existing requirements
@@ -89,13 +89,13 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 		boolean found = false;
 		for (ReqDefOrCapDef d : this.list) {
 			idx++;
-			if (this.getId(d).equals(name)) {
+			if (this.getId(d).equals(postData.name)) {
 				found = true;
 				break;
 			}
 		}
 
-		QName typeQName = QName.valueOf(type);
+		QName typeQName = QName.valueOf(postData.type);
 		// Create object and put type in it
 		ReqDefOrCapDef def;
 		if (this instanceof CapabilityDefinitionsResource) {
@@ -108,7 +108,7 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 		}
 
 		// copy all other data into object
-		AbstractReqOrCapDefResource.invokeSetter(def, "setName", name);
+		AbstractReqOrCapDefResource.invokeSetter(def, "setName", postData.name);
 		AbstractReqOrCapDefResource.invokeSetter(def, "setLowerBound", lbound);
 		AbstractReqOrCapDefResource.invokeSetter(def, "setUpperBound", ubound);
 

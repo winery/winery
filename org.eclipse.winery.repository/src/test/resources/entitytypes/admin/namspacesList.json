@@ -1,0 +1,46 @@
+[
+  {
+	"prefix": "tosca",
+	"namespace": "http://docs.oasis-open.org/tosca/ns/2011/12"
+  },
+  {
+	"prefix": "tbt",
+	"namespace": "http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"
+  },
+  {
+	"prefix": "tst",
+	"namespace": "http://docs.oasis-open.org/tosca/ns/2011/12/ToscaSpecificTypes"
+  },
+  {
+	"prefix": "wfc",
+	"namespace": "http://winery.opentosca.org/test/capabilitytypes/fruits"
+  },
+  {
+	"prefix": "wfni",
+	"namespace": "http://winery.opentosca.org/test/nodetypeimplementations/fruits"
+  },
+  {
+	"prefix": "wfn",
+	"namespace": "http://winery.opentosca.org/test/nodetypes/fruits"
+  },
+  {
+	"prefix": "wfr",
+	"namespace": "http://winery.opentosca.org/test/relationshiptypes/fruits"
+  },
+  {
+	"prefix": "selfservice",
+	"namespace": "http://www.eclipse.org/winery/model/selfservice"
+  },
+  {
+	"prefix": "winery",
+	"namespace": "http://www.opentosca.org/winery/extensions/tosca/2013/02/12"
+  },
+  {
+	"prefix": "xsd",
+	"namespace": "http://www.w3.org/2001/XMLSchema"
+  },
+  {
+	"prefix": "xmlns",
+	"namespace": "http://www.w3.org/XML/1998/namespace"
+  }
+]

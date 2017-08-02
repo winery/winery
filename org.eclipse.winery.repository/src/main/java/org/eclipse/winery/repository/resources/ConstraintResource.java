@@ -29,11 +29,9 @@ import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeRes
 public class ConstraintResource extends EntityWithoutIdResource<TConstraint> {
 
 	/**
-	 *
 	 * @param constraint the current constraint value
-	 * @param list the list this constraint belongs to
-	 * @param res the node type resource this constraint belongs to. Required
-	 *            for saving
+	 * @param list       the list this constraint belongs to
+	 * @param res        the node type resource this constraint belongs to. Required for saving
 	 */
 	public ConstraintResource(TConstraint constraint, int idx, List<TConstraint> list, NodeTypeResource res) {
 		super(constraint, idx, list, res);

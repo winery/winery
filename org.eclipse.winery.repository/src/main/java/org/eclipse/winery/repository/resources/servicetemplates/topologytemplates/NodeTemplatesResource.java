@@ -17,8 +17,6 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources.entitytemplates.TEntityTemplatesResource;
 
-import com.sun.jersey.api.view.Viewable;
-
 public class NodeTemplatesResource extends TEntityTemplatesResource<NodeTemplateResource, TNodeTemplate> {
 
 	public NodeTemplatesResource(List<TNodeTemplate> list, IPersistable res) {
@@ -29,11 +27,4 @@ public class NodeTemplatesResource extends TEntityTemplatesResource<NodeTemplate
 	public String getId(TNodeTemplate entity) {
 		return entity.getId();
 	}
-
-	@Override
-	public Viewable getHTML() {
-		// TODO Auto-generated method stub
-		throw new IllegalStateException("Not yet implemented.");
-	}
-
 }

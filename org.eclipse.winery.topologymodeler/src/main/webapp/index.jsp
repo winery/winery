@@ -84,6 +84,11 @@
 		repositoryURL = repositoryURL.substring(0, repositoryURL.length()-1);
 	}
 
+	String uiURL = request.getParameter("uiURL");
+	if (StringUtils.isEmpty(uiURL)) {
+	    uiURL = repositoryURL;
+	}
+
 	String ns = request.getParameter("ns");
 	if (StringUtils.isEmpty(ns)) {
 %>
@@ -279,6 +284,7 @@ require(["jquery", "pnotify"], function() {
 // .repositoryURL - the URL of the repository
 // DOES NOT end with /
 winery.repositoryURL = "<%=repositoryURL%>";
+winery.uiURL = "<%=uiURL%>";
 
 </script>
 
@@ -404,6 +410,7 @@ function updateDeploymentArtifact() {
 <ct:artifactcreationdialog
 	URL="getURLForDeploymanetArtifactGeneration()"
 	repositoryURL="<%=repositoryURL%>"
+	uiURL="<%=uiURL%>"
 	name="Deployment"
 	onSuccessfulArtifactCreationFunction="artifactAddedSuccessfully"
 	allNamespaces="<%=client.getNamespaces()%>"
@@ -425,7 +432,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 %>
 
 <div id="winery">
-	<ncnt:propertiesOfOneNodeTemplate repositoryURL="<%=repositoryURL%>"/>
+	<ncnt:propertiesOfOneNodeTemplate uiURL="<%=uiURL%>" repositoryURL="<%=repositoryURL%>"/>
 	<ncrt:propertiesOfOneRelationshipTemplate relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>"/>
 
 	<div id="topbar">
@@ -511,7 +518,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 	</div>
 
 	<tmpl:defineCreateConnectorEndpointsFunction relationshipTypes="<%=relationshipTypes%>"/>
-	<t:palette client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>"/>
+	<t:palette client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>" uiURL="<%=uiURL%>"/>
 
 	<div id="selectionbox">
 	</div>
@@ -533,7 +540,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 				String left = ModelUtilities.getLeft(nodeTemplate);
 				String top = ModelUtilities.getTop(nodeTemplate);
 		%>
-				<nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>" nodeTemplate="<%=nodeTemplate%>" top="<%=top%>" left="<%=left%>"/>
+				<nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>" uiURL="<%=uiURL%>" nodeTemplate="<%=nodeTemplate%>" top="<%=top%>" left="<%=left%>"/>
 		<%
 			}
 		}

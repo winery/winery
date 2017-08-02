@@ -1,0 +1,9 @@
+{
+  "artifactName": "baobab_bananaInterface_IA",
+  "artifactTemplateName": "baobab_bananaInterface_IA",
+  "artifactTemplateNamespace": "http://winery.opentosca.org/test/artifacttemplates/fruits",
+  "autoCreateArtifactTemplate": "true",
+  "artifactType": "{http://winery.opentosca.org/test/artifacttypes/fruits}WAR",
+  "interfaceName": "bananaInterface",
+  "javaPackage": "org.opentosca.winery.nodetypeimplementations"
+}

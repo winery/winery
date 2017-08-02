@@ -12,7 +12,6 @@
 package org.eclipse.winery.repository.resources.servicetemplates.plans;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
@@ -20,23 +19,16 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.InputParameters;
 import org.eclipse.winery.model.tosca.TPlan.OutputParameters;
-import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
@@ -46,7 +38,6 @@ import org.eclipse.winery.repository.resources._support.collections.withid.Entit
 import org.eclipse.winery.repository.resources.interfaces.ParametersResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +57,6 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 
 	/**
 	 * Ugly hack to get the parent service template resource
-	 *
 	 */
 	public ServiceTemplateResource getServiceTemplateResource() {
 		// Solution proposal 1: Each sub-resource should know its parent service
@@ -111,27 +101,6 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 			return BackendUtils.persist(this.res);
 		} else {
 			return res;
-		}
-	}
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML(@Context UriInfo uriInfo) {
-		boolean isBPMN4TOSCA = this.o.getPlanLanguage().equals(org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20);
-		String bpmn4toscaBaseURL = Prefs.INSTANCE.getBPMN4TOSCABaseURL();
-		if (isBPMN4TOSCA && (!StringUtils.isEmpty(bpmn4toscaBaseURL))) {
-			String uri = bpmn4toscaBaseURL;
-			URI repositoryURI = uriInfo.getBaseUri();
-			uri += "?repositoryURL=" + Util.URLencode(repositoryURI.toString());
-			TOSCAComponentId serviceTemplateId = this.getServiceTemplateResource().getId();
-			uri += "&namespace=" + serviceTemplateId.getNamespace().getEncoded();
-			uri += "&id=" + serviceTemplateId.getXmlId().getEncoded();
-			uri += "&plan=" + this.getName();
-			return Response.temporaryRedirect(Utils.createURI(uri)).build();
-		} else {
-			// return Response.ok().entity("No editor plugin found for plan language " + this.o.getPlanLanguage()).build();
-			URI fileURI = uriInfo.getAbsolutePath().resolve("file");
-			return Response.seeOther(fileURI).build();
 		}
 	}
 

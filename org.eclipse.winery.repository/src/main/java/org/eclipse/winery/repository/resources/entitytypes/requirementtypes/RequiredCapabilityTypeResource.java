@@ -8,11 +8,9 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - JSON API
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.requirementtypes;
-
-import java.util.Collection;
-import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -28,24 +26,18 @@ import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.resources.apiData.AvailableSuperclassesApiData;
+import org.eclipse.winery.repository.resources.apiData.RequiredCapabilityTypeApiData;
 
 import com.sun.jersey.api.NotFoundException;
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 
 public class RequiredCapabilityTypeResource {
 
 	private RequirementTypeResource requirementTypeResource;
 
-
 	public RequiredCapabilityTypeResource(RequirementTypeResource requirementTypeResource) {
 		this.requirementTypeResource = requirementTypeResource;
-	}
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/requirementtypes/requiredcapabilitytype.jsp", this);
 	}
 
 	public TRequirementType getRequirementType() {
@@ -75,11 +67,9 @@ public class RequiredCapabilityTypeResource {
 		return BackendUtils.persist(this.requirementTypeResource);
 	}
 
-	/**
-	 * required for jsp
-	 **/
-	public Collection<QName> getAllCapabilityTypes() {
-		SortedSet<CapabilityTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(CapabilityTypeId.class);
-		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public RequiredCapabilityTypeApiData getAllCapabilityTypes() {
+		return new RequiredCapabilityTypeApiData(new AvailableSuperclassesApiData(CapabilityTypeId.class), this.getRequirementType().getRequiredCapabilityType());
 	}
 }

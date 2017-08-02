@@ -22,8 +22,6 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeId;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
 
-import com.sun.jersey.api.view.Viewable;
-
 /**
  * specifies the methods required by implementations.jsp
  */
@@ -41,13 +39,6 @@ public abstract class ImplementationsOfOneType {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/entitytypes/implementations.jsp", this);
-		return Response.ok().entity(viewable).build();
-	}
-
-	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public abstract Response getJSON();
 
@@ -56,8 +47,7 @@ public abstract class ImplementationsOfOneType {
 	}
 
 	/**
-	 * @return a list of type implementations implementing the associated node
-	 *         type
+	 * @return a list of type implementations implementing the associated node type
 	 */
 	public abstract String getImplementationsTableData();
 
@@ -70,5 +60,4 @@ public abstract class ImplementationsOfOneType {
 	 * The string displayed to the user
 	 */
 	public abstract String getTypeStr();
-
 }

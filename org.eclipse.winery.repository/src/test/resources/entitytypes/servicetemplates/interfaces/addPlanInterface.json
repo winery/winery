@@ -1,0 +1,13 @@
+[
+  {
+	"operation": [
+	  {
+		"name": "harvesting",
+		"plan": {
+		  "planRef": "harvest_Plan"
+		}
+	  }
+	],
+	"name": "planInterface"
+  }
+]

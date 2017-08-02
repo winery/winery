@@ -11,7 +11,6 @@
  *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
  *     Lukas Harzenetter, Nicole Keppler - forceDelete for Namespaces
  *     Karoline Saatkamp - clone of TTopologyTemplates, TNodeTemplate, and TRelationshipTemplates
- *     Marvin Wohlfarth - implementation for detection of duplicate ids
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
@@ -66,7 +65,6 @@ import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.ObjectFactory;
-import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -77,7 +75,6 @@ import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.Constants;
@@ -123,8 +120,6 @@ import org.w3c.dom.ls.LSInput;
 public class BackendUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
-	private static int idCounterRequirements = 0;
-	private static int idCounterCapabilities = 0;
 
 	/**
 	 * Deletes the whole namespace in the component
@@ -727,8 +722,8 @@ public class BackendUtils {
 		nodeTemplateClone.setMinInstances(nodeTemplate.getMinInstances());
 		nodeTemplateClone.setName(nodeTemplate.getName());
 		nodeTemplateClone.setPolicies(nodeTemplate.getPolicies());
-		nodeTemplateClone.setCapabilities(cloneCapabilities(nodeTemplate));
-		nodeTemplateClone.setRequirements(cloneRequirements(nodeTemplate));
+		nodeTemplateClone.setRequirements(nodeTemplate.getRequirements());
+		nodeTemplateClone.setCapabilities(nodeTemplate.getCapabilities());
 		nodeTemplateClone.setProperties(nodeTemplate.getProperties());
 		nodeTemplateClone.setPropertyConstraints(nodeTemplate.getPropertyConstraints());
 
@@ -1077,72 +1072,5 @@ public class BackendUtils {
 			res.add(id.getQName());
 		}
 		return res;
-	}
-
-	/**
-	 * Check the ids for new nodes, avoid repeating of target labels
-	 */
-	public static TNodeTemplate checkId(TNodeTemplate duplicatedNode, TNodeTemplate tNodeTemplate, String targetLabel) {
-		if (tNodeTemplate.getId().contains(targetLabel)) {
-			duplicatedNode.setId(Util.makeNCName(tNodeTemplate.getId() + idCounterRequirements));
-			duplicatedNode.setName(Util.makeNCName(tNodeTemplate.getName() + idCounterRequirements));
-			idCounterRequirements++;
-			return duplicatedNode;
-		} else {
-			duplicatedNode.setId(Util.makeNCName(tNodeTemplate.getId() + "-" + targetLabel));
-			duplicatedNode.setName(Util.makeNCName(tNodeTemplate.getName() + "-" + targetLabel));
-			return duplicatedNode;
-		}
-	}
-
-	/**
-	 * Fix the ids to avoid duplicate ids in capabilities
-	 * @return fixedCapabilities with fixed ids or null if the nodeTemplate has no capabilities
-	 */
-	public static TNodeTemplate.Capabilities cloneCapabilities(TNodeTemplate nodeTemplate) {
-		if (nodeTemplate.getCapabilities() == null) {
-			LOGGER.debug("Capabilites are null, not cloned any capabilities for " +  nodeTemplate.getId());
-			return null;
-		}
-			TNodeTemplate.Capabilities fixedCapabilities = new TNodeTemplate.Capabilities();
-			for (int i = 0; i < nodeTemplate.getCapabilities().getCapability().size(); i++) {
-				TCapability tempCapability = new TCapability();
-				String id = nodeTemplate.getCapabilities().getCapability().get(i).getId() + "_" + idCounterCapabilities;
-				tempCapability.setId(id);
-				tempCapability.setName(nodeTemplate.getCapabilities().getCapability().get(i).getName());
-				tempCapability.setProperties(nodeTemplate.getCapabilities().getCapability().get(i).getProperties());
-				tempCapability.setPropertyConstraints(nodeTemplate.getCapabilities().getCapability().get(i).getPropertyConstraints());
-				tempCapability.setType(nodeTemplate.getCapabilities().getCapability().get(i).getType());
-				fixedCapabilities.getCapability().add(tempCapability);
-				LOGGER.debug("Cloned requirements for " + nodeTemplate.getId());
-				idCounterCapabilities++;
-			}
-			return fixedCapabilities;
-	}
-
-	/**
-	 * Fix the ids to avoid duplicate ids in requirements
-	 * @param nodeTemplate
-	 * @return fixedRequirements with fixed ids or null if the nodeTemplate has no requirements
-	 */
-	public static TNodeTemplate.Requirements cloneRequirements(TNodeTemplate nodeTemplate) {
-		if (nodeTemplate.getRequirements() == null) {
-			LOGGER.debug("Requirements are null, not cloned any requirements for " + nodeTemplate.getId());
-			return null;
-		}
-		TNodeTemplate.Requirements fixedRequirements = new TNodeTemplate.Requirements();
-		for (int i = 0; i < nodeTemplate.getRequirements().getRequirement().size(); i++) {
-			TRequirement tempRequirement = new TRequirement();
-			String id = nodeTemplate.getRequirements().getRequirement().get(i).getId() + "_" + idCounterRequirements;
-			tempRequirement.setId(id);
-			tempRequirement.setName(nodeTemplate.getRequirements().getRequirement().get(i).getName());
-			tempRequirement.setProperties(nodeTemplate.getRequirements().getRequirement().get(i).getProperties());
-			tempRequirement.setPropertyConstraints(nodeTemplate.getRequirements().getRequirement().get(i).getPropertyConstraints());
-			tempRequirement.setType(nodeTemplate.getRequirements().getRequirement().get(i).getType());
-			fixedRequirements.getRequirement().add(tempRequirement);
-			LOGGER.debug("Cloned requirements for " + nodeTemplate.getId());
-			idCounterRequirements++;
-		}
-		return fixedRequirements;
 	}
 }

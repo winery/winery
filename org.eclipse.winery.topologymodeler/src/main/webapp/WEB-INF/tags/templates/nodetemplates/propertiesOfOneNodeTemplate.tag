@@ -17,6 +17,7 @@
 <%@tag language="java" pageEncoding="UTF-8" description="Renders the properies of one node tempate on the right"%>
 
 <%@attribute name="repositoryURL" required="true" type="java.lang.String" description="The repository URL"%>
+<%@attribute name="uiURL" required="true" type="java.lang.String" description="The UI URL"%>
 
 <%@taglib prefix="ct" tagdir="/WEB-INF/tags/common" %>
 
@@ -95,7 +96,7 @@
 
 			// copy type
 			var typeQName = headerContainer.children("span.typeQName").text();
-			var href = wsc.makeNodeTypeURLFromQName("${repositoryURL}", typeQName);
+			var href = wsc.makeNodeTypeURLFromQName("${uiURL}", typeQName);
 			var type = headerContainer.children("div.type").text();
 			$("#nodetemplateType").attr("href", href).text(type);
 
