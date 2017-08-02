@@ -10,6 +10,9 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ## [unreleased]
 
+### Changed
+* Initial support for BPMN4TOSCA implemented using Angular
+
 ### Removed
 * `csarname` is empty at all CSAR exports
 * `data.json` is not exported any more

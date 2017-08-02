@@ -1,0 +1,43 @@
+/**
+ * Copyright (c) 2017 ZTE Corporation.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     ZTE - initial API and implementation and/or initial documentation
+ */
+
+.wm-properties-wrapper {
+    background-color: white;
+    position: fixed;
+    width: 500px;
+    height: 100%;
+    border-left: 1px solid #00aaff;
+    z-index: 2000;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding-left: 20px;
+    margin-bottom: 0;
+    padding-right: 20px;
+    padding-top: 40px;
+    -webkit-box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+    border-radius: 0;
+    overflow-y: scroll;
+}
+
+.edit {
+    display: none;
+}
+
+.editing .view {
+    display: none;
+}
+
+.editing .edit {
+    display: block;
+}
