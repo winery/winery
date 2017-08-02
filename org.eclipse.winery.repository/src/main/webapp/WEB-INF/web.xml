@@ -59,6 +59,10 @@
 			<param-name>com.sun.jersey.config.feature.Redirect</param-name>
 			<param-value>true</param-value>
 		</init-param>
+		<init-param>
+			<param-name>jersey.config.server.wadl.disableWadl</param-name>
+			<param-value>true</param-value>
+		</init-param>
 
 		<!-- enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html -->
 		<init-param>

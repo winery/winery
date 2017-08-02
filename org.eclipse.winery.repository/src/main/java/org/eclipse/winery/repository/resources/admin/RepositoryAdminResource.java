@@ -20,65 +20,22 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.eclipse.winery.repository.Prefs;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 
-import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
-import org.restdoc.annotations.RestDoc;
-import org.restdoc.annotations.RestDocParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RepositoryAdminResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryAdminResource.class);
-
-
-	// @formatter:off
-	@GET
-	@Produces(MediaType.TEXT_HTML) // we cannot add MimeTypes.MIMETYPE_ZIP as dumpRepository also produces that mimetype
-	@RestDoc(methodDescription = "Returns the repository admin page and implements administration utility")
-	public Response onGet(
-		@QueryParam(value = "dump") @RestDocParam(description = "If given, a dump of the repository is sent") String dump,
-		@QueryParam(value = "reset") @RestDocParam(description = "Resets the repository to the last &ldquo;official&rdquo; known state") String reset,
-		@QueryParam(value = "commit") @RestDocParam(description = "Commits the current state to the repository and pushes it upstream") String commit
-	) {
-		// @formatter:on
-		if (dump != null) {
-			return this.dumpRepository();
-		} else if (reset != null) {
-			try {
-				((GitBasedRepository) Prefs.INSTANCE.getRepository()).cleanAndResetHard();
-			} catch (Exception e) {
-				Response res;
-				res = Response.serverError().entity(e.getMessage()).build();
-				return res;
-			}
-			return Response.noContent().build();
-		} else if (commit != null) {
-			try {
-				((GitBasedRepository) Prefs.INSTANCE.getRepository()).addCommit("Files changed externally");
-			} catch (Exception e) {
-				Response res;
-				res = Response.serverError().entity(e.getMessage()).build();
-				return res;
-			}
-			return Response.noContent().build();
-		} else {
-			Viewable viewable = new Viewable("/jsp/admin/repository.jsp", this);
-			return Response.ok().entity(viewable).build();
-		}
-	}
 
 	/**
 	 * Imports the given ZIP

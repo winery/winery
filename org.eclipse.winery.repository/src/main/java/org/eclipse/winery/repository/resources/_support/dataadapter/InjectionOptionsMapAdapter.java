@@ -18,23 +18,23 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
-public class InjectionOptionsMapAdapter extends XmlAdapter<InjectionOptions, Map<String, List<TNodeTemplate>>> {
+public class InjectionOptionsMapAdapter extends XmlAdapter<InjectionOptions, Map<String, List<TTopologyTemplate>>> {
 
 	@Override
-	public Map<String, List<TNodeTemplate>> unmarshal(InjectionOptions injectionOptions) throws Exception {
-		Map<String, List<TNodeTemplate>> mapInjections = new HashMap<>();
+	public Map<String, List<TTopologyTemplate>> unmarshal(InjectionOptions injectionOptions) throws Exception {
+		Map<String, List<TTopologyTemplate>> mapInjections = new HashMap<>();
 		for (InjectionOption injection : injectionOptions.getInjectionOption()) {
-			mapInjections.put(injection.hostedNodeID, injection.hostNodeTemplateOptions);
+			mapInjections.put(injection.nodeID, injection.injectionOptions);
 		}
 		return mapInjections;
 	}
 
 	@Override
-	public InjectionOptions marshal(Map<String, List<TNodeTemplate>> mapInjectionOptions) throws Exception {
+	public InjectionOptions marshal(Map<String, List<TTopologyTemplate>> mapInjectionOptions) throws Exception {
 		InjectionOptions injectionOptions = new InjectionOptions();
-		for (Map.Entry<String, List<TNodeTemplate>> entry : mapInjectionOptions.entrySet()) {
+		for (Map.Entry<String, List<TTopologyTemplate>> entry : mapInjectionOptions.entrySet()) {
 			injectionOptions.addInjectionOptions(new InjectionOption(entry.getKey(), entry.getValue()));
 		}
 		return injectionOptions;

@@ -1,0 +1,39 @@
+[
+  {
+	"operation": [
+	  {
+		"nodeOperation": {
+		  "nodeRef": "baobab",
+		  "interfaceName": "bananaInterface",
+		  "operationName": "peel"
+		},
+		"name": "baobab-nodetemplate-interface-peel"
+	  }
+	],
+	"name": "baobab-nodetemplate-interface"
+  },
+  {
+	"operation": [
+	  {
+		"name": "eat",
+		"relationshipOperation": {
+		  "interfaceName": "consistency",
+		  "operationName": "isHard",
+		  "relationshipRef": "con_27"
+		}
+	  }
+	],
+	"name": "baobab-relationshiptemplate-interface"
+  },
+  {
+	"operation": [
+	  {
+		"name": "harvesting",
+		"plan": {
+		  "planRef": "harvest_Plan"
+		}
+	  }
+	],
+	"name": "planInterface"
+  }
+]

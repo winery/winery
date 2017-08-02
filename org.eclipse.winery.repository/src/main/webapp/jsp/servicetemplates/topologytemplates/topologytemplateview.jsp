@@ -11,34 +11,37 @@
  *    Oliver Kopp - initial API and implementation and/or initial documentation
  *******************************************************************************/
 --%>
-<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@page buffer="none" %>
 
-<%@page import="org.eclipse.winery.common.interfaces.IWineryRepository"%>
 <%@page import="org.eclipse.winery.repository.Prefs" %>
-<%@page import="org.eclipse.winery.repository.client.WineryRepositoryClientFactory"%>
-<%@page import="org.eclipse.winery.repository.client.IWineryRepositoryClient"%>
-<%@page import="org.eclipse.winery.repository.client.WineryRepositoryClient"%>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
 
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%@taglib prefix="w" uri="http://www.eclipse.org/winery/repository/functions"%>
-
+<%@taglib prefix="w" uri="http://www.eclipse.org/winery/repository/functions" %>
+<%
+	String uiURL = request.getParameter("uiURL");
+	if (StringUtils.isEmpty(uiURL)) {
+		uiURL = "";
+	}
+%>
 <html>
 <head>
-	<meta name="application-name" content="Winery" />
+	<meta name="application-name" content="Winery"/>
 	<meta charset="UTF-8">
 	<link rel="icon" href="${w:topologyModelerURI()}/favicon.png" type="image/png">
 
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap.css" />
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap-theme.css" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap.css"/>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/components/bootstrap/dist/css/bootstrap-theme.css"/>
 
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/requirejs/require.js'></script>
 
 	<!-- jquery and jquery UI have to be loaded using the old fashioned way to avoid incompatibilities with bootstrap v3 -->
 	<script type='text/javascript' src='${pageContext.request.contextPath}/components/jquery/jquery.js'></script>
 	<script type='text/javascript' src='${pageContext.request.contextPath}/3rdparty/jquery-ui/js/jquery-ui.js'></script>
-	<script type='text/javascript' src='${pageContext.request.contextPath}/components/bootstrap/dist/js/bootstrap.js'></script>
+	<script type='text/javascript'
+			src='${pageContext.request.contextPath}/components/bootstrap/dist/js/bootstrap.js'></script>
 	<script>
 		require.config({
 			baseUrl: "${pageContext.request.contextPath}/js",
@@ -56,12 +59,14 @@
 		});
 	</script>
 	<c:if test="${not empty it.additionalScript}">
-	<script type='text/javascript' src='${it.additionalScript}'></script>
+		<script type='text/javascript' src='${it.additionalScript}'></script>
 	</c:if>
 </head>
 <body>
 
-<t:topologyTemplateRenderer topology="${it.topologyTemplate}" repositoryURL="<%=Prefs.INSTANCE.getResourcePath()%>" client="${it.client}" fullscreen="true" additonalCSS="${it.additonalCSS}" autoLayoutOnLoad="${it.autoLayoutOnLoad}"/>
+<t:topologyTemplateRenderer topology="${it.topologyTemplate}" repositoryURL="<%=Prefs.INSTANCE.getResourcePath()%>"
+							uiURL="<%=uiURL%>" client="${it.client}" fullscreen="true" additonalCSS="${it.additonalCSS}"
+							autoLayoutOnLoad="${it.autoLayoutOnLoad}"/>
 
 </body>
 </html>

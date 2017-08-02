@@ -1,0 +1,15 @@
+[
+  {
+	"operation": [
+	  {
+		"name": "eat",
+		"relationshipOperation": {
+		  "interfaceName": "consistency",
+		  "operationName": "isHard",
+		  "relationshipRef": "con_27"
+		}
+	  }
+	],
+	"name": "baobab-relationshiptemplate-interface"
+  }
+]

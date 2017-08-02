@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Karoline Saatkamp - add get BadRequest test method
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
@@ -22,6 +23,7 @@ import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.eclipse.jetty.server.Server;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.xmlunit.matchers.CompareMatcher;
@@ -70,9 +72,16 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
 		return (fileName.endsWith("xml"));
 	}
 
+	private boolean isTxt(String fileName) {
+		return (fileName.endsWith("txt"));
+	}
+
 	private ContentType getAccept(String fileName) {
 		if (isXml(fileName)) {
 			return ContentType.XML;
+		} else if (fileName.endsWith("-badrequest.txt")) {
+			// convention: we always expect JSON
+			return ContentType.JSON;
 		} else {
 			return ContentType.JSON;
 		}
@@ -116,12 +125,42 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
 		}
 	}
 
+	public void assertGetExpectBadRequestResponse(String restURL, String fileName) {
+		try {
+			String expectedStr = readFromClasspath(fileName);
+			final String receivedStr = start()
+					.accept(getAccept(fileName))
+					.get(callURL(restURL))
+					.then()
+					.log()
+					.all()
+					.statusCode(400)
+					.extract()
+					.response()
+					.getBody()
+					.asString();
+			if (isXml(fileName)) {
+				org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
+			} else if (isTxt(fileName)) {
+				Assert.assertEquals(expectedStr, receivedStr);
+			} else {
+				JSONAssert.assertEquals(
+						expectedStr,
+						receivedStr,
+						true);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public void assertGetSize(String restURL, int size) {
 		start()
+				.accept(ContentType.JSON)
 				.get(callURL(restURL))
 				.then()
 				.log()
-				.ifError()
+				.all()
 				.statusCode(200)
 				.body("size()", is(size));
 	}
@@ -136,14 +175,41 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
 				.statusCode(204);
 	}
 
+	/**
+	 * Maybe remove in order to force JSON.
+	 */
+	public void assertPutText(String restURL, String content) {
+		start()
+				.body(content)
+				.contentType(ContentType.TEXT)
+				.put(callURL(restURL))
+				.then()
+				.statusCode(204);
+	}
+
 	public void assertPost(String restURL, String fileName) {
+		String contents = readFromClasspath(fileName);
+		start()
+				.body(contents)
+				.contentType(getAccept(fileName))
+				.accept(getAccept(fileName))
+				.post(callURL(restURL))
+				.then()
+				.statusCode(201);
+	}
+
+	/**
+	 * Because some methods don't respond with a "created" status.
+	 * TODO: fix all methods which return "noContent" status so that this method can be deleted.
+	 */
+	public void assertNoContentPost(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);
 		start()
 				.body(contents)
 				.contentType(getAccept(fileName))
 				.post(callURL(restURL))
 				.then()
-				.statusCode(201);
+				.statusCode(204);
 	}
 
 	public void assertPost(String restURL, String namespace, String name) {
@@ -165,5 +231,4 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
 			throw new RuntimeException(e);
 		}
 	}
-
 }

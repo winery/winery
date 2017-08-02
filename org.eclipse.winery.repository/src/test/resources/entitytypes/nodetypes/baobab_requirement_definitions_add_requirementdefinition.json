@@ -1,0 +1,6 @@
+{
+  "name": "ImportConstraintsMaximumWeight",
+  "type": "{http://winery.opentosca.org/test/requirementtypes/fruits}MaximumWeight",
+  "lowerBound": 1,
+  "upperBound": "1"
+}

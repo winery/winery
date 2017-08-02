@@ -14,7 +14,7 @@
  *    Niko Stadelmaier - removal of select2 library
  *    Philipp Meyer - removal of select2 library
  *    Lukas Balzer, Nicole Keppler - switch to bootstrap-touchspin
- *    Karoline Saatkamp - maintenance
+ *    Karoline Saatkamp - add matching and maintenance
  *******************************************************************************/
 --%>
 
@@ -82,6 +82,11 @@
 		repositoryURL = "http://localhost:8080/winery";
 	} else if (repositoryURL.endsWith("/")) {
 		repositoryURL = repositoryURL.substring(0, repositoryURL.length()-1);
+	}
+
+	String uiURL = request.getParameter("uiURL");
+	if (StringUtils.isEmpty(uiURL)) {
+	    uiURL = repositoryURL;
 	}
 
 	String ns = request.getParameter("ns");
@@ -279,6 +284,7 @@ require(["jquery", "pnotify"], function() {
 // .repositoryURL - the URL of the repository
 // DOES NOT end with /
 winery.repositoryURL = "<%=repositoryURL%>";
+winery.uiURL = "<%=uiURL%>";
 
 </script>
 
@@ -404,6 +410,7 @@ function updateDeploymentArtifact() {
 <ct:artifactcreationdialog
 	URL="getURLForDeploymanetArtifactGeneration()"
 	repositoryURL="<%=repositoryURL%>"
+	uiURL="<%=uiURL%>"
 	name="Deployment"
 	onSuccessfulArtifactCreationFunction="artifactAddedSuccessfully"
 	allNamespaces="<%=client.getNamespaces()%>"
@@ -425,7 +432,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 %>
 
 <div id="winery">
-	<ncnt:propertiesOfOneNodeTemplate repositoryURL="<%=repositoryURL%>"/>
+	<ncnt:propertiesOfOneNodeTemplate uiURL="<%=uiURL%>" repositoryURL="<%=repositoryURL%>"/>
 	<ncrt:propertiesOfOneRelationshipTemplate relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>"/>
 
 	<div id="topbar">
@@ -446,6 +453,8 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 		<button data-toggle="button" class="btn btn-default" onclick="togglePrintView(!$(this).hasClass('active'));">Print View</button>
 
 		<button class="btn btn-default" onclick="winery.events.fire(winery.events.name.command.SPLIT);" id="splitBtn" data-loading-text="Splitting...">Split</button>
+
+		<button class="btn btn-default" onclick="winery.events.fire(winery.events.name.command.MATCH);" id="matchBtn" data-loading-text="Matching...">Match</button>
 
 		<button class="btn btn-default topbutton" onclick="winery.events.fire(winery.events.name.command.IMPORT_TOPOLOGY);" id="importBtn">Import Topology</button>
 
@@ -509,7 +518,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 	</div>
 
 	<tmpl:defineCreateConnectorEndpointsFunction relationshipTypes="<%=relationshipTypes%>"/>
-	<t:palette client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>"/>
+	<t:palette client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>" uiURL="<%=uiURL%>"/>
 
 	<div id="selectionbox">
 	</div>
@@ -531,7 +540,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 				String left = ModelUtilities.getLeft(nodeTemplate);
 				String top = ModelUtilities.getTop(nodeTemplate);
 		%>
-				<nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>" nodeTemplate="<%=nodeTemplate%>" top="<%=top%>" left="<%=left%>"/>
+				<nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>" uiURL="<%=uiURL%>" nodeTemplate="<%=nodeTemplate%>" top="<%=top%>" left="<%=left%>"/>
 		<%
 			}
 		}
@@ -650,6 +659,7 @@ Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(Ar
 		winery.events.register(winery.events.name.command.IMPORT_TOPOLOGY, wt.openChooseTopologyToImportDiag);
 		winery.events.register(winery.events.name.command.SAVE, wt.save);
 		winery.events.register(winery.events.name.command.SPLIT, wt.split);
+		winery.events.register(winery.events.name.command.MATCH, wt.match);
 		wt.setTopologyTemplateURL("<%=topologyTemplateURL%>");
 	});
 </script>

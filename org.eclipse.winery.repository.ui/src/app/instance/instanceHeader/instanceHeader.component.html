@@ -1,0 +1,57 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Harzenetter - initial API and implementation
+ */
+-->
+<div class="top" [class.twolines]="needTwoLines">
+    <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon">
+    <div class="informationContainer">
+        <div id="component_name" class="name editable editable-click">
+            {{ selectedComponentId }}
+        </div>
+        <div id="component_namespace" class="namespace editable editable-click">
+            {{ selectedNamespace }}
+        </div>
+    </div>
+    <div class="managementButtons">
+        <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
+        <a class="btn btn-info" target="_blank" href="{{ backendLink }}?definitions">XML</a>
+        <a class="btn btn-info" href="{{ backendLink }}?csar">CSAR</a>
+        <div *ngIf="typeUrl">
+            {{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a>
+        </div>
+    </div>
+    <div class="subMenu">
+        <a *ngFor="let item of subMenu"
+           class="styledTabMenuButton styledTabMenuButton2ndlevel"
+           [routerLink]="['./' + item | lowercase | removeWhiteSpaces ]"
+           [routerLinkActive]="'selected'"
+           (click)="selectedTab = item">
+            <div class="left"></div>
+            <div class="center">{{ item }}</div>
+            <div class="right"></div>
+        </a>
+    </div>
+</div>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete Property'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Do you want to delete <span style="font-weight:bold;">{{ selectedComponentId }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="deleteConfirmed.emit();"
+                        [closeButtonLabel]="'Cancel'"
+                        [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>

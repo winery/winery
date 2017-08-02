@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Balzer - added changes for angular2 frontend
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.nodetypes;
 
@@ -31,8 +32,8 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.resources.GenericVisualAppearanceResource;
+import org.eclipse.winery.repository.resources.apiData.NodeTypesVisualsApiData;
 
-import com.sun.jersey.api.view.Viewable;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -45,13 +46,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
 	public VisualAppearanceResource(NodeTypeResource res, Map<QName, String> map, NodeTypeId parentId) {
 		super(res, map, new VisualAppearanceId(parentId));
-	}
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/entitytypes/nodetypes/visualappearance.jsp", this);
-		return Response.ok().entity(viewable).build();
 	}
 
 	@GET
@@ -74,11 +68,22 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	}
 
 	@PUT
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Path("bordercolor")
 	public Response putBorderColor(@FormParam("color") String color) {
 		this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, color);
 		return BackendUtils.persist(this.res);
 	}
 
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public NodeTypesVisualsApiData getJsonData() {
+		return new NodeTypesVisualsApiData(this);
+	}
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response putJsonData(NodeTypesVisualsApiData data) {
+		this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, data.color);
+		return BackendUtils.persist(this.res);
+	}
 }

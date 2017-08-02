@@ -11,24 +11,31 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.admin;
 
-import javax.ws.rs.GET;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.resources.admin.types.ConstraintTypesManager;
 import org.eclipse.winery.repository.resources.admin.types.PlanLanguagesManager;
 import org.eclipse.winery.repository.resources.admin.types.PlanTypesManager;
+import org.eclipse.winery.repository.resources.apiData.OAuthStateAndCodeApiData;
 
-import com.sun.jersey.api.view.Viewable;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 
 public class AdminTopResource {
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/admin/adminindex.jsp", this);
-	}
 
 	@Path("namespaces/")
 	public NamespacesResource getNamespacesResource() {
@@ -53,5 +60,29 @@ public class AdminTopResource {
 	@Path("constrainttypes/")
 	public ConstraintTypesManager getConstraintTypesManager() {
 		return ConstraintTypesManager.INSTANCE;
+	}
+
+	@POST
+	@Path("githubaccesstoken")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getGitHubAccessToken(OAuthStateAndCodeApiData codeApiData) throws Exception {
+		HttpClient httpclient = HttpClients.createDefault();
+		HttpPost httppost = new HttpPost("https://github.com/login/oauth/access_token");
+		httppost.setHeader("Accept", "application/json");
+
+		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
+		params.add(new BasicNameValuePair("client_id", Environment.CONFIGURATION.gitHubClientId));
+		params.add(new BasicNameValuePair("client_secret", Environment.CONFIGURATION.gitHubClientSecret));
+		params.add(new BasicNameValuePair("code", codeApiData.code));
+		params.add(new BasicNameValuePair("state", codeApiData.state));
+		httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+
+		HttpResponse response = httpclient.execute(httppost);
+
+		return Response
+				.status(response.getStatusLine().getStatusCode())
+				.entity(response.getEntity().getContent())
+				.build();
 	}
 }

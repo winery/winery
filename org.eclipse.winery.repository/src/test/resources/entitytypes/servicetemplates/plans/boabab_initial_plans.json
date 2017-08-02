@@ -1,0 +1,20 @@
+[
+  {
+	"documentation": [],
+	"any": [],
+	"otherAttributes": {},
+	"inputParameters": {
+	  "inputParameter": []
+	},
+	"outputParameters": {
+	  "outputParameter": []
+	},
+	"planModelReference": {
+	  "reference": "../servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/plans/harvest_Plan/harvest_Plan.bpmn4tosca"
+	},
+	"id": "harvest_Plan",
+	"name": "harvest Plan",
+	"planType": "http://docs.oasis-open.org/tosca/ns/2011/12/PlanTypes/BuildPlan",
+	"planLanguage": "http://www.opentosca.org/bpmn4tosca"
+  }
+]

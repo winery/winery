@@ -1,0 +1,34 @@
+<!--
+/**
+* Copyright (c) 2017 University of Stuttgart.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* and the Apache License 2.0 which both accompany this distribution,
+* and are available at http://www.eclipse.org/legal/epl-v10.html
+* and http://www.apache.org/licenses/LICENSE-2.0
+*
+* Contributors:
+*     Niko Stadelmaier - initial API and implementation
+*/
+-->
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <div class="tab-pane active" id="description">
+        <div class="form-group">
+            <label class="label-form">Name</label>
+            <input type="text" class="form-control" [(ngModel)]="data.displayName">
+
+        </div>
+
+        <div class="form-group">
+            <label class="label-form">Description</label>
+            <textarea class="form-control" id="applicationDescriptionDiv" [(ngModel)]="data.description"></textarea>
+        </div>
+
+        <div>
+            <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+        </div>
+    </div>
+</div>

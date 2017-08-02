@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * should be used, the method {@code getEntityResource} has to be overriden.
  *
  * @param <EntityResourceT> the resource modeling the entity
- * @param <EntityT> the entity type of single items in the list
+ * @param <EntityT>         the entity type of single items in the list
  */
 public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends EntityWithoutIdResource<EntityT>, EntityT> extends EntityCollectionResource<EntityResourceT, EntityT> {
 
@@ -110,5 +110,4 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 		}
 		return newInstance;
 	}
-
 }

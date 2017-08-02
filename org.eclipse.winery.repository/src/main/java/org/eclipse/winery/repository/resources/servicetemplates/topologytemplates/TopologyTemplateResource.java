@@ -123,7 +123,6 @@ public class TopologyTemplateResource {
 			client.addRepository(this.repositoryURI.toString());
 			return client;
 		}
-
 	}
 
 	@GET
@@ -189,9 +188,7 @@ public class TopologyTemplateResource {
 	}
 
 	/**
-	 *
-	 * @param uriInfo the URI ending with "topologytemplate/" of a service
-	 *            template
+	 * @param uriInfo the URI ending with "topologytemplate/" of a service template
 	 */
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -226,9 +223,9 @@ public class TopologyTemplateResource {
 	// @formatter:off
 	@GET
 	@RestDoc(methodDescription = "Returns a JSON representation of the topology template. <br />" +
-	"X and Y coordinates are embedded as attributes. QName string with Namespace: <br />" +
-	"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} <br />" +
-	"@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
+			"X and Y coordinates are embedded as attributes. QName string with Namespace: <br />" +
+			"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} <br />" +
+			"@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
 	@Produces(MediaType.APPLICATION_JSON)
 	// @formatter:on
 	public Response getComponentInstanceJSON() {
@@ -348,20 +345,21 @@ public class TopologyTemplateResource {
 	// @formatter:off
 	@GET
 	@RestDoc(methodDescription = "<p>Returns an XML representation of the topology template." +
-	" X and Y coordinates are embedded as attributes. Namespace:" +
-	"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} </p>" +
-	"<p>{@link org.eclipse.winery.repository.client.WineryRepositoryClient." +
-	"getTopologyTemplate(QName)} consumes this template</p>" +
-	"<p>@return The XML representation of the topology template <em>without</em>" +
-	"associated artifacts and without the parent service template </p>")
+			" X and Y coordinates are embedded as attributes. Namespace:" +
+			"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} </p>" +
+			"<p>{@link org.eclipse.winery.repository.client.WineryRepositoryClient." +
+			"getTopologyTemplate(QName)} consumes this template</p>" +
+			"<p>@return The XML representation of the topology template <em>without</em>" +
+			"associated artifacts and without the parent service template </p>")
 	@Produces(MediaType.TEXT_XML)
 	// @formatter:on
 	public Response getComponentInstanceXML() {
 		return Utils.getXML(TTopologyTemplate.class, this.topologyTemplate);
 	}
 
-	@POST
+	@Path("split/")
 	@Produces(MediaType.TEXT_PLAIN)
+	@POST
 	public Response split(@Context UriInfo uriInfo) {
 		Splitting splitting = new Splitting();
 		ServiceTemplateId splitServiceTemplateId;
@@ -371,6 +369,21 @@ public class TopologyTemplateResource {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not split. " + e.getMessage()).build();
 		}
 		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(splitServiceTemplateId));
+		return Response.created(url).build();
+	}
+
+	@Path("match/")
+	@Produces(MediaType.TEXT_PLAIN)
+	@POST
+	public Response match(@Context UriInfo uriInfo) {
+		Splitting splitting = new Splitting();
+		ServiceTemplateId matchedServiceTemplateId;
+		try {
+			matchedServiceTemplateId = splitting.matchTopologyOfServiceTemplate((ServiceTemplateId) this.serviceTemplateRes.getId());
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not match. " + e.getMessage()).build();
+		}
+		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(matchedServiceTemplateId));
 		return Response.created(url).build();
 	}
 

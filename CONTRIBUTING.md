@@ -2,6 +2,17 @@
 
 # Contributing Patches
 
+<!-- toc -->
+
+- [Sign a Eclipse Contributor Agreement (ECA)](#sign-a-eclipse-contributor-agreement-eca)
+- [Configuring Git](#configuring-git)
+- [Configuring GitHub](#configuring-github)
+- [Making the Commit](#making-the-commit)
+- [Contributing via GitHub PullRequests](#contributing-via-github-pullrequests)
+- [Background Information](#background-information)
+
+<!-- tocstop -->
+
 We love seeing people contribute patches to the Winery project and the process is relatively simple.
 In general, we follow [GitHub's fork & pull request model](https://help.github.com/articles/fork-a-repo/).
 Since we are an Eclipse project, we have requirements on commits.
@@ -49,7 +60,7 @@ Please follow <http://eclipse.github.io/winery/> to setup a git hook, which ensu
 
 ## Configuring GitHub
 
-Please ensure that the Email-Adress you use at Eclipse is the same as the "Public email" configured at https://github.com/settings/profile.
+Please ensure that the email address you use at Eclipse is the same as the "Public email" configured at https://github.com/settings/profile.
 
 ## Making the Commit
 
@@ -60,6 +71,9 @@ You can check out [the guide at GitHub](https://help.github.com/articles/signing
 
 One way to think of this is that when you sign the CLA you are indicating that you are free to contribute to eclipse, but that does not mean everything you ever do can be contributed.
 Using the commit signing mechanism indicates that your commit is under the auspices of your agreement.
+
+In the case of multiple authors, plese add `Also-by: Some Bodyelse <somebodyelse@nowhere.com>` for each additional author.
+For more information, see <https://www.eclipse.org/projects/handbook/#resources-commit>.
 
 ## Contributing via GitHub PullRequests
 

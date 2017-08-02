@@ -1,0 +1,275 @@
+{"hostInjections": {
+  "shetland_pony": {
+	"documentation": [
+	  {
+		"content": [
+		  "Stack of Node Template pasture from Provider Repository PastureProvider"
+		],
+		"source": null,
+		"lang": null
+	  }
+	],
+	"any": [
+	],
+	"otherAttributes": {
+	},
+	"relationshipTemplates": [
+	],
+	"nodeTemplates": [
+	  {
+		"documentation": [
+		],
+		"any": [
+		],
+		"otherAttributes": {
+		  "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "PastureProvider",
+		  "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "841",
+		  "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "245"
+		},
+		"id": "pasture",
+		"type": "{http://winery.opentosca.org/test/ponyuniverse}pasture",
+		"capabilities": {
+		  "capability": [
+			{
+			  "documentation": [
+			  ],
+			  "any": [
+			  ],
+			  "otherAttributes": {
+			  },
+			  "id": "placeforaPony",
+			  "type": "{http://winery.opentosca.org/test/ponyuniverse}CapWarmFloor",
+			  "name": "CapWarmFloor"
+			}
+		  ]
+		},
+		"name": "pasture",
+		"minInstances": 1,
+		"maxInstances": "1"
+	  }
+	]
+  }
+},
+  "connectionInjections": {
+	"requiresDryFood":
+	{
+	  "documentation": [
+		{
+		  "content": [
+			"Stack of Node Template oat from Provider Repository FoodProvider"
+		  ],
+		  "source": null,
+		  "lang": null
+		}
+	  ],
+	  "any": [
+
+	  ],
+	  "otherAttributes": {
+
+	  },
+	  "nodeTemplates": [
+		{
+		  "documentation": [
+
+		  ],
+		  "any": [
+
+		  ],
+		  "otherAttributes": {
+			"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "FoodProvider",
+			"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "733",
+			"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "45"
+		  },
+		  "id": "oat",
+		  "type": "{http://winery.opentosca.org/test/ponyuniverse}oat",
+		  "requirements": {
+			"requirement": [
+			  {
+				"documentation": [
+
+				],
+				"any": [
+
+				],
+				"otherAttributes": {
+
+				},
+				"id": "requiredAHostingTrough",
+				"type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostOat",
+				"name": "ReqCanHostOat"
+			  }
+			]
+		  },
+		  "capabilities": {
+			"capability": [
+			  {
+				"documentation": [
+
+				],
+				"any": [
+
+				],
+				"otherAttributes": {
+
+				},
+				"id": "provideDryFood",
+				"type": "{http://winery.opentosca.org/test/ponyuniverse}CapDryFood",
+				"name": "CapDryFood"
+			  }
+			]
+		  },
+		  "name": "oat",
+		  "minInstances": 1,
+		  "maxInstances": "1"
+		},
+		{
+		  "documentation": [
+
+		  ],
+		  "any": [
+
+		  ],
+		  "otherAttributes": {
+			"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "FoodProvider",
+			"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "727",
+			"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "391"
+		  },
+		  "id": "trough",
+		  "type": "{http://winery.opentosca.org/test/ponyuniverse}trough",
+		  "capabilities": {
+			"capability": [
+			  {
+				"documentation": [
+
+				],
+				"any": [
+
+				],
+				"otherAttributes": {
+
+				},
+				"id": "CanHostOat",
+				"type": "{http://winery.opentosca.org/test/ponyuniverse}CapCanHostOat",
+				"name": "CapCanHostOat"
+			  }
+			]
+		  },
+		  "name": "trough",
+		  "minInstances": 1,
+		  "maxInstances": "1"
+		}
+	  ],
+	  "relationshipTemplates": [
+		{
+		  "documentation": [
+
+		  ],
+		  "any": [
+
+		  ],
+		  "otherAttributes": {
+
+		  },
+		  "id": "con_19",
+		  "type": "{http://winery.opentosca.org/test/ponyuniverse}hostedOn",
+		  "sourceElement": {
+			"ref": {
+			  "documentation": [
+
+			  ],
+			  "any": [
+
+			  ],
+			  "otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "FoodProvider",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "733",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "45"
+			  },
+			  "id": "oat",
+			  "type": "{http://winery.opentosca.org/test/ponyuniverse}oat",
+			  "requirements": {
+				"requirement": [
+				  {
+					"documentation": [
+
+					],
+					"any": [
+
+					],
+					"otherAttributes": {
+
+					},
+					"id": "requiredAHostingTrough",
+					"type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostOat",
+					"name": "ReqCanHostOat"
+				  }
+				]
+			  },
+			  "capabilities": {
+				"capability": [
+				  {
+					"documentation": [
+
+					],
+					"any": [
+
+					],
+					"otherAttributes": {
+
+					},
+					"id": "provideDryFood",
+					"type": "{http://winery.opentosca.org/test/ponyuniverse}CapDryFood",
+					"name": "CapDryFood"
+				  }
+				]
+			  },
+			  "name": "oat",
+			  "minInstances": 1,
+			  "maxInstances": "1"
+			}
+		  },
+		  "targetElement": {
+			"ref": {
+			  "documentation": [
+
+			  ],
+			  "any": [
+
+			  ],
+			  "otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "FoodProvider",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "727",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "391"
+			  },
+			  "id": "trough",
+			  "type": "{http://winery.opentosca.org/test/ponyuniverse}trough",
+			  "capabilities": {
+				"capability": [
+				  {
+					"documentation": [
+
+					],
+					"any": [
+
+					],
+					"otherAttributes": {
+
+					},
+					"id": "CanHostOat",
+					"type": "{http://winery.opentosca.org/test/ponyuniverse}CapCanHostOat",
+					"name": "CapCanHostOat"
+				  }
+				]
+			  },
+			  "name": "trough",
+			  "minInstances": 1,
+			  "maxInstances": "1"
+			}
+		  },
+		  "name": "con_19"
+		}
+	  ]
+	}
+  }
+}

@@ -1,0 +1,57 @@
+[
+  {
+	"operation": [
+	  {
+		"documentation": [
+		],
+		"any": [
+		],
+		"otherAttributes": {
+		},
+		"inputParameters": {
+		  "inputParameter": [
+			{
+			  "name": "bananaInShell",
+			  "type": "xsd:string",
+			  "required": "YES"
+			},
+			{
+			  "name": "peeler",
+			  "type": "xsd:string",
+			  "required": "YES"
+			}
+		  ]
+		},
+		"outputParameters": {
+		  "outputParameter": [
+			{
+			  "name": "peeledBanana",
+			  "type": "xsd:string",
+			  "required": "NO"
+			}
+		  ]
+		},
+		"name": "peel"
+	  },
+	  {
+		"documentation": [
+		],
+		"any": [
+		],
+		"otherAttributes": {
+		},
+		"inputParameters": {
+		  "inputParameter": [
+			{
+			  "name": "mouth",
+			  "type": "xsd:string",
+			  "required": "YES"
+			}
+		  ]
+		},
+		"name": "eat"
+	  }
+	],
+	"name": "bananaInterface"
+  }
+]

@@ -22,6 +22,11 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 
 /**
  * <p>Java class for tExportedOperation complex type.
@@ -79,6 +84,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "relationshipOperation",
     "plan"
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TExportedOperation {
 
     @XmlElement(name = "NodeOperation")
@@ -215,6 +221,7 @@ public class TExportedOperation {
         @XmlAttribute(name = "nodeRef", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
+		@JsonIdentityReference(alwaysAsId = true)
         protected Object nodeRef;
         @XmlAttribute(name = "interfaceName", required = true)
         @XmlSchemaType(name = "anyURI")
@@ -323,6 +330,7 @@ public class TExportedOperation {
         @XmlAttribute(name = "planRef", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
+		@JsonIdentityReference(alwaysAsId = true)
         protected Object planRef;
 
         /**
@@ -378,6 +386,7 @@ public class TExportedOperation {
         @XmlAttribute(name = "relationshipRef", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
+		@JsonIdentityReference(alwaysAsId = true)
         protected Object relationshipRef;
         @XmlAttribute(name = "interfaceName", required = true)
         @XmlSchemaType(name = "anyURI")
