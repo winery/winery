@@ -66,6 +66,6 @@
                 </executions>
             </plugin>
         </plugins>
-        <finalName>workflowmodeler</finalName>
+        <finalName>winery-workflowmodeler</finalName>
     </build>
 </project>

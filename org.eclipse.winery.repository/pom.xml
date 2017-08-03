@@ -479,7 +479,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<finalName>winery</finalName>
+		<finalName>winery-repository</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
