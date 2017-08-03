@@ -1,7 +1,7 @@
 {
     "dash": "plain",
-    "sourcearrowhead": "none",
-    "targetarrowhead": "PlainArrow",
+    "sourceArrowHead": "none",
+    "targetArrowHead": "PlainArrow",
     "color": "#323cb0",
-    "hovercolor": "black"
+    "hoverColor": "black"
 }
