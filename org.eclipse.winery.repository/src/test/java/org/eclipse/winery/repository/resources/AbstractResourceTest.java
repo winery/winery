@@ -106,7 +106,7 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
 					.get(callURL(restURL))
 					.then()
 					.log()
-					.all()
+					.ifValidationFails()
 					.statusCode(200)
 					.extract()
 					.response()
@@ -133,7 +133,7 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
 					.get(callURL(restURL))
 					.then()
 					.log()
-					.all()
+					.ifValidationFails()
 					.statusCode(400)
 					.extract()
 					.response()
@@ -160,7 +160,7 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
 				.get(callURL(restURL))
 				.then()
 				.log()
-				.all()
+				.ifValidationFails()
 				.statusCode(200)
 				.body("size()", is(size));
 	}
