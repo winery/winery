@@ -57,23 +57,39 @@ public class PropertiesResource {
 		return BackendUtils.persist(this.res);
 	}
 
+	/**
+	 * @return Key/Value map in the case of Winery WPD mode - else instance of XML Element in case of non-key/value properties
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Properties getJson() {
-		Properties properties = ModelUtilities.getPropertiesKV(this.template);
+	public Object getJson() {
 		TEntityType tempType = Utils.getTypeForTemplate(this.template);
 		WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(tempType);
-
-		if (wpd != null) {
+		TEntityTemplate.Properties props = this.template.getProperties();
+		if (wpd == null) {
+			// no Winery special treatment, just return the XML properties
+			return props;
+		} else {
+			Properties properties;
+			if (props == null) {
+				// ensure that always empty data is returned
+				properties = new Properties();
+			} else {
+				properties = props.getKVProperties();
+			}
 			// iterate on all defined properties and add them if necessary
 			for (PropertyDefinitionKV propdef : wpd.getPropertyDefinitionKVList()) {
 				String key = propdef.getKey();
-				if (properties.getProperty(key) == null) {
+				String value = properties.getProperty(key);
+				if (value == null) {
+					// render null as ""
 					properties.put(key, "");
+				} else {
+					properties.put(key, value);
 				}
 			}
+			return properties;
 		}
 
-		return properties;
 	}
 }
