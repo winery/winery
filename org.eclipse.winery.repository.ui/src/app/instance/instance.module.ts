@@ -46,7 +46,7 @@ import { RepositoryModule } from './admin/repository/repository.module';
 import { TagModule } from './serviceTemplates/tag/tag.module';
 import { TypeWithShortNameComponent } from './admin/typesWithShortName/typeWithShortName.component';
 import { SpinnerWithInfinityModule } from '../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.module';
-import { WineryEditorModule } from '../wineryEditorModul/wineryEditor.module';
+import { WineryEditorModule } from '../wineryEditorModule/wineryEditor.module';
 import { CapOrReqDefComponent } from './nodeTypes/capabilityOrRequirementDefinitions/capOrReqDef.component';
 import { SelfServicePortalModule } from './serviceTemplates/selfServicePortal/selfServicePortal.module';
 import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';

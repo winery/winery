@@ -22,7 +22,7 @@ import { SelfServicePortalOptionsComponent } from './selfServicePortalOptions.co
 import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
 import { WineryUploaderModule } from '../../../wineryUploader/wineryUploader.module';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
-import { WineryEditorModule } from '../../../wineryEditorModul/wineryEditor.module';
+import { WineryEditorModule } from '../../../wineryEditorModule/wineryEditor.module';
 import { WineryEditXMLModule } from '../../sharedComponents/editXML/editXML.module';
 
 @NgModule({

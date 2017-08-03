@@ -12,7 +12,7 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { EditXMLService } from './editXML.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { WineryEditorComponent } from '../../../wineryEditorModul/wineryEditor.component';
+import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
 
 declare var requirejs: any;
 

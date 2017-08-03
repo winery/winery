@@ -14,7 +14,7 @@ import { NgModule } from '@angular/core';
 
 import { EditXMLComponent } from './editXML.component';
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
-import { WineryEditorModule } from '../../../wineryEditorModul/wineryEditor.module';
+import { WineryEditorModule } from '../../../wineryEditorModule/wineryEditor.module';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
