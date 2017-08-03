@@ -8,7 +8,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Niko Stadelmaier - initial API and implementation
+ *     Niko Stadelmaier, Tino Stadelmaier - initial API and implementation
  */
 -->
 <div [class.hidden]="!loading">
@@ -115,6 +115,8 @@
                 *ngIf="selectedRadioButton === 'createArtifactTemplate' || selectedRadioButton === 'skipArtifactTemplate' "
                 [title]="'Artifact Type'"
                 [displayList]="artifactTypesList"
+                [width]="'none'"
+                [showOpenButton]="false"
                 (selectedValueChanged)="onSelectedArtifactTypeChanged($event.value)">
             </winery-qname-selector>
             <winery-qname-selector
@@ -151,7 +153,7 @@
             </winery-uploader>
         </div>
         <br>
-        <div>
+        <div id="filesDiv">
             <h5>Already included Files:</h5>
             <table role="presentation">
                 <tbody class="files">

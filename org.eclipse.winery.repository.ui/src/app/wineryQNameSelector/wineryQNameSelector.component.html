@@ -18,7 +18,7 @@
     <div *ngSwitchDefault="">
         <label class="control-label">{{ title }}</label>
         <div>
-            <select class="form-control" style="width:600px; display:inline; margin-right: 10px;" (change)="onChange($event.target.value)">
+            <select class="form-control" [style.width.px]="width" style="display:inline; margin-right: 10px;" (change)="onChange($event.target.value)">
                 <option>(none)</option>
                 <option *ngFor="let item of displayList?.classes"
                         [selected]="selectedValue === item.qName"
