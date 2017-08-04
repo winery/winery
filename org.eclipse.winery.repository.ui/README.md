@@ -52,9 +52,7 @@ Most errors will be fix automatically. More complex ones need to be resolved man
 
 ## Production Build
 After step 3 at setting up local development server do
-1. `npm run build` (please note that production build is only triggerd if linting returns with no errors!)
-2. optional: if you want to serve the production build
-    - `npm run build:serve`
+`npm run build` (please note that production build is only triggered if linting returns with no errors!)
 
 ### API Documentation
 The production build also adds a automatically generated **documentation** which can be found at `/dist/doc/index.html`.
@@ -66,18 +64,8 @@ Use the tslint-cli for this:
 `tslint ./src/**/*.ts`
 
 
-## Generate WineryUi.war
-**BEFORE** building the production build or the war file, it must be ensured, that the ``<base href="/">`` is changed to ``<base href="./">``,
- otherwise it will not work if hosted on tomcat. For more information, [see here](http://stackoverflow.com/questions/39018765/deploy-angular-2-app-with-webpack-to-tomcat-404-errors).
-
-1. Do production build
-2. `npm run war`
-
-or alternatively
-1. Do production build
-2. `cd dist`
-3. `jar cvf WineryUi.war .`
-
+## Generate winery-ui.war
+Execute `mvn package`.
 
 ## License
 
