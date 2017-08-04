@@ -433,11 +433,28 @@ You can use [JRebel](http://www.jrebel.com) for hot code replacement in the Tomc
 
 ### Trouble shooting IntelliJ
 
-  * `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already` and `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already. Could not load [org.apache.xerces.util.XMLGrammarPoolImpl].`
-    * `mvn clean package`
-    * Build -> Build Artifacts... -> org.eclipse.winery.repository.war:exploded: Clean
-    * Build -> Rebuild Project
-  * Has issues with a new selfserivce portal model:  Use [everything](https://www.voidtools.com/) (`choco install everything`) to locate all "selfservice metadata jars" and delete them. Otherwise, Winery does not compile.
+#### Strange errors
+I get strange errors:
+    `java.lang.ClassNotFoundException: com.sun.jersey.spi.container.servlet.ServletContainer`,
+    `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already`,
+    `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already. Could not load [org.apache.xerces.util.XMLGrammarPoolImpl].`, or
+    `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already. Could not load [javax.xml.validation.Schema].`
+
+Solution 1:
+
+1. Stop Tomcat
+2. `mvn clean package` - either via command line or using the menu in IntelliJ
+3. Build -> Build Artifacts... -> org.eclipse.winery.repository.war:exploded: Clean
+4. Build -> Rebuild Project
+
+Solution 2:
+
+Someone could have used an `ExecutorService` and not adhered the lifecycle.
+
+#### Has issues with a new selfservice portal model
+
+Use [everything](https://www.voidtools.com/) (`choco install everything`) to locate all "selfservice metadata jars" and delete them.
+Otherwise, Winery does not compile.
 
 ### Other troubleshootings
 
