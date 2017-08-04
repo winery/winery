@@ -6,8 +6,8 @@
 
 ### Backend
 The frontend assumes that the backend server is running on the same host, using the same protocol on port `8080`. It further
-assumes, that all requests have to be prefixed with `/winery`. Therefore an example request to the backend, if it runs locally,
-looks like this: `http://localhost:8080/winery/servicetemplates`.
+assumes, that all requests have to be prefixed with `/winery-repository`. Therefore an example request to the backend, if it runs locally,
+looks like this: `http://localhost:8080/winery-repository/servicetemplates`.
 
 ## Setup Local Development Server
 1. `npm install`

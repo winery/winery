@@ -51,7 +51,6 @@ Table of contents:
   * [IGenericRepository](#igenericrepository)
   * [IRepository](#irepository)
   * [IWineryRepository](#iwineryrepository)
-- [Shared JSPs and TAGs](#shared-jsps-and-tags)
 - [Type, Template, and Artifact Management](#type-template-and-artifact-management)
 - [Topology Modeler](#topology-modeler)
 - [Debugging Hints](#debugging-hints)
@@ -102,8 +101,10 @@ You can start bower manually in `org.eclipse.winery.repository` and `org.eclipse
 
 There are two WARs generated:
 
-* `org.eclipse.winery.repository/target/winery.war` and
+* `org.eclipse.winery.repository/target/winery-repository.war` and
+* `org.eclipse.winery.repository.ui/target/winery.war`
 * `org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war`
+* `org.eclipse.winery.workflowmodeler/target/winery-workflowmodeler.war`
 
 They can be deployed on a Apache Tomcat runtime environment.
 
@@ -383,56 +384,6 @@ object out of a QName.
 Jersey 1.1. web client. it uses a subset of the REST API to communicate with the repository. Currently, the client
 has features required by the topology modeler.
 
-## Shared JSPs and TAGs
-
-In the "generate-sources" Maven phase of the repository, shared jsps and tags are copied from the topology modeler.
-
-Figure 9 shows the shared jsps. Currently, it is only one JSP. the "dialog.jsp" is used for Yes/No dialogs.
-
-Figure 10 shows the shared tags "orioneditor.tag" is a wrapper for an Orion based editing area. Orion
-( https://www.eclipse.org/orion ) is a web-based IDE by the Eclipse Software Foundation. The tags in the
-"policies" folder are used for creating and rendering policies. The tags in the "templates" folder implement
-functionality for all entity templates such as artifact templates or node templates. Node templates may carry
-requirements and capabilities. The respective tags are contained in the "reqscaps" folder.
-
-
-![Shared JSP Files](graphics/SharedJSPFiles.png)  
-**Figure 9: Shared JSP files**
-
-
-
-![Shared Tags](graphics/SharedTags.png)  
-**Figure 10: Shared Tags**
-
-
-## Type, Template, and Artifact Management
-
-The REST resources offer the method getHTML, which returns a HTML page, when *text/html* is requested.
-It uses JSPs to generate the requested page. Figure 11 shows the structure of the available jsps. They are sorted
-according the different entity types available in TOSCA.
-
-
-![JSP Structure](graphics/JSPStructure.png)  
-**Figure 11: JSP structure**
-
-
-Figure 12 shows the rendered result for the instance states of a node type. The URL used is
-nodetypes/http%253A%252F%252Fexample.com%252FNodeTypes/NT1/#instancestates. A GET with accept
-text/html on the resource nodetypes/http%253A%252F%252Fexample.com%252FNodeTypes/NT1/instancestates
-leads to a processing of the GET request at org.eclipse.winery.repository.resources.entitytypes.InstanceStateResource(getHTML()).
-This renders/jsp/entitytypes/instancestates.jsp. A click on the "Add" button will result on a POST on the
-InstanceStateResource. After a HTTP 304, the instance state is inserted in the table by the client side-
-JavaScript.
-
-The general idea is to have the content of the fragment identifier rendered by a separate resource. The switch
-functionality is implemented in "hashloading.jsp". At each change of the fragment identifier, the respective
-URL is constricted and the content of the div containing the tab content is replaced by the response of the server.
-
-
-![Nodetypes Rendering](graphics/WinerysRenderingofNodetypes.png)  
-**Figure 12 Winery's rendering of nodetypes/http%253A%252F%252Fexample.com%252FNodeTypes/NT1/#instancestates**
-
-
 ## Topology Modeler
 
 The main file of the topology modeler is the "index.jsp". It uses embedded Java code to connect to the repository.
@@ -451,39 +402,34 @@ whereby "tmpl" is bound to "/WEB-INF/tags/common/templates". the property on the
 **Figure 13: Winery's topology modeler**
 
 
-## Debugging Hints
+## Debugging hints
 
-### Debugging JavaScript Code
+### Debugging JavaScript code
 
 #### Chrome
 
-Press f12 to open the debug console
+- Press <kbd>F12</kbd> to open the debug console
+- Use the [Augury](https://chrome.google.com/webstore/detail/augury/elgalmkoelokbchhkhacckoklkejnhcd) Chrome extension
 
 #### Firefox
 
-Use Firebug ( https://getfirebug.com ) It offers more possibilities than the built in console.
-
-### Automatic Browser Refresh
-
-One can use the browser extension LiveReload ( http://www.livereload.com ) to enable reloading of pages after a change.
-Set *workspaces\valesca\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\winery* as directory, use
-http://localhost:8080/winery as URL, and enable LiveReload in the browser.
+- Press <kbd>F12</kbd> to open the debug console
 
 ### Faster Redeployment
 
-It takes a few seconds until the whole application is redeployed. You can use JRebel ( http://www.jrebel.com )
-for hot code replacement in the Tomcat in Eclipse.
+It takes a few seconds until the whole application is redeployed.
+You can use [JRebel](http://www.jrebel.com) for hot code replacement in the Tomcat in Eclipse and IntelliJ.
 
-## Miscellaneous Hints
+## Miscellaneous hints
 
-### Generating the Right Output
+### Generating the right output
 
-*  If necessary, set the content type of the JSP: <%@page contentType="image/svg+xml; charset=utf-8" %>
-  *    Otherwise, answer is plain text (and not XML)
+* If necessary, set the content type of the JSP: `<%@page contentType="image/svg+xml; charset=utf-8" %>`
+  * Otherwise, answer is plain text (and not XML)
 
-*  XML documents have to contain the header <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-  *    standalone=yes means that there is no external DTD
-  *    eleminates parsing errors in firefox
+* XML documents have to contain the header `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`
+  * `standalone=yes` means that there is no external DTD
+  * this eleminates parsing errors in firefox
 
 ### Trouble shooting IntelliJ
 
@@ -493,7 +439,7 @@ for hot code replacement in the Tomcat in Eclipse.
     * Build -> Rebuild Project
   * Has issues with a new selfserivce portal model:  Use [everything](https://www.voidtools.com/) (`choco install everything`) to locate all "selfservice metadata jars" and delete them. Otherwise, Winery does not compile.
 
-### Other Troubleshootings
+### Other troubleshootings
 
 When executing tests, winery logs its output in `winery-debug.log`, too.
 
@@ -523,12 +469,12 @@ When running in jetty 9.0.5, there is always the error message "Request Entity T
 There is the `maxFormContentSize` set in `jetty-web.xml`, but it currently does not help to solve this issue.
 
 When doing a copy-libs-to-tomcat hack, possibly "W3C_XML_SCHEMA_NS_URI cannot be resolved or is not a field" appears.
-Remove `stax-api-1.0.1.jar` out of `tomcat7/lib`: Java's `rt.jar` should be used instead for `javax.xml.XMLConstants`.
+Remove `stax-api-1.0.1.jar` out of `tomcat8/lib`: Java's `rt.jar` should be used instead for `javax.xml.XMLConstants`.
 
 ### "name" vs. "id" at Entities
 
-Some entities carry a name, some an id and some both. A justification is available at TOSCA issue 47
-( https://issues.oasis-open.org/browse/TOSCA-47 ).
+Some entities carry a name, some an id and some both
+ A justification is available at [TOSCA issue 47](https://issues.oasis-open.org/browse/TOSCA-47).
 
 ### Possible Attachments of Artifacts
 
@@ -542,21 +488,21 @@ Deployment Artifacts (DAs) may be attached at
 * NodeType
 * NodeTemplate
 
-## Example Repository
+## Example repository
 
-An example Repository is available at
-https://github.com/OpenTOSCA/OpenTOSCA.github.io/blob/master/third-party/winery-repository.zip .
+An example repository is available at <files.opentosca.org/third-party/v2.0.0/winery-repository.zip>.
 One can import the repository by *Administration*, then *Repository* and finally *Import repository*.
 
-The test repository is avaiable at https://github.com/winery/test-repository.
+The test repository is availabe at <https://github.com/winery/test-repository>.
+This can be directly cloned into `c:\winery-repository`.
 
-## Recommended Programming Literature
+## Recommended programming literature
 
 * Joshua Bloch. Effective Java, 2nd edition. Addison-Wesley
 
 ## Abbreviations
 
-|       |                                                                       |
+| Abbreviation  | Meaning |
 |-------|-----------------------------------------------------------------------|
 | BPMN  | Buisness Process Model and Notation                                   |
 | TOSCA | OASIS Topology and Orchestration Specification for Cloud Applications |
