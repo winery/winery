@@ -99,12 +99,12 @@ Run `mvn package`.
 In case [bower] fails, try to investigate using `mvn package -X`.
 You can start bower manually in `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler` by issuing `bower install`.
 
-There are two WARs generated:
+There are four WARs generated:
 
-* `org.eclipse.winery.repository/target/winery-repository.war` and
-* `org.eclipse.winery.repository.ui/target/winery-ui.war`
-* `org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war`
-* `org.eclipse.winery.workflowmodeler/target/winery-workflowmodeler.war`
+* `org.eclipse.winery.repository/target/winery.war` - the repository
+* `org.eclipse.winery.repository.ui/target/winery-ui.war` - the UI for the repository
+* `org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war` - the topology modeler
+* `org.eclipse.winery.workflowmodeler/target/winery-workflowmodeler.war` - the workflow modeler
 
 They can be deployed on a Apache Tomcat runtime environment.
 

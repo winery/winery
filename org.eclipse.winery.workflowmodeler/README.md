@@ -16,7 +16,7 @@ It was decided that Angular is more modern and thus, the Workflow Modeler was re
 Execute `npm start`.
 Open <http://localhost:9527/> with correct HTTP GET params:
 
-- `repositoryURL` - e.g., http://dev.winery.opentosca.org/winery-repository/
+- `repositoryURL` - e.g., http://dev.winery.opentosca.org/winery/
 - `namespace` - e.g., http://www.example.org/servicetemplates
 - `id` - e.g., PlanDemonstration
 - `plan` - e.g., Test

@@ -26,4 +26,4 @@ export const sections = {
 };
 
 export const hostURL = location.protocol + '//' + location.hostname + ':8080';
-export const backendBaseURL = hostURL + '/winery-repository';
+export const backendBaseURL = hostURL + '/winery';

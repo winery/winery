@@ -36,7 +36,7 @@ First of all, generate a war to have all dependencies fetched by maven.
 Now you can see the Tomcat v7.0 Server at localhost [Stopped, Republish] in your server window.
 Select it and click on the green play button in the window.
 
-Now, Winery can be viewed at http://localhost:8080/winery-repository/
+Now, Winery can be viewed at http://localhost:8080/winery-ui/
 
 ## Setup Code Style
 
