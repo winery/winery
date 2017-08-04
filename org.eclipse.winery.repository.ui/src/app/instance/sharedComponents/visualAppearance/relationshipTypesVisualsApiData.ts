@@ -15,16 +15,16 @@ export class RelationshipTypesVisualsApiData {
     targetArrowHead: string;
     dash: string;
     color: string;
-    hovercolor: string;
+    hoverColor: string;
     boolData: any;
 
-    public constructor(data: any, createBools: boolean) {
+    public constructor(data: any, create: boolean) {
         this.sourceArrowHead = data.sourceArrowHead;
         this.targetArrowHead = data.targetArrowHead;
         this.dash = data.dash;
         this.color = data.color;
-        this.hovercolor = data.hovercolor;
-        if (createBools) {
+        this.hoverColor = data.hoverColor;
+        if (create) {
             this.boolData = new DataInfo();
         }
     }

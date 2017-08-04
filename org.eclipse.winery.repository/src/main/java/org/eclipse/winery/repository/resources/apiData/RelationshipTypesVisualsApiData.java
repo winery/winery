@@ -14,26 +14,22 @@ package org.eclipse.winery.repository.resources.apiData;
 import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.VisualAppearanceResource;
 
 public class RelationshipTypesVisualsApiData {
-	public String sourcearrowhead;
-	public String targetarrowhead;
+
+	public String sourceArrowHead;
+	public String targetArrowHead;
 	public String dash;
 	public String color;
-	public String hovercolor;
+	public String hoverColor;
 
-	public RelationshipTypesVisualsApiData (VisualAppearanceResource visuals) {
-		this.sourcearrowhead = visuals.getSourceArrowHead();
-		this.targetarrowhead = visuals.getTargetArrowHead();
+	public RelationshipTypesVisualsApiData(VisualAppearanceResource visuals) {
+		this.sourceArrowHead = visuals.getSourceArrowHead();
+		this.targetArrowHead = visuals.getTargetArrowHead();
 		this.dash = visuals.getDash();
 		this.color = visuals.getColor();
-		this.hovercolor = visuals.getHoverColor();
+		this.hoverColor = visuals.getHoverColor();
 	}
 
 	public RelationshipTypesVisualsApiData() {
 
-	}
-
-	@Override
-	public String toString() {
-		return "{sourcearrowhead: " + sourcearrowhead + "}";
 	}
 }

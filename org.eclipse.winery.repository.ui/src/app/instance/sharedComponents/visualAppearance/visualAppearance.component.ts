@@ -158,11 +158,11 @@ export class VisualAppearanceComponent implements OnInit {
     }
 
     public get hoverColorLocal() {
-        return this.relationshipData.hovercolor;
+        return this.relationshipData.hoverColor;
     }
 
     public set hoverColorLocal(color: string) {
-        this.relationshipData.hovercolor = color;
+        this.relationshipData.hoverColor = color;
     }
 
     private handleResponse(response: any) {
