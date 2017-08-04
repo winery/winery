@@ -1,7 +1,7 @@
 {
   "name": "workflow-modeler",
   "version": "1.0.0",
-  "description": "A Designer For workflow",
+  "description": "A designer for BPMN4TOSCA-based workflows",
   "scripts": {
     "start": "webpack-dev-server --inline --progress",
     "test": "karma start",
