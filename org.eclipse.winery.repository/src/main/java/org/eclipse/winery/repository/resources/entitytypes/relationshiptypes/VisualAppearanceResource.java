@@ -49,7 +49,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	private static final QName QNAME_ARROWHEAD_TARGET = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "targetArrowHead");
 	private static final QName QNAME_DASH = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "dash");
 	private static final QName QNAME_LINEWIDTH = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "linewidth");
-	private static final QName QNAME_HOVER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "hovercolor");
+	private static final QName QNAME_HOVER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "hoverColor");
 
 
 	public VisualAppearanceResource(RelationshipTypeResource res, Map<QName, String> map, RelationshipTypeId parentId) {
@@ -103,10 +103,10 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			jg.writeEndObject();
 
 			jg.writeStringField("dash", getDash());
-			jg.writeStringField("sourcearrowhead", this.getSourceArrowHead());
-			jg.writeStringField("targetarrowhead", this.getTargetArrowHead());
+			jg.writeStringField("sourceArrowHead", this.getSourceArrowHead());
+			jg.writeStringField("targetArrowHead", this.getTargetArrowHead());
 			jg.writeStringField("color", this.getColor());
-			jg.writeStringField("hovercolor", this.getHoverColor());
+			jg.writeStringField("hoverColor", this.getHoverColor());
 			// BEGIN: Overlays
 
 			jg.writeFieldName("overlays");
@@ -196,10 +196,10 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
 		}
 
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, data.targetarrowhead);
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, data.sourcearrowhead);
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, data.targetArrowHead);
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, data.sourceArrowHead);
 		this.otherAttributes.put(VisualAppearanceResource.QNAME_DASH, data.dash);
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_HOVER_COLOR, data.hovercolor);
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_HOVER_COLOR, data.hoverColor);
 		this.otherAttributes.put(QNames.QNAME_COLOR, data.color);
 		return BackendUtils.persist(this.res);
 	}
