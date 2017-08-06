@@ -1,6 +1,6 @@
 {
-  "name": "Winery",
-  "version": "0.1.37-SNAPSHOT",
+  "name": "winery",
+  "version": "1.0.0-SNAPSHOT",
   "author": "Oliver Kopp <kopp.dev@gmail.com>",
   "contributors": [
     {
