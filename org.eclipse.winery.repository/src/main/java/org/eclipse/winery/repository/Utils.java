@@ -196,7 +196,7 @@ public class Utils {
             conf.put(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
             try {
                 exporter.exportTOSCA(resource.getId(), output, conf);
-            } catch (JAXBException e) {
+            } catch (Exception e) {
                 throw new WebApplicationException(e);
             }
             output.close();

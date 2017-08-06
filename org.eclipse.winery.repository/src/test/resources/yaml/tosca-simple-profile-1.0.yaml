@@ -8,6 +8,12 @@
 # and http://www.apache.org/licenses/LICENSE-2.0
 #
 
+##########################################################################
+# TOSCA Namespacing keyword specifies the TOSCA Namespace Alias value which 
+# all TOSCA Service Templates MUST always have.
+##########################################################################
+tosca_definitions_version: tosca_simple_yaml_1_1
+
 imports:
   - artifact_types.yaml
   - capability_types.yaml

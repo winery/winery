@@ -129,7 +129,9 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		this.id = id;
 
 		// the resource itself exists
-		assert (Repository.INSTANCE.exists(id));
+		if (!Repository.INSTANCE.exists(id)) {
+			throw new IllegalStateException(String.format("The resource %s does not exist", id));
+		}
 
 		// the data file might not exist
 		this.ref = BackendUtils.getRefOfDefinitions(id);
@@ -304,7 +306,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 				Map<String, Object> conf = new HashMap<>();
 				try {
 					exporter.exportTOSCA(AbstractComponentInstanceResource.this.id, output, conf);
-				} catch (JAXBException e) {
+				} catch (Exception e) {
 					throw new WebApplicationException(e);
 				}
 			}

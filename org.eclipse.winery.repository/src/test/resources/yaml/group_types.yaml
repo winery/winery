@@ -9,6 +9,12 @@
 #
 
 ##########################################################################
+# TOSCA Namespacing keyword specifies the TOSCA Namespace Alias value which 
+# all TOSCA Service Templates MUST always have.
+##########################################################################
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+##########################################################################
 # TOSCA Group Types represent logical groupings of TOSCA nodes that have an 
 # implied membership relationship and may need to be orchestrated or managed 
 # together to achieve some result.  Some use cases being developed by the 

@@ -56,11 +56,10 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.resources.admin.NamespacesResource;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
@@ -117,83 +116,73 @@ public class CSARExporter {
 	 * @param out the outputstream to write to
 	 * @throws JAXBException
 	 */
-	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, JAXBException {
+	public void writeCSAR(TOSCAComponentId entryId, OutputStream out) throws ArchiveException, IOException, JAXBException, RepositoryCorruptException {
 		CSARExporter.LOGGER.trace("Starting CSAR export with {}", entryId.toString());
 
 		Map<RepositoryFileReference, String> refMap = new HashMap<>();
 		Collection<String> definitionNames = new ArrayList<>();
 
-		final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out);
+		try (final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out)) {
+			TOSCAExportUtil exporter = new TOSCAExportUtil();
+			Map<String, Object> conf = new HashMap<>();
 
-		TOSCAExportUtil exporter = new TOSCAExportUtil();
-		Map<String, Object> conf = new HashMap<>();
+			ExportedState exportedState = new ExportedState();
 
-		ExportedState exportedState = new ExportedState();
+			TOSCAComponentId currentId = entryId;
+			do {
+				String defName = CSARExporter.getDefinitionsPathInsideCSAR(currentId);
+				definitionNames.add(defName);
 
-		TOSCAComponentId currentId = entryId;
-		do {
-			String defName = CSARExporter.getDefinitionsPathInsideCSAR(currentId);
-			definitionNames.add(defName);
-
-			zos.putArchiveEntry(new ZipArchiveEntry(defName));
-			Collection<TOSCAComponentId> referencedIds;
-			try {
+				zos.putArchiveEntry(new ZipArchiveEntry(defName));
+				Collection<TOSCAComponentId> referencedIds;
 				referencedIds = exporter.exportTOSCA(currentId, zos, refMap, conf);
-			} catch (IllegalStateException e) {
-				// thrown if something went wrong inside the repo
-				out.close();
-				// we just rethrow as there currently is no error stream.
-				throw e;
+				zos.closeArchiveEntry();
+
+				exportedState.flagAsExported(currentId);
+				exportedState.flagAsExportRequired(referencedIds);
+
+				currentId = exportedState.pop();
+			} while (currentId != null);
+
+			// if we export a ServiceTemplate, data for the self-service portal might exist
+			if (entryId instanceof ServiceTemplateId) {
+				ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
+				this.addSelfServiceMetaData(serviceTemplateId, refMap, zos);
 			}
-			zos.closeArchiveEntry();
 
-			exportedState.flagAsExported(currentId);
-			exportedState.flagAsExportRequired(referencedIds);
+			// now, refMap contains all files to be added to the CSAR
 
-			currentId = exportedState.pop();
-		} while (currentId != null);
+			// write manifest directly after the definitions to have it more at the beginning of the ZIP rather than having it at the very end
+			this.addManifest(entryId, definitionNames, refMap, zos);
 
-		// if we export a ServiceTemplate, data for the self-service portal might exist
-		if (entryId instanceof ServiceTemplateId) {
-			ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
-			this.addSelfServiceMetaData(serviceTemplateId, refMap, zos);
-		}
+			// used for generated XSD schemas
+			TransformerFactory tFactory = TransformerFactory.newInstance();
+			Transformer transformer;
+			try {
+				transformer = tFactory.newTransformer();
+			} catch (TransformerConfigurationException e1) {
+				CSARExporter.LOGGER.debug(e1.getMessage(), e1);
+				throw new IllegalStateException("Could not instantiate transformer", e1);
+			}
 
-		// now, refMap contains all files to be added to the CSAR
-
-		// write manifest directly after the definitions to have it more at the beginning of the ZIP rather than having it at the very end
-		this.addManifest(entryId, definitionNames, refMap, zos);
-
-		// used for generated XSD schemas
-		TransformerFactory tFactory = TransformerFactory.newInstance();
-		Transformer transformer;
-		try {
-			transformer = tFactory.newTransformer();
-		} catch (TransformerConfigurationException e1) {
-			CSARExporter.LOGGER.debug(e1.getMessage(), e1);
-			throw new IllegalStateException("Could not instantiate transformer", e1);
-		}
-
-		// write all referenced files
-		for (RepositoryFileReference ref : refMap.keySet()) {
-			String archivePath = refMap.get(ref);
-			CSARExporter.LOGGER.trace("Creating {}", archivePath);
-			if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
-				addDummyRepositoryFileReferenceForGeneratedXSD(zos, transformer, (DummyRepositoryFileReferenceForGeneratedXSD) ref, archivePath);
-			} else {
-				if (ref.getParent() instanceof ArtifactTemplateDirectoryId) {
-					addArtifactTemplateToZipFile(zos, ref, archivePath);
+			// write all referenced files
+			for (RepositoryFileReference ref : refMap.keySet()) {
+				String archivePath = refMap.get(ref);
+				CSARExporter.LOGGER.trace("Creating {}", archivePath);
+				if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
+					addDummyRepositoryFileReferenceForGeneratedXSD(zos, transformer, (DummyRepositoryFileReferenceForGeneratedXSD) ref, archivePath);
 				} else {
-					addFileToZipArchive(zos, ref, archivePath);
-					zos.closeArchiveEntry();
+					if (ref.getParent() instanceof ArtifactTemplateDirectoryId) {
+						addArtifactTemplateToZipFile(zos, ref, archivePath);
+					} else {
+						addFileToZipArchive(zos, ref, archivePath);
+						zos.closeArchiveEntry();
+					}
 				}
 			}
+
+			this.addNamespacePrefixes(zos);
 		}
-
-		this.addNamespacePrefixes(zos);
-
-		zos.finish();
-		zos.close();
 	}
 
 	/**
@@ -432,8 +421,8 @@ public class CSARExporter {
 
 		Application application = res.getApplication();
 
-		// hack for the OpenTOSCA container to contain the CSAR name also in data.json
-		application.setCsarName(entryId.getXmlId().getDecoded() + ".csar");
+		// clear CSAR name as this may change.
+		application.setCsarName(null);
 
 		// hack for the OpenTOSCA container to display something
 		application.setVersion("1.0");
@@ -481,19 +470,6 @@ public class CSARExporter {
 		// add everything in the root of the CSAR
 		String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
 		addSelfServiceMetaData(serviceTemplateId, targetDir, refMap);
-		this.addSelfServiceMetaDataAsJSON(serviceTemplateId, zos);
-	}
-
-	private void addSelfServiceMetaDataAsJSON(ServiceTemplateId serviceTemplateId, ArchiveOutputStream zos) throws IOException {
-		ArchiveEntry archiveEntry = new ZipArchiveEntry(Constants.DIRNAME_SELF_SERVICE_METADATA + "/data.json");
-		zos.putArchiveEntry(archiveEntry);
-		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
-		Application application = serviceTemplateResource.getSelfServicePortalResource().getApplication();
-		ObjectMapper om = new ObjectMapper();
-		// using om.writeValue(zos, application) causes trouble with the zos, so we write it into a byte array first
-		byte[] bytes = om.writeValueAsBytes(application);
-		zos.write(bytes);
-		zos.closeArchiveEntry();
 	}
 
 	private void addManifest(TOSCAComponentId id, Collection<String> definitionNames, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream out) throws IOException {
