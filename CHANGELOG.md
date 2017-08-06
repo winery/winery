@@ -8,14 +8,17 @@ Here, the categories "Changed" for added and changed functionality,
 
 We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `#NUM`.
 
-## [unreleased]
-
 ## [v1.0.0] - not yet released
+
+### Changed
 
 - Adaptions required by the IP check
 - Bug fixes
+- Enfore `LF` line endings in the repository
+- **BREAKING**: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
 - Add support of [XaaS Packager](http://eclipse.github.io/winery/user/XaaSPackager)
 - Add support of [Splitting](http://eclipse.github.io/winery/user/Splitting)
+
 
 ## Initial Code Contribution - 2014-03-27
 
