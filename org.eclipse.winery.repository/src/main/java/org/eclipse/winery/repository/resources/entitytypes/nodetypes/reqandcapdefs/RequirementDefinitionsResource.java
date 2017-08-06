@@ -23,8 +23,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
 
-import com.sun.jersey.api.view.Viewable;
-
 public class RequirementDefinitionsResource extends RequirementOrCapabilityDefinitionsResource<RequirementDefinitionResource, TRequirementDefinition> {
 
 	public RequirementDefinitionsResource(NodeTypeResource res, List<TRequirementDefinition> defs) {
@@ -32,14 +30,8 @@ public class RequirementDefinitionsResource extends RequirementOrCapabilityDefin
 	}
 
 	@Override
-	public Viewable getHTML() {
-		return new Viewable("/jsp/entitytypes/nodetypes/reqandcapdefs/reqdefs.jsp", this);
-	}
-
-	@Override
 	public Collection<QName> getAllTypes() {
 		SortedSet<RequirementTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(RequirementTypeId.class);
 		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
 	}
-
 }

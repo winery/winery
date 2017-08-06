@@ -127,7 +127,7 @@ public class ModelUtilities {
 	 */
 	public static Properties getPropertiesKV(TEntityTemplate template) {
 		if (template.getProperties() != null) {
-			return template.getProperties().getProperties();
+			return template.getProperties().getKVProperties();
 		} else {
 			return null;
 		}

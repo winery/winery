@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -30,7 +30,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.restdoc.annotations.RestDoc;
@@ -41,7 +41,7 @@ import org.restdoc.annotations.RestDoc;
  *
  * FIXME: This class should be generalized to handle ImportId
  */
-public class XSDImportsResource extends AbstractComponentsResource<XSDImportResource> {
+public class XSDImportsResource extends AbstractComponentsWithoutTypeReferenceResource<XSDImportResource> {
 
 	@Path("{namespace}/")
 	@GET

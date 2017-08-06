@@ -1,0 +1,20 @@
+{
+  "documentation": null,
+  "any": null,
+  "otherAttributes": null,
+  "inputParameters": {
+	"inputParameter": []
+  },
+  "outputParameters": {
+	"outputParameter": []
+  },
+  "name": "harvest Plan",
+  "precondition": null,
+  "planModel": null,
+  "planModelReference": {
+	"reference": ""
+  },
+  "id": "",
+  "planType": "http://docs.oasis-open.org/tosca/ns/2011/12/PlanTypes/BuildPlan",
+  "planLanguage": "http://www.opentosca.org/bpmn4tosca"
+}

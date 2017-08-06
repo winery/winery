@@ -1,0 +1,95 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Nicole Keppler, Lukas Balzer - initial API and implementation
+ */
+-->
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table
+        [data]="tagsData"
+        [columns]="columns"
+        (cellSelected)="onCellSelected($event.row)"
+        [itemsPerPage]="10"
+        (removeBtnClicked)="onRemoveClick($event)"
+        (addBtnClicked)="onAddClick();">
+    </winery-table>
+</div>
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <winery-modal-header [title]="'Add Tag'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #addTagForm="ngForm" id="addTagForm">
+            <div class="form-group">
+                <label class="control-label" for="name">Name</label>
+                <input #nameInput="ngModel"
+                       id="name"
+                       class="form-control"
+                       type="text"
+                       name="name"
+                       required
+                       [(ngModel)]="newTag.name"
+                       [wineryDuplicateValidator]="validatorObject"
+                />
+                <div *ngIf="nameInput.errors && (nameInput.dirty || nameInput.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!nameInput.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!nameInput.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="value">Value</label>
+                <input #valueInput="ngModel"
+                       id="value"
+                       class="form-control"
+                       type="text"
+                       name="value"
+                       required
+                       [(ngModel)]="newTag.value"
+                />
+                <div *ngIf="valueInput.errors && (valueInput.dirty || valueInput.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!valueInput.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!valueInput.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="addNewTag()"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Add'"
+                         [disableOkButton]="!addTagForm?.form.valid">
+    </winery-modal-footer>
+
+</winery-modal>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete Tag'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="selectedCell != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ selectedCell.name }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>

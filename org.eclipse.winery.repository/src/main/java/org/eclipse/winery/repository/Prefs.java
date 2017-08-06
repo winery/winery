@@ -22,8 +22,6 @@ import java.security.AccessControlException;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -147,7 +145,12 @@ public class Prefs implements ServletContextListener {
 		}
 	}
 
+	/**
+	 * Initializes Winery using the given context
+	 */
 	private void doInitialization(ServletContext ctx) {
+		Objects.requireNonNull(ctx);
+
 		if (Locale.getDefault() != Locale.ENGLISH) {
 			try {
 				// needed for {@link
@@ -210,13 +213,10 @@ public class Prefs implements ServletContextListener {
 
 		// Initialize XSD validation in the background. Takes up a few seconds.
 		// If we do not do it here, the first save by a user takes a few seconds, which is inconvenient
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		executor.submit(() -> {
-			Prefs.LOGGER.debug("Initializing XML validation");
-			@SuppressWarnings("unused")
-			TOSCADocumentBuilderFactory tdbf = TOSCADocumentBuilderFactory.INSTANCE;
-			Prefs.LOGGER.debug("Initialized XML validation");
-		});
+		Prefs.LOGGER.debug("Initializing XML validation");
+		@SuppressWarnings("unused")
+		TOSCADocumentBuilderFactory tdbf = TOSCADocumentBuilderFactory.INSTANCE;
+		Prefs.LOGGER.debug("Initialized XML validation");
 	}
 
 	public IRepository getRepository() {

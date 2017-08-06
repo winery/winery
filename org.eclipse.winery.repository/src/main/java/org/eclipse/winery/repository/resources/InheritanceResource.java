@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,20 +8,18 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - add JSON implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.resources;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.backend.Repository;
-
-import com.sun.jersey.api.view.Viewable;
+import org.eclipse.winery.repository.resources.apiData.InheritanceResourceApiData;
 
 /**
  * Class for managing inheritance properties: abstract, final, derivedFromn
@@ -38,37 +36,44 @@ public class InheritanceResource {
 
 	private AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal managedResource;
 
-
 	public InheritanceResource(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
 		this.managedResource = res;
-	}
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML() {
-		return new Viewable("/jsp/inheritance.jsp", this);
-	}
-
-	public String getIsAbstract() {
-		return this.managedResource.getIsAbstract();
-	}
-
-	public String getIsFinal() {
-		return this.managedResource.getIsAbstract();
 	}
 
 	public String getDerivedFrom() {
 		return this.managedResource.getDerivedFrom();
 	}
 
-	/** JSP Data **/
+	/**
+	 * Produces a JSON object containing all necessary data for displaying and editing the inheritance.
+	 *
+	 * @return JSON object in the format
+	 * {
+	 *    "isAbstract": "no",
+	 *    "isFinal": "yes",
+	 *    "derivedFrom": "[QName]"
+	 *  }
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public InheritanceResourceApiData getInheritanceManagementJSON() {
+		return new InheritanceResourceApiData(this.managedResource);
+	}
 
-	public SortedSet<? extends TOSCAComponentId> getPossibleSuperTypes() {
-		// sorted by Name, not by namespace
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(this.managedResource.getId().getClass());
-		SortedSet<? extends TOSCAComponentId> res = new TreeSet<>(allTOSCAcomponentIds);
-		res.remove(this.managedResource.getId());
-		// FEATURE: Possibly exclude all subtypes to avoid circles. However, this could be disappointing for users who know what they are doing
-		return res;
+	/**
+	 * Saves the inheritance management from a putted json object in the format:
+	 * {
+	 *   "isAbstract": "no",
+	 *   "isFinal": "yes",
+	 *   "derivedFrom": "[QName]"
+	 * }
+	 *
+	 * @param json Should at least contain values for abstract, final and QName.
+	 * @return Response
+	 */
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response saveInheritanceManagementFromJSON(InheritanceResourceApiData json) {
+		return this.managedResource.putInheritance(json);
 	}
 }

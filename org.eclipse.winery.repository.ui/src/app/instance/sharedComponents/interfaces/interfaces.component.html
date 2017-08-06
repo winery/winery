@@ -1,0 +1,132 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
+ */
+-->
+<div *ngIf="loading">
+    <winery-loader></winery-loader>
+</div>
+
+<div *ngIf="!loading">
+    <div class="right">
+        <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+    </div>
+    <div style="display: inline-flex;">
+        <winery-selectable-list [title]="'Interfaces'"
+                               [rows]="interfacesData"
+                               (addButtonClicked)="addInterface()"
+                               (selectionChanged)="onInterfaceSelect($event)"
+                               (removeButtonClicked)="removeInterface($event)">
+        </winery-selectable-list>
+        <winery-selectable-list *ngIf="operations"
+                               [title]="'Operations'"
+                               [rows]="operations"
+                               (addButtonClicked)="addOperation()"
+                               (selectionChanged)="onOperationSelected($event)"
+                               (removeButtonClicked)="removeOperation()">
+        </winery-selectable-list>
+    </div>
+
+    <div *ngIf="isServiceTemplate; else inOutParameters">
+        <winery-service-templates-target-interface [operation]="selectedOperation"></winery-service-templates-target-interface>
+    </div>
+    <ng-template #inOutParameters>
+        <div class="generateButtons">
+            <button class="btn btn-default btn-sm"
+                    [disabled]="!selectedInterface" (click)="showGenerateImplementationModal();">
+                Generate Implementation Artifact
+            </button>
+            <button class="btn btn-default btn-sm"
+                    [disabled]="containsDefaultLifecycle()" (click)="generateLifecycleInterface()">
+                Generate Lifecycle Interface
+            </button>
+        </div>
+
+        <winery-io-parameter [inputParameters]="inputParameters" [outputParameters]="outputParameters">
+        </winery-io-parameter>
+    </ng-template>
+</div>
+
+<winery-modal bsModal #addIntOpModal="bs-modal" [modalRef]="addIntOpModal">
+    <winery-modal-header [title]="modalTitle"></winery-modal-header>
+    <winery-modal-body>
+        <form #addElementForm="ngForm">
+            <div class="form-group">
+                <label for="interfaceName" class="control-label">Name</label>
+                <input type="text"
+                       class="form-control"
+                       id="interfaceName"
+                       name="interfaceName"
+                       #newName="ngModel"
+                       ngModel
+                       required
+                       [wineryDuplicateValidator]="validatorObject">
+                <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!newName.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!newName.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer
+        (onOk)="modalTitle === 'Interface' ? onAddInterface(newName.value) : onAddOperation(newName.value);"
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Add'"
+        [disableOkButton]="!addElementForm?.form.valid">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
+    <winery-modal-header [title]="modalTitle"></winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Are you sure you want to remove <span style="font-weight:bold;">{{ elementToRemove }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+                        (onOk)="onRemoveElement()"></winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #generateImplModal="bs-modal" [modalRef]="generateImplModal">
+    <winery-modal-header [title]="'Generate Implementation Artifact'"></winery-modal-header>
+    <winery-modal-body>
+        <form *ngIf="!generating; else loadingGeneration" #generateForm="ngForm">
+            <div class="form-group">
+                <label for="javaPackage" class="control-label">Java Package</label>
+                <input type="text" name="javaPackage" [(ngModel)]="generateArtifactApiData.javaPackage"
+                       required id="javaPackage"
+                       class="form-control">
+            </div>
+            <winery-component-exists [generateData]="implementation" [modalRef]="generateImplModal">
+            </winery-component-exists>
+            <p>
+                There is no check for the name of the implementation artifact. The artifact template name will be reused
+                as implementation artifact name without any further check.
+            </p>
+            <winery-component-exists [generateData]="artifactTemplate" [modalRef]="generateImplModal">
+            </winery-component-exists>
+        </form>
+        <ng-template #loadingGeneration>
+            <winery-loader></winery-loader>
+        </ng-template>
+    </winery-modal-body>
+    <winery-modal-footer
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Generate'"
+        [disableOkButton]="!(implementation.createComponent || artifactTemplate.createComponent)"
+        (onOk)="generateImplementationArtifact()">
+    </winery-modal-footer>
+</winery-modal>

@@ -55,6 +55,7 @@ public class Splitting {
 	// counter for relationships starts at 100 because all TRelationshipTemplate should have a 3 digit number in their id
 	private static int newRelationshipIdCounter = 100;
 	private static int nodeTemplateIdCounter = 1;
+	private static int IdCounter = 1;
 
 	// Required variables for the following computation of the transitive closure of a given topology
 	private Map<TNodeTemplate, Set<TNodeTemplate>> initDirectSuccessors = new HashMap<>();
@@ -270,7 +271,8 @@ public class Splitting {
 					// Otherwise, duplicate the considered node for each target label
 					for (String targetLabel: predecessorsTargetLabel) {
 						TNodeTemplate duplicatedNode = BackendUtils.clone(currentNode);
-						duplicatedNode = BackendUtils.checkId(duplicatedNode, currentNode, targetLabel);
+						duplicatedNode.setId(Util.makeNCName(currentNode.getId() + "-" + targetLabel));
+						duplicatedNode.setName(Util.makeNCName(currentNode.getName() + "-" + targetLabel));
 						topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
 						topologyTemplateCopy.getNodeTemplateOrRelationshipTemplate().add(duplicatedNode);
 						ModelUtilities.setTargetLabel(duplicatedNode, targetLabel);
@@ -554,6 +556,9 @@ public class Splitting {
 				newMatchingNodeTemplate = newHostNodeTemplate;
 				//newMatchingNodeTemplate.setId(Util.makeNCName(newMatchingNodeTemplate.getId() + "-" + ModelUtilities.getTargetLabel(newMatchingNodeTemplate).get()));
 				//newMatchingNodeTemplate.setName(Util.makeNCName(newMatchingNodeTemplate.getName() + "-" + ModelUtilities.getTargetLabel(newMatchingNodeTemplate).get()));
+				matchingTopologyFragment.getNodeTemplateOrRelationshipTemplate().stream()
+						.filter(et -> topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream().anyMatch(tet -> tet.getId().equals(et.getId())))
+						.forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
 				topologyTemplate.getNodeTemplateOrRelationshipTemplate().addAll(matchingTopologyFragment.getNodeTemplateOrRelationshipTemplate());
 				matching.add(newMatchingNodeTemplate);
 			} else {
@@ -676,7 +681,6 @@ public class Splitting {
 
 		}
 		topologyTemplate.getNodeTemplateOrRelationshipTemplate().removeAll(replacedNodeTemplatesToDelete);
-		fixDuplicateTemplateIds(topologyTemplate);
 
 		return topologyTemplate;
 	}
@@ -732,6 +736,10 @@ public class Splitting {
 
 			QName requiredCapabilityTypeQName = getRequiredCapabilityTypeQNameOfRequirement(openRequirement);
 
+			selectedConnectionFragments.get(openRequirementId).getNodeTemplateOrRelationshipTemplate().stream()
+					.filter(et -> topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream().anyMatch(tet -> tet.getId().equals(et.getId())))
+					.forEach(et -> et.setId(et.getId() + "_" + IdCounter++));
+
 			topologyTemplate.getNodeTemplateOrRelationshipTemplate()
 					.addAll(selectedConnectionFragments.get(openRequirementId).getNodeTemplateOrRelationshipTemplate());
 			nodeTemplates.addAll(ModelUtilities.getAllNodeTemplates(selectedConnectionFragments.get(openRequirementId)));
@@ -781,7 +789,6 @@ public class Splitting {
 				throw new SplittingException("No suitable relationship type found for matching");
 			}
 		}
-		fixDuplicateTemplateIds(topologyTemplate);
 		return topologyTemplate;
 	}
 
@@ -1031,7 +1038,8 @@ public class Splitting {
 	protected List<TNodeTemplate> getHostedOnSuccessorsOfNodeTemplate(TTopologyTemplate topologyTemplate, TNodeTemplate nodeTemplate) {
 		List<TNodeTemplate> successorNodeTemplates = new ArrayList<>();
 		for (TRelationshipTemplate relationshipTemplate: ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate)) {
-			if (getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
+			if (getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget() != null && 
+					getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
 				successorNodeTemplates.add(ModelUtilities.getTargetNodeTemplateOfRelationshipTemplate(topologyTemplate, relationshipTemplate));
 			}
 		}
@@ -1049,7 +1057,8 @@ public class Splitting {
 		predecessorNodeTemplates.clear();
 		List<TRelationshipTemplate> incomingRelationships = ModelUtilities.getIncomingRelationshipTemplates(topologyTemplate, nodeTemplate);
 		for (TRelationshipTemplate relationshipTemplate: incomingRelationships) {
-			if (getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
+			if (getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget() != null && 
+					getBasisRelationshipType(relationshipTemplate.getType()).getValidTarget().getTypeRef().getLocalPart().equalsIgnoreCase("Container")) {
 				predecessorNodeTemplates.add(ModelUtilities.getSourceNodeTemplateOfRelationshipTemplate(topologyTemplate, relationshipTemplate));
 			}
 		}
@@ -1100,52 +1109,6 @@ public class Splitting {
 		}
 	}
 
-
-	/**
-	 * compare each id to all other ids and fix duplicated ones
-	 * @param tTopologyTemplate
-	 */
-	public static void fixDuplicateTemplateIds(TTopologyTemplate tTopologyTemplate) {
-
-		//check for duplicate NodeTemplateIds
-		List<TRelationshipTemplate> tRelationshipTemplates = tTopologyTemplate.getRelationshipTemplates();
-		List <String> tRelationshipTemplatesIds = new ArrayList();
-				tRelationshipTemplates.stream().forEach(rt -> tRelationshipTemplatesIds.add(rt.getId()));
-		for (TRelationshipTemplate relationshipTemplate : tRelationshipTemplates) {
-			List<String> sameIds = tRelationshipTemplatesIds.stream().filter(id -> relationshipTemplate.getId().equals(id)).collect(Collectors.toList());
-			if (sameIds.size() > 1) {
-				relationshipTemplate.setName("con_" + newRelationshipIdCounter);
-				relationshipTemplate.setId("con_" + newRelationshipIdCounter);
-				newRelationshipIdCounter++;
-			}
-			tRelationshipTemplatesIds.clear();
-			tRelationshipTemplates.stream().forEach(rt -> tRelationshipTemplatesIds.add(rt.getId()));
-		}
-
-		//check for duplicate NodeTemplateIds, if detected one, append a counter
-		List<TNodeTemplate> tNodeTemplates = tTopologyTemplate.getNodeTemplates();
-		List<String> ids = new ArrayList<>();
-		for (TNodeTemplate tNodeTemplate: tNodeTemplates) {
-			if (ids.isEmpty()) {
-				ids.add(tNodeTemplate.getId());
-			} else {
-				for (String string: ids) {
-					if (string == tNodeTemplate.getId()) {
-						StringBuilder builder = new StringBuilder();
-						builder.append(string).append("_").append(nodeTemplateIdCounter);
-						String tempId = builder.toString();
-						nodeTemplateIdCounter++;
-						tNodeTemplate.setId(tempId);
-						tNodeTemplate.setName(tempId);
-						ids.add(tempId);
-						break;
-					}
-				}
-				ids.add(tNodeTemplate.getId());
-			}
-		}
-	}
-
 	public Map<TRequirement, String> getOpenRequirementsAndMatchingBasisCapabilityTypeNames(TTopologyTemplate topologyTemplate) {
 		Map<TRequirement, String> openRequirements = new HashMap<>();
 		List<TNodeTemplate> nodeTemplates = ModelUtilities.getAllNodeTemplates(topologyTemplate);
@@ -1155,7 +1118,7 @@ public class Splitting {
 				List<TRequirement> containedRequirements = nodeTemplate.getRequirements().getRequirement();
 				List<TNodeTemplate> successorsOfNodeTemplate = new ArrayList<>();
 				List<TRelationshipTemplate> outgoingRelationships = ModelUtilities.getOutgoingRelationshipTemplates(topologyTemplate, nodeTemplate);
-				if (outgoingRelationships != null) {
+				if (outgoingRelationships != null && !outgoingRelationships.isEmpty()) {
 					for (TRelationshipTemplate relationshipTemplate : outgoingRelationships) {
 						if (relationshipTemplate.getSourceElement().getRef() instanceof TNodeTemplate) {
 							successorsOfNodeTemplate.add((TNodeTemplate) relationshipTemplate.getTargetElement().getRef());

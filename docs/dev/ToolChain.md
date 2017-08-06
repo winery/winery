@@ -3,6 +3,8 @@
 <!-- toc -->
 
 - [GitHub - Start](#github---start)
+  * [First steps](#first-steps)
+  * [Steps for working on a topic](#steps-for-working-on-a-topic)
 - [GitHub - Preparation First Pull Request](#github---preparation-first-pull-request)
 - [GitHub - Prepare Pull Request](#github---prepare-pull-request)
 - [GitHub - Create Pull Request](#github---create-pull-request)
@@ -17,11 +19,24 @@ For setup the IDE, please go to the [DevGuide](./).
 
 ## GitHub - Start
 
-* To contribute to Eclipse Winery development you need a GitHub account and access to <https://github.com/opentosca/winery>
-* First steps:
+To contribute to Eclipse Winery development you need a GitHub account and access to <https://github.com/opentosca/winery>.
+Email your supervisor your GitHub username.
+
+- In case you did not choose an account name, use `flastname` as pattern:
+  `f` is the lower-case first letter of your firstname and
+  `lastname` is the lower-case lastname.
+- Due to open source development, your email adress will get public.
+  In case, you don't have a public email adress, we recommend to create one or use your student email adress.
+  In case you want to create a longer-lasting one, please use the GitHub username.
+  Example: `flastname@gmail.com`.
+
+### First steps
+
   1. Clone https://github.com/opentosca/winery (automatically it becomes the `origin`)
   2. `git remote add upstream https://github.com/eclipse/winery.git`
-* Steps for working on a topic
+
+### Steps for working on a topic
+
   1. Create a new branch for each topic (fix a bug, add functionality) and name it accordingly.
   2. Sync with latest upstream/master: `git fetch upstream`
   3. Create branch based on `upstream/master` and make it known publicly:
@@ -38,7 +53,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
 ## GitHub - Preparation First Pull Request to offical Eclipse Winery™ repository
 
 * Check [CONTRIBUTING.md](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md) and carefully read the instructions
-* http://wiki.eclipse.org/Development_Resources/Contributing_via_Git --> Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
+* http://wiki.eclipse.org/Development_Resources/Contributing_via_Git 🡒 Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
 * Sign the Contributor Agreement electronically
 
 ## GitHub - Prepare Pull Request
@@ -60,15 +75,15 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
      - Check again the style (!)
      - (Don't forget RESCAN to see the current changes)
   7. Add Changes/Fixed to `CHANGELOG.md` and add description to `docs/index.md` (if helpful)
-  8. Stage To Commit --> All Changes are staged to Commit
+  8. Press "Stage to Commit" 🡒 all changes are staged to Commit
   9. Sign the Commit Message (<kbd>Ctrl</kbd>+<kbd>S</kbd>)
   10. Commit & Push with "force overwrite" since you changed the branch: `git push -f`
 
 ## GitHub - Create Pull Request
 
-Attention: Commits on the same branch done after the Pull Request is sent are still part of the Pull Request (!)
+**Attention: Commits on the same branch done after the Pull Request is sent are still part of the Pull Request (!)**
 
-* Go to https://github.com/eclipse/winery --> Pull Request
+* Go to https://github.com/eclipse/winery 🡒 Pull Request
 * Fill in the title of the Pull Request and give a more detailed description of the changes or added functionality
 * In case of UI changes: Add screenshots
 * Add `[x]` to the items listed in the write field
@@ -82,12 +97,16 @@ Attention: Commits on the same branch done after the Pull Request is sent are st
 
 * If there is a red cross, click in repective "Details" and fix them
 
-* In case of missing code quality, ... changes are requested by a commiter (person controlling the pull request process)
+* In case of missing code quality, ... changes are requested by a committer (person controlling the pull request process)
 * FOR WINERY THE FOLLOWING APPLY:
   - Open Git Gui
   - Make requested changes in your code (don't forget to RESCAN)
   - Commit
   - Push
+  - Wait for a second review
+  - In case everything is fine, squash the commits into one.
+    See [GitHub - Prepare Pull Request](#github---prepare-pull-request).
+    Then, do a force push (`git push -f`)
 
 ## Excursus: Git
 

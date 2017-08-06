@@ -55,7 +55,7 @@ function getNSAndId(attributeName, xmlElement) {
  */
 function addHref(el, pathComponent, attributeName, xmlElement) {
 	var nsAndId = getNSAndId(attributeName, xmlElement);
-	var loc = winery.repositoryURL + "/" + pathComponent + "/" + encodeID(nsAndId.ns) + "/" + encodeID(nsAndId.id);
+	var loc = winery.uiURL + "/" + pathComponent + "/" + encodeID(nsAndId.ns) + "/" + encodeID(nsAndId.id);
 	el.attr("href", loc);
 }
 

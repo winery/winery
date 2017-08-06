@@ -1,0 +1,45 @@
+<!--
+/**
+ * Copyright (c) 2017 ZTE Corporation.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     ZTE - initial API and implementation and/or initial documentation
+ */
+-->
+
+<div class="form-group row">
+    <label class="col-md-2 form-control-label text-md-right">Node</label>
+    <div class="col-md-10">
+        <select class="form-control" [ngModel]="node.template.id"
+                (ngModelChange)="node.template.id=$event; nodeTemplateChanged();">
+            <option *ngFor="let template of nodeTemplates" value="{{template.id}}">{{template.name}}</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label class="col-md-2 form-control-label text-md-right">Interface</label>
+    <div class="col-md-10">
+        <select class="form-control" [ngModel]="node.template.nodeInterface"
+                (ngModelChange)="node.template.nodeInterface=$event; nodeInterfaceChanged();">
+            <option *ngFor="let interface of nodeInterfaces" value="{{interface}}">{{interface}}</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label class="col-md-2 form-control-label text-md-right">Operation</label>
+    <div class="col-md-10">
+        <select class="form-control" [ngModel]="node.template.operation"
+                (ngModelChange)="node.template.operation=$event; nodeOperationChanged();">
+            <option *ngFor="let operation of nodeOperations" value="{{operation.name}}">{{operation.name}}</option>
+        </select>
+    </div>
+</div>
+<hr>
+

@@ -9,6 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Jerome Tagliaferri - support for setting the color
+ *     Lukas Balzer - added PUT and GET for supporting json
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytypes.relationshiptypes;
 
@@ -16,10 +17,8 @@ import java.io.StringWriter;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,10 +32,10 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.resources.GenericVisualAppearanceResource;
+import org.eclipse.winery.repository.resources.apiData.RelationshipTypesVisualsApiData;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
@@ -50,18 +49,11 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	private static final QName QNAME_ARROWHEAD_TARGET = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "targetArrowHead");
 	private static final QName QNAME_DASH = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "dash");
 	private static final QName QNAME_LINEWIDTH = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "linewidth");
-	private static final QName QNAME_HOVER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "hovercolor");
+	private static final QName QNAME_HOVER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "hoverColor");
 
 
 	public VisualAppearanceResource(RelationshipTypeResource res, Map<QName, String> map, RelationshipTypeId parentId) {
 		super(res, map, new VisualAppearanceId(parentId));
-	}
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Response getHTML() {
-		Viewable viewable = new Viewable("/jsp/entitytypes/relationshiptypes/visualappearance.jsp", this);
-		return Response.ok().entity(viewable).build();
 	}
 
 	@GET
@@ -87,16 +79,16 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			if (!StringUtils.isEmpty(dash)) {
 				String dashStyle = null;
 				switch (dash) {
-				case "dotted":
-					dashStyle = "1 5";
-					break;
-				case "dotted2":
-					dashStyle = "3 4";
-					break;
-				case "plain":
-					// default works
-					// otherwise, "1 0" can be used
-					break;
+					case "dotted":
+						dashStyle = "1 5";
+						break;
+					case "dotted2":
+						dashStyle = "3 4";
+						break;
+					case "plain":
+						// default works
+						// otherwise, "1 0" can be used
+						break;
 				}
 				if (dashStyle != null) {
 					jg.writeStringField("dashstyle", dashStyle);
@@ -110,6 +102,11 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 			jg.writeObject(this.getHoverColor());
 			jg.writeEndObject();
 
+			jg.writeStringField("dash", getDash());
+			jg.writeStringField("sourceArrowHead", this.getSourceArrowHead());
+			jg.writeStringField("targetArrowHead", this.getTargetArrowHead());
+			jg.writeStringField("color", this.getColor());
+			jg.writeStringField("hoverColor", this.getHoverColor());
 			// BEGIN: Overlays
 
 			jg.writeFieldName("overlays");
@@ -192,38 +189,29 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		}
 	}
 
-	/* * * source arrow head * * */
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response putJsonData(RelationshipTypesVisualsApiData data) {
+		if (data == null) {
+			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
+		}
 
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, data.targetArrowHead);
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, data.sourceArrowHead);
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_DASH, data.dash);
+		this.otherAttributes.put(VisualAppearanceResource.QNAME_HOVER_COLOR, data.hoverColor);
+		this.otherAttributes.put(QNames.QNAME_COLOR, data.color);
+		return BackendUtils.persist(this.res);
+	}
+
+	/* * * source arrow head * * */
 	public String getSourceArrowHead() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, Defaults.DEFAULT_RT_ARROWHEAD_SOURCE);
 	}
 
-	@PUT
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Path("sourcearrowhead")
-	public Response onPutSourceHead(String config) {
-		if (StringUtils.isEmpty(config)) {
-			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
-		}
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_SOURCE, config);
-		return BackendUtils.persist(this.res);
-	}
-
 	/* * * target arrow head * * */
-
 	public String getTargetArrowHead() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, Defaults.DEFAULT_RT_ARROWHEAD_TARGET);
-	}
-
-	@PUT
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Path("targetarrowhead")
-	public Response onPutTargetHead(String config) {
-		if (StringUtils.isEmpty(config)) {
-			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
-		}
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_ARROWHEAD_TARGET, config);
-		return BackendUtils.persist(this.res);
 	}
 
 	/* * *
@@ -235,20 +223,8 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	 * "The dashstyle attribute is specified as an array of strokes and spaces, where each value is some multiple of the width of the Connector"
 	 *
 	 * * * */
-
 	public String getDash() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_DASH, Defaults.DEFAULT_RT_DASH);
-	}
-
-	@PUT
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Path("dash")
-	public Response onPutDash(String config) {
-		if (StringUtils.isEmpty(config)) {
-			return Response.status(Status.BAD_REQUEST).entity("config must not be empty").build();
-		}
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_DASH, config);
-		return BackendUtils.persist(this.res);
 	}
 
 	/* * * stroke/line width * * */
@@ -266,26 +242,10 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		return BackendUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_COLOR, this.otherAttributes, this.res);
 	}
 
-	@PUT
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Path("color")
-	public Response onPutColor(@FormParam("color") String color) {
-		this.otherAttributes.put(QNames.QNAME_COLOR, color);
-		return BackendUtils.persist(this.res);
-	}
-
 	/**
 	 * read by topologytemplateeditor.jsp via ${it.hoverColor}
 	 */
 	public String getHoverColor() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_HOVER_COLOR, Defaults.DEFAULT_RT_HOVER_COLOR);
-	}
-
-	@PUT
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Path("hovercolor")
-	public Response onPutHoverColor(@FormParam("color") String color) {
-		this.otherAttributes.put(VisualAppearanceResource.QNAME_HOVER_COLOR, color);
-		return BackendUtils.persist(this.res);
 	}
 }

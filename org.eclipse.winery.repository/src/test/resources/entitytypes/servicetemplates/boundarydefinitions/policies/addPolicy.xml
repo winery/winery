@@ -1,0 +1,8 @@
+<Policy xsi:nil="true" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		name="grape"
+		xmlns:ns10="http://winery.opentosca.org/test/policytypes/fruits"
+		policyType="ns10:european"
+		xmlns:ns11="http://winery.opentosca.org/test/policytemplates/fruits"
+		policyRef="ns11:italian">
+</Policy>

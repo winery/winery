@@ -27,6 +27,7 @@
 
 <%@attribute name="topology" required="true" description="the topology template to be rendered" type="org.eclipse.winery.model.tosca.TTopologyTemplate" %>
 <%@attribute name="repositoryURL" required="true" %>
+<%@attribute name="uiURL" required="true" %>
 <%@attribute name="client" required="true" type="org.eclipse.winery.common.interfaces.IWineryRepository" %>
 <%@attribute name="fullscreen" required="false" type="java.lang.Boolean" %>
 <%@attribute name="additonalCSS" required="false"%>
@@ -164,7 +165,7 @@ function doLayout() {
 			top = Integer.toString(Utils.convertStringToInt(top) - minTop);
 		}
 %>
-		<nt:nodeTemplateRenderer top="<%=top%>" left="<%=left%>" nodeTemplate="<%=nodeTemplate%>" repositoryURL="${repositoryURL}" client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" topologyModelerURI="${w:topologyModelerURI()}/" />
+		<nt:nodeTemplateRenderer top="<%=top%>" left="<%=left%>" nodeTemplate="<%=nodeTemplate%>" repositoryURL="${repositoryURL}" uiURL="<%=uiURL%>" client="<%=client%>" relationshipTypes="<%=relationshipTypes%>" topologyModelerURI="${w:topologyModelerURI()}/" />
 <%
 	}
 	if (somethingWithoutPosition) {

@@ -175,7 +175,7 @@ public abstract class TEntityTemplate extends HasId {
 		 */
 		@XmlTransient
 		@JsonIgnore
-		public java.util.Properties getProperties() {
+		public java.util.Properties getKVProperties() {
 			java.util.Properties properties = new java.util.Properties();
 			org.eclipse.winery.model.tosca.TEntityTemplate.Properties tprops = this;
 			if (tprops != null) {

@@ -8,14 +8,17 @@ This howto is based on [Eclipse IDE for Java EE Developers].
 First of all, generate a war to have all dependencies fetched by maven.
 
 ## Recommended plugins
+
 * [AnyEdit](http://andrei.gmxhome.de/anyedit/) for ensuring that tabs are always used
     * Configure: Window -> Preferences -> General / Editors / AnyEdit Tools -> "Auto - Convert EXCLUSION file list" -> "Add filter" -> "*.java", "Convert...": 4 spaces for a tab
 
 ## Optional plugins
+
 * [Eclipse Code Recommenders](http://www.eclipse.org/recommenders/)
 * [VJET JavaScript IDE](http://www.eclipse.org/proposals/webtools.vjet/)
 
 ## Make Winery projects known to Eclipse
+
 1. Import all projects
     * Use "Existing Maven Projects". `mvn eclips:m2eclipse` currently does not enable "maven" in eclipse.
 2. At `org.eclipse.winery.repository` and ` org.eclipse.winery.topologymodeler`:
@@ -25,6 +28,7 @@ First of all, generate a war to have all dependencies fetched by maven.
     * "Finish" -> "OK"
 
 ### Setup Tomcat
+
 1. Open servers window: Window -> Show View -> Other -> Server -> Servers
 2. New server wizard... -> Apache -> Tomcat v7.0 Server -> Next -> Winery -> Add -> Finish
 3. Rename the Server to "Apache Tomcat v7.0"
@@ -32,7 +36,7 @@ First of all, generate a war to have all dependencies fetched by maven.
 Now you can see the Tomcat v7.0 Server at localhost [Stopped, Republish] in your server window.
 Select it and click on the green play button in the window.
 
-Now, Winery can be viewed at http://localhost:8080/winery/
+Now, Winery can be viewed at http://localhost:8080/winery-ui/
 
 ## Setup Code Style
 
@@ -57,6 +61,7 @@ The repository location can be changed:
 Copy `winery.properties` to `path-to-workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\winery`.
 
 ## License
+
 Copyright (c) 2012-2014 University of Stuttgart.
 
 All rights reserved. This program and the accompanying materials

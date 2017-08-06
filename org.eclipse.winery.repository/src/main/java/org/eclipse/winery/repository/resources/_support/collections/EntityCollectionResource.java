@@ -8,31 +8,34 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Balzer, Nicole Keppler - added support for angular frontend
  *******************************************************************************/
 package org.eclipse.winery.repository.resources._support.collections;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.jersey.api.NotFoundException;
-import com.sun.jersey.api.view.Viewable;
-import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * key is generated (subclass EntityWithoutIdCollectionResource)
  *
  * @param <EntityResourceT> the resource modeling the entity
- * @param <EntityT> the entity type of single items in the list
+ * @param <EntityT>         the entity type of single items in the list
  */
 public abstract class EntityCollectionResource<EntityResourceT extends EntityResource<EntityT>, EntityT> implements IIdDetermination<EntityT> {
 
@@ -59,39 +62,17 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 
 
 	/**
-	 * @param entityTClazz the class of EntityT. Required as it is not possible to call
-	 *            new EntityT (see http://stackoverflow.com/a/1090488/873282)
-	 * @param list the list of entities contained in this resource. Has to be
-	 *            typed <Object> as not all TOSCA elements in the specification
-	 *            inherit from TExtensibleElements
-	 * @param res the main resource the list is belonging to. Required for
-	 *            persistence.
+	 * @param entityTClazz the class of EntityT. Required as it is not possible to call new EntityT (see
+	 *                     http://stackoverflow.com/a/1090488/873282)
+	 * @param list         the list of entities contained in this resource. Has to be typed <Object> as not all TOSCA
+	 *                     elements in the specification inherit from TExtensibleElements
+	 * @param res          the main resource the list is belonging to. Required for persistence.
 	 */
 	public EntityCollectionResource(Class<EntityResourceT> entityResourceTClazz, Class<EntityT> entityTClazz, List<EntityT> list, IPersistable res) {
 		this.entityResourceTClazz = entityResourceTClazz;
 		this.entityTClazz = entityTClazz;
 		this.list = list;
 		this.res = res;
-	}
-
-	/**
-	 * Returns a list of ids of all entities nested here
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Object getListOfAllEntityIds(@QueryParam("select2") String select2) {
-		if (select2 == null) {
-			return this.getListOfAllEntityIdsAsList();
-		} else {
-			// return data ready for consumption by select2
-			List<Select2DataItem> res = new ArrayList<>(this.list.size());
-			for (EntityT o : this.list) {
-				String id = this.getId(o);
-				Select2DataItem di = new Select2DataItem(id, id);
-				res.add(di);
-			}
-			return res;
-		}
 	}
 
 	public List<String> getListOfAllEntityIdsAsList() {
@@ -104,15 +85,39 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	}
 
 	/**
-	 * Required by reqandcapdefs.jsp
+	 * XML is currently not possible. One has to use Utils.getXMLAsString((Class<EntityT>) this.o.getClass(), this.o,
+	 * false);
 	 */
-	public List<EntityResourceT> getAllEntityResources() {
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getAllEntityResources(@QueryParam(value = "noId") boolean noId) {
 		List<String> listOfAllSubResources = this.getListOfAllEntityIdsAsList();
-		List<EntityResourceT> res = new ArrayList<>(listOfAllSubResources.size());
+		List<EntityResourceT> resources = new ArrayList<>(listOfAllSubResources.size());
 		for (String id : listOfAllSubResources) {
-			res.add(this.getEntityResourceFromDecodedId(id));
+			resources.add(this.getEntityResourceFromDecodedId(id));
 		}
-		return res;
+		
+		return resources.stream().map((EntityResourceT res) -> {
+			String id = this.getId(res.o);
+			// some objects already have an id field
+			// we set it nevertheless, because it might happen that the name of the id field is not "id", but something else (such as "name")
+
+			this.getEntityResourceFromDecodedId(id);
+			// general method, same as with data binding
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.enable(SerializationFeature.INDENT_OUTPUT);
+			// (note: can also use more specific type, like ArrayNode or
+			// ObjectNode!)
+			JsonNode jsonNode = mapper.valueToTree(res.o);
+			if (!noId) {
+				((ObjectNode) jsonNode).put("id", id);
+			}
+			try {
+				return mapper.writeValueAsString(jsonNode);
+			} catch (JsonProcessingException e) {
+				throw new WebApplicationException(e);
+			}
+		}).collect(Collectors.joining(",", "[", "]"));
 	}
 
 	public EntityResourceT getEntityResourceFromDecodedId(String id) {
@@ -144,23 +149,10 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 
 	/**
 	 * @param entity the entity to create a resource for
-	 * @param idx the index in the list
+	 * @param idx    the index in the list
 	 * @return the resource managing the given entity
 	 */
 	protected abstract EntityResourceT getEntityResourceInstance(EntityT entity, int idx);
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	@RestDoc(methodDescription = "@return the HTML fragment (DIV-container) to be embedded in the 'Interface' part of nodetype.js ")
-	public Response getHTMLAsResponse() {
-		Viewable viewable = this.getHTML();
-		return Response.ok().header(HttpHeaders.VARY, HttpHeaders.ACCEPT).entity(viewable).build();
-	}
-
-	/**
-	 * called by getHTMLAsResponse
-	 */
-	public abstract Viewable getHTML();
 
 	/**
 	 * Adds a new entity
@@ -168,7 +160,6 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 	 * In case the element already exists, we return "CONFLICT"
 	 */
 	@POST
-	@Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Response addNewElement(EntityT entity) {
 		if (entity == null) {
 			return Response.status(Status.BAD_REQUEST).entity("a valid XML/JSON element has to be posted").build();
@@ -202,5 +193,4 @@ public abstract class EntityCollectionResource<EntityResourceT extends EntityRes
 		// all items checked: nothing equal contained
 		return false;
 	}
-
 }

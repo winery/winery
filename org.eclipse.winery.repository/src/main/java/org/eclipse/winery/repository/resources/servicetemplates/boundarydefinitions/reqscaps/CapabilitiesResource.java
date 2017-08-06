@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier - JSON implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps;
 
@@ -26,9 +27,8 @@ import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.CollectionsHelper;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
+import org.eclipse.winery.repository.resources.apiData.RequirementsOrCapabilityApiData;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-
-import com.sun.jersey.api.view.Viewable;
 
 /**
  * This class is an adaption from
@@ -38,11 +38,6 @@ public class CapabilitiesResource extends EntityWithoutIdCollectionResource<Capa
 
 	public CapabilitiesResource(IPersistable res, List<TCapabilityRef> refs) {
 		super(CapabilityResource.class, TCapabilityRef.class, refs, res);
-	}
-
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet required: boundarydefinitions.jsp renders all tab content.");
 	}
 
 	@POST
@@ -73,4 +68,31 @@ public class CapabilitiesResource extends EntityWithoutIdCollectionResource<Capa
 		return CollectionsHelper.persist(this.res, this, ref, true);
 	}
 
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addNewElementJSON(RequirementsOrCapabilityApiData reqOrCap) {
+		// Implementation adapted from super addNewElement
+
+		if (reqOrCap.ref == null) {
+			return Response.status(Status.BAD_REQUEST).entity("A reference has to be provided").build();
+		}
+
+		TCapabilityRef ref = new TCapabilityRef();
+		ref.setName(reqOrCap.name); // may also be null
+
+		// The XML model fordces us to put a reference to the object and not just the string
+		ServiceTemplateResource rs = (ServiceTemplateResource) this.res;
+		TCapability resolved = ModelUtilities.resolveCapability(rs.getServiceTemplate(), reqOrCap.ref);
+		// In case nothing was found: report back to the user
+		if (resolved == null) {
+			return Response.status(Status.BAD_REQUEST).entity("Reference could not be resolved").build();
+		}
+
+		ref.setRef(resolved);
+
+		// "this.alreadyContains(ref)" cannot be called as this leads to a mappable exception: The data does not contain an id where the given ref attribute may point to
+
+		this.list.add(ref);
+		return CollectionsHelper.persist(this.res, this, ref, true);
+	}
 }

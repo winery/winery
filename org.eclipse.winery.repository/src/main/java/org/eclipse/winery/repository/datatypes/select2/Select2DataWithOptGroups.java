@@ -8,9 +8,12 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Lukas Harzenetter - add id to groups
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.select2;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -29,10 +32,17 @@ public class Select2DataWithOptGroups {
 	 * @param text the text of the item {@inheritDoc}
 	 */
 	public void add(String group, String id, String text) {
-		Select2OptGroup optGroup = this.idx.get(group);
+		String groupId = group;
+		try {
+			groupId = URLEncoder.encode(group, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		Select2OptGroup optGroup = this.idx.get(groupId);
 		if (optGroup == null) {
-			optGroup = new Select2OptGroup(group);
-			this.idx.put(group, optGroup);
+			optGroup = new Select2OptGroup(groupId, group);
+			this.idx.put(groupId, optGroup);
 		}
 
 		Select2DataItem item = new Select2DataItem(id, text);

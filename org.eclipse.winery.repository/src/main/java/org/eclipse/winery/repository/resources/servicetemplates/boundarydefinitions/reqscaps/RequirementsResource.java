@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Tino Stadelmaier - JSON implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps;
 
@@ -26,9 +27,8 @@ import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.repository.resources._support.IPersistable;
 import org.eclipse.winery.repository.resources._support.collections.CollectionsHelper;
 import org.eclipse.winery.repository.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
+import org.eclipse.winery.repository.resources.apiData.RequirementsOrCapabilityApiData;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
-
-import com.sun.jersey.api.view.Viewable;
 
 /**
  * This class is mirrored at
@@ -40,18 +40,13 @@ public class RequirementsResource extends EntityWithoutIdCollectionResource<Requ
 		super(RequirementResource.class, TRequirementRef.class, refs, res);
 	}
 
-	@Override
-	public Viewable getHTML() {
-		throw new IllegalStateException("Not yet required: boundarydefinitions.jsp renders all tab content.");
-	}
-
 	/**
 	 * Adds an element using form-encoding
 	 *
 	 * This is necessary as TRequirementRef contains an IDREF and the XML
 	 * snippet itself does not contain the target id
 	 *
-	 * @param name the optional name of the requirement
+	 * @param name      the optional name of the requirement
 	 * @param reference the reference to a requirement in the topology
 	 */
 	@POST
@@ -82,4 +77,31 @@ public class RequirementsResource extends EntityWithoutIdCollectionResource<Requ
 		return CollectionsHelper.persist(this.res, this, ref, true);
 	}
 
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response addNewElementJSON(RequirementsOrCapabilityApiData reqOrCap) {
+		// Implementation adapted from super addNewElement
+
+		if (reqOrCap.ref == null) {
+			return Response.status(Status.BAD_REQUEST).entity("A reference has to be provided").build();
+		}
+
+		TRequirementRef ref = new TRequirementRef();
+		ref.setName(reqOrCap.name); // may also be null
+
+		// The XML model forces us to put a reference to the object and not just the string
+		ServiceTemplateResource rs = (ServiceTemplateResource) this.res;
+		TRequirement resolved = ModelUtilities.resolveRequirement(rs.getServiceTemplate(), reqOrCap.ref);
+		// In case nothing was found: report back to the user
+		if (resolved == null) {
+			return Response.status(Status.BAD_REQUEST).entity("Reference could not be resolved").build();
+		}
+
+		ref.setRef(resolved);
+
+		// "this.alreadyContains(ref)" cannot be called as this leads to a mappable exception: The data does not contain an id where the given ref attribute may point to
+
+		this.list.add(ref);
+		return CollectionsHelper.persist(this.res, this, ref, true);
+	}
 }

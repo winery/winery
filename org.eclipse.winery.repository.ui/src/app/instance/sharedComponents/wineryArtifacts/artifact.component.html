@@ -1,0 +1,190 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Niko Stadelmaier, Tino Stadelmaier - initial API and implementation
+ */
+-->
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <div id="artifacts">
+        <div>
+            <label>Available {{name}} Artifacts</label>
+        </div>
+        <winery-table [title]="title"
+                      [columns]="columns"
+                      [data]="artifactsData"
+                      (addBtnClicked)="onAddClick()"
+                      (removeBtnClicked)="onRemoveClick($event)">
+        </winery-table>
+    </div>
+</div>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete Property'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="elementToRemove != null" id="diagyesnomsg">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.name }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="removeConfirmed();"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #addArtifactModal="bs-modal" [modalRef]="addArtifactModal">
+    <winery-modal-header [title]="'Add ' + name + ' Artifact'">
+
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #addArtifactForm="ngForm" id="addArtifactForm">
+            <label class="control-label" for="key">Name</label>
+            <input
+                #artifactName="ngModel"
+                id="key"
+                class="form-control"
+                type="text"
+                name="key"
+                required
+                [(ngModel)]="newArtifact.artifactName">
+
+            <div *ngIf="artifactName.errors && (artifactName.touched)"
+                 class="alert alert-danger">
+                <div [hidden]="!artifactName.errors.wineryDuplicateValidator">
+                    No duplicates allowed!
+                </div>
+                <div [hidden]="!artifactName.errors.required">
+                    Name is required
+                </div>
+            </div>
+
+            <div *ngIf="!isDeploymentArtifact">
+                <label class="control-label" for="key">Interface Name</label>
+                <select [(ngModel)]="selectedInterface" name="interfaces" class="form-control">
+                    <option *ngFor="let interfaceItem of interfacesList" [ngValue]="interfaceItem">{{interfaceItem.text}}</option>
+                </select>
+
+                <label class="control-label" for="key">Operations</label>
+                <select [(ngModel)]="selectedOperation" name="interfaces" class="form-control">
+                    <option *ngFor="let operation of selectedInterface?.operations" [ngValue]="operation">
+                        {{operation}}
+                    </option>
+                </select>
+            </div>
+            <fieldset>
+                <h4>Artifact Template Creation</h4>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="artifactTemplateCreation" value="createArtifactTemplate"
+                               checked="checked" id="createArtifactTemplateInput" [(ngModel)]="selectedRadioButton"
+                               (click)="onCreateArtifactTemplateClicked()"/>Create
+                        Artifact
+                        Template
+                    </label>
+                    <p class="help-block">Check if you want to upload <strong>new</strong> files, you do not want to
+                        reuse existing files and you do not point to an image library.</p>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="artifactTemplateCreation" value="linkArtifactTemplate"
+                               [(ngModel)]="selectedRadioButton">Link Artifact
+                        Template
+                    </label>
+                    <p class="help-block">Check if you want to reuse existing files.</p>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="artifactTemplateCreation" value="skipArtifactTemplate"
+                               [(ngModel)]="selectedRadioButton">Do not create
+                        an artifact template
+                    </label>
+                    <p class="help-block">Check if you want to point to an image library.</p>
+                </div>
+            </fieldset>
+            <winery-qname-selector
+                *ngIf="selectedRadioButton === 'createArtifactTemplate' || selectedRadioButton === 'skipArtifactTemplate' "
+                [title]="'Artifact Type'"
+                [displayList]="artifactTypesList"
+                [width]="'none'"
+                [showOpenButton]="false"
+                (selectedValueChanged)="onSelectedArtifactTypeChanged($event.value)">
+            </winery-qname-selector>
+            <winery-qname-selector
+                *ngIf="selectedRadioButton === 'linkArtifactTemplate'"
+                [title]="'Artifact Template'"
+                [displayList]="artifactTemplatesList"
+                (selectedValueChanged)="onSelectedArtifactTemplateChanged($event.value)">
+            </winery-qname-selector>
+            <winery-component-exists
+                *ngIf="selectedRadioButton === 'createArtifactTemplate'"
+                [generateData]=artifact
+                [modalRef]="addArtifactModal">
+            </winery-component-exists>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="addArtifactModal.hide()">Cancel
+        </button>
+        <button type="button" [disabled]="!addArtifactForm?.form.valid || noneSelected"
+                class="btn btn-primary"
+                (click)="addConfirmed()">Add
+        </button>
+    </winery-modal-footer>
+
+</winery-modal>
+
+<winery-modal bsModal #uploadFileModal="bs-modal" [modalRef]="uploadFileModal">
+    <winery-modal-header [title]="'Add files to artifact template ' + newArtifact.artifactTemplateName">
+    </winery-modal-header>
+
+    <winery-modal-body>
+        <div>
+            <winery-uploader (onSucces)="loadFiles(uploadUrl)" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true">
+            </winery-uploader>
+        </div>
+        <br>
+        <div id="filesDiv">
+            <h5>Already included Files:</h5>
+            <table role="presentation">
+                <tbody class="files">
+                <tr *ngFor="let file of filesList">
+                    <td>
+                        <span class="preview"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}"><img src="{{file.thumbnailUrl}}"></a></span>
+                    </td>
+                    <td>
+                        <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}">{{file.name}}</a></p>
+                    </td>
+                    <td>
+                        <span class="size">{{file.size / 1024 | number: '1.2-2'}} KB</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" (click)="deleteFile(file)">Delete</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </winery-modal-body>
+</winery-modal>
+
+<winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
+    <winery-modal-header [title]="'Delete File'"></winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Are you sure you want to remove <span style="font-weight:bold;">{{ fileToRemove?.name }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+                         (onOk)="onRemoveElement()">
+    </winery-modal-footer>
+</winery-modal>

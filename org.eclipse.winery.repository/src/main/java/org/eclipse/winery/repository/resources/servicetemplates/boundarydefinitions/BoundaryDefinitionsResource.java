@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Niko Stadelmaier - add JSON GET, PUT; xml api for properties and xml
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions;
 
@@ -40,7 +41,6 @@ import org.eclipse.winery.repository.resources.servicetemplates.boundarydefiniti
 import org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps.CapabilitiesResource;
 import org.eclipse.winery.repository.resources.servicetemplates.boundarydefinitions.reqscaps.RequirementsResource;
 
-import com.sun.jersey.api.view.Viewable;
 import org.restdoc.annotations.RestDoc;
 import org.restdoc.annotations.RestDocParam;
 import org.w3c.dom.Document;
@@ -57,22 +57,36 @@ public class BoundaryDefinitionsResource {
 	}
 
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML(@Context UriInfo uriInfo) {
-		return new Viewable("/jsp/servicetemplates/boundarydefinitions/boundarydefinitions.jsp", new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()));
+	@Produces(MediaType.APPLICATION_JSON)
+	public TBoundaryDefinitions getJSON(@Context UriInfo uriInfo) {
+		return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getDefs();
+	}
+
+	@Path("xml/")
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	public String getXML(@Context UriInfo uriInfo) {
+		return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getBoundaryDefinitionsAsXMLString();
 	}
 
 	@PUT
 	@RestDoc(methodDescription = "Replaces the boundary definitions by the information given in the XML")
-	@Consumes(MediaType.TEXT_XML)
+	@Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
 	public Response setModel(TBoundaryDefinitions boundaryDefinitions) {
 		this.serviceTemplateResource.getServiceTemplate().setBoundaryDefinitions(boundaryDefinitions);
 		return BackendUtils.persist(this.serviceTemplateResource);
 	}
 
 	@Path("properties/")
+	@GET
+	@Produces(MediaType.APPLICATION_XML)
+	public String getProperties(@Context UriInfo uriInfo) {
+		return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getPropertiesAsXMLString();
+	}
+
+	@Path("properties/")
 	@PUT
-	@Consumes(MediaType.TEXT_XML)
+	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
 	@RestDoc(resourceDescription = "Models the user-defined properties. The property mappings go into a separate resource propertymappings.")
 	public Response putProperties(@RestDocParam(description = "Stored properties. The XSD allows a single element only. Therefore, we go for the contained element") Document doc) {
 		org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties properties = ModelUtilities.getProperties(this.boundaryDefinitions);
@@ -130,6 +144,16 @@ public class BoundaryDefinitionsResource {
 			properties.setPropertyMappings(propertyMappings);
 		}
 		return new PropertyMappingsResource(propertyMappings, this.serviceTemplateResource);
+	}
+
+	@Path("propertyconstraints/")
+	public PropertyConstraintsResource getPropertyConstraints() {
+		TBoundaryDefinitions.PropertyConstraints constraints = this.boundaryDefinitions.getPropertyConstraints();
+		if (constraints == null) {
+			constraints = new TBoundaryDefinitions.PropertyConstraints();
+			this.boundaryDefinitions.setPropertyConstraints(constraints);
+		}
+		return new PropertyConstraintsResource(constraints, this.serviceTemplateResource);
 	}
 
 	@Path("interfaces/")

@@ -28,7 +28,11 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
     7. Press "OK"
     8. Press "Close"
     9. Press "OK"
-6. Setup tomcat as usual.
+6. Setup tomcat as usual. In case you develop the backend, use following configuration:
+  - org.eclipse.winery.repository:war exploded to `/winery`
+  - External artifact `.../org.eclipse.winery.repository.ui/target/winery-ui.war` to `/winery-ui`
+  - org.eclipse.winery.topologymodeler:war exploded to `/winery-topologymodeler`
+  - External artifact `.../org.eclipse.winery.workflowmodeler/target/winery-workflowmodeler.war` to `/winery-workflowmodeler`
 
 ## Further Remarks
 

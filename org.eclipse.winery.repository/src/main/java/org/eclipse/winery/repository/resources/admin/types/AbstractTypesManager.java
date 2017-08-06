@@ -17,8 +17,8 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,8 +36,8 @@ import org.eclipse.winery.repository.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.datatypes.ids.admin.TypesId;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.resources.admin.AbstractAdminResource;
+import org.eclipse.winery.repository.resources.apiData.TypeWithShortNameApiData;
 
-import com.sun.jersey.api.view.Viewable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,11 +126,11 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Object getTypesAsJSONArrayList(@QueryParam("select2") String select2) {
-		if (select2 == null) {
+	public Object getTypesAsJSONArrayList(@QueryParam("ngSelect") String ngSelect) {
+		if (ngSelect == null) {
 			return this.getTypes();
 		} else {
-			// select2 mode
+			// ngSelect mode
 			SortedSet<Select2DataItem> res = new TreeSet<>();
 			for (TypeWithShortName t : this.getTypes()) {
 				Select2DataItem item = new Select2DataItem(t.getType(), t.getShortName());
@@ -171,23 +171,17 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 		return res;
 	}
 
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public Viewable getHTML(@Context UriInfo uriInfo) {
-		this.uriInfo = uriInfo;
-		return new Viewable("/jsp/admin/types/types.jsp", this);
-	}
-
 	@POST
-	public Response updateTypeMapping(@FormParam("shortname") String shortName, @FormParam("type") String type) {
-		if (StringUtils.isEmpty(shortName)) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response updateTypeMapping(TypeWithShortNameApiData newType) {
+		if (StringUtils.isEmpty(newType.shortName)) {
 			return Response.status(Status.BAD_REQUEST).entity("shortName has to be given").build();
 		}
-		if (StringUtils.isEmpty(type)) {
+		if (StringUtils.isEmpty(newType.type)) {
 			return Response.status(Status.BAD_REQUEST).entity("type has to be given").build();
 		}
-		shortName = Util.URLdecode(shortName);
-		type = Util.URLdecode(type);
+		String shortName = Util.URLdecode(newType.shortName);
+		String type = Util.URLdecode(newType.type);
 		TypeWithShortName tws = new TypeWithShortName(type, shortName);
 		this.addTypeWithShortName(tws);
 		return Response.noContent().build();

@@ -1,0 +1,16 @@
+{
+  "validSource": {
+	"validEndingsSelectionType": "NODETYPE",
+	"validDataSet": {
+	  "id": "{http://winery.opentosca.org/test/nodetypes/fruits}boabab",
+	  "text": "boabab"
+	}
+  },
+  "validTarget": {
+	"validEndingsSelectionType": "NODETYPE",
+	"validDataSet": {
+	  "id": "{http://winery.opentosca.org/test/nodetypes/fruits}boabab",
+	  "text": "boabab"
+	}
+  }
+}

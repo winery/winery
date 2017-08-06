@@ -1,0 +1,5 @@
+<selfservice:Application xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
+	<selfservice:displayName>baobab_serviceTemplate</selfservice:displayName>
+	<selfservice:iconUrl>icon.jpg</selfservice:iconUrl>
+	<selfservice:imageUrl>image.jpg</selfservice:imageUrl>
+</selfservice:Application>

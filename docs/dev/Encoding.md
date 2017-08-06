@@ -1,6 +1,8 @@
 # Encoding of folder names, namespaces, and ids in Winery
 
-## Example to understand double encoding of URIs in the winery
+**Outdated** Although the information about double-encoding is correct, the UI has been re-implemented using Angular, which introduces an additional layer of URLs. 
+
+## Example to understand double encoding of URIs in Winery
 
 In file systems, characteers `/` and `:` are not allowed [source](https://stackoverflow.com/a/31976060/873282).
 The [design decision](../adr/0002-filesystem-folder-structure-using-type-namespace-id-structure) is that all files (node types, imports in CSARs, ...) are stored and structured using directories with human readable names.
