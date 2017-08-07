@@ -10,8 +10,8 @@
 
 	<repositories>
 		<repository>
-			<id>2471.de</id>
-			<url>http://2471.de/maven2</url>
+			<id>opentosca</id>
+			<url>https://opentosca.github.io/mvn-repo/</url>
 		</repository>
 	</repositories>
 
@@ -20,7 +20,7 @@
 		<winery.upload.url>IA_ARTIFACT_TEMPLATE_UPLOAD_URL</winery.upload.url>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<cxf.version>2.7.6</cxf.version>
-		<highlevelrestapi.version>0.1.6</highlevelrestapi.version>
+		<highlevelrestapi.version>2.0.0-SNAPSHOT</highlevelrestapi.version>
 	</properties>
 
 	<dependencies>
