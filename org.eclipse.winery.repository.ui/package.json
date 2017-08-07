@@ -1,6 +1,6 @@
 {
     "name": "WineryUI",
-    "version": "1.0.0-SNAPSHOT",
+    "version": "2.0.0-SNAPSHOT",
     "description": "Winery frontend",
     "private": true,
     "scripts": {

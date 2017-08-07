@@ -108,6 +108,10 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
     See [GitHub - Prepare Pull Request](#github---prepare-pull-request).
     Then, do a force push (`git push -f`)
 
+## GitHub - After Pull Request Got Merged
+
+* Delete the branch on `origin`: `git push origin :[name]` or use GitHub's UI via <https://github.com/OpenTOSCA/winery/branches/active>.
+
 ## Excursus: Git
 
 ![ExcursusGit](graphics/ExcursusGit.png)
