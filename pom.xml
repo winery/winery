@@ -61,6 +61,16 @@
     <prerequisites>
         <maven>3.0.3</maven>
     </prerequisites>
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<name>Temporary Staging Repository</name>
+			<url>file://${project.build.directory}/mvn-repo</url>
+		</repository>
+	</distributionManagement>
+	<properties>
+		<github.global.server>github</github.global.server>
+	</properties>
 	<modules>
 		<module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
 		<module>org.eclipse.winery.common</module>
