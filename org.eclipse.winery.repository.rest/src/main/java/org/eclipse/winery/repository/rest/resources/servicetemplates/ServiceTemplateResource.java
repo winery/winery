@@ -133,7 +133,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	@Override
 	public Response setName(String name) {
 		this.getServiceTemplate().setName(name);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	// @formatter:off
@@ -165,7 +165,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	@Path("substitutableNodeType")
 	public Response deleteSubstitutableNodeType() {
 		this.getServiceTemplate().setSubstitutableNodeType(null);
-		BackendUtils.persist(this);
+		Utils.persist(this);
 		return Response.noContent().build();
 	}
 

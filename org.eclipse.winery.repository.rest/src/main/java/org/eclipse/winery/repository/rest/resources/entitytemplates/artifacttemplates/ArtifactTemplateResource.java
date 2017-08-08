@@ -108,7 +108,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	@Override
 	public Response setName(String name) {
 		this.getTArtifactTemplate().setName(name);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Override
@@ -173,13 +173,13 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	@Override
 	public Response setType(QName type) {
 		this.entityTemplateResource.setType(type);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Override
 	public Response setType(String typeStr) {
 		this.entityTemplateResource.setType(typeStr);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Override

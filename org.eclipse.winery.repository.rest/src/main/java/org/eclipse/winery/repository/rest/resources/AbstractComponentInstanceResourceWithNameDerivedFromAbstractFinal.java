@@ -63,7 +63,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 	@Path("name")
 	public Response putName(String name) {
 		ModelUtilities.setName(this.getElement(), name);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	/**
@@ -161,6 +161,6 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not set inheritance resource", e);
 			throw new IllegalStateException(e);
 		}
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 }

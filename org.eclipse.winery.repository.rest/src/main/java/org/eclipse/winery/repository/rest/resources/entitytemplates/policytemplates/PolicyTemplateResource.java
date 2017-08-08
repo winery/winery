@@ -60,13 +60,13 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
 	@Override
 	public Response setType(QName type) {
 		this.getPolicyTemplate().setType(type);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Override
 	public Response setType(String typeStr) {
 		this.getPolicyTemplate().setType(QName.valueOf(typeStr));
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
 	@Override
 	public Response setName(String name) {
 		this.getPolicyTemplate().setName(name);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 }

@@ -11,14 +11,15 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import java.io.IOException;
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.model.tosca.TDefinitions;
 
+/**
+ * Indicates that BackendUtils.persist() can te used
+ */
 public interface IPersistable {
 
-	/**
-	 * @throws IOException if content could not be updated in the repository
-	 * @throws IllegalStateException if an JAXBException occurred. This should
-	 *             never happen.
-	 */
-	void persist() throws IOException;
+	TDefinitions getDefinitions();
+
+	RepositoryFileReference getRepositoryFileReference();
 }

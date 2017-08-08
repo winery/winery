@@ -50,7 +50,7 @@ public class ArtifactTypeResource extends EntityTypeResource {
 	@Path("/fileextension")
 	public Response setAssociatedFileExtension(String fileExtension) {
 		this.getDefinitions().getOtherAttributes().put(this.qnameFileExtension, fileExtension);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Override

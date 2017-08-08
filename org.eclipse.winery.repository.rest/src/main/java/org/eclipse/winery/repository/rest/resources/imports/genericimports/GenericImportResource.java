@@ -86,7 +86,7 @@ public class GenericImportResource extends AbstractComponentInstanceResource {
 		}
 
 		if (needsPersistence) {
-			BackendUtils.persist(this);
+			Utils.persist(this);
 		}
 	}
 

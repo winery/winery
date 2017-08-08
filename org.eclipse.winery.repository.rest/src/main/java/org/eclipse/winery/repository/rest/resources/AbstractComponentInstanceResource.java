@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +38,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -50,6 +48,7 @@ import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -60,11 +59,10 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources.documentation.DocumentationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
@@ -174,7 +172,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 */
 	@DELETE
 	public final Response onDelete() {
-		return BackendUtils.delete(this.id);
+		return Utils.delete(this.id);
 	}
 
 	@Override
@@ -328,11 +326,6 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		}
 	}
 
-	@Override
-	public void persist() throws IOException {
-		BackendUtils.persist(this.definitions, this.ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
-	}
-
 	/**
 	 * Creates a new instance of the object represented by this resource
 	 */
@@ -349,7 +342,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		this.copyIdToFields();
 
 		// ensure that the definitions is persisted. Ensures that export works.
-		BackendUtils.persist(this);
+		Utils.persist(this);
 	}
 
 	/**
@@ -376,8 +369,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 *
 	 * We opted for a separate method from createNewElement to enable renaming of the object
 	 *
-	 * Should be protected, but {@link FilebasedRepository#rename(org.eclipse.winery.common.ids.definitions.TOSCAComponentId,
-	 * org.eclipse.winery.common.ids.definitions.TOSCAComponentId)} requires it. TODO: move this method to BackendUtils
+	 * Should be protected, but {@link IWineryRepositoryCommon#rename(org.eclipse.winery.common.ids.definitions.TOSCAComponentId, org.eclipse.winery.common.ids.definitions.TOSCAComponentId)} requires it.
 	 * or some other utility classes Reason: This method is used by BackendUtils.rename Not yet done, because the logic
 	 * is sophisticated and much intelligence is currently in the child classes. The logic is also bundled together with
 	 * the resources. For instance, the logic for ServiceTemplate is at ServiceTemplateResource.
@@ -422,15 +414,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 * as adding imports, etc.
 	 */
 	public String getDefinitionsAsXMLString() {
-		StringWriter w = new StringWriter();
-		Marshaller m = JAXBSupport.createMarshaller(true);
-		try {
-			m.marshal(this.definitions, w);
-		} catch (JAXBException e) {
-			AbstractComponentInstanceResource.LOGGER.error("Could not marshal definitions", e);
-			throw new IllegalStateException(e);
-		}
-		return w.toString();
+		return BackendUtils.getDefinitionsAsXMLString(this.getDefinitions());
 	}
 
 	/**
@@ -438,6 +422,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 */
 	public Definitions getDefinitions() {
 		return this.definitions;
+	}
+
+	public RepositoryFileReference getRepositoryFileReference() {
+		return this.ref;
 	}
 
 	@PUT
@@ -514,7 +502,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		// TODO: future work: raise error if user changed id or namespace
 		this.copyIdToFields();
 
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@GET

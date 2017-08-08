@@ -90,7 +90,7 @@ public class SelfServicePortalResource implements IPersistable {
 		if (!Repository.INSTANCE.exists(this.data_xml_ref)) {
 			// this.application is already initialized with a default value.
 			// So we just need to persist this resource
-			BackendUtils.persist(this);
+			Utils.persist(this);
 		}
 	}
 
@@ -177,7 +177,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onPutOnDisplayName(Application value) {
 		this.application.setDisplayName(value.getDisplayName());
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Path("description")
@@ -185,7 +185,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onPutOnDescription(Application value) {
 		this.application.setDescription(value.getDescription());
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Path("options/")

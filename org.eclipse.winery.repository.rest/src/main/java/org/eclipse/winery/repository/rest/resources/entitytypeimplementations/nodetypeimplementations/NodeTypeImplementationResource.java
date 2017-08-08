@@ -94,7 +94,7 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 	@Override
 	public Response setType(QName type) {
 		this.getNTI().setNodeType(type);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Override

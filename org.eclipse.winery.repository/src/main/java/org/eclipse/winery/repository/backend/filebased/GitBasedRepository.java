@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-import javax.ws.rs.core.MediaType;
+import org.apache.tika.mime.MediaType;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 

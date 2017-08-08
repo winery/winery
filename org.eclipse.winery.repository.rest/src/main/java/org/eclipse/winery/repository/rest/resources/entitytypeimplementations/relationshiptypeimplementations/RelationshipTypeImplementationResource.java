@@ -71,7 +71,7 @@ public class RelationshipTypeImplementationResource extends EntityTypeImplementa
 	@Override
 	public Response setType(QName type) {
 		this.getRTI().setRelationshipType(type);
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	@Override

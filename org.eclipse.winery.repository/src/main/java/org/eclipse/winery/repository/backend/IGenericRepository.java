@@ -20,14 +20,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.SortedSet;
 
-import javax.ws.rs.core.MediaType;
-
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
+
+import org.apache.tika.mime.MediaType;
 
 /**
  * Enables access to the winery repository via Ids defined in package

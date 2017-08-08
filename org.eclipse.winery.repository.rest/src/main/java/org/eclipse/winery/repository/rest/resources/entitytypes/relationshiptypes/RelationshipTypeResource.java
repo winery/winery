@@ -144,7 +144,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 			this.getRelationshipType().setValidTarget(vt);
 		}
 
-		return BackendUtils.persist(this);
+		return Utils.persist(this);
 	}
 
 	/**

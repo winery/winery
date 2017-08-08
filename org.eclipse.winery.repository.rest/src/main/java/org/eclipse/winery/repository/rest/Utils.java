@@ -24,8 +24,10 @@ import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -59,6 +61,7 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
@@ -74,6 +77,8 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.ResourceCreationResult;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.export.CSARExporter;
@@ -100,6 +105,8 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.taglibs.standard.functions.Functions;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
@@ -252,14 +259,6 @@ public class Utils {
 		int dotIndex = res.lastIndexOf('.');
 		assert (dotIndex >= 0);
 		return res.substring(dotIndex + 1, res.length() - "Resource".length());
-	}
-
-	/**
-	 * @return Singular type name for the given id. E.g., "ServiceTemplateId"
-	 *         gets "ServiceTemplate"
-	 */
-	public static String getTypeForAdminId(Class<? extends AdminId> idClass) {
-		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
 
 	/**
@@ -1027,12 +1026,256 @@ public class Utils {
 	public static Response.ResponseBuilder persistWithResponseBuilder(IPersistable res) {
 		Response r;
 		try {
-			res.persist();
+			BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
 		} catch (IOException e) {
 			LOGGER.debug("Could not persist resource", e);
 			throw new WebApplicationException(e);
 		}
 		return Response.noContent();
 	}
+
+	public static Response rename(TOSCAComponentId oldId, TOSCAComponentId newId) {
+		try {
+			Repository.INSTANCE.rename(oldId, newId);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		URI uri = Utils.getAbsoluteURI(newId);
+
+		return Response.created(uri).entity(uri.toString()).build();
+	}
+
+	/**
+	 * Deletes the whole namespace in the component
+	 */
+	public static Response delete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, String namespaceStr) {
+		Namespace namespace = new Namespace(namespaceStr, true);
+		try {
+			Repository.INSTANCE.forceDelete(toscaComponentIdClazz, namespace);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Deletes given file/dir and returns appropriate response code
+	 */
+	public static Response delete(GenericId id) {
+		if (!Repository.INSTANCE.exists(id)) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		try {
+			Repository.INSTANCE.forceDelete(id);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Deletes given file and returns appropriate response code
+	 */
+	public static Response delete(RepositoryFileReference ref) {
+		if (!Repository.INSTANCE.exists(ref)) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
+		try {
+			Repository.INSTANCE.forceDelete(ref);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		return Response.ok().build();
+	}
+
+	public static String getURLforPathInsideRepo(String pathInsideRepo) {
+		// first encode the whole string
+		String res = Util.URLencode(pathInsideRepo);
+		// issue: "/" is also encoded. This has to be undone:
+		res = res.replaceAll(BackendUtils.slashEncoded, "/");
+		return res;
+	}
+
+	/**
+	 * Generates given TOSCA element and returns appropriate response code <br  />
+	 *
+	 * In the case of an existing resource, the other possible return code is
+	 * 302. This code has no Status constant, therefore we use Status.CONFLICT,
+	 * which is also possible.
+	 *
+	 * @return <ul>
+	 *         <li>
+	 *         <ul>
+	 *         <li>Status.CREATED (201) if the resource has been created,</li>
+	 *         <li>Status.CONFLICT if the resource already exists,</li>
+	 *         <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li>
+	 *         </ul>
+	 *         </li>
+	 *         <li>URI: the absolute URI of the newly created resource</li>
+	 *         </ul>
+	 */
+	public static ResourceCreationResult create(GenericId id) {
+		ResourceCreationResult res = new ResourceCreationResult();
+		if (Repository.INSTANCE.exists(id)) {
+			// res.setStatus(302);
+			res.setStatus(Status.CONFLICT);
+		} else {
+			if (Repository.INSTANCE.flagAsExisting(id)) {
+				res.setStatus(Status.CREATED);
+				// @formatter:off
+				// This method is a generic method
+				// We cannot return an "absolute" URL as the URL is always
+				// relative to the caller
+				// Does not work: String path = Prefs.INSTANCE.getResourcePath()
+				// + "/" +
+				// Utils.getURLforPathInsideRepo(id.getPathInsideRepo());
+				// We distinguish between two cases: TOSCAcomponentId and
+				// TOSCAelementId
+				// @formatter:on
+				String path;
+				if (id instanceof TOSCAComponentId) {
+					// here, we return namespace + id, as it is only possible to
+					// post on the TOSCA component*s* resource to create an
+					// instance of a TOSCA component
+					TOSCAComponentId tcId = (TOSCAComponentId) id;
+					path = tcId.getNamespace().getEncoded() + "/" + tcId.getXmlId().getEncoded() + "/";
+				} else {
+					assert (id instanceof TOSCAElementId);
+					// We just return the id as we assume that only the parent
+					// of this id may create sub elements
+					path = id.getXmlId().getEncoded() + "/";
+				}
+				// we have to encode it twice to get correct URIs
+				path = BackendUtils.getURLforPathInsideRepo(path);
+				URI uri = BackendUtils.createURI(path);
+				res.setUri(uri);
+				res.setId(id);
+			} else {
+				res.setStatus(Status.INTERNAL_SERVER_ERROR);
+			}
+		}
+		return res;
+	}
+
+	/**
+	 * Sends the file if modified and "not modified" if not modified future work
+	 * may put each file with a unique id in a separate folder in tomcat * use
+	 * that static URL for each file * if file is modified, URL of file changes
+	 * * -> client always fetches correct file
+	 *
+	 * additionally "Vary: Accept" header is added (enables caching of the
+	 * response)
+	 *
+	 * method header for calling method public <br />
+	 * <code>Response getXY(@HeaderParam("If-Modified-Since") String modified) {...}</code>
+	 *
+	 * @param ref      references the file to be send
+	 * @param modified - HeaderField "If-Modified-Since" - may be "null"
+	 * @return Response to be sent to the client
+	 */
+	public static Response returnRepoPath(RepositoryFileReference ref, String modified) {
+		return BackendUtils.returnRefAsResponseBuilder(ref, modified).build();
+	}
+
+	/**
+	 * This is not repository specific, but we leave it close to the only caller
+	 *
+	 * If the passed ref is newer than the modified date (or the modified date
+	 * is null), an OK response with an inputstream pointing to the path is
+	 * returned
+	 */
+	private static ResponseBuilder returnRefAsResponseBuilder(RepositoryFileReference ref, String modified) {
+		if (!Repository.INSTANCE.exists(ref)) {
+			return Response.status(Status.NOT_FOUND);
+		}
+
+		FileTime lastModified;
+		try {
+			lastModified = Repository.INSTANCE.getLastModifiedTime(ref);
+		} catch (IOException e1) {
+			BackendUtils.LOGGER.debug("Could not get lastModifiedTime", e1);
+			return Response.serverError();
+		}
+
+		// do we really need to send the file or can send "not modified"?
+		if (!BackendUtils.isFileNewerThanModifiedDate(lastModified.toMillis(), modified)) {
+			return Response.status(Status.NOT_MODIFIED);
+		}
+
+		ResponseBuilder res;
+		try {
+			res = Response.ok(Repository.INSTANCE.newInputStream(ref));
+		} catch (IOException e) {
+			BackendUtils.LOGGER.debug("Could not open input stream", e);
+			return Response.serverError();
+		}
+		res = res.lastModified(new Date(lastModified.toMillis()));
+		// vary:accept header is always set to be safe
+		res = res.header(HttpHeaders.VARY, HttpHeaders.ACCEPT);
+		// determine and set MIME content type
+		try {
+			res = res.header(HttpHeaders.CONTENT_TYPE, Repository.INSTANCE.getMimeType(ref));
+		} catch (IOException e) {
+			BackendUtils.LOGGER.debug("Could not determine mime type", e);
+			return Response.serverError();
+		}
+		// set filename
+		ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(ref.getFileName()).modificationDate(new Date(lastModified.toMillis())).build();
+		res.header("Content-Disposition", contentDisposition);
+		return res;
+	}
+
+	/**
+	 * Updates the given property in the given configuration. Currently always
+	 * returns "no content", because the underlying class does not report any
+	 * errors during updating. <br />
+	 *
+	 * If null or "" is passed as value, the property is cleared
+	 *
+	 * @return Status.NO_CONTENT
+	 */
+	public static Response updateProperty(Configuration configuration, String property, String val) {
+		if (StringUtils.isBlank(val)) {
+			configuration.clearProperty(property);
+		} else {
+			configuration.setProperty(property, val);
+		}
+		return Response.noContent().build();
+	}
+
+	/**
+	 * Writes data to file. Replaces the file's content with the given content.
+	 * The file does not need to exist
+	 *
+	 * @param ref     Reference to the File to write to (overwrite)
+	 * @param content the data to write
+	 * @return a JAX-RS Response containing the result. NOCONTENT if successful, InternalSeverError otherwise
+	 */
+	public static Response putContentToFile(RepositoryFileReference ref, String content, @SuppressWarnings("SameParameterValue") org.apache.tika.mime.MediaType mediaType) {
+		try {
+			Repository.INSTANCE.putContentToFile(ref, content, mediaType);
+		} catch (IOException e) {
+			BackendUtils.LOGGER.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		return Response.noContent().build();
+	}
+
+	public static Response putContentToFile(RepositoryFileReference ref, InputStream inputStream, org.apache.tika.mime.MediaType mediaType) {
+		try {
+			Repository.INSTANCE.putContentToFile(ref, inputStream, mediaType);
+		} catch (IOException e) {
+			BackendUtils.LOGGER.error(e.getMessage(), e);
+			return Response.serverError().entity(e.getMessage()).build();
+		}
+		return Response.noContent().build();
+	}
+
+
+
 
 }
