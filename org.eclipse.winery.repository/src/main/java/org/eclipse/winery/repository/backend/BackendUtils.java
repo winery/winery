@@ -315,36 +315,6 @@ public class BackendUtils {
 	}
 
 	/**
-	 * @param qNameOfTheType the QName of the type, where all TOSCAComponentIds, where the associated element points to
-	 *                       the type
-	 * @param clazz          the Id class of the entities to discover
-	 */
-	public static <X extends TOSCAComponentId> Collection<X> getAllElementsRelatedWithATypeAttribute(Class<X> clazz, QName qNameOfTheType) {
-		// we do not use any database system,
-		// therefore we have to crawl through each node type implementation by ourselves
-		SortedSet<X> allIds = Repository.INSTANCE.getAllTOSCAComponentIds(clazz);
-		Collection<X> res = new HashSet<>();
-		for (X id : allIds) {
-			IHasTypeReference resource;
-			try {
-				resource = (IHasTypeReference) AbstractComponentsResource.getComponentInstaceResource(id);
-			} catch (ClassCastException e) {
-				String error = "Requested following the type, but the component instance does not implmenet IHasTypeReference";
-				BackendUtils.LOGGER.error(error);
-				throw new IllegalStateException(error);
-			}
-			// The resource may have been freshly initialized due to existence of a directory
-			// then it has no node type assigned leading to ntiRes.getType() being null
-			// we ignore this error here
-			if (qNameOfTheType.equals(resource.getType())) {
-				// the component instance is an implementation of the associated node type
-				res.add(id);
-			}
-		}
-		return res;
-	}
-
-	/**
 	 * Returns a list of the topology template nested in the given service
 	 * template
 	 */

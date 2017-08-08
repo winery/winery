@@ -18,7 +18,11 @@ import java.io.InputStream;
 import java.nio.file.attribute.FileTime;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.SortedSet;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
@@ -26,6 +30,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
+import org.eclipse.winery.model.tosca.Definitions;
 
 import org.apache.tika.mime.MediaType;
 
@@ -189,4 +194,36 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * @param clazz the TOSCA component class which namespaces' should be returned.
 	 */
 	Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz);
+
+	/**
+	 * @param clazz          the id class of the entities to discover
+	 * @param qNameOfTheType the QName of the type, where all TOSCAComponentIds,
+	 *                       where the associated element points to the type
+	 */
+	default <X extends TOSCAComponentId> Collection<X> getAllElementsReferencingGivenType(Class<X> clazz, QName qNameOfTheType) {
+		// we do not use any database system,
+		// therefore we have to crawl through each node type implementation by ourselves
+		SortedSet<X> allIds = Repository.INSTANCE.getAllTOSCAComponentIds(clazz);
+		Collection<X> res = new HashSet<>();
+		for (X id : allIds) {
+			Definitions def = this.getDefinitions(id).get();
+			
+			IHasTypeReference resource;
+			try {
+				resource = (IHasTypeReference) AbstractComponentsResource.getComponentInstaceResource(id);
+			} catch (ClassCastException e) {
+				String error = "Requested following the type, but the component instance does not implmenet IHasTypeReference";
+				BackendUtils.LOGGER.error(error);
+				throw new IllegalStateException(error);
+			}
+			// The resource may have been freshly initialized due to existence of a directory
+			// then it has no node type assigned leading to ntiRes.getType() being null
+			// we ignore this error here
+			if (qNameOfTheType.equals(resource.getType())) {
+				// the component instance is an implementation of the associated node type
+				res.add(id);
+			}
+		}
+		return res;
+	}
 }
