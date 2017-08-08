@@ -83,6 +83,7 @@
 		<module>org.eclipse.winery.repository</module>
 		<module>org.eclipse.winery.repository.client</module>
 		<module>org.eclipse.winery.repository.configuration</module>
+		<module>org.eclipse.winery.repository.rest</module>
 		<module>org.eclipse.winery.repository.ui</module>
 		<module>org.eclipse.winery.topologymodeler</module>
 		<module>org.eclipse.winery.workflowmodeler</module>
