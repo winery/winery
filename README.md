@@ -8,6 +8,7 @@ The branch `master` differs from eclipse/winery in the following files:
 - [README.md](README.md) - This text file
 - [.travis.yml](.travis.yml) - Different AWS S3 upload directory
 - [Dockerfile](Dockerfile) - Custom Docker build for the OpenTOSCA organization
+- [pom.xml](pom.xml) - Upload to opentosca/mvn-repo
 
 One can find out the differences between the master branches of these two repositories by executing the following command:
 
