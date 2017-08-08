@@ -26,14 +26,24 @@ script:
   - mv org.eclipse.winery.workflowmodeler/target/*.war build/
 
 deploy:
-  provider: s3
-  skip_cleanup: true
-  access_key_id: $AWSAccessKeyId
-  secret_access_key: $AWSSecretKey
-  bucket: builds.opentosca.org
-  acl: public_read
-  local_dir: "build/"
-  upload-dir: "winery/$TRAVIS_BRANCH"
-  region: eu-central-1
-  on:
-    all_branches: true
+  - provider: s3
+    skip_cleanup: true
+    access_key_id: $AWSAccessKeyId
+    secret_access_key: $AWSSecretKey
+    bucket: builds.opentosca.org
+    acl: public_read
+    local_dir: "build/"
+    upload-dir: "winery/$TRAVIS_BRANCH"
+    region: eu-central-1
+    on:
+      all_branches: true
+  - provider: script
+    script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: script
+    script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
+    skip_cleanup: true
+    on:
+      branch: ghpagesdeploy
