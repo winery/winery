@@ -65,7 +65,7 @@
 		<repository>
 			<id>internal.repo</id>
 			<name>Temporary Staging Repository</name>
-			<url>file://${project.build.directory}/mvn-repo</url>
+			<url>file://${session.executionRootDirectory}/target/mvn-repo</url>
 		</repository>
 	</distributionManagement>
 	<properties>
