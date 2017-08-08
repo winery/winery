@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.IHasTypeReference;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
@@ -50,9 +50,6 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
 	//		this.template.setId(id);
 	//	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public QName getType() {
 		return this.o.getType();
@@ -64,26 +61,17 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
 		return this.getType().toString();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Response setType(QName type) {
 		this.o.setType(type);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Response setType(String typeStr) {
 		return this.setType(QName.valueOf(typeStr));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public PropertiesResource getPropertiesResource() {
 		return new PropertiesResource(this.o, (AbstractComponentInstanceResource) this.res);

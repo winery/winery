@@ -54,6 +54,15 @@ import org.apache.tika.mime.MediaType;
 interface IGenericRepository extends IWineryRepositoryCommon {
 
 	/**
+	 * Loads the TDefinition element belonging to the given id.
+	 * Undefined behavior if <code>!exists(id)</code>
+	 * 
+	 * @param id the TOSCAComponentId to load
+	 * @return Optional.empty() if the definition of the given id does not exist
+	 */
+	Optional<Definitions> getDefinitions(TOSCAComponentId id);
+
+	/**
 	 * Flags the given TOSCA element as existing.
 	 * The respective resource itself creates appropriate data files.
 	 *

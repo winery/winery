@@ -42,5 +42,11 @@ public class Definitions
     extends TDefinitions
 {
 
+	/**
+	 * Convencience method for <code>this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0)</code>
+	 */
+	public TExtensibleElements getElement() {
+		return this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
+	}
 
 }

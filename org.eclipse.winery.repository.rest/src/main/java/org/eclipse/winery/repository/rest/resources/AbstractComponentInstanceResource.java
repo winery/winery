@@ -302,16 +302,13 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 *                               in the prototype.
 	 */
 	private void load() {
+		this.definitions = Repository.INSTANCE.getDefinitions(this.id).orElseThrow(() -> {
+			AbstractComponentInstanceResource.LOGGER.error("Could not read content from file " + this.ref);
+			return new IllegalStateException();
+		});
+
 		try {
-			InputStream is = Repository.INSTANCE.newInputStream(this.ref);
-			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			this.definitions = (Definitions) u.unmarshal(is);
-		} catch (Exception e) {
-			AbstractComponentInstanceResource.LOGGER.error("Could not read content from file " + this.ref, e);
-			throw new IllegalStateException(e);
-		}
-		try {
-			this.element = this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
+			this.element = this.definitions.getElement();
 		} catch (IndexOutOfBoundsException e) {
 			if (this instanceof GenericImportResource) {
 				//noinspection StatementWithEmptyBody

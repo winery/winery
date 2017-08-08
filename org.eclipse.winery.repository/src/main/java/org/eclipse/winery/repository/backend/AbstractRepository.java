@@ -15,13 +15,20 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Optional;
 
+import javax.xml.bind.Unmarshaller;
+
+import jdk.nashorn.internal.runtime.regexp.joni.constants.OPCode;
 import org.apache.tika.mime.MediaType;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.JAXBSupport;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.IOUtils;
@@ -67,11 +74,11 @@ public abstract class AbstractRepository implements IRepository {
 			// create mimetype information
 			try (InputStream is = this.newInputStream(ref);
 					BufferedInputStream bis = new BufferedInputStream(is)) {
-				mimeType = Utils.getMimeType(bis, ref.getFileName());
+				mimeType = BackendUtils.getMimeType(bis, ref.getFileName());
 			}
 			if (mimeType != null) {
 				// successful execution
-				this.setMimeType(ref, MediaType.valueOf(mimeType));
+				this.setMimeType(ref, MediaType.parse(mimeType));
 			} else {
 				AbstractRepository.LOGGER.debug("Could not determine mimetype");
 			}
@@ -106,4 +113,19 @@ public abstract class AbstractRepository implements IRepository {
 		return this.getConfiguration(ref);
 	}
 
+	@Override
+	public Optional<Definitions> getDefinitions(TOSCAComponentId id) {
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+		if (!exists(ref)) {
+			return Optional.empty();
+		}
+		try {
+			InputStream is = Repository.INSTANCE.newInputStream(ref);
+			Unmarshaller u = JAXBSupport.createUnmarshaller();
+			return Optional.of((Definitions) u.unmarshal(is));
+		} catch (Exception e) {
+			LOGGER.error("Could not read content from file " + ref, e);
+			throw new IllegalStateException(e);
+		}
+	}
 }
