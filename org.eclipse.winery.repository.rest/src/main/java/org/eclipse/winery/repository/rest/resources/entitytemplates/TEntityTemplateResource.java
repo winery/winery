@@ -13,20 +13,13 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.rest.resources.IHasTypeReference;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
 
-public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWithIdResource<E> implements IEntityTemplateResource<E>, IHasTypeReference {
+public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWithIdResource<E> implements IEntityTemplateResource<E> {
 
 	/**
 	 * This constructor is used for both entity templates nested in an component
@@ -39,37 +32,6 @@ public class TEntityTemplateResource<E extends TEntityTemplate> extends EntityWi
 	 */
 	public TEntityTemplateResource(IIdDetermination<E> idDetermination, E o, int idx, List<E> list, IPersistable res) {
 		super(idDetermination, o, idx, list, res);
-	}
-
-	//	public String getId() {
-	//		return this.template.getId();
-	//	}
-	//
-	//	public void setId(String id) {
-	//		// TODO: There is no check for uniqueness of the given id
-	//		this.template.setId(id);
-	//	}
-
-	@Override
-	public QName getType() {
-		return this.o.getType();
-	}
-
-	@Path("type")
-	@GET
-	public String getTypeAsQNameString() {
-		return this.getType().toString();
-	}
-
-	@Override
-	public Response setType(QName type) {
-		this.o.setType(type);
-		return Utils.persist(this.res);
-	}
-
-	@Override
-	public Response setType(String typeStr) {
-		return this.setType(QName.valueOf(typeStr));
 	}
 
 	@Override

@@ -13,7 +13,7 @@ package org.eclipse.winery.model.tosca;
 
 import javax.xml.namespace.QName;
 
-public interface IHasTypeReference {
+public interface HasType {
 
 	/**
 	 * @return the QName of the type with full namespace, never null (according

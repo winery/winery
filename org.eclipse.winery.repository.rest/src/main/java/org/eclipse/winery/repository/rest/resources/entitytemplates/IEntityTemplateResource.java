@@ -17,13 +17,12 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.rest.resources.IHasTypeReference;
 
 /**
  * Interface ensuring that no methods are forgotten when implementing an
  * {@link AbstractComponentInstanceResource}, which is also a template
  */
-public interface IEntityTemplateResource<E extends TEntityTemplate> extends IHasTypeReference {
+public interface IEntityTemplateResource<E extends TEntityTemplate> {
 
 	@Path("properties/")
 	PropertiesResource getPropertiesResource();

@@ -33,6 +33,7 @@ import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactTemplate.ArtifactReferences;
@@ -158,35 +159,14 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		return new FilesResource(fileDir);
 	}
 
-	/***********************************************************************
-	 * "inheritance" from TEntityTemplateResource<TArtifactTemplate> *
-	 *
-	 * Offering all methods of TEntityTemplateResource<TArtifactTemplate> and
-	 * forwarding it to our private instance of it
-	 */
-
-	@Override
-	public QName getType() {
-		return this.entityTemplateResource.getType();
-	}
-
-	@Override
-	public Response setType(QName type) {
-		this.entityTemplateResource.setType(type);
-		return Utils.persist(this);
-	}
-
-	@Override
-	public Response setType(String typeStr) {
-		this.entityTemplateResource.setType(typeStr);
-		return Utils.persist(this);
-	}
-
 	@Override
 	public PropertiesResource getPropertiesResource() {
 		return new PropertiesResource(this.getTArtifactTemplate(), this);
 	}
 
+	/**
+	 * TODO: This should moved to org.eclipse.winery.repository
+	 */
 	int getReferenceCount() {
 		// We do not use a database, therefore, we have to go through all possibilities pointing to the artifact template
 		// DAs and IAs point to an artifact template
@@ -283,7 +263,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 			String res = Integer.toString(this.getReferenceCount());
 			return Response.ok().entity(res).build();
 		} else if (type != null) {
-			String res = this.getType().toString();
+			String res = ((HasType) this.getElement()).getType().toString();
 			return Response.ok().entity(res).build();
 		} else {
 			// we enforce the query parameter to be extensible to other queries

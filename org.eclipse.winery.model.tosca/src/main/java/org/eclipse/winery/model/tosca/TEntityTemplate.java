@@ -47,7 +47,7 @@ import org.w3c.dom.NodeList;
 		TRelationshipTemplate.class,
 		TNodeTemplate.class
 })
-public abstract class TEntityTemplate extends HasId {
+public abstract class TEntityTemplate extends HasId implements HasType {
 
 	@XmlElement(name = "Properties")
 	protected TEntityTemplate.Properties properties;

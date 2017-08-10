@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 
@@ -42,7 +43,7 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 			return creationResult.getResponse();
 		}
 		if (creationResult.getStatus().equals(Status.CREATED)) {
-			IHasTypeReference resource = (IHasTypeReference) AbstractComponentsResource.getComponentInstaceResource((TOSCAComponentId) creationResult.getId());
+			HasType resource = (HasType) AbstractComponentsResource.getComponentInstaceResource((TOSCAComponentId) creationResult.getId());
 			resource.setType(jsonData.type);
 			// we assume that setType succeeded and just return the result of the
 			// creation of the artifact template resource

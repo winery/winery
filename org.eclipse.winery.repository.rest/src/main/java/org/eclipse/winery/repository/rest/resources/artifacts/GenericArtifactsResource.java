@@ -62,7 +62,7 @@ import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.rest.resources.IHasTypeReference;
+import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.repository.rest.resources.INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.apiData.GenerateArtifactApiData;
@@ -318,7 +318,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		TInterface iface;
 
 		assert (this instanceof ImplementationArtifactsResource);
-		IHasTypeReference typeRes = (EntityTypeImplementationResource) this.res;
+		HasType typeRes = (EntityTypeImplementationResource) this.res;
 		QName type = typeRes.getType();
 		TOSCAComponentId typeId;
 		TNodeType nodeType;
