@@ -21,8 +21,7 @@ import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinitio
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.MockXMLElement;
-import org.eclipse.winery.repository.resources._support.dataadapter.InjectorReplaceData;
-import org.eclipse.winery.repository.resources.admin.NamespacesResource;
+import org.eclipse.winery.repository.rest.resources.admin.NamespacesResource;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.slf4j.Logger;
@@ -82,7 +81,7 @@ public class JAXBSupport {
 			// For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
 			// @formatter:off
 			context = JAXBContext.newInstance(
-					InjectorReplaceData.class,
+					//InjectorReplaceData.class,
 					TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
 					WinerysPropertiesDefinition.class,
 					// for the self-service portal
