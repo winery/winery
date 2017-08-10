@@ -25,5 +25,7 @@ export const sections = {
     imports: 'xSDImport',
 };
 
-export const hostURL = location.protocol + '//' + location.hostname + ':8080';
+// when running in development mode on port 3000, use default port 8080
+// otherwise, assume that backend runs on the some port
+export const hostURL = location.protocol + '//' + location.hostname + ':' + (location.port == '3000' ? '8080' : location.port);
 export const backendBaseURL = hostURL + '/winery';
