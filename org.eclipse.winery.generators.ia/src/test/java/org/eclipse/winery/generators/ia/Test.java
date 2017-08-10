@@ -18,7 +18,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.eclipse.winery.model.tosca.ObjectFactory;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
@@ -39,38 +38,36 @@ public class Test {
 
 	@org.junit.Test
 	public void testInOut() throws MalformedURLException {
-		ObjectFactory f = new ObjectFactory();
-
-		TInterface tinterface = f.createTInterface();
+		TInterface tinterface = new TInterface();
 		tinterface.setName("http://www.example.org/interfaces/lifecycle");
 
-		TOperation op1 = f.createTOperation();
+		TOperation op1 = new TOperation();
 		op1.setName("Op1InOut");
 		tinterface.getOperation().add(op1);
-		InputParameters op1InputParameters = f.createTOperationInputParameters();
+		InputParameters op1InputParameters = new InputParameters();
 
-		TParameter op1ip1 = f.createTParameter();
+		TParameter op1ip1 = new TParameter();
 		op1ip1.setName("op1ip1");
 		op1ip1.setType("xs:string");
 		op1InputParameters.getInputParameter().add(op1ip1);
-		TParameter op1ip2 = f.createTParameter();
+		TParameter op1ip2 = new TParameter();
 		op1ip2.setName("op1ip2");
 		op1ip2.setType("xs:string");
 		op1InputParameters.getInputParameter().add(op1ip2);
 		op1.setInputParameters(op1InputParameters);
 
-		OutputParameters op1OutputParameters = f.createTOperationOutputParameters();
-		TParameter op1op1 = f.createTParameter();
+		OutputParameters op1OutputParameters = new OutputParameters();
+		TParameter op1op1 = new TParameter();
 		op1op1.setName("op1op1");
 		op1op1.setType("xs:string");
 		op1OutputParameters.getOutputParameter().add(op1op1);
-		TParameter op1op2 = f.createTParameter();
+		TParameter op1op2 = new TParameter();
 		op1op2.setName("op1op2");
 		op1op1.setType("xs:string");
 		op1OutputParameters.getOutputParameter().add(op1op2);
 		op1.setOutputParameters(op1OutputParameters);
 
-		TNodeType nodeType = f.createTNodeType();
+		TNodeType nodeType = new TNodeType();
 		nodeType.setName("test");
 		nodeType.setTargetNamespace("http://asd.com");
 
@@ -81,42 +78,40 @@ public class Test {
 
 	@org.junit.Test
 	public void testMultipleOperationsInOrOut() throws MalformedURLException {
-		ObjectFactory f = new ObjectFactory();
-
-		TInterface tinterface = f.createTInterface();
+		TInterface tinterface = new TInterface();
 		tinterface.setName("TestInOrOut");
 
-		TOperation opIn = f.createTOperation();
+		TOperation opIn = new TOperation();
 		opIn.setName("OpIn");
 		tinterface.getOperation().add(opIn);
 
-		InputParameters op1InputParameters = f.createTOperationInputParameters();
-		TParameter op1ip1 = f.createTParameter();
+		InputParameters op1InputParameters = new InputParameters();
+		TParameter op1ip1 = new TParameter();
 		op1ip1.setName("op1ip1");
 		op1ip1.setType("xs:string");
 		op1InputParameters.getInputParameter().add(op1ip1);
-		TParameter op1ip2 = f.createTParameter();
+		TParameter op1ip2 = new TParameter();
 		op1ip2.setName("op1ip2");
 		op1ip2.setType("xs:string");
 		op1InputParameters.getInputParameter().add(op1ip2);
 		opIn.setInputParameters(op1InputParameters);
 
-		TOperation opOut = f.createTOperation();
+		TOperation opOut = new TOperation();
 		opOut.setName("OpOut");
 		tinterface.getOperation().add(opOut);
 
-		OutputParameters op1OutputParameters = f.createTOperationOutputParameters();
-		TParameter op1op1 = f.createTParameter();
+		OutputParameters op1OutputParameters = new OutputParameters();
+		TParameter op1op1 = new TParameter();
 		op1op1.setName("op1op1");
 		op1op1.setType("xs:string");
 		op1OutputParameters.getOutputParameter().add(op1op1);
-		TParameter op1op2 = f.createTParameter();
+		TParameter op1op2 = new TParameter();
 		op1op2.setName("op1op2");
 		op1op1.setType("xs:string");
 		op1OutputParameters.getOutputParameter().add(op1op2);
 		opOut.setOutputParameters(op1OutputParameters);
 
-		TNodeType nodeType = f.createTNodeType();
+		TNodeType nodeType = new TNodeType();
 		nodeType.setName("test");
 		nodeType.setTargetNamespace("http://asd.com");
 
@@ -127,16 +122,14 @@ public class Test {
 
 	@org.junit.Test
 	public void testNoParams() throws MalformedURLException {
-		ObjectFactory f = new ObjectFactory();
-
-		TInterface tinterface = f.createTInterface();
+		TInterface tinterface = new TInterface();
 		tinterface.setName("TestNoParams");
 
-		TOperation opIn = f.createTOperation();
+		TOperation opIn = new TOperation();
 		opIn.setName("OpNoParams");
 		tinterface.getOperation().add(opIn);
 
-		TNodeType nodeType = f.createTNodeType();
+		TNodeType nodeType = new TNodeType();
 		nodeType.setName("test");
 		nodeType.setTargetNamespace("http://asd.com");
 
