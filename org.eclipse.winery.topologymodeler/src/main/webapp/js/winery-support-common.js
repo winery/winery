@@ -8,7 +8,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
- *    Niko Stadelmaier - removal of select2 library
+ *    Niko Stadelmaier - removal of select2 library, remove typeahead
  *******************************************************************************/
 
 /**
@@ -168,37 +168,16 @@ define([], function() {
 				url: url,
 				dataType: "json"
 			}).done(function (result) {
-
-				var convResult = result.map(function(item){
-					return {id: item.id, name: item.text};
-				});
-				var params = {"source": convResult,
-					showHintOnFocus: "all"
-				};
+				
+				// };
 				if (typeof allowAdditions === "boolean") {
-					// params.createSearchChoice = function(term) {
-					// 	// enables creation of new namespaces
-					// 	return {id:term, text:term};
-					// }
 				}
-				// console.log("params", params);
-				// init select2 and select first item
-				require(["bootstrap3-typeahead"], function() {
-					$("#" + fieldId).typeahead('destroy');
-					$("#" + fieldId).typeahead(params);
-					if (result.length === 0) {
-						$("#" + fieldId).val("");
-					} else {
-						$("#" + fieldId).val(result[0].id);
-						$("#" + fieldId).typeahead("lookup", result[0].name);
-					}
-				});
 
 				if (typeof onSuccess === "function") {
 					onSuccess();
 				}
 			}).fail(function(jqXHR, textStatus, errorThrown) {
-				vShowAJAXError("Could not fetch select2 data from " + url, jqXHR, errorThrown);
+				vShowAJAXError("Could not fetch data from " + url, jqXHR, errorThrown);
 			});
 
 		}

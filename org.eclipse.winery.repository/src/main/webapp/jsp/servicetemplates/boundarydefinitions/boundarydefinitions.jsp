@@ -10,7 +10,7 @@
  * Contributors:
  *    Oliver Kopp - initial API and implementation and/or initial documentation
  *    Tobias Binz - communication with the nested iframe
- *    Niko Stadelmaier - removal of select2 library
+ *    Niko Stadelmaier - removal of select2 library, remove typeahead
  *******************************************************************************/
 --%>
 
@@ -337,19 +337,18 @@
 			<div class="form-group">
 				<label for="interface" class="col-sm-1 control-label">Interface</label>
 				<div class="col-sm-8">
-					<input id="interface" autocomplete="off" class="form-control" placeholder="NCName or URI">
+					<input id="interface" autocomplete="off" class="form-control" placeholder="NCName or URI"></input>
 				</div>
 				<button type="button" class="btn btn-danger btn-sm col-sm-1" onclick="deleteCurrentlySelectedInterface();">Delete</button>
 			</div>
 			<div class="form-group">
 				<label for="operation" class="col-sm-1 control-label">Operation</label>
 				<div class="col-sm-8">
-					<input id="operation" autocomplete="off" class="form-control" placeholder="NCName">
+					<input id="operation" autocomplete="off" class="form-control" placeholder="NCName"></input>
 				</div>
 				<button type="button" class="btn btn-danger btn-sm col-sm-1" onclick="deleteCurrentlySelectedOperation();">Delete</button>
 			</div>
 		</form>
-
 		<h4>Target</h4>
 
 		<form id="reftargettypeForm">
@@ -404,18 +403,18 @@
 			<div class="form-group" id="selectInterfaceNameDiv">
 				<label for="TargetInterface" class="col-sm-1 control-label">Interface</label>
 				<div class="col-sm-8">
-					<input id="TargetInterface" class="form-control">
+					<select id="TargetInterface" class="form-control"></select>
 				</div>
 			</div>
 
 			<div class="form-group" id="selectOperationNameDiv">
 				<label for="TargetOperation" class="col-sm-1 control-label">Operation</label>
 				<div class="col-sm-8">
-					<input id="TargetOperation" class="form-control">
+					<select id="TargetOperation" class="form-control"></select>
 				</div>
 			</div>
 		</form>
-
+		
 		<div id="notApplicableDiv" style="display:none;">
 			<p>not applicable in the case of plans</p>
 		</div>
@@ -425,7 +424,7 @@
 	<script type="text/x-tmpl" id="select-template">
 
 		{% for (var i=0; i<o.source.length; i++) { %}
-    		<option value={% o.source[i].id %}>{%=o.source[i].name%}</option>
+    		<option value={% o.source[i].id %}>{%=o.source[i].text%}</option>
 		{% } %}
 
 	</script>
@@ -444,14 +443,7 @@
 			}
 		}, true);
 	});
-
-	function updateInterfaces(){
-		require(["winery-support-common"], function(wsc) {
-		    //pass null as callback since event handler for interfaces are alredy set above, therefore no callback required
-			wsc.fetchSelect2DataAndInitSelect2("interface", "boundarydefinitions/interfaces/?select2", null, true);
-		});
-	}
-
+	
 	function getInterfacesAndInterfaceURLs() {
 		var iface = $("#interface").val();
 		iface = encodeID(iface);
@@ -499,7 +491,6 @@
 						contentType: "application/json"
 					}).done(function (result) {
 						vShowSuccess("Sucessfully created interface");
-						updateInterfaces();
 					}).fail(function(jqXHR, textStatus, errorThrown) {
 						vShowAJAXError("Could not create interface", jqXHR, errorThrown);
 					});
@@ -898,6 +889,12 @@ function getDataForUpdateTargetOperation(url, showError) {
 	});
 	return select2data;
 }
+function fillSelectWithId(fieldId, data){
+	$("#" + fieldId).empty();
+	$.each(data, function(index, item){
+		$("#" + fieldId).append($("<option/>").val(item.id).text(item.name));
+	});
+}
 
 function updateTargetOperation(operationNameToSelect) {
 	var ifaceURL = $("#TargetInterface").data("url2");
@@ -921,8 +918,7 @@ function updateTargetOperation(operationNameToSelect) {
 	var convDataArray = select2data.map(function(item){
 		return {id: item.id, name: item.text};
 	});
-
-		$("#TargetOperation").html(tmpl("select-template", convDataArray));
+		fillSelectWithId("TargetOperation", convDataArray);
 		var valueToSelect = null;
 		if ((typeof operationNameToSelect !== "undefined") && (operationNameToSelect != null)) {
 			valueToSelect = operationNameToSelect;
@@ -957,7 +953,7 @@ function updateTargetInterfaceAndOperationFromInterfaceURL(ifaceURL, interfaceNa
 	var convDataArray = select2data.map(function(item){
 		return {id: item.id, name: item.text};
 	});
-	$("#TargetInterface").html(tmpl("select-template", convDataArray));
+	fillSelectWithId("TargetInterface", convDataArray);
 
 	var valueToSelect = null;
 	if ((typeof interfaceNameToSelect !== "undefined") && (interfaceNameToSelect != null)) {

@@ -37,21 +37,3 @@
 	<input type="text" class="form-control" name="${nameOfInput}" id="${idOfInput}"></input>
 </div>
 
-<script>
-	// we have to use data as select2 does not allow "createSearchChoice" when using <select> as underlying html element
-	require(["bootstrap3-typeahead"], function () {
-
-	$("#${idOfInput}").typeahead({
-
-		source:[
-			<c:forEach var="ns" items="${allNamespaces}" varStatus="loop">
-			{id:"${ns}",name:"${ns}"}<c:if test="${!loop.last}">,</c:if>
-			</c:forEach>
-		],
-		autoSelect : true,
-		showHintOnFocus: true
-	});
-	$("#${idOfInput}").val("${selected}");
-	$("#${idOfInput}").typeahead("lookup", "${selected}");
-})
-</script>

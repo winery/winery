@@ -84,22 +84,6 @@ function createResource(nameOfResource, fields, url, onSuccess) cannot be used a
 </div>
 
 <script>
-<c:if test="${empty type and not empty typeSelectorData}">
-	require(["bootstrap3-typeahead"], function(){
-
-
-		$("#ciType").typeahead({
-			source : [
-				<c:forEach var="typeId" items="${typeSelectorData}" varStatus="loop">
-				{id:"${typeId.QName}",name:"${typeId.xmlId.decoded}"}<c:if test="${!loop.last}">,</c:if>
-				</c:forEach>
-			],
-			autoSelect: true,
-			showHintOnFocus: true
-		});
-	});
-
-</c:if>
 
 $("#addComponentInstanceDiag").on("shown.bs.modal", function() {
 	$("#nameOfNewCI").focus();

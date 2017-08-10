@@ -36,22 +36,3 @@
 	<label for="${idOfInput}" class="control-label">Namespace</label>
 	<input type="select" class="form-control" name="${nameOfInput}" id="${idOfInput}"></input>
 </div>
-
-<script>
-
-require(["bootstrap3-typeahead"], function () {
-
-    $("#${idOfInput}").typeahead({
-
-        source:[
-            <c:forEach var="ns" items="${allNamespaces}" varStatus="loop">
-            {id:"${ns.decoded}",name:"${ns.decoded}"}<c:if test="${!loop.last}">,</c:if>
-            </c:forEach>
-        ],
-        autoSelect : true,
-        showHintOnFocus: true
-    });
-            <%--.typeahead("val", "${selected}");--%>
-})
-
-</script>

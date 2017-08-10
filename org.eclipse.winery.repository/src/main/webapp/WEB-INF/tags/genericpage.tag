@@ -86,8 +86,6 @@
 
 				"pnotify": "../components/pnotify/jquery.pnotify",
 
-				"bootstrap3-typeahead": "../components/bootstrap3-typeahead/bootstrap3-typeahead",
-
 				"tmpl": "../components/blueimp-tmpl/js/tmpl",
 
 				"URIjs": '../components/uri.js/src',
