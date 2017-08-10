@@ -3,6 +3,13 @@
 This is a fork of [Eclipse Winery](https://github.com/eclipse/winery) and might include current research results not yet approved by Eclipse legal.
 Find out more about the OpenTOSCA eco system at [www.opentosca.org](http://www.opentosca.org/).
 
+## Running via docker
+
+1. `docker build -t winery .`. In case, there are issues, you can also try `docker build --no-cache -t winery .`
+2. `docker run -p 9999:8080 winery` to run winery on http://localhost:9999/
+
+## Differences to Eclipse Winery
+
 The branch `master` differs from eclipse/winery in the following files:
 
 - [README.md](README.md) - This text file

@@ -9,8 +9,7 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
         nodejs \
         unzip \
     && rm -rf /var/lib/apt/lists/* \
-    && echo '{ "allow_root": true }' > /root/.bowerrc \
-    && npm install -g bower
+    && echo '{ "allow_root": true }' > /root/.bowerrc
 
 RUN git clone --recursive --depth=1 ${GIT_REPO_URL} -b ${GIT_BRANCH} /tmp/winery \
     && cd /tmp/winery \
