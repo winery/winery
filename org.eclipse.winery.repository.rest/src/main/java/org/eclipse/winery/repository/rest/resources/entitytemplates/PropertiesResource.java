@@ -26,7 +26,7 @@ import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 

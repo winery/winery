@@ -26,7 +26,7 @@ import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.TypeWithShortName;

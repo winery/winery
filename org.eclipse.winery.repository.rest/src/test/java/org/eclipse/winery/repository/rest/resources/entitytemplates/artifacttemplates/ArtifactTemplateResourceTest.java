@@ -12,7 +12,7 @@
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
+import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;

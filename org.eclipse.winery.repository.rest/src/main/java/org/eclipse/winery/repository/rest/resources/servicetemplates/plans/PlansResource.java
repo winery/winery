@@ -31,7 +31,7 @@ import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;

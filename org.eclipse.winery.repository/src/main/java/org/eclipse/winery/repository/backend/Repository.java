@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.eclipse.winery.repository.Prefs;
+import org.eclipse.winery.repository.rest.Prefs;
 
 public class Repository {
 

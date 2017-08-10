@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.runtimeintegration;
 
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 
 public class OpenTOSCAContainerConnection {
 

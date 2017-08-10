@@ -83,7 +83,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.Filename;

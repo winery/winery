@@ -30,7 +30,7 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;

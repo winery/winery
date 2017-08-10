@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.FileMeta;

@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 

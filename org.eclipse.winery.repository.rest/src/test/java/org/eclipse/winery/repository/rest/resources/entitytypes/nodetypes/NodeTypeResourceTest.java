@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes;
 
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.rest.resources.TestIds;
 

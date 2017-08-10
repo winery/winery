@@ -19,7 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.backend.ResourceCreationResult;
+import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 
 import org.apache.commons.lang3.StringUtils;

@@ -33,7 +33,7 @@ import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;

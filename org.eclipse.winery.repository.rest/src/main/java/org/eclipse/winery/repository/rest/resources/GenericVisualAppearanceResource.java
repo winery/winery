@@ -27,8 +27,8 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
-import org.eclipse.winery.repository.Prefs;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Prefs;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;

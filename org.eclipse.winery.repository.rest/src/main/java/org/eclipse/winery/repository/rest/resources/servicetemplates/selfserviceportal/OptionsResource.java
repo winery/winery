@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;

@@ -39,10 +39,10 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.backend.ResourceCreationResult;
+import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;

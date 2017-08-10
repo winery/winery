@@ -9,9 +9,8 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.model.tosca;
 
-import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
 public interface IHasTypeReference {
@@ -25,7 +24,7 @@ public interface IHasTypeReference {
 	/**
 	 * Sets the type and directly persists the resource
 	 */
-	Response setType(QName type);
+	void setType(QName type);
 
 	/**
 	 * Calls setType(QName) with QName.valueOf(typeStr)
@@ -34,6 +33,8 @@ public interface IHasTypeReference {
 	 *
 	 * @param typeStr a textual representation of a QName
 	 */
-	Response setType(String typeStr);
+	default void setType(String typeStr) {
+		this.setType(QName.valueOf(typeStr));
+	}
 
 }

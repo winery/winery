@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.importing.CSARImporter;
 import org.eclipse.winery.repository.importing.ImportMetaInformation;
 import org.eclipse.winery.repository.rest.resources.API.APIResource;

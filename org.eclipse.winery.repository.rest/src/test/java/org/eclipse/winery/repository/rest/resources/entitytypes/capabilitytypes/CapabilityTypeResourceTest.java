@@ -16,7 +16,7 @@ import java.io.IOException;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
+import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.rest.resources.ResourceTest;

@@ -54,7 +54,7 @@ import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;

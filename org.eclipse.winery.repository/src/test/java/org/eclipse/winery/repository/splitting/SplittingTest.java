@@ -24,7 +24,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.Prefs;
+import org.eclipse.winery.repository.rest.Prefs;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 

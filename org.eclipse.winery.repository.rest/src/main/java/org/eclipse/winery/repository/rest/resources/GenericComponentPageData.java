@@ -22,7 +22,7 @@ import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates.PolicyTemplatesResource;

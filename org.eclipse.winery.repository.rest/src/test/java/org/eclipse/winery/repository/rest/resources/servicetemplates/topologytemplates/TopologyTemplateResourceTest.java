@@ -14,7 +14,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.topologyte
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 

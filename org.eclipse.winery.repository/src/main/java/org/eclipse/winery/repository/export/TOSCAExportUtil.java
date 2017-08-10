@@ -80,7 +80,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.Filename;

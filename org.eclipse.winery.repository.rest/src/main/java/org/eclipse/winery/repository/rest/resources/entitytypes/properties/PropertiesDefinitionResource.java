@@ -31,7 +31,7 @@ import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.admin.NamespacesResource;

@@ -17,8 +17,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.Prefs;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Prefs;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.Repository;
 
 import org.apache.commons.io.FilenameUtils;

@@ -32,7 +32,7 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 

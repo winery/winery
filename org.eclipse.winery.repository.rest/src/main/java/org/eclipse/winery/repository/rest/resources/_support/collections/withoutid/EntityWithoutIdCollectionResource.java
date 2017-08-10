@@ -18,7 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
