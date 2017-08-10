@@ -64,7 +64,6 @@ import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.ObjectFactory;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -763,8 +762,7 @@ public class BackendUtils {
 	 * @return a definitions element prepared for wrapping a TOSCA component instance
 	 */
 	public static Definitions createWrapperDefinitions(TOSCAComponentId tcId) {
-		ObjectFactory of = new ObjectFactory();
-		Definitions defs = of.createDefinitions();
+		Definitions defs = new Definitions();
 		return updateWrapperDefinitions(tcId, defs);
 	}
 
