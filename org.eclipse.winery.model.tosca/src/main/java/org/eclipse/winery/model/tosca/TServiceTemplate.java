@@ -61,7 +61,7 @@ import org.eclipse.jdt.annotation.Nullable;
         "topologyTemplate",
         "plans"
 })
-public class TServiceTemplate extends HasId {
+public class TServiceTemplate extends HasId implements HasName {
 
     @XmlElement(name = "Tags")
     protected TTags tags;
