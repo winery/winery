@@ -86,7 +86,7 @@ import org.eclipse.jdt.annotation.Nullable;
         TArtifactType.class,
         TPolicyType.class
 })
-public class TEntityType extends TExtensibleElements {
+public class TEntityType extends TExtensibleElements implements HasName {
     @XmlElement(name = "Tags")
     protected TTags tags;
     @XmlElement(name = "DerivedFrom")
@@ -195,30 +195,17 @@ public class TEntityType extends TExtensibleElements {
         this.propertiesDefinition = value;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
+    @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
+    @Override
     public void setName(String value) {
         this.name = value;
     }
 
-    /**
-     * Gets the value of the abstract property.
-     *
-     * @return possible object is {@link TBoolean }
-     */
     @NonNull
     public TBoolean getAbstract() {
         if (_abstract == null) {
