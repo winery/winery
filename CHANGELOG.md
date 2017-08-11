@@ -10,7 +10,9 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ## [unreleased]
 
-* Initial support for BPMN4TOSCA implemented using Angular
+### Changed
+
+- Initial support for BPMN4TOSCA implemented using Angular
 - org.eclipse.winery.model.tosca was extended with builders and some helper classes
 
 ## [v2.0.0-M1] - 2017-07-03
