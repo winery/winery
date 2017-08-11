@@ -162,6 +162,13 @@ public class TDefinitions extends HasId implements HasName {
     }
 
     /**
+     * Convenience method for <code>this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0)</code>
+     */
+    public TExtensibleElements getElement() {
+        return this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
+    }
+
+    /**
      * Gets the value of the extensions property.
      *
      * @return possible object is {@link TDefinitions.Extensions }

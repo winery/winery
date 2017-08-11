@@ -175,6 +175,16 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
         return Objects.hash(super.hashCode(), tags, requiredContainerFeatures, implementationArtifacts, targetNamespace, name, _abstract, _final, implementedType);
     }
 
+    @Override
+    public QName getType() {
+        return this.implementedType;
+    }
+
+    @Override
+    public void setType(QName type) {
+        this.implementedType = type;
+    }
+
     public static abstract class Builder extends TExtensibleElements.Builder {
         private String name;
         private String targetNamespace;

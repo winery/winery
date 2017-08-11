@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin.types;
 
-import org.eclipse.winery.repository.datatypes.ids.admin.PlanTypesId;
+import org.eclipse.winery.common.ids.admin.PlanTypesId;
 
 public class PlanTypesManager extends AbstractTypesManager {
 

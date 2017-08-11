@@ -302,7 +302,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 *                               in the prototype.
 	 */
 	private void load() {
-		this.definitions = Repository.INSTANCE.getDefinitions(this.id).orElseThrow(() -> {
+		this.definitions = Repository.INSTANCE.getTDefinitions(this.id).orElseThrow(() -> {
 			AbstractComponentInstanceResource.LOGGER.error("Could not read content from file " + this.ref);
 			return new IllegalStateException();
 		});
@@ -383,7 +383,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 * to use "getXY" defined by each subclass, where XY is the concrete type
 	 *
 	 * Shortcut for
-	 * getDefinitions().getServiceTemplateOrNodeTypeOrNodeTypeImplementation
+	 * getTDefinitions().getServiceTemplateOrNodeTypeOrNodeTypeImplementation
 	 * ().get(0);
 	 *
 	 * @return TCapabilityType|...

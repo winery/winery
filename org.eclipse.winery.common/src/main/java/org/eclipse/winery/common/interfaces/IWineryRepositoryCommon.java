@@ -14,10 +14,14 @@
 package org.eclipse.winery.common.interfaces;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 
 /**
  * Enables access to the winery repository via Ids defined in package
@@ -32,6 +36,19 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
  * {@link org.eclipse.winery.repository.backend.IRepository}
  */
 public interface IWineryRepositoryCommon {
+
+	/**
+	 * Loads the TDefinition element belonging to the given id.
+	 * Undefined behavior if <code>!exists(id)</code>
+	 *
+	 * @param id the TOSCAComponentId to load
+	 * @return Optional.empty() if the definition of the given id does not exist
+	 */
+	Optional<TDefinitions> getTDefinitions(TOSCAComponentId id);
+
+	default Optional<TNodeTypeImplementation> getElement(NodeTypeImplementationId id) {
+		return this.getTDefinitions(id).map(definitions -> (TNodeTypeImplementation) definitions.getElement());
+	}
 
 	/**
 	 * Deletes the TOSCA element <b>and all sub elements</b> referenced by the

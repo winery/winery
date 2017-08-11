@@ -33,7 +33,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.datatypes.TypeWithShortName;
-import org.eclipse.winery.repository.datatypes.ids.admin.TypesId;
+import org.eclipse.winery.common.ids.admin.TypesId;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.resources.admin.AbstractAdminResource;
 import org.eclipse.winery.repository.rest.resources.apiData.TypeWithShortNameApiData;

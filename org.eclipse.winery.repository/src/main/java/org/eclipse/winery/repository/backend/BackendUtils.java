@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.SortedSet;
 
 import javax.xml.XMLConstants;
@@ -45,11 +44,9 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.IdUtil;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
@@ -73,7 +70,7 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
-import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
+import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
@@ -95,7 +92,6 @@ import org.apache.xerces.xs.XSParticle;
 import org.apache.xerces.xs.XSTerm;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.ls.LSInput;
@@ -207,7 +203,7 @@ public class BackendUtils {
 
 
 	public static String getName(TOSCAComponentId instanceId) throws RepositoryCorruptException {
-		TExtensibleElements instanceElement = Repository.INSTANCE.getDefinitions(instanceId)
+		TExtensibleElements instanceElement = Repository.INSTANCE.getTDefinitions(instanceId)
 				.orElseThrow(() -> new RepositoryCorruptException("Definitions does not exist for instance"))
 				.getElement();
 		return ModelUtilities.getNameWithIdFallBack(instanceElement);
@@ -221,29 +217,8 @@ public class BackendUtils {
 	 * <b>not</b> double encoded. With trailing slash if sub-resources can exist
 	 * @throws IllegalStateException if id is of an unknown subclass of id
 	 */
-	public static String getPathInsideRepo(GenericId id) {
-		Objects.requireNonNull(id);
-
-		// for creating paths see also org.eclipse.winery.repository.Utils.getIntermediateLocationStringForType(String, String)
-		// and org.eclipse.winery.common.Util.getRootPathFragment(Class<? extends TOSCAcomponentId>)
-		if (id instanceof AdminId) {
-			return "admin/" + id.getXmlId().getEncoded() + "/";
-		} else if (id instanceof GenericImportId) {
-			GenericImportId i = (GenericImportId) id;
-			String res = "imports/";
-			res = res + Util.URLencode(i.getType()) + "/";
-			res = res + i.getNamespace().getEncoded() + "/";
-			res = res + i.getXmlId().getEncoded() + "/";
-			return res;
-		} else if (id instanceof TOSCAComponentId) {
-			return IdUtil.getPathFragment(id);
-		} else if (id instanceof TOSCAElementId) {
-			// we cannot reuse IdUtil.getPathFragment(id) as this TOSCAelementId
-			// might be nested in an AdminId
-			return BackendUtils.getPathInsideRepo(id.getParent()) + id.getXmlId().getEncoded() + "/";
-		} else {
-			throw new IllegalStateException("Unknown subclass of GenericId " + id.getClass());
-		}
+	private static String getPathInsideRepo(GenericId id) {
+		return Util.getPathInsideRepo(id);
 	}
 
 	/**

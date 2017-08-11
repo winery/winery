@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -44,6 +45,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.IdUtil;
+import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
@@ -67,6 +70,8 @@ import org.w3c.dom.Element;
 public class Util {
 
 	public static final String FORBIDDEN_CHARACTER_REPLACEMENT = "_";
+
+	public static final String slashEncoded = Util.URLencode("/");
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
 
@@ -125,6 +130,51 @@ public class Util {
 			return false;
 		}
 		return !u.isAbsolute();
+	}
+
+	/**
+	 * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPathForId(org.eclipse.winery.common.ids.GenericId) instead.
+	 *
+	 * @return the path starting from the root element to the current element. Separated by "/", URLencoded, but
+	 * <b>not</b> double encoded. With trailing slash if sub-resources can exist
+	 * @throws IllegalStateException if id is of an unknown subclass of id
+	 */
+	public static String getPathInsideRepo(GenericId id) {
+		Objects.requireNonNull(id);
+
+		// for creating paths see also org.eclipse.winery.repository.Utils.getIntermediateLocationStringForType(String, String)
+		// and org.eclipse.winery.common.Util.getRootPathFragment(Class<? extends TOSCAcomponentId>)
+		if (id instanceof AdminId) {
+			return "admin/" + id.getXmlId().getEncoded() + "/";
+		} else if (id instanceof GenericImportId) {
+			GenericImportId i = (GenericImportId) id;
+			String res = "imports/";
+			res = res + Util.URLencode(i.getType()) + "/";
+			res = res + i.getNamespace().getEncoded() + "/";
+			res = res + i.getXmlId().getEncoded() + "/";
+			return res;
+		} else if (id instanceof TOSCAComponentId) {
+			return IdUtil.getPathFragment(id);
+		} else if (id instanceof TOSCAElementId) {
+			// we cannot reuse IdUtil.getPathFragment(id) as this TOSCAelementId
+			// might be nested in an AdminId
+			return getPathInsideRepo(id.getParent()) + id.getXmlId().getEncoded() + "/";
+		} else {
+			throw new IllegalStateException("Unknown subclass of GenericId " + id.getClass());
+		}
+	}
+
+	/**
+	 * @param id the GenericId to determine the path for
+	 * @return the path correctly URL encoded
+	 */
+	public static String getUrlPathForId(GenericId id) {
+		String pathInsideRepo = getPathInsideRepo(id);
+		// first encode the whole string
+		String res = Util.URLencode(pathInsideRepo);
+		// issue: "/" is also encoded. This has to be undone:
+		res = res.replaceAll(slashEncoded, "/");
+		return res;
 	}
 
 	/**

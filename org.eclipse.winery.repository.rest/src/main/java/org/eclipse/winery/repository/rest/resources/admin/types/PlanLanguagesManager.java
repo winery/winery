@@ -12,7 +12,7 @@
 package org.eclipse.winery.repository.rest.resources.admin.types;
 
 import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.repository.datatypes.ids.admin.PlanLanguagesId;
+import org.eclipse.winery.common.ids.admin.PlanLanguagesId;
 
 public class PlanLanguagesManager extends AbstractTypesManager {
 

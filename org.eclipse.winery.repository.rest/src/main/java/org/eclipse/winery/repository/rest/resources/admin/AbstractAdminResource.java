@@ -15,7 +15,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
+import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.repository.rest.Utils;
 
 import org.apache.commons.configuration.Configuration;

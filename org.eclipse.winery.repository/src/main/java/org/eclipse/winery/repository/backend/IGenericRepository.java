@@ -19,7 +19,6 @@ import java.nio.file.attribute.FileTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
@@ -28,13 +27,10 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 
 import org.apache.tika.mime.MediaType;
 
@@ -56,19 +52,6 @@ import org.apache.tika.mime.MediaType;
  * Currently, this class is used internally only
  */
 interface IGenericRepository extends IWineryRepositoryCommon {
-
-	/**
-	 * Loads the TDefinition element belonging to the given id.
-	 * Undefined behavior if <code>!exists(id)</code>
-	 * 
-	 * @param id the TOSCAComponentId to load
-	 * @return Optional.empty() if the definition of the given id does not exist
-	 */
-	Optional<Definitions> getDefinitions(TOSCAComponentId id);
-	
-	default Optional<TNodeTypeImplementation> getElement(NodeTypeImplementationId id) {
-		return this.getDefinitions(id).map(definitions -> (TNodeTypeImplementation) definitions.getElement());
-	} 
 
 	/**
 	 * Flags the given TOSCA element as existing.
@@ -228,7 +211,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 				// The resource may have been freshly initialized due to existence of a directory
 				// then it has no node type assigned leading to ntiRes.getType() being null
 				// we ignore this error here
-				.filter(id -> ((HasType) this.getDefinitions(id).get().getElement()).getType().equals(qNameOfTheType))
+				.filter(id -> ((HasType) this.getTDefinitions(id).get().getElement()).getType().equals(qNameOfTheType))
 				.collect(Collectors.toList());
 	}
 }

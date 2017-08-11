@@ -9,18 +9,18 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.datatypes.ids.admin;
+package org.eclipse.winery.common.ids.admin;
 
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
-public class ConstraintTypesId extends TypesId {
+public class PlanTypesId extends TypesId {
 
-	private final static XMLId xmlId = new XMLId(IdNames.CONSTRAINTTYPES, false);
+	private final static XMLId xmlId = new XMLId(IdNames.PLANTYPES, false);
 
 
-	public ConstraintTypesId() {
-		super(ConstraintTypesId.xmlId);
+	public PlanTypesId() {
+		super(PlanTypesId.xmlId);
 	}
 
 }

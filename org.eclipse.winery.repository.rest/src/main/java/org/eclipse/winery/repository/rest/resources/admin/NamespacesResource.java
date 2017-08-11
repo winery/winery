@@ -44,7 +44,7 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndCountOfComponentInstances
-import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
+import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.rest.resources.apiData.NamespaceWithPrefix;
 
 import org.apache.commons.lang3.StringUtils;

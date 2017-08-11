@@ -53,7 +53,7 @@ import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.rest.Prefs;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
+import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;

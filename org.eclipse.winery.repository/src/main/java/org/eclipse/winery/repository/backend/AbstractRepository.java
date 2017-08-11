@@ -112,7 +112,7 @@ public abstract class AbstractRepository implements IRepository {
 	}
 
 	@Override
-	public Optional<Definitions> getDefinitions(TOSCAComponentId id) {
+	public Optional<Definitions> getTDefinitions(TOSCAComponentId id) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		if (!exists(ref)) {
 			return Optional.empty();

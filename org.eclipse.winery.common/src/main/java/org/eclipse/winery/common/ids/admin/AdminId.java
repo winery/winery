@@ -9,7 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.datatypes.ids.admin;
+package org.eclipse.winery.common.ids.admin;
 
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.XMLId;
