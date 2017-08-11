@@ -14,9 +14,9 @@ package org.eclipse.winery.repository.rest.resources.admin;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
+import org.eclipse.winery.repository.rest.Utils;
 
 import org.apache.commons.configuration.Configuration;
 
@@ -41,6 +41,6 @@ public abstract class AbstractAdminResource {
 
 	@DELETE
 	public Response onDelete() {
-		return BackendUtils.delete(this.id);
+		return Utils.delete(this.id);
 	}
 }

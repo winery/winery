@@ -31,10 +31,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ModelUtilities;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.constants.QNames;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.constants.QNames;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
@@ -52,7 +53,7 @@ import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeI
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
-import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Policies;
@@ -87,18 +88,18 @@ import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.resources.EntityTypeResource;
-import org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
-import org.eclipse.winery.repository.resources.entitytemplates.policytemplates.PolicyTemplateResource;
-import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
-import org.eclipse.winery.repository.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
-import org.eclipse.winery.repository.resources.entitytypes.nodetypes.NodeTypeResource;
-import org.eclipse.winery.repository.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
-import org.eclipse.winery.repository.resources.entitytypes.requirementtypes.RequirementTypeResource;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
+import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
+import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
+import org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates.PolicyTemplateResource;
+import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes.RequirementTypeResource;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.ext.XLogger;
@@ -418,7 +419,7 @@ public class TOSCAExportUtil {
 	 */
 	private void addToImports(TOSCAComponentId id, Collection<TImport> imports) {
 		TImport imp = new TImport();
-		imp.setImportType(org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE);
+		imp.setImportType(Namespaces.TOSCA_NAMESPACE);
 		imp.setNamespace(id.getNamespace().getDecoded());
 		URI uri = (URI) this.exportConfiguration.get(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString());
 		if (uri == null) {

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ModelUtilities;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TDocumentation;
@@ -29,9 +29,9 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.resources.entitytypes.requirementtypes.RequirementTypeResource;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes.RequirementTypeResource;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 public class ProviderRepository {
 

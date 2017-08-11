@@ -15,7 +15,7 @@ package org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycomp
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.winery.common.ModelUtilities;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;

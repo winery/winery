@@ -38,7 +38,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.common.ModelUtilities;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
@@ -54,6 +54,7 @@ import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
@@ -401,7 +402,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 			plan.setId(planId.getXmlId().getDecoded());
 			plan.setName(planId.getXmlId().getDecoded());
 			plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
-			plan.setPlanLanguage(org.eclipse.winery.common.constants.Namespaces.URI_BPEL20_EXECUTABLE);
+			plan.setPlanLanguage(Namespaces.URI_BPEL20_EXECUTABLE);
 
 			// create a PlanModelReferenceElement pointing to that file
 			String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));

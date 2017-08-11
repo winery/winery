@@ -9,7 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.common.constants;
+package org.eclipse.winery.model.tosca.constants;
 
 /**
  * Defines namespace constants not available in Java7's XMLConstants

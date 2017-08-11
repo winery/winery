@@ -41,8 +41,9 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.datatypes.NamespaceAndCountOfComponentInstances;
+import org.eclipse.winery.repository.rest.datatypes.NamespaceAndCountOfComponentInstances
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.rest.resources.apiData.NamespaceWithPrefix;
 
@@ -66,8 +67,8 @@ public class NamespacesResource extends AbstractAdminResource {
 		// if that behavior is not desired, the code has to be moved to "generatePrefix" which checks for existence, ...
 		this.configuration.setProperty("http://www.w3.org/2001/XMLSchema", "xsd");
 		this.configuration.setProperty("http://www.w3.org/XML/1998/namespace", "xmlns");
-		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE, "tosca");
-		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery");
+		this.configuration.setProperty(Namespaces.TOSCA_NAMESPACE, "tosca");
+		this.configuration.setProperty(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery");
 	}
 
 	/**

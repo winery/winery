@@ -9,7 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.common.propertydefinitionkv;
+package org.eclipse.winery.model.tosca.propertydefinitionkv;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

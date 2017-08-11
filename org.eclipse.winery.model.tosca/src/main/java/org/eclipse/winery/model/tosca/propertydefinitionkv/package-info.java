@@ -20,10 +20,10 @@
  *
  */
 @XmlSchema(namespace = Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, elementFormDefault = XmlNsForm.QUALIFIED)
-package org.eclipse.winery.common.propertydefinitionkv;
+package org.eclipse.winery.model.tosca.propertydefinitionkv;
 
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;
 
-import org.eclipse.winery.common.constants.Namespaces;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 

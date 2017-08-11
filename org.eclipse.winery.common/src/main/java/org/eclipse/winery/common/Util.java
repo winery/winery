@@ -56,6 +56,7 @@ import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.taglibs.standard.functions.Functions;
@@ -320,7 +321,7 @@ public class Util {
 		}
 		if (namespace == null) {
 			// fallback non-specified namespaces
-			namespace = org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE;
+			namespace = Namespaces.TOSCA_NAMESPACE;
 		}
 		String localName = Util.getLocalName(clazz);
 		QName qname = new QName(namespace, localName);
@@ -422,21 +423,6 @@ public class Util {
 	public static String getLastURIPart(String loc) {
 		int posSlash = loc.lastIndexOf('/');
 		return loc.substring(posSlash + 1);
-	}
-
-	/**
-	 * Determines a color belonging to the given name
-	 */
-	public static String getColor(String name) {
-		int hash = name.hashCode();
-		// trim to 3*8=24 bits
-		hash = hash & 0xFFFFFF;
-		// check if color is more than #F0F0F0, i.e., too light
-		if (((hash & 0xF00000) >= 0xF00000) && (((hash & 0x00F000) >= 0x00F000) && ((hash & 0x0000F0) >= 0x0000F0))) {
-			// set one high bit to zero for each channel. That makes the overall color darker
-			hash = hash & 0xEFEFEF;
-		}
-		return String.format("#%06x", hash);
 	}
 
 	/**

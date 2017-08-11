@@ -9,15 +9,22 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.common.constants;
+package org.eclipse.winery.model.tosca.propertydefinitionkv;
 
-import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.List;
 
-public class QNames {
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-	public static final QName QNAME_BORDER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "bordercolor");
-	public static final QName QNAME_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "color");
+@XmlRootElement(name = "PropertyDefinitions")
+public class PropertyDefinitionKVList extends ArrayList<PropertyDefinitionKV> {
 
-	// Boolean flag to indicate that the import is generated via the Winery Properties Defintion
-	public static final QName QNAME_WINERYS_PROPERTIES_DEFINITION_ATTRIBUTE = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "wpd");
+	private static final long serialVersionUID = -6442041855597987094L;
+
+	@XmlElement(name = "PropertyDefinition")
+	public List<PropertyDefinitionKV> getPropertyDefinitionKVs() {
+		return this;
+	}
+
 }

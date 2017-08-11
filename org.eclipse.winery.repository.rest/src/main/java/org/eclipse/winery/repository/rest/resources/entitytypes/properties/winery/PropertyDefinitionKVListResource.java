@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.properties.winery;
 
-import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 

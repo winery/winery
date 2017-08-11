@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -37,6 +36,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -53,11 +53,12 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.constants.Namespaces;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
@@ -77,7 +78,6 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.export.CSARExporter;
@@ -85,9 +85,11 @@ import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
+import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
@@ -102,14 +104,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.header.ContentDisposition;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.taglibs.standard.functions.Functions;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.parser.AutoDetectParser;
 import org.apache.xerces.xs.XSConstants;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
@@ -129,8 +129,6 @@ public class Utils {
 	public static final ObjectMapper mapper = getObjectMapper();
 
 	private static final XLogger LOGGER = XLoggerFactory.getXLogger(Utils.class);
-
-	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.valueOf("application/octet-stream");
 
 	// RegExp inspired by http://stackoverflow.com/a/5396246/873282
 	// NameStartChar without ":"
@@ -465,48 +463,6 @@ public class Utils {
 	 */
 	public static String getWineryTopologyModelerPath() {
 		return Prefs.INSTANCE.getWineryTopologyModelerPath();
-	}
-
-	/**
-	 * Detect the mime type of the stream. The stream is marked at the beginning
-	 * and reset at the end
-	 *
-	 * @param bis the stream
-	 * @param fn the fileName of the file belonging to the stream
-	 */
-	public static String getMimeType(BufferedInputStream bis, String fn) throws IOException {
-		AutoDetectParser parser = new AutoDetectParser();
-		Detector detector = parser.getDetector();
-		Metadata md = new Metadata();
-		md.add(Metadata.RESOURCE_NAME_KEY, fn);
-		org.apache.tika.mime.MediaType mediaType = detector.detect(bis, md);
-		return mediaType.toString();
-	}
-
-	/**
-	 * Fixes the mediaType if it is too vague (such as application/octet-stream)
-	 *
-	 * @return a more fitting MediaType or the original one if it is appropriate
-	 *         enough
-	 */
-	public static MediaType getFixedMimeType(BufferedInputStream is, String fileName, MediaType mediaType) {
-		if (mediaType.equals(Utils.MEDIATYPE_APPLICATION_OCTET_STREAM)) {
-			// currently, we fix application/octet-stream only
-
-			// TODO: instead of using apache tika, we could hve a user-configured map storing
-			//  * media type
-			//  * file extension
-
-			try {
-				return MediaType.valueOf(Utils.getMimeType(is, fileName));
-			} catch (Exception e) {
-				Utils.LOGGER.debug("Could not determine mimetype for " + fileName, e);
-				// just keep the old one
-				return mediaType;
-			}
-		} else {
-			return mediaType;
-		}
 	}
 
 	/**
@@ -1177,7 +1133,7 @@ public class Utils {
 	 * @return Response to be sent to the client
 	 */
 	public static Response returnRepoPath(RepositoryFileReference ref, String modified) {
-		return BackendUtils.returnRefAsResponseBuilder(ref, modified).build();
+		return Utils.returnRefAsResponseBuilder(ref, modified).build();
 	}
 
 	/**
@@ -1187,7 +1143,7 @@ public class Utils {
 	 * is null), an OK response with an inputstream pointing to the path is
 	 * returned
 	 */
-	private static ResponseBuilder returnRefAsResponseBuilder(RepositoryFileReference ref, String modified) {
+	private static Response.ResponseBuilder returnRefAsResponseBuilder(RepositoryFileReference ref, String modified) {
 		if (!Repository.INSTANCE.exists(ref)) {
 			return Response.status(Status.NOT_FOUND);
 		}
@@ -1196,7 +1152,7 @@ public class Utils {
 		try {
 			lastModified = Repository.INSTANCE.getLastModifiedTime(ref);
 		} catch (IOException e1) {
-			BackendUtils.LOGGER.debug("Could not get lastModifiedTime", e1);
+			LOGGER.debug("Could not get lastModifiedTime", e1);
 			return Response.serverError();
 		}
 
@@ -1205,11 +1161,11 @@ public class Utils {
 			return Response.status(Status.NOT_MODIFIED);
 		}
 
-		ResponseBuilder res;
+		Response.ResponseBuilder res;
 		try {
 			res = Response.ok(Repository.INSTANCE.newInputStream(ref));
 		} catch (IOException e) {
-			BackendUtils.LOGGER.debug("Could not open input stream", e);
+			LOGGER.debug("Could not open input stream", e);
 			return Response.serverError();
 		}
 		res = res.lastModified(new Date(lastModified.toMillis()));
@@ -1219,7 +1175,7 @@ public class Utils {
 		try {
 			res = res.header(HttpHeaders.CONTENT_TYPE, Repository.INSTANCE.getMimeType(ref));
 		} catch (IOException e) {
-			BackendUtils.LOGGER.debug("Could not determine mime type", e);
+			LOGGER.debug("Could not determine mime type", e);
 			return Response.serverError();
 		}
 		// set filename
@@ -1258,7 +1214,7 @@ public class Utils {
 		try {
 			Repository.INSTANCE.putContentToFile(ref, content, mediaType);
 		} catch (IOException e) {
-			BackendUtils.LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
@@ -1268,13 +1224,48 @@ public class Utils {
 		try {
 			Repository.INSTANCE.putContentToFile(ref, inputStream, mediaType);
 		} catch (IOException e) {
-			BackendUtils.LOGGER.error(e.getMessage(), e);
+			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
 	}
 
 
+	/**
+	 * Updates the color if the color is not yet existent
+	 *
+	 * @param name            the name of the component. Used as basis for a generated color
+	 * @param qname           the QName of the color attribute
+	 * @param otherAttributes the plain "XML" attributes. They are used to check
+	 */
+	public static String getColorAndSetDefaultIfNotExisting(String name, QName qname, Map<QName, String> otherAttributes, TopologyGraphElementEntityTypeResource res) {
+		String colorStr = otherAttributes.get(qname);
+		if (colorStr == null) {
+			colorStr = Util.getColor(name);
+			otherAttributes.put(qname, colorStr);
+			Utils.persist(res);
+		}
+		return colorStr;
+	}
+
+	/**
+	 * @param tcId                    The element type id to get the location for
+	 * @param uri                     uri to use if in XML export mode, null if in CSAR export mode
+	 * @param wrapperElementLocalName the local name of the wrapper element
+	 */
+	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
+		String loc = BackendUtils.getPathInsideRepo(tcId);
+		loc = loc + "propertiesdefinition/";
+		loc = Utils.getURLforPathInsideRepo(loc);
+		if (uri == null) {
+			loc = loc + wrapperElementLocalName + ".xsd";
+			// for the import later, we need "../" in front
+			loc = "../" + loc;
+		} else {
+			loc = uri + loc + "xsd";
+		}
+		return loc;
+	}
 
 
 }

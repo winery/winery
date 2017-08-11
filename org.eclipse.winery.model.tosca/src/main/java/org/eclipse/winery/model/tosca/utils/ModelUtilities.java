@@ -11,7 +11,7 @@
  *     Pascal Hirmer - support for instantiation of node templates and relationship templates
  *     Karoline Saatkamp - support for target location labels
  *******************************************************************************/
-package org.eclipse.winery.common;
+package org.eclipse.winery.model.tosca.utils;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -33,11 +33,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.common.constants.Namespaces;
-import org.eclipse.winery.common.constants.QNames;
-import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
-import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
@@ -57,8 +52,12 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.constants.QNames;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -260,10 +259,25 @@ public class ModelUtilities {
 		et.getAny().add(wpd);
 	}
 
+	/**
+	 * Determines a color belonging to the given name
+	 */
+	public static String getColor(String name) {
+		int hash = name.hashCode();
+		// trim to 3*8=24 bits
+		hash = hash & 0xFFFFFF;
+		// check if color is more than #F0F0F0, i.e., too light
+		if (((hash & 0xF00000) >= 0xF00000) && (((hash & 0x00F000) >= 0x00F000) && ((hash & 0x0000F0) >= 0x0000F0))) {
+			// set one high bit to zero for each channel. That makes the overall color darker
+			hash = hash & 0xEFEFEF;
+		}
+		return String.format("#%06x", hash);
+	}
+
 	public static String getBorderColor(TNodeType nt) {
 		String borderColor = nt.getOtherAttributes().get(QNames.QNAME_BORDER_COLOR);
 		if (borderColor == null) {
-			borderColor = Util.getColor(nt.getName());
+			borderColor = getColor(nt.getName());
 		}
 		return borderColor;
 	}
@@ -271,7 +285,7 @@ public class ModelUtilities {
 	public static String getColor(TRelationshipType rt) {
 		String color = rt.getOtherAttributes().get(QNames.QNAME_COLOR);
 		if (color == null) {
-			color = Util.getColor(rt.getName());
+			color = getColor(rt.getName());
 		}
 		return color;
 	}
@@ -331,7 +345,7 @@ public class ModelUtilities {
 			res = (String) method.invoke(ci);
 		} catch (Exception e) {
 		}
-		if (StringUtils.isEmpty(res)) {
+		if (res == null) {
 			try {
 				method = ci.getClass().getMethod("getId");
 				res = (String) method.invoke(ci);

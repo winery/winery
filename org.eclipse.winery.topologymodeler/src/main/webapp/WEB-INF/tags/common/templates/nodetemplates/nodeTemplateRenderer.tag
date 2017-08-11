@@ -40,7 +40,7 @@
 <%@tag import="javax.xml.transform.OutputKeys"%>
 <%@tag import="javax.xml.transform.Transformer"%>
 <%@tag import="javax.xml.transform.TransformerFactory"%>
-<%@tag import="org.eclipse.winery.common.ModelUtilities"%>
+<%@tag import="org.eclipse.winery.model.tosca.utils.ModelUtilities"%>
 <%@tag import="org.eclipse.winery.common.Util"%>
 <%@tag import="org.eclipse.winery.common.ids.definitions.ArtifactTemplateId"%>
 <%@tag import="org.eclipse.winery.common.ids.definitions.ArtifactTypeId"%>

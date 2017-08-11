@@ -13,8 +13,8 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.properties;
 
 import java.util.List;
 
-import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityType;
 
 /**

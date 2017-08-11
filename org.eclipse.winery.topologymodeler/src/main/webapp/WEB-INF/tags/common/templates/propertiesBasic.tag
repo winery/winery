@@ -13,7 +13,7 @@
 --%>
 <%@tag description="Has to be included once before ussage of properties.tag. Used in topology modeler and in properties.jsp of entitytemplates" pageEncoding="UTF-8"%>
 
-<%@tag import="org.eclipse.winery.common.constants.Namespaces" %>
+<%@tag import="org.eclipse.winery.model.tosca.constants.Namespaces" %>
 
 <%@taglib prefix="o"  tagdir="/WEB-INF/tags/common/orioneditor"%>
 

@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,46 +25,36 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.nio.file.attribute.FileTime;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.HttpHeaders;
-import org.apache.tika.mime.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ModelUtilities;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdUtil;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
-import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
-import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.ObjectFactory;
 import org.eclipse.winery.model.tosca.TDefinitions;
@@ -84,11 +75,13 @@ import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.admin.AdminId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
-import com.sun.jersey.core.header.ContentDisposition;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.AutoDetectParser;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.xs.XSImplementationImpl;
 import org.apache.xerces.xs.XSComplexTypeDefinition;
@@ -113,14 +106,16 @@ import org.w3c.dom.ls.LSInput;
  */
 public class BackendUtils {
 
-	public static final String slashEncoded = Util.URLencode("/");
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
+
+	public static final String slashEncoded = Util.URLencode("/");
+
+	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
 
 	/**
 	 * @return true if given fileDate is newer then the modified date (or modified is null)
 	 */
-	private static boolean isFileNewerThanModifiedDate(long millis, String modified) {
+	public static boolean isFileNewerThanModifiedDate(long millis, String modified) {
 		if (modified == null) {
 			return true;
 		}
@@ -209,11 +204,10 @@ public class BackendUtils {
 	}
 
 
-	public static String getName(TOSCAComponentId instanceId) {
-		Repository.INSTANCE.
-		// TODO: Here is a performance issue as we don't use caching or a database
-		// Bad, but without performance loss: Use "text = instanceId.getXmlId().getDecoded();"
-		TExtensibleElements instanceElement = AbstractComponentsResource.getComponentInstaceResource(instanceId).getElement();
+	public static String getName(TOSCAComponentId instanceId) throws RepositoryCorruptException {
+		TExtensibleElements instanceElement = Repository.INSTANCE.getDefinitions(instanceId)
+				.orElseThrow(() -> new RepositoryCorruptException("Definitions does not exist for instance"))
+				.getElement();
 		return ModelUtilities.getNameWithIdFallBack(instanceElement);
 	}
 
@@ -534,42 +528,6 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Updates the color if the color is not yet existent
-	 *
-	 * @param name            the name of the component. Used as basis for a generated color
-	 * @param qname           the QName of the color attribute
-	 * @param otherAttributes the plain "XML" attributes. They are used to check
-	 */
-	public static String getColorAndSetDefaultIfNotExisting(String name, QName qname, Map<QName, String> otherAttributes, TopologyGraphElementEntityTypeResource res) {
-		String colorStr = otherAttributes.get(qname);
-		if (colorStr == null) {
-			colorStr = Util.getColor(name);
-			otherAttributes.put(qname, colorStr);
-			BackendUtils.persist(res);
-		}
-		return colorStr;
-	}
-
-	/**
-	 * @param tcId                    The element type id to get the location for
-	 * @param uri                     uri to use if in XML export mode, null if in CSAR export mode
-	 * @param wrapperElementLocalName the local name of the wrapper element
-	 */
-	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
-		String loc = BackendUtils.getPathInsideRepo(tcId);
-		loc = loc + "propertiesdefinition/";
-		loc = Utils.getURLforPathInsideRepo(loc);
-		if (uri == null) {
-			loc = loc + wrapperElementLocalName + ".xsd";
-			// for the import later, we need "../" in front
-			loc = "../" + loc;
-		} else {
-			loc = uri + loc + "xsd";
-		}
-		return loc;
-	}
-
-	/**
 	 * @param ref the file to read from
 	 */
 	public static XSModel getXSModel(final RepositoryFileReference ref) {
@@ -816,4 +774,46 @@ public class BackendUtils {
 		}
 		return res;
 	}
+
+	/**
+	 * Detect the mime type of the stream. The stream is marked at the beginning
+	 * and reset at the end
+	 *
+	 * @param bis the stream
+	 * @param fn the fileName of the file belonging to the stream
+	 */
+	public static MediaType getMimeType(BufferedInputStream bis, String fn) throws IOException {
+		AutoDetectParser parser = new AutoDetectParser();
+		Detector detector = parser.getDetector();
+		Metadata md = new Metadata();
+		md.add(Metadata.RESOURCE_NAME_KEY, fn);
+		return detector.detect(bis, md);
+	}
+
+	/**
+	 * Fixes the mediaType if it is too vague (such as application/octet-stream)
+	 *
+	 * @return a more fitting MediaType or the original one if it is appropriate
+	 *         enough
+	 */
+	public static MediaType getFixedMimeType(BufferedInputStream is, String fileName, MediaType mediaType) {
+		if (mediaType.equals(MEDIATYPE_APPLICATION_OCTET_STREAM)) {
+			// currently, we fix application/octet-stream only
+
+			// TODO: instead of using apache tika, we could hve a user-configured map storing
+			//  * media type
+			//  * file extension
+
+			try {
+				return BackendUtils.getMimeType(is, fileName);
+			} catch (Exception e) {
+				BackendUtils.LOGGER.debug("Could not determine mimetype for " + fileName, e);
+				// just keep the old one
+				return mediaType;
+			}
+		} else {
+			return mediaType;
+		}
+	}
+
 }

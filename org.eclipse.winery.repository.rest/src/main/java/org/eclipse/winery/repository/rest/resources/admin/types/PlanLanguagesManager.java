@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin.types;
 
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.datatypes.ids.admin.PlanLanguagesId;
 
 public class PlanLanguagesManager extends AbstractTypesManager {
@@ -21,9 +22,9 @@ public class PlanLanguagesManager extends AbstractTypesManager {
 	private PlanLanguagesManager() {
 		super(new PlanLanguagesId());
 		// add data without rendering in the plan languages file
-		this.addData(org.eclipse.winery.common.constants.Namespaces.URI_BPEL20_EXECUTABLE, "BPEL 2.0 (executable)");
-		this.addData(org.eclipse.winery.common.constants.Namespaces.URI_BPMN20_MODEL, "BPMN 2.0");
-		this.addData(org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20, "BPMN4TOSCA 2.0");
+		this.addData(Namespaces.URI_BPEL20_EXECUTABLE, "BPEL 2.0 (executable)");
+		this.addData(Namespaces.URI_BPMN20_MODEL, "BPMN 2.0");
+		this.addData(Namespaces.URI_BPMN4TOSCA_20, "BPMN4TOSCA 2.0");
 	}
 
 }

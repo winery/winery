@@ -18,7 +18,7 @@
 
 <%@tag import="java.util.Collection"%>
 <%@tag import="javax.xml.namespace.QName"%>
-<%@tag import="org.eclipse.winery.common.ModelUtilities"%>
+<%@tag import="org.eclipse.winery.model.tosca.utils.ModelUtilities"%>
 <%@tag import="org.eclipse.winery.common.Util"%>
 <%@tag import="org.eclipse.winery.model.tosca.TNodeType"%>
 <%@tag import="org.eclipse.winery.model.tosca.TRelationshipType"%>

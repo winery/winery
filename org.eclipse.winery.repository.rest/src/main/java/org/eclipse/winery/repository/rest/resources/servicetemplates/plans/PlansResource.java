@@ -30,6 +30,7 @@ import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -114,7 +115,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 	}
 
 	private Response saveFile(TPlan tPlan, InputStream uploadedInputStream, FormDataContentDisposition fileDetail, FormDataBodyPart body) {
-		boolean bpmn4toscaMode = org.eclipse.winery.common.constants.Namespaces.URI_BPMN4TOSCA_20.equals(tPlan.getPlanLanguage());
+		boolean bpmn4toscaMode = Namespaces.URI_BPMN4TOSCA_20.equals(tPlan.getPlanLanguage());
 
 		if (uploadedInputStream != null || bpmn4toscaMode) {
 			// Determine Id
