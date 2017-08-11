@@ -26,8 +26,10 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.datatypes.select2.Select2DataWithOptGroups;
-import org.eclipse.winery.repository.datatypes.select2.Select2OptGroup;
+import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataWithOptGroups;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2OptGroup;
 import org.eclipse.winery.repository.rest.resources.entitytypes.properties.PropertiesDefinitionResource;
 
 public abstract class EntityTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
@@ -62,7 +64,7 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 	/**
 	 * Used by children to implement getListOfAllInstances()
 	 */
-	protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends TOSCAComponentId> clazz) {
+	protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends TOSCAComponentId> clazz) throws RepositoryCorruptException {
 		Select2DataWithOptGroups data = new Select2DataWithOptGroups();
 
 		Collection<? extends TOSCAComponentId> instanceIds = BackendUtils.getAllElementsRelatedWithATypeAttribute(clazz, this.id.getQName());
