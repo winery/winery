@@ -95,12 +95,6 @@ public class GenericImportResource extends AbstractComponentInstanceResource {
 		throw new IllegalStateException("This should not never happen.");
 	}
 
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		// this.theImport cannot be used as this method is called by the super constructor
-		((TImport) this.element).setNamespace(id.getNamespace().getDecoded());
-	}
-
 	@GET
 	@Path("{filename}")
 	public Response getFile(@PathParam("filename") String fileName) {

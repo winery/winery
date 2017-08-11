@@ -15,7 +15,6 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates.policytempl
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.repository.rest.Utils;
@@ -54,11 +53,6 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
 	@Override
 	public PropertiesResource getPropertiesResource() {
 		return new PropertiesResource(this.getPolicyTemplate(), this);
-	}
-
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		this.getPolicyTemplate().setId(id.getXmlId().getDecoded());
 	}
 
 	@Override

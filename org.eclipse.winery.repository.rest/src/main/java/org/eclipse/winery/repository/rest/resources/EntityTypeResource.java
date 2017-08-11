@@ -38,13 +38,6 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 		super(id);
 	}
 
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		TEntityType entityType = this.getEntityType();
-		entityType.setTargetNamespace(id.getNamespace().getDecoded());
-		entityType.setName(id.getXmlId().getDecoded());
-	}
-
 	/**
 	 * Convenience method to avoid casting. Required by
 	 * PropertiesDefinitionResource's jsp

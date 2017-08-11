@@ -13,16 +13,12 @@
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
-import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.INodeTemplateResourceOrNodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.artifacts.DeploymentArtifactsResource;
@@ -78,12 +74,6 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TNodeTypeImplementation();
-	}
-
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		this.getNTI().setTargetNamespace(id.getNamespace().getDecoded());
-		this.getNTI().setName(id.getXmlId().getDecoded());
 	}
 
 }

@@ -319,13 +319,6 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		return new TServiceTemplate();
 	}
 
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		this.getServiceTemplate().setId(id.getXmlId().getDecoded());
-		this.getServiceTemplate().setName(id.getXmlId().getDecoded());
-		this.getServiceTemplate().setTargetNamespace(id.getNamespace().getDecoded());
-	}
-
 	/**
 	 * Synchronizes the known plans with the data in the XML. When there is a
 	 * stored file, but no known entry in the XML, we guess "BPEL" as language

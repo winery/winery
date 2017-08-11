@@ -101,7 +101,7 @@ import org.w3c.dom.Element;
 @XmlSeeAlso({
         Definitions.class
 })
-public class TDefinitions extends HasId implements HasName {
+public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlElement(name = "Extensions")
     protected TDefinitions.Extensions extensions;
     @XmlElement(name = "Import")

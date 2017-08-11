@@ -65,6 +65,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.AbstractRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -256,7 +257,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
 		// This works, because the definitions object here is the same as the definitions object treated at copyIdToFields
 		// newId has to be passed, because the id is final at AbstractComponentInstanceResource
-		componentInstanceResource.copyIdToFields(newId);
+		BackendUtils.copyIdToFields((HasIdInIdOrNameField) definitions.getElement(), newId);
 
 		try {
 			BackendUtils.persist(definitions, newRef, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);

@@ -15,7 +15,6 @@ package org.eclipse.winery.repository.rest.resources.entitytypeimplementations.r
 import javax.ws.rs.Path;
 
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
@@ -52,12 +51,6 @@ public class RelationshipTypeImplementationResource extends EntityTypeImplementa
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TRelationshipTypeImplementation();
-	}
-
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		this.getRTI().setTargetNamespace(id.getNamespace().getDecoded());
-		this.getRTI().setName(id.getXmlId().getDecoded());
 	}
 
 }

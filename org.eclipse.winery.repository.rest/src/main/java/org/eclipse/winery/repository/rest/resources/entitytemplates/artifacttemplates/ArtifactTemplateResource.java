@@ -32,7 +32,6 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -45,10 +44,10 @@ import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources.IHasName;
@@ -115,12 +114,6 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TArtifactTemplate();
-	}
-
-	@Override
-	public void copyIdToFields(TOSCAComponentId id) {
-		this.getTArtifactTemplate().setId(id.getXmlId().getDecoded());
-		// Namespace cannot be set as the namespace is contained in TDefinitions only
 	}
 
 	/**

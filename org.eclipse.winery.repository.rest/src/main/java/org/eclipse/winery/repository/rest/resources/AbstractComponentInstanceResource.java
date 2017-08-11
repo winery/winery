@@ -50,6 +50,7 @@ import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -336,7 +337,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(this.element);
 
 		// copy ns + id
-		this.copyIdToFields();
+		BackendUtils.copyIdToFields((HasIdInIdOrNameField) this.element, this.getId());
 
 		// ensure that the definitions is persisted. Ensures that export works.
 		Utils.persist(this);
@@ -358,24 +359,6 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 * We opted for a) to increase readability of the code
 	 */
 	protected abstract TExtensibleElements createNewElement();
-
-	/**
-	 * Copies the current id of the resource to the appropriate fields in the element.
-	 *
-	 * For instance, the id is put in the "name" field for EntityTypes
-	 *
-	 * We opted for a separate method from createNewElement to enable renaming of the object
-	 *
-	 * Should be protected, but {@link IWineryRepositoryCommon#rename(org.eclipse.winery.common.ids.definitions.TOSCAComponentId, org.eclipse.winery.common.ids.definitions.TOSCAComponentId)} requires it.
-	 * or some other utility classes Reason: This method is used by BackendUtils.rename Not yet done, because the logic
-	 * is sophisticated and much intelligence is currently in the child classes. The logic is also bundled together with
-	 * the resources. For instance, the logic for ServiceTemplate is at ServiceTemplateResource.
-	 */
-	public abstract void copyIdToFields(TOSCAComponentId id);
-
-	public final void copyIdToFields() {
-		this.copyIdToFields(this.getId());
-	}
 
 	/**
 	 * Returns the Element belonging to this resource. As Java does not allow
@@ -493,11 +476,11 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		this.definitions = defs;
 
 		// replace existing element by retrieved data
-		this.element = this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
+		this.element = this.definitions.getElement();
 
 		// ensure that ids did not change
 		// TODO: future work: raise error if user changed id or namespace
-		this.copyIdToFields();
+		BackendUtils.copyIdToFields((HasIdInIdOrNameField) element, this.getId());
 
 		return Utils.persist(this);
 	}

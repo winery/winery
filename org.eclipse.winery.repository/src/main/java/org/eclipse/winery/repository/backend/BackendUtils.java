@@ -40,19 +40,18 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
+import org.eclipse.winery.model.tosca.HasTargetNamespace;
 import org.eclipse.winery.model.tosca.ObjectFactory;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
@@ -67,10 +66,13 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
-import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
@@ -791,6 +793,18 @@ public class BackendUtils {
 			}
 		} else {
 			return mediaType;
+		}
+	}
+
+	/**
+	 * Copies the given id resource to the appropriate fields in the element.
+	 *
+	 * For instance, the id is put in the "name" field for EntityTypes
+	 */
+	public static void copyIdToFields(HasIdInIdOrNameField element, TOSCAComponentId id) {
+		element.setId(id.getXmlId().getDecoded());
+		if (element instanceof HasTargetNamespace) {
+			((HasTargetNamespace) element).setTargetNamespace(id.getNamespace().getDecoded());
 		}
 	}
 
