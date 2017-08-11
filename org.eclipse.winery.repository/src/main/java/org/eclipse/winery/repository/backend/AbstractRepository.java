@@ -19,19 +19,16 @@ import java.util.Optional;
 
 import javax.xml.bind.Unmarshaller;
 
-import jdk.nashorn.internal.runtime.regexp.joni.constants.OPCode;
-import org.apache.tika.mime.MediaType;
-
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.IOUtils;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,8 +51,6 @@ public abstract class AbstractRepository implements IRepository {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
 	 * This is a simple implementation using the information put by
 	 * setMimeType(RepositoryFileReference ref) or determining the mime type
 	 * using Utils.getMimeType. If the latter is done, the mime type is
@@ -72,15 +67,18 @@ public abstract class AbstractRepository implements IRepository {
 		} else {
 			// repository has been manipulated manually,
 			// create mimetype information
+			MediaType mediaType;
 			try (InputStream is = this.newInputStream(ref);
 					BufferedInputStream bis = new BufferedInputStream(is)) {
-				mimeType = BackendUtils.getMimeType(bis, ref.getFileName());
+				mediaType = BackendUtils.getMimeType(bis, ref.getFileName());
 			}
-			if (mimeType != null) {
+			if (mediaType != null) {
 				// successful execution
-				this.setMimeType(ref, MediaType.parse(mimeType));
+				this.setMimeType(ref, mediaType);
+				mimeType = mediaType.toString();
 			} else {
 				AbstractRepository.LOGGER.debug("Could not determine mimetype");
+				mimeType = null;
 			}
 		}
 		return mimeType;

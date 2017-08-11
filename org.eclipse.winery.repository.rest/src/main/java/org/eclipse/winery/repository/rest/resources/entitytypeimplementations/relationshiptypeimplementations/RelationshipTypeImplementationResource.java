@@ -13,15 +13,12 @@
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.artifacts.ImplementationArtifactsResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.EntityTypeImplementationResource;
@@ -63,20 +60,4 @@ public class RelationshipTypeImplementationResource extends EntityTypeImplementa
 		this.getRTI().setName(id.getXmlId().getDecoded());
 	}
 
-	@Override
-	public QName getType() {
-		return this.getRTI().getRelationshipType();
-	}
-
-	@Override
-	public Response setType(QName type) {
-		this.getRTI().setRelationshipType(type);
-		return Utils.persist(this);
-	}
-
-	@Override
-	public Response setType(String typeStr) {
-		QName qname = QName.valueOf(typeStr);
-		return this.setType(qname);
-	}
 }

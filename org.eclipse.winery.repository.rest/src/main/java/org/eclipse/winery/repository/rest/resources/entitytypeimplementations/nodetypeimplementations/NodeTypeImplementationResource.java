@@ -86,20 +86,4 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 		this.getNTI().setName(id.getXmlId().getDecoded());
 	}
 
-	@Override
-	public QName getType() {
-		return this.getNTI().getNodeType();
-	}
-
-	@Override
-	public Response setType(QName type) {
-		this.getNTI().setNodeType(type);
-		return Utils.persist(this);
-	}
-
-	@Override
-	public Response setType(String typeStr) {
-		QName type = QName.valueOf(typeStr);
-		return this.setType(type);
-	}
 }

@@ -241,8 +241,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			return;
 		}
 
-		AbstractComponentInstanceResource componentInstanceResource = AbstractComponentsResource.getComponentInstaceResource(oldId);
-		//AbstractComponentInstanceResource newComponentInstanceResource = AbstractComponentsResource.getComponentInstaceResource(newId);
+		Definitions definitions = this.getDefinitions(oldId).get();
 
 		RepositoryFileReference oldRef = BackendUtils.getRefOfDefinitions(oldId);
 		RepositoryFileReference newRef = BackendUtils.getRefOfDefinitions(newId);
@@ -256,7 +255,6 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		org.apache.commons.io.FileUtils.moveDirectory(oldDir, newDir);
 
 		// Update definitions and store it
-		Definitions definitions = componentInstanceResource.getDefinitions();
 
 		// This also updates the definitions of componentInstanceResource
 		BackendUtils.updateWrapperDefinitions(newId, definitions);

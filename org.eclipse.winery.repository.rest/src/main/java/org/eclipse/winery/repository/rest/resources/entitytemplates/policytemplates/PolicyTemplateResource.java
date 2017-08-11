@@ -13,13 +13,12 @@
 package org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates;
 
 import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.IHasName;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
@@ -50,23 +49,6 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
 	@Override
 	protected TExtensibleElements createNewElement() {
 		return new TPolicyTemplate();
-	}
-
-	@Override
-	public QName getType() {
-		return this.getPolicyTemplate().getType();
-	}
-
-	@Override
-	public Response setType(QName type) {
-		this.getPolicyTemplate().setType(type);
-		return Utils.persist(this);
-	}
-
-	@Override
-	public Response setType(String typeStr) {
-		this.getPolicyTemplate().setType(QName.valueOf(typeStr));
-		return Utils.persist(this);
 	}
 
 	@Override
