@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TDocumentation;
@@ -28,10 +27,8 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes.RequirementTypeResource;
-import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 public class ProviderRepository {
 
@@ -42,9 +39,8 @@ public class ProviderRepository {
 	/**
 	 * Pointing to a concrete node template has to be done by putting this node template into a separeate namespace
 	 *
-	 * The given targetLocation is appended to {@see NS_NAME_START} to gain the namespace.
-	 * All NodeTemplates in this namespace and all "lower" namespaces (e.g., starting with that string)
-	 * are returned.
+	 * The given targetLocation is appended to {@see NS_NAME_START} to gain the namespace. All NodeTemplates in this
+	 * namespace and all "lower" namespaces (e.g., starting with that string) are returned.
 	 *
 	 * @return All node templates available for the given targetLocation.
 	 */
@@ -52,8 +48,7 @@ public class ProviderRepository {
 	public List<TTopologyTemplate> getAllTopologyFragmentsForLocationAndOfferingCapability(String targetLocation, TRequirement requirement) {
 		QName reqTypeQName = requirement.getType();
 		RequirementTypeId reqTypeId = new RequirementTypeId(reqTypeQName);
-		RequirementTypeResource reqTypeResource = (RequirementTypeResource) AbstractComponentsResource.getComponentInstaceResource(reqTypeId);
-		QName requiredCapabilityType = reqTypeResource.getRequirementType().getRequiredCapabilityType();
+		QName requiredCapabilityType = Repository.INSTANCE.getElement(reqTypeId).get().getRequiredCapabilityType();
 
 		return getAllTopologyFragmentsForLocation(targetLocation).stream()
 				.filter(tf -> {
@@ -67,10 +62,8 @@ public class ProviderRepository {
 					} else {
 						return false;
 					}
-
 				})
 				.collect(Collectors.toList());
-
 	}
 
 	public List<TTopologyTemplate> getAllTopologyFragmentsForLocation(String targetLocation) {
@@ -86,8 +79,7 @@ public class ProviderRepository {
 				.filter(id -> id.getNamespace().getDecoded().toLowerCase().startsWith(namespaceStr))
 				// get all contained node templates
 				.flatMap(id -> {
-					ServiceTemplateResource serviceTemplateResource = (ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(id);
-					TTopologyTemplate topologyTemplate = serviceTemplateResource.getServiceTemplate().getTopologyTemplate();
+					TTopologyTemplate topologyTemplate = Repository.INSTANCE.getElement(id).get().getTopologyTemplate();
 					List<TNodeTemplate> matchedNodeTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
 							.filter(t -> t instanceof TNodeTemplate)
 							.map(TNodeTemplate.class::cast)
@@ -96,12 +88,11 @@ public class ProviderRepository {
 					matchedNodeTemplates.forEach(t -> ModelUtilities.setTargetLabel(t, id.getNamespace().getDecoded().replace(NS_NAME_START, "")));
 
 					return getAllTopologyFragmentsFromServiceTemplate(topologyTemplate).stream();
-
 				})
 				.collect(Collectors.toList());
 	}
 
-	private List<TTopologyTemplate> getAllTopologyFragmentsFromServiceTemplate (TTopologyTemplate topologyTemplate) {
+	private List<TTopologyTemplate> getAllTopologyFragmentsFromServiceTemplate(TTopologyTemplate topologyTemplate) {
 
 		List<TTopologyTemplate> topologyFragments = new ArrayList<>();
 
@@ -124,7 +115,7 @@ public class ProviderRepository {
 			topologyTemplate.getDocumentation().add(documentation);
 			topologyFragments.add(topologyTemplate);
 		} else {
-			for (TNodeTemplate nodeWithoutIncomingRel: nodeTemplatesWithoutIncomingRelationship) {
+			for (TNodeTemplate nodeWithoutIncomingRel : nodeTemplatesWithoutIncomingRelationship) {
 				if (!visitedNodeTemplates.contains(nodeWithoutIncomingRel)) {
 					TTopologyTemplate topologyFragment = new TTopologyTemplate();
 					TDocumentation documentation = new TDocumentation();
@@ -165,5 +156,4 @@ public class ProviderRepository {
 		}
 		return topologyFragmentElements;
 	}
-
 }

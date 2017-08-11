@@ -799,7 +799,7 @@ public class Splitting {
 		SortedSet<RelationshipTypeId> relTypeIds = Repository.INSTANCE.getAllTOSCAComponentIds(RelationshipTypeId.class);
 		List<TRelationshipType> relationshipTypes = new ArrayList<>();
 		for (RelationshipTypeId id : relTypeIds) {
-			relationshipTypes.add((TRelationshipType) AbstractComponentsResource.getComponentInstaceResource(id).getElement());
+			relationshipTypes.add(Repository.INSTANCE.getElement(id).get());
 		}
 
 		Properties requirementProperties = ModelUtilities.getPropertiesKV(requirement);
@@ -814,16 +814,16 @@ public class Splitting {
 			QName referencedRelationshipType = (QName) requirementProperties.get("requiredRelationshipType");
 			RelationshipTypeId relTypeId = new RelationshipTypeId(referencedRelationshipType);
 			if (relTypeIds.stream().anyMatch(rti -> rti.equals(relTypeId))) {
-				return (TRelationshipType) AbstractComponentsResource.getComponentInstaceResource(relTypeId).getElement();
+				return Repository.INSTANCE.getElement(relTypeId).get();
 			}
 		} else {
 			QName requirementTypeQName = requirement.getType();
 			RequirementTypeId reqTypeId = new RequirementTypeId(requirement.getType());
-			TRequirementType requirementType = (TRequirementType) AbstractComponentsResource.getComponentInstaceResource(reqTypeId).getElement();
+			TRequirementType requirementType = Repository.INSTANCE.getElement(reqTypeId).get();
 
 			QName capabilityTypeQName = capability.getType();
 			CapabilityTypeId capTypeId = new CapabilityTypeId(capability.getType());
-			TCapabilityType capabilityType = (TCapabilityType) AbstractComponentsResource.getComponentInstaceResource(capTypeId).getElement();
+			TCapabilityType capabilityType = Repository.INSTANCE.getElement(capTypeId).get();
 
 			List<TRelationshipType> availableMatchingRelationshipTypes = new ArrayList<>();
 			availableMatchingRelationshipTypes.clear();
@@ -852,8 +852,7 @@ public class Splitting {
 					if (capabilityType.getDerivedFrom() != null) {
 						QName derivedFromCapabilityTypeRef = capabilityType.getDerivedFrom().getTypeRef();
 						CapabilityTypeId derivedFromCapTypeId = new CapabilityTypeId(derivedFromCapabilityTypeRef);
-						derivedFromCapabilityType = (TCapabilityType) AbstractComponentsResource
-								.getComponentInstaceResource(derivedFromCapTypeId).getElement();
+						derivedFromCapabilityType = Repository.INSTANCE.getElement(derivedFromCapTypeId).get();
 
 						for (TRelationshipType rt : relationshipTypes) {
 							if ((rt.getValidSource() == null || rt.getValidSource().getTypeRef().equals(requirementTypeQName)) && (rt.getValidTarget() != null && rt.getValidTarget().getTypeRef().equals(derivedFromCapabilityTypeRef))) {
@@ -864,8 +863,7 @@ public class Splitting {
 					if (requirementType.getDerivedFrom() != null) {
 						QName derivedFromRequirementTypeRef = requirementType.getDerivedFrom().getTypeRef();
 						RequirementTypeId derivedFromReqTypeId = new RequirementTypeId(derivedFromRequirementTypeRef);
-						derivedFromRequirementType = (TRequirementType) AbstractComponentsResource
-								.getComponentInstaceResource(derivedFromReqTypeId).getElement();
+						derivedFromRequirementType = Repository.INSTANCE.getElement(derivedFromReqTypeId).get();
 
 						for (TRelationshipType rt : relationshipTypes) {
 							if ((rt.getValidSource() != null && rt.getValidSource().getTypeRef().equals(derivedFromRequirementTypeRef)) && (rt.getValidTarget() != null && rt.getValidTarget().getTypeRef().equals(capabilityTypeQName))) {
@@ -1152,8 +1150,7 @@ public class Splitting {
 
 	private TCapabilityType getBasisCapabilityType (QName capabilityTypeQName) {
 		CapabilityTypeId parentCapTypeId = new CapabilityTypeId(capabilityTypeQName);
-		TCapabilityType parentCapabilityType = (TCapabilityType) AbstractComponentsResource
-				.getComponentInstaceResource(parentCapTypeId).getElement();
+		TCapabilityType parentCapabilityType = Repository.INSTANCE.getElement(parentCapTypeId).get();
 		TCapabilityType basisCapabilityType = parentCapabilityType;
 
 		while (parentCapabilityType != null) {
@@ -1162,8 +1159,7 @@ public class Splitting {
 			if (parentCapabilityType.getDerivedFrom() != null) {
 				capabilityTypeQName = parentCapabilityType.getDerivedFrom().getTypeRef();
 				parentCapTypeId = new CapabilityTypeId(capabilityTypeQName);
-				parentCapabilityType = (TCapabilityType) AbstractComponentsResource
-						.getComponentInstaceResource(parentCapTypeId).getElement();
+				parentCapabilityType = Repository.INSTANCE.getElement(parentCapTypeId).get();
 			} else {
 				parentCapabilityType = null;
 			}
@@ -1175,15 +1171,14 @@ public class Splitting {
 	private QName getRequiredCapabilityTypeQNameOfRequirement (TRequirement requirement) {
 		QName reqTypeQName = requirement.getType();
 		RequirementTypeId reqTypeId = new RequirementTypeId(reqTypeQName);
-		TRequirementType requirementType = (TRequirementType) AbstractComponentsResource.getComponentInstaceResource(reqTypeId).getElement();
+		TRequirementType requirementType = Repository.INSTANCE.getElement(reqTypeId).get();
 		return requirementType.getRequiredCapabilityType();
 
 	}
 
 	private TRelationshipType getBasisRelationshipType (QName relationshipTypeQName) {
 		RelationshipTypeId parentRelationshipTypeId = new RelationshipTypeId(relationshipTypeQName);
-		TRelationshipType parentRelationshipType = (TRelationshipType) AbstractComponentsResource
-				.getComponentInstaceResource(parentRelationshipTypeId).getElement();
+		TRelationshipType parentRelationshipType = Repository.INSTANCE.getElement(parentRelationshipTypeId).get();
 		TRelationshipType basisRelationshipType = parentRelationshipType;
 
 		while (parentRelationshipType != null) {
@@ -1192,8 +1187,7 @@ public class Splitting {
 			if (parentRelationshipType.getDerivedFrom() != null) {
 				relationshipTypeQName = parentRelationshipType.getDerivedFrom().getTypeRef();
 				parentRelationshipTypeId = new RelationshipTypeId(relationshipTypeQName);
-				parentRelationshipType = (TRelationshipType) AbstractComponentsResource
-						.getComponentInstaceResource(parentRelationshipTypeId).getElement();
+				parentRelationshipType = Repository.INSTANCE.getElement(parentRelationshipTypeId).get();
 			} else {
 				parentRelationshipType = null;
 			}
