@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
+import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
-import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
 public class ArtifactTemplateDirectoryId extends TOSCAElementId {
 
@@ -24,5 +24,4 @@ public class ArtifactTemplateDirectoryId extends TOSCAElementId {
 	public ArtifactTemplateDirectoryId(ArtifactTemplateId parent) {
 		super(parent, ArtifactTemplateDirectoryId.xmlID);
 	}
-
 }

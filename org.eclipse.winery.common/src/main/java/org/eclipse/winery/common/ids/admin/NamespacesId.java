@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.admin;
 
+import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.XMLId;
-import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
 public class NamespacesId extends AdminId {
 
@@ -22,5 +22,4 @@ public class NamespacesId extends AdminId {
 	public NamespacesId() {
 		super(NamespacesId.xmlId);
 	}
-
 }

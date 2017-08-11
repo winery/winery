@@ -11,16 +11,14 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.admin;
 
+import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.XMLId;
-import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
 public class PlanTypesId extends TypesId {
 
 	private final static XMLId xmlId = new XMLId(IdNames.PLANTYPES, false);
 
-
 	public PlanTypesId() {
 		super(PlanTypesId.xmlId);
 	}
-
 }
