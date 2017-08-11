@@ -97,7 +97,7 @@ public class CSARExporter {
 	private static String getDefinitionsName(TOSCAComponentId id) {
 		// the prefix is globally unique and the id locally in a namespace
 		// therefore a concatenation of both is also unique
-		return NamespacesResource.getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
+		return Repository.INSTANCE.getNamespaceManager().getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
 	}
 
 	public static String getDefinitionsFileName(TOSCAComponentId id) {

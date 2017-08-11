@@ -395,7 +395,7 @@ public class BackendUtils {
 
 		// set a unique id to create a valid definitions element
 		// we do not use UUID to be more human readable and deterministic (for debugging)
-		String prefix = NamespacesResource.getPrefix(tcId.getNamespace());
+		String prefix = Repository.INSTANCE.getNamespaceManager().getPrefix(tcId.getNamespace());
 		String elId = tcId.getXmlId().getDecoded();
 		String id = "winery-defs-for_" + prefix + "-" + elId;
 		defs.setId(id);

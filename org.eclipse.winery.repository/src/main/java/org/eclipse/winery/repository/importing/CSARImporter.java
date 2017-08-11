@@ -83,6 +83,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
+import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
@@ -245,6 +246,7 @@ public class CSARImporter {
 	 * @param rootPath the root path of the extracted CSAR
 	 */
 	private void importNamespacePrefixes(Path rootPath) {
+		NamespaceManager namespaceManager = Repository.INSTANCE.getNamespaceManager();
 		Path properties = rootPath.resolve(CSARExporter.PATH_TO_NAMESPACES_PROPERTIES);
 		if (Files.exists(properties)) {
 			PropertiesConfiguration pconf;
@@ -258,8 +260,8 @@ public class CSARImporter {
 			while (namespaces.hasNext()) {
 				boolean addToStorage = false;
 				String namespace = namespaces.next();
-				if (NamespacesResource.getInstance().getIsPrefixKnownForNamespace(namespace)) {
-					String storedPrefix = NamespacesResource.getPrefix(namespace);
+				if (namespaceManager.hasPrefix(namespace)) {
+					String storedPrefix = namespaceManager.getPrefix(namespace);
 					// QUICK HACK to check whether the prefix is a generated one
 					// We assume we know the internal generation routine
 					Matcher m = CSARImporter.GENERATED_PREFIX_PATTERN.matcher(storedPrefix);
@@ -273,7 +275,7 @@ public class CSARImporter {
 				}
 				if (addToStorage) {
 					String prefix = pconf.getString(namespace);
-					NamespacesResource.getInstance().addNamespace(namespace, prefix);
+					namespaceManager.setPrefix(namespace, prefix);
 				}
 			}
 		}
