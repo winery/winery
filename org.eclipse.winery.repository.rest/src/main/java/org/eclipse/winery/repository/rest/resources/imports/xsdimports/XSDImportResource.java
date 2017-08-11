@@ -167,7 +167,7 @@ public class XSDImportResource extends GenericImportResource {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, location);
-		return BackendUtils.returnRepoPath(ref, null);
+		return Utils.returnRepoPath(ref, null);
 	}
 
 }

@@ -38,7 +38,7 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.datatypes.FileMeta;
+import org.eclipse.winery.repository.rest.datatypes.FileMeta;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -66,8 +66,7 @@ public class FilesResource {
 	}
 
 	/**
-	 * Handles the upload of a <em>single</em> file. Adds the given file to the
-	 * current artifact template.
+	 * Handles the upload of a <em>single</em> file. Adds the given file to the current artifact template.
 	 *
 	 * If the file already exists, is it <em>overridden</em>
 	 *
@@ -88,9 +87,9 @@ public class FilesResource {
 
 		// TODO: instead of fixing the media type, we could overwrite the browser's mediatype by using some user configuration
 		BufferedInputStream bis = new BufferedInputStream(uploadedInputStream);
-		MediaType mediaType = Utils.getFixedMimeType(bis, fileName, body.getMediaType());
+		org.apache.tika.mime.MediaType mediaType = BackendUtils.getFixedMimeType(bis, fileName, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));
 
-		Response response = BackendUtils.putContentToFile(ref, bis, mediaType);
+		Response response = Utils.putContentToFile(ref, bis, mediaType);
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			return response;
 		}
@@ -141,13 +140,13 @@ public class FilesResource {
 	@Path("/{fileName}")
 	public Response getFile(@PathParam("fileName") String fileName, @HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
-		return BackendUtils.returnRepoPath(ref, modified);
+		return Utils.returnRepoPath(ref, modified);
 	}
 
 	@DELETE
 	@Path("/{fileName}")
 	public Response deleteFile(@PathParam("fileName") String fileName) {
 		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
-		return BackendUtils.delete(ref);
+		return Utils.delete(ref);
 	}
 }

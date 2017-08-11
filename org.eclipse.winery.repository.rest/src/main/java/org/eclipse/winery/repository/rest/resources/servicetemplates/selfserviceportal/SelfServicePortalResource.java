@@ -144,7 +144,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@GET
 	public Response getIcon(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
-		return BackendUtils.returnRepoPath(ref, modified);
+		return Utils.returnRepoPath(ref, modified);
 	}
 
 	@Path("icon.jpg")
@@ -160,7 +160,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@GET
 	public Response getImage(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
-		return BackendUtils.returnRepoPath(ref, modified);
+		return Utils.returnRepoPath(ref, modified);
 	}
 
 	@Path("image.jpg")

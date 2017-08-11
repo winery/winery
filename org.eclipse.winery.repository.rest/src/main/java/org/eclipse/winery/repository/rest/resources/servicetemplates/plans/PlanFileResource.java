@@ -110,6 +110,6 @@ public class PlanFileResource {
 	@GET
 	public Response getFile(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = this.getFileRef();
-		return BackendUtils.returnRepoPath(ref, modified);
+		return Utils.returnRepoPath(ref, modified);
 	}
 }

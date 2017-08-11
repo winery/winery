@@ -58,14 +58,14 @@ public class OptionResource extends EntityWithIdResource<ApplicationOption> {
 	@GET
 	public Response getIcon(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.ssmdId, this.getFileNamePrefix() + OptionResource.ICON_JPG);
-		return BackendUtils.returnRepoPath(ref, modified);
+		return Utils.returnRepoPath(ref, modified);
 	}
 
 	@Path("planinputmessage")
 	@GET
 	public Response getPlanInputMessage(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.ssmdId, this.getFileNamePrefix() + OptionResource.PLAN_INPUT_XML);
-		return BackendUtils.returnRepoPath(ref, modified);
+		return Utils.returnRepoPath(ref, modified);
 	}
 
 	@Override

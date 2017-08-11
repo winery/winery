@@ -93,7 +93,7 @@ public abstract class GenericVisualAppearanceResource {
 
 	protected Response getImage(String name, String modified) {
 		RepositoryFileReference target = this.getRepoFileRef(name);
-		return BackendUtils.returnRepoPath(target, modified);
+		return Utils.returnRepoPath(target, modified);
 	}
 
 	/**
