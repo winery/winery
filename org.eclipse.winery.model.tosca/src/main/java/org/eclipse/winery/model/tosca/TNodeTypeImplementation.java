@@ -114,6 +114,15 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
         return Objects.hash(super.hashCode(), tags, derivedFrom, requiredContainerFeatures, implementationArtifacts, deploymentArtifacts, _abstract, _final);
     }
 
+    @Nullable
+    public TDeploymentArtifacts getDeploymentArtifacts() {
+        return deploymentArtifacts;
+    }
+
+    public void setDeploymentArtifacts(TDeploymentArtifacts value) {
+        this.deploymentArtifacts = value;
+    }
+
     public TNodeTypeImplementation.DerivedFrom getDerivedFrom() {
         return derivedFrom;
     }
