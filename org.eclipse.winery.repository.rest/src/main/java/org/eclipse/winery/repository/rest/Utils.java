@@ -53,7 +53,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
@@ -76,6 +75,8 @@ import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
@@ -346,7 +347,7 @@ public class Utils {
 	 * @return the absolute path for the given id
 	 */
 	public static String getAbsoluteURL(GenericId id) {
-		return Prefs.INSTANCE.getResourcePath() + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(id));
+		return Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPathForId(id);
 	}
 
 	/**
@@ -356,7 +357,7 @@ public class Utils {
 	 * @return the relative path for the given id
 	 */
 	public static String getRelativeURL(URI baseURI, GenericId id) {
-		String absolutePath = Prefs.INSTANCE.getResourcePath() + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(id));
+		String absolutePath = Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPathForId(id);
 		return baseURI.relativize(URI.create(absolutePath)).toString();
 	}
 
