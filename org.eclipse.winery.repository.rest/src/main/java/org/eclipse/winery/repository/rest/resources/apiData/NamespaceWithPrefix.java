@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,26 +7,27 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Niko Stadelmaier - initial API and implementation
+ *   - Niko Stadelmaier - initial API and implementation
+ *   - Oliver Kopp - cleanup
  *
  *******************************************************************************/
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
+import java.util.Objects;
+
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.repository.rest.resources.admin.NamespacesResource;
 
 public class NamespaceWithPrefix implements Comparable<NamespaceWithPrefix> {
 
 	public String prefix = "";
 	public String namespace = "";
 
-	public NamespaceWithPrefix() {
-	}
-
-	public NamespaceWithPrefix(Namespace ns) {
+	public NamespaceWithPrefix(Namespace ns, String prefix) {
+		Objects.requireNonNull(ns);
+		Objects.requireNonNull(prefix);
 		this.namespace = ns.getDecoded();
-		this.prefix = NamespacesResource.getPrefix(ns);
+		this.prefix = prefix;
 	}
 
 	@Override
@@ -35,28 +36,16 @@ public class NamespaceWithPrefix implements Comparable<NamespaceWithPrefix> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final NamespaceWithPrefix other = (NamespaceWithPrefix) obj;
-		if (this.prefix == null ? other.prefix != null : !this.prefix.equals(other.prefix)) {
-			return false;
-		}
-		if (this.namespace == null ? other.namespace != null : !this.namespace.equals(other.namespace)) {
-			return false;
-		}
-		return true;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof NamespaceWithPrefix)) return false;
+		NamespaceWithPrefix that = (NamespaceWithPrefix) o;
+		return Objects.equals(prefix, that.prefix) &&
+				Objects.equals(namespace, that.namespace);
 	}
 
 	@Override
 	public int hashCode() {
-		int hash = 5;
-		hash = 59 * hash + (this.namespace != null ? this.namespace.hashCode() : 0);
-		hash = 59 * hash + (this.prefix != null ? this.prefix.hashCode() : 0);
-		return hash;
+		return Objects.hash(prefix, namespace);
 	}
 }

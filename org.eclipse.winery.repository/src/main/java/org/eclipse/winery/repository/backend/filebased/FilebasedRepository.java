@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Oliver Kopp - initial API and implementation
+ *     Oliver Kopp - initial API and implementation, adaptions to IGenericRepository
  *     Tino Stadelmaier, Philipp Meyer - rename id and/or namespace
  *     Lukas Harzentter - get namespaces for specific component
  *     Nicole Keppler - forceDelete for Namespaces
@@ -45,13 +45,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.tika.mime.MediaType;
-
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
@@ -70,22 +69,21 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.AbstractRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
+import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.tika.mime.MediaType;
 import org.eclipse.jgit.dircache.InvalidPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * When it comes to a storage of plain files, we use Java 7's nio internally.
- * Therefore, we intend to expose the stream types offered by java.nio.Files:
- * BufferedReader/BufferedWriter
+ * When it comes to a storage of plain files, we use Java 7's nio internally. Therefore, we intend to expose the stream
+ * types offered by java.nio.Files: BufferedReader/BufferedWriter
  */
 public class FilebasedRepository extends AbstractRepository implements IRepositoryAdministration {
 
@@ -99,9 +97,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	private final FileSystemProvider provider;
 
 	/**
-	 *
-	 * @param repositoryLocation a string pointing to a location on the file
-	 *            system. May be null.
+	 * @param repositoryLocation a string pointing to a location on the file system. May be null.
 	 */
 	public FilebasedRepository(String repositoryLocation) {
 		this.repositoryRoot = this.determineRepositoryPath(repositoryLocation);
@@ -127,13 +123,12 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	}
 
 	private Path id2AbsolutePath(GenericId id) {
-		Path relativePath = this.fileSystem.getPath(BackendUtils.getPathInsideRepo(id));
+		Path relativePath = this.fileSystem.getPath(Util.getPathInsideRepo(id));
 		return this.makeAbsolute(relativePath);
 	}
 
 	/**
-	 * Converts the given reference to an absolute path of the underlying
-	 * FileSystem
+	 * Converts the given reference to an absolute path of the underlying FileSystem
 	 */
 	public Path ref2AbsolutePath(RepositoryFileReference ref) {
 		return this.id2AbsolutePath(ref.getParent()).resolve(ref.getFileName());
@@ -270,7 +265,6 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			// Somewhere, the first letter is deleted --> /odetypes/http%3A%2F%2Fwww.example.org%2F05/
 			// We just ignore it for now
 		}
-
 	}
 
 	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) {
@@ -508,17 +502,17 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		// @formatter:off
 		@SuppressWarnings("rawtypes")
 		Collection<Class<? extends TOSCAComponentId>> toscaComponentIds = Arrays.asList(
-			ArtifactTemplateId.class,
-			ArtifactTypeId.class,
-			CapabilityTypeId.class,
-			NodeTypeId.class,
-			NodeTypeImplementationId.class,
-			PolicyTemplateId.class,
-			PolicyTypeId.class,
-			RelationshipTypeId.class,
-			RelationshipTypeImplementationId.class,
-			RequirementTypeId.class,
-			ServiceTemplateId.class
+				ArtifactTemplateId.class,
+				ArtifactTypeId.class,
+				CapabilityTypeId.class,
+				NodeTypeId.class,
+				NodeTypeImplementationId.class,
+				PolicyTemplateId.class,
+				PolicyTypeId.class,
+				RelationshipTypeId.class,
+				RelationshipTypeImplementationId.class,
+				RequirementTypeId.class,
+				ServiceTemplateId.class
 		);
 		// @formatter:on
 
@@ -530,6 +524,11 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		Collection<Class<? extends TOSCAComponentId>> list = new ArrayList<>();
 		list.add(clazz);
 		return getNamespaces(list);
+	}
+
+	@Override
+	public NamespaceManager getNamespaceManager() {
+		return new ConfigurationBasedNamespaceManager(this.getConfiguration(new NamespacesId()));
 	}
 
 	private Collection<Namespace> getNamespaces(Collection<Class<? extends TOSCAComponentId>> toscaComponentIds) {
@@ -630,30 +629,20 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public long getSize(RepositoryFileReference ref) throws IOException {
 		return Files.size(this.ref2AbsolutePath(ref));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public FileTime getLastModifiedTime(RepositoryFileReference ref) throws IOException {
 		Path path = this.ref2AbsolutePath(ref);
 		return Files.getLastModifiedTime(path);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public InputStream newInputStream(RepositoryFileReference ref) throws IOException {
 		Path path = this.ref2AbsolutePath(ref);
 		return Files.newInputStream(path);
 	}
-
 }

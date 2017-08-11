@@ -11,16 +11,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes;
 
-import java.util.Collection;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeId;
-import org.eclipse.winery.repository.rest.resources.admin.NamespacesResource;
 
 /**
  * specifies the methods required by implementations.jsp
@@ -41,10 +37,6 @@ public abstract class ImplementationsOfOneType {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public abstract Response getJSON();
-
-	public Collection<Namespace> getNamespaceAutocompletionList() {
-		return NamespacesResource.getNamespaces();
-	}
 
 	/**
 	 * @return a list of type implementations implementing the associated node type

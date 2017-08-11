@@ -21,7 +21,6 @@ import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefi
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.MockXMLElement;
-import org.eclipse.winery.repository.rest.resources.admin.NamespacesResource;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.slf4j.Logger;

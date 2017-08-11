@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Oliver Kopp - initial API and implementation
+ *     Oliver Kopp - initial API and implementation, more helper methods
  *     Lukas Harzentter - get namespaces for specific component
  *     Tino Stadelmaier, Philipp Meyer - code cleaning
  *******************************************************************************/
@@ -35,33 +35,26 @@ import org.eclipse.winery.model.tosca.HasType;
 import org.apache.tika.mime.MediaType;
 
 /**
- * Enables access to the winery repository via Ids defined in package
- * {@link org.eclipse.winery.common.ids}
+ * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.common.ids}
  *
- * In contrast to {@link org.eclipse.winery.repository.backend.IRepository},
- * this is NOT dependent on a particular storage format for the properties.
- * These two classes exist to make the need for reengineering explicit.
+ * In contrast to {@link org.eclipse.winery.repository.backend.IRepository}, this is NOT dependent on a particular
+ * storage format for the properties. These two classes exist to make the need for reengineering explicit.
  *
- * This is a first attempt to offer methods via GenericId. It might happen, that
- * methods, where GenericIds make sense, are simply added to "IWineryRepository"
- * instead of being added here.
+ * This is a first attempt to offer methods via GenericId. It might happen, that methods, where GenericIds make sense,
+ * are simply added to "IWineryRepository" instead of being added here.
  *
- * The ultimate goal is to get rid of this class and to have
- * IWineryRepositoryCommon only.
+ * The ultimate goal is to get rid of this class and to have IWineryRepositoryCommon only.
  *
  * Currently, this class is used internally only
  */
 interface IGenericRepository extends IWineryRepositoryCommon {
 
 	/**
-	 * Flags the given TOSCA element as existing.
-	 * The respective resource itself creates appropriate data files.
+	 * Flags the given TOSCA element as existing. The respective resource itself creates appropriate data files.
 	 *
-	 * Pre-Condition: !exists(id)<br/>
-	 * Post-Condition: exists(id)
+	 * Pre-Condition: !exists(id)<br/> Post-Condition: exists(id)
 	 *
-	 * Typically, the given TOSCA element is created if a configuration is asked
-	 * for
+	 * Typically, the given TOSCA element is created if a configuration is asked for
 	 */
 	boolean flagAsExisting(GenericId id);
 
@@ -89,10 +82,9 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 *
 	 * If the parent of the reference does not exist, it is created.
 	 *
-	 * @param ref the reference to the file. Must not be null.
-	 * @param content the content to put into the file. Must not be null.
+	 * @param ref       the reference to the file. Must not be null.
+	 * @param content   the content to put into the file. Must not be null.
 	 * @param mediaType the media type of the file. Must not be null.
-	 *
 	 * @throws IOException if something goes wrong
 	 */
 	void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException;
@@ -102,15 +94,14 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 *
 	 * If the parent of the reference does not exist, it is created.
 	 *
-	 * @param ref the reference to the file
+	 * @param ref         the reference to the file
 	 * @param inputStream the content to put into the file
 	 * @throws IOException if something goes wrong
 	 */
 	void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException;
 
 	/**
-	 * Creates an opened inputStream of the contents referenced by ref. The
-	 * stream has to be closed by the caller.
+	 * Creates an opened inputStream of the contents referenced by ref. The stream has to be closed by the caller.
 	 *
 	 * @param ref the reference to the file
 	 * @return an inputstream
@@ -141,15 +132,14 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 *
 	 * @param ref the reference to the file
 	 * @return the mimetype as string
-	 * @throws IOException if something goes wrong
-	 * @throws IllegalStateException if an internal error occurs, which is not
-	 *             an IOException
+	 * @throws IOException           if something goes wrong
+	 * @throws IllegalStateException if an internal error occurs, which is not an IOException
 	 */
 	String getMimeType(RepositoryFileReference ref) throws IOException;
 
 	/**
-	 * @return the last change date of the file belonging to the given
-	 *         reference. NULL if the associated file does not exist.
+	 * @return the last change date of the file belonging to the given reference. NULL if the associated file does not
+	 * exist.
 	 */
 	Date getLastUpdate(RepositoryFileReference ref);
 
@@ -164,17 +154,14 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	/**
 	 * Returns the set of <em>all</em> ids nested in the given reference
 	 *
-	 * The generated Ids are linked as child to the id associated to the given
-	 * reference
+	 * The generated Ids are linked as child to the id associated to the given reference
 	 *
-	 * Required for getting plans nested in a service template: plans are nested
-	 * below the PlansOfOneServiceTemplateId
+	 * Required for getting plans nested in a service template: plans are nested below the PlansOfOneServiceTemplateId
 	 *
-	 * @param ref a reference to the TOSCA element to be checked. The path
-	 *            belonging to this element is checked.
+	 * @param ref     a reference to the TOSCA element to be checked. The path belonging to this element is checked.
 	 * @param idClass the class of the Id
-	 * @return the set of Ids nested in the given reference. Empty set if there
-	 *         are no or the reference itself does not exist.
+	 * @return the set of Ids nested in the given reference. Empty set if there are no or the reference itself does not
+	 * exist.
 	 */
 	<T extends TOSCAElementId> SortedSet<T> getNestedIds(GenericId ref, Class<T> idClass);
 
@@ -197,8 +184,8 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 
 	/**
 	 * @param clazz          the id class of the entities to discover
-	 * @param qNameOfTheType the QName of the type, where all TOSCAComponentIds,
-	 *                       where the associated element points to the type
+	 * @param qNameOfTheType the QName of the type, where all TOSCAComponentIds, where the associated element points to
+	 *                       the type
 	 */
 	default <X extends TOSCAComponentId> Collection<X> getAllElementsReferencingGivenType(Class<X> clazz, QName qNameOfTheType) {
 		Objects.requireNonNull(clazz);
@@ -214,4 +201,6 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 				.filter(id -> ((HasType) this.getTDefinitions(id).get().getElement()).getType().equals(qNameOfTheType))
 				.collect(Collectors.toList());
 	}
+
+	NamespaceManager getNamespaceManager();
 }
