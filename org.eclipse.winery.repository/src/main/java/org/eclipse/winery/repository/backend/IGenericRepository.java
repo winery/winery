@@ -198,7 +198,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 				// The resource may have been freshly initialized due to existence of a directory
 				// then it has no node type assigned leading to ntiRes.getType() being null
 				// we ignore this error here
-				.filter(id -> ((HasType) this.getTDefinitions(id).get().getElement()).getType().equals(qNameOfTheType))
+				.filter(id -> ((HasType) this.getDefinitions(id).get().getElement()).getType().equals(qNameOfTheType))
 				.collect(Collectors.toList());
 	}
 

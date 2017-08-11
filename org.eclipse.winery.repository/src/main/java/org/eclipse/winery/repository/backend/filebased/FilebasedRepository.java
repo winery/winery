@@ -236,7 +236,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			return;
 		}
 
-		Definitions definitions = this.getTDefinitions(oldId).get();
+		Definitions definitions = this.getDefinitions(oldId).get();
 
 		RepositoryFileReference oldRef = BackendUtils.getRefOfDefinitions(oldId);
 		RepositoryFileReference newRef = BackendUtils.getRefOfDefinitions(newId);

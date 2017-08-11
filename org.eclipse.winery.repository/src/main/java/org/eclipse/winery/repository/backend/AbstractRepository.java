@@ -22,7 +22,7 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
 
@@ -112,7 +112,7 @@ public abstract class AbstractRepository implements IRepository {
 	}
 
 	@Override
-	public Optional<TDefinitions> getTDefinitions(TOSCAComponentId id) {
+	public Optional<Definitions> getDefinitions(TOSCAComponentId id) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		if (!exists(ref)) {
 			return Optional.empty();
@@ -120,7 +120,7 @@ public abstract class AbstractRepository implements IRepository {
 		try {
 			InputStream is = Repository.INSTANCE.newInputStream(ref);
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			return Optional.of((TDefinitions) u.unmarshal(is));
+			return Optional.of((Definitions) u.unmarshal(is));
 		} catch (Exception e) {
 			LOGGER.error("Could not read content from file " + ref, e);
 			throw new IllegalStateException(e);

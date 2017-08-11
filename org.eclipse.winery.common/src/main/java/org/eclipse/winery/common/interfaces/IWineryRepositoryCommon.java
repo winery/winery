@@ -20,7 +20,7 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 
 /**
@@ -44,10 +44,10 @@ public interface IWineryRepositoryCommon {
 	 * @param id the TOSCAComponentId to load
 	 * @return Optional.empty() if the definition of the given id does not exist
 	 */
-	Optional<TDefinitions> getTDefinitions(TOSCAComponentId id);
+	Optional<Definitions> getDefinitions(TOSCAComponentId id);
 
 	default Optional<TNodeTypeImplementation> getElement(NodeTypeImplementationId id) {
-		return this.getTDefinitions(id).map(definitions -> (TNodeTypeImplementation) definitions.getElement());
+		return this.getDefinitions(id).map(definitions -> (TNodeTypeImplementation) definitions.getElement());
 	}
 
 	/**

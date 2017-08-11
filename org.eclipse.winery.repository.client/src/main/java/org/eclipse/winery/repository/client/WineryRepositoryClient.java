@@ -542,7 +542,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	}
 
 	@Override
-	public Optional<TDefinitions> getTDefinitions(TOSCAComponentId id) {
+	public Optional<TDefinitions> getDefinitions(TOSCAComponentId id) {
 		for (WebResource wr : this.repositoryResources) {
 			String path = Util.getUrlPathForId(id);
 			TDefinitions definitions = WineryRepositoryClient.getDefinitions(wr.path(path));
