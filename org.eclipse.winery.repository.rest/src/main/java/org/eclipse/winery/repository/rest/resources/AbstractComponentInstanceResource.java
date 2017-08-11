@@ -217,14 +217,14 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		} else {
 			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().toString(), false);
 		}
-		return BackendUtils.rename(this.getId(), newId);
+		return Utils.rename(this.getId(), newId);
 	}
 
 	@POST
 	@Path("namespace")
 	public Response putNamespace(@FormParam("ns") String namespace) {
 		TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().getDecoded(), false);
-		return BackendUtils.rename(this.getId(), newId);
+		return Utils.rename(this.getId(), newId);
 	}
 
 	@GET
