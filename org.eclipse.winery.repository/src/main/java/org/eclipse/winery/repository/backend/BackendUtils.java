@@ -94,6 +94,8 @@ import org.apache.xerces.xs.XSObjectList;
 import org.apache.xerces.xs.XSParticle;
 import org.apache.xerces.xs.XSTerm;
 import org.apache.xerces.xs.XSTypeDefinition;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.ls.LSInput;
@@ -326,6 +328,7 @@ public class BackendUtils {
 		return l;
 	}
 
+	@NonNull
 	private static Collection<QName> getAllReferencedArtifactTemplates(TDeploymentArtifacts tDeploymentArtifacts) {
 		if (tDeploymentArtifacts == null) {
 			return Collections.emptyList();
@@ -373,8 +376,8 @@ public class BackendUtils {
 		QName nodeTypeQName = nodeTemplate.getType();
 		Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
 		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-			NodeTypeImplementationResource ntiRes = new NodeTypeImplementationResource(nodeTypeImplementationId);
-			allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getDeploymentArtifacts());
+			TDeploymentArtifacts deploymentArtifacts = Repository.INSTANCE.getElement(nodeTypeImplementationId).get().getDeploymentArtifacts();
+			allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(deploymentArtifacts);
 			l.addAll(allReferencedArtifactTemplates);
 		}
 
@@ -388,8 +391,8 @@ public class BackendUtils {
 		QName nodeTypeQName = nodeTemplate.getType();
 		Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
 		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-			NodeTypeImplementationResource ntiRes = new NodeTypeImplementationResource(nodeTypeImplementationId);
-			Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getImplementationArtifacts());
+			TImplementationArtifacts implementationArtifacts = Repository.INSTANCE.getElement(nodeTypeImplementationId).get().getImplementationArtifacts();
+			Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(implementationArtifacts);
 			l.addAll(allReferencedArtifactTemplates);
 		}
 

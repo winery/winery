@@ -28,11 +28,13 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 
 import org.apache.tika.mime.MediaType;
 
@@ -63,6 +65,10 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * @return Optional.empty() if the definition of the given id does not exist
 	 */
 	Optional<Definitions> getDefinitions(TOSCAComponentId id);
+	
+	default Optional<TNodeTypeImplementation> getElement(NodeTypeImplementationId id) {
+		return this.getDefinitions(id).map(definitions -> (TNodeTypeImplementation) definitions.getElement());
+	} 
 
 	/**
 	 * Flags the given TOSCA element as existing.
