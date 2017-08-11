@@ -688,7 +688,7 @@ public class TOSCAExportUtil {
 		Collection<TOSCAComponentId> ids = new ArrayList<>();
 
 		// add all implementations
-		Collection<RelationshipTypeImplementationId> allTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, id.getQName());
+		Collection<RelationshipTypeImplementationId> allTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName());
 		for (RelationshipTypeImplementationId ntiId : allTypeImplementations) {
 			ids.add(ntiId);
 		}
@@ -733,7 +733,7 @@ public class TOSCAExportUtil {
 
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(NodeTypeId id) {
 		Collection<TOSCAComponentId> ids = new ArrayList<>();
-		Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, id.getQName());
+		Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, id.getQName());
 		for (NodeTypeImplementationId ntiId : allNodeTypeImplementations) {
 			ids.add(ntiId);
 		}

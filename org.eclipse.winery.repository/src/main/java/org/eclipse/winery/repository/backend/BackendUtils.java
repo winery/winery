@@ -371,7 +371,7 @@ public class BackendUtils {
 
 		// DAs may be assigned via node type implementations
 		QName nodeTypeQName = nodeTemplate.getType();
-		Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, nodeTypeQName);
+		Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
 		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
 			NodeTypeImplementationResource ntiRes = new NodeTypeImplementationResource(nodeTypeImplementationId);
 			allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getDeploymentArtifacts());
@@ -386,7 +386,7 @@ public class BackendUtils {
 
 		// IAs may be assigned via node type implementations
 		QName nodeTypeQName = nodeTemplate.getType();
-		Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, nodeTypeQName);
+		Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
 		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
 			NodeTypeImplementationResource ntiRes = new NodeTypeImplementationResource(nodeTypeImplementationId);
 			Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(ntiRes.getNTI().getImplementationArtifacts());

@@ -58,7 +58,7 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 			JsonGenerator jGenerator = jsonFactory.createGenerator(tableDataSW);
 			jGenerator.writeStartArray();
 
-			Collection<RelationshipTypeImplementationId> allNTIids = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
+			Collection<RelationshipTypeImplementationId> allNTIids = Repository.INSTANCE.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
 			for (RelationshipTypeImplementationId ntiID : allNTIids) {
 				jGenerator.writeStartArray();
 				jGenerator.writeString(ntiID.getNamespace().getDecoded());
@@ -88,7 +88,7 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 
 	@Override
 	public Response getJSON() {
-		Collection<RelationshipTypeImplementationId> allImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
+		Collection<RelationshipTypeImplementationId> allImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
 		List<QNameApiData> res = new ArrayList<>(allImplementations.size());
 		QNameConverter adapter = new QNameConverter();
 		for (RelationshipTypeImplementationId id : allImplementations) {

@@ -63,7 +63,7 @@ public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneTy
 			JsonGenerator jGenerator = jsonFactory.createGenerator(tableDataSW);
 			jGenerator.writeStartArray();
 
-			Collection<NodeTypeImplementationId> allNodeTypeImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, this.getTypeId().getQName());
+			Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, this.getTypeId().getQName());
 			for (NodeTypeImplementationId ntiID : allNodeTypeImplementations) {
 				jGenerator.writeStartArray();
 				jGenerator.writeString(ntiID.getNamespace().getDecoded());
@@ -93,7 +93,7 @@ public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneTy
 
 	@Override
 	public Response getJSON() {
-		Collection<NodeTypeImplementationId> allImplementations = BackendUtils.getAllElementsRelatedWithATypeAttribute(NodeTypeImplementationId.class, this.getTypeId().getQName());
+		Collection<NodeTypeImplementationId> allImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, this.getTypeId().getQName());
 		List<QNameApiData> res = new ArrayList<>(allImplementations.size());
 		QNameConverter adapter = new QNameConverter();
 		for (NodeTypeImplementationId id : allImplementations) {

@@ -67,7 +67,7 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 	protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends TOSCAComponentId> clazz) throws RepositoryCorruptException {
 		Select2DataWithOptGroups data = new Select2DataWithOptGroups();
 
-		Collection<? extends TOSCAComponentId> instanceIds = BackendUtils.getAllElementsRelatedWithATypeAttribute(clazz, this.id.getQName());
+		Collection<? extends TOSCAComponentId> instanceIds = Repository.INSTANCE.getAllElementsReferencingGivenType(clazz, this.id.getQName());
 
 		for (TOSCAComponentId instanceId : instanceIds) {
 			String groupText = instanceId.getNamespace().getDecoded();
