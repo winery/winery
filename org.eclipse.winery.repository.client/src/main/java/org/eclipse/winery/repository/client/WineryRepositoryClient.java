@@ -53,6 +53,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
 import org.eclipse.winery.common.interfaces.QNameWithName;
+import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -542,10 +543,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	}
 
 	@Override
-	public Optional<TDefinitions> getDefinitions(TOSCAComponentId id) {
+	public Optional<Definitions> getDefinitions(TOSCAComponentId id) {
 		for (WebResource wr : this.repositoryResources) {
 			String path = Util.getUrlPathForId(id);
-			TDefinitions definitions = WineryRepositoryClient.getDefinitions(wr.path(path));
+			Definitions definitions = WineryRepositoryClient.getDefinitions(wr.path(path));
 			if (definitions == null) {
 				// in case of an error, just try the next one
 				continue;
@@ -570,7 +571,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		return WineryRepositoryClient.getDefinitions(componentListResource, ns, localPart);
 	}
 	
-	private static TDefinitions getDefinitions(WebResource instanceResource) {
+	private static Definitions getDefinitions(WebResource instanceResource) {
 		// TODO: org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsWithAssociatedThings() could be used to do the resolving at the server
 
 		ClientResponse response = instanceResource.accept(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS).get(ClientResponse.class);
@@ -579,12 +580,12 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			return null;
 		}
 
-		TDefinitions definitions;
+		Definitions definitions;
 		try {
 			Unmarshaller um = WineryRepositoryClient.createUnmarshaller();
-			definitions = (TDefinitions) um.unmarshal(response.getEntityInputStream());
+			definitions = (Definitions) um.unmarshal(response.getEntityInputStream());
 		} catch (JAXBException e) {
-			LOGGER.error("Could not umarshal TDefinitions", e);
+			LOGGER.error("Could not unmarshal Definitions", e);
 			// try next service
 			return null;
 		}
