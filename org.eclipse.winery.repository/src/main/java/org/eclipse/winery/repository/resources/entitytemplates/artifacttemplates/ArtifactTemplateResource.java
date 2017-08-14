@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
+ *     Philipp Meyer - support for src directory
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.entitytemplates.artifacttemplates;
 
@@ -27,6 +28,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
@@ -48,6 +50,8 @@ import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSrcDirectoryId;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.IHasName;
@@ -129,7 +133,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	public void synchronizeReferences() {
 		TArtifactTemplate template = this.getTArtifactTemplate();
 
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId((ArtifactTemplateId) this.id);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId((ArtifactTemplateId) this.id);
 		SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(fileDir);
 		if (files.isEmpty()) {
 			// clear artifact references
@@ -154,9 +158,24 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 
 	@Path("files/")
 	public FilesResource getFilesResource() {
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId((ArtifactTemplateId) this.id);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId((ArtifactTemplateId) this.id);
 		return new FilesResource(fileDir);
 	}
+
+	@Path("source/")
+	public FilesResource getSrcResource() {
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSrcDirectoryId((ArtifactTemplateId) this.id);
+		return new FilesResource(fileDir);
+	}
+
+	@GET
+	@Path("source/zip")
+	@Produces(MimeTypes.MIMETYPE_ZIP)
+	public Response getDefinitionsAsResponse() {
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSrcDirectoryId((ArtifactTemplateId) this.id);
+		return Utils.getZippedContents(fileDir);
+	}
+
 
 	/***********************************************************************
 	 * "inheritance" from TEntityTemplateResource<TArtifactTemplate> *

@@ -10,6 +10,7 @@
  *     Oliver Kopp - initial API and implementation
  *     Nicole Keppler, Lukas Balzer - changes for angular frontend
  *     Armin Hüneburg - add initial git support
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
@@ -51,7 +52,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
@@ -60,6 +60,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TConstraint;
@@ -220,16 +221,35 @@ public class Utils {
 	public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
 		final CSARExporter exporter = new CSARExporter();
 		StreamingOutput so = output -> {
-            try {
-                exporter.writeCSAR(resource.getId(), output);
-            } catch (Exception e) {
-                throw new WebApplicationException(e);
-            }
-        };
+			try {
+				exporter.writeCSAR(resource.getId(), output);
+			} catch (Exception e) {
+				throw new WebApplicationException(e);
+			}
+		};
 		StringBuilder sb = new StringBuilder();
 		sb.append("attachment;filename=\"");
 		sb.append(resource.getXmlId().getEncoded());
 		sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
+		sb.append("\"");
+		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+	}
+
+	/**
+	 * Zipps the folder reference given by the id. As filename the parent id is used.
+	 */
+	public static Response getZippedContents(final GenericId id) {
+		StreamingOutput so = output -> {
+			try {
+				Repository.INSTANCE.getZippedContents(id, output);
+			} catch (Exception e) {
+				throw new WebApplicationException(e);
+			}
+		};
+		StringBuilder sb = new StringBuilder();
+		sb.append("attachment;filename=\"");
+		sb.append(id.getParent().getXmlId().getEncoded());
+		sb.append(Constants.SUFFIX_ZIP);
 		sb.append("\"");
 		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
 	}
@@ -243,9 +263,9 @@ public class Utils {
 		return objectMapper;
 	}
 
+
 	/**
-	 * @return Singular type name for the given resource. E.g.,
-	 *         "ServiceTemplateResource" gets "ServiceTemplate"
+	 * @return Singular type name for the given resource. E.g., "ServiceTemplateResource" gets "ServiceTemplate"
 	 */
 	public static String getTypeForInstance(Class<? extends AbstractComponentInstanceResource> resClass) {
 		String res = resClass.getName();
@@ -256,16 +276,15 @@ public class Utils {
 	}
 
 	/**
-	 * @return Singular type name for the given id. E.g., "ServiceTemplateId"
-	 *         gets "ServiceTemplate"
+	 * @return Singular type name for the given id. E.g., "ServiceTemplateId" gets "ServiceTemplate"
 	 */
 	public static String getTypeForAdminId(Class<? extends AdminId> idClass) {
 		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
 
 	/**
-	 * @return Singular type name for given AbstractComponentsResource. E.g,
-	 *         "ServiceTemplatesResource" gets "ServiceTemplate"
+	 * @return Singular type name for given AbstractComponentsResource. E.g, "ServiceTemplatesResource" gets
+	 * "ServiceTemplate"
 	 */
 	public static String getTypeForComponentContainer(Class<? extends AbstractComponentsResource> containerClass) {
 		String res = containerClass.getName();

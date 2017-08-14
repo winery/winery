@@ -22,8 +22,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.resources.INodeTemplateResourceOrNodeTypeImplementationResource;
@@ -122,8 +122,8 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 	}
 
 	/**
-	 * Required for persistence after a change of the deployment artifact.
-	 * Required by DeploymentArtifactResource to be able to persist
+	 * Required for persistence after a change of the deployment artifact. Required by DeploymentArtifactResource to be
+	 * able to persist
 	 *
 	 * @return the service template this node template belongs to
 	 */
@@ -132,8 +132,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 	}
 
 	/**
-	 * required for topology modeler to check for existence of a node template
-	 * at the server
+	 * required for topology modeler to check for existence of a node template at the server
 	 *
 	 * @return empty response
 	 */
@@ -141,5 +140,4 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 	public Response getHEAD() {
 		return Response.noContent().build();
 	}
-
 }

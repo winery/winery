@@ -45,6 +45,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -401,7 +402,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 			plan.setId(planId.getXmlId().getDecoded());
 			plan.setName(planId.getXmlId().getDecoded());
 			plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
-			plan.setPlanLanguage(org.eclipse.winery.common.constants.Namespaces.URI_BPEL20_EXECUTABLE);
+			plan.setPlanLanguage(Namespaces.URI_BPEL20_EXECUTABLE);
 
 			// create a PlanModelReferenceElement pointing to that file
 			String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));

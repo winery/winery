@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.winery.common.constants.Namespaces;
+import org.eclipse.winery.model.tosca.Namespaces;
 
 /**
  * This is Winery's main extension element for a key/value based properties

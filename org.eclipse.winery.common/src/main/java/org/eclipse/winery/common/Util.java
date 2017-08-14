@@ -54,6 +54,7 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 
@@ -320,7 +321,7 @@ public class Util {
 		}
 		if (namespace == null) {
 			// fallback non-specified namespaces
-			namespace = org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE;
+			namespace = Namespaces.TOSCA_NAMESPACE;
 		}
 		String localName = Util.getLocalName(clazz);
 		QName qname = new QName(namespace, localName);

@@ -19,9 +19,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -37,8 +37,7 @@ public class ArtifactTypeResource extends EntityTypeResource {
 	}
 
 	/**
-	 * @return the file extension associated with this artifact type. May be
-	 *         null
+	 * @return the file extension associated with this artifact type. May be null
 	 */
 	@GET
 	@Path("/fileextension")

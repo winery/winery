@@ -10,6 +10,7 @@
  *     Kálmán Képes - initial API and implementation and/or initial documentation
  *     Oliver Kopp - adapted to new storage model and to TOSCA v1.0
  *     Karoline Saatkamp - adapted importer to return importMetaInformation
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.importing;
 
@@ -48,7 +49,6 @@ import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
@@ -64,6 +64,7 @@ import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinitio
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactReference.Exclude;
 import org.eclipse.winery.model.tosca.TArtifactReference.Include;
@@ -89,6 +90,7 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.export.CSARExporter;
@@ -847,7 +849,7 @@ public class CSARImporter {
 
 	private void importAllFiles(Collection<Path> allFiles, ArtifactTemplateId atid, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
 		// import all files to repository
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(atid);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(atid);
 		for (Path p : allFiles) {
 			if (!Files.exists(p)) {
 				errors.add(String.format("File %1$s does not exist", p.toString()));
