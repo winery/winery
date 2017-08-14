@@ -1,8 +1,5 @@
 FROM maven:3-jdk-8 as builder
 
-ARG GIT_REPO_URL=https://github.com/OpenTOSCA/winery.git
-ARG GIT_BRANCH=master
-
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
     && apt-get update -qq && apt-get install -qqy \
@@ -11,13 +8,10 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && rm -rf /var/lib/apt/lists/* \
     && echo '{ "allow_root": true }' > /root/.bowerrc
 
-RUN git clone --recursive --depth=1 ${GIT_REPO_URL} -b ${GIT_BRANCH} /tmp/winery \
-    && cd /tmp/winery \
-    && mvn package -DskipTests=true
-
-RUN apt-get update -qq && apt-get install -qqy \
-        unzip \
-    && unzip /tmp/winery/org.eclipse.winery.repository/target/winery.war -d /opt/winery \
+WORKDIR /tmp/winery
+COPY . /tmp/winery
+RUN mvn package -DskipTests=true
+RUN unzip /tmp/winery/org.eclipse.winery.repository/target/winery.war -d /opt/winery \
     && sed -i "sXbpmn4toscamodelerBaseURI=.*Xbpmn4toscamodelerBaseURI=/winery-workflowmodelerX" /opt/winery/WEB-INF/classes/winery.properties \
     && sed -i "sX#repositoryPath=.*XrepositoryPath=/var/opentosca/repositoryX" /opt/winery/WEB-INF/classes/winery.properties
 
