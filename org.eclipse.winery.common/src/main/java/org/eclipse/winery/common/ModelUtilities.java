@@ -33,11 +33,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.constants.QNames;
 import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.common.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
@@ -74,17 +74,14 @@ public class ModelUtilities {
 	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
 
 	/**
-	 * This is a special method for Winery. Winery allows to define a property
-	 * definition by specifying name/type values. Instead of parsing the
-	 * extensible elements returned TDefinitions, this method is a convenience
-	 * method to access this information
+	 * This is a special method for Winery. Winery allows to define a property definition by specifying name/type
+	 * values. Instead of parsing the extensible elements returned TDefinitions, this method is a convenience method to
+	 * access this information
 	 *
 	 * @param et the entitytype to read the properties definition from
-	 * @return a WinerysPropertiesDefinition object, which includes a map of
-	 *         name/type-pairs denoting the associated property definitions. A
-	 *         default element name and namespace is added if it is not defined
-	 *         in the underlying XML. null if no Winery specific KV properties
-	 *         are defined for the given entity type
+	 * @return a WinerysPropertiesDefinition object, which includes a map of name/type-pairs denoting the associated
+	 * property definitions. A default element name and namespace is added if it is not defined in the underlying XML.
+	 * null if no Winery specific KV properties are defined for the given entity type
 	 */
 	public static WinerysPropertiesDefinition getWinerysPropertiesDefinition(TEntityType et) {
 		// similar implementation as org.eclipse.winery.repository.resources.entitytypes.properties.PropertiesDefinitionResource.getListFromEntityType(TEntityType)
@@ -117,9 +114,8 @@ public class ModelUtilities {
 	}
 
 	/**
-	 * This is a special method for Winery. Winery allows to define a property
-	 * by specifying name/value values. Instead of parsing the XML contained in
-	 * TNodeType, this method is a convenience method to access this information
+	 * This is a special method for Winery. Winery allows to define a property by specifying name/value values. Instead
+	 * of parsing the XML contained in TNodeType, this method is a convenience method to access this information
 	 *
 	 * The return type "Properties" is used because of the key/value properties.
 	 *
@@ -131,16 +127,14 @@ public class ModelUtilities {
 		} else {
 			return null;
 		}
-		
 	}
 
 	/**
-	 * This is a special method for Winery. Winery allows to define a property
-	 * by specifying name/value values. We convert the given Properties to XML.
+	 * This is a special method for Winery. Winery allows to define a property by specifying name/value values. We
+	 * convert the given Properties to XML.
 	 *
-	 * @param wpd the Winery's properties definition of the type of the given
-	 *            template (i.e., wpd =
-	 *            getWinerysPropertiesDefinition(template.getType()))
+	 * @param wpd      the Winery's properties definition of the type of the given template (i.e., wpd =
+	 *                 getWinerysPropertiesDefinition(template.getType()))
 	 * @param template the node template to set the associated properties
 	 */
 	public static void setPropertiesKV(WinerysPropertiesDefinition wpd, TEntityTemplate template, Properties properties) {
@@ -175,14 +169,12 @@ public class ModelUtilities {
 	}
 
 	/**
-	 * Generates a XSD when Winery's K/V properties are used. This method is put
-	 * here instead of WinerysPropertiesDefinitionResource to avoid generating
-	 * the subresource
+	 * Generates a XSD when Winery's K/V properties are used. This method is put here instead of
+	 * WinerysPropertiesDefinitionResource to avoid generating the subresource
 	 *
 	 * public because of the usage by TOSCAEXportUtil
 	 *
-	 * @return empty Document, if Winery's Properties Definition is not fully
-	 *         filled (e.g., no wrapping element defined)
+	 * @return empty Document, if Winery's Properties Definition is not fully filled (e.g., no wrapping element defined)
 	 */
 	public static Document getWinerysPropertiesDefinitionXSDAsDocument(WinerysPropertiesDefinition wpd) {
 		/*
@@ -242,11 +234,11 @@ public class ModelUtilities {
 	}
 
 	/**
-	 * Removes an existing Winery's Properties definition. If no such definition
-	 * exists, the TEntityType is not modified
+	 * Removes an existing Winery's Properties definition. If no such definition exists, the TEntityType is not
+	 * modified
 	 */
 	public static void removeWinerysPropertiesDefinition(TEntityType et) {
-		for (Iterator<Object> iterator = et.getAny().iterator(); iterator.hasNext();) {
+		for (Iterator<Object> iterator = et.getAny().iterator(); iterator.hasNext(); ) {
 			Object o = iterator.next();
 			if (o instanceof WinerysPropertiesDefinition) {
 				iterator.remove();
@@ -289,15 +281,12 @@ public class ModelUtilities {
 	}
 
 	/**
-	 * Special method to get the name of an extensible element as the TOSCA
-	 * specification does not have a separate super type for elements with a
-	 * name
+	 * Special method to get the name of an extensible element as the TOSCA specification does not have a separate super
+	 * type for elements with a name
 	 *
-	 * {@link Util#instanceSupportsNameAttribute(java.lang.Class)}
-	 * is related
+	 * {@link Util#instanceSupportsNameAttribute(java.lang.Class)} is related
 	 *
-	 * @param e the extensible element offering a name attribute (besides an id
-	 *            attribute)
+	 * @param e the extensible element offering a name attribute (besides an id attribute)
 	 * @return the name of the extensible element
 	 * @throws IllegalStateException if e does not offer the method "getName"
 	 */
@@ -314,13 +303,11 @@ public class ModelUtilities {
 	}
 
 	/**
-	 * Returns the name of the given element. If the name does not exist or is
-	 * empty, the id is returned
+	 * Returns the name of the given element. If the name does not exist or is empty, the id is returned
 	 *
 	 * {@see getName}
 	 *
-	 * @return the name if there is a name field, if not, the id is returned. In
-	 *         case there is a Name field,
+	 * @return the name if there is a name field, if not, the id is returned. In case there is a Name field,
 	 */
 	public static String getNameWithIdFallBack(TExtensibleElements ci) {
 		Method method;
@@ -343,12 +330,10 @@ public class ModelUtilities {
 	}
 
 	/**
-	 * Special method to set the name of an extensible element as the TOSCA
-	 * specification does not have a separate super type for elements with a
-	 * name
+	 * Special method to set the name of an extensible element as the TOSCA specification does not have a separate super
+	 * type for elements with a name
 	 *
-	 * @param e the extensible element offering a name attribute (besides an id
-	 *            attribute)
+	 * @param e    the extensible element offering a name attribute (besides an id attribute)
 	 * @param name the new name
 	 * @throws IllegalStateException if e does not offer the method "getName"
 	 */
@@ -398,8 +383,7 @@ public class ModelUtilities {
 	 * locates targetObjectRef inside a topology template
 	 *
 	 * @param topologyTemplate the topology template to search in
-	 * @param targetObjectRef the object ref as String
-	 *
+	 * @param targetObjectRef  the object ref as String
 	 * @return null if not found, otherwise the entity template in the topology
 	 */
 	public static TEntityTemplate findNodeTemplateOrRequirementOfNodeTemplateOrCapabilityOfNodeTemplateOrRelationshipTemplate(TTopologyTemplate topologyTemplate, String targetObjectRef) {
@@ -429,7 +413,6 @@ public class ModelUtilities {
 						}
 					}
 				}
-
 			} else {
 				assert (t instanceof TRelationshipTemplate);
 				if (t.getId().equals(targetObjectRef)) {
@@ -445,9 +428,8 @@ public class ModelUtilities {
 	/**
 	 * Returns the id of the given element
 	 *
-	 * The TOSCA specification does NOT always put an id field. In the case of
-	 * EntityTypes and EntityTypeImplementations, there is no id, but a name
-	 * field
+	 * The TOSCA specification does NOT always put an id field. In the case of EntityTypes and
+	 * EntityTypeImplementations, there is no id, but a name field
 	 *
 	 * This method abstracts from that fact.
 	 */
@@ -553,10 +535,8 @@ public class ModelUtilities {
 	/**
 	 * Sets the x coordinate of a {@link TNodeTemplate}.
 	 *
-	 * @param nodeTemplate
-	 * 			 the nodeTemplate to be altered
-	 * @param coordinate
-	 * 			 the value of the coordinate to be set
+	 * @param nodeTemplate the nodeTemplate to be altered
+	 * @param coordinate   the value of the coordinate to be set
 	 */
 	public static void setLeft(TNodeTemplate nodeTemplate, String coordinate) {
 		Map<QName, String> otherNodeTemplateAttributes = nodeTemplate.getOtherAttributes();
@@ -566,25 +546,19 @@ public class ModelUtilities {
 	/**
 	 * Sets the y coordinate of a {@link TNodeTemplate}.
 	 *
-	 * @param nodeTemplate
-	 * 			 the nodeTemplate to be altered
-	 * @param coordinate
-	 * 			 the value of the coordinate to be set
-	 * @return
-	 * 			 the altered {@link TNodeTemplate}
+	 * @param nodeTemplate the nodeTemplate to be altered
+	 * @param coordinate   the value of the coordinate to be set
+	 * @return the altered {@link TNodeTemplate}
 	 */
 	public static void setTop(TNodeTemplate nodeTemplate, String coordinate) {
 		Map<QName, String> otherNodeTemplateAttributes = nodeTemplate.getOtherAttributes();
 		otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"), coordinate);
-
 	}
 
 	/**
 	 * This method instantiates a {@link TNodeTemplate} for a given {@link TNodeType}.
 	 *
-	 * @param nodeType
-	 *            the {@link TNodeType} used for the {@link TNodeTemplate} instantiation.
-	 *
+	 * @param nodeType the {@link TNodeType} used for the {@link TNodeTemplate} instantiation.
 	 * @return the instantiated {@link TNodeTemplate}
 	 */
 	public static TNodeTemplate instantiateNodeTemplate(TNodeType nodeType) {
@@ -626,13 +600,10 @@ public class ModelUtilities {
 	/**
 	 * This method instantiates a {@link TRelationshipTemplate} for a given {@link TRelationshipType}.
 	 *
-	 * @param relationshipType
-	 *            the {@link TRelationshipType} used for the {@link TRelationshipTemplate} instantiation.
-	 * @param sourceNodeTemplate
-	 *            the source {@link TNodeTemplate} of the connection
-	 * @param targetNodeTemplate
-	 *            the target {@link TNodeTemplate} of the connection
-	 *
+	 * @param relationshipType   the {@link TRelationshipType} used for the {@link TRelationshipTemplate}
+	 *                           instantiation.
+	 * @param sourceNodeTemplate the source {@link TNodeTemplate} of the connection
+	 * @param targetNodeTemplate the target {@link TNodeTemplate} of the connection
 	 * @return the instantiated {@link TRelationshipTemplate}
 	 */
 	public static TRelationshipTemplate instantiateRelationshipTemplate(TRelationshipType relationshipType, TNodeTemplate sourceNodeTemplate, TNodeTemplate targetNodeTemplate) {
@@ -669,7 +640,7 @@ public class ModelUtilities {
 		otherAttributes.put(QNAME_LOCATION, targetLabel);
 	}
 
-	public static TNodeTemplate getSourceNodeTemplateOfRelationshipTemplate (TTopologyTemplate topologyTemplate, TRelationshipTemplate relationshipTemplate) {
+	public static TNodeTemplate getSourceNodeTemplateOfRelationshipTemplate(TTopologyTemplate topologyTemplate, TRelationshipTemplate relationshipTemplate) {
 		if (relationshipTemplate.getSourceElement().getRef() instanceof TRequirement) {
 			TRequirement requirement = (TRequirement) relationshipTemplate.getSourceElement().getRef();
 			return topologyTemplate.getNodeTemplates().stream()
@@ -682,7 +653,7 @@ public class ModelUtilities {
 		}
 	}
 
-	public static TNodeTemplate getTargetNodeTemplateOfRelationshipTemplate (TTopologyTemplate topologyTemplate, TRelationshipTemplate relationshipTemplate) {
+	public static TNodeTemplate getTargetNodeTemplateOfRelationshipTemplate(TTopologyTemplate topologyTemplate, TRelationshipTemplate relationshipTemplate) {
 		if (relationshipTemplate.getTargetElement().getRef() instanceof TCapability) {
 			TCapability capability = (TCapability) relationshipTemplate.getTargetElement().getRef();
 			return topologyTemplate.getNodeTemplates().stream()
@@ -720,12 +691,9 @@ public class ModelUtilities {
 				.collect(Collectors.toList());
 
 		return outgoingRelationshipTemplates;
-
 	}
 
 	/**
-	 *
-	 * @param topologyTemplate
 	 * @return all nodes templates of the topologyTemplate
 	 * @deprecated Use {@link TTopologyTemplate#getNodeTemplates()}
 	 */
@@ -755,12 +723,12 @@ public class ModelUtilities {
 	}
 
 	/**
-	 * When sending JSON to the server, the content of "any" is a String and not some JSON data structure.
-	 * To be able to save it as XML, we have to "objectize" the content of Any
+	 * When sending JSON to the server, the content of "any" is a String and not some JSON data structure. To be able to
+	 * save it as XML, we have to "objectize" the content of Any
 	 *
 	 * @param nodeTemplates The node templates to update. The content of the given collection is modified.
-     * @throws IllegalStateException if DocumentBuilder could not iniitialized
-	 * @throws IOException if something goes wrong during parsing
+	 * @throws IllegalStateException if DocumentBuilder could not iniitialized
+	 * @throws IOException           if something goes wrong during parsing
 	 */
 	public static void patchAnyAttributes(Collection<TNodeTemplate> nodeTemplates) throws IOException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -805,5 +773,4 @@ public class ModelUtilities {
 			}
 		}
 	}
-
 }

@@ -25,5 +25,5 @@ package org.eclipse.winery.common.propertydefinitionkv;
 import javax.xml.bind.annotation.XmlNsForm;
 import javax.xml.bind.annotation.XmlSchema;
 
-import org.eclipse.winery.common.constants.Namespaces;
+import org.eclipse.winery.model.tosca.Namespaces;
 

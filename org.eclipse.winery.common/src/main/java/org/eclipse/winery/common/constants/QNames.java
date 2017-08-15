@@ -13,6 +13,8 @@ package org.eclipse.winery.common.constants;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.Namespaces;
+
 public class QNames {
 
 	public static final QName QNAME_BORDER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "bordercolor");

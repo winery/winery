@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -11,6 +11,7 @@
  *     Tino Stadelmaier, Philipp Meyer - rename id and/or namespace
  *     Lukas Harzentter - get namespaces for specific component
  *     Nicole Keppler - forceDelete for Namespaces
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
@@ -70,22 +71,28 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.AbstractRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
+import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.jgit.dircache.InvalidPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * When it comes to a storage of plain files, we use Java 7's nio internally.
- * Therefore, we intend to expose the stream types offered by java.nio.Files:
- * BufferedReader/BufferedWriter
+ * When it comes to a storage of plain files, we use Java 7's nio internally. Therefore, we intend to expose the stream
+ * types offered by java.nio.Files: BufferedReader/BufferedWriter
  */
 public class FilebasedRepository extends AbstractRepository implements IRepositoryAdministration {
 
@@ -99,9 +106,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	private final FileSystemProvider provider;
 
 	/**
-	 *
-	 * @param repositoryLocation a string pointing to a location on the file
-	 *            system. May be null.
+	 * @param repositoryLocation a string pointing to a location on the file system. May be null.
 	 */
 	public FilebasedRepository(String repositoryLocation) {
 		this.repositoryRoot = this.determineRepositoryPath(repositoryLocation);
@@ -132,8 +137,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	}
 
 	/**
-	 * Converts the given reference to an absolute path of the underlying
-	 * FileSystem
+	 * Converts the given reference to an absolute path of the underlying FileSystem
 	 */
 	public Path ref2AbsolutePath(RepositoryFileReference ref) {
 		return this.id2AbsolutePath(ref.getParent()).resolve(ref.getFileName());
@@ -272,7 +276,6 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			// Somewhere, the first letter is deleted --> /odetypes/http%3A%2F%2Fwww.example.org%2F05/
 			// We just ignore it for now
 		}
-
 	}
 
 	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) {
@@ -510,17 +513,17 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		// @formatter:off
 		@SuppressWarnings("rawtypes")
 		Collection<Class<? extends TOSCAComponentId>> toscaComponentIds = Arrays.asList(
-			ArtifactTemplateId.class,
-			ArtifactTypeId.class,
-			CapabilityTypeId.class,
-			NodeTypeId.class,
-			NodeTypeImplementationId.class,
-			PolicyTemplateId.class,
-			PolicyTypeId.class,
-			RelationshipTypeId.class,
-			RelationshipTypeImplementationId.class,
-			RequirementTypeId.class,
-			ServiceTemplateId.class
+				ArtifactTemplateId.class,
+				ArtifactTypeId.class,
+				CapabilityTypeId.class,
+				NodeTypeId.class,
+				NodeTypeImplementationId.class,
+				PolicyTemplateId.class,
+				PolicyTypeId.class,
+				RelationshipTypeId.class,
+				RelationshipTypeImplementationId.class,
+				RequirementTypeId.class,
+				ServiceTemplateId.class
 		);
 		// @formatter:on
 
@@ -658,4 +661,25 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		return Files.newInputStream(path);
 	}
 
+	@Override
+	public void getZippedContents(final GenericId id, OutputStream out) throws WineryRepositoryException {
+		Objects.requireNonNull(id);
+		Objects.requireNonNull(out);
+
+		SortedSet<RepositoryFileReference> containedFiles = this.getContainedFiles(id);
+
+		try (final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out)) {
+			for (RepositoryFileReference ref : containedFiles) {
+				zos.putArchiveEntry(new ZipArchiveEntry(ref.getFileName()));
+				try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+					IOUtils.copy(is, zos);
+				}
+				zos.closeArchiveEntry();
+			}
+		} catch (ArchiveException e) {
+			throw new WineryRepositoryException("Internal error while generating archive", e);
+		} catch (IOException e) {
+			throw new WineryRepositoryException("I/O exception during export", e);
+		}
+	}
 }
