@@ -394,44 +394,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<dependencies>
-					<!--dependency>
-						<groupId>org.apache.ant</groupId>
-						<artifactId>ant-apache-bsf</artifactId>
-						<version>1.9.2</version>
-					</dependency-->
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-all</artifactId>
-						<version>2.1.7</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<id>default-cli</id>
-						<configuration>
-							<target>
-								<copy todir="${project.basedir}/src/main/webapp/WEB-INF/tags/common" overwrite="true">
-									<fileset dir="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/WEB-INF/tags/common" />
-								</copy>
-								<copy todir="${project.basedir}/src/main/webapp/jsp/shared" overwrite="true">
-									<fileset dir="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/jsp/shared" />
-								</copy>
-								<copy todir="${project.basedir}/src/main/webapp/WEB-INF" overwrite="true" file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/WEB-INF/common-functions.tld" />
-								<copy todir="${project.basedir}/src/main/webapp/js" overwrite="true" file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/js/winery-common-topologyrendering.js" />
-								<copy todir="${project.basedir}/src/main/webapp/js" overwrite="true" file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/js/winery-support-common.js" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>2.5</version>
 				<configuration>
