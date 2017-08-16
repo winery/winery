@@ -9,12 +9,14 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Lukas Harzentter - get namespaces for specific component
- *     Tino Stadelmaier, Philipp Meyer - code cleaning
+ *     Tino Stadelmaier - code cleaning
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.attribute.FileTime;
 import java.util.Collection;
 import java.util.Date;
@@ -28,6 +30,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
+import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
 /**
  * Enables access to the winery repository via Ids defined in package
@@ -114,12 +117,21 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	InputStream newInputStream(RepositoryFileReference ref) throws IOException;
 
 	/**
-	 * Returns the size of the file referenced by ref
+	 * Creates a stream of a ZIP file containing all files contained in the given id
 	 *
-	 * @param ref a refernce to the file stored in the repository
-	 * @return the size in bytes
-	 * @throws IOException if something goes wrong
+	 * @param id the id whose children should be zipped
+	 * @param out the outputstream to write to
 	 */
+	void getZippedContents(final GenericId id, OutputStream out) throws WineryRepositoryException;
+
+
+		/**
+         * Returns the size of the file referenced by ref
+         *
+         * @param ref a refernce to the file stored in the repository
+         * @return the size in bytes
+         * @throws IOException if something goes wrong
+         */
 	long getSize(RepositoryFileReference ref) throws IOException;
 
 	/**

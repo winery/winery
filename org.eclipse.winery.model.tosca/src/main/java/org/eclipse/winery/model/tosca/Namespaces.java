@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2014 University of Stuttgart.
+ * Copyright (c) 2013-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,8 +8,9 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Philipp Meyer - change package and move to commons module
  *******************************************************************************/
-package org.eclipse.winery.common.constants;
+package org.eclipse.winery.model.tosca;
 
 /**
  * Defines namespace constants not available in Java7's XMLConstants

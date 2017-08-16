@@ -26,9 +26,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.constants.Defaults;
-import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.constants.QNames;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.resources.GenericVisualAppearanceResource;

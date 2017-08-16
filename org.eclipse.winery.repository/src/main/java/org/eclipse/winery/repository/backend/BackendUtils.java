@@ -163,7 +163,7 @@ public class BackendUtils {
 			BackendUtils.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
-		return Response.ok().build();
+		return Response.ok().status(Status.NO_CONTENT).build();
 	}
 
 	/**

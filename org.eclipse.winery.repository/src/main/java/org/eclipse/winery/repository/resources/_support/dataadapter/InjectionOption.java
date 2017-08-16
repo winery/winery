@@ -17,7 +17,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.eclipse.winery.common.constants.Namespaces;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 public class InjectionOption {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,7 @@
  * Contributors:
  *     Kálmán Képes - initial API and implementation and/or initial documentation
  *     Oliver Kopp - adapted to new storage model and to TOSCA v1.0
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
@@ -54,6 +55,7 @@ import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Policies;
 import org.eclipse.winery.model.tosca.TCapability;
@@ -85,6 +87,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
@@ -418,7 +421,7 @@ public class TOSCAExportUtil {
 	 */
 	private void addToImports(TOSCAComponentId id, Collection<TImport> imports) {
 		TImport imp = new TImport();
-		imp.setImportType(org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE);
+		imp.setImportType(Namespaces.TOSCA_NAMESPACE);
 		imp.setNamespace(id.getNamespace().getDecoded());
 		URI uri = (URI) this.exportConfiguration.get(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString());
 		if (uri == null) {
@@ -653,7 +656,7 @@ public class TOSCAExportUtil {
 		// Therefore, we adapt the content of the attached files to the really existing files
 		res.synchronizeReferences();
 
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(id);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
 		SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(fileDir);
 		for (RepositoryFileReference ref : files) {
 			// Even if writing a TOSCA only (!this.writingCSAR),

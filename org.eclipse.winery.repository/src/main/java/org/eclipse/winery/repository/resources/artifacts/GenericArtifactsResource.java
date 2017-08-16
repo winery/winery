@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.artifacts;
 
@@ -41,7 +42,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.constants.Namespaces;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
@@ -49,6 +49,7 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.generators.ia.Generator;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
@@ -60,6 +61,7 @@ import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.ResourceCreationResult;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.IHasTypeReference;
@@ -372,7 +374,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		// store it
 		// TODO: refactor: this is more a RepositoryUtils thing than a special thing here; see also importFile at CSARImporter
 
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(artifactTemplateId);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
 		RepositoryFileReference fref = new RepositoryFileReference(fileDir, zipFile.getName());
 		try (InputStream is = Files.newInputStream(zipFile.toPath());
 			 BufferedInputStream bis = new BufferedInputStream(is)) {

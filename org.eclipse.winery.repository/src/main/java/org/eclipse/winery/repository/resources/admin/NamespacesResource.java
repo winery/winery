@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2016 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -11,6 +11,7 @@
  *     Lukas Harzenetter - return namespaces sorted
  *     Nicole Keppler - return filtered namespace with number of containing components
  *     Niko Stadelmaier - return namespaces with prefix
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.resources.admin;
 
@@ -41,6 +42,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.datatypes.NamespaceAndCountOfComponentInstances;
 import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
@@ -66,8 +68,8 @@ public class NamespacesResource extends AbstractAdminResource {
 		// if that behavior is not desired, the code has to be moved to "generatePrefix" which checks for existence, ...
 		this.configuration.setProperty("http://www.w3.org/2001/XMLSchema", "xsd");
 		this.configuration.setProperty("http://www.w3.org/XML/1998/namespace", "xmlns");
-		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE, "tosca");
-		this.configuration.setProperty(org.eclipse.winery.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery");
+		this.configuration.setProperty(Namespaces.TOSCA_NAMESPACE, "tosca");
+		this.configuration.setProperty(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery");
 	}
 
 	/**

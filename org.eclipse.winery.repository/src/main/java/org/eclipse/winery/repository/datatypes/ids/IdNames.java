@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.ids;
 
@@ -20,7 +21,8 @@ public class IdNames {
 
 	// the files belonging to one artifact template are nested in the sub
 	// directory "files"
-	public static final String ARTIFACTTEMPLATEDIRECTORY = "files";
+	public static final String ARTIFACTTEMPLATEFILESDIRECTORY = "files";
+	public static final String ARTIFACTTEMPLATESRCDIRECTORY = "src";
 
 	public static final String CONSTRAINTTYPES = "constrainttypes";
 	public static final String NAMESPACES = "namespaces";
