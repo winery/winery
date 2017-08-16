@@ -410,6 +410,7 @@
 				</dependencies>
 				<executions>
 					<execution>
+						<!-- still required, because the topology preview is in place -->
 						<phase>generate-sources</phase>
 						<id>default-cli</id>
 						<configuration>
