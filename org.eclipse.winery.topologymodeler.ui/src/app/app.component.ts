@@ -206,7 +206,6 @@ export class AppComponent implements OnInit {
   constructor(private ngRedux: NgRedux<IAppState>, private actions: AppActions) {
   }
 
-
   
   ngOnInit() {
     this.topologyTemplate = this.testJson;
