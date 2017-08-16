@@ -1,0 +1,85 @@
+div.container {
+
+  width: 210px;
+  font-size: small;
+  box-shadow: 2px 2px 10px -2px rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+}
+
+.icon-styling {
+
+  color: rgba(200, 200, 200, 1);
+}
+
+[draggable=true] {
+  cursor: move;
+}
+
+a {
+  font-size: small;
+  line-height: 25%
+}
+
+.hidden {
+  display: none;
+}
+
+p {
+  line-height: 22%
+}
+
+#specifierDiv {
+  margin-top: 2px;
+}
+
+div.selected {
+  background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.30) 10px, rgba(255, 255, 255, 0.7) 10px, rgba(255, 255, 255, 0.7) 20px);
+  height: 52px;
+  margin: -1px;
+}
+
+div.unselected {
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.30));
+  height: 52px;
+  margin: -1px;
+}
+
+.container rounded {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+div.endpointContainer {
+  background: #ffffff;
+  box-shadow: 2px 2px 19px #aaa;
+  border: 1px solid #aeaeae;
+  width: 150px;
+  position: absolute;
+  left: 212px;
+  padding: 5px;
+}
+
+div.connectorEndpoint {
+  width: 140px;
+  cursor: pointer;
+}
+
+div.connectorEndpoint:hover {
+  background: rgb(237, 242, 247);
+}
+
+div.connectorBox {
+  height: 15px;
+  width: 15px;
+  float: left;
+}
+
+div.connectorLabel {
+  height: 15px;
+  width: 125px;
+  margin-left: 20px;
+  white-space: nowrap;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

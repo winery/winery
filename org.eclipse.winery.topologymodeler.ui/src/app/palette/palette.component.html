@@ -1,0 +1,27 @@
+      <div class="bootstrap-vertical-nav" [@paletteRootState]="paletteRootState">
+
+        <button id="palette_root" class="btn btn-primary" [@paletteRootState]="paletteRootState" type="button" (click)="openPalette()">
+          <div [@paletteRootTextState]="paletteRootState">Palette</div>
+        </button>
+
+        <div [@paletteItemState]="paletteRootState" class="palette-items-wrapper">
+          <ul class="nav flex-column nav-tabs">
+            <li *ngFor="let el of paletteItems" class="nav-item">
+              <div class="nav-link" href="#">{{ el.nodeTitle }}</div>
+            </li>
+            <li class="nav-item">
+              <div class="nav-link" href="#" (mousedown)="publishTitle($event)">Apache-2.4</div>
+            </li>
+            <li class="nav-item">
+              <div class="nav-link" href="#" (mousedown)="publishTitle($event)">Babel</div>
+            </li>
+            <li class="nav-item">
+              <div class="nav-link" href="#" (mousedown)="publishTitle($event)">Dashboard</div>
+            </li>
+            <li class="nav-item">
+              <div class="nav-link" href="#" (mousedown)="publishTitle($event)">Dashboard</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
