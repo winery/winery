@@ -10,7 +10,8 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ## [unreleased]
 
-* Initial support for BPMN4TOSCA implemented using Angular
+- Initial support for BPMN4TOSCA implemented using Angular
+- Fixed wrong output of "CSAR Export mode. Putting XSD into CSAR" if in CSAR export mode
 
 ## [v2.0.0-M1] - 2017-07-03
 

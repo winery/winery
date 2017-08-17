@@ -807,19 +807,21 @@ public class BackendUtils {
 
 	/**
 	 * @param tcId                    The element type id to get the location for
-	 * @param uri                     uri to use if in XML export mode, null if in CSAR export mode
+	 * @param baseUri                 uri to prepend if in XML export mode, <code>null</code> if in CSAR export mode, example: <code>http://localhost:8080/winery</code>
 	 * @param wrapperElementLocalName the local name of the wrapper element
 	 */
-	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
+	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI baseUri, String wrapperElementLocalName) {
+		Objects.requireNonNull(tcId);
+		Objects.requireNonNull(wrapperElementLocalName);
 		String loc = BackendUtils.getPathInsideRepo(tcId);
 		loc = loc + "propertiesdefinition/";
 		loc = Utils.getURLforPathInsideRepo(loc);
-		if (uri == null) {
+		if (baseUri == null) {
 			loc = loc + wrapperElementLocalName + ".xsd";
 			// for the import later, we need "../" in front
 			loc = "../" + loc;
 		} else {
-			loc = uri + loc + "xsd";
+			loc = baseUri.resolve(loc).resolve("xsd").toString();
 		}
 		return loc;
 	}

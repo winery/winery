@@ -1,6 +1,6 @@
-<tosca:Definitions xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="empty" targetNamespace="http://www.example.org/empty">
-	<tosca:Import importType="http://www.w3.org/2001/XMLSchema" location="../nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/propertiesdefinition/BaobabProperties.xsd" namespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:wpd="true"/>
-	<tosca:NodeType abstract="no" final="no" name="baobab" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01">
+<tosca:Definitions xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="empty" targetNamespace="http://www.example.org/empty">
+	<tosca:Import namespace="http://winery.opentosca.org/test/nodetypes/fruits" location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/propertiesdefinition/xsd" importType="http://www.w3.org/2001/XMLSchema" winery:wpd="true"/>
+	<tosca:NodeType name="baobab" abstract="no" final="no" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01">
 		<winery:PropertiesDefinition elementname="BaobabProperties" namespace="http://winery.opentosca.org/test/nodetypes/fruits">
 			<winery:properties>
 				<winery:key>Antioxidants</winery:key>

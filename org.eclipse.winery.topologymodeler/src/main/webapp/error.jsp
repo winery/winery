@@ -9,8 +9,10 @@
  *
  * Contributors:
  *    Michael Wurster - Initial implementation
+ *    Oliver Kopp - minor fixes
  *******************************************************************************/
 --%>
+<!-- isErrorPage="true" declares the variable "exception" -->
 <%@page language="java" contentType="text/html; charset=utf-8"
 		pageEncoding="utf-8" isErrorPage="true" %>
 
@@ -27,7 +29,7 @@
 	<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
 </head>
 <body>
-<h3>Error: <%=exception.getMessage() %></h3>
-<code><%=exception.printStackTrace() %></code>
+<h3>Error: <%=exception.toString() %></h3>
+<%-- <code><% exception.printStackTrace(new PrintWriter(out)); %></code> --%>
 </body>
 </html>
