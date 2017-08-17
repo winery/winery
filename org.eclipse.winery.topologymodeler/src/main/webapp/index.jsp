@@ -40,7 +40,7 @@
 <%@page import="org.eclipse.winery.model.tosca.TRelationshipTemplate"%>
 <%@page import="org.eclipse.winery.model.tosca.TRequirement"%>
 <%@page import="org.eclipse.winery.model.tosca.TRequirementType"%>
-<%@page import="org.eclipse.winery.common.constants.Namespaces" %>
+<%@page import="org.eclipse.winery.model.tosca.Namespaces" %>
 <%@page import="org.eclipse.winery.common.ids.definitions.ArtifactTemplateId"%>
 <%@page import="org.eclipse.winery.common.ids.definitions.ServiceTemplateId" %>
 <%@page import="org.eclipse.winery.common.interfaces.QNameWithName"%>
@@ -1504,7 +1504,7 @@ function onDoneRegisterConnectionTypesAndConnectNodeTemplates() {
 		xmlns:ns2="{%=o.artifactTemplateNSAndId.namespace%}"
 		artifactRef="ns2:{%=o.artifactTemplateNSAndId.localname%}"
 		{% } %}
-		xmlns:tosca="<%=org.eclipse.winery.common.constants.Namespaces.TOSCA_NAMESPACE%>" />
+		xmlns:tosca="<%=org.eclipse.winery.model.tosca.Namespaces.TOSCA_NAMESPACE%>" />
 </script>
 
 <%-- param: value, selected (optional), text --%>
