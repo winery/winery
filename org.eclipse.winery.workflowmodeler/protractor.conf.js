@@ -8,10 +8,9 @@
  *
  * Contributors:
  *     ZTE - initial API and implementation and/or initial documentation
+ *
+ * This file has been generated using `ng new` and adapted to winery's needs.
  */
-// Protractor configuration file, see link for more information
-// https://github.com/angular/protractor/blob/master/lib/config.ts
-
 const { SpecReporter } = require('jasmine-spec-reporter');
 
 exports.config = {

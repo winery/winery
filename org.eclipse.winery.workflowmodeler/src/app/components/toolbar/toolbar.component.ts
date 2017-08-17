@@ -9,14 +9,12 @@
  * Contributors:
  *     ZTE - initial API and implementation and/or initial documentation
  */
-
 import { Component } from '@angular/core';
 
 import { NodeType } from '../../model/workflow/node-type';
 import { BroadcastService } from '../../services/broadcast.service';
 import { JsPlumbService } from '../../services/jsplumb.service';
 import { ModelService } from '../../services/model.service';
-import { WineryService } from '../../services/winery.service';
 
 /**
  * toolbar component contains some basic operations(save) and all of the supported workflow nodes.
@@ -28,10 +26,10 @@ import { WineryService } from '../../services/winery.service';
     templateUrl: 'toolbar.component.html',
 })
 export class WmToolbarComponent {
-    private nodeTypes = NodeType;
 
-    constructor(private wineryService: WineryService,
-                private modelSerivce: ModelService,
+    nodeTypes = NodeType;
+
+    constructor(private modelSerivce: ModelService,
                 private jsPlumbService: JsPlumbService,
                 private broadcastSerice: BroadcastService) {
         this.broadcastSerice.jsPlumbInstance$.subscribe(

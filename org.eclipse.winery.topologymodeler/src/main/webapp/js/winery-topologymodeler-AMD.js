@@ -18,7 +18,7 @@ define(
 	// although XMLWriter ist not an AMD module, requirejs does not complain when loading it
 	["winery-support-common", "XMLWriter"],
 	function (w) {
-		// has to be consistent with {@link org.eclipse.winery.model.tosca.Namespaces}
+		// has to be consistent with {@link org.eclipse.winery.common.constants.Namespaces}
 		var TOSCA_NAMESPACE = "http://docs.oasis-open.org/tosca/ns/2011/12";
 		var TOSCA_WINERY_EXTENSIONS_NAMESPACE ="http://www.opentosca.org/winery/extensions/tosca/2013/02/12";
 

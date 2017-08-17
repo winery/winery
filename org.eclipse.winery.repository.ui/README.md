@@ -10,8 +10,16 @@ The frontend assumes that the backend server is running on
 - the same protocol,
 - the same port and
 - at `/winery`.
-The only exception is when the UI is running on port `3000`, the port is assumed to be `8080`.
-Therefore,  an example request to the backend, if it runs locally, looks like this: `http://localhost:8080/winery/servicetemplates`.
+- The only exception is when the UI is running on port `3000`, the port is assumed to be `8080`.
+Therefore, an example request to the backend, if it runs locally, looks like this: <http://localhost:8080/winery/servicetemplates>.
+
+Equal assumptions are made for the workflow modeler:
+- the same host,
+- the same protocol,
+- the same port and
+- at `/winery-workflowmodeler`.
+- With the exception that in development mode, the workflow modeler is assumed to be running on port `9527`. Therefore, 
+an example request to the backend, if it runs locally, looks like this: <http://localhost:9527/winery-workflowmodeler/?repositoryURL=http:%2F%2Fdev.winery.opentosca.org%2Fwinery%2F&namespace=http:%2F%2Fwww.example.org%2Fservicetemplates&id=PlanDemonstration&plan=Test>
 
 ## Setup Local Development Server
 1. `npm install`
