@@ -10,12 +10,10 @@
  *     ZTE - initial API and implementation and/or initial documentation
  */
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
 
 import { Operation } from '../../model/operation';
 import { Parameter } from '../../model/parameter';
 import { Node } from '../../model/workflow/node';
-import { BroadcastService } from '../../services/broadcast.service';
 import { WineryService } from '../../services/winery.service';
 
 /**
@@ -27,10 +25,11 @@ import { WineryService } from '../../services/winery.service';
     templateUrl: 'node-template.component.html',
 })
 export class WmNodeTemplateComponent implements AfterViewInit {
+
     @Input() public node: Node;
-    private nodeTemplates = [];
-    private nodeInterfaces: string[] = [];
-    private nodeOperations: Operation[] = [];
+    nodeTemplates = [];
+    nodeInterfaces: string[] = [];
+    nodeOperations: Operation[] = [];
 
     constructor(private wineryService: WineryService) {
     }
@@ -112,7 +111,7 @@ export class WmNodeTemplateComponent implements AfterViewInit {
         }
     }
 
-    private updateNodeParams(params: {input:string[], output:string[]}) {
+    private updateNodeParams(params: { input: string[], output: string[] }) {
         this.node.input = [];
         params.input.forEach(param =>
             this.node.input.push(new Parameter(param, 'string', '')));

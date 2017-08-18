@@ -4,6 +4,7 @@ This document provides (i) guides about development and (ii) design ideas of Win
 
 Other sources of information:
 
+- [Angular UI](angular-ui) - documentation recarding the user interface, which is written in Angular
 - [CodeHeaders](CodeHeaders) - documentation about required code headers
 - [Encoding](Encoding) - information about how percent-encoding is used at Winery
 - [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)

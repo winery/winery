@@ -29,3 +29,5 @@ export const sections = {
 // otherwise, assume that backend runs on the some port
 export const hostURL = location.protocol + '//' + location.hostname + ':' + (location.port === '3000' ? '8080' : location.port);
 export const backendBaseURL = hostURL + '/winery';
+export const workflowModelerURL = location.protocol + '//' + location.hostname + ':' + (location.port === '4200' ? '9527' : location.port)
+    + '/winery-workflowmodeler';

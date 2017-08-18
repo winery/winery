@@ -19,7 +19,7 @@ import { SelectData } from '../../../wineryInterfaces/selectData';
 import { WineryUploaderComponent } from '../../../wineryUploader/wineryUploader.component';
 import { SelectItem } from 'ng2-select';
 import { InputParameters, OutputParameters } from '../../../wineryInterfaces/parameters';
-import { backendBaseURL, hostURL } from '../../../configuration';
+import { backendBaseURL, workflowModelerURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
 
 @Component({
@@ -34,17 +34,17 @@ export class PlansComponent implements OnInit {
     loading = true;
 
     embeddedPlansColumns: Array<WineryTableColumn> = [
-        {title: 'Precondition', name: 'precondition', sort: true},
-        {title: 'Name', name: 'name', sort: true},
-        {title: 'Type', name: 'planType', sort: true},
-        {title: 'Language', name: 'planLanguage', sort: true}
+        { title: 'Precondition', name: 'precondition', sort: true },
+        { title: 'Name', name: 'name', sort: true },
+        { title: 'Type', name: 'planType', sort: true },
+        { title: 'Language', name: 'planLanguage', sort: true }
     ];
     linkedPlansColumns: Array<WineryTableColumn> = [
-        {title: 'Precondition', name: 'precondition', sort: true},
-        {title: 'Name', name: 'name', sort: true},
-        {title: 'Type', name: 'planType', sort: true},
-        {title: 'Language', name: 'planLanguage', sort: true},
-        {title: 'Reference', name: 'planModelReference.reference', sort: true}
+        { title: 'Precondition', name: 'precondition', sort: true },
+        { title: 'Name', name: 'name', sort: true },
+        { title: 'Type', name: 'planType', sort: true },
+        { title: 'Language', name: 'planLanguage', sort: true },
+        { title: 'Reference', name: 'planModelReference.reference', sort: true }
     ];
 
     plansApiData: PlansApiData[] = null;
@@ -89,7 +89,7 @@ export class PlansComponent implements OnInit {
     }
 
     onEditPlan(plan: PlansApiData) {
-        const bpmnUrl = hostURL + '/bpmn4tosca/'
+        const bpmnUrl = workflowModelerURL
             + '?repositoryURL=' + encodeURIComponent(backendBaseURL + '/')
             + '&namespace=' + encodeURIComponent(this.sharedData.selectedNamespace)
             + '&id=' + this.sharedData.selectedResource
@@ -200,6 +200,7 @@ export class PlansComponent implements OnInit {
                 error => this.handleError(error)
             );
     }
+
     // endregion
     // endregion
 
