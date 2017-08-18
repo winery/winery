@@ -11,7 +11,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import { isNullOrUndefined } from 'util';
 
 import { Node } from '../model/workflow/node';
 

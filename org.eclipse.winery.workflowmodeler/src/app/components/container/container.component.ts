@@ -29,7 +29,7 @@ export class WmContainerComponent implements AfterViewInit {
 
     constructor(private broadcastService: BroadcastService,
                 private jsPlumbService: JsPlumbService,
-                private modelService: ModelService) {
+                public modelService: ModelService) {
 
         this.broadcastService.jsPlumbInstance$.subscribe(instance => this.jsPlumbService.buttonDroppable());
     }
