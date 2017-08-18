@@ -23,6 +23,7 @@ import { isNullOrUndefined } from 'util';
 import { NgForm } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Response } from '@angular/http';
+import { ToscaTypes } from '../wineryInterfaces/enums';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -40,13 +41,13 @@ const showGrouped = 'Group by Namespace';
 export class SectionComponent implements OnInit, OnDestroy {
 
     loading = true;
-    selectedResource: string;
+    toscaType: ToscaTypes;
     routeSub: Subscription;
     filterString = '';
     itemsPerPage = 10;
     currentPage = 1;
     showNamespace = 'all';
-    changeViewButtonTitle: string = showGrouped;
+    changeViewButtonTitle = showGrouped;
     componentData: SectionData[];
     elementToRemove: SectionData;
     types: SelectData[];
@@ -151,7 +152,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     private handleResolverData(data: any) {
         const resolved: SectionResolverData = data.resolveData;
 
-        this.selectedResource = resolved.section;
+        this.toscaType = resolved.section;
         this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : this.showNamespace;
         this.types = null;
 
@@ -172,17 +173,17 @@ export class SectionComponent implements OnInit, OnDestroy {
 
         let typesUrl: string;
 
-        switch (this.selectedResource) {
-            case 'nodeTypeImplementation':
+        switch (this.toscaType) {
+            case ToscaTypes.NodeTypeImplementation:
                 typesUrl = '/nodetypes';
                 break;
-            case 'relationshipTypeImplementation':
+            case ToscaTypes.RelationshipTypeImplementation:
                 typesUrl = '/relationshiptypes';
                 break;
-            case 'policyTemplate':
+            case ToscaTypes.PolicyTemplate:
                 typesUrl = '/policytypes';
                 break;
-            case 'artifactTemplate':
+            case ToscaTypes.ArtifactTemplate:
                 typesUrl = '/artifacttypes';
                 break;
             default:
@@ -206,8 +207,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     private handleSaveSuccess() {
         this.newComponentName = this.newComponentName.replace(/\s/g, '_');
         this.notify.success('Successfully saved component ' + this.newComponentName);
-        this.router.navigateByUrl('/'
-            + this.selectedResource.toLowerCase() + 's/'
+        this.router.navigateByUrl('/' + this.toscaType + '/'
             + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
             + this.newComponentName);
     }

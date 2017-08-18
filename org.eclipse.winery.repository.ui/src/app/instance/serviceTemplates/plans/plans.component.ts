@@ -91,8 +91,8 @@ export class PlansComponent implements OnInit {
     onEditPlan(plan: PlansApiData) {
         const bpmnUrl = workflowModelerURL
             + '?repositoryURL=' + encodeURIComponent(backendBaseURL + '/')
-            + '&namespace=' + encodeURIComponent(this.sharedData.selectedNamespace)
-            + '&id=' + this.sharedData.selectedResource
+            + '&namespace=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
+            + '&id=' + this.sharedData.toscaComponent.localName
             + '&plan=' + plan.name;
         window.open(bpmnUrl, '_blank');
     }

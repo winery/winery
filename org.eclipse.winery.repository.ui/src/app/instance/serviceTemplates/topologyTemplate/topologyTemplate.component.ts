@@ -34,7 +34,7 @@ export class TopologyTemplateComponent implements OnInit {
         this.editorUrl = backendBaseURL + '-topologymodeler/'
             + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
             + '&uiURL=' + uiURL
-            + '&ns=' + encodeURIComponent(this.sharedData.selectedNamespace)
-            + '&id=' + this.sharedData.selectedComponentId;
+            + '&ns=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
+            + '&id=' + this.sharedData.toscaComponent.localName;
     }
 }

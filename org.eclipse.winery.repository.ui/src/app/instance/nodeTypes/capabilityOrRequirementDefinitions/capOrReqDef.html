@@ -60,7 +60,7 @@
                     [title]="'Types'"
                     [displayList]="capabilityTypesList"
                     [selectedResource]=""
-                    [selectedValue]="capOrReqDefToBeAdded.capabilityType"
+                    [selectedValue]="capOrReqDefToBeAdded.type"
                     [showOpenButton]="false"
                     (selectedValueChanged)="onSelectedValueChanged($event.value)"
                 ></winery-qname-selector>
@@ -112,7 +112,7 @@
             </ol>
         </ng-template>
     </winery-modal-body>
-    <winery-modal-footer (onOk)="openEditConstraintModal();"
+    <winery-modal-footer (onOk)="openEditConstraintModal()"
                          [closeButtonLabel]="'Close'"
                          [okButtonLabel]="'Add new'">
     </winery-modal-footer>

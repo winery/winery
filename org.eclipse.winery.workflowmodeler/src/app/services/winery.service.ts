@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     ZTE - initial API and implementation and/or initial documentation
+ *     Lukas Harzenetter - fix TSLint errors
  */
 
 import { Injectable } from '@angular/core';

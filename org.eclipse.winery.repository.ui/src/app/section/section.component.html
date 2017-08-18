@@ -24,7 +24,7 @@
                 *ngFor="let item of componentData
                 | filterSections: { showNamespaces: showNamespace, filterString: filterString }
                 | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }"
-                [resourceType]="selectedResource"
+                [toscaType]="toscaType"
                 [data]="item"
                 (deleted)="getSectionsData()">
             </winery-entity-container>

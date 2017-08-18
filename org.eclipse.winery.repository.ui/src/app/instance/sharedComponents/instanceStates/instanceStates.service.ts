@@ -15,7 +15,6 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { InstanceStateApiData } from './InstanceStateApiData';
-import List = _.List;
 
 @Injectable()
 export class InstanceStateService {

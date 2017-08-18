@@ -7,15 +7,17 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Michael Wurster - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
-const path = require('path');
+import { NgModule } from '@angular/core';
+import { ArtifactTypeRouterModule } from './artifactTypeRouter.module';
+import { CommonModule } from '@angular/common';
 
-const ROOT = path.resolve(__dirname, '..');
-
-function root(args) {
-  args = Array.prototype.slice.call(arguments, 0);
-  return path.join.apply(path, [ROOT].concat(args));
+@NgModule({
+    imports: [
+        CommonModule,
+        ArtifactTypeRouterModule,
+    ],
+})
+export class ArtifactTypeModule {
 }
-
-exports.root = root;

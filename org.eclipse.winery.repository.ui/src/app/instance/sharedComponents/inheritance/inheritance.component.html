@@ -35,7 +35,7 @@
     <winery-qname-selector
         [title]="'Derived from'"
         [displayList]="availableSuperClasses"
-        [selectedResource]="selectedResource"
+        [selectedResource]="toscaType"
         [selectedValue]="inheritanceApiData.derivedFrom"
         (selectedValueChanged)="onSelectedValueChanged($event.value)">
     </winery-qname-selector>

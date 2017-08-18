@@ -23,7 +23,7 @@ import { NameAndQNameApiDataList } from './wineryNameAndQNameApiData';
  *     </li>
  *     <li><code>displayList</code> the list of QNames in {@link NameAndQNameApiDataList} format. This field is
  *         mandatory!
- *     <li><code>selectedResource</code>
+ *     <li><code>toscaType</code>
  *     </li>
  *     <li><code>selectedValue</code> sets the currently selected value in the dropdown
  *     </li>
@@ -40,7 +40,7 @@ import { NameAndQNameApiDataList } from './wineryNameAndQNameApiData';
  * <winery-qname-selector
  *     [title]="'Derived from'"
  *     [displayList]="availableSuperClasses"
- *     [selectedResource]="selectedResource"
+ *     [toscaType]="toscaType"
  *     [selectedValue]="inheritanceApiData.derivedFrom"
  *     (selectedValueChanged)="onSelectedValueChanged($event.value)">
  * </winery-qname-selector>
