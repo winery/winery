@@ -38,11 +38,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
@@ -55,9 +54,10 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.InjectorReplaceData;
@@ -398,7 +398,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 			plan.setPlanLanguage(Namespaces.URI_BPEL20_EXECUTABLE);
 
 			// create a PlanModelReferenceElement pointing to that file
-			String path = Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
+			String path = Util.getUrlPath(ref);
 			// path is relative from the definitions element
 			path = "../" + path;
 			PlanModelReference pref = new PlanModelReference();
@@ -409,7 +409,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		}
 
 		try {
-			this.persist();
+			BackendUtils.persist(this);
 		} catch (IOException e) {
 			throw new IllegalStateException("Could not persist resource", e);
 		}

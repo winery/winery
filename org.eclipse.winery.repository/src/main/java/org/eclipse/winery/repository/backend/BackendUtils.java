@@ -38,6 +38,7 @@ import java.util.SortedSet;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
@@ -45,6 +46,7 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.admin.AdminId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlansId;
@@ -66,13 +68,16 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.Constants;
+import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
@@ -107,8 +112,6 @@ import org.w3c.dom.ls.LSInput;
 public class BackendUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
-
-	public static final String slashEncoded = Util.URLencode("/");
 
 	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
 
@@ -806,6 +809,38 @@ public class BackendUtils {
 		if (element instanceof HasTargetNamespace) {
 			((HasTargetNamespace) element).setTargetNamespace(id.getNamespace().getDecoded());
 		}
+	}
+
+	/**
+	 *
+	 * @param directoryId ArtifactTemplateDirectoryId of the ArtifactTemplate that should contain a reference to a git repository.
+	 * @return The URL and the branch/tag that contains the files for the ArtifactTemplate. null if no git information is given.
+	 */
+	public static GitInfo getGitInformation(ArtifactTemplateDirectoryId directoryId) {
+		if (!(directoryId.getParent() instanceof ArtifactTemplateId)) {
+			return null;
+		}
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
+		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+			Unmarshaller u = JAXBSupport.createUnmarshaller();
+			Definitions defs = ((Definitions) u.unmarshal(is));
+			Map<QName, String> atts = defs.getOtherAttributes();
+			String src = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitsrc"));
+			String branch = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitbranch"));
+			// ^ is the XOR operator
+			if (src == null ^ branch == null) {
+				LOGGER.error("Git information not complete, URL or branch missing");
+				return null;
+			} else if (src == null && branch == null) {
+				return null;
+			}
+			return new GitInfo(src, branch);
+		} catch (IOException e) {
+			LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
+		} catch (JAXBException e) {
+			LOGGER.error("Error in XML in " + ref.getFileName(), e);
+		}
+		return null;
 	}
 
 }

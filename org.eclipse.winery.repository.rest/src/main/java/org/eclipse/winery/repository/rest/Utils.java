@@ -75,7 +75,6 @@ import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
@@ -271,29 +270,6 @@ public class Utils {
 		return res.substring(dotIndex + 1, res.length() - "sResource".length());
 	}
 
-	@SuppressWarnings("unchecked")
-	public static Class<? extends TOSCAComponentId> getComponentIdClass(String idClassName) {
-		String pkg = "org.eclipse.winery.common.ids.definitions.";
-		if (idClassName.contains("Import")) {
-			// quick hack to handle imports, which reside in their own package
-			pkg = pkg + "imports.";
-		}
-		String fullClassName = pkg + idClassName;
-		try {
-			return (Class<? extends TOSCAComponentId>) Class.forName(fullClassName);
-		} catch (ClassNotFoundException e) {
-			// quick hack for Ids local to winery repository
-			try {
-				fullClassName = "org.eclipse.winery.repository.datatypes.ids.admin." + idClassName;
-				return (Class<? extends TOSCAComponentId>) Class.forName(fullClassName);
-			} catch (ClassNotFoundException e2) {
-				String errorMsg = "Could not find id class for component container, " + fullClassName;
-				Utils.LOGGER.error(errorMsg);
-				throw new IllegalStateException(errorMsg);
-			}
-		}
-	}
-
 	/**
 	 * Returns a class object for ids of components nested in the given
 	 * AbstractComponentsResource
@@ -302,52 +278,14 @@ public class Utils {
 		// the name of the id class is the type + "Id"
 		String idClassName = Utils.getTypeForComponentContainer(containerClass) + "Id";
 
-		return Utils.getComponentIdClass(idClassName);
-	}
-
-	public static Class<? extends TOSCAComponentId> getComponentIdClassForTExtensibleElements(Class<? extends TExtensibleElements> clazz) {
-		// we assume that the clazzName always starts with a T.
-		// Therefore, we fetch everything after the last dot (plus offest 1)
-		String idClassName = clazz.getName();
-		int dotIndex = idClassName.lastIndexOf('.');
-		assert (dotIndex >= 0);
-		idClassName = idClassName.substring(dotIndex + 2) + "Id";
-
-		return Utils.getComponentIdClass(idClassName);
-	}
-
-	public static String Object2JSON(Object o) {
-		String res;
-		try {
-			res = Utils.mapper.writeValueAsString(o);
-		} catch (Exception e) {
-			Utils.LOGGER.error(e.getMessage(), e);
-			return null;
-		}
-		return res;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static Class<? extends GenericId> getGenericIdClassForType(String typeIdType) {
-		Class<? extends GenericId> res;
-		// quick hack - we only need definitions right now
-		String pkg = "org.eclipse.winery.repository.datatypes.ids.definitions.";
-		String className = typeIdType;
-		className = pkg + className;
-		try {
-			res = (Class<? extends GenericId>) Class.forName(className);
-		} catch (ClassNotFoundException e) {
-			Utils.LOGGER.error("Could not find id class for id type", e);
-			res = null;
-		}
-		return res;
+		return Util.getComponentIdClass(idClassName);
 	}
 
 	/**
 	 * @return the absolute path for the given id
 	 */
 	public static String getAbsoluteURL(GenericId id) {
-		return Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPathForId(id);
+		return Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPath(id);
 	}
 
 	/**
@@ -357,7 +295,7 @@ public class Utils {
 	 * @return the relative path for the given id
 	 */
 	public static String getRelativeURL(URI baseURI, GenericId id) {
-		String absolutePath = Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPathForId(id);
+		String absolutePath = Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPath(id);
 		return baseURI.relativize(URI.create(absolutePath)).toString();
 	}
 
@@ -365,7 +303,7 @@ public class Utils {
 	 * @return the absolute path for the given id
 	 */
 	public static String getAbsoluteURL(RepositoryFileReference ref) {
-		return Prefs.INSTANCE.getResourcePath() + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(ref));
+		return Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPath(ref);
 	}
 
 	public static URI getAbsoluteURI(GenericId id) {
@@ -749,38 +687,6 @@ public class Utils {
 		return res;
 	}
 
-	/**
-	 *
-	 * @param directoryId ArtifactTemplateDirectoryId of the ArtifactTemplate that should contain a reference to a git repository.
-	 * @return The URL and the branch/tag that contains the files for the ArtifactTemplate. null if no git information is given.
-	 */
-	public static GitInfo getGitInformation(ArtifactTemplateDirectoryId directoryId) {
-		if (!(directoryId.getParent() instanceof ArtifactTemplateId)) {
-			return null;
-		}
-		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
-		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
-			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			Definitions defs = ((Definitions) u.unmarshal(is));
-			Map<QName, String> atts = defs.getOtherAttributes();
-			String src = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitsrc"));
-			String branch = atts.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "gitbranch"));
-			// ^ is the XOR operator
-			if (src == null ^ branch == null) {
-				Utils.LOGGER.error("Git information not complete, URL or branch missing");
-				return null;
-			} else if (src == null && branch == null) {
-				return null;
-			}
-			return new GitInfo(src, branch);
-		} catch (IOException e) {
-			Utils.LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
-		} catch (JAXBException e) {
-			Utils.LOGGER.error("Error in XML in " + ref.getFileName(), e);
-		}
-		return null;
-	}
-
 	public static Set<String> clean(Set<String> set) {
 		Set<String> newSet = new HashSet<String>();
 
@@ -1048,14 +954,6 @@ public class Utils {
 		return Response.ok().build();
 	}
 
-	public static String getURLforPathInsideRepo(String pathInsideRepo) {
-		// first encode the whole string
-		String res = Util.URLencode(pathInsideRepo);
-		// issue: "/" is also encoded. This has to be undone:
-		res = res.replaceAll(BackendUtils.slashEncoded, "/");
-		return res;
-	}
-
 	/**
 	 * Generates given TOSCA element and returns appropriate response code <br  />
 	 *
@@ -1088,7 +986,7 @@ public class Utils {
 				// relative to the caller
 				// Does not work: String path = Prefs.INSTANCE.getResourcePath()
 				// + "/" +
-				// Utils.getURLforPathInsideRepo(id.getPathInsideRepo());
+				// Utils.getUrlPathForPathInsideRepo(id.getPathInsideRepo());
 				// We distinguish between two cases: TOSCAcomponentId and
 				// TOSCAelementId
 				// @formatter:on
@@ -1257,7 +1155,7 @@ public class Utils {
 	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
 		String loc = BackendUtils.getPathInsideRepo(tcId);
 		loc = loc + "propertiesdefinition/";
-		loc = Utils.getURLforPathInsideRepo(loc);
+		loc = Utils.getUrlPathForPathInsideRepo(loc);
 		if (uri == null) {
 			loc = loc + wrapperElementLocalName + ".xsd";
 			// for the import later, we need "../" in front
@@ -1268,5 +1166,15 @@ public class Utils {
 		return loc;
 	}
 
+	public static String Object2JSON(Object o) {
+		String res;
+		try {
+			res = Utils.mapper.writeValueAsString(o);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			return null;
+		}
+		return res;
+	}
 
 }

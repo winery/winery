@@ -39,16 +39,13 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.tika.mime.MediaType;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
@@ -60,7 +57,6 @@ import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -81,11 +77,13 @@ import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.backend.NamespaceManager;
-import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.Repository;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
@@ -93,11 +91,11 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDire
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.export.CSARExporter;
-import org.eclipse.winery.repository.rest.resources.admin.NamespacesResource;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -432,7 +430,7 @@ public class CSARImporter {
 			String id = ModelUtilities.getId(ci);
 
 			// Determine WineryId
-			Class<? extends TOSCAComponentId> widClass = org.eclipse.winery.repository.Utils.getComponentIdClassForTExtensibleElements(ci.getClass());
+			Class<? extends TOSCAComponentId> widClass = Util.getComponentIdClassForTExtensibleElements(ci.getClass());
 			final TOSCAComponentId wid = BackendUtils.getTOSCAcomponentId(widClass, namespace, id, false);
 
 			if (Repository.INSTANCE.exists(wid)) {
@@ -553,7 +551,7 @@ public class CSARImporter {
 					// add import to definitions
 
 					// adapt path - similar to importOtherImport
-					String newLoc = "../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(fileRef));
+					String newLoc = "../" + Util.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(fileRef));
 					imp.setLocation(newLoc);
 					defs.getImport().add(imp);
 				} else {
@@ -696,7 +694,7 @@ public class CSARImporter {
 
 						// file is imported
 						// Adjust the reference
-						refContainer.setReference("../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(fref)));
+						refContainer.setReference("../" + Util.getUrlPath(fref));
 					}
 				}
 			}

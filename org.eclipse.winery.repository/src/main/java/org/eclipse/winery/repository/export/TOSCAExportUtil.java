@@ -430,7 +430,7 @@ public class TOSCAExportUtil {
 			fn = Util.URLencode(fn);
 			imp.setLocation(fn);
 		} else {
-			String path = Util.getUrlPathForId(id);
+			String path = Util.getUrlPath(id);
 			path = path + "?definitions";
 			URI absoluteURI = uri.resolve(path);
 			imp.setLocation(absoluteURI.toString());

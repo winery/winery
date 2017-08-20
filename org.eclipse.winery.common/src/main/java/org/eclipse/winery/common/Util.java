@@ -133,7 +133,7 @@ public class Util {
 	}
 
 	/**
-	 * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPathForId(org.eclipse.winery.common.ids.GenericId) instead.
+	 * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
 	 * @return the path starting from the root element to the current element. Separated by "/", URLencoded, but
 	 * <b>not</b> double encoded. With trailing slash if sub-resources can exist
@@ -164,17 +164,82 @@ public class Util {
 		}
 	}
 
+	public static Class<? extends TOSCAComponentId> getComponentIdClassForTExtensibleElements(Class<? extends TExtensibleElements> clazz) {
+		// we assume that the clazzName always starts with a T.
+		// Therefore, we fetch everything after the last dot (plus offest 1)
+		String idClassName = clazz.getName();
+		int dotIndex = idClassName.lastIndexOf('.');
+		assert (dotIndex >= 0);
+		idClassName = idClassName.substring(dotIndex + 2) + "Id";
+
+		return getComponentIdClass(idClassName);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Class<? extends TOSCAComponentId> getComponentIdClass(String idClassName) {
+		String pkg = "org.eclipse.winery.common.ids.definitions.";
+		if (idClassName.contains("Import")) {
+			// quick hack to handle imports, which reside in their own package
+			pkg = pkg + "imports.";
+		}
+		String fullClassName = pkg + idClassName;
+		try {
+			return (Class<? extends TOSCAComponentId>) Class.forName(fullClassName);
+		} catch (ClassNotFoundException e) {
+			// quick hack for Ids local to winery repository
+			try {
+				fullClassName = "org.eclipse.winery.repository.datatypes.ids.admin." + idClassName;
+				return (Class<? extends TOSCAComponentId>) Class.forName(fullClassName);
+			} catch (ClassNotFoundException e2) {
+				String errorMsg = "Could not find id class for component container, " + fullClassName;
+				LOGGER.error(errorMsg);
+				throw new IllegalStateException(errorMsg);
+			}
+		}
+	}
+
+
+
+	@SuppressWarnings("unchecked")
+	public static Class<? extends GenericId> getGenericIdClassForType(String typeIdType) {
+		Class<? extends GenericId> res;
+		// quick hack - we only need definitions right now
+		String pkg = "org.eclipse.winery.repository.datatypes.ids.definitions.";
+		String className = typeIdType;
+		className = pkg + className;
+		try {
+			res = (Class<? extends GenericId>) Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			LOGGER.error("Could not find id class for id type", e);
+			res = null;
+		}
+		return res;
+	}
+
+
 	/**
 	 * @param id the GenericId to determine the path for
 	 * @return the path correctly URL encoded
 	 */
-	public static String getUrlPathForId(GenericId id) {
+	public static String getUrlPath(GenericId id) {
 		String pathInsideRepo = getPathInsideRepo(id);
 		// first encode the whole string
 		String res = Util.URLencode(pathInsideRepo);
 		// issue: "/" is also encoded. This has to be undone:
 		res = res.replaceAll(slashEncoded, "/");
 		return res;
+	}
+
+	public static String getUrlPath(String pathInsideRepo) {
+		// first encode the whole string
+		String res = Util.URLencode(pathInsideRepo);
+		// issue: "/" is also encoded. This has to be undone:
+		res = res.replaceAll(slashEncoded, "/");
+		return res;
+	}
+
+	public static String getUrlPath(RepositoryFileReference ref) {
+		return getUrlPath(ref.getParent()) + Util.URLencode(ref.getFileName());
 	}
 
 	/**
@@ -625,4 +690,5 @@ public class Util {
 	public static org.eclipse.winery.model.tosca.TEntityType getType(org.eclipse.winery.common.interfaces.IWineryRepository client, javax.xml.namespace.QName qname, java.lang.Class clazz) {
 		return client.getType(qname, clazz);
 	}
+
 }

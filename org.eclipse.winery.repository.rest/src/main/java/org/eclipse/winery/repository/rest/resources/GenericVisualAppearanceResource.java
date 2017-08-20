@@ -26,12 +26,13 @@ import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
-import org.eclipse.winery.repository.rest.Prefs;
-import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
+import org.eclipse.winery.repository.rest.Prefs;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 
 import com.sun.jersey.multipart.FormDataBodyPart;
@@ -75,7 +76,7 @@ public abstract class GenericVisualAppearanceResource {
 	//@JsonIgnore
 	public URI getAbsoluteURL() {
 		String URI = Prefs.INSTANCE.getResourcePath();
-		URI = URI + "/" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(this.id));
+		URI = URI + "/" + Util.getUrlPath(this.id);
 		return Utils.createURI(URI);
 	}
 
