@@ -9,40 +9,36 @@
  * Contributors:
  *     Josip Ledic - initial API and implementation
  */
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {WineryAlertService} from '../winery-alert/winery-alert.service';
-import {NgRedux, select} from '@angular-redux/store';
+import {NgRedux} from '@angular-redux/store';
 import {TopologyRendererActions} from '../redux/actions/topologyRenderer.actions';
 import {ButtonsStateModel} from '../models/buttonsState.model';
 import {IAppState} from '../redux/store/app.store';
-import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit, OnDestroy {
+export class NavbarComponent implements OnDestroy {
 
   /**
    * Boolean variables that hold the state {pressed vs. !pressed} of the navbar buttons.
    * @type {boolean}
    */
   navbarButtonsState: ButtonsStateModel;
-  subscription;
-  layoutPressed = false;
-  alignvPressed = false;
-  alignhPressed = false;
-  @Output() navbarEventEmitter = new EventEmitter();
-  // @select('topologyRendererState') navbarButtonsState$: Observable<any>;
+  navBarButtonsStateSubscription;
 
   constructor(private alert: WineryAlertService,
               private ngRedux: NgRedux<IAppState>,
               private actions: TopologyRendererActions) {
-    this.subscription = ngRedux.select<any>('topologyRendererState')
-      .subscribe(newButtonsState => {
-        this.navbarButtonsState = newButtonsState;
-      });
+    this.navBarButtonsStateSubscription = ngRedux.select(state => state.topologyRendererState)
+      .subscribe(newButtonsState => this.setButtonsState(newButtonsState));
+  }
+
+  setButtonsState(newButtonsState: ButtonsStateModel): void {
+    this.navbarButtonsState = newButtonsState;
   }
 
   getStyle(buttonPressed: boolean): string {
@@ -90,30 +86,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
         break;
       }
       case 'layout': {
-        this.layoutPressed = !this.layoutPressed;
-        const layoutObject = {
-          name: 'layout',
-          state: this.layoutPressed
-        };
-        this.navbarEventEmitter.emit(layoutObject);
+        this.ngRedux.dispatch(this.actions.executeLayout());
         break;
       }
       case 'alignh': {
-        this.alignhPressed = !this.alignhPressed;
-        const alignhObject = {
-          name: 'alignh',
-          state: this.alignhPressed
-        };
-        this.navbarEventEmitter.emit(alignhObject);
+        this.ngRedux.dispatch(this.actions.executeAlignH());
         break;
       }
       case 'alignv': {
-        this.alignvPressed = !this.alignvPressed;
-        const alignvObject = {
-          name: 'alignv',
-          state: this.alignvPressed
-        };
-        this.navbarEventEmitter.emit(alignvObject);
+        this.ngRedux.dispatch(this.actions.executeAlignV());
       }
     }
   }
@@ -122,10 +103,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.alert.success('Successfully saved!');
   }
 
-  ngOnInit() {
-  }
-
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.navBarButtonsStateSubscription.unsubscribe();
   }
 }

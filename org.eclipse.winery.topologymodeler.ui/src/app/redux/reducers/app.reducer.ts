@@ -11,54 +11,46 @@
  */
 import { Action } from 'redux';
 import {
-  AppActions, EnhanceGridAction, SaveNodeTemplateAction, SaveRelationshipAction,
+  AppActions, SaveNodeTemplateAction, SaveRelationshipAction,
   SendPaletteOpenedAction,
 } from '../actions/app.actions';
 import {TNodeTemplate, TRelationshipTemplate, TTopologyTemplate} from 'app/ttopology-template';
 
 export interface AppState {
   currentPaletteOpenedState: boolean;
-  currentEnhancedGridState: boolean;
-  currentSavedJsonTopology: TTopologyTemplate;
+  currentJsonTopology: TTopologyTemplate;
 }
 
 export const INITIAL_APP_STATE: AppState = {
   currentPaletteOpenedState: false,
-  currentEnhancedGridState: true,
-  currentSavedJsonTopology: new TTopologyTemplate
+  currentJsonTopology: new TTopologyTemplate
 };
 
 export const AppReducer =
   function (lastState: AppState = INITIAL_APP_STATE, action: Action): AppState {
     switch (action.type) {
-      case AppActions.SEND_PALETTEOPENED:
+      case AppActions.SEND_PALETTE_OPENED:
         const paletteOpened: boolean = (<SendPaletteOpenedAction>action).paletteOpened;
         return {
           ...lastState,
           currentPaletteOpenedState: paletteOpened
         };
-      case AppActions.ENHANCE_GRID:
-        const enhancedGrid: boolean = (<EnhanceGridAction>action).enhancedGrid;
-        return {
-          ...lastState,
-          currentEnhancedGridState: enhancedGrid
-        };
       case AppActions.SAVE_NODE_TEMPLATE:
         const newNode: TNodeTemplate = (<SaveNodeTemplateAction>action).nodeTemplate;
         return {
           ...lastState,
-          currentSavedJsonTopology: {
-            nodeTemplates: [...lastState.currentSavedJsonTopology.nodeTemplates, newNode],
-            relationshipTemplates: lastState.currentSavedJsonTopology.relationshipTemplates
+          currentJsonTopology: {
+            nodeTemplates: [...lastState.currentJsonTopology.nodeTemplates, newNode],
+            relationshipTemplates: lastState.currentJsonTopology.relationshipTemplates
           }
         };
       case AppActions.SAVE_RELATIONSHIP:
         const newRelationship: TRelationshipTemplate = (<SaveRelationshipAction>action).relationshipTemplate;
         return {
           ...lastState,
-          currentSavedJsonTopology: {
-            nodeTemplates: lastState.currentSavedJsonTopology.nodeTemplates,
-            relationshipTemplates: [...lastState.currentSavedJsonTopology.relationshipTemplates, newRelationship]
+          currentJsonTopology: {
+            nodeTemplates: lastState.currentJsonTopology.nodeTemplates,
+            relationshipTemplates: [...lastState.currentJsonTopology.relationshipTemplates, newRelationship]
           }
         };
       default:

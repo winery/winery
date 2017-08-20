@@ -8,9 +8,10 @@
  *
  * Contributors:
  *     Josip Ledic - initial API and implementation
+ *     Thommy Zelenik - implementation
  */
 import { Injectable } from '@angular/core';
-import { Action } from 'redux';
+import {Action} from 'redux';
 
 @Injectable()
 export class TopologyRendererActions {
@@ -21,6 +22,9 @@ export class TopologyRendererActions {
   static TOGGLE_DEPLOYMENT_ARTIFACTS = 'TOGGLE_DEPLOYMENT_ARTIFACTS';
   static TOGGLE_IDS = 'TOGGLE_IDS';
   static TOGGLE_TYPES = 'TOGGLE_TYPES';
+  static EXECUTE_LAYOUT = 'EXECUTE_LAYOUT';
+  static EXECUTE_ALIGN_H = 'EXECUTE_ALIGN_H';
+  static EXECUTE_ALIGN_V = 'EXECUTE_ALIGN_V';
 
   togglePolicies(): Action {
     return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -42,5 +46,14 @@ export class TopologyRendererActions {
   }
   toggleTypes(): Action {
     return { type: TopologyRendererActions.TOGGLE_TYPES };
+  }
+  executeLayout(): Action {
+    return { type: TopologyRendererActions.EXECUTE_LAYOUT };
+  }
+  executeAlignH(): Action {
+    return { type: TopologyRendererActions.EXECUTE_ALIGN_H };
+  }
+  executeAlignV(): Action {
+    return { type: TopologyRendererActions.EXECUTE_ALIGN_V };
   }
 }

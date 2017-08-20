@@ -61,46 +61,28 @@ export class PaletteComponent implements OnInit, OnDestroy {
   paletteRootState = 'shrunk';
   paletteItems = [];
   allNodeTemplates: Array<TNodeTemplate> = [];
-  subscription;
+  nodeTemplatesSubscription;
+  paletteOpenedSubscription;
 
   constructor(private paletteService: PaletteService,
               private ngRedux: NgRedux<IAppState>,
               private actions: AppActions) {
-    this.subscription = ngRedux.select<any>('appState')
-      .subscribe(newState => {
-        this.updateState(newState.currentPaletteOpenedState);
-        this.addNodes(newState.currentSavedJsonTopology.nodeTemplates);
-      });
+    this.nodeTemplatesSubscription = ngRedux.select(state => state.appState.currentJsonTopology.nodeTemplates)
+      .subscribe(currentNodes => this.addNewNode(currentNodes));
+    this.paletteOpenedSubscription = this.ngRedux.select(state => state.appState.currentPaletteOpenedState)
+      .subscribe(currentPaletteOpened => this.updateState(currentPaletteOpened));
     this.paletteItems = paletteService.getPaletteData();
+  }
+
+  addNewNode(currentNodes: Array<TNodeTemplate>): void{
+    if (currentNodes.length > 0) {
+      this.allNodeTemplates.push(currentNodes[currentNodes.length - 1])
+    }
   }
 
   updateState(newPaletteOpenedState: any) {
     if (!newPaletteOpenedState) {
       this.paletteRootState = 'shrunk';
-    }
-  }
-
-  addNodes(nodeTemplates: Array<TNodeTemplate>) {
-    if (nodeTemplates.length > 0) {
-      if (this.allNodeTemplates.length === 0) {
-        this.allNodeTemplates = nodeTemplates;
-      }
-      this.checkNodes(nodeTemplates);
-    }
-  }
-
-  checkNodes(currentNodes: Array<TNodeTemplate>) {
-    if (currentNodes !== null) {
-      const newNode = currentNodes[currentNodes.length - 1];
-      if (this.allNodeTemplates.length !== 0) {
-        const lastNodeId = this.allNodeTemplates[this.allNodeTemplates.length - 1].id;
-        const newNodeId = newNode.id;
-        if (lastNodeId !== newNodeId) {
-          this.allNodeTemplates.push(newNode);
-        }
-      } else {
-        this.allNodeTemplates.push(newNode);
-      }
     }
   }
 
@@ -119,7 +101,7 @@ export class PaletteComponent implements OnInit, OnDestroy {
       this.ngRedux.dispatch(this.actions.sendPaletteOpened(true));
     } else {
       this.paletteRootState = 'shrunk';
-      this.ngRedux.dispatch(this.actions.sendPaletteOpened(true));
+      this.ngRedux.dispatch(this.actions.sendPaletteOpened(false));
     }
   }
 
@@ -171,7 +153,8 @@ export class PaletteComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.nodeTemplatesSubscription.unsubscribe();
+    this.paletteOpenedSubscription.unsubscribe();
   }
 }
 

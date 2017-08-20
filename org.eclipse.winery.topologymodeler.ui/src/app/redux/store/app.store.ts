@@ -21,31 +21,16 @@ import {
 } from '../reducers/topologyRenderer.reducer';
 
 export interface IAppState {
-  /*
-  paletteItem: PaletteItemState;
-  paletteOpened: PaletteOpenedState;
-  enhanceGrid: EnhanceGridState;
-  */
   topologyRendererState: TopologyRendererState;
   appState: AppState;
 }
 
 export const INITIAL_IAPP_STATE: IAppState = {
-  /*
-  paletteItem: INITIAL_PALETTE_ITEM_STATE,
-  paletteOpened: INITIAL_PALETTE_OPENED_STATE,
-  enhanceGrid: INITIAL_ENHANCE_GRID_STATE,
-  */
   topologyRendererState: INITIAL_TOPOLOGY_RENDERER_STATE,
   appState: INITIAL_APP_STATE
 };
 
 export const rootReducer: Reducer<IAppState> = combineReducers<IAppState>({
-  /*
-  paletteItem: PaletteItemReducer,
-  paletteOpened: PaletteOpenedReducer,
-  enhanceGrid: EnhanceGridReducer,
-  */
   topologyRendererState: TopologyRendererReducer,
   appState: AppReducer
 });

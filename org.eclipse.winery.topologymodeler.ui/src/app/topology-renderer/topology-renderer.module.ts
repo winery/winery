@@ -26,7 +26,8 @@ import { JsonService } from '../jsonService/json.service';
 import { JsPlumbService } from '../jsPlumbService';
 import { WineryCustomOption } from '../winery-alert/winery-alert-options';
 import { TopologyRendererComponent } from './topology-renderer.component';
-import { NgReduxModule, NgRedux } from '@angular-redux/store';
+import {NgReduxModule} from '@angular-redux/store';
+import {TopologyRendererActions} from "../redux/actions/topologyRenderer.actions";
 
 @NgModule({
   imports: [
@@ -49,19 +50,21 @@ import { NgReduxModule, NgRedux } from '@angular-redux/store';
   ],
   exports: [
     TopologyRendererComponent
-  ]
+  ],
 })
 export class TopologyRendererModule {
+
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: TopologyRendererModule,
       providers: [
         {provide: ToastOptions, useClass: WineryCustomOption},
         JsPlumbService,
-        JsonService,
+        JsonService
       ]
     };
   }
   constructor() {
   }
-}
+
+  }

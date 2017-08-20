@@ -26,7 +26,6 @@ export class TopologyRendererComponent implements OnInit {
 
   @Input() topologyTemplate: any;
   @Input() visuals: Visuals[] = [new Visuals('red', 'apple', 'apple', 'abc')];
-  pressedNavBarButton: any;
 
   constructor(vcr: ViewContainerRef, private notify: WineryAlertService,
               private jsonService: JsonService) {
@@ -36,9 +35,5 @@ export class TopologyRendererComponent implements OnInit {
   ngOnInit() {
     this.jsonService.setVisuals(this.visuals);
     this.jsonService.setTopologyTemplate(this.topologyTemplate);
-  }
-
-  sendPressedNavBarButtonToCanvas($event): void {
-    this.pressedNavBarButton = $event;
   }
 }

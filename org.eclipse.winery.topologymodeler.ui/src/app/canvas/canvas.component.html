@@ -20,8 +20,7 @@
             [left]="node.otherAttributes.x + 'px'"
             [top]="node.otherAttributes.y + 'px'"
             [nodeImageUrl]="node.imageUrl"
-            (askForRepaint)="repaintJsPlumb()"
-            [navBarButtonClicked]="pressedNavBarButton"
+            [navbarButtonsState]="navbarButtonsState"
             (addNodeToDragSelection)="addNodeToDragSelection($event)"
             (checkIfNodeInSelection)="checkIfNodeInSelection($event)"
             [selectedNodes]="selectedNodes">

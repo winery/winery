@@ -20,5 +20,8 @@ export interface ButtonsStateModel {
     propertiesButton?: boolean;
     typesButton?: boolean;
     idsButton?: boolean;
+    layoutButton?: boolean;
+    alignHButton?: boolean;
+    alignVButton?: boolean
   };
 }

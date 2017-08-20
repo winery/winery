@@ -21,6 +21,9 @@ export interface TopologyRendererState {
     propertiesButton?: boolean;
     typesButton?: boolean;
     idsButton?: boolean;
+    layoutButton?: boolean;
+    alignHButton?: boolean;
+    alignVButton?: boolean
   };
 }
 
@@ -32,7 +35,10 @@ export const INITIAL_TOPOLOGY_RENDERER_STATE: TopologyRendererState = {
     deploymentArtifactsButton: false,
     propertiesButton: false,
     typesButton: true,
-    idsButton: true
+    idsButton: true,
+    layoutButton: false,
+    alignHButton: false,
+    alignVButton: false
   }
 };
 
@@ -84,6 +90,24 @@ export const TopologyRendererReducer =
           ...lastState,
           buttonsState: {...lastState.buttonsState,
             typesButton: !lastState.buttonsState.typesButton}
+        };
+      case TopologyRendererActions.EXECUTE_LAYOUT:
+        return {
+          ...lastState,
+          buttonsState: {...lastState.buttonsState,
+            layoutButton: !lastState.buttonsState.layoutButton}
+        };
+      case TopologyRendererActions.EXECUTE_ALIGN_H:
+        return {
+          ...lastState,
+          buttonsState: {...lastState.buttonsState,
+            alignHButton: !lastState.buttonsState.alignHButton}
+        };
+      case TopologyRendererActions.EXECUTE_ALIGN_V:
+        return {
+          ...lastState,
+          buttonsState: {...lastState.buttonsState,
+            alignVButton: !lastState.buttonsState.alignVButton}
         };
     }
     return lastState;

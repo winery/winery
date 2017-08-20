@@ -1,20 +1,13 @@
-import {
-  Component,
-  DoCheck,
-  ElementRef,
-  HostListener,
-  Input,
-  KeyValueDiffers, OnDestroy,
-  OnInit,
-} from '@angular/core';
-import { JsPlumbService } from '../jsPlumbService';
-import { JsonService } from '../jsonService/json.service';
-import {TNodeTemplate, TRelationshipTemplate, TTopologyTemplate} from '../ttopology-template';
-import { LayoutDirective } from '../layout.directive';
+import {Component, ElementRef, HostListener, KeyValueDiffers, OnDestroy, OnInit,} from '@angular/core';
+import {JsPlumbService} from '../jsPlumbService';
+import {JsonService} from '../jsonService/json.service';
+import {TNodeTemplate, TRelationshipTemplate} from '../ttopology-template';
+import {LayoutDirective} from '../layout.directive';
 import {AppActions} from '../redux/actions/app.actions';
-import {NgRedux, select} from '@angular-redux/store';
+import {NgRedux} from '@angular-redux/store';
 import {IAppState} from '../redux/store/app.store';
-import {Observable} from 'rxjs/Observable';
+import {ButtonsStateModel} from '../models/buttonsState.model';
+import {TopologyRendererActions} from '../redux/actions/topologyRenderer.actions';
 
 @Component({
   selector: 'app-canvas',
@@ -22,17 +15,13 @@ import {Observable} from 'rxjs/Observable';
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.css']
 })
-export class CanvasComponent implements OnInit, DoCheck, OnDestroy {
-  paletteClicked = false;
-  nodeTemplates: any[] = [];
+export class CanvasComponent implements OnInit, OnDestroy {
   allNodeTemplates: Array<TNodeTemplate> = [];
   allRelationshipTemplates: Array<TRelationshipTemplate> = [];
-  relationshipTemplates: Array<TRelationshipTemplate> = [];
-  nodeTypes: any[] = [];
+  navbarButtonsState: ButtonsStateModel;
   selectedNodes: string[] = [];
   newJsPlumbInstance: any;
   visuals: any[];
-  @Input() pressedNavBarButton: any;
   nodeSelected = false;
   nodeArrayEmpty = false;
   pageX: Number;
@@ -44,7 +33,7 @@ export class CanvasComponent implements OnInit, DoCheck, OnDestroy {
   selectionHeight: number;
   callOpenSelector: boolean;
   callSelectItems: boolean;
-  offsetY = 32;
+  offsetY = 0;
   offsetX = 102;
   startTime: number;
   endTime: number;
@@ -52,23 +41,38 @@ export class CanvasComponent implements OnInit, DoCheck, OnDestroy {
   crosshair = false;
   differPressedNavBarButton: any;
   enhanceGrid: number;
-  subscription;
-  /*
-  @select(appState => appState.currentSavedJsonTopology) readonly currentSavedJsonTopology: Observable<any>;
-  @select(appState => appState.currentEnhanceGridState) readonly currentPaletteOpenedState: Observable<any>;
-  */
+  nodeTemplatesSubscription;
+  gridSubscription;
+  relationshipTemplatesSubscription;
+  navBarButtonsStateSubscription;
 
   constructor(private jsPlumbService: JsPlumbService, private jsonService: JsonService, private _eref: ElementRef,
               private _layoutDirective: LayoutDirective,
               differsPressedNavBarButton: KeyValueDiffers,
               private ngRedux: NgRedux<IAppState>,
-              private actions: AppActions) {
-    this.subscription = ngRedux.select<any>('appState')
-      .subscribe(newState => {
-        this.updateGridState(newState.currentPaletteOpenedState);
-        this.addTopology(newState.currentSavedJsonTopology);
-      });
-    this.differPressedNavBarButton = differsPressedNavBarButton.find([]).create(null);
+              private actions: AppActions,
+              private topologyRendererActions: TopologyRendererActions) {
+    this.nodeTemplatesSubscription = this.ngRedux.select(state => state.appState.currentJsonTopology.nodeTemplates)
+      .subscribe(currentNodes => this.addNewNode(currentNodes));
+    this.relationshipTemplatesSubscription = this.ngRedux.select(state => state.appState.currentJsonTopology.relationshipTemplates)
+      .subscribe(currentRelationships => this.addNewRelationship(currentRelationships));
+    this.gridSubscription = this.ngRedux.select(state => state.appState.currentPaletteOpenedState)
+      .subscribe(currentPaletteOpened => this.updateGridState(currentPaletteOpened));
+    this.navBarButtonsStateSubscription = ngRedux.select(state => state.topologyRendererState)
+      .subscribe(currentButtonsState => this.setButtonsState(currentButtonsState));
+  }
+
+  addNewNode(currentNodes: Array<TNodeTemplate>): void{
+    if (currentNodes.length > 0) {
+      this.allNodeTemplates.push(currentNodes[currentNodes.length - 1])
+    }
+  }
+  addNewRelationship(currentRelationships: Array<TRelationshipTemplate>): void {
+    const newRelationship = currentRelationships[currentRelationships.length - 1];
+    if (currentRelationships.length > 0) {
+      this.allRelationshipTemplates.push(newRelationship);
+      setTimeout(() => this.displayRelationships(newRelationship), 1);
+    }
   }
 
   updateGridState(currentPaletteOpenedState: boolean) {
@@ -81,48 +85,22 @@ export class CanvasComponent implements OnInit, DoCheck, OnDestroy {
     }
   }
 
-  addTopology(currentSavedJsonTopology: TTopologyTemplate): void {
-    if (currentSavedJsonTopology.nodeTemplates.length > 0) {
-      if (this.allNodeTemplates.length === 0) {
-        this.allNodeTemplates = currentSavedJsonTopology.nodeTemplates;
+  setButtonsState(currentButtonsState: ButtonsStateModel): void {
+      this.navbarButtonsState = currentButtonsState;
+      setTimeout(() => this.repaintJsPlumb(), 1);
+      const alignmentButtonLayout = this.navbarButtonsState.buttonsState.layoutButton;
+      const alignmentButtonAlignH = this.navbarButtonsState.buttonsState.alignHButton;
+      const alignmentButtonAlignV = this.navbarButtonsState.buttonsState.alignVButton;
+      if (alignmentButtonLayout) {
+        this._layoutDirective.layoutNodes(this.allNodeTemplates, this.allRelationshipTemplates, this.newJsPlumbInstance);
+        this.ngRedux.dispatch(this.topologyRendererActions.executeLayout());
+      } else if (alignmentButtonAlignH){
+        this._layoutDirective.alignHorizontal(this.allNodeTemplates, this.newJsPlumbInstance);
+        this.ngRedux.dispatch(this.topologyRendererActions.executeAlignH());
+      } else if (alignmentButtonAlignV) {
+        this._layoutDirective.alignVertical(this.allNodeTemplates, this.newJsPlumbInstance);
+        this.ngRedux.dispatch(this.topologyRendererActions.executeAlignV());
       }
-      this.addNodes(currentSavedJsonTopology.nodeTemplates);
-    }
-    if (currentSavedJsonTopology.relationshipTemplates.length > 0) {
-      if (this.allRelationshipTemplates.length === 0) {
-        this.allRelationshipTemplates = currentSavedJsonTopology.relationshipTemplates;
-      }
-      this.addRelationships(currentSavedJsonTopology.relationshipTemplates);
-    }
-  }
-
-  addNodes(currentNodes: Array<TNodeTemplate>) {
-    const newNode = currentNodes[currentNodes.length - 1];
-    if (this.allNodeTemplates.length > 0) {
-      const lastNodeId = this.allNodeTemplates[this.allNodeTemplates.length - 1].id;
-      const newNodeId = newNode.id;
-      if (lastNodeId !== newNodeId) {
-        this.allNodeTemplates.push(newNode);
-        console.log(newNode.otherAttributes.x);
-      }
-    } else {
-      this.allNodeTemplates.push(newNode);
-    }
-  }
-
-  addRelationships(currentRelationships: Array<TRelationshipTemplate>) {
-    const newRelationship = currentRelationships[currentRelationships.length - 1];
-    if (this.allRelationshipTemplates.length > 0) {
-      const lastRelationshipId = this.allRelationshipTemplates[this.allRelationshipTemplates.length - 1].id;
-      const newRelationshipId = newRelationship.id;
-      if (lastRelationshipId !== newRelationshipId) {
-        this.allRelationshipTemplates.push(newRelationship);
-        setTimeout(() => this.displayRelationships(newRelationship), 1);
-      }
-    } else {
-      this.allRelationshipTemplates.push(newRelationship);
-      setTimeout(() => this.displayRelationships(newRelationship), 1);
-    }
   }
 
   displayRelationships(newRelationship: TRelationshipTemplate): void {
@@ -235,32 +213,14 @@ export class CanvasComponent implements OnInit, DoCheck, OnDestroy {
     this.newJsPlumbInstance.repaintEverything();
   }
 
-  ngDoCheck(): void {
-    const pressedNavBarButton = this.differPressedNavBarButton.diff(this.pressedNavBarButton);
-
-    if (pressedNavBarButton) {
-      if (pressedNavBarButton._mapHead.currentValue === 'layout') {
-        this._layoutDirective.layoutNodes(this.allNodeTemplates, this.relationshipTemplates, this.newJsPlumbInstance);
-      }
-      if (pressedNavBarButton._mapHead.currentValue === 'alignv') {
-        this._layoutDirective.alignVertical(this.allNodeTemplates, this.newJsPlumbInstance);
-      }
-      if (pressedNavBarButton._mapHead.currentValue === 'alignh') {
-        this._layoutDirective.alignHorizontal(this.allNodeTemplates, this.newJsPlumbInstance);
-      }
-    }
-  }
-
   ngOnInit() {
     this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
     this.newJsPlumbInstance.setContainer('container');
-    this.relationshipTemplates = this.jsonService.getRelationships();
     this.visuals = this.jsonService.getVisuals();
     this.assignVisuals();
   }
 
   assignVisuals() {
-    this.visuals = this.jsonService.getVisuals();
     for (const node of this.allNodeTemplates) {
       for (const visual of this.visuals) {
         // console.log('node.id = ' + node.id);
@@ -338,6 +298,9 @@ export class CanvasComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.nodeTemplatesSubscription.unsubscribe();
+    this.gridSubscription.unsubscribe();
+    this.relationshipTemplatesSubscription.unsubscribe();
+    this.navBarButtonsStateSubscription.unsubscribe();
   }
 }
