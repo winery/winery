@@ -27,6 +27,7 @@ Intermediate milestone build for the OpenTOSCA eco system.
 - **BREAKING**: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
 - Add support of [XaaS Packager](http://eclipse.github.io/winery/user/XaaSPackager)
 - Add support of [Splitting](http://eclipse.github.io/winery/user/Splitting)
+- Add support of [DASpecification](http://eclipse.github.io/winery/user/DASpecification)
 
 ## Initial Code Contribution - 2014-03-27
 
