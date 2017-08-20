@@ -7,20 +7,17 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- * Lukas Harzenetter - initial API and implementation
+ * - Oliver Kopp - initial API and implementation
  */
-
 package org.eclipse.winery.repository.configuration;
 
-import java.util.Objects;
+/**
+ * Package-private class to handle the complete configuration. To the callers, there will be separate classes
+ */
+class WineryConfiguration {
 
-public class Configuration {
+	String gitHubClientId;
 
-	public String gitHubClientId;
+	String gitHubClientSecret;
 
-	public String gitHubClientSecret;
-
-	public int hashCode() {
-		return Objects.hash(gitHubClientId, gitHubClientSecret);
-	}
 }

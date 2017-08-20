@@ -72,8 +72,8 @@ public class AdminTopResource {
 		httppost.setHeader("Accept", "application/json");
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
-		params.add(new BasicNameValuePair("client_id", Environment.CONFIGURATION.gitHubClientId));
-		params.add(new BasicNameValuePair("client_secret", Environment.CONFIGURATION.gitHubClientSecret));
+		params.add(new BasicNameValuePair("client_id", Environment.getGitHubConfiguration().getGitHubClientId()));
+		params.add(new BasicNameValuePair("client_secret", Environment.getGitHubConfiguration().getGitHubClientSecret()));
 		params.add(new BasicNameValuePair("code", codeApiData.code));
 		params.add(new BasicNameValuePair("state", codeApiData.state));
 		httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));

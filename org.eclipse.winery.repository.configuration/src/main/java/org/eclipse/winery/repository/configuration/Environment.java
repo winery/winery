@@ -7,7 +7,8 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- * Lukas Harzenetter - initial API and implementation
+ * - Lukas Harzenetter - initial API and implementation
+ * - Oliver Kopp - separate configuration types
  */
 package org.eclipse.winery.repository.configuration;
 
@@ -21,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class Environment {
 
-	public static final Configuration CONFIGURATION = getConfiguration();
+	private static final WineryConfiguration CONFIGURATION = getWineryConfiguration();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Environment.class);
 
@@ -29,19 +30,18 @@ public class Environment {
 	 * Prevent utility class from getting instantiated.
 	 */
 	private Environment() {
-
 	}
 
-	public static Configuration getConfiguration() {
-		if (CONFIGURATION != null) {
-			return CONFIGURATION;
-		}
-
+	private static WineryConfiguration getWineryConfiguration() {
 		ObjectMapper mapper = new ObjectMapper(new JsonFactory());
 		try (InputStream inputStream = Environment.class.getResourceAsStream("/environments/config.json")) {
-			return mapper.readValue(inputStream, Configuration.class);
+			return mapper.readValue(inputStream, WineryConfiguration.class);
 		} catch (IOException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	public static GitHubConfiguration getGitHubConfiguration() {
+		return new GitHubConfiguration(CONFIGURATION);
 	}
 }
