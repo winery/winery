@@ -16,7 +16,6 @@ package org.eclipse.winery.repository.resources.servicetemplates;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +47,6 @@ import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -58,6 +56,8 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
+import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
 import org.eclipse.winery.repository.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.resources.IHasName;
 import org.eclipse.winery.repository.resources._support.dataadapter.InjectorReplaceData;
@@ -219,24 +219,28 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	@Path("injector/replace")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-	public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws IOException, ParserConfigurationException, SAXException, SplittingException {
-		Collection<TTopologyTemplate> hostInjectorTopologyTemplates = injectorReplaceData.hostInjections.values();
-		hostInjectorTopologyTemplates.forEach(t -> {
-			try {
-				ModelUtilities.patchAnyAttributes(t.getNodeTemplates());
-			} catch (IOException e) {
-				LOGGER.error("XML was invalid", e);
-			}
-		});
-
-		Collection<TTopologyTemplate> connectionInjectorTopologyTemplates = injectorReplaceData.connectionInjections.values();
-		connectionInjectorTopologyTemplates.forEach(t -> {
-			try {
-				ModelUtilities.patchAnyAttributes(t.getNodeTemplates());
-			} catch (IOException e) {
-				LOGGER.error("XML was invalid", e);
-			}
-		});
+	public Response injectNodeTemplates(InjectorReplaceData injectorReplaceData, @Context UriInfo uriInfo) throws Exception, IOException, ParserConfigurationException, SAXException, SplittingException {
+		
+		if (injectorReplaceData.hostInjections != null) {
+			Collection<TTopologyTemplate> hostInjectorTopologyTemplates = injectorReplaceData.hostInjections.values();
+			hostInjectorTopologyTemplates.forEach(t -> {
+				try {
+					ModelUtilities.patchAnyAttributes(t.getNodeTemplates());
+				} catch (IOException e) {
+					LOGGER.error("XML was invalid", e);
+				}
+			});	
+		}
+		if (injectorReplaceData.connectionInjections != null) {
+			Collection<TTopologyTemplate> connectionInjectorTopologyTemplates = injectorReplaceData.connectionInjections.values();
+			connectionInjectorTopologyTemplates.forEach(t -> {
+				try {
+					ModelUtilities.patchAnyAttributes(t.getNodeTemplates());
+				} catch (IOException e) {
+					LOGGER.error("XML was invalid", e);
+				}
+			});
+		}
 
 		Splitting splitting = new Splitting();
 		TTopologyTemplate matchedHostsTopologyTemplate;
@@ -265,49 +269,26 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		} else {
 			throw new SplittingException("No open Requirements which can be matched");
 		}
+		
+		TTopologyTemplate daSpecifiedTopology = matchedConnectedTopologyTemplate;
 
-		this.getServiceTemplate().setTopologyTemplate(matchedConnectedTopologyTemplate);
+		//Start additional functionality Driver Injection
+		if (!DASpecification.getNodeTemplatesWithAbstractDAs(matchedConnectedTopologyTemplate).isEmpty() &&
+				DASpecification.getNodeTemplatesWithAbstractDAs(matchedConnectedTopologyTemplate) != null) {
+			daSpecifiedTopology = DriverInjection.injectDriver(matchedConnectedTopologyTemplate);
+		}
+		//End additional functionality Driver Injection
+
+		this.getServiceTemplate().setTopologyTemplate(daSpecifiedTopology);
 
 		LOGGER.debug("Persisting...");
 		this.persist();
 		LOGGER.debug("Persisted.");
 
 		//No renaming of the Service Template allowed because of the plans
-
 		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(id));
 		LOGGER.debug("URI of the old and new service template {}", url.toString());
 		return Response.created(url).build();
-	}
-
-	/**
-	 * Used for testing
-	 */
-	@GET
-	@Path("injector/replace")
-	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
-	public Response getInjectorReplacement() {
-		//Test data
-		InjectorReplaceData injectorReplaceData = new InjectorReplaceData();
-		TTopologyTemplate tt = new TTopologyTemplate();
-		TNodeTemplate nt1 = new TNodeTemplate();
-		nt1.setId("nt1");
-		TNodeTemplate nt2 = new TNodeTemplate();
-		nt2.setId("nt2");
-		TNodeTemplate nt3 = new TNodeTemplate();
-		nt3.setId("nt3");
-		TNodeTemplate.Requirements r = new TNodeTemplate.Requirements();
-		TRequirement rt = new TRequirement();
-		rt.setName("Requ");
-		r.getRequirement().add(rt);
-		nt3.setRequirements(r);
-		tt.getNodeTemplateOrRelationshipTemplate().add(nt1);
-		//injectorReplaceData.setTopologyTemplate(tt);
-		Map<String, TNodeTemplate> replaceNodes = new HashMap<>();
-		replaceNodes.put("test", nt2);
-		replaceNodes.put("test2", nt3);
-		//injectorReplaceData.setInjections(replaceNodes);
-
-		return Response.ok().entity(injectorReplaceData).build();
 	}
 
 	public TServiceTemplate getServiceTemplate() {
