@@ -25,7 +25,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.Prefs;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import org.junit.Before;
@@ -50,8 +50,8 @@ public class SplittingTest {
 		// initialize the repo for testing
 		new Prefs(true);
 
-		assertTrue(Repository.INSTANCE.exists(id));
-		assertTrue(Repository.INSTANCE.exists(id2));
+		assertTrue(RepositoryFactory.getRepository().exists(id));
+		assertTrue(RepositoryFactory.getRepository().exists(id2));
 
 		ServiceTemplateResource res = new ServiceTemplateResource(id);
 		topologyTemplate = res.getServiceTemplate().getTopologyTemplate();
@@ -286,7 +286,7 @@ public class SplittingTest {
 		// initialize the repo for testing
 		new Prefs(true);
 
-		assertTrue(Repository.INSTANCE.exists(serviceTemplateId));
+		assertTrue(RepositoryFactory.getRepository().exists(serviceTemplateId));
 
 		ServiceTemplateResource resource = new ServiceTemplateResource(serviceTemplateId);
 		TTopologyTemplate topologyTemplateMatching = resource.getServiceTemplate().getTopologyTemplate();

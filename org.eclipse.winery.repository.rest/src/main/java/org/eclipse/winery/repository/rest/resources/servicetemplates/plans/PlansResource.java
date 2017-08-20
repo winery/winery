@@ -34,7 +34,7 @@ import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
@@ -122,9 +122,9 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			PlansId plansId = new PlansId((ServiceTemplateId) ((ServiceTemplateResource) this.res).getId());
 			PlanId planId = new PlanId(plansId, new XMLId(tPlan.getId(), false));
 			// Ensure overwriting
-			if (Repository.INSTANCE.exists(planId)) {
+			if (RepositoryFactory.getRepository().exists(planId)) {
 				try {
-					Repository.INSTANCE.forceDelete(planId);
+					RepositoryFactory.getRepository().forceDelete(planId);
 					// Quick hack to remove the deleted plan from the plans element
 					((ServiceTemplateResource) this.res).synchronizeReferences();
 				} catch (IOException e) {
@@ -137,7 +137,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 				fileName = tPlan.getId() + Constants.SUFFIX_BPMN4TOSCA;
 				RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
 				try {
-					Repository.INSTANCE.putContentToFile(ref, "{}", MediaType.APPLICATION_JSON_TYPE);
+					RepositoryFactory.getRepository().putContentToFile(ref, "{}", MediaType.APPLICATION_JSON_TYPE);
 				} catch (IOException e1) {
 					return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create empty plan. " + e1.getMessage()).build();
 				}
@@ -149,7 +149,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 				// Really store it
 				RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
 				try {
-					Repository.INSTANCE.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+					RepositoryFactory.getRepository().putContentToFile(ref, uploadedInputStream, body.getMediaType());
 				} catch (IOException e1) {
 					return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
 				}

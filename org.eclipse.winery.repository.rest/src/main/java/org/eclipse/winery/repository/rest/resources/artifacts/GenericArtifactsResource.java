@@ -56,7 +56,7 @@ import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
@@ -379,7 +379,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			String mediaType = Utils.getMimeType(bis, zipFile.getName());
 			// TODO: do the catch thing as in CSARImporter
 
-			Repository.INSTANCE.putContentToFile(fref, bis, MediaType.valueOf(mediaType));
+			RepositoryFactory.getRepository().putContentToFile(fref, bis, MediaType.valueOf(mediaType));
 		} catch (IOException e1) {
 			throw new IllegalStateException("Could not import generated files", e1);
 		}
@@ -440,7 +440,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 * @return list of known artifact types.
 	 */
 	public List<QName> getAllArtifactTypes() {
-		SortedSet<ArtifactTypeId> allArtifactTypes = Repository.INSTANCE.getAllTOSCAComponentIds(ArtifactTypeId.class);
+		SortedSet<ArtifactTypeId> allArtifactTypes = RepositoryFactory.getRepository().getAllTOSCAComponentIds(ArtifactTypeId.class);
 		List<QName> res = new ArrayList<>(allArtifactTypes.size());
 		for (ArtifactTypeId id : allArtifactTypes) {
 			res.add(id.getQName());

@@ -22,8 +22,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
@@ -76,7 +75,7 @@ public class OptionResource extends EntityWithIdResource<ApplicationOption> {
 		// we use the URL stored in the data instead of the generated URL to be compatible with manually edits
 		RepositoryFileReference ref = new RepositoryFileReference(this.ssmdId, this.o.getIconUrl());
 		try {
-			Repository.INSTANCE.forceDelete(ref);
+			RepositoryFactory.getRepository().forceDelete(ref);
 		} catch (IOException e) {
 			OptionResource.LOGGER.error("Could not remove file", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -86,7 +85,7 @@ public class OptionResource extends EntityWithIdResource<ApplicationOption> {
 		// we use the URL stored in the data instead of the generated URL to be compatible with manually edits
 		ref = new RepositoryFileReference(this.ssmdId, this.o.getPlanInputMessageUrl());
 		try {
-			Repository.INSTANCE.forceDelete(ref);
+			RepositoryFactory.getRepository().forceDelete(ref);
 		} catch (IOException e) {
 			OptionResource.LOGGER.error("Could not remove file", e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();

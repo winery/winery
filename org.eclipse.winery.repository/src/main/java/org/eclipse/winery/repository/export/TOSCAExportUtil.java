@@ -83,7 +83,7 @@ import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
@@ -203,7 +203,7 @@ public class TOSCAExportUtil {
 	 * @throws RepositoryCorruptException if tcId does not exist
 	 */
 	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws JAXBException, RepositoryCorruptException {
-		if (!Repository.INSTANCE.exists(tcId)) {
+		if (!RepositoryFactory.getRepository().exists(tcId)) {
 			String error = "Component instance " + tcId.toString() + " does not exist.";
 			TOSCAExportUtil.LOGGER.error(error);
 			throw new RepositoryCorruptException(error);
@@ -543,9 +543,9 @@ public class TOSCAExportUtil {
 		// the data model is consistent with the repository
 		// we crawl through the repository to as putRefAsReferencedItemInCSAR expects a repository file reference
 		PlansId plansContainerId = new PlansId(id);
-		SortedSet<PlanId> nestedPlans = Repository.INSTANCE.getNestedIds(plansContainerId, PlanId.class);
+		SortedSet<PlanId> nestedPlans = RepositoryFactory.getRepository().getNestedIds(plansContainerId, PlanId.class);
 		for (PlanId planId : nestedPlans) {
-			SortedSet<RepositoryFileReference> containedFiles = Repository.INSTANCE.getContainedFiles(planId);
+			SortedSet<RepositoryFileReference> containedFiles = RepositoryFactory.getRepository().getContainedFiles(planId);
 			// even if we currently support only one file in the directory, we just add everything
 			for (RepositoryFileReference ref : containedFiles) {
 				this.putRefAsReferencedItemInCSAR(ref);
@@ -655,7 +655,7 @@ public class TOSCAExportUtil {
 		res.synchronizeReferences();
 
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(id);
-		SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(fileDir);
+		SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
 		for (RepositoryFileReference ref : files) {
 			// Even if writing a TOSCA only (!this.writingCSAR),
 			// we put the virtual path in the TOSCA
@@ -688,7 +688,7 @@ public class TOSCAExportUtil {
 		Collection<TOSCAComponentId> ids = new ArrayList<>();
 
 		// add all implementations
-		Collection<RelationshipTypeImplementationId> allTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName());
+		Collection<RelationshipTypeImplementationId> allTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName());
 		for (RelationshipTypeImplementationId ntiId : allTypeImplementations) {
 			ids.add(ntiId);
 		}
@@ -703,7 +703,7 @@ public class TOSCAExportUtil {
 
 			// similar code as for valid target (difference: req/cap)
 			NodeTypeId ntId = new NodeTypeId(typeRef);
-			if (Repository.INSTANCE.exists(ntId)) {
+			if (RepositoryFactory.getRepository().exists(ntId)) {
 				ids.add(ntId);
 			} else {
 				RequirementTypeId rtId = new RequirementTypeId(typeRef);
@@ -718,7 +718,7 @@ public class TOSCAExportUtil {
 
 			// similar code as for valid target (difference: req/cap)
 			NodeTypeId ntId = new NodeTypeId(typeRef);
-			if (Repository.INSTANCE.exists(ntId)) {
+			if (RepositoryFactory.getRepository().exists(ntId)) {
 				ids.add(ntId);
 			} else {
 				CapabilityTypeId capId = new CapabilityTypeId(typeRef);
@@ -733,7 +733,7 @@ public class TOSCAExportUtil {
 
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(NodeTypeId id) {
 		Collection<TOSCAComponentId> ids = new ArrayList<>();
-		Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, id.getQName());
+		Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, id.getQName());
 		for (NodeTypeImplementationId ntiId : allNodeTypeImplementations) {
 			ids.add(ntiId);
 		}
@@ -768,16 +768,16 @@ public class TOSCAExportUtil {
 
 	private void addVisualAppearanceToCSAR(TopologyGraphElementEntityTypeId id) {
 		VisualAppearanceId visId = new VisualAppearanceId(id);
-		if (Repository.INSTANCE.exists(visId)) {
+		if (RepositoryFactory.getRepository().exists(visId)) {
 			// we do NOT check for the id, but simply check for bigIcon.png (only exists in NodeType) and smallIcon.png (exists in NodeType and RelationshipType)
 
 			RepositoryFileReference ref = new RepositoryFileReference(visId, Filename.FILENAME_BIG_ICON);
-			if (Repository.INSTANCE.exists(ref)) {
+			if (RepositoryFactory.getRepository().exists(ref)) {
 				this.referencesToPathInCSARMap.put(ref, BackendUtils.getPathInsideRepo(ref));
 			}
 
 			ref = new RepositoryFileReference(visId, Filename.FILENAME_SMALL_ICON);
-			if (Repository.INSTANCE.exists(ref)) {
+			if (RepositoryFactory.getRepository().exists(ref)) {
 				this.referencesToPathInCSARMap.put(ref, BackendUtils.getPathInsideRepo(ref));
 			}
 		}

@@ -45,7 +45,7 @@ import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
@@ -124,7 +124,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		TArtifactTemplate template = this.getTArtifactTemplate();
 
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId((ArtifactTemplateId) this.id);
-		SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(fileDir);
+		SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
 		if (files.isEmpty()) {
 			// clear artifact references
 			template.setArtifactReferences(null);
@@ -172,7 +172,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		Collection<TImplementationArtifact> allIAs = new HashSet<>();
 
 		// handle Node Type Implementation, which contains DAs and IAs
-		SortedSet<NodeTypeImplementationId> nodeTypeImplementations = Repository.INSTANCE.getAllTOSCAComponentIds(NodeTypeImplementationId.class);
+		SortedSet<NodeTypeImplementationId> nodeTypeImplementations = RepositoryFactory.getRepository().getAllTOSCAComponentIds(NodeTypeImplementationId.class);
 		for (NodeTypeImplementationId ntiId : nodeTypeImplementations) {
 			NodeTypeImplementationResource ntiRes = (NodeTypeImplementationResource) AbstractComponentsResource.getComponentInstaceResource(ntiId);
 			TDeploymentArtifacts deploymentArtifacts = ntiRes.getNTI().getDeploymentArtifacts();
@@ -186,7 +186,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		}
 
 		// check all Relationshiptype Implementations for IAs
-		SortedSet<RelationshipTypeImplementationId> relationshipTypeImplementations = Repository.INSTANCE.getAllTOSCAComponentIds(RelationshipTypeImplementationId.class);
+		SortedSet<RelationshipTypeImplementationId> relationshipTypeImplementations = RepositoryFactory.getRepository().getAllTOSCAComponentIds(RelationshipTypeImplementationId.class);
 		for (RelationshipTypeImplementationId rtiId : relationshipTypeImplementations) {
 			RelationshipTypeImplementationResource rtiRes = (RelationshipTypeImplementationResource) AbstractComponentsResource.getComponentInstaceResource(rtiId);
 			TImplementationArtifacts implementationArtifacts = rtiRes.getRTI().getImplementationArtifacts();
@@ -196,7 +196,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		}
 
 		// check all node templates for DAs
-		SortedSet<ServiceTemplateId> serviceTemplates = Repository.INSTANCE.getAllTOSCAComponentIds(ServiceTemplateId.class);
+		SortedSet<ServiceTemplateId> serviceTemplates = RepositoryFactory.getRepository().getAllTOSCAComponentIds(ServiceTemplateId.class);
 		for (ServiceTemplateId sid : serviceTemplates) {
 			ServiceTemplateResource serviceTemplateRes = (ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(sid);
 			TTopologyTemplate topologyTemplate = serviceTemplateRes.getServiceTemplate().getTopologyTemplate();

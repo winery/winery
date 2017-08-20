@@ -60,7 +60,7 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
@@ -123,13 +123,13 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		this.id = id;
 
 		// the resource itself exists
-		if (!Repository.INSTANCE.exists(id)) {
+		if (!RepositoryFactory.getRepository().exists(id)) {
 			throw new IllegalStateException(String.format("The resource %s does not exist", id));
 		}
 
 		// the data file might not exist
 		this.ref = BackendUtils.getRefOfDefinitions(id);
-		if (Repository.INSTANCE.exists(this.ref)) {
+		if (RepositoryFactory.getRepository().exists(this.ref)) {
 			this.load();
 		} else {
 			this.createNew();
@@ -229,7 +229,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@GET
 	@Produces(MimeTypes.MIMETYPE_ZIP)
 	public final Response getCSAR() {
-		if (!Repository.INSTANCE.exists(this.id)) {
+		if (!RepositoryFactory.getRepository().exists(this.id)) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		return Utils.getCSARofSelectedResource(this);
@@ -244,7 +244,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@GET
 	@Produces({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
 	public Response getDefinitionsAsResponse(@QueryParam(value = "csar") String csar) {
-		if (!Repository.INSTANCE.exists(this.id)) {
+		if (!RepositoryFactory.getRepository().exists(this.id)) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
@@ -274,7 +274,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public TDefinitions getDefinitionsAsJson() {
-		if (!Repository.INSTANCE.exists(this.id)) {
+		if (!RepositoryFactory.getRepository().exists(this.id)) {
 			throw new NotFoundException();
 		}
 
@@ -302,7 +302,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 *                               in the prototype.
 	 */
 	private void load() {
-		this.definitions = Repository.INSTANCE.getDefinitions(this.id).orElseThrow(() -> {
+		this.definitions = RepositoryFactory.getRepository().getDefinitions(this.id).orElseThrow(() -> {
 			AbstractComponentInstanceResource.LOGGER.error("Could not read content from file " + this.ref);
 			return new IllegalStateException();
 		});

@@ -29,7 +29,7 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -87,7 +87,7 @@ public class XSDImportsResource extends AbstractComponentsWithoutTypeReferenceRe
 	 */
 	private Set<XSDImportId> getImportsOfNS(final String nsString) {
 		// FIXME: Currently not supported by the repository, therefore, we filter by hand
-		Set<XSDImportId> allImports = Repository.INSTANCE.getAllTOSCAComponentIds(XSDImportId.class);
+		Set<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
 		Namespace ns = new Namespace(nsString, true);
 		Set<XSDImportId> importsOfNs = new HashSet<>();
 		for (XSDImportId imp : allImports) {

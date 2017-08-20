@@ -37,7 +37,7 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.datatypes.FileMeta;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 
@@ -99,7 +99,7 @@ public class FilesResource {
 		String thumbnailURL = uriInfo.getBaseUriBuilder().path(Constants.PATH_MIMETYPEIMAGES).path(FilenameUtils.getExtension(fileName) + Constants.SUFFIX_MIMETYPEIMAGES).build().toString();
 		long size;
 		try {
-			size = Repository.INSTANCE.getSize(ref);
+			size = RepositoryFactory.getRepository().getSize(ref);
 		} catch (IOException e) {
 			FilesResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
@@ -122,7 +122,7 @@ public class FilesResource {
 
 	private List<FileMeta> getAllFileMetas() {
 		List<FileMeta> res = new ArrayList<>();
-		SortedSet<RepositoryFileReference> fileRefs = Repository.INSTANCE.getContainedFiles(this.fileDir);
+		SortedSet<RepositoryFileReference> fileRefs = RepositoryFactory.getRepository().getContainedFiles(this.fileDir);
 		for (RepositoryFileReference ref : fileRefs) {
 			res.add(new FileMeta(ref));
 		}

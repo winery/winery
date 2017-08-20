@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 
 public class RequirementDefinitionsResource extends RequirementOrCapabilityDefinitionsResource<RequirementDefinitionResource, TRequirementDefinition> {
@@ -31,7 +31,7 @@ public class RequirementDefinitionsResource extends RequirementOrCapabilityDefin
 
 	@Override
 	public Collection<QName> getAllTypes() {
-		SortedSet<RequirementTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(RequirementTypeId.class);
+		SortedSet<RequirementTypeId> allTOSCAComponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(RequirementTypeId.class);
 		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
 	}
 }

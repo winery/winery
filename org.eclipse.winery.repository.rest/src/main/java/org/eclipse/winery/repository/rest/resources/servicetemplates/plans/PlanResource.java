@@ -31,7 +31,7 @@ import org.eclipse.winery.model.tosca.TPlan.InputParameters;
 import org.eclipse.winery.model.tosca.TPlan.OutputParameters;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
@@ -94,7 +94,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 		Response res = super.onDelete();
 		if (Utils.isSuccessFulResponse(res)) {
 			try {
-				Repository.INSTANCE.forceDelete(this.getId());
+				RepositoryFactory.getRepository().forceDelete(this.getId());
 			} catch (IOException e) {
 				return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not remove plan file").build();
 			}

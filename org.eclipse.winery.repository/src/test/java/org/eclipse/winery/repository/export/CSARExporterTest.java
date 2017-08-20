@@ -25,7 +25,7 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.AbstractWineryWithRepositoryTest;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.junit.Assert;
@@ -50,7 +50,7 @@ public class CSARExporterTest extends AbstractWineryWithRepositoryTest {
 			setRevisionTo(commitId);
 			for (Class<? extends TOSCAComponentId> idClass : new Class[]{
 					ArtifactTypeId.class, ServiceTemplateId.class}) {
-				Repository.INSTANCE.getAllTOSCAComponentIds(idClass).stream().sorted().forEach(id -> res.add(new Object[]{commitId, id}));
+				RepositoryFactory.getRepository().getAllTOSCAComponentIds(idClass).stream().sorted().forEach(id -> res.add(new Object[]{commitId, id}));
 			}
 		}
 		return res;

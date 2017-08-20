@@ -193,7 +193,7 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 
 		// we do not use any database system,
 		// therefore we have to crawl through each node type implementation by ourselves
-		return Repository.INSTANCE.getAllTOSCAComponentIds(clazz)
+		return RepositoryFactory.getRepository().getAllTOSCAComponentIds(clazz)
 				.stream()
 				// The resource may have been freshly initialized due to existence of a directory
 				// then it has no node type assigned leading to ntiRes.getType() being null

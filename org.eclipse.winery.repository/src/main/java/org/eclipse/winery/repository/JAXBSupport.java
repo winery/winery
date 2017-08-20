@@ -21,7 +21,7 @@ import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefi
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.repository.backend.MockXMLElement;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.slf4j.Logger;
@@ -71,7 +71,7 @@ public class JAXBSupport {
 			//		return "";
 			//	}
 
-			return Repository.INSTANCE.getNamespaceManager().getPrefix(namespaceUri);
+			return RepositoryFactory.getRepository().getNamespaceManager().getPrefix(namespaceUri);
 		}
 	}
 

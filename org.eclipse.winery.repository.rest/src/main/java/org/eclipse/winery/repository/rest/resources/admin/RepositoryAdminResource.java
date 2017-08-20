@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -43,13 +43,13 @@ public class RepositoryAdminResource {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response importRepositoryDump(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
-		((IRepositoryAdministration) Repository.INSTANCE).doImport(uploadedInputStream);
+		((IRepositoryAdministration) RepositoryFactory.getRepository()).doImport(uploadedInputStream);
 		return Response.noContent().build();
 	}
 
 	@DELETE
 	public void deleteRepositoryData() {
-		((IRepositoryAdministration) Repository.INSTANCE).doClear();
+		((IRepositoryAdministration) RepositoryFactory.getRepository()).doClear();
 	}
 
 	@GET
@@ -59,7 +59,7 @@ public class RepositoryAdminResource {
 
 			@Override
 			public void write(OutputStream output) throws IOException, WebApplicationException {
-				((IRepositoryAdministration) Repository.INSTANCE).doDump(output);
+				((IRepositoryAdministration) RepositoryFactory.getRepository()).doDump(output);
 			}
 		};
 		return Response.ok().header("Content-Disposition", "attachment;filename=\"repository.zip\"").type(org.eclipse.winery.common.constants.MimeTypes.MIMETYPE_ZIP).entity(so).build();

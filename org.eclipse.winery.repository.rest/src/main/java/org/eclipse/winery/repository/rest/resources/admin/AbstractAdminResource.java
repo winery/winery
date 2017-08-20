@@ -14,7 +14,7 @@ package org.eclipse.winery.repository.rest.resources.admin;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.repository.rest.Utils;
 
@@ -36,7 +36,7 @@ public abstract class AbstractAdminResource {
 	 */
 	protected AbstractAdminResource(AdminId id) {
 		this.id = id;
-		this.configuration = Repository.INSTANCE.getConfiguration(id);
+		this.configuration = RepositoryFactory.getRepository().getConfiguration(id);
 	}
 
 	@DELETE

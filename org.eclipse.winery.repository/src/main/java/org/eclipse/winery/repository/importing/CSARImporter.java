@@ -84,7 +84,7 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.NamespaceManager;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
@@ -244,7 +244,7 @@ public class CSARImporter {
 	 * @param rootPath the root path of the extracted CSAR
 	 */
 	private void importNamespacePrefixes(Path rootPath) {
-		NamespaceManager namespaceManager = Repository.INSTANCE.getNamespaceManager();
+		NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
 		Path properties = rootPath.resolve(CSARExporter.PATH_TO_NAMESPACES_PROPERTIES);
 		if (Files.exists(properties)) {
 			PropertiesConfiguration pconf;
@@ -433,9 +433,9 @@ public class CSARImporter {
 			Class<? extends TOSCAComponentId> widClass = Util.getComponentIdClassForTExtensibleElements(ci.getClass());
 			final TOSCAComponentId wid = BackendUtils.getTOSCAcomponentId(widClass, namespace, id, false);
 
-			if (Repository.INSTANCE.exists(wid)) {
+			if (RepositoryFactory.getRepository().exists(wid)) {
 				if (overwrite) {
-					Repository.INSTANCE.forceDelete(wid);
+					RepositoryFactory.getRepository().forceDelete(wid);
 					String msg = String.format("Deleted %1$s %2$s to enable replacement", ci.getClass().getName(), wid.getQName().toString());
 					CSARImporter.LOGGER.debug(msg);
 				} else {
@@ -542,7 +542,7 @@ public class CSARImporter {
 					// QUICK HACK. Alternative: Add new method Repository.INSTANCE.getOutputStream and transform DOM node to OuptputStream
 					String content = Util.getXMLAsString(element);
 					try {
-						Repository.INSTANCE.putContentToFile(fileRef, content, MediaType.APPLICATION_XML_TYPE);
+						RepositoryFactory.getRepository().putContentToFile(fileRef, content, MediaType.APPLICATION_XML_TYPE);
 					} catch (IOException e) {
 						CSARImporter.LOGGER.debug("Could not put XML Schema definition to file " + fileRef.toString(), e);
 						errors.add("Could not put XML Schema definition to file " + fileRef.toString());
@@ -615,7 +615,7 @@ public class CSARImporter {
 							// it was too difficult to do the location check there, therefore we just remove the XSD from the repository here
 							XSDImportId importId = new XSDImportId(winerysPropertiesDefinition.getNamespace(), elementName, false);
 							try {
-								Repository.INSTANCE.forceDelete(importId);
+								RepositoryFactory.getRepository().forceDelete(importId);
 							} catch (IOException e) {
 								CSARImporter.LOGGER.debug("Could not delete Winery's generated XSD definition", e);
 								errors.add("Could not delete Winery's generated XSD definition");
@@ -836,7 +836,7 @@ public class CSARImporter {
 				}
 			}
 			try {
-				Repository.INSTANCE.putContentToFile(fref, bis, MediaType.valueOf(mediaType));
+				RepositoryFactory.getRepository().putContentToFile(fref, bis, MediaType.valueOf(mediaType));
 			} catch (IllegalArgumentException | IOException e) {
 				throw new IllegalStateException(e);
 			}
@@ -1062,7 +1062,7 @@ public class CSARImporter {
 			rid = new GenericImportId(namespace, id, false, type);
 		}
 
-		boolean importDataExistsInRepo = Repository.INSTANCE.exists(rid);
+		boolean importDataExistsInRepo = RepositoryFactory.getRepository().exists(rid);
 
 		if (!importDataExistsInRepo) {
 			// We have to
@@ -1103,7 +1103,7 @@ public class CSARImporter {
 					String mimeType = Utils.getMimeType(bis, path.getFileName().toString());
 					mediaType = MediaType.valueOf(mimeType);
 				}
-				Repository.INSTANCE.putContentToFile(fileRef, bis, mediaType);
+				RepositoryFactory.getRepository().putContentToFile(fileRef, bis, mediaType);
 			} catch (IllegalArgumentException | IOException e) {
 				throw new IllegalStateException(e);
 			}
@@ -1130,7 +1130,7 @@ public class CSARImporter {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		String s = Utils.getXMLAsString(defs, true);
 		try {
-			Repository.INSTANCE.putContentToFile(ref, s, MediaType.valueOf(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS));
+			RepositoryFactory.getRepository().putContentToFile(ref, s, MediaType.valueOf(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS));
 		} catch (IllegalArgumentException | IOException e) {
 			throw new IllegalStateException(e);
 		}

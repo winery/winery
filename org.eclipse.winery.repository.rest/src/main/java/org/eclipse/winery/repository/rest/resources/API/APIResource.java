@@ -28,7 +28,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataWithOptGroups;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
@@ -47,7 +47,7 @@ public class APIResource {
 		QName serviceTemplateQName = QName.valueOf(serviceTemplateQNameString);
 
 		ServiceTemplateId serviceTemplateId = new ServiceTemplateId(serviceTemplateQName);
-		if (!Repository.INSTANCE.exists(serviceTemplateId)) {
+		if (!RepositoryFactory.getRepository().exists(serviceTemplateId)) {
 			return Response.status(Status.BAD_REQUEST).entity("service template does not exist").build();
 		}
 		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);
@@ -85,7 +85,7 @@ public class APIResource {
 		QName serviceTemplateQName = QName.valueOf(serviceTemplateQNameString);
 
 		ServiceTemplateId serviceTemplateId = new ServiceTemplateId(serviceTemplateQName);
-		if (!Repository.INSTANCE.exists(serviceTemplateId)) {
+		if (!RepositoryFactory.getRepository().exists(serviceTemplateId)) {
 			return Response.status(Status.BAD_REQUEST).entity("service template does not exist").build();
 		}
 		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(serviceTemplateId);

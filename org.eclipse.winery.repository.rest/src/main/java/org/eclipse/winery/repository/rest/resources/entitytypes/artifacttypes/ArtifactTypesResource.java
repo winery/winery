@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
 public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenceResource<ArtifactTypeResource> {
@@ -75,7 +75,7 @@ public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenc
 	 * This is more a DAO method
 	 */
 	public ArtifactTypeResource getArtifactTypeForExtension(String extension) {
-		SortedSet<ArtifactTypeId> allArtifactTypeIds = Repository.INSTANCE.getAllTOSCAComponentIds(ArtifactTypeId.class);
+		SortedSet<ArtifactTypeId> allArtifactTypeIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(ArtifactTypeId.class);
 		ArtifactTypeResource res = null;
 		for (ArtifactTypeId id : allArtifactTypeIds) {
 			ArtifactTypeResource r = new ArtifactTypeResource(id);

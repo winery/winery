@@ -52,7 +52,7 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.rest.Prefs;
 import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
@@ -97,7 +97,7 @@ public class CSARExporter {
 	private static String getDefinitionsName(TOSCAComponentId id) {
 		// the prefix is globally unique and the id locally in a namespace
 		// therefore a concatenation of both is also unique
-		return Repository.INSTANCE.getNamespaceManager().getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
+		return RepositoryFactory.getRepository().getNamespaceManager().getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
 	}
 
 	public static String getDefinitionsFileName(TOSCAComponentId id) {
@@ -196,7 +196,7 @@ public class CSARExporter {
 		GitInfo gitInfo = Utils.getGitInformation((ArtifactTemplateDirectoryId)ref.getParent());
 
 		if (gitInfo == null) {
-            try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+            try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
                 if (is != null) {
                     ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
                     zos.putArchiveEntry(archiveEntry);
@@ -238,7 +238,7 @@ public class CSARExporter {
 	 * @param archivePath Path inside the archive to the file
 	 */
 	private void addFileToZipArchive(ArchiveOutputStream zos, RepositoryFileReference ref, String archivePath) {
-		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+		try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
             ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
             zos.putArchiveEntry(archiveEntry);
             IOUtils.copy(is, zos);
@@ -375,7 +375,7 @@ public class CSARExporter {
 	 * @throws IOException
 	 */
 	private void addNamespacePrefixes(ArchiveOutputStream zos) throws IOException {
-		Configuration configuration = Repository.INSTANCE.getConfiguration(new NamespacesId());
+		Configuration configuration = RepositoryFactory.getRepository().getConfiguration(new NamespacesId());
 		if (configuration instanceof PropertiesConfiguration) {
 			// Quick hack: direct serialization only works for PropertiesConfiguration
 			PropertiesConfiguration pconf = (PropertiesConfiguration) configuration;
@@ -412,10 +412,10 @@ public class CSARExporter {
 		// The schema says that the images have to exist
 		// However, at a quick modeling, there might be no images
 		// Therefore, we check for existence
-		if (Repository.INSTANCE.exists(res.icon_jpg_ref)) {
+		if (RepositoryFactory.getRepository().exists(res.icon_jpg_ref)) {
 			refMap.put(res.icon_jpg_ref, targetDir + "icon.jpg");
 		}
-		if (Repository.INSTANCE.exists(res.image_jpg_ref)) {
+		if (RepositoryFactory.getRepository().exists(res.image_jpg_ref)) {
 			refMap.put(res.image_jpg_ref, targetDir + "image.jpg");
 		}
 
@@ -456,7 +456,7 @@ public class CSARExporter {
 
 	private void putRefIntoRefMap(String targetDir, Map<RepositoryFileReference, String> refMap, SelfServiceMetaDataId id, String url) {
 		RepositoryFileReference ref = new RepositoryFileReference(id, url);
-		if (Repository.INSTANCE.exists(ref)) {
+		if (RepositoryFactory.getRepository().exists(ref)) {
             refMap.put(ref, targetDir + url);
         } else {
             CSARExporter.LOGGER.error("Data corrupt: pointing to non-existent file " + ref);
@@ -502,7 +502,7 @@ public class CSARExporter {
 			if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
 				mimeType = MimeTypes.MIMETYPE_XSD;
 			} else {
-				mimeType = Repository.INSTANCE.getMimeType(ref);
+				mimeType = RepositoryFactory.getRepository().getMimeType(ref);
 			}
 			pw.println("Content-Type: " + mimeType);
 			pw.println();

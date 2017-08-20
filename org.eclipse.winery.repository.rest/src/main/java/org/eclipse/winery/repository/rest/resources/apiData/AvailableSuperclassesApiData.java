@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 
 public class AvailableSuperclassesApiData {
@@ -33,7 +33,7 @@ public class AvailableSuperclassesApiData {
 	}
 
 	private void generateList(Class<? extends TOSCAComponentId> clazz, TOSCAComponentId classToExclude) {
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(clazz);
+		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(clazz);
 		if (classToExclude != null) {
 			allTOSCAcomponentIds.remove(classToExclude);
 		}

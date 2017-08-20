@@ -25,8 +25,7 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 
@@ -70,7 +69,7 @@ public class GenericImportResource extends AbstractComponentInstanceResource {
 		if (this.theImport.getLocation() == null) {
 			// invalid import -- try to synchronize with storage
 
-			SortedSet<RepositoryFileReference> containedFiles = Repository.INSTANCE.getContainedFiles(id);
+			SortedSet<RepositoryFileReference> containedFiles = RepositoryFactory.getRepository().getContainedFiles(id);
 			// there is also a .definitions contained
 			// we are only interested in the non-.definitions
 			for (RepositoryFileReference ref : containedFiles) {

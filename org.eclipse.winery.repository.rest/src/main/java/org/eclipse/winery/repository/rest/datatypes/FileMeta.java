@@ -19,7 +19,7 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.rest.Prefs;
 import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class FileMeta {
 	public FileMeta(RepositoryFileReference ref) {
 		this.name = ref.getFileName();
 		try {
-			this.size = Repository.INSTANCE.getSize(ref);
+			this.size = RepositoryFactory.getRepository().getSize(ref);
 		} catch (IOException e) {
 			FileMeta.LOGGER.error(e.getMessage(), e);
 			this.size = 0;

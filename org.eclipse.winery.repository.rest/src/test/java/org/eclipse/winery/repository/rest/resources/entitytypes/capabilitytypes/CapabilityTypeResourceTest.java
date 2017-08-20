@@ -17,7 +17,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.rest.resources.ResourceTest;
 
@@ -41,13 +41,13 @@ public class CapabilityTypeResourceTest extends ResourceTest {
 
 	@Before
 	public void setRevision() throws Exception {
-		((GitBasedRepository) Repository.INSTANCE).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
+		((GitBasedRepository) RepositoryFactory.getRepository()).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
 	}
 
 	@Test
 	public void getElementAsXMLString() throws IOException {
 		// ensure that no test object exists
-		Repository.INSTANCE.forceDelete(CapabilityTypeResourceTest.id);
+		RepositoryFactory.getRepository().forceDelete(CapabilityTypeResourceTest.id);
 
 		CapabilityTypeResource res = new CapabilityTypeResource(CapabilityTypeResourceTest.id);
 		String s = res.getDefinitionsAsXMLString();

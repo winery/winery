@@ -208,7 +208,7 @@ public class BackendUtils {
 
 
 	public static String getName(TOSCAComponentId instanceId) throws RepositoryCorruptException {
-		TExtensibleElements instanceElement = Repository.INSTANCE.getDefinitions(instanceId)
+		TExtensibleElements instanceElement = RepositoryFactory.getRepository().getDefinitions(instanceId)
 				.orElseThrow(() -> new RepositoryCorruptException("Definitions does not exist for instance"))
 				.getElement();
 		return ModelUtilities.getNameWithIdFallBack(instanceElement);
@@ -354,9 +354,9 @@ public class BackendUtils {
 
 		// DAs may be assigned via node type implementations
 		QName nodeTypeQName = nodeTemplate.getType();
-		Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
+		Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
 		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-			TDeploymentArtifacts deploymentArtifacts = Repository.INSTANCE.getElement(nodeTypeImplementationId).get().getDeploymentArtifacts();
+			TDeploymentArtifacts deploymentArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).get().getDeploymentArtifacts();
 			allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(deploymentArtifacts);
 			l.addAll(allReferencedArtifactTemplates);
 		}
@@ -369,9 +369,9 @@ public class BackendUtils {
 
 		// IAs may be assigned via node type implementations
 		QName nodeTypeQName = nodeTemplate.getType();
-		Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
+		Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
 		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-			TImplementationArtifacts implementationArtifacts = Repository.INSTANCE.getElement(nodeTypeImplementationId).get().getImplementationArtifacts();
+			TImplementationArtifacts implementationArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).get().getImplementationArtifacts();
 			Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(implementationArtifacts);
 			l.addAll(allReferencedArtifactTemplates);
 		}
@@ -398,7 +398,7 @@ public class BackendUtils {
 
 		// set a unique id to create a valid definitions element
 		// we do not use UUID to be more human readable and deterministic (for debugging)
-		String prefix = Repository.INSTANCE.getNamespaceManager().getPrefix(tcId.getNamespace());
+		String prefix = RepositoryFactory.getRepository().getNamespaceManager().getPrefix(tcId.getNamespace());
 		String elId = tcId.getXmlId().getDecoded();
 		String id = "winery-defs-for_" + prefix + "-" + elId;
 		defs.setId(id);
@@ -507,7 +507,7 @@ public class BackendUtils {
 		byte[] data = out.toByteArray();
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
 		// this may throw an IOExcpetion. We propagate this exception.
-		Repository.INSTANCE.putContentToFile(ref, in, mediaType);
+		RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
 	}
 
 	/**
@@ -519,7 +519,7 @@ public class BackendUtils {
 		}
 		final InputStream is;
 		try {
-			is = Repository.INSTANCE.newInputStream(ref);
+			is = RepositoryFactory.getRepository().newInputStream(ref);
 		} catch (IOException e) {
 			BackendUtils.LOGGER.debug("Could not create input stream", e);
 			return null;
@@ -821,7 +821,7 @@ public class BackendUtils {
 			return null;
 		}
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
-		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+		try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
 			Definitions defs = ((Definitions) u.unmarshal(is));
 			Map<QName, String> atts = defs.getOtherAttributes();

@@ -28,7 +28,7 @@ import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
@@ -104,7 +104,7 @@ public class BoundaryDefinitionsJSPData {
 	}
 
 	public Collection<QName> getAllPolicyTypes() {
-		SortedSet<PolicyTypeId> allTOSCAComponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(PolicyTypeId.class);
+		SortedSet<PolicyTypeId> allTOSCAComponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(PolicyTypeId.class);
 		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
 	}
 

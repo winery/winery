@@ -15,7 +15,7 @@ package org.eclipse.winery.repository.rest.resources.servicetemplates.topologyte
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class TopologyTemplateResourceTest  extends AbstractResourceTest {
 
 		// Quick hack to ensure that the service template containing the tpology template exists
 		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/fruits", "farm", false);
-		Repository.INSTANCE.flagAsExisting(id);
+		RepositoryFactory.getRepository().flagAsExisting(id);
 
 		this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/farm/topologytemplate/", "servicetemplates/farm_topologytemplate.json");
 	}

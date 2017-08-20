@@ -35,7 +35,7 @@ import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
@@ -87,7 +87,7 @@ public class SelfServicePortalResource implements IPersistable {
 	}
 
 	public void ensureDataXmlExists() {
-		if (!Repository.INSTANCE.exists(this.data_xml_ref)) {
+		if (!RepositoryFactory.getRepository().exists(this.data_xml_ref)) {
 			// this.application is already initialized with a default value.
 			// So we just need to persist this resource
 			Utils.persist(this);
@@ -97,9 +97,9 @@ public class SelfServicePortalResource implements IPersistable {
 	@GET
 	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
 	public Application getData() {
-		if (Repository.INSTANCE.exists(this.data_xml_ref)) {
+		if (RepositoryFactory.getRepository().exists(this.data_xml_ref)) {
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref)) {
+			try (InputStream is = RepositoryFactory.getRepository().newInputStream(this.data_xml_ref)) {
 				return (Application) u.unmarshal(is);
 			} catch (IOException | JAXBException e) {
 				SelfServicePortalResource.LOGGER.error("Could not read from " + this.data_xml_ref, e);
@@ -213,9 +213,9 @@ public class SelfServicePortalResource implements IPersistable {
 	@Produces({MediaType.TEXT_XML,  MediaType.APPLICATION_XML})
 	public String getApplicationAsXMLStringEncoded() {
 		String res;
-		if (Repository.INSTANCE.exists(this.data_xml_ref)) {
+		if (RepositoryFactory.getRepository().exists(this.data_xml_ref)) {
 			StringWriter sw = new StringWriter();
-			try (InputStream is = Repository.INSTANCE.newInputStream(this.data_xml_ref)) {
+			try (InputStream is = RepositoryFactory.getRepository().newInputStream(this.data_xml_ref)) {
 				IOUtils.copy(is, sw);
 			} catch (IOException e) {
 				SelfServicePortalResource.LOGGER.error("Could not read from file", e);

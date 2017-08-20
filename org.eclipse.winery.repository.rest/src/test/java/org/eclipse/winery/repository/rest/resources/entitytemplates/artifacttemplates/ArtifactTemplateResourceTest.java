@@ -13,7 +13,7 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttem
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
 
@@ -34,7 +34,7 @@ public class ArtifactTemplateResourceTest {
 
 	@Before
 	public void setRevision() throws Exception {
-		((GitBasedRepository) Repository.INSTANCE).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
+		((GitBasedRepository) RepositoryFactory.getRepository()).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
 	}
 
 	@Test

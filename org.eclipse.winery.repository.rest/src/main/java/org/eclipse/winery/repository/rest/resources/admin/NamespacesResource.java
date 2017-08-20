@@ -37,7 +37,7 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.backend.NamespaceManager;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.ConfigurationBasedNamespaceManager;
 import org.eclipse.winery.repository.rest.resources.apiData.NamespaceWithPrefix;
 
@@ -64,7 +64,7 @@ public class NamespacesResource extends AbstractAdminResource {
 	 */
 	public Collection<Namespace> getNamespaces() {
 		Set<Namespace> res = this.namespaceManager.getAllNamespaces().stream().map(ns -> new Namespace(ns, false)).collect(Collectors.toSet());
-		res.addAll(Repository.INSTANCE.getUsedNamespaces());
+		res.addAll(RepositoryFactory.getRepository().getUsedNamespaces());
 		ArrayList<Namespace> list = new ArrayList<>(res);
 		Collections.sort(list);
 		return list;

@@ -28,7 +28,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public class ProviderRepository {
 
@@ -48,7 +48,7 @@ public class ProviderRepository {
 	public List<TTopologyTemplate> getAllTopologyFragmentsForLocationAndOfferingCapability(String targetLocation, TRequirement requirement) {
 		QName reqTypeQName = requirement.getType();
 		RequirementTypeId reqTypeId = new RequirementTypeId(reqTypeQName);
-		QName requiredCapabilityType = Repository.INSTANCE.getElement(reqTypeId).get().getRequiredCapabilityType();
+		QName requiredCapabilityType = RepositoryFactory.getRepository().getElement(reqTypeId).get().getRequiredCapabilityType();
 
 		return getAllTopologyFragmentsForLocation(targetLocation).stream()
 				.filter(tf -> {
@@ -74,12 +74,12 @@ public class ProviderRepository {
 			namespaceStr = NS_NAME_START + targetLocation.toLowerCase();
 		}
 
-		return Repository.INSTANCE.getAllTOSCAComponentIds(ServiceTemplateId.class).stream()
+		return RepositoryFactory.getRepository().getAllTOSCAComponentIds(ServiceTemplateId.class).stream()
 				// get all service templates in the namespace
 				.filter(id -> id.getNamespace().getDecoded().toLowerCase().startsWith(namespaceStr))
 				// get all contained node templates
 				.flatMap(id -> {
-					TTopologyTemplate topologyTemplate = Repository.INSTANCE.getElement(id).get().getTopologyTemplate();
+					TTopologyTemplate topologyTemplate = RepositoryFactory.getRepository().getElement(id).get().getTopologyTemplate();
 					List<TNodeTemplate> matchedNodeTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
 							.filter(t -> t instanceof TNodeTemplate)
 							.map(TNodeTemplate.class::cast)

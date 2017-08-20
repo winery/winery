@@ -32,7 +32,7 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -93,13 +93,13 @@ public class XSDImportResource extends GenericImportResource {
 		if (ref == null) {
 			return Collections.emptySet();
 		}
-		Date lastUpdate = Repository.INSTANCE.getLastUpdate(ref);
+		Date lastUpdate = RepositoryFactory.getRepository().getLastUpdate(ref);
 
 		String cacheFileName = "definedLocalNames " + Integer.toString(type) + ".cache";
 		RepositoryFileReference cacheRef = new RepositoryFileReference(this.id, cacheFileName);
 		boolean cacheNeedsUpdate = true;
-		if (Repository.INSTANCE.exists(cacheRef)) {
-			Date lastUpdateCache = Repository.INSTANCE.getLastUpdate(cacheRef);
+		if (RepositoryFactory.getRepository().exists(cacheRef)) {
+			Date lastUpdateCache = RepositoryFactory.getRepository().getLastUpdate(cacheRef);
 			if (lastUpdate.compareTo(lastUpdateCache) <= 0) {
 				cacheNeedsUpdate = false;
 			}
@@ -132,14 +132,14 @@ public class XSDImportResource extends GenericImportResource {
 				XSDImportResource.LOGGER.error("Could not generate cache content", e);
 			}
 			try {
-				Repository.INSTANCE.putContentToFile(cacheRef, cacheContent, MediaType.APPLICATION_JSON_TYPE);
+				RepositoryFactory.getRepository().putContentToFile(cacheRef, cacheContent, MediaType.APPLICATION_JSON_TYPE);
 			} catch (IOException e) {
 				XSDImportResource.LOGGER.error("Could not update cache", e);
 			}
 		} else {
 			// read content from cache
 			// cache should contain most recent information
-			try (InputStream is = Repository.INSTANCE.newInputStream(cacheRef)) {
+			try (InputStream is = RepositoryFactory.getRepository().newInputStream(cacheRef)) {
 				result = Utils.mapper.readValue(is, java.util.List.class);
 			} catch (IOException e) {
 				XSDImportResource.LOGGER.error("Could not read from cache", e);

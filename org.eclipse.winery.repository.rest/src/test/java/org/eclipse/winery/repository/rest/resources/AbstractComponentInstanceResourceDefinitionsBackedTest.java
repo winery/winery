@@ -16,7 +16,7 @@ import java.io.IOException;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.repository.backend.MockXMLElement;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.entitytypes.capabilitytypes.CapabilityTypeResource;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -31,22 +31,22 @@ public class AbstractComponentInstanceResourceDefinitionsBackedTest extends Reso
 	@Test
 	public void testPlainPersist() throws IOException {
 		// ensure that no test object exists
-		Repository.INSTANCE.forceDelete(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
+		RepositoryFactory.getRepository().forceDelete(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
 
 		CapabilityTypeResource res = new CapabilityTypeResource(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
 		res.persist();
-		Assert.assertTrue("Element has to exist", Repository.INSTANCE.exists(AbstractComponentInstanceResourceDefinitionsBackedTest.id));
+		Assert.assertTrue("Element has to exist", RepositoryFactory.getRepository().exists(AbstractComponentInstanceResourceDefinitionsBackedTest.id));
 	}
 
 	@Test
 	public void testPersistWithData() throws IOException {
 		// ensure that no test object exists
-		Repository.INSTANCE.forceDelete(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
+		RepositoryFactory.getRepository().forceDelete(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
 
 		CapabilityTypeResource res = new CapabilityTypeResource(AbstractComponentInstanceResourceDefinitionsBackedTest.id);
 		res.getElement().getAny().add(new MockXMLElement());
 		res.persist();
-		Assert.assertTrue("Element has to exist", Repository.INSTANCE.exists(AbstractComponentInstanceResourceDefinitionsBackedTest.id));
+		Assert.assertTrue("Element has to exist", RepositoryFactory.getRepository().exists(AbstractComponentInstanceResourceDefinitionsBackedTest.id));
 
 		// reload data
 		res = new CapabilityTypeResource(AbstractComponentInstanceResourceDefinitionsBackedTest.id);

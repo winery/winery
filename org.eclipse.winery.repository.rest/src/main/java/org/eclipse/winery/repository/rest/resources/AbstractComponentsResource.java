@@ -41,7 +41,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -176,7 +176,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 */
 	public static AbstractComponentInstanceResource getComponentInstaceResource(TOSCAComponentId tcId) {
 		String type = Util.getTypeForComponentId(tcId.getClass());
-		if (!Repository.INSTANCE.exists(tcId)) {
+		if (!RepositoryFactory.getRepository().exists(tcId)) {
 			AbstractComponentsResource.LOGGER.debug("TOSCA component id " + tcId.toString() + " not found");
 			throw new NotFoundException("TOSCA component id " + tcId.toString() + " not found");
 		}
@@ -201,7 +201,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 */
 	public Collection<AbstractComponentInstanceResource> getAll() {
 		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
+		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(idClass);
 		ArrayList<AbstractComponentInstanceResource> res = new ArrayList<>(allTOSCAcomponentIds.size());
 		for (TOSCAComponentId id : allTOSCAcomponentIds) {
 			AbstractComponentInstanceResource r = AbstractComponentsResource.getComponentInstaceResource(id);
@@ -226,7 +226,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	public String getListOfAllIds(@QueryParam("grouped") String grouped) {
 		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
 		boolean supportsNameAttribute = Util.instanceSupportsNameAttribute(idClass);
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = Repository.INSTANCE.getAllTOSCAComponentIds(idClass);
+		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(idClass);
 		JsonFactory jsonFactory = new JsonFactory();
 		StringWriter sw = new StringWriter();
 		try {

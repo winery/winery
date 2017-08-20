@@ -77,7 +77,7 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.export.CSARExporter;
@@ -485,7 +485,7 @@ public class Utils {
 	}
 
 	public static ArrayNode getAllXSDefinitionsForTypeAheadSelectionRaw(short type) {
-		SortedSet<XSDImportId> allImports = Repository.INSTANCE.getAllTOSCAComponentIds(XSDImportId.class);
+		SortedSet<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
 
 		Map<Namespace, Collection<String>> data = new HashMap<>();
 
@@ -756,7 +756,7 @@ public class Utils {
 
 		String xmlString = sw.toString();
 
-		Repository.INSTANCE.putContentToFile(fileRef, xmlString, MediaType.valueOf(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS));
+		RepositoryFactory.getRepository().putContentToFile(fileRef, xmlString, MediaType.valueOf(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS));
 
 		return newServiceTemplateId;
 	}
@@ -843,7 +843,7 @@ public class Utils {
 	 */
 	public static TArtifactTemplate getTArtifactTemplate(ArtifactTemplateDirectoryId directoryId) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
-		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+		try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
 			Definitions defs = ((Definitions) u.unmarshal(is));
 			for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
@@ -898,7 +898,7 @@ public class Utils {
 
 	public static Response rename(TOSCAComponentId oldId, TOSCAComponentId newId) {
 		try {
-			Repository.INSTANCE.rename(oldId, newId);
+			RepositoryFactory.getRepository().rename(oldId, newId);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
@@ -914,7 +914,7 @@ public class Utils {
 	public static Response delete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, String namespaceStr) {
 		Namespace namespace = new Namespace(namespaceStr, true);
 		try {
-			Repository.INSTANCE.forceDelete(toscaComponentIdClazz, namespace);
+			RepositoryFactory.getRepository().forceDelete(toscaComponentIdClazz, namespace);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
@@ -926,11 +926,11 @@ public class Utils {
 	 * Deletes given file/dir and returns appropriate response code
 	 */
 	public static Response delete(GenericId id) {
-		if (!Repository.INSTANCE.exists(id)) {
+		if (!RepositoryFactory.getRepository().exists(id)) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		try {
-			Repository.INSTANCE.forceDelete(id);
+			RepositoryFactory.getRepository().forceDelete(id);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
@@ -942,11 +942,11 @@ public class Utils {
 	 * Deletes given file and returns appropriate response code
 	 */
 	public static Response delete(RepositoryFileReference ref) {
-		if (!Repository.INSTANCE.exists(ref)) {
+		if (!RepositoryFactory.getRepository().exists(ref)) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		try {
-			Repository.INSTANCE.forceDelete(ref);
+			RepositoryFactory.getRepository().forceDelete(ref);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
@@ -974,11 +974,11 @@ public class Utils {
 	 */
 	public static ResourceCreationResult create(GenericId id) {
 		ResourceCreationResult res = new ResourceCreationResult();
-		if (Repository.INSTANCE.exists(id)) {
+		if (RepositoryFactory.getRepository().exists(id)) {
 			// res.setStatus(302);
 			res.setStatus(Status.CONFLICT);
 		} else {
-			if (Repository.INSTANCE.flagAsExisting(id)) {
+			if (RepositoryFactory.getRepository().flagAsExisting(id)) {
 				res.setStatus(Status.CREATED);
 				// @formatter:off
 				// This method is a generic method
@@ -1043,13 +1043,13 @@ public class Utils {
 	 * returned
 	 */
 	private static Response.ResponseBuilder returnRefAsResponseBuilder(RepositoryFileReference ref, String modified) {
-		if (!Repository.INSTANCE.exists(ref)) {
+		if (!RepositoryFactory.getRepository().exists(ref)) {
 			return Response.status(Status.NOT_FOUND);
 		}
 
 		FileTime lastModified;
 		try {
-			lastModified = Repository.INSTANCE.getLastModifiedTime(ref);
+			lastModified = RepositoryFactory.getRepository().getLastModifiedTime(ref);
 		} catch (IOException e1) {
 			LOGGER.debug("Could not get lastModifiedTime", e1);
 			return Response.serverError();
@@ -1062,7 +1062,7 @@ public class Utils {
 
 		Response.ResponseBuilder res;
 		try {
-			res = Response.ok(Repository.INSTANCE.newInputStream(ref));
+			res = Response.ok(RepositoryFactory.getRepository().newInputStream(ref));
 		} catch (IOException e) {
 			LOGGER.debug("Could not open input stream", e);
 			return Response.serverError();
@@ -1072,7 +1072,7 @@ public class Utils {
 		res = res.header(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 		// determine and set MIME content type
 		try {
-			res = res.header(HttpHeaders.CONTENT_TYPE, Repository.INSTANCE.getMimeType(ref));
+			res = res.header(HttpHeaders.CONTENT_TYPE, RepositoryFactory.getRepository().getMimeType(ref));
 		} catch (IOException e) {
 			LOGGER.debug("Could not determine mime type", e);
 			return Response.serverError();
@@ -1111,7 +1111,7 @@ public class Utils {
 	 */
 	public static Response putContentToFile(RepositoryFileReference ref, String content, @SuppressWarnings("SameParameterValue") org.apache.tika.mime.MediaType mediaType) {
 		try {
-			Repository.INSTANCE.putContentToFile(ref, content, mediaType);
+			RepositoryFactory.getRepository().putContentToFile(ref, content, mediaType);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
@@ -1121,7 +1121,7 @@ public class Utils {
 
 	public static Response putContentToFile(RepositoryFileReference ref, InputStream inputStream, org.apache.tika.mime.MediaType mediaType) {
 		try {
-			Repository.INSTANCE.putContentToFile(ref, inputStream, mediaType);
+			RepositoryFactory.getRepository().putContentToFile(ref, inputStream, mediaType);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();

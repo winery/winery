@@ -14,7 +14,7 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqan
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 
 import io.restassured.RestAssured;
@@ -55,7 +55,7 @@ public class RequirementDefinitionsTest {
 		new PrefsTestEnabledGitBackedRepository();
 
 		// we use a half-filled repository
-		((GitBasedRepository) Repository.INSTANCE).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
+		((GitBasedRepository) RepositoryFactory.getRepository()).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");
 
 		// we test on the Amazon EC2 node type
 		// could be any other node type without requirement definitions

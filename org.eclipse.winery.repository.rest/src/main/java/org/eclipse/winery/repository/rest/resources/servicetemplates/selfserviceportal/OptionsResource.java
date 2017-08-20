@@ -25,7 +25,7 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 
@@ -102,7 +102,7 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 
 		RepositoryFileReference iconRef = new RepositoryFileReference(ssmdId, iconFileName);
 		try {
-			Repository.INSTANCE.putContentToFile(iconRef, uploadedInputStream, body.getMediaType());
+			RepositoryFactory.getRepository().putContentToFile(iconRef, uploadedInputStream, body.getMediaType());
 		} catch (IOException e) {
 			OptionsResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
@@ -110,7 +110,7 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 
 		RepositoryFileReference planInputMessageRef = new RepositoryFileReference(ssmdId, planInputMessageFileName);
 		try {
-			Repository.INSTANCE.putContentToFile(planInputMessageRef, planInputMessage, MediaType.TEXT_XML_TYPE);
+			RepositoryFactory.getRepository().putContentToFile(planInputMessageRef, planInputMessage, MediaType.TEXT_XML_TYPE);
 		} catch (IOException e) {
 			OptionsResource.LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();

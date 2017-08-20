@@ -56,7 +56,7 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources.IHasName;
@@ -331,7 +331,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 
 		// plans stored in the repository
 		PlansId plansContainerId = new PlansId((ServiceTemplateId) this.getId());
-		SortedSet<PlanId> nestedPlans = Repository.INSTANCE.getNestedIds(plansContainerId, PlanId.class);
+		SortedSet<PlanId> nestedPlans = RepositoryFactory.getRepository().getNestedIds(plansContainerId, PlanId.class);
 
 		Set<PlanId> plansToAdd = new HashSet<>();
 		plansToAdd.addAll(nestedPlans);
@@ -385,7 +385,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		// add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
 		List<TPlan> thePlans = plans.getPlan();
 		for (PlanId planId : plansToAdd) {
-			SortedSet<RepositoryFileReference> files = Repository.INSTANCE.getContainedFiles(planId);
+			SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(planId);
 			if (files.size() != 1) {
 				throw new IllegalStateException("Currently, only one file per plan is supported.");
 			}

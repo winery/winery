@@ -23,7 +23,7 @@ import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates.PolicyTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationsResource;
@@ -48,7 +48,7 @@ public final class GenericComponentPageData {
 		this.resourceClass = resourceClass;
 		this.showAllItems = showAllItems;
 		this.cIdClass = Utils.getComponentIdClassForComponentContainer(resourceClass);
-		this.componentInstanceIds = Repository.INSTANCE.getAllTOSCAComponentIds(cIdClass);
+		this.componentInstanceIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(cIdClass);
 	}
 
 	public GenericComponentPageData(Class<? extends AbstractComponentsResource> resourceClass, String namespace) {
@@ -112,7 +112,7 @@ public final class GenericComponentPageData {
 		} else {
 			return Collections.emptyList();
 		}
-		return Repository.INSTANCE.getAllTOSCAComponentIds(typeIdClass);
+		return RepositoryFactory.getRepository().getAllTOSCAComponentIds(typeIdClass);
 	}
 
 	public boolean isShowAllItems() {

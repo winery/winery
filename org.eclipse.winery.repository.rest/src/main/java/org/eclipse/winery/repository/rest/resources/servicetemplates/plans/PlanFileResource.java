@@ -27,7 +27,7 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -84,7 +84,7 @@ public class PlanFileResource {
 
 		// Really store it
 		try {
-			Repository.INSTANCE.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+			RepositoryFactory.getRepository().putContentToFile(ref, uploadedInputStream, body.getMediaType());
 		} catch (IOException e1) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
 		}
