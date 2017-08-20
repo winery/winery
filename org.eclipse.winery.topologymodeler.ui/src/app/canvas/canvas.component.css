@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:900');
+.selection {
+  position: absolute !important;
+  border: 1px dashed #89B;
+  background: #BCE;
+  background-color: #BEC;
+  border-color: #8B9;
+  opacity: 0.2;
+  z-index: 9000;
+  display: none;
+  cursor: default !important;
+}
+.crosshair {
+  cursor: crosshair;
+}
+.selection-active {
+  display: block !important;
+}
+
+.selection > span {
+  background-color: rgba(239, 28, 190, 0.2);
+  border: 1px dashed #b20e8c;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+#grid {
+  width: 100%;
+  height: 100%;
+  margin-left: 19%;
+  position: absolute;
+}

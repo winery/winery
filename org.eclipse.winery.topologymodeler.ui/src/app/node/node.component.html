@@ -1,0 +1,175 @@
+<div class="container rounded" style="padding: 3px; position: absolute;" [style.top]="top" [style.left]="left"
+     id={{title}} [style.borderColor]="nodeColor" [style.backgroundColor]="nodeColor"
+     (mousedown)="trackTimeOfMouseDown()"
+     (mouseup)="trackTimeOfMouseUp()"
+     (click)="showConnectorEndpoint($event)">
+  <div class="row rounded"
+       [class.selected]="makeSelectionVisible"
+       [class.unselected]="!makeSelectionVisible">
+    <div class="col-sm-3">
+      <img *ngIf="!nodeImageUrl" src="https://api.adorable.io/avatars/50/{{title}}" style="border-radius: 10%; margin-top: 1px">
+      <img *ngIf="nodeImageUrl" src="{{nodeImageUrl}}">
+    </div>
+    <div id="specifierDiv" class="col-sm-9">
+      <table class="table table-active table-border--grey table-sm">
+
+        <tr>
+          <td class="td-key">name:</td>
+          <td>{{title}}</td>
+        </tr>
+        <tr *ngIf="navbarButtonsState.buttonsState.idsButton">
+          <td class="td-key">id:</td>
+          <td style="color: crimson">{{title}}</td>
+        </tr>
+        <tr *ngIf="navbarButtonsState.buttonsState.typesButton">
+          <td class="td-key">link:</td>
+          <td class="btn-link">{{title}}</td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
+  <div class="endpointContainer" *ngIf="connectorEndpointVisible">
+    <div class="connectorEndpoint">
+      <div class="connectorBox">
+      </div>
+      <div class="connectorLabel">
+      </div>
+    </div>
+  </div>
+
+  <accordion #accordion>
+
+    <!-- PROPERTIES -->
+    <accordion-group
+      #propertiesgroup
+      panelClass="accordionGroupPanel"
+      *ngIf="navbarButtonsState.buttonsState.propertiesButton">
+      <div accordion-heading>
+        Properties
+        <i class="pull-sm-0 float-sm-right fa icon-styling"
+           [ngClass]="{'fa-chevron-down': propertiesgroup?.isOpen, 'fa-chevron-right': !propertiesgroup?.isOpen}"
+           style="padding-top: 3px"></i>
+      </div>
+    </accordion-group>
+
+    <!-- DEPLOYMENT ARTIFACTS -->
+    <accordion-group
+      #deploymentartifactsgroup
+      panelClass="accordionGroupPanel"
+      *ngIf="navbarButtonsState.buttonsState.deploymentArtifactsButton">
+      <div accordion-heading>
+        Deployment Artifacts
+        <i class="pull-sm-0 float-sm-right fa icon-styling"
+           [ngClass]="{'fa-chevron-down': deploymentartifactsgroup?.isOpen,
+           'fa-chevron-right': !deploymentartifactsgroup?.isOpen}"
+           style="padding-top: 3px"></i>
+      </div>
+    </accordion-group>
+
+    <!-- REQUIREMENTS & CAPABILITIES -->
+    <accordion-group
+      #requirementscapabilitiesgroup
+      panelClass="accordionGroupPanel"
+      *ngIf="navbarButtonsState.buttonsState.requirementsCapabilitiesButton">
+      <div accordion-heading>
+        Requirements - Capabilities
+        <i class="pull-sm-0 float-sm-right fa icon-styling"
+           [ngClass]="{'fa-chevron-down': requirementscapabilitiesgroup?.isOpen,
+           'fa-chevron-right': !requirementscapabilitiesgroup?.isOpen}"
+           style="padding-top: 3px"></i>
+      </div>
+    </accordion-group>
+
+    <!-- POLICIES -->
+    <accordion-group
+      #policiesgroup
+      panelClass="accordionGroupPanel"
+      *ngIf="navbarButtonsState.buttonsState.policiesButton">
+      <div accordion-heading>
+        Policies
+        <i class="pull-sm-0 float-sm-right fa icon-styling"
+           [ngClass]="{'fa-chevron-down': policiesgroup?.isOpen, 'fa-chevron-right': !policiesgroup?.isOpen}">
+        </i>
+      </div>
+    </accordion-group>
+
+    <!-- TARGET LOCATIONS -->
+    <accordion-group
+      #targetlocationsgroup
+      panelClass="accordionGroupPanel"
+      *ngIf="navbarButtonsState.buttonsState.targetLocationsButton">
+      <div accordion-heading>
+        Target Locations
+        <i class="pull-sm-0 float-sm-right fa icon-styling"
+           [ngClass]="{'fa-chevron-down': targetlocationsgroup?.isOpen,
+           'fa-chevron-right': !targetlocationsgroup?.isOpen}">
+        </i>
+      </div>
+    </accordion-group>
+  </accordion>
+</div>
+<!--
+<div class="old-container-style" [style.top]="top" [style.left]="left"
+     id={{title}} [style.borderColor]="nodeColor" [style.backgroundColor]="nodeColor"
+     [class.selected]="makeSelectionVisible"
+     (mousedown)="trackTimeOfMouseDown()"
+     (mouseup)="trackTimeOfMouseUp()"
+     (click)="showConnectorEndpoint($event)">
+  <div class="old-row-style">
+    <div>
+    </div>
+    <div id="specifierDiv">
+      <p class="old-name">{{title}}</p>
+      <p class="old-id" *ngIf="idsVisible">{{title}}</p>
+      <a href="#" class="old-type" *ngIf="typesVisible">{{title}}</a>
+    </div>
+  </div>
+    &lt;!&ndash; PROPERTIES &ndash;&gt;
+    <div class="old-properties-style"
+      *ngIf="propertiesVisible">
+      <div class="old-properties-header-style">
+        Properties
+        <i class="pull-sm-0 float-sm-right fa"></i>
+      </div>
+    </div>
+    &lt;!&ndash; DEPLOYMENT ARTIFACTS &ndash;&gt;
+    <div class="old-deployment-style"
+      #deploymentartifactsgroup
+      *ngIf="deploymentArtifactsVisible">
+      <div class="old-deployment-header-style">
+        Deployment Artifacts
+        <i class="pull-sm-0 float-sm-right fa icon-styling"></i>
+      </div>
+    </div>
+    &lt;!&ndash; REQUIREMENTS & CAPABILITIES &ndash;&gt;
+    <div class="old-requirements-style"
+      #requirementscapabilitiesgroup
+      *ngIf="requirementsCapabilitiesVisible">
+      <div class="old-requirements-header-style">
+        Requirements - Capabilities
+        <i class="pull-sm-0 float-sm-right fa icon-styling"></i>
+      </div>
+    </div>
+    &lt;!&ndash; POLICIES &ndash;&gt;
+    <div class="old-policies-style"
+      #policiesgroup
+      *ngIf="policiesVisible">
+      <div class="old-policies-header-style">
+        Policies
+        <i class="pull-sm-0 float-sm-right fa icon-styling">
+        </i>
+      </div>
+    </div>
+    &lt;!&ndash; TARGET LOCATIONS &ndash;&gt;
+    <div class="old-target-style"
+      #targetlocationsgroup
+      *ngIf="targetLocationsVisible">
+      <div>
+        Target Locations
+        <i class="pull-sm-0 float-sm-right fa icon-styling">
+        </i>
+      </div>
+    </div>
+  </div>
+-->

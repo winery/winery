@@ -1,0 +1,9 @@
+#palette_root {
+  border-radius:0.25rem;
+  box-shadow: initial;
+}
+.nav-item {
+  border: 2px solid rgba(0,0,0,.125);
+  background-color: #f7f7f9;
+  border-radius: 0.25rem;
+}

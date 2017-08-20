@@ -33,7 +33,7 @@ deploy:
   bucket: builds.opentosca.org
   acl: public_read
   local_dir: "build/"
-  upload-dir: "winery-eclipse/$TRAVIS_BRANCH"
+  upload-dir: "winery/$TRAVIS_BRANCH"
   region: eu-central-1
   on:
     all_branches: true

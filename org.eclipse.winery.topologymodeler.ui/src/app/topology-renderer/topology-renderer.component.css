@@ -1,0 +1,11 @@
+app-navbar {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  z-index: 500;
+}
+
+app-canvas {
+  width: 100%;
+  padding-top: 47px;
+}

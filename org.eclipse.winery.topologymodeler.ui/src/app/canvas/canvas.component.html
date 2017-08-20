@@ -1,0 +1,28 @@
+<div id="container" style="height: auto;">
+  <div id="grid"
+       (mousedown)="trackTimeOfMouseDown($event)"
+       (mouseup)="trackTimeOfMouseUp($event)"
+       [class.crosshair]="this.crosshair"
+       [style.marginLeft.px]="enhanceGrid">
+    <div class="selection" id="selection"
+         [class.selection-active]="selectionActive"
+         [style.left.px]="pageX"
+         [style.top.px]="pageY"
+         [style.width.px]="selectionWidth"
+         [style.height.px]="selectionHeight">
+      <span></span>
+    </div>
+  </div>
+  <app-node *ngFor="let node of allNodeTemplates"
+            [title]="node.id"
+            [nodeColor]="node.color"
+            (sendId)="makeDraggable($event)"
+            [left]="node.otherAttributes.x + 'px'"
+            [top]="node.otherAttributes.y + 'px'"
+            [nodeImageUrl]="node.imageUrl"
+            [navbarButtonsState]="navbarButtonsState"
+            (addNodeToDragSelection)="addNodeToDragSelection($event)"
+            (checkIfNodeInSelection)="checkIfNodeInSelection($event)"
+            [selectedNodes]="selectedNodes">
+  </app-node>
+</div>

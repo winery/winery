@@ -38,7 +38,7 @@
     "bootstrap": "3.1.1",
     "bootstrap-switch": "v1.9.0",
     "bootstrap-touchspin": "3.1.2",
-    "colorwheel": "https://github.com/koppor/colorwheel.git#bower",
+    "colorwheel": "https://github.com/jweir/colorwheel.git#v1.0.0",
     "datatables": "1.9.4",
     "jquery": "2.0.3",
     "jquery-typing": "https://github.com/tnajdek/jquery-typing.git#0.3.2-2",
