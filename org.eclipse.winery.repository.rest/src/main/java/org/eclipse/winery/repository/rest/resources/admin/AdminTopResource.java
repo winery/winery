@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.configuration.GitHubConfiguration;
 import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesManager;
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
@@ -72,8 +73,12 @@ public class AdminTopResource {
 		httppost.setHeader("Accept", "application/json");
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
-		params.add(new BasicNameValuePair("client_id", Environment.getGitHubConfiguration().getGitHubClientId()));
-		params.add(new BasicNameValuePair("client_secret", Environment.getGitHubConfiguration().getGitHubClientSecret()));
+
+		// get configuration and fill with default values if no configuration exists
+		final GitHubConfiguration gitHubConfiguration = Environment.getGitHubConfiguration().orElse(new GitHubConfiguration("id", "secreat"));
+
+		params.add(new BasicNameValuePair("client_id", gitHubConfiguration.getGitHubClientId()));
+		params.add(new BasicNameValuePair("client_secret", gitHubConfiguration.getGitHubClientSecret()));
 		params.add(new BasicNameValuePair("code", codeApiData.code));
 		params.add(new BasicNameValuePair("state", codeApiData.state));
 		httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));

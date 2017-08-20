@@ -17,17 +17,11 @@ import java.util.Objects;
 public class GitHubConfiguration {
 
 	private String gitHubClientId;
-
 	private String gitHubClientSecret;
 
 	public GitHubConfiguration(String gitHubClientId, String gitHubClientSecret) {
 		this.gitHubClientId = gitHubClientId;
 		this.gitHubClientSecret = gitHubClientSecret;
-	}
-
-	GitHubConfiguration(WineryConfiguration wineryConfiguration) {
-		this.gitHubClientId = wineryConfiguration.gitHubClientId;
-		this.gitHubClientSecret = wineryConfiguration.gitHubClientSecret;
 	}
 
 	public String getGitHubClientId() {

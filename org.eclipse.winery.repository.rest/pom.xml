@@ -304,14 +304,6 @@
 					<include>logback-test.xml</include>
 				</includes>
 			</resource>
-			<resource>
-				<directory>src/main/templates</directory>
-				<includes>
-					<include>*.java</include>
-				</includes>
-				<filtering>true</filtering>
-				<targetPath>${project.build.directory}/generated-sources/java/org/eclipse/winery/repository</targetPath>
-			</resource>
 		</resources>
 		<plugins>
 			<plugin>

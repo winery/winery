@@ -1,4 +1,4 @@
-package org.eclipse.winery.repository;
+package org.eclipse.winery.repository.configuration;
 
 public final class Version {
 

@@ -24,12 +24,14 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.attribute.FileTime;
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -79,6 +81,7 @@ import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.export.CSARExporter;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
@@ -116,10 +119,9 @@ import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Element;
 
 /**
- * Contains utility functionality concerning with everything that is
- * <em>not</em> related only to the repository, but more. For instance, resource
- * functionality. Utility functionality for the repository is contained at
- * {@link BackendUtils}
+ * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
+ * more. For instance, resource functionality. Utility functionality for the repository is contained at {@link
+ * BackendUtils}
  */
 public class Utils {
 
@@ -139,6 +141,19 @@ public class Utils {
 	private static final String RANGE_NCNAMECHAR = Utils.RANGE_NCNAMESTARTCHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
 	private static final String REGEX_INVALIDNCNAMESCHAR = "[^" + Utils.RANGE_NCNAMECHAR + "]";
 
+	static {
+		if (Locale.getDefault() != Locale.ENGLISH) {
+			try {
+				// needed for {@link
+				// returnRepoPath(File, String)}
+				Locale.setDefault(Locale.ENGLISH);
+			} catch (AccessControlException e) {
+				// Happens at Google App Engine
+				LOGGER.error("Could not switch locale to English", e);
+			}
+		}
+	}
+
 	public static URI createURI(String uri) {
 		try {
 			return new URI(uri);
@@ -151,9 +166,8 @@ public class Utils {
 	/**
 	 * Creates a (valid) XML ID (NCName) based on the passed name
 	 *
-	 * Valid NCNames: http://www.w3.org/TR/REC-xml-names/#NT-NCName /
-	 * http://www.w3.org/TR/xml/#NT-Name http://www.w3.org/TR/xml/#NT-Name
-	 *
+	 * Valid NCNames: http://www.w3.org/TR/REC-xml-names/#NT-NCName / http://www.w3.org/TR/xml/#NT-Name
+	 * http://www.w3.org/TR/xml/#NT-Name
 	 */
 	public static XMLId createXMLid(String name) {
 		return new XMLId(Utils.createXMLidAsString(name), false);
@@ -162,13 +176,11 @@ public class Utils {
 	/**
 	 * Creates a (valid) XML ID (NCName) based on the passed name
 	 *
-	 * Valid NCNames: http://www.w3.org/TR/REC-xml-names/#NT-NCName /
-	 * http://www.w3.org/TR/xml/#NT-Name http://www.w3.org/TR/xml/#NT-Name
+	 * Valid NCNames: http://www.w3.org/TR/REC-xml-names/#NT-NCName / http://www.w3.org/TR/xml/#NT-Name
+	 * http://www.w3.org/TR/xml/#NT-Name
 	 *
-	 * TODO: this method seems to be equal to {@link
-	 * Util#makeNCName(java.lang.String)}. The methods should be
-	 * merged into one.
-	 *
+	 * TODO: this method seems to be equal to {@link Util#makeNCName(java.lang.String)}. The methods should be merged
+	 * into one.
 	 */
 	public static String createXMLidAsString(String name) {
 		String id = name;
@@ -196,15 +208,15 @@ public class Utils {
 	public static Response getDefinitionsOfSelectedResource(final AbstractComponentInstanceResource resource, final URI uri) {
 		final TOSCAExportUtil exporter = new TOSCAExportUtil();
 		StreamingOutput so = output -> {
-            Map<String, Object> conf = new HashMap<>();
-            conf.put(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
-            try {
-                exporter.exportTOSCA(resource.getId(), output, conf);
-            } catch (Exception e) {
-                throw new WebApplicationException(e);
-            }
-            output.close();
-        };
+			Map<String, Object> conf = new HashMap<>();
+			conf.put(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
+			try {
+				exporter.exportTOSCA(resource.getId(), output, conf);
+			} catch (Exception e) {
+				throw new WebApplicationException(e);
+			}
+			output.close();
+		};
 		/*
 		 * this code is for offering a download action // Browser offers save as
 		 * // .tosca is more or less needed for debugging, only a CSAR makes
@@ -223,12 +235,12 @@ public class Utils {
 	public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
 		final CSARExporter exporter = new CSARExporter();
 		StreamingOutput so = output -> {
-            try {
-                exporter.writeCSAR(resource.getId(), output);
-            } catch (Exception e) {
-                throw new WebApplicationException(e);
-            }
-        };
+			try {
+				exporter.writeCSAR(resource.getId(), output);
+			} catch (Exception e) {
+				throw new WebApplicationException(e);
+			}
+		};
 		StringBuilder sb = new StringBuilder();
 		sb.append("attachment;filename=\"");
 		sb.append(resource.getXmlId().getEncoded());
@@ -247,8 +259,7 @@ public class Utils {
 	}
 
 	/**
-	 * @return Singular type name for the given resource. E.g.,
-	 *         "ServiceTemplateResource" gets "ServiceTemplate"
+	 * @return Singular type name for the given resource. E.g., "ServiceTemplateResource" gets "ServiceTemplate"
 	 */
 	public static String getTypeForInstance(Class<? extends AbstractComponentInstanceResource> resClass) {
 		String res = resClass.getName();
@@ -259,8 +270,8 @@ public class Utils {
 	}
 
 	/**
-	 * @return Singular type name for given AbstractComponentsResource. E.g,
-	 *         "ServiceTemplatesResource" gets "ServiceTemplate"
+	 * @return Singular type name for given AbstractComponentsResource. E.g, "ServiceTemplatesResource" gets
+	 * "ServiceTemplate"
 	 */
 	public static String getTypeForComponentContainer(Class<? extends AbstractComponentsResource> containerClass) {
 		String res = containerClass.getName();
@@ -271,8 +282,7 @@ public class Utils {
 	}
 
 	/**
-	 * Returns a class object for ids of components nested in the given
-	 * AbstractComponentsResource
+	 * Returns a class object for ids of components nested in the given AbstractComponentsResource
 	 */
 	public static Class<? extends TOSCAComponentId> getComponentIdClassForComponentContainer(Class<? extends AbstractComponentsResource> containerClass) {
 		// the name of the id class is the type + "Id"
@@ -285,17 +295,16 @@ public class Utils {
 	 * @return the absolute path for the given id
 	 */
 	public static String getAbsoluteURL(GenericId id) {
-		return Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPath(id);
+		return Environment.getUrlConfiguration().getRepositoryApiUrl() + "/" + Util.getUrlPath(id);
 	}
 
 	/**
 	 * @param baseURI the URI from which the path should start
-	 * @param id the generic id to resolve
-	 *
+	 * @param id      the generic id to resolve
 	 * @return the relative path for the given id
 	 */
 	public static String getRelativeURL(URI baseURI, GenericId id) {
-		String absolutePath = Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPath(id);
+		String absolutePath = Environment.getUrlConfiguration().getRepositoryApiUrl() + "/" + Util.getUrlPath(id);
 		return baseURI.relativize(URI.create(absolutePath)).toString();
 	}
 
@@ -303,7 +312,7 @@ public class Utils {
 	 * @return the absolute path for the given id
 	 */
 	public static String getAbsoluteURL(RepositoryFileReference ref) {
-		return Prefs.INSTANCE.getResourcePath() + "/" + Util.getUrlPath(ref);
+		return Environment.getUrlConfiguration().getRepositoryApiUrl() + "/" + Util.getUrlPath(ref);
 	}
 
 	public static URI getAbsoluteURI(GenericId id) {
@@ -318,9 +327,8 @@ public class Utils {
 	}
 
 	/**
-	 * This method is similar to {@link
-	 * Util#qname2href(java.lang.String, java.lang.Class, javax.xml.namespace.QName, java.lang.String)}, but treats winery's
-	 * internal ID model instead of the global TOSCA model
+	 * This method is similar to {@link Util#qname2href(java.lang.String, java.lang.Class, javax.xml.namespace.QName,
+	 * java.lang.String)}, but treats winery's internal ID model instead of the global TOSCA model
 	 *
 	 * @param id the id to create an <code>a href</code> element for
 	 * @return an <code>a</code> HTML element pointing to the given id
@@ -330,28 +338,27 @@ public class Utils {
 	}
 
 	public static String artifactTypeQName2href(QName qname) {
-		return Util.qname2href(Prefs.INSTANCE.getResourcePath(), TArtifactType.class, qname);
+		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryApiUrl(), TArtifactType.class, qname);
 	}
 
 	public static String nodeTypeQName2href(QName qname) {
-		return Util.qname2href(Prefs.INSTANCE.getResourcePath(), TNodeType.class, qname);
+		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryApiUrl(), TNodeType.class, qname);
 	}
 
 	public static String relationshipTypeQName2href(QName qname) {
-		return Util.qname2href(Prefs.INSTANCE.getResourcePath(), TRelationshipType.class, qname);
+		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryApiUrl(), TRelationshipType.class, qname);
 	}
 
 	public static String policyTypeQName2href(QName qname) {
-		return Util.qname2href(Prefs.INSTANCE.getResourcePath(), TPolicyType.class, qname);
+		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryApiUrl(), TPolicyType.class, qname);
 	}
 
 	/**
 	 * Returns the middle part of the package name or the JSP location
 	 *
-	 * @param type the type
+	 * @param type      the type
 	 * @param separator the separator to be used, "." or "/"
-	 * @return string which can be used "in the middle" of a package or of a
-	 *         path to a JSP
+	 * @return string which can be used "in the middle" of a package or of a path to a JSP
 	 */
 	public static String getIntermediateLocationStringForType(String type, String separator) {
 		String location;
@@ -397,8 +404,7 @@ public class Utils {
 	}
 
 	/**
-	 * @return the path to the Winery topology modeler. Required by
-	 *         functions.tld
+	 * @return the path to the Winery topology modeler. Required by functions.tld
 	 */
 	public static String getWineryTopologyModelerPath() {
 		return Prefs.INSTANCE.getWineryTopologyModelerPath();
@@ -409,12 +415,11 @@ public class Utils {
 	 *
 	 * Used in cases the given element is not annotated with @XmlRoot
 	 *
-	 * We cannot use {@literal Class<? extends TExtensibleElements>} as, for
-	 * instance, {@link TConstraint} does not inherit from
-	 * {@link TExtensibleElements}
+	 * We cannot use {@literal Class<? extends TExtensibleElements>} as, for instance, {@link TConstraint} does not
+	 * inherit from {@link TExtensibleElements}
 	 *
 	 * @param clazz the Class of the passed object, required if obj is null
-	 * @param obj the object to serialize
+	 * @param obj   the object to serialize
 	 */
 	public static <T> Response getXML(Class<T> clazz, T obj) {
 		// see commit ab4b5c547619c058990 for an implementation using getJAXBElement,
@@ -637,9 +642,8 @@ public class Utils {
 	/**
 	 * referenced by functions.tld
 	 *
-	 * We need the bridge as functions (at tld) require a static method. We did
-	 * not want to put two methods in Prefs and therefore, we put the method
-	 * here.
+	 * We need the bridge as functions (at tld) require a static method. We did not want to put two methods in Prefs and
+	 * therefore, we put the method here.
 	 */
 	public static Boolean isRestDocDocumentationAvailable() {
 		return Prefs.INSTANCE.isRestDocDocumentationAvailable();
@@ -650,8 +654,8 @@ public class Utils {
 	}
 
 	/**
-	 * Converts the given String to an integer. Fallback if String is a float.
-	 * If String is an invalid number, "0" is returned
+	 * Converts the given String to an integer. Fallback if String is a float. If String is an invalid number, "0" is
+	 * returned
 	 */
 	public static int convertStringToInt(String number) {
 		int intTop = 0;
@@ -670,8 +674,7 @@ public class Utils {
 	}
 
 	/**
-	 * Checks whether a given resource (with absolute URL!) is available with a
-	 * HEAD request on it.
+	 * Checks whether a given resource (with absolute URL!) is available with a HEAD request on it.
 	 */
 	public static boolean isResourceAvailable(String path) {
 		Client client = Client.create();
@@ -737,13 +740,13 @@ public class Utils {
 
 		for (TTag tag : oldSTModel.getTags().getTag()) {
 			switch (tag.getName()) {
-			case "xaasPackageNode":
-			case "xaasPackageArtifactType":
-			case "xaasPackageDeploymentArtifact":
-				toRemove.add(tag);
-				break;
-			default:
-				break;
+				case "xaasPackageNode":
+				case "xaasPackageArtifactType":
+				case "xaasPackageDeploymentArtifact":
+					toRemove.add(tag);
+					break;
+				default:
+					break;
 			}
 		}
 
@@ -837,12 +840,11 @@ public class Utils {
 	}
 
 	/**
-	 *
 	 * @param directoryId DirectoryID of the TArtifactTemplate that should be returned.
 	 * @return The TArtifactTemplate corresponding to the directoryId.
 	 */
 	public static TArtifactTemplate getTArtifactTemplate(ArtifactTemplateDirectoryId directoryId) {
-		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
 		try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
 			Definitions defs = ((Definitions) u.unmarshal(is));
@@ -861,6 +863,7 @@ public class Utils {
 
 	/**
 	 * Tests if a path matches a glob pattern. {@see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>}
+	 *
 	 * @param glob Glob pattern to test the path against.
 	 * @param path Path that should match the glob pattern.
 	 * @return Whether the glob and the path result in a match.
@@ -957,20 +960,12 @@ public class Utils {
 	/**
 	 * Generates given TOSCA element and returns appropriate response code <br  />
 	 *
-	 * In the case of an existing resource, the other possible return code is
-	 * 302. This code has no Status constant, therefore we use Status.CONFLICT,
-	 * which is also possible.
+	 * In the case of an existing resource, the other possible return code is 302. This code has no Status constant,
+	 * therefore we use Status.CONFLICT, which is also possible.
 	 *
-	 * @return <ul>
-	 *         <li>
-	 *         <ul>
-	 *         <li>Status.CREATED (201) if the resource has been created,</li>
-	 *         <li>Status.CONFLICT if the resource already exists,</li>
-	 *         <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li>
-	 *         </ul>
-	 *         </li>
-	 *         <li>URI: the absolute URI of the newly created resource</li>
-	 *         </ul>
+	 * @return <ul> <li> <ul> <li>Status.CREATED (201) if the resource has been created,</li> <li>Status.CONFLICT if the
+	 * resource already exists,</li> <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li> </ul> </li>
+	 * <li>URI: the absolute URI of the newly created resource</li> </ul>
 	 */
 	public static ResourceCreationResult create(GenericId id) {
 		ResourceCreationResult res = new ResourceCreationResult();
@@ -984,7 +979,7 @@ public class Utils {
 				// This method is a generic method
 				// We cannot return an "absolute" URL as the URL is always
 				// relative to the caller
-				// Does not work: String path = Prefs.INSTANCE.getResourcePath()
+				// Does not work: String path = Environment.getUrlConfiguration().getRepositoryApiUrl()
 				// + "/" +
 				// Utils.getUrlPathForPathInsideRepo(id.getPathInsideRepo());
 				// We distinguish between two cases: TOSCAcomponentId and
@@ -1016,16 +1011,14 @@ public class Utils {
 	}
 
 	/**
-	 * Sends the file if modified and "not modified" if not modified future work
-	 * may put each file with a unique id in a separate folder in tomcat * use
-	 * that static URL for each file * if file is modified, URL of file changes
-	 * * -> client always fetches correct file
+	 * Sends the file if modified and "not modified" if not modified future work may put each file with a unique id in a
+	 * separate folder in tomcat * use that static URL for each file * if file is modified, URL of file changes * ->
+	 * client always fetches correct file
 	 *
-	 * additionally "Vary: Accept" header is added (enables caching of the
-	 * response)
+	 * additionally "Vary: Accept" header is added (enables caching of the response)
 	 *
-	 * method header for calling method public <br />
-	 * <code>Response getXY(@HeaderParam("If-Modified-Since") String modified) {...}</code>
+	 * method header for calling method public <br /> <code>Response getXY(@HeaderParam("If-Modified-Since") String
+	 * modified) {...}</code>
 	 *
 	 * @param ref      references the file to be send
 	 * @param modified - HeaderField "If-Modified-Since" - may be "null"
@@ -1038,9 +1031,8 @@ public class Utils {
 	/**
 	 * This is not repository specific, but we leave it close to the only caller
 	 *
-	 * If the passed ref is newer than the modified date (or the modified date
-	 * is null), an OK response with an inputstream pointing to the path is
-	 * returned
+	 * If the passed ref is newer than the modified date (or the modified date is null), an OK response with an
+	 * inputstream pointing to the path is returned
 	 */
 	private static Response.ResponseBuilder returnRefAsResponseBuilder(RepositoryFileReference ref, String modified) {
 		if (!RepositoryFactory.getRepository().exists(ref)) {
@@ -1084,9 +1076,8 @@ public class Utils {
 	}
 
 	/**
-	 * Updates the given property in the given configuration. Currently always
-	 * returns "no content", because the underlying class does not report any
-	 * errors during updating. <br />
+	 * Updates the given property in the given configuration. Currently always returns "no content", because the
+	 * underlying class does not report any errors during updating. <br />
 	 *
 	 * If null or "" is passed as value, the property is cleared
 	 *
@@ -1102,8 +1093,7 @@ public class Utils {
 	}
 
 	/**
-	 * Writes data to file. Replaces the file's content with the given content.
-	 * The file does not need to exist
+	 * Writes data to file. Replaces the file's content with the given content. The file does not need to exist
 	 *
 	 * @param ref     Reference to the File to write to (overwrite)
 	 * @param content the data to write
@@ -1176,5 +1166,4 @@ public class Utils {
 		}
 		return res;
 	}
-
 }

@@ -72,6 +72,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -98,10 +99,11 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	private final FileSystemProvider provider;
 
 	/**
-	 * @param repositoryLocation a string pointing to a location on the file system. May be null.
+	 * @param fileBasedRepositoryConfiguration configuration of the filebased repository. The contained repositoryPath may be null
 	 */
-	public FilebasedRepository(String repositoryLocation) {
-		this.repositoryRoot = this.determineRepositoryPath(repositoryLocation);
+	public FilebasedRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
+		Objects.requireNonNull(fileBasedRepositoryConfiguration);
+		this.repositoryRoot = this.determineRepositoryPath(fileBasedRepositoryConfiguration.getRepositoryPath());
 		this.fileSystem = this.repositoryRoot.getFileSystem();
 		this.provider = this.fileSystem.provider();
 		LOGGER.debug("Repository root: {}", this.repositoryRoot);

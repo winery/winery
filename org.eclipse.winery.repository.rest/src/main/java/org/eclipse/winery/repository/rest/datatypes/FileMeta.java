@@ -62,7 +62,7 @@ public class FileMeta {
 		}
 		this.url = Utils.getAbsoluteURL(ref);
 		this.deleteUrl = this.url;
-		this.thumbnailUrl = Prefs.INSTANCE.getResourcePath() + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
+		this.thumbnailUrl = Environment.getUrlConfiguration().getRepositoryApiUrl() + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
 	}
 
 	/**

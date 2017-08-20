@@ -75,7 +75,7 @@ public abstract class GenericVisualAppearanceResource {
 	 */
 	//@JsonIgnore
 	public URI getAbsoluteURL() {
-		String URI = Prefs.INSTANCE.getResourcePath();
+		String URI = Environment.getUrlConfiguration().getRepositoryApiUrl();
 		URI = URI + "/" + Util.getUrlPath(this.id);
 		return Utils.createURI(URI);
 	}
