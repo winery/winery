@@ -227,7 +227,7 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
+	 * Do <em>not</em> use this for creating URLs. Use {@link Utils#getURLforPathInsideRepo(java.lang.String)}
 	 * or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
 	 * @return the path starting from the root element to the current element. Separated by "/", parent URLencoded.
