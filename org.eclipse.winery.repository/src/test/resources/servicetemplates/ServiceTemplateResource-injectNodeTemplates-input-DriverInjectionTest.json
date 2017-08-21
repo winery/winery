@@ -1,0 +1,96 @@
+{ "hostInjections": {
+  "ponycompetition":
+  {
+	"documentation": [
+	  {
+		"content": [
+		  "Stack of Node Template dressageequipment from Provider Repository EquipmentProvider"
+		],
+		"source": null,
+		"lang": null
+	  }
+	],
+	"any": [
+
+	],
+	"otherAttributes": {
+
+	},
+	"relationshipTemplates": [
+
+	],
+	"nodeTemplates": [
+	  {
+		"id": "dressageequipment",
+		"documentation": [
+
+		],
+		"any": [
+
+		],
+		"otherAttributes": {
+		  "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "EquipmentProvider",
+		  "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "804",
+		  "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "270"
+		},
+		"type": "{http://winery.opentosca.org/test/ponyuniverse}dressageequipment",
+		"capabilities": {
+		  "capability": [
+			{
+			  "id": "CapEquipment",
+			  "documentation": [
+
+			  ],
+			  "any": [
+
+			  ],
+			  "otherAttributes": {
+
+			  },
+			  "type": "{http://winery.opentosca.org/test/ponyuniverse}CapEquipment",
+			  "name": "CapEquipment"
+			}
+		  ]
+		},
+		"deploymentArtifacts": {
+		  "deploymentArtifact": [
+			{
+			  "documentation": [
+
+			  ],
+			  "any": [
+
+			  ],
+			  "otherAttributes": {
+
+			  },
+			  "name": "DressageEquipment_Pony",
+			  "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Pony",
+			  "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Pony"
+			},
+			{
+			  "documentation": [
+
+			  ],
+			  "any": [
+
+			  ],
+			  "otherAttributes": {
+
+			  },
+			  "name": "DressageEquipment_Unicorn",
+			  "artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Unicorn",
+			  "artifactRef": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DressageEquipment_Unicorn"
+			}
+		  ]
+		},
+		"name": "dressageequipment",
+		"minInstances": 1,
+		"maxInstances": "1"
+	  }
+	]
+  }
+
+},
+  "connectionInjections": null
+}

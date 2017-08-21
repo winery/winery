@@ -43,6 +43,8 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
+import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
 import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
@@ -131,7 +133,7 @@ public class Splitting {
 	 * @throws SplittingException
 	 * @throws IOException
 	 */
-	public ServiceTemplateId matchTopologyOfServiceTemplate(ServiceTemplateId id) throws SplittingException, IOException {
+	public ServiceTemplateId matchTopologyOfServiceTemplate(ServiceTemplateId id) throws Exception {
 		TTopologyTemplate matchedHostsTopologyTemplate = new TTopologyTemplate();
 		TTopologyTemplate matchedConnectedTopologyTemplate = new TTopologyTemplate();
 
@@ -176,7 +178,16 @@ public class Splitting {
 			throw new SplittingException("No open Requirements which can be matched");
 		}
 
-		matchedTemplateResource.getServiceTemplate().setTopologyTemplate(matchedConnectedTopologyTemplate);
+		TTopologyTemplate daSpecifiedTopology = matchedConnectedTopologyTemplate;
+
+		//Start additional functionality Driver Injection
+		if (!DASpecification.getNodeTemplatesWithAbstractDAs(matchedConnectedTopologyTemplate).isEmpty() &&
+				DASpecification.getNodeTemplatesWithAbstractDAs(matchedConnectedTopologyTemplate) != null) {
+			daSpecifiedTopology = DriverInjection.injectDriver(matchedConnectedTopologyTemplate);
+		}
+		//End additional functionality Driver Injection
+
+		matchedTemplateResource.getServiceTemplate().setTopologyTemplate(daSpecifiedTopology);
 		LOGGER.debug("Persisting...");
 		matchedTemplateResource.persist();
 		LOGGER.debug("Persisted.");
