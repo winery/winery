@@ -169,6 +169,14 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     }
 
     /**
+     * Convenience method for clearing the current elements and setting the given one as single element
+     */
+    public void setElement(TExtensibleElements element) {
+        this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().clear();
+        this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(element);
+    }
+
+    /**
      * Gets the value of the extensions property.
      *
      * @return possible object is {@link TDefinitions.Extensions }

@@ -30,7 +30,10 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
+import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
 
 import org.apache.tika.mime.MediaType;
 
@@ -203,4 +206,20 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	}
 
 	NamespaceManager getNamespaceManager();
+
+	/**
+	 * Updates the element belonging to the given TOSCAComponentId
+	 *
+	 * @param id      the TOSCAComponentId to update
+	 * @param element the element to set
+	 * @throws IOException if persisting went wrong
+	 */
+	default void setElement(TOSCAComponentId id, TExtensibleElements element) throws IOException {
+		// default implementation on the server side
+		// the client side has to use the REST method
+		Definitions definitions = BackendUtils.createWrapperDefinitions(id);
+		definitions.setElement(element);
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+		BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+	}
 }
