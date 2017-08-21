@@ -8,12 +8,15 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -21,12 +24,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 
 /**
  * <p>Java class for tRequirementDefinition complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="tRequirementDefinition">
  *   &lt;complexContent>
@@ -37,7 +42,8 @@ import javax.xml.namespace.QName;
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *                 &lt;sequence>
- *                   &lt;element name="Constraint" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tConstraint" maxOccurs="unbounded"/>
+ *                   &lt;element name="Constraint" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tConstraint"
+ * maxOccurs="unbounded"/>
  *                 &lt;/sequence>
  *               &lt;/restriction>
  *             &lt;/complexContent>
@@ -68,17 +74,12 @@ import javax.xml.namespace.QName;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirementDefinition", propOrder = {
-    "constraints"
+        "constraints"
 })
-public class TRequirementDefinition
-    extends TExtensibleElements
-{
-
+public class TRequirementDefinition extends TExtensibleElements {
     @XmlElement(name = "Constraints")
     protected TRequirementDefinition.Constraints constraints;
     @XmlAttribute(name = "name", required = true)
@@ -90,25 +91,51 @@ public class TRequirementDefinition
     @XmlAttribute(name = "upperBound")
     protected String upperBound;
 
+    public TRequirementDefinition() {
+
+    }
+
+    public TRequirementDefinition(Builder builder) {
+        super(builder);
+        this.constraints = builder.constraints;
+        this.name = builder.name;
+        this.requirementType = builder.requirementType;
+        this.lowerBound = builder.lowerBound;
+        this.upperBound = builder.upperBound;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TRequirementDefinition)) return false;
+        if (!super.equals(o)) return false;
+        TRequirementDefinition that = (TRequirementDefinition) o;
+        return Objects.equals(constraints, that.constraints) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(requirementType, that.requirementType) &&
+                Objects.equals(lowerBound, that.lowerBound) &&
+                Objects.equals(upperBound, that.upperBound);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), constraints, name, requirementType, lowerBound, upperBound);
+    }
+
     /**
      * Gets the value of the constraints property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TRequirementDefinition.Constraints }
-     *     
+     *
+     * @return possible object is {@link TRequirementDefinition.Constraints }
      */
+    /*@Nullable*/
     public TRequirementDefinition.Constraints getConstraints() {
         return constraints;
     }
 
     /**
      * Sets the value of the constraints property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TRequirementDefinition.Constraints }
-     *     
+     *
+     * @param value allowed object is {@link TRequirementDefinition.Constraints }
      */
     public void setConstraints(TRequirementDefinition.Constraints value) {
         this.constraints = value;
@@ -116,23 +143,18 @@ public class TRequirementDefinition
 
     /**
      * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
+    @NonNull
     public String getName() {
         return name;
     }
 
     /**
      * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setName(String value) {
         this.name = value;
@@ -140,23 +162,18 @@ public class TRequirementDefinition
 
     /**
      * Gets the value of the requirementType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+     *
+     * @return possible object is {@link QName }
      */
+    @NonNull
     public QName getRequirementType() {
         return requirementType;
     }
 
     /**
      * Sets the value of the requirementType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
+     *
+     * @param value allowed object is {@link QName }
      */
     public void setRequirementType(QName value) {
         this.requirementType = value;
@@ -164,15 +181,13 @@ public class TRequirementDefinition
 
     /**
      * Gets the value of the lowerBound property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
+     *
+     * @return possible object is {@link Integer }
      */
+    @NonNull
     public int getLowerBound() {
         if (lowerBound == null) {
-            return  1;
+            return 1;
         } else {
             return lowerBound;
         }
@@ -180,11 +195,8 @@ public class TRequirementDefinition
 
     /**
      * Sets the value of the lowerBound property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
+     *
+     * @param value allowed object is {@link Integer }
      */
     public void setLowerBound(Integer value) {
         this.lowerBound = value;
@@ -192,12 +204,10 @@ public class TRequirementDefinition
 
     /**
      * Gets the value of the upperBound property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
+    @NonNull
     public String getUpperBound() {
         if (upperBound == null) {
             return "1";
@@ -208,11 +218,8 @@ public class TRequirementDefinition
 
     /**
      * Sets the value of the upperBound property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setUpperBound(String value) {
         this.upperBound = value;
@@ -221,26 +228,25 @@ public class TRequirementDefinition
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
      *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
      *       &lt;sequence>
-     *         &lt;element name="Constraint" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tConstraint" maxOccurs="unbounded"/>
+     *         &lt;element name="Constraint" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tConstraint"
+     * maxOccurs="unbounded"/>
      *       &lt;/sequence>
      *     &lt;/restriction>
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-        "constraint"
+            "constraint"
     })
     public static class Constraints {
 
@@ -249,33 +255,96 @@ public class TRequirementDefinition
 
         /**
          * Gets the value of the constraint property.
-         * 
+         *
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the constraint property.
-         * 
+         *
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getConstraint().add(newItem);
          * </pre>
-         * 
-         * 
+         *
+         *
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TConstraint }
-         * 
-         * 
          */
+        @NonNull
         public List<TConstraint> getConstraint() {
             if (constraint == null) {
                 constraint = new ArrayList<TConstraint>();
             }
             return this.constraint;
         }
-
     }
 
+    public static class Builder extends TExtensibleElements.Builder {
+        private final String name;
+        private final QName requirementType;
+
+        private Constraints constraints;
+        private Integer lowerBound;
+        private String upperBound;
+
+        public Builder(String name, QName requirementType) {
+            this.name = name;
+            this.requirementType = requirementType;
+        }
+
+        public Builder setConstraints(TRequirementDefinition.Constraints constraints) {
+            this.constraints = constraints;
+            return this;
+        }
+
+        public Builder setLowerBound(Integer lowerBound) {
+            this.lowerBound = lowerBound;
+            return this;
+        }
+
+        public Builder setUpperBound(String upperBound) {
+            this.upperBound = upperBound;
+            return this;
+        }
+
+        public Builder addConstraints(TRequirementDefinition.Constraints constraints) {
+            if (constraints == null || constraints.getConstraint().isEmpty()) {
+                return this;
+            }
+
+            if (this.constraints == null) {
+                this.constraints = constraints;
+            } else {
+                this.constraints.getConstraint().addAll(constraints.getConstraint());
+            }
+            return this;
+        }
+
+        public Builder addConstraints(List<TConstraint> constraints) {
+            if (constraints == null) {
+                return this;
+            }
+
+            TRequirementDefinition.Constraints tmp = new TRequirementDefinition.Constraints();
+            tmp.getConstraint().addAll(constraints);
+            return addConstraints(tmp);
+        }
+
+        public Builder addConstraints(TConstraint constraints) {
+            if (constraints == null) {
+                return this;
+            }
+
+            TRequirementDefinition.Constraints tmp = new TRequirementDefinition.Constraints();
+            tmp.getConstraint().add(constraints);
+            return addConstraints(tmp);
+        }
+
+        public TRequirementDefinition build() {
+            return new TRequirementDefinition(this);
+        }
+    }
 }
