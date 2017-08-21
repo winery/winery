@@ -625,23 +625,6 @@ public class Utils {
 		return (TEntityType) typeResource.getElement();
 	}
 
-	/**
-	 * referenced by functions.tld
-	 */
-	public static Boolean isContainerLocallyAvailable() {
-		return Prefs.INSTANCE.isContainerLocallyAvailable();
-	}
-
-	/**
-	 * referenced by functions.tld
-	 *
-	 * We need the bridge as functions (at tld) require a static method. We did not want to put two methods in Prefs and
-	 * therefore, we put the method here.
-	 */
-	public static Boolean isRestDocDocumentationAvailable() {
-		return Prefs.INSTANCE.isRestDocDocumentationAvailable();
-	}
-
 	public static boolean isSuccessFulResponse(Response res) {
 		return Status.fromStatusCode(res.getStatus()).getFamily().equals(Family.SUCCESSFUL);
 	}
