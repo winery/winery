@@ -264,6 +264,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		try {
 			BackendUtils.persist(definitions, newRef, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
 		} catch (InvalidPathException e) {
+			LOGGER.debug("Invalid path during write", e);
 			// QUICK FIX
 			// Somewhere, the first letter is deleted --> /odetypes/http%3A%2F%2Fwww.example.org%2F05/
 			// We just ignore it for now
