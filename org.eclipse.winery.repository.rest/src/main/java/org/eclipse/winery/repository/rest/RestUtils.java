@@ -72,6 +72,7 @@ import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -729,7 +730,7 @@ public class RestUtils {
 
 		String xmlString = sw.toString();
 
-		RepositoryFactory.getRepository().putContentToFile(fileRef, xmlString, MediaType.valueOf(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS));
+		RepositoryFactory.getRepository().putContentToFile(fileRef, xmlString, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
 
 		return newServiceTemplateId;
 	}
@@ -1066,7 +1067,7 @@ public class RestUtils {
 	public static String getColorAndSetDefaultIfNotExisting(String name, QName qname, Map<QName, String> otherAttributes, TopologyGraphElementEntityTypeResource res) {
 		String colorStr = otherAttributes.get(qname);
 		if (colorStr == null) {
-			colorStr = Util.getColor(name);
+			colorStr = ModelUtilities.getColor(name);
 			otherAttributes.put(qname, colorStr);
 			RestUtils.persist(res);
 		}
