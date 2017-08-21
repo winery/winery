@@ -53,6 +53,7 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
@@ -480,7 +481,7 @@ public class CSARExporter {
 		// Setting Versions
 		pw.println("TOSCA-Meta-Version: 1.0");
 		pw.println("CSAR-Version: 1.0");
-		String versionString = "Created-By: Winery " + Prefs.INSTANCE.getVersion();
+		String versionString = "Created-By: Winery " + Environment.getVersion();
 		pw.println(versionString);
 		// Winery currently is unaware of tDefinitions, therefore, we use the
 		// name of the service template
