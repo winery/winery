@@ -32,7 +32,6 @@ import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -44,10 +43,10 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.LoggerFactory;
 
 public class Splitting {
@@ -76,9 +75,9 @@ public class Splitting {
 	 * @return id of the ServiceTemplate which contains the matched topology
 	 */
 	public ServiceTemplateId splitTopologyOfServiceTemplate(ServiceTemplateId id) throws SplittingException, IOException {
-
 		long start = System.currentTimeMillis();
-		TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(id).get();
+		IRepository repository = RepositoryFactory.getRepository();
+		TServiceTemplate serviceTemplate = repository.getElement(id);
 
 		// create wrapper service template
 		ServiceTemplateId splitServiceTemplateId =
@@ -86,31 +85,27 @@ public class Splitting {
 						id.getNamespace().getDecoded(),
 						id.getXmlId().getDecoded() + "-split",
 						false);
-		RepositoryFactory.getRepository().forceDelete(splitServiceTemplateId);
-		RepositoryFactory.getRepository().flagAsExisting(splitServiceTemplateId);
-		Definitions splitServiceTemplateDefintions = RepositoryFactory.getRepository().getDefinitions(splitServiceTemplateId).get();
-
+		repository.forceDelete(splitServiceTemplateId);
+		repository.flagAsExisting(splitServiceTemplateId);
+		TServiceTemplate splitServiceTemplate = new TServiceTemplate();
 		TTopologyTemplate splitTopologyTemplate = split(serviceTemplate.getTopologyTemplate());
-		splitServiceTemplateDefintions.get
-		splitServiceTempateResource.getServiceTemplate().setTopologyTemplate(splitTopologyTemplate);
+		splitServiceTemplate.setTopologyTemplate(splitTopologyTemplate);
+
 		LOGGER.debug("Persisting...");
-		splitServiceTempateResource.persist();
+		repository.setElement(splitServiceTemplateId, splitServiceTemplate);
 		LOGGER.debug("Persisted.");
 
 		// create wrapper service template
 		ServiceTemplateId matchedServiceTemplateId =
 				new ServiceTemplateId(id.getNamespace().getDecoded(),
 						id.getXmlId().getDecoded() + "-split-matched", false);
-		RepositoryFactory.getRepository().forceDelete(matchedServiceTemplateId);
-		RepositoryFactory.getRepository().flagAsExisting(matchedServiceTemplateId);
-		ServiceTemplateResource matchedTemplateResource =
-				(ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(matchedServiceTemplateId);
-
+		repository.forceDelete(matchedServiceTemplateId);
+		repository.flagAsExisting(matchedServiceTemplateId);
+		TServiceTemplate matchedServiceTemplate = new TServiceTemplate();
 		TTopologyTemplate matchedTopologyTemplate = hostMatchingWithDefaultHostSelection(splitTopologyTemplate);
-
-		matchedTemplateResource.getServiceTemplate().setTopologyTemplate(matchedTopologyTemplate);
+		matchedServiceTemplate.setTopologyTemplate(matchedTopologyTemplate);
 		LOGGER.debug("Persisting...");
-		matchedTemplateResource.persist();
+		repository.setElement(matchedServiceTemplateId, matchedServiceTemplate);
 		LOGGER.debug("Persisted.");
 
 		long duration = System.currentTimeMillis() - start;
@@ -129,25 +124,13 @@ public class Splitting {
 	 *
 	 * @param id of the ServiceTemplate switch should be split and matched to cloud providers
 	 * @return id of the ServiceTemplate which contains the matched topology
-	 * @throws SplittingException
-	 * @throws IOException
 	 */
 	public ServiceTemplateId matchTopologyOfServiceTemplate(ServiceTemplateId id) throws SplittingException, IOException {
-		TTopologyTemplate matchedHostsTopologyTemplate = new TTopologyTemplate();
-		TTopologyTemplate matchedConnectedTopologyTemplate = new TTopologyTemplate();
-
 		long start = System.currentTimeMillis();
-		ServiceTemplateResource serviceTempateResource =
-				(ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(id);
+		IRepository repository = RepositoryFactory.getRepository();
 
-		// create wrapper service template
-		ServiceTemplateId matchedServiceTemplateId =
-				new ServiceTemplateId(id.getNamespace().getDecoded(),
-						id.getXmlId().getDecoded() + "-matched", false);
-		RepositoryFactory.getRepository().forceDelete(matchedServiceTemplateId);
-		RepositoryFactory.getRepository().flagAsExisting(matchedServiceTemplateId);
-		ServiceTemplateResource matchedTemplateResource =
-				(ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(matchedServiceTemplateId);
+		@NonNull TServiceTemplate serviceTemplate = repository.getElement(id);
+		@NonNull TTopologyTemplate topologyTemplate = serviceTemplate.getTopologyTemplate();
 
 		/*
 		Get all open requirements and the basis type of the required capability type
@@ -156,15 +139,16 @@ public class Splitting {
 			"Endpoint" which means a connectsTo injection is required
 		 */
 		Map<TRequirement, String> requirementsAndMatchingBasisCapabilityTypes =
-				getOpenRequirementsAndMatchingBasisCapabilityTypeNames(serviceTempateResource.getServiceTemplate().getTopologyTemplate());
+				getOpenRequirementsAndMatchingBasisCapabilityTypeNames(topologyTemplate);
 		// Output check
 		for (TRequirement req : requirementsAndMatchingBasisCapabilityTypes.keySet()) {
 			System.out.println("open Requirement: " + req.getId());
 			System.out.println("matchingbasisType: " + requirementsAndMatchingBasisCapabilityTypes.get(req));
 		}
 
+		TTopologyTemplate matchedConnectedTopologyTemplate;
 		if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Container")) {
-			matchedHostsTopologyTemplate = hostMatchingWithDefaultLabelingAndHostSelection(serviceTempateResource.getServiceTemplate().getTopologyTemplate());
+			@NonNull TTopologyTemplate matchedHostsTopologyTemplate = hostMatchingWithDefaultLabelingAndHostSelection(topologyTemplate);
 
 			if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
 				matchedConnectedTopologyTemplate = connectionMatchingWithDefaultConnectorSelection(matchedHostsTopologyTemplate);
@@ -172,14 +156,23 @@ public class Splitting {
 				matchedConnectedTopologyTemplate = matchedHostsTopologyTemplate;
 			}
 		} else if (requirementsAndMatchingBasisCapabilityTypes.containsValue("Endpoint")) {
-			matchedConnectedTopologyTemplate = connectionMatchingWithDefaultConnectorSelection(serviceTempateResource.getServiceTemplate().getTopologyTemplate());
+			matchedConnectedTopologyTemplate = connectionMatchingWithDefaultConnectorSelection(topologyTemplate);
 		} else {
 			throw new SplittingException("No open Requirements which can be matched");
 		}
 
-		matchedTemplateResource.getServiceTemplate().setTopologyTemplate(matchedConnectedTopologyTemplate);
+
+		// create wrapper service template
+		ServiceTemplateId matchedServiceTemplateId =
+				new ServiceTemplateId(id.getNamespace().getDecoded(),
+						id.getXmlId().getDecoded() + "-matched", false);
+		RepositoryFactory.getRepository().forceDelete(matchedServiceTemplateId);
+		RepositoryFactory.getRepository().flagAsExisting(matchedServiceTemplateId);
+		repository.flagAsExisting(matchedServiceTemplateId);
+		TServiceTemplate matchedServiceTemplate = new TServiceTemplate();
+		matchedServiceTemplate.setTopologyTemplate(matchedConnectedTopologyTemplate);
 		LOGGER.debug("Persisting...");
-		matchedTemplateResource.persist();
+		repository.setElement(matchedServiceTemplateId, matchedServiceTemplate);
 		LOGGER.debug("Persisted.");
 
 		long duration = System.currentTimeMillis() - start;
@@ -188,7 +181,7 @@ public class Splitting {
 		return matchedServiceTemplateId;
 	}
 
-    /*
+	/*
 	 * Checks if a topology template is valid.
 	 * The topology is valid if (1) all highest node templates have target labels assigned and
 	 * (2) all successor nodes connected by hostedOn relationships have no other target labels then the predecessors.
@@ -800,7 +793,7 @@ public class Splitting {
 		SortedSet<RelationshipTypeId> relTypeIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(RelationshipTypeId.class);
 		List<TRelationshipType> relationshipTypes = new ArrayList<>();
 		for (RelationshipTypeId id : relTypeIds) {
-			relationshipTypes.add(RepositoryFactory.getRepository().getElement(id).get());
+			relationshipTypes.add(RepositoryFactory.getRepository().getElement(id));
 		}
 
 		Properties requirementProperties = ModelUtilities.getPropertiesKV(requirement);
@@ -815,16 +808,16 @@ public class Splitting {
 			QName referencedRelationshipType = (QName) requirementProperties.get("requiredRelationshipType");
 			RelationshipTypeId relTypeId = new RelationshipTypeId(referencedRelationshipType);
 			if (relTypeIds.stream().anyMatch(rti -> rti.equals(relTypeId))) {
-				return RepositoryFactory.getRepository().getElement(relTypeId).get();
+				return RepositoryFactory.getRepository().getElement(relTypeId);
 			}
 		} else {
 			QName requirementTypeQName = requirement.getType();
 			RequirementTypeId reqTypeId = new RequirementTypeId(requirement.getType());
-			TRequirementType requirementType = RepositoryFactory.getRepository().getElement(reqTypeId).get();
+			TRequirementType requirementType = RepositoryFactory.getRepository().getElement(reqTypeId);
 
 			QName capabilityTypeQName = capability.getType();
 			CapabilityTypeId capTypeId = new CapabilityTypeId(capability.getType());
-			TCapabilityType capabilityType = RepositoryFactory.getRepository().getElement(capTypeId).get();
+			TCapabilityType capabilityType = RepositoryFactory.getRepository().getElement(capTypeId);
 
 			List<TRelationshipType> availableMatchingRelationshipTypes = new ArrayList<>();
 			availableMatchingRelationshipTypes.clear();
@@ -853,7 +846,7 @@ public class Splitting {
 					if (capabilityType.getDerivedFrom() != null) {
 						QName derivedFromCapabilityTypeRef = capabilityType.getDerivedFrom().getTypeRef();
 						CapabilityTypeId derivedFromCapTypeId = new CapabilityTypeId(derivedFromCapabilityTypeRef);
-						derivedFromCapabilityType = RepositoryFactory.getRepository().getElement(derivedFromCapTypeId).get();
+						derivedFromCapabilityType = RepositoryFactory.getRepository().getElement(derivedFromCapTypeId);
 
 						for (TRelationshipType rt : relationshipTypes) {
 							if ((rt.getValidSource() == null || rt.getValidSource().getTypeRef().equals(requirementTypeQName)) && (rt.getValidTarget() != null && rt.getValidTarget().getTypeRef().equals(derivedFromCapabilityTypeRef))) {
@@ -864,7 +857,7 @@ public class Splitting {
 					if (requirementType.getDerivedFrom() != null) {
 						QName derivedFromRequirementTypeRef = requirementType.getDerivedFrom().getTypeRef();
 						RequirementTypeId derivedFromReqTypeId = new RequirementTypeId(derivedFromRequirementTypeRef);
-						derivedFromRequirementType = RepositoryFactory.getRepository().getElement(derivedFromReqTypeId).get();
+						derivedFromRequirementType = RepositoryFactory.getRepository().getElement(derivedFromReqTypeId);
 
 						for (TRelationshipType rt : relationshipTypes) {
 							if ((rt.getValidSource() != null && rt.getValidSource().getTypeRef().equals(derivedFromRequirementTypeRef)) && (rt.getValidTarget() != null && rt.getValidTarget().getTypeRef().equals(capabilityTypeQName))) {
@@ -1151,7 +1144,7 @@ public class Splitting {
 
 	private TCapabilityType getBasisCapabilityType (QName capabilityTypeQName) {
 		CapabilityTypeId parentCapTypeId = new CapabilityTypeId(capabilityTypeQName);
-		TCapabilityType parentCapabilityType = RepositoryFactory.getRepository().getElement(parentCapTypeId).get();
+		TCapabilityType parentCapabilityType = RepositoryFactory.getRepository().getElement(parentCapTypeId);
 		TCapabilityType basisCapabilityType = parentCapabilityType;
 
 		while (parentCapabilityType != null) {
@@ -1160,7 +1153,7 @@ public class Splitting {
 			if (parentCapabilityType.getDerivedFrom() != null) {
 				capabilityTypeQName = parentCapabilityType.getDerivedFrom().getTypeRef();
 				parentCapTypeId = new CapabilityTypeId(capabilityTypeQName);
-				parentCapabilityType = RepositoryFactory.getRepository().getElement(parentCapTypeId).get();
+				parentCapabilityType = RepositoryFactory.getRepository().getElement(parentCapTypeId);
 			} else {
 				parentCapabilityType = null;
 			}
@@ -1172,14 +1165,14 @@ public class Splitting {
 	private QName getRequiredCapabilityTypeQNameOfRequirement (TRequirement requirement) {
 		QName reqTypeQName = requirement.getType();
 		RequirementTypeId reqTypeId = new RequirementTypeId(reqTypeQName);
-		TRequirementType requirementType = RepositoryFactory.getRepository().getElement(reqTypeId).get();
+		TRequirementType requirementType = RepositoryFactory.getRepository().getElement(reqTypeId);
 		return requirementType.getRequiredCapabilityType();
 
 	}
 
 	private TRelationshipType getBasisRelationshipType (QName relationshipTypeQName) {
 		RelationshipTypeId parentRelationshipTypeId = new RelationshipTypeId(relationshipTypeQName);
-		TRelationshipType parentRelationshipType = RepositoryFactory.getRepository().getElement(parentRelationshipTypeId).get();
+		TRelationshipType parentRelationshipType = RepositoryFactory.getRepository().getElement(parentRelationshipTypeId);
 		TRelationshipType basisRelationshipType = parentRelationshipType;
 
 		while (parentRelationshipType != null) {
@@ -1188,7 +1181,7 @@ public class Splitting {
 			if (parentRelationshipType.getDerivedFrom() != null) {
 				relationshipTypeQName = parentRelationshipType.getDerivedFrom().getTypeRef();
 				parentRelationshipTypeId = new RelationshipTypeId(relationshipTypeQName);
-				parentRelationshipType = RepositoryFactory.getRepository().getElement(parentRelationshipTypeId).get();
+				parentRelationshipType = RepositoryFactory.getRepository().getElement(parentRelationshipTypeId);
 			} else {
 				parentRelationshipType = null;
 			}
