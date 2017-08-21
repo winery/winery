@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.importing.CSARImporter;
 import org.eclipse.winery.repository.importing.ImportMetaInformation;
 import org.eclipse.winery.repository.rest.resources.API.APIResource;
@@ -137,7 +137,7 @@ public class MainResource {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response onGet() {
-		return Response.temporaryRedirect(Utils.createURI("servicetemplates/")).build();
+		return Response.temporaryRedirect(RestUtils.createURI("servicetemplates/")).build();
 	}
 
 	@POST
@@ -161,7 +161,7 @@ public class MainResource {
 		}
 		if (importMetaInformation.errors.isEmpty()) {
 			if (importMetaInformation.entryServiceTemplate.isPresent()) {
-				URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(importMetaInformation.entryServiceTemplate.get()));
+				URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(importMetaInformation.entryServiceTemplate.get()));
 				return Response.created(url).build();
 			} else {
 				return Response.noContent().build();

@@ -34,7 +34,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionEnum;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionResourceApiData;
@@ -87,10 +87,10 @@ public class PropertiesDefinitionResource {
 
 		switch (type) {
 			case "element":
-				definitions = Utils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.ELEMENT_DECLARATION);
+				definitions = RestUtils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.ELEMENT_DECLARATION);
 				break;
 			case "type":
-				definitions = Utils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.TYPE_DEFINITION);
+				definitions = RestUtils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.TYPE_DEFINITION);
 				break;
 		}
 
@@ -110,7 +110,7 @@ public class PropertiesDefinitionResource {
 	public Response clearPropertiesDefinition() {
 		this.getEntityType().setPropertiesDefinition(null);
 		ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
-		return Utils.persist(this.parentRes);
+		return RestUtils.persist(this.parentRes);
 	}
 
 	public boolean getIsWineryKeyValueProperties() {
@@ -141,7 +141,7 @@ public class PropertiesDefinitionResource {
 			for (String error : errors) {
 				PropertiesDefinitionResource.LOGGER.debug(error);
 			}
-			return Utils.persist(this.parentRes);
+			return RestUtils.persist(this.parentRes);
 		} else if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
 			TEntityType et = this.parentRes.getEntityType();
 
@@ -155,7 +155,7 @@ public class PropertiesDefinitionResource {
 			if (!namespaceManager.hasPrefix(namespace)) {
 				namespaceManager.addNamespace(namespace);
 			}
-			return Utils.persist(this.parentRes);
+			return RestUtils.persist(this.parentRes);
 		}
 
 		return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();

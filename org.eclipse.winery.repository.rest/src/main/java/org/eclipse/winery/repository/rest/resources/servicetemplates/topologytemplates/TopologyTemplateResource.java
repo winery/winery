@@ -43,8 +43,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.rest.Prefs;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.client.IWineryRepositoryClient;
 import org.eclipse.winery.repository.client.WineryRepositoryClientFactory;
@@ -182,7 +181,7 @@ public class TopologyTemplateResource {
 			res = Response.ok().header(HttpHeaders.VARY, HttpHeaders.ACCEPT).entity(viewable).build();
 		} else {
 			// edit mode
-			URI uri = Utils.createURI(location);
+			URI uri = RestUtils.createURI(location);
 			res = Response.seeOther(uri).build();
 		}
 		return res;
@@ -206,9 +205,9 @@ public class TopologyTemplateResource {
 		Client client = Client.create();
 
 		Builder wr = null;
-		if (Utils.isResourceAvailable("http://localhost:1339/planbuilder")) {
+		if (RestUtils.isResourceAvailable("http://localhost:1339/planbuilder")) {
 			wr = client.resource("http://localhost:1339/planbuilder/sync").type(MediaType.APPLICATION_XML);
-		} else if (Utils.isResourceAvailable("http://localhost:1337/containerapi/planbuilder")) {
+		} else if (RestUtils.isResourceAvailable("http://localhost:1337/containerapi/planbuilder")) {
 			wr = client.resource("http://localhost:1337/containerapi/planbuilder/sync").type(MediaType.APPLICATION_XML);
 		}
 
@@ -331,7 +330,7 @@ public class TopologyTemplateResource {
 	@Consumes(MediaType.TEXT_XML)
 	public Response setModel(TTopologyTemplate topologyTemplate) {
 		this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
-		return Utils.persist(this.serviceTemplateRes);
+		return RestUtils.persist(this.serviceTemplateRes);
 	}
 
 	@PUT
@@ -340,7 +339,7 @@ public class TopologyTemplateResource {
 	public Response setModelJson(TTopologyTemplate topologyTemplate) throws Exception {
 		ModelUtilities.patchAnyAttributes(topologyTemplate.getNodeTemplates());
 		this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
-		return Utils.persist(this.serviceTemplateRes);
+		return RestUtils.persist(this.serviceTemplateRes);
 	}
 
 	// @formatter:off
@@ -355,7 +354,7 @@ public class TopologyTemplateResource {
 	@Produces(MediaType.TEXT_XML)
 	// @formatter:on
 	public Response getComponentInstanceXML() {
-		return Utils.getXML(TTopologyTemplate.class, this.topologyTemplate);
+		return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate);
 	}
 
 	@Path("split/")
@@ -369,7 +368,7 @@ public class TopologyTemplateResource {
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not split. " + e.getMessage()).build();
 		}
-		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(splitServiceTemplateId));
+		URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(splitServiceTemplateId));
 		return Response.created(url).build();
 	}
 
@@ -384,7 +383,7 @@ public class TopologyTemplateResource {
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Could not match. " + e.getMessage()).build();
 		}
-		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(matchedServiceTemplateId));
+		URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(matchedServiceTemplateId));
 		return Response.created(url).build();
 	}
 

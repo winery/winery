@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition.Constraints;
 import org.eclipse.winery.model.tosca.TConstraint;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
@@ -82,7 +82,7 @@ public final class CapabilityDefinitionResource extends AbstractReqOrCapDefResou
 	public Response setType(@FormParam(value = "type") String value) {
 		QName qname = QName.valueOf(value);
 		this.capDef.setCapabilityType(qname);
-		return Utils.persist(this.parent);
+		return RestUtils.persist(this.parent);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -79,7 +79,7 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 		}
 		ApplicationOption option = new ApplicationOption();
 
-		String id = Utils.createXMLidAsString(name);
+		String id = RestUtils.createXMLidAsString(name);
 
 		String fileNamePrefix = OptionResource.getFileNamePrefix(id);
 		String iconFileName = fileNamePrefix + OptionResource.ICON_JPG;
@@ -98,14 +98,14 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 		SelfServiceMetaDataId ssmdId = ((SelfServicePortalResource) this.res).getId();
 
 		RepositoryFileReference iconRef = new RepositoryFileReference(ssmdId, iconFileName);
-		Utils.putContentToFile(iconRef, uploadedInputStream, body.getMediaType());
+		RestUtils.putContentToFile(iconRef, uploadedInputStream, body.getMediaType());
 
 		RepositoryFileReference planInputMessageRef = new RepositoryFileReference(ssmdId, planInputMessageFileName);
-		Utils.putContentToFile(planInputMessageRef, planInputMessage, MediaType.TEXT_XML_TYPE);
+		RestUtils.putContentToFile(planInputMessageRef, planInputMessage, MediaType.TEXT_XML_TYPE);
 
 		// END: store icon and planInputMessage
 
 		this.list.add(option);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 }

@@ -54,7 +54,7 @@ import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
@@ -206,7 +206,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				QName artifactTemplateQName = new QName(apiData.artifactTemplateNamespace, apiData.artifactTemplateName);
 				artifactTemplateId = new ArtifactTemplateId(artifactTemplateQName);
 			}
-			ResourceCreationResult creationResult = Utils.create(artifactTemplateId);
+			ResourceCreationResult creationResult = RestUtils.create(artifactTemplateId);
 			if (!creationResult.isSuccess()) {
 				// something went wrong. skip
 				return creationResult.getResponse();
@@ -277,7 +277,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 
 //			String implOrDeplArtifactXML = Utils.getXMLAsString(resultingArtifact);
 
-			return Response.created(Utils.createURI(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
+			return Response.created(RestUtils.createURI(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
 		} else {
 			// after everything was created, we fire up the artifact generation
 			return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId, artifactTemplateResource);
@@ -353,7 +353,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			return Response.serverError().entity("Could not create temporary directory").build();
 		}
 
-		URI artifactTemplateFilesUri = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(artifactTemplateId)).resolve("files/");
+		URI artifactTemplateFilesUri = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(artifactTemplateId)).resolve("files/");
 		URL artifactTemplateFilesUrl;
 		try {
 			artifactTemplateFilesUrl = artifactTemplateFilesUri.toURL();
@@ -376,7 +376,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		RepositoryFileReference fref = new RepositoryFileReference(fileDir, zipFile.getName());
 		try (InputStream is = Files.newInputStream(zipFile.toPath());
 			 BufferedInputStream bis = new BufferedInputStream(is)) {
-			String mediaType = Utils.getMimeType(bis, zipFile.getName());
+			String mediaType = RestUtils.getMimeType(bis, zipFile.getName());
 			// TODO: do the catch thing as in CSARImporter
 
 			RepositoryFactory.getRepository().putContentToFile(fref, bis, MediaType.valueOf(mediaType));
@@ -393,7 +393,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		}
 		this.storeProperties(artifactTemplateResource, typeId, name);
 
-		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(fref));
+		URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(fref));
 		return Response.created(url).build();
 	}
 

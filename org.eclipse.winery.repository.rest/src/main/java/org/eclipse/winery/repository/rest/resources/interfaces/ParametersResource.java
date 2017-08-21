@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TParameter;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 
@@ -82,7 +82,7 @@ public class ParametersResource extends EntityWithIdCollectionResource<Parameter
 
 		this.list.add(param);
 
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	@Override

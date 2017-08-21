@@ -62,7 +62,7 @@ import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources.documentation.DocumentationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
@@ -172,7 +172,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 */
 	@DELETE
 	public final Response onDelete() {
-		return Utils.delete(this.id);
+		return RestUtils.delete(this.id);
 	}
 
 	@Override
@@ -216,14 +216,14 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		} else {
 			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().toString(), false);
 		}
-		return Utils.rename(this.getId(), newId);
+		return RestUtils.rename(this.getId(), newId);
 	}
 
 	@POST
 	@Path("namespace")
 	public Response putNamespace(@FormParam("ns") String namespace) {
 		TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().getDecoded(), false);
-		return Utils.rename(this.getId(), newId);
+		return RestUtils.rename(this.getId(), newId);
 	}
 
 	@GET
@@ -232,7 +232,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		if (!RepositoryFactory.getRepository().exists(this.id)) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
-		return Utils.getCSARofSelectedResource(this);
+		return RestUtils.getCSARofSelectedResource(this);
 	}
 
 	/**
@@ -249,7 +249,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		}
 
 		if (csar != null) {
-			return Utils.getCSARofSelectedResource(this);
+			return RestUtils.getCSARofSelectedResource(this);
 		}
 
 		// we cannot use this.definitions as that definitions is Winery's interal representation of the data and not the full blown definitions (including imports to referenced elements)
@@ -337,7 +337,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		BackendUtils.copyIdToFields((HasIdInIdOrNameField) this.element, this.getId());
 
 		// ensure that the definitions is persisted. Ensures that export works.
-		Utils.persist(this);
+		RestUtils.persist(this);
 	}
 
 	/**
@@ -444,14 +444,14 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			}
 		} catch (SAXException | IOException e) {
 			AbstractComponentInstanceResource.LOGGER.debug("Could not parse XML", e);
-			return Utils.getResponseForException(e);
+			return RestUtils.getResponseForException(e);
 		}
 		try {
 			u = JAXBSupport.createUnmarshaller();
 			defs = (Definitions) u.unmarshal(doc);
 		} catch (JAXBException e) {
 			AbstractComponentInstanceResource.LOGGER.debug("Could not unmarshal from request body stream", e);
-			return Utils.getResponseForException(e);
+			return RestUtils.getResponseForException(e);
 		}
 
 		// initial validity check
@@ -479,7 +479,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		// TODO: future work: raise error if user changed id or namespace
 		BackendUtils.copyIdToFields((HasIdInIdOrNameField) element, this.getId());
 
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 
 	@GET

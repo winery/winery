@@ -28,7 +28,7 @@ import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -78,7 +78,7 @@ public class PlanFileResource {
 			persistanceNecessary = false;
 		} else {
 			// new filename sent
-			Utils.delete(oldRef);
+			RestUtils.delete(oldRef);
 			PlansResource.setPlanModelReference(this.plan, this.planId, fileName);
 			persistanceNecessary = true;
 		}
@@ -91,7 +91,7 @@ public class PlanFileResource {
 		}
 
 		if (persistanceNecessary) {
-			return Utils.persist(this.res);
+			return RestUtils.persist(this.res);
 		} else {
 			return Response.noContent().build();
 		}
@@ -102,7 +102,7 @@ public class PlanFileResource {
 	// @formatter:off
 	public Response onPutJSON(InputStream is) {
 		RepositoryFileReference ref = this.getFileRef();
-		return Utils.putContentToFile(ref, is, MediaTypes.MEDIATYPE_APPLICATION_JSON);
+		return RestUtils.putContentToFile(ref, is, MediaTypes.MEDIATYPE_APPLICATION_JSON);
 	}
 
 	/**
@@ -111,6 +111,6 @@ public class PlanFileResource {
 	@GET
 	public Response getFile(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = this.getFileRef();
-		return Utils.returnRepoPath(ref, modified);
+		return RestUtils.returnRepoPath(ref, modified);
 	}
 }

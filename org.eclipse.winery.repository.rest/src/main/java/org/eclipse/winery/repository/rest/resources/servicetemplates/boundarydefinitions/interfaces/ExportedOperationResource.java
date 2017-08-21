@@ -32,7 +32,7 @@ import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
@@ -129,7 +129,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 		default:
 			return Response.status(Status.BAD_REQUEST).entity("Unknown type " + type).build();
 		}
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	/**
@@ -184,7 +184,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 		default:
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Unknown type " + this.getType()).build();
 		}
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	@Path("interfacename")
@@ -213,7 +213,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 		} else {
 			throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("No type set").build());
 		}
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	@Path("operationname")
@@ -242,7 +242,7 @@ public class ExportedOperationResource extends EntityWithIdResource<TExportedOpe
 		} else {
 			throw new WebApplicationException(Response.status(Status.BAD_REQUEST).entity("No type set").build());
 		}
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 }

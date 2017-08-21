@@ -26,7 +26,7 @@ import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.TypeWithShortName;
@@ -60,7 +60,7 @@ public class BoundaryDefinitionsJSPData {
 			return "";
 		} else {
 			// something stored --> return that
-			return Utils.getXMLAsString(p.getAny());
+			return RestUtils.getXMLAsString(p.getAny());
 		}
 	}
 
@@ -90,12 +90,12 @@ public class BoundaryDefinitionsJSPData {
 	}
 
 	public String getBoundaryDefinitionsAsXMLStringEncoded() {
-		String res = Utils.getXMLAsString(this.defs);
+		String res = RestUtils.getXMLAsString(this.defs);
 		return Functions.escapeXml(res);
 	}
 
 	public String getBoundaryDefinitionsAsXMLString() {
-		String res = Utils.getXMLAsString(this.defs);
+		String res = RestUtils.getXMLAsString(this.defs);
 		return res;
 	}
 

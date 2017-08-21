@@ -20,9 +20,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.nio.file.attribute.FileTime;
 import java.security.AccessControlException;
 import java.util.ArrayList;
@@ -49,7 +46,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
@@ -65,7 +61,6 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -82,7 +77,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.export.CSARExporter;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
@@ -123,23 +117,23 @@ import org.w3c.dom.Element;
  * more. For instance, resource functionality. Utility functionality for the repository is contained at {@link
  * BackendUtils}
  */
-public class Utils {
+public class RestUtils {
 
 	/**
 	 * Shared object to map JSONs
 	 */
 	public static final ObjectMapper mapper = getObjectMapper();
 
-	private static final XLogger LOGGER = XLoggerFactory.getXLogger(Utils.class);
+	private static final XLogger LOGGER = XLoggerFactory.getXLogger(RestUtils.class);
 
 	// RegExp inspired by http://stackoverflow.com/a/5396246/873282
 	// NameStartChar without ":"
 	// stackoverflow: -dfff, standard: d7fff
 	private static final String RANGE_NCNAMESTARTCHAR = "A-Z_a-z\\u00C0\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02ff\\u0370-\\u037d" + "\\u037f-\\u1fff\\u200c\\u200d\\u2070-\\u218f\\u2c00-\\u2fef\\u3001-\\ud7ff" + "\\uf900-\\ufdcf\\ufdf0-\\ufffd\\x10000-\\xEFFFF";
-	private static final String REGEX_NCNAMESTARTCHAR = "[" + Utils.RANGE_NCNAMESTARTCHAR + "]";
+	private static final String REGEX_NCNAMESTARTCHAR = "[" + RestUtils.RANGE_NCNAMESTARTCHAR + "]";
 
-	private static final String RANGE_NCNAMECHAR = Utils.RANGE_NCNAMESTARTCHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
-	private static final String REGEX_INVALIDNCNAMESCHAR = "[^" + Utils.RANGE_NCNAMECHAR + "]";
+	private static final String RANGE_NCNAMECHAR = RestUtils.RANGE_NCNAMESTARTCHAR + "\\-\\.0-9\\u00b7\\u0300-\\u036f\\u203f-\\u2040";
+	private static final String REGEX_INVALIDNCNAMESCHAR = "[^" + RestUtils.RANGE_NCNAMECHAR + "]";
 
 	static {
 		if (Locale.getDefault() != Locale.ENGLISH) {
@@ -170,7 +164,7 @@ public class Utils {
 	 * http://www.w3.org/TR/xml/#NT-Name
 	 */
 	public static XMLId createXMLid(String name) {
-		return new XMLId(Utils.createXMLidAsString(name), false);
+		return new XMLId(RestUtils.createXMLidAsString(name), false);
 	}
 
 	/**
@@ -184,7 +178,7 @@ public class Utils {
 	 */
 	public static String createXMLidAsString(String name) {
 		String id = name;
-		if (!id.substring(0, 1).matches(Utils.REGEX_NCNAMESTARTCHAR)) {
+		if (!id.substring(0, 1).matches(RestUtils.REGEX_NCNAMESTARTCHAR)) {
 			id = "_".concat(id);
 		}
 		// id starts with a valid character
@@ -197,7 +191,7 @@ public class Utils {
 		// alternative: replace invalid characters by URLencoded version. As the
 		// ID is visible only in the URL, this quick hack should be OK
 		// ID is visible only in the URL, this quick hack should be OK
-		id = id.replaceAll(Utils.REGEX_INVALIDNCNAMESCHAR, "_");
+		id = id.replaceAll(RestUtils.REGEX_INVALIDNCNAMESCHAR, "_");
 
 		return id;
 	}
@@ -286,7 +280,7 @@ public class Utils {
 	 */
 	public static Class<? extends TOSCAComponentId> getComponentIdClassForComponentContainer(Class<? extends AbstractComponentsResource> containerClass) {
 		// the name of the id class is the type + "Id"
-		String idClassName = Utils.getTypeForComponentContainer(containerClass) + "Id";
+		String idClassName = RestUtils.getTypeForComponentContainer(containerClass) + "Id";
 
 		return Util.getComponentIdClass(idClassName);
 	}
@@ -316,7 +310,7 @@ public class Utils {
 	}
 
 	public static URI getAbsoluteURI(GenericId id) {
-		return Utils.createURI(Utils.getAbsoluteURL(id));
+		return RestUtils.createURI(RestUtils.getAbsoluteURL(id));
 	}
 
 	public static String doubleEscapeHTMLAndThenConvertNL2BR(String txt) {
@@ -334,7 +328,7 @@ public class Utils {
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
 	public static String getHREF(TOSCAComponentId id) {
-		return "<a href=\"" + Utils.getAbsoluteURL(id) + "\">" + Functions.escapeXml(id.getXmlId().getDecoded()) + "</a>";
+		return "<a href=\"" + RestUtils.getAbsoluteURL(id) + "\">" + Functions.escapeXml(id.getXmlId().getDecoded()) + "</a>";
 	}
 
 	public static String artifactTypeQName2href(QName qname) {
@@ -419,7 +413,7 @@ public class Utils {
 		// which can be directly passed as entity
 		// the issue is that we want to have a *formatted* XML
 		// Therefore, we serialize "by hand".
-		String xml = Utils.getXMLAsString(clazz, obj, false);
+		String xml = RestUtils.getXMLAsString(clazz, obj, false);
 
 		return Response.ok().type(MediaType.TEXT_XML).entity(xml).build();
 	}
@@ -431,7 +425,7 @@ public class Utils {
 		try {
 			m.marshal(rootElement, w);
 		} catch (JAXBException e) {
-			Utils.LOGGER.error("Could not put content to string", e);
+			RestUtils.LOGGER.error("Could not put content to string", e);
 			throw new IllegalStateException(e);
 		}
 		return w.toString();
@@ -442,7 +436,7 @@ public class Utils {
 			// in case the object is a DOM element, we use the DOM functionality
 			return Util.getXMLAsString((Element) obj);
 		} else {
-			return Utils.getXMLAsString(obj, false);
+			return RestUtils.getXMLAsString(obj, false);
 		}
 	}
 
@@ -452,31 +446,31 @@ public class Utils {
 		}
 		@SuppressWarnings("unchecked")
 		Class<T> clazz = (Class<T>) obj.getClass();
-		return Utils.getXMLAsString(clazz, obj, includeProcessingInstruction);
+		return RestUtils.getXMLAsString(clazz, obj, includeProcessingInstruction);
 	}
 
 	public static String getAllXSDElementDefinitionsForTypeAheadSelection() {
-		Utils.LOGGER.entry();
+		RestUtils.LOGGER.entry();
 		try {
-			return Utils.getAllXSDefinitionsForTypeAheadSelection(XSConstants.ELEMENT_DECLARATION);
+			return RestUtils.getAllXSDefinitionsForTypeAheadSelection(XSConstants.ELEMENT_DECLARATION);
 		} finally {
-			Utils.LOGGER.exit();
+			RestUtils.LOGGER.exit();
 		}
 	}
 
 	public static String getAllXSDTypeDefinitionsForTypeAheadSelection() {
-		Utils.LOGGER.entry();
+		RestUtils.LOGGER.entry();
 		try {
-			return Utils.getAllXSDefinitionsForTypeAheadSelection(XSConstants.TYPE_DEFINITION);
+			return RestUtils.getAllXSDefinitionsForTypeAheadSelection(XSConstants.TYPE_DEFINITION);
 		} finally {
-			Utils.LOGGER.exit();
+			RestUtils.LOGGER.exit();
 		}
 	}
 
 	// TODO: maybe not necessary if everything is working with angular
 	public static String getAllXSDefinitionsForTypeAheadSelection(short type) {
 		try {
-			return Utils.mapper.writeValueAsString(Utils.getAllXSDefinitionsForTypeAheadSelectionRaw(type));
+			return RestUtils.mapper.writeValueAsString(RestUtils.getAllXSDefinitionsForTypeAheadSelectionRaw(type));
 		} catch (JsonProcessingException e) {
 			throw new IllegalStateException("Could not create JSON", e);
 		}
@@ -500,7 +494,7 @@ public class Utils {
 			list.addAll(allLocalNames);
 		}
 
-		ArrayNode rootNode = Utils.mapper.createArrayNode();
+		ArrayNode rootNode = RestUtils.mapper.createArrayNode();
 
 		// ensure ordering in JSON object
 		Collection<Namespace> allns = new TreeSet<>();
@@ -509,11 +503,11 @@ public class Utils {
 		for (Namespace ns : allns) {
 			Collection<String> localNames = data.get(ns);
 			if (!localNames.isEmpty()) {
-				ObjectNode groupEntry = Utils.mapper.createObjectNode();
+				ObjectNode groupEntry = RestUtils.mapper.createObjectNode();
 				rootNode.add(groupEntry);
 				groupEntry.put("id", ns.getEncoded());
 				groupEntry.put("text", ns.getDecoded());
-				ArrayNode children = Utils.mapper.createArrayNode();
+				ArrayNode children = RestUtils.mapper.createArrayNode();
 				groupEntry.put("children", children);
 				Collection<String> sortedLocalNames = new TreeSet<>();
 				sortedLocalNames.addAll(localNames);
@@ -521,7 +515,7 @@ public class Utils {
 					String value = "{" + ns.getDecoded() + "}" + localName;
 					//noinspection UnnecessaryLocalVariable
 					String text = localName;
-					ObjectNode o = Utils.mapper.createObjectNode();
+					ObjectNode o = RestUtils.mapper.createObjectNode();
 					o.put("text", text);
 					o.put("id", value);
 					children.add(o);
@@ -576,8 +570,8 @@ public class Utils {
 		instanceResourceClassName += "Resource";
 		instanceResourceClassName = packageName + "." + instanceResourceClassName;
 
-		Utils.LOGGER.debug("idClassName: {}", idClassName);
-		Utils.LOGGER.debug("className: {}", instanceResourceClassName);
+		RestUtils.LOGGER.debug("idClassName: {}", idClassName);
+		RestUtils.LOGGER.debug("className: {}", instanceResourceClassName);
 
 		// Get instance of id class having "type" as id
 		Class<? extends TOSCAComponentId> idClass;
@@ -747,15 +741,15 @@ public class Utils {
 	}
 
 	public static boolean containsNodeTypes(TServiceTemplate serviceTemplate, Collection<QName> nodeTypes) {
-		return nodeTypes.stream().allMatch(nodeType -> Utils.containsNodeType(serviceTemplate, nodeType));
+		return nodeTypes.stream().allMatch(nodeType -> RestUtils.containsNodeType(serviceTemplate, nodeType));
 	}
 
 	public static boolean containsTag(TServiceTemplate serviceTemplate, String tagKey) {
-		return Utils.getTagValue(serviceTemplate, tagKey) != null;
+		return RestUtils.getTagValue(serviceTemplate, tagKey) != null;
 	}
 
 	public static boolean containsTag(TServiceTemplate serviceTemplate, String tagKey, String tagValue) {
-		String value = Utils.getTagValue(serviceTemplate, tagKey);
+		String value = RestUtils.getTagValue(serviceTemplate, tagKey);
 		return value != null && value.equals(tagValue);
 	}
 
@@ -764,11 +758,11 @@ public class Utils {
 			if (tag.contains(":")) {
 				String key = tag.split(":")[0];
 				String value = tag.split(":")[1];
-				if (!Utils.containsTag(serviceTemplate, key, value)) {
+				if (!RestUtils.containsTag(serviceTemplate, key, value)) {
 					return false;
 				}
 			} else {
-				if (!Utils.containsTag(serviceTemplate, tag)) {
+				if (!RestUtils.containsTag(serviceTemplate, tag)) {
 					return false;
 				}
 			}
@@ -840,7 +834,7 @@ public class Utils {
 			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
-		URI uri = Utils.getAbsoluteURI(newId);
+		URI uri = RestUtils.getAbsoluteURI(newId);
 
 		return Response.created(uri).entity(uri.toString()).build();
 	}
@@ -934,7 +928,7 @@ public class Utils {
 				}
 				// we have to encode it twice to get correct URIs
 				path = Util.getUrlPath(path);
-				URI uri = Utils.createURI(path);
+				URI uri = RestUtils.createURI(path);
 				res.setUri(uri);
 				res.setId(id);
 			} else {
@@ -959,7 +953,7 @@ public class Utils {
 	 * @return Response to be sent to the client
 	 */
 	public static Response returnRepoPath(RepositoryFileReference ref, String modified) {
-		return Utils.returnRefAsResponseBuilder(ref, modified).build();
+		return RestUtils.returnRefAsResponseBuilder(ref, modified).build();
 	}
 
 	/**
@@ -1074,7 +1068,7 @@ public class Utils {
 		if (colorStr == null) {
 			colorStr = Util.getColor(name);
 			otherAttributes.put(qname, colorStr);
-			Utils.persist(res);
+			RestUtils.persist(res);
 		}
 		return colorStr;
 	}
@@ -1101,7 +1095,7 @@ public class Utils {
 	public static String Object2JSON(Object o) {
 		String res;
 		try {
-			res = Utils.mapper.writeValueAsString(o);
+			res = RestUtils.mapper.writeValueAsString(o);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return null;

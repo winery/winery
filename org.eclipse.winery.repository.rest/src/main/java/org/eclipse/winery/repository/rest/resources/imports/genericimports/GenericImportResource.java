@@ -26,7 +26,7 @@ import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 
 public class GenericImportResource extends AbstractComponentInstanceResource {
@@ -85,7 +85,7 @@ public class GenericImportResource extends AbstractComponentInstanceResource {
 		}
 
 		if (needsPersistence) {
-			Utils.persist(this);
+			RestUtils.persist(this);
 		}
 	}
 
@@ -106,7 +106,7 @@ public class GenericImportResource extends AbstractComponentInstanceResource {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, location);
-		return Utils.returnRepoPath(ref, null);
+		return RestUtils.returnRepoPath(ref, null);
 
 	}
 

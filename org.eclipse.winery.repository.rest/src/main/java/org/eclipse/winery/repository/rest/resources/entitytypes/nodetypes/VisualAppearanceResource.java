@@ -31,7 +31,7 @@ import org.eclipse.winery.model.tosca.constants.QNames;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.GenericVisualAppearanceResource;
 import org.eclipse.winery.repository.rest.resources.apiData.NodeTypesVisualsApiData;
 
@@ -72,7 +72,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	@Path("bordercolor")
 	public Response putBorderColor(@FormParam("color") String color) {
 		this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, color);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	@GET
@@ -85,6 +85,6 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response putJsonData(NodeTypesVisualsApiData data) {
 		this.otherAttributes.put(QNames.QNAME_BORDER_COLOR, data.color);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 }

@@ -19,7 +19,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TDocumentation;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 
 public class DocumentationResource {
@@ -51,7 +51,7 @@ public class DocumentationResource {
 		TDocumentation tDocumentation = new TDocumentation();
 		tDocumentation.getContent().add(documentation);
 		this.documentation.add(tDocumentation);
-		return Utils.persist(this.abstractComponentInstanceResource);
+		return RestUtils.persist(this.abstractComponentInstanceResource);
 	}
 
 }

@@ -29,8 +29,7 @@ import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.InputParameters;
 import org.eclipse.winery.model.tosca.TPlan.OutputParameters;
-import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
@@ -92,13 +91,13 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	@DELETE
 	public Response onDelete() {
 		Response res = super.onDelete();
-		if (Utils.isSuccessFulResponse(res)) {
+		if (RestUtils.isSuccessFulResponse(res)) {
 			try {
 				RepositoryFactory.getRepository().forceDelete(this.getId());
 			} catch (IOException e) {
 				return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not remove plan file").build();
 			}
-			return Utils.persist(this.res);
+			return RestUtils.persist(this.res);
 		} else {
 			return res;
 		}
@@ -116,7 +115,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	@Override
 	public Response setName(@FormParam("value") String name) {
 		this.o.setName(name);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	@Path("file")
@@ -134,7 +133,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	@Path("type")
 	public Response setType(@FormParam("type") String type) {
 		this.o.setPlanType(type);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	@GET
@@ -147,7 +146,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	@Path("language")
 	public Response setLanguage(@FormParam("language") String language) {
 		this.o.setPlanType(language);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	@Path("inputparameters/")

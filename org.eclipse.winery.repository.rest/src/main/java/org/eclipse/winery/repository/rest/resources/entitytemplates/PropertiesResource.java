@@ -26,7 +26,7 @@ import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 
 public class PropertiesResource {
@@ -53,7 +53,7 @@ public class PropertiesResource {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
 	public Response setProperties(TEntityTemplate.Properties properties) {
 		this.template.setProperties(properties);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class PropertiesResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getJson() {
-		TEntityType tempType = Utils.getTypeForTemplate(this.template);
+		TEntityType tempType = RestUtils.getTypeForTemplate(this.template);
 		WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(tempType);
 		TEntityTemplate.Properties props = this.template.getProperties();
 		if (wpd == null) {

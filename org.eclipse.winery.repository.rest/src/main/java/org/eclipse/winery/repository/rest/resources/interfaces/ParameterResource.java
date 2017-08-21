@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TParameter;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
@@ -42,7 +42,7 @@ public class ParameterResource extends EntityWithIdResource<TParameter> {
 	@Path("type")
 	public Response putType(@FormParam(value = "type") String type) {
 		this.o.setType(type);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	@GET
@@ -56,7 +56,7 @@ public class ParameterResource extends EntityWithIdResource<TParameter> {
 	public Response putRequired(@FormParam(value = "required") String required) {
 		TBoolean tb = TBoolean.valueOf(required);
 		this.o.setRequired(tb);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 }

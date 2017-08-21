@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.runtimeintegration;
 
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 
 public class OpenTOSCAContainerConnection {
 
@@ -24,7 +24,7 @@ public class OpenTOSCAContainerConnection {
 	public static boolean isContainerLocallyAvailable() {
 		// the string determining the location of the OpenTOSCA container admin resource
 		String adminPath = "http://localhost:8080/admin/";
-		return Utils.isResourceAvailable(adminPath);
+		return RestUtils.isResourceAvailable(adminPath);
 	}
 
 }

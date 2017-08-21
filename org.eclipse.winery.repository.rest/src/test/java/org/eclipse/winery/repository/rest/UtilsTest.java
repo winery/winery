@@ -57,16 +57,16 @@ public class UtilsTest {
 
 	@Test
 	public void testCreateID() {
-		Assert.assertEquals("Frank_s_test", Utils.createXMLid("Frank's test").getDecoded());
-		Assert.assertEquals("MyNodeType", Utils.createXMLid("MyNodeType").getDecoded());
-		Assert.assertEquals("A_Node_Type", Utils.createXMLid("A Node Type").getDecoded());
+		Assert.assertEquals("Frank_s_test", RestUtils.createXMLid("Frank's test").getDecoded());
+		Assert.assertEquals("MyNodeType", RestUtils.createXMLid("MyNodeType").getDecoded());
+		Assert.assertEquals("A_Node_Type", RestUtils.createXMLid("A Node Type").getDecoded());
 	}
 
 	@Test
 	public void relationshipTemplateIsSerializedAsRefInJson() throws Exception {
 		JSONAssert.assertEquals(
 				minimalTopologyTemplateAsJsonString,
-				Utils.Object2JSON(minimalTopologyTemplate),
+				RestUtils.Object2JSON(minimalTopologyTemplate),
 				true);
 	}
 
@@ -78,6 +78,6 @@ public class UtilsTest {
 		new PrefsTestEnabledGitBackedRepository();
 		((GitBasedRepository) RepositoryFactory.getRepository()).setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
 
-		Assert.assertEquals(minimalTopologyTemplateAsXmlString, Utils.getXMLAsString(minimalTopologyTemplate));
+		Assert.assertEquals(minimalTopologyTemplateAsXmlString, RestUtils.getXMLAsString(minimalTopologyTemplate));
 	}
 }

@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections.withoutid;
 
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 
 public class IdDeterminationWithHashCode implements IIdDetermination<Object> {
@@ -21,7 +21,7 @@ public class IdDeterminationWithHashCode implements IIdDetermination<Object> {
 	@Override
 	public String getId(Object entity) {
 		// We assume that different Object serializations *always* have different hashCodes
-		int hash = Utils.getXMLAsString(entity).hashCode();
+		int hash = RestUtils.getXMLAsString(entity).hashCode();
 		return Integer.toString(hash);
 	}
 

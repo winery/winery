@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.PropertyConstraintsApiData;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
@@ -55,7 +55,7 @@ public class PropertyConstraintsResource {
 			TPropertyConstraint propertyConstraint = iterator.next();
 			if (propertyConstraint.getProperty().equals(id)) {
 				iterator.remove();
-				return Utils.persist(this.res);
+				return RestUtils.persist(this.res);
 			}
 		}
 		// if the property mapping was not found, we reach this point
@@ -79,7 +79,7 @@ public class PropertyConstraintsResource {
 		propertyConstraint.setAny(constraintsApiData.getFragments());
 		propertyConstraint.setConstraintType(constraintsApiData.getConstraintType());
 		this.propertyConstraints.getPropertyConstraint().add(propertyConstraint);
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 	@GET

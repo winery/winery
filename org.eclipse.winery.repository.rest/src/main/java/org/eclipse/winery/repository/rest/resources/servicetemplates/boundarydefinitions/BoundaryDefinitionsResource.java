@@ -34,7 +34,7 @@ import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Requirements;
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.model.tosca.TRequirementRef;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.interfaces.InterfacesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.policies.PoliciesResource;
@@ -74,7 +74,7 @@ public class BoundaryDefinitionsResource {
 	@Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
 	public Response setModel(TBoundaryDefinitions boundaryDefinitions) {
 		this.serviceTemplateResource.getServiceTemplate().setBoundaryDefinitions(boundaryDefinitions);
-		return Utils.persist(this.serviceTemplateResource);
+		return RestUtils.persist(this.serviceTemplateResource);
 	}
 
 	@Path("properties/")
@@ -91,7 +91,7 @@ public class BoundaryDefinitionsResource {
 	public Response putProperties(@RestDocParam(description = "Stored properties. The XSD allows a single element only. Therefore, we go for the contained element") Document doc) {
 		org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties properties = ModelUtilities.getProperties(this.boundaryDefinitions);
 		properties.setAny(doc.getDocumentElement());
-		return Utils.persist(this.serviceTemplateResource);
+		return RestUtils.persist(this.serviceTemplateResource);
 	}
 
 	@Path("requirements/")

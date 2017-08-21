@@ -33,8 +33,7 @@ import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
@@ -90,7 +89,7 @@ public class SelfServicePortalResource implements IPersistable {
 		if (!RepositoryFactory.getRepository().exists(this.data_xml_ref)) {
 			// this.application is already initialized with a default value.
 			// So we just need to persist this resource
-			Utils.persist(this);
+			RestUtils.persist(this);
 		}
 	}
 
@@ -131,15 +130,15 @@ public class SelfServicePortalResource implements IPersistable {
 	@PUT
 	@Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
 	public Response onPutXML(Application data) {
-		String content = Utils.getXMLAsString(data);
-		return Utils.putContentToFile(this.data_xml_ref, content, MediaType.TEXT_XML_TYPE);
+		String content = RestUtils.getXMLAsString(data);
+		return RestUtils.putContentToFile(this.data_xml_ref, content, MediaType.TEXT_XML_TYPE);
 	}
 
 	@Path("icon.jpg")
 	@GET
 	public Response getIcon(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
-		return Utils.returnRepoPath(ref, modified);
+		return RestUtils.returnRepoPath(ref, modified);
 	}
 
 	@Path("icon.jpg")
@@ -148,14 +147,14 @@ public class SelfServicePortalResource implements IPersistable {
 	public Response putIcon(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
 		ensureDataXmlExists();
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
-		return Utils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+		return RestUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
 
 	@Path("image.jpg")
 	@GET
 	public Response getImage(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
-		return Utils.returnRepoPath(ref, modified);
+		return RestUtils.returnRepoPath(ref, modified);
 	}
 
 	@Path("image.jpg")
@@ -164,7 +163,7 @@ public class SelfServicePortalResource implements IPersistable {
 	public Response putImage(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
 		ensureDataXmlExists();
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
-		return Utils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+		return RestUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
 
 	@Path("displayname")
@@ -172,7 +171,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onPutOnDisplayName(Application value) {
 		this.application.setDisplayName(value.getDisplayName());
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 
 	@Path("description")
@@ -180,7 +179,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onPutOnDescription(Application value) {
 		this.application.setDescription(value.getDescription());
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 
 	@Path("options/")
@@ -219,7 +218,7 @@ public class SelfServicePortalResource implements IPersistable {
 		} else {
 			// return skeleton for application
 			// application object is already filled with default values if no file exists in repo
-			res = Utils.getXMLAsString(this.getApplication());
+			res = RestUtils.getXMLAsString(this.getApplication());
 		}
 		return res;
 	}

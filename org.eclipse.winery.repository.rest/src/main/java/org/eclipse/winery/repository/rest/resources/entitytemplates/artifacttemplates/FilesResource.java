@@ -35,7 +35,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.datatypes.FileMeta;
@@ -60,7 +60,7 @@ public class FilesResource {
 	}
 
 	private String getData4jqueryFileUpload(List<FileMeta> metas) {
-		String data4jqueryFileUpload = Utils.Object2JSON(metas);
+		String data4jqueryFileUpload = RestUtils.Object2JSON(metas);
 		data4jqueryFileUpload = "{\"files\":" + data4jqueryFileUpload + "}";
 		return data4jqueryFileUpload;
 	}
@@ -89,13 +89,13 @@ public class FilesResource {
 		BufferedInputStream bis = new BufferedInputStream(uploadedInputStream);
 		org.apache.tika.mime.MediaType mediaType = BackendUtils.getFixedMimeType(bis, fileName, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));
 
-		Response response = Utils.putContentToFile(ref, bis, mediaType);
+		Response response = RestUtils.putContentToFile(ref, bis, mediaType);
 		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
 			return response;
 		}
 
 		// create FileMeta object
-		String URL = Utils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
+		String URL = RestUtils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
 		String thumbnailURL = uriInfo.getBaseUriBuilder().path(Constants.PATH_MIMETYPEIMAGES).path(FilenameUtils.getExtension(fileName) + Constants.SUFFIX_MIMETYPEIMAGES).build().toString();
 		long size;
 		try {
@@ -108,7 +108,7 @@ public class FilesResource {
 
 		List<FileMeta> metas = new ArrayList<>();
 		metas.add(fileMeta);
-		return Response.created(Utils.createURI(URL)).entity(this.getData4jqueryFileUpload(metas)).build();
+		return Response.created(RestUtils.createURI(URL)).entity(this.getData4jqueryFileUpload(metas)).build();
 	}
 
 	/**
@@ -140,13 +140,13 @@ public class FilesResource {
 	@Path("/{fileName}")
 	public Response getFile(@PathParam("fileName") String fileName, @HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
-		return Utils.returnRepoPath(ref, modified);
+		return RestUtils.returnRepoPath(ref, modified);
 	}
 
 	@DELETE
 	@Path("/{fileName}")
 	public Response deleteFile(@PathParam("fileName") String fileName) {
 		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
-		return Utils.delete(ref);
+		return RestUtils.delete(ref);
 	}
 }

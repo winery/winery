@@ -30,7 +30,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiDataSet;
 import org.eclipse.winery.repository.rest.resources.entitytypes.InstanceStatesResource;
@@ -144,7 +144,7 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 			this.getRelationshipType().setValidTarget(vt);
 		}
 
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 
 	/**

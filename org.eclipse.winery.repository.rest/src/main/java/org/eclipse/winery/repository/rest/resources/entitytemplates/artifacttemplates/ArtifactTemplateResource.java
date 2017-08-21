@@ -47,7 +47,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources.IHasName;
@@ -108,7 +108,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	@Override
 	public Response setName(String name) {
 		this.getTArtifactTemplate().setName(name);
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 
 	@Override

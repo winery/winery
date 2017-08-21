@@ -26,7 +26,7 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TEntityType.DerivedFrom;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.AvailableSuperclassesApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceApiData;
 
@@ -63,7 +63,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 	@Path("name")
 	public Response putName(String name) {
 		ModelUtilities.setName(this.getElement(), name);
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 
 	/**
@@ -161,6 +161,6 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 			AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.LOGGER.error("Could not set inheritance resource", e);
 			throw new IllegalStateException(e);
 		}
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 }

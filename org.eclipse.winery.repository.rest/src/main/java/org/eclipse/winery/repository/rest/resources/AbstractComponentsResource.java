@@ -39,7 +39,7 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * TOSCAcomponentIds.
  *
  * TODO: Add generics here!
- * {@link Utils#getComponentIdClassForComponentContainer(java.lang.Class)} is then obsolete
+ * {@link RestUtils#getComponentIdClassForComponentContainer(java.lang.Class)} is then obsolete
  */
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
 
@@ -79,7 +79,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		if (StringUtils.isEmpty(namespace) || StringUtils.isEmpty(name)) {
 			res = new ResourceCreationResult(Status.BAD_REQUEST);
 		} else {
-			String id = Utils.createXMLidAsString(name);
+			String id = RestUtils.createXMLidAsString(name);
 			TOSCAComponentId tcId;
 			try {
 				tcId = this.getTOSCAcomponentId(namespace, id, false);
@@ -107,7 +107,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * Uses reflection to create a new instance
 	 */
 	protected TOSCAComponentId getTOSCAcomponentId(String namespace, String id, boolean URLencoded) {
-		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
+		Class<? extends TOSCAComponentId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
 		return BackendUtils.getTOSCAcomponentId(idClass, namespace, id, URLencoded);
 	}
 
@@ -118,7 +118,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * already exists,</li> <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li> </ul>
 	 */
 	protected ResourceCreationResult createComponentInstance(TOSCAComponentId tcId) {
-		return Utils.create(tcId);
+		return RestUtils.create(tcId);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -126,7 +126,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		// Guess the package
 		String pkg = "org.eclipse.winery.repository.resources.";
 
-		pkg += Utils.getIntermediateLocationStringForType(type, ".");
+		pkg += RestUtils.getIntermediateLocationStringForType(type, ".");
 
 		// naming convention: Instance is named after container, but without the
 		// plural s
@@ -200,7 +200,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * Required by topologytemplateedit.jsp
 	 */
 	public Collection<AbstractComponentInstanceResource> getAll() {
-		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
+		Class<? extends TOSCAComponentId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
 		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(idClass);
 		ArrayList<AbstractComponentInstanceResource> res = new ArrayList<>(allTOSCAcomponentIds.size());
 		for (TOSCAComponentId id : allTOSCAcomponentIds) {
@@ -224,7 +224,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getListOfAllIds(@QueryParam("grouped") String grouped) {
-		Class<? extends TOSCAComponentId> idClass = Utils.getComponentIdClassForComponentContainer(this.getClass());
+		Class<? extends TOSCAComponentId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
 		boolean supportsNameAttribute = Util.instanceSupportsNameAttribute(idClass);
 		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(idClass);
 		JsonFactory jsonFactory = new JsonFactory();

@@ -30,7 +30,7 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
@@ -127,7 +127,7 @@ public class XSDImportResource extends GenericImportResource {
 
 			String cacheContent = null;
 			try {
-				cacheContent = Utils.mapper.writeValueAsString(result);
+				cacheContent = RestUtils.mapper.writeValueAsString(result);
 			} catch (JsonProcessingException e) {
 				XSDImportResource.LOGGER.error("Could not generate cache content", e);
 			}
@@ -140,7 +140,7 @@ public class XSDImportResource extends GenericImportResource {
 			// read content from cache
 			// cache should contain most recent information
 			try (InputStream is = RepositoryFactory.getRepository().newInputStream(cacheRef)) {
-				result = Utils.mapper.readValue(is, java.util.List.class);
+				result = RestUtils.mapper.readValue(is, java.util.List.class);
 			} catch (IOException e) {
 				XSDImportResource.LOGGER.error("Could not read from cache", e);
 				result = Collections.emptyList();
@@ -167,7 +167,7 @@ public class XSDImportResource extends GenericImportResource {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, location);
-		return Utils.returnRepoPath(ref, null);
+		return RestUtils.returnRepoPath(ref, null);
 	}
 
 }

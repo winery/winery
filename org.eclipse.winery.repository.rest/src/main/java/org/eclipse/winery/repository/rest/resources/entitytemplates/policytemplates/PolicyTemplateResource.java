@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.IHasName;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
@@ -68,7 +68,7 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
 	@Override
 	public Response setName(String name) {
 		this.getPolicyTemplate().setName(name);
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 
 }

@@ -17,7 +17,7 @@ import java.util.Objects;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 
@@ -75,13 +75,13 @@ public class ImplementationArtifactResource extends GenericArtifactResource<Impl
 	@Override
 	public void setArtifactType(ArtifactTypeId artifactTypeId) {
 		this.getImplementationArtifact().setArtifactType(artifactTypeId.getQName());
-		Utils.persist(this.res);
+		RestUtils.persist(this.res);
 	}
 
 	@Override
 	public void setArtifactTemplate(ArtifactTemplateId artifactTemplateId) {
 		this.getImplementationArtifact().setArtifactRef(artifactTemplateId.getQName());
-		Utils.persist(this.res);
+		RestUtils.persist(this.res);
 	}
 
 	@Override

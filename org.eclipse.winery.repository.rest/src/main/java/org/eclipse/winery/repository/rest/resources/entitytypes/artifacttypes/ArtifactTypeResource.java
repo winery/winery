@@ -25,7 +25,7 @@ import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.datatypes.select2.Select2OptGroup;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 
 public class ArtifactTypeResource extends EntityTypeResource {
@@ -50,7 +50,7 @@ public class ArtifactTypeResource extends EntityTypeResource {
 	@Path("/fileextension")
 	public Response setAssociatedFileExtension(String fileExtension) {
 		this.getDefinitions().getOtherAttributes().put(this.qnameFileExtension, fileExtension);
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 
 	@Override

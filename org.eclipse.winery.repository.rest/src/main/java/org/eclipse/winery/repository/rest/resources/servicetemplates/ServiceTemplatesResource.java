@@ -33,7 +33,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
@@ -46,24 +46,24 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response createFromArtifact(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @FormDataParam("artifactType") QName artifactType, @FormDataParam("nodeTypes") Set<QName> nodeTypes, @FormDataParam("infrastructureNodeType") QName infrastructureNodeType, @FormDataParam("tags") Set<String> sentTags, @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
-		Set<String> tags = Utils.clean(sentTags);
-		nodeTypes = Utils.cleanQNameSet(nodeTypes);
+		Set<String> tags = RestUtils.clean(sentTags);
+		nodeTypes = RestUtils.cleanQNameSet(nodeTypes);
 
 		Collection<ServiceTemplateId> xaasPackages = this.getXaaSPackageTemplates(artifactType);
 		Collection<ServiceTemplateId> toRemove = new ArrayList<ServiceTemplateId>();
 
 		// check whether the serviceTemplate contains all the given nodeTypes
 		for (ServiceTemplateId serviceTemplate : xaasPackages) {
-			if (!Utils.containsNodeTypes(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), nodeTypes) | !Utils.containsTags(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), tags)) {
+			if (!RestUtils.containsNodeTypes(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), nodeTypes) | !RestUtils.containsTags(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), tags)) {
 				toRemove.add(serviceTemplate);
 				continue;
 			}
 			if (infrastructureNodeType != null && !infrastructureNodeType.getLocalPart().equals("undefined")) {
-				if (Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageInfrastructure") == null) {
+				if (RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageInfrastructure") == null) {
 					toRemove.add(serviceTemplate);
 					continue;
 				} else {
-					String value = Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageInfrastructure");
+					String value = RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageInfrastructure");
 					String localName = value.split("}")[1];
 					String namespace = value.split("}")[0].substring(1);
 					if (!infrastructureNodeType.equals(new QName(namespace, localName))) {
@@ -86,20 +86,20 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
 		String newTemplateName = fileDetail.getFileName() + "ServiceTemplate";
 
 		// create artifactTemplate for the uploaded artifact
-		ArtifactTemplateId artifactTemplateId = Utils.createArtifactTemplate(uploadedInputStream, fileDetail, body, artifactType, uriInfo);
+		ArtifactTemplateId artifactTemplateId = RestUtils.createArtifactTemplate(uploadedInputStream, fileDetail, body, artifactType, uriInfo);
 
 		// clone serviceTemplate
-		ServiceTemplateId serviceTemplateId = Utils.cloneServiceTemplate(serviceTemplate, newTemplateName, fileDetail.getFileName());
+		ServiceTemplateId serviceTemplateId = RestUtils.cloneServiceTemplate(serviceTemplate, newTemplateName, fileDetail.getFileName());
 
-		if (Utils.hasDA(serviceTemplateId, Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"))) {
+		if (RestUtils.hasDA(serviceTemplateId, RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"))) {
 
 			// inject artifact as DA into cloned ServiceTemplate
-			BackendUtils.injectArtifactTemplateIntoDeploymentArtifact(serviceTemplateId, Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"), artifactTemplateId);
+			BackendUtils.injectArtifactTemplateIntoDeploymentArtifact(serviceTemplateId, RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"), artifactTemplateId);
 		} else {
 			return Response.serverError().entity("Tagged DeploymentArtifact couldn't be found on given specified NodeTemplate").build();
 		}
 
-		URI absUri = Utils.getAbsoluteURI(serviceTemplateId);
+		URI absUri = RestUtils.getAbsoluteURI(serviceTemplateId);
 		// http://localhost:8080/winery/servicetemplates/winery/servicetemplates/http%253A%252F%252Fopentosca.org%252Fservicetemplates/hs_err_pid13228.logServiceTemplate/
 		// http://localhost:8080/winery/servicetemplates/winery/servicetemplates/http%253A%252F%252Fopentosca.org%252Fservicetemplates/java0.logServiceTemplate/
 		String absUriString = absUri.toString().replace("/winery/servicetemplates", "");
@@ -111,7 +111,7 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
 	private Collection<ServiceTemplateId> getXaaSPackageTemplates(QName artifactType) {
 		Collection<ServiceTemplateId> xaasPackages = new ArrayList<ServiceTemplateId>();
 		for (ServiceTemplateId serviceTemplate : this.getXaaSPackageTemplates()) {
-			String artifactTypeTagValue = Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageArtifactType");
+			String artifactTypeTagValue = RestUtils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageArtifactType");
 			QName taggedArtifactType = QName.valueOf(artifactTypeTagValue);
 			if (taggedArtifactType.equals(artifactType)) {
 				xaasPackages.add(serviceTemplate);

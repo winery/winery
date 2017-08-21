@@ -32,8 +32,7 @@ import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
@@ -79,14 +78,14 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		// the drawback is, that we do not allow two plans with the same name
 		// during creation, but allow renaming plans to the same name (as we do
 		// not allow ID renaming)
-		String xmlId = Utils.createXMLidAsString(newPlan.getName());
+		String xmlId = RestUtils.createXMLidAsString(newPlan.getName());
 		newPlan.setId(xmlId);
 
 		this.list.add(newPlan);
 
 		Response response = this.saveFile(newPlan, null, null, null);
 		if (response.getStatus() == 204) {
-			return Response.created(Utils.createURI(Util.URLencode(xmlId))).entity(newPlan).build();
+			return Response.created(RestUtils.createURI(Util.URLencode(xmlId))).entity(newPlan).build();
 		}
 
 		return response;
@@ -158,6 +157,6 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			PlansResource.setPlanModelReference(tPlan, planId, fileName);
 		}
 
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 }

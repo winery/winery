@@ -17,8 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.rest.Prefs;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.apache.commons.io.FilenameUtils;
@@ -60,7 +59,7 @@ public class FileMeta {
 			FileMeta.LOGGER.error(e.getMessage(), e);
 			this.size = 0;
 		}
-		this.url = Utils.getAbsoluteURL(ref);
+		this.url = RestUtils.getAbsoluteURL(ref);
 		this.deleteUrl = this.url;
 		this.thumbnailUrl = Environment.getUrlConfiguration().getRepositoryApiUrl() + Constants.PATH_MIMETYPEIMAGES + FilenameUtils.getExtension(this.name) + Constants.SUFFIX_MIMETYPEIMAGES;
 	}

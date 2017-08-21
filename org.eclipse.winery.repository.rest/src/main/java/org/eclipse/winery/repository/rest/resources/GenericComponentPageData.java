@@ -22,7 +22,7 @@ import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates.PolicyTemplatesResource;
@@ -47,7 +47,7 @@ public final class GenericComponentPageData {
 	public GenericComponentPageData(Class<? extends AbstractComponentsResource> resourceClass, boolean showAllItems) {
 		this.resourceClass = resourceClass;
 		this.showAllItems = showAllItems;
-		this.cIdClass = Utils.getComponentIdClassForComponentContainer(resourceClass);
+		this.cIdClass = RestUtils.getComponentIdClassForComponentContainer(resourceClass);
 		this.componentInstanceIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(cIdClass);
 	}
 
@@ -65,11 +65,11 @@ public final class GenericComponentPageData {
 	}
 
 	public String getType() {
-		return Utils.getTypeForComponentContainer(this.resourceClass);
+		return RestUtils.getTypeForComponentContainer(this.resourceClass);
 	}
 
 	public Class<? extends TOSCAComponentId> getTOSCAComponentId() {
-		return Utils.getComponentIdClassForComponentContainer(this.resourceClass);
+		return RestUtils.getComponentIdClassForComponentContainer(this.resourceClass);
 	}
 
 	public String getCSSclass() {

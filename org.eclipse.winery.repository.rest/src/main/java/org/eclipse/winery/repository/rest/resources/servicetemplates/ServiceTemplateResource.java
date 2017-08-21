@@ -56,7 +56,7 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.InjectorReplaceData;
@@ -133,7 +133,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	@Override
 	public Response setName(String name) {
 		this.getServiceTemplate().setName(name);
-		return Utils.persist(this);
+		return RestUtils.persist(this);
 	}
 
 	// @formatter:off
@@ -165,7 +165,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	@Path("substitutableNodeType")
 	public Response deleteSubstitutableNodeType() {
 		this.getServiceTemplate().setSubstitutableNodeType(null);
-		Utils.persist(this);
+		RestUtils.persist(this);
 		return Response.noContent().build();
 	}
 
@@ -268,12 +268,12 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		this.getServiceTemplate().setTopologyTemplate(matchedConnectedTopologyTemplate);
 
 		LOGGER.debug("Persisting...");
-		Utils.persist(this);
+		RestUtils.persist(this);
 		LOGGER.debug("Persisted.");
 
 		//No renaming of the Service Template allowed because of the plans
 
-		URI url = uriInfo.getBaseUri().resolve(Utils.getAbsoluteURL(id));
+		URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(id));
 		LOGGER.debug("URI of the old and new service template {}", url.toString());
 		return Response.created(url).build();
 	}
@@ -407,6 +407,6 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 			thePlans.add(plan);
 		}
 
-		Utils.persist(this);
+		RestUtils.persist(this);
 	}
 }

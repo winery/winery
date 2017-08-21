@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.ConstraintsResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
@@ -94,7 +94,7 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 	public Response setName(@FormParam(value = "name") String name) {
 		// TODO: type check - see also min/max Instance of a node template
 		this.invokeSetter("setName", name);
-		return Utils.persist(this.parent);
+		return RestUtils.persist(this.parent);
 	}
 
 	@PUT
@@ -102,7 +102,7 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 	public Response setLowerBound(@FormParam(value = "lowerbound") String value) {
 		// TODO: type check
 		this.invokeSetter("setLowerBound", value);
-		return Utils.persist(this.parent);
+		return RestUtils.persist(this.parent);
 	}
 
 	@PUT
@@ -110,7 +110,7 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 	public Response setUpperBound(@FormParam(value = "upperbound") String value) {
 		// TODO: type check
 		this.invokeSetter("setUpperBound", value);
-		return Utils.persist(this.parent);
+		return RestUtils.persist(this.parent);
 	}
 
 	@Path("constraints/")

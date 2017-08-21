@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 
 /**
@@ -85,7 +85,7 @@ public abstract class EntityResource<EntityT> {
 	public Response getXML() {
 		assert (this.o != null);
 		// Utils.getXML has to be used as Jersey can only serialize XMLRootElements
-		return Utils.getXML((Class<EntityT>) this.o.getClass(), this.o);
+		return RestUtils.getXML((Class<EntityT>) this.o.getClass(), this.o);
 	}
 
 	/**
@@ -116,7 +116,7 @@ public abstract class EntityResource<EntityT> {
 		} catch (IndexOutOfBoundsException e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not delete entity, even if it should exist").build();
 		}
-		return Utils.persist(this.res);
+		return RestUtils.persist(this.res);
 	}
 
 }
