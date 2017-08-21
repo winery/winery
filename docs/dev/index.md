@@ -460,6 +460,9 @@ Otherwise, Winery does not compile.
 
 When executing tests, winery logs its output in `winery-debug.log`, too.
 
+Q: Version.java is missing, what can I do? <br/>
+A: Execute `mvn resources:resources` in the project `org.eclipse.winery.repository.configuration`
+
 In case some JavaScript libraries cannot be found by the browser, execute `bower prune`, `bower install`, `bower update` in both `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler`.
 
 If `mvn package` does not work in a sub project, execute `mvn install` in the root. [Source](http://stackoverflow.com/q/29712865/873282)
