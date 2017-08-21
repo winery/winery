@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,14 +7,13 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Oliver Kopp - initial API and implementation
+ *     Oliver Kopp - initial API, implementation, minor corrections
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,18 +21,16 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
-import org.eclipse.winery.model.tosca.TDocumentation;
-import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
@@ -59,10 +56,6 @@ public class SelfServicePortalResource {
 	private final SelfServiceMetaDataId id;
 
 
-	public SelfServicePortalResource(ServiceTemplateId serviceTemplateId) {
-		this(null, serviceTemplateId);
-	}
-
 	public SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource) {
 		this(serviceTemplateResource, (ServiceTemplateId) serviceTemplateResource.getId());
 	}
@@ -74,9 +67,9 @@ public class SelfServicePortalResource {
 	private SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource, ServiceTemplateId serviceTemplateId) {
 		this.serviceTemplateResource = serviceTemplateResource;
 		this.id = new SelfServiceMetaDataId(serviceTemplateId);
-		this.data_xml_ref = new RepositoryFileReference(this.id, "data.xml");
-		this.icon_jpg_ref = new RepositoryFileReference(this.id, "icon.jpg");
-		this.image_jpg_ref = new RepositoryFileReference(this.id, "image.jpg");
+		this.data_xml_ref = SelfServiceMetaDataUtils.getDataXmlRef(this.id);
+		this.icon_jpg_ref = SelfServiceMetaDataUtils.getIconJpgRef(this.id);
+		this.image_jpg_ref = SelfServiceMetaDataUtils.getImageJpgRef(this.id);
 		this.application = this.getData();
 	}
 
@@ -84,46 +77,10 @@ public class SelfServicePortalResource {
 		return this.id;
 	}
 
-	public void ensureDataXmlExists() {
-		if (!RepositoryFactory.getRepository().exists(this.data_xml_ref)) {
-			// this.application is already initialized with a default value.
-			// So we just need to persist this resource
-			persist();
-		}
-	}
-
 	@GET
 	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
 	public Application getData() {
-		if (RepositoryFactory.getRepository().exists(this.data_xml_ref)) {
-			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			try (InputStream is = RepositoryFactory.getRepository().newInputStream(this.data_xml_ref)) {
-				return (Application) u.unmarshal(is);
-			} catch (IOException | JAXBException e) {
-				SelfServicePortalResource.LOGGER.error("Could not read from " + this.data_xml_ref, e);
-				return new Application();
-			}
-		} else {
-			return this.getDefaultApplicationData();
-		}
-	}
-
-	private Application getDefaultApplicationData() {
-		Application app = new Application();
-		app.setIconUrl("icon.jpg");
-		app.setImageUrl("image.jpg");
-		if (this.serviceTemplateResource != null) {
-			app.setDisplayName(this.serviceTemplateResource.getName());
-			List<TDocumentation> documentation = this.serviceTemplateResource.getServiceTemplate().getDocumentation();
-			if ((documentation != null) && (!documentation.isEmpty())) {
-				TDocumentation doc = documentation.get(0);
-				List<Object> content = doc.getContent();
-				if ((content != null) && (!content.isEmpty())) {
-					app.setDescription(content.get(0).toString());
-				}
-			}
-		}
-		return app;
+		return SelfServiceMetaDataUtils.getApplication(this.id);
 	}
 
 	@PUT
@@ -144,7 +101,11 @@ public class SelfServicePortalResource {
 	@PUT
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response putIcon(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
-		ensureDataXmlExists();
+		try {
+			SelfServiceMetaDataUtils.ensureDataXmlExists(this.id);
+		} catch (IOException e) {
+			throw new WebApplicationException(e);
+		}
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
 		return RestUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
@@ -160,7 +121,11 @@ public class SelfServicePortalResource {
 	@PUT
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response putImage(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
-		ensureDataXmlExists();
+		try {
+			SelfServiceMetaDataUtils.ensureDataXmlExists(this.id);
+		} catch (IOException e) {
+			throw new WebApplicationException(e);
+		}
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
 		return RestUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}

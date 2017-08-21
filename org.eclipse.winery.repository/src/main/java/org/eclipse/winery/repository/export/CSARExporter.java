@@ -53,6 +53,7 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
@@ -399,25 +400,27 @@ public class CSARExporter {
 	 * @param targetDir the directory in the CSAR where to put the content to
 	 * @param refMap is used later to create the CSAR
 	 */
-	private void addSelfServiceMetaData(ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) {
-		SelfServicePortalResource res = new SelfServicePortalResource(entryId);
+	private void addSelfServiceMetaData(ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) throws IOException {
+		final SelfServiceMetaDataId selfServiceMetaDataId = new SelfServiceMetaDataId(entryId);
 
 		// This method is also called if the directory SELFSERVICE-Metadata exists without content and even if the directory does not exist at all,
 		// but the ServiceTemplate itself exists.
 		// The current assumption is that this is enough for an existence.
 		// Thus, we have to take care of the case of an empty directory and add a default data.xml
-		res.ensureDataXmlExists();
-
-		refMap.put(res.data_xml_ref, targetDir + "data.xml");
+		SelfServiceMetaDataUtils.ensureDataXmlExists(selfServiceMetaDataId);
+		
+		refMap.put(SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId), targetDir + "data.xml");
 
 		// The schema says that the images have to exist
 		// However, at a quick modeling, there might be no images
 		// Therefore, we check for existence
-		if (RepositoryFactory.getRepository().exists(res.icon_jpg_ref)) {
-			refMap.put(res.icon_jpg_ref, targetDir + "icon.jpg");
+		final RepositoryFileReference iconJpgRef = SelfServiceMetaDataUtils.getIconJpgRef(selfServiceMetaDataId);
+		if (RepositoryFactory.getRepository().exists(iconJpgRef)) {
+			refMap.put(iconJpgRef, targetDir + "icon.jpg");
 		}
-		if (RepositoryFactory.getRepository().exists(res.image_jpg_ref)) {
-			refMap.put(res.image_jpg_ref, targetDir + "image.jpg");
+		final RepositoryFileReference imageJpgRef = SelfServiceMetaDataUtils.getImageJpgRef(selfServiceMetaDataId);
+		if (RepositoryFactory.getRepository().exists(imageJpgRef)) {
+			refMap.put(imageJpgRef, targetDir + "image.jpg");
 		}
 
 		Application application = res.getApplication();
