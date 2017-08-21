@@ -45,6 +45,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -124,6 +125,7 @@ import org.apache.xerces.xs.XSTypeDefinition;
 import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
+import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
 
 /**
@@ -1062,92 +1064,48 @@ public class BackendUtils {
 		RepositoryFactory.getRepository().setElement(id, serviceTemplate);
 	}
 
-	public static String getAllXSDElementDefinitionsForTypeAheadSelection() {
-		LOGGER.entry();
-		try {
-			return getAllXSDefinitionsForTypeAheadSelection(XSConstants.ELEMENT_DECLARATION);
-		} finally {
-			LOGGER.exit();
-		}
-	}
-
-	public static String getAllXSDTypeDefinitionsForTypeAheadSelection() {
-		LOGGER.entry();
-		try {
-			return getAllXSDefinitionsForTypeAheadSelection(XSConstants.TYPE_DEFINITION);
-		} finally {
-			LOGGER.exit();
-		}
-	}
-
-	// TODO: maybe not necessary if everything is working with angular
-	public static String getAllXSDefinitionsForTypeAheadSelection(short type) {
-		try {
-			return RestUtils.mapper.writeValueAsString(RestUtils.getAllXSDefinitionsForTypeAheadSelectionRaw(type));
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("Could not create JSON", e);
-		}
-	}
-
-	public static ArrayNode getAllXSDefinitionsForTypeAheadSelectionRaw(short type) {
-		SortedSet<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
-
-		Map<Namespace, Collection<String>> data = new HashMap<>();
-
-		for (XSDImportId id : allImports) {
-			XSDImportResource resource = new XSDImportResource(id);
-			Collection<String> allLocalNames = resource.getAllDefinedLocalNames(type);
-
-			Collection<String> list;
-			if ((list = data.get(id.getNamespace())) == null) {
-				// list does not yet exist
-				list = new ArrayList<>();
-				data.put(id.getNamespace(), list);
-			}
-			list.addAll(allLocalNames);
-		}
-
-		ArrayNode rootNode = RestUtils.mapper.createArrayNode();
-
-		// ensure ordering in JSON object
-		Collection<Namespace> allns = new TreeSet<>();
-		allns.addAll(data.keySet());
-
-		for (Namespace ns : allns) {
-			Collection<String> localNames = data.get(ns);
-			if (!localNames.isEmpty()) {
-				ObjectNode groupEntry = RestUtils.mapper.createObjectNode();
-				rootNode.add(groupEntry);
-				groupEntry.put("id", ns.getEncoded());
-				groupEntry.put("text", ns.getDecoded());
-				ArrayNode children = RestUtils.mapper.createArrayNode();
-				groupEntry.put("children", children);
-				Collection<String> sortedLocalNames = new TreeSet<>();
-				sortedLocalNames.addAll(localNames);
-				for (String localName : sortedLocalNames) {
-					String value = "{" + ns.getDecoded() + "}" + localName;
-					//noinspection UnnecessaryLocalVariable
-					String text = localName;
-					ObjectNode o = RestUtils.mapper.createObjectNode();
-					o.put("text", text);
-					o.put("id", value);
-					children.add(o);
-				}
-			}
-		}
-
-		return rootNode;
-	}
-
 	public static String Object2JSON(Object o) {
 		String res;
 		try {
-			res = RestUtils.mapper.writeValueAsString(o);
+			res = BackendUtils.mapper.writeValueAsString(o);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			return null;
 		}
 		return res;
 	}
+
+	public static String getXMLAsString(Object obj) {
+		if (obj instanceof Element) {
+			// in case the object is a DOM element, we use the DOM functionality
+			return Util.getXMLAsString((Element) obj);
+		} else {
+			return BackendUtils.getXMLAsString(obj, false);
+		}
+	}
+
+	public static <T> String getXMLAsString(T obj, boolean includeProcessingInstruction) {
+		if (obj == null) {
+			return "";
+		}
+		@SuppressWarnings("unchecked")
+		Class<T> clazz = (Class<T>) obj.getClass();
+		return BackendUtils.getXMLAsString(clazz, obj, includeProcessingInstruction);
+	}
+
+	public static <T> String getXMLAsString(Class<T> clazz, T obj, boolean includeProcessingInstruction) {
+		JAXBElement<T> rootElement = Util.getJAXBElement(clazz, obj);
+		Marshaller m = JAXBSupport.createMarshaller(includeProcessingInstruction);
+		StringWriter w = new StringWriter();
+		try {
+			m.marshal(rootElement, w);
+		} catch (JAXBException e) {
+			BackendUtils.LOGGER.error("Could not put content to string", e);
+			throw new IllegalStateException(e);
+		}
+		return w.toString();
+	}
+
+
 
 }

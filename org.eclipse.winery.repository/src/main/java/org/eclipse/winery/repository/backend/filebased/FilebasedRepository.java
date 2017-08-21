@@ -72,6 +72,8 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
+import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
 
 import org.apache.commons.configuration.Configuration;
@@ -99,7 +101,8 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	private final FileSystemProvider provider;
 
 	/**
-	 * @param fileBasedRepositoryConfiguration configuration of the filebased repository. The contained repositoryPath may be null
+	 * @param fileBasedRepositoryConfiguration configuration of the filebased repository. The contained repositoryPath
+	 *                                         may be null
 	 */
 	public FilebasedRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
 		Objects.requireNonNull(fileBasedRepositoryConfiguration);
@@ -527,6 +530,11 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	@Override
 	public NamespaceManager getNamespaceManager() {
 		return new ConfigurationBasedNamespaceManager(this.getConfiguration(new NamespacesId()));
+	}
+
+	@Override
+	public XsdImportManager getXsdImportManager() {
+		return new RepositoryBasedXsdImportManager();
 	}
 
 	private Collection<Namespace> getNamespaces(Collection<Class<? extends TOSCAComponentId>> toscaComponentIds) {

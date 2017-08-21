@@ -1119,7 +1119,7 @@ public class CSARImporter {
                     // We call the queries without storing the result:
                     // We use the SIDEEFFECT that a cache is created
                     BackendUtils.getAllXSDElementDefinitionsForTypeAheadSelection();
-                    Utils.getAllXSDTypeDefinitionsForTypeAheadSelection();
+					BackendUtils.getAllXSDTypeDefinitionsForTypeAheadSelection();
                     CSARImporter.LOGGER.debug("Updated XSD import cache data");
                 });
 			}
@@ -1128,7 +1128,7 @@ public class CSARImporter {
 
 	private static void storeDefinitions(TOSCAComponentId id, TDefinitions defs) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
-		String s = Utils.getXMLAsString(defs, true);
+		String s = Util.getXMLAsString(defs, true);
 		try {
 			RepositoryFactory.getRepository().putContentToFile(ref, s, MediaType.valueOf(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS));
 		} catch (IllegalArgumentException | IOException e) {

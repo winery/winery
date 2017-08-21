@@ -34,6 +34,7 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 
 import org.apache.tika.mime.MediaType;
 
@@ -206,6 +207,8 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	}
 
 	NamespaceManager getNamespaceManager();
+	
+	XsdImportManager getXsdImportManager();
 
 	/**
 	 * Updates the element belonging to the given TOSCAComponentId Regenerates wrapper definitions; thus all extensions

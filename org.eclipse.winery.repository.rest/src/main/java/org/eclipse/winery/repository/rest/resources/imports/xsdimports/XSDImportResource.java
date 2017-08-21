@@ -11,14 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
@@ -30,16 +22,10 @@ import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.xerces.xs.XSConstants;
 import org.apache.xerces.xs.XSModel;
-import org.apache.xerces.xs.XSNamedMap;
-import org.apache.xerces.xs.XSObject;
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,77 +70,6 @@ public class XSDImportResource extends GenericImportResource {
 	private XSModel getXSModel() {
 		final RepositoryFileReference ref = this.getXSDFileReference();
 		return BackendUtils.getXSModel(ref);
-	}
-
-	// we need "unchecked", because of the parsing of the cache
-	@SuppressWarnings("unchecked")
-	public Collection<String> getAllDefinedLocalNames(short type) {
-		RepositoryFileReference ref = this.getXSDFileReference();
-		if (ref == null) {
-			return Collections.emptySet();
-		}
-		Date lastUpdate = RepositoryFactory.getRepository().getLastUpdate(ref);
-
-		String cacheFileName = "definedLocalNames " + Integer.toString(type) + ".cache";
-		RepositoryFileReference cacheRef = new RepositoryFileReference(this.id, cacheFileName);
-		boolean cacheNeedsUpdate = true;
-		if (RepositoryFactory.getRepository().exists(cacheRef)) {
-			Date lastUpdateCache = RepositoryFactory.getRepository().getLastUpdate(cacheRef);
-			if (lastUpdate.compareTo(lastUpdateCache) <= 0) {
-				cacheNeedsUpdate = false;
-			}
-		}
-
-		List<String> result;
-		if (cacheNeedsUpdate) {
-
-			XSModel model = this.getXSModel();
-			if (model == null) {
-				return Collections.emptySet();
-			}
-			XSNamedMap components = model.getComponents(type);
-			//@SuppressWarnings("unchecked")
-			int len = components.getLength();
-			result = new ArrayList<>(len);
-			for (int i = 0; i < len; i++) {
-				XSObject item = components.item(i);
-				// if queried for TYPE_DEFINITION, then XSD base types (such as IDREF) are also returned
-				// We want to return only types defined in the namespace of this resource
-				if (item.getNamespace().equals(this.id.getNamespace().getDecoded())) {
-					result.add(item.getName());
-				}
-			}
-
-			String cacheContent = null;
-			try {
-				cacheContent = BackendUtils.mapper.writeValueAsString(result);
-			} catch (JsonProcessingException e) {
-				XSDImportResource.LOGGER.error("Could not generate cache content", e);
-			}
-			try {
-				RepositoryFactory.getRepository().putContentToFile(cacheRef, cacheContent, MediaTypes.MEDIATYPE_APPLICATION_JSON);
-			} catch (IOException e) {
-				XSDImportResource.LOGGER.error("Could not update cache", e);
-			}
-		} else {
-			// read content from cache
-			// cache should contain most recent information
-			try (InputStream is = RepositoryFactory.getRepository().newInputStream(cacheRef)) {
-				result = BackendUtils.mapper.readValue(is, java.util.List.class);
-			} catch (IOException e) {
-				XSDImportResource.LOGGER.error("Could not read from cache", e);
-				result = Collections.emptyList();
-			}
-		}
-		return result;
-	}
-
-	public Collection<String> getAllDefinedElementsLocalNames() {
-		return this.getAllDefinedLocalNames(XSConstants.ELEMENT_DECLARATION);
-	}
-
-	public Collection<String> getAllDefinedTypesLocalNames() {
-		return this.getAllDefinedLocalNames(XSConstants.TYPE_DEFINITION);
 	}
 
 	@GET

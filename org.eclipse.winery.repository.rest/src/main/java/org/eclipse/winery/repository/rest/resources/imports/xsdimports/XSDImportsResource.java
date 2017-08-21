@@ -11,12 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,14 +20,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.restdoc.annotations.RestDoc;
 
 /**
@@ -47,78 +38,13 @@ public class XSDImportsResource extends AbstractComponentsWithoutTypeReferenceRe
 	@GET
 	@RestDoc(methodDescription = "Returns all available local names of defined elements in this namespace")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAllElementLocalNames(@PathParam("namespace") String nsString, @QueryParam(value = "elements") String returnElements, @QueryParam(value = "types") String returnTypes) {
+	public List<String> getAllElementLocalNames(
+			@PathParam("namespace") String nsString,
+			@QueryParam(value = "elements") String returnElements,
+			@QueryParam(value = "types") String returnTypes) {
 		// returnElements is not read as either types or elements may be read
-		Set<String> allNCNames = this.getAllElementLocalNamesAsSet(nsString, returnTypes != null);
-		try {
-			return BackendUtils.mapper.writeValueAsString(allNCNames);
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException(e);
-		}
-	}
-
-	/**
-	 * @param nsString the namesapce as String
-	 * @param getTypes true: return ElementTypes, false: return Elements
-	 */
-	private Set<String> getAllElementLocalNamesAsSet(final String nsString, final boolean getTypes) {
-		Set<XSDImportId> importsOfNS = this.getImportsOfNS(nsString);
-
-		// TreeSet enables ordering
-		Set<String> allNCNames = new TreeSet<>();
-
-		for (XSDImportId imp : importsOfNS) {
-			XSDImportResource res = new XSDImportResource(imp);
-			Collection<String> col;
-			if (getTypes) {
-				col = res.getAllDefinedTypesLocalNames();
-			} else {
-				col = res.getAllDefinedElementsLocalNames();
-			}
-			allNCNames.addAll(col);
-		}
-		return allNCNames;
-	}
-
-	/**
-	 * Finds out all imports belonging to the given namespace
-	 *
-	 * @param nsString the namespace to query
-	 */
-	private Set<XSDImportId> getImportsOfNS(final String nsString) {
-		// FIXME: Currently not supported by the repository, therefore, we filter by hand
-		Set<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
-		Namespace ns = new Namespace(nsString, true);
-		Set<XSDImportId> importsOfNs = new HashSet<>();
-		for (XSDImportId imp : allImports) {
-			if (imp.getNamespace().equals(ns)) {
-				importsOfNs.add(imp);
-			}
-		}
-		return importsOfNs;
-	}
-
-	/**
-	 * Returns a mapping from localnames to XSD files, containing the defined
-	 * local names for the given namespace
-	 */
-	public Map<String, RepositoryFileReference> getMapFromLocalNameToXSD(final String nsString, final boolean getTypes) {
-		Set<XSDImportId> importsOfNS = this.getImportsOfNS(nsString);
-		Map<String, RepositoryFileReference> result = new HashMap<>();
-		for (XSDImportId imp : importsOfNS) {
-			XSDImportResource res = new XSDImportResource(imp);
-			Collection<String> col;
-			if (getTypes) {
-				col = res.getAllDefinedTypesLocalNames();
-			} else {
-				col = res.getAllDefinedElementsLocalNames();
-			}
-			RepositoryFileReference ref = res.getXSDFileReference();
-			for (String localName : col) {
-				result.put(localName, ref);
-			}
-		}
-		return result;
+		return RepositoryFactory.getRepository().getXsdImportManager()
+				.getAllDeclaredElementLocalNames(new Namespace(nsString, true), (returnTypes != null));
 	}
 
 }

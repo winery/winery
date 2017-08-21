@@ -396,37 +396,6 @@ public class RestUtils {
 		return Response.ok().type(MediaType.TEXT_XML).entity(xml).build();
 	}
 
-	public static <T> String getXMLAsString(Class<T> clazz, T obj, boolean includeProcessingInstruction) {
-		JAXBElement<T> rootElement = Util.getJAXBElement(clazz, obj);
-		Marshaller m = JAXBSupport.createMarshaller(includeProcessingInstruction);
-		StringWriter w = new StringWriter();
-		try {
-			m.marshal(rootElement, w);
-		} catch (JAXBException e) {
-			RestUtils.LOGGER.error("Could not put content to string", e);
-			throw new IllegalStateException(e);
-		}
-		return w.toString();
-	}
-
-	public static String getXMLAsString(Object obj) {
-		if (obj instanceof Element) {
-			// in case the object is a DOM element, we use the DOM functionality
-			return Util.getXMLAsString((Element) obj);
-		} else {
-			return RestUtils.getXMLAsString(obj, false);
-		}
-	}
-
-	public static <T> String getXMLAsString(T obj, boolean includeProcessingInstruction) {
-		if (obj == null) {
-			return "";
-		}
-		@SuppressWarnings("unchecked")
-		Class<T> clazz = (Class<T>) obj.getClass();
-		return RestUtils.getXMLAsString(clazz, obj, includeProcessingInstruction);
-	}
-
 	public static Response getResponseForException(Exception e) {
 		String msg;
 		if (e.getCause() != null) {
