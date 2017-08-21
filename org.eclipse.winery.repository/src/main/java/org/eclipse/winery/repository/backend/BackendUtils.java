@@ -25,6 +25,9 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +51,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
@@ -55,6 +59,7 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
 import org.eclipse.winery.model.tosca.ObjectFactory;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
@@ -843,6 +848,47 @@ public class BackendUtils {
 			LOGGER.error("Error in XML in " + ref.getFileName(), e);
 		}
 		return null;
+	}
+
+
+	/**
+	 * @param directoryId DirectoryID of the TArtifactTemplate that should be returned.
+	 * @return The TArtifactTemplate corresponding to the directoryId.
+	 */
+	public static TArtifactTemplate getTArtifactTemplate(ArtifactTemplateDirectoryId directoryId) {
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
+		try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
+			Unmarshaller u = JAXBSupport.createUnmarshaller();
+			Definitions defs = ((Definitions) u.unmarshal(is));
+			for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
+				if (elem instanceof TArtifactTemplate) {
+					return (TArtifactTemplate) elem;
+				}
+			}
+		} catch (IOException e) {
+			LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
+		} catch (JAXBException e) {
+			LOGGER.error("Error in XML in " + ref.getFileName(), e);
+		}
+		return null;
+	}
+
+	/**
+	 * Tests if a path matches a glob pattern. {@see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>}
+	 *
+	 * @param glob Glob pattern to test the path against.
+	 * @param path Path that should match the glob pattern.
+	 * @return Whether the glob and the path result in a match.
+	 */
+	public static boolean isGlobMatch(String glob, Path path) {
+		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + glob);
+		return matcher.matches(path);
+	}
+
+	public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) {
+		TServiceTemplate element = RepositoryFactory.getRepository().getElement(serviceTemplate);
+		element.getTopologyTemplate().getNodeTemplate(nodeTemplateId).getDeploymentArtifacts().getDeploymentArtifact(deploymentArtifactId).setArtifactRef(artifactTemplate.getQName());
+		return true;
 	}
 
 }

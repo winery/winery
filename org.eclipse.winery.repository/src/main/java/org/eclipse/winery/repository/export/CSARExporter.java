@@ -40,6 +40,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
@@ -50,14 +51,13 @@ import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
-import org.eclipse.winery.repository.rest.Prefs;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.rest.resources.admin.NamespacesResource;
+import org.eclipse.winery.repository.rest.Prefs;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -193,7 +193,7 @@ public class CSARExporter {
 	 * @throws IOException thrown when the temporary directory can not be created
 	 */
 	private void addArtifactTemplateToZipFile(ArchiveOutputStream zos, RepositoryFileReference ref, String archivePath) throws IOException {
-		GitInfo gitInfo = Utils.getGitInformation((ArtifactTemplateDirectoryId)ref.getParent());
+		GitInfo gitInfo = BackendUtils.getGitInformation((ArtifactTemplateDirectoryId)ref.getParent());
 
 		if (gitInfo == null) {
             try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
@@ -222,7 +222,7 @@ public class CSARExporter {
                     + "/"
                     + ((ArtifactTemplateId)ref.getParent().getParent()).getQName().getLocalPart()
                     + "/files/";
-			TArtifactTemplate template = Utils.getTArtifactTemplate((ArtifactTemplateDirectoryId) ref.getParent());
+			TArtifactTemplate template = BackendUtils.getTArtifactTemplate((ArtifactTemplateDirectoryId) ref.getParent());
 			addWorkingTreeToArchive(zos, template, tempDir, path);
         } catch (GitAPIException e) {
             CSARExporter.LOGGER.error(String.format("Error while cloning repo: %s / %s", gitInfo.URL, gitInfo.BRANCH), e);

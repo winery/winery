@@ -32,6 +32,7 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
@@ -93,7 +94,7 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
 		if (Utils.hasDA(serviceTemplateId, Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"))) {
 
 			// inject artifact as DA into cloned ServiceTemplate
-			Utils.injectArtifactTemplateIntoDeploymentArtifact(serviceTemplateId, Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"), artifactTemplateId);
+			BackendUtils.injectArtifactTemplateIntoDeploymentArtifact(serviceTemplateId, Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageNode"), Utils.getTagValue(new ServiceTemplateResource(serviceTemplate).getServiceTemplate(), "xaasPackageDeploymentArtifact"), artifactTemplateId);
 		} else {
 			return Response.serverError().entity("Tagged DeploymentArtifact couldn't be found on given specified NodeTemplate").build();
 		}

@@ -816,48 +816,6 @@ public class Utils {
 	}
 
 	/**
-	 * @param directoryId DirectoryID of the TArtifactTemplate that should be returned.
-	 * @return The TArtifactTemplate corresponding to the directoryId.
-	 */
-	public static TArtifactTemplate getTArtifactTemplate(ArtifactTemplateDirectoryId directoryId) {
-		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
-		try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
-			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			Definitions defs = ((Definitions) u.unmarshal(is));
-			for (TExtensibleElements elem : defs.getServiceTemplateOrNodeTypeOrNodeTypeImplementation()) {
-				if (elem instanceof TArtifactTemplate) {
-					return (TArtifactTemplate) elem;
-				}
-			}
-		} catch (IOException e) {
-			Utils.LOGGER.error("Error reading definitions of " + directoryId.getParent() + " at " + ref.getFileName(), e);
-		} catch (JAXBException e) {
-			Utils.LOGGER.error("Error in XML in " + ref.getFileName(), e);
-		}
-		return null;
-	}
-
-	/**
-	 * Tests if a path matches a glob pattern. {@see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>}
-	 *
-	 * @param glob Glob pattern to test the path against.
-	 * @param path Path that should match the glob pattern.
-	 * @return Whether the glob and the path result in a match.
-	 */
-	public static boolean isGlobMatch(String glob, Path path) {
-		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + glob);
-		return matcher.matches(path);
-	}
-
-	public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) {
-
-		ServiceTemplateResource stRes = new ServiceTemplateResource(serviceTemplate);
-		stRes.getTopologyTemplateResource().getNodeTemplatesResource().getEntityResource(nodeTemplateId).getDeploymentArtifacts().getEntityResource(deploymentArtifactId).setArtifactTemplate(artifactTemplate);
-
-		return true;
-	}
-
-	/**
 	 * Persists the resource and returns appropriate response
 	 */
 	public static Response persist(IPersistable res) {
