@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -543,7 +542,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	}
 
 	@Override
-	public Optional<Definitions> getDefinitions(TOSCAComponentId id) {
+	public Definitions getDefinitions(TOSCAComponentId id) {
 		for (WebResource wr : this.repositoryResources) {
 			String path = Util.getUrlPath(id);
 			Definitions definitions = WineryRepositoryClient.getDefinitions(wr.path(path));
@@ -554,10 +553,10 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			TExtensibleElements element = definitions.getElement();
 			if (element instanceof TEntityType) {
 				this.cache((TEntityType) element, id.getQName());
-				return Optional.of(definitions);
+				return definitions;
 			}
 		}
-		return Optional.empty();
+		return new Definitions();
 	}
 
 	/**
