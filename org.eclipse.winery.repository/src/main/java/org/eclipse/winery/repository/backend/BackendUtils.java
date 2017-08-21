@@ -523,7 +523,7 @@ public class BackendUtils {
 		}
 		byte[] data = out.toByteArray();
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
-		// this may throw an IOExcpetion. We propagate this exception.
+		// this may throw an IOException. We propagate this exception.
 		RepositoryFactory.getRepository().putContentToFile(ref, in, mediaType);
 	}
 
