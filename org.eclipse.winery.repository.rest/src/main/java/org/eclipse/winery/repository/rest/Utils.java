@@ -404,13 +404,6 @@ public class Utils {
 	}
 
 	/**
-	 * @return the path to the Winery topology modeler. Required by functions.tld
-	 */
-	public static String getWineryTopologyModelerPath() {
-		return Prefs.INSTANCE.getWineryTopologyModelerPath();
-	}
-
-	/**
 	 * Converts the given object to XML.
 	 *
 	 * Used in cases the given element is not annotated with @XmlRoot
@@ -999,8 +992,8 @@ public class Utils {
 					path = id.getXmlId().getEncoded() + "/";
 				}
 				// we have to encode it twice to get correct URIs
-				path = BackendUtils.getURLforPathInsideRepo(path);
-				URI uri = BackendUtils.createURI(path);
+				path = Util.getUrlPath(path);
+				URI uri = Utils.createURI(path);
 				res.setUri(uri);
 				res.setId(id);
 			} else {
@@ -1143,9 +1136,9 @@ public class Utils {
 	 * @param wrapperElementLocalName the local name of the wrapper element
 	 */
 	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
-		String loc = BackendUtils.getPathInsideRepo(tcId);
+		String loc = Util.getPathInsideRepo(tcId);
 		loc = loc + "propertiesdefinition/";
-		loc = Utils.getUrlPathForPathInsideRepo(loc);
+		loc = Util.getUrlPath(loc);
 		if (uri == null) {
 			loc = loc + wrapperElementLocalName + ".xsd";
 			// for the import later, we need "../" in front

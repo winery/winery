@@ -289,9 +289,6 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		return Files.exists(absolutePath);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void putContentToFile(RepositoryFileReference ref, String content, MediaType mediaType) throws IOException {
 		if (mediaType == null) {
@@ -306,9 +303,6 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		Files.write(path, content.getBytes());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
 		if (mediaType == null) {

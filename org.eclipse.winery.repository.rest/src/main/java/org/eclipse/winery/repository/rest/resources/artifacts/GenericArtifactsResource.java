@@ -206,7 +206,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				QName artifactTemplateQName = new QName(apiData.artifactTemplateNamespace, apiData.artifactTemplateName);
 				artifactTemplateId = new ArtifactTemplateId(artifactTemplateQName);
 			}
-			ResourceCreationResult creationResult = BackendUtils.create(artifactTemplateId);
+			ResourceCreationResult creationResult = Utils.create(artifactTemplateId);
 			if (!creationResult.isSuccess()) {
 				// something went wrong. skip
 				return creationResult.getResponse();

@@ -55,7 +55,6 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
@@ -269,7 +268,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		this.getServiceTemplate().setTopologyTemplate(matchedConnectedTopologyTemplate);
 
 		LOGGER.debug("Persisting...");
-		this.persist();
+		Utils.persist(this);
 		LOGGER.debug("Persisted.");
 
 		//No renaming of the Service Template allowed because of the plans
@@ -408,10 +407,6 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 			thePlans.add(plan);
 		}
 
-		try {
-			BackendUtils.persist(this);
-		} catch (IOException e) {
-			throw new IllegalStateException("Could not persist resource", e);
-		}
+		Utils.persist(this);
 	}
 }

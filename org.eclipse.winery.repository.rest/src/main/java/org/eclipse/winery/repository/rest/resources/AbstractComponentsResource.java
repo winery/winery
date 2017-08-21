@@ -118,7 +118,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * already exists,</li> <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li> </ul>
 	 */
 	protected ResourceCreationResult createComponentInstance(TOSCAComponentId tcId) {
-		return BackendUtils.create(tcId);
+		return Utils.create(tcId);
 	}
 
 	@SuppressWarnings("unchecked")
