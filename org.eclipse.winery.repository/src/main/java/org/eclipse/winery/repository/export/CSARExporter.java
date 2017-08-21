@@ -54,13 +54,11 @@ import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.rest.Prefs;
-import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -423,7 +421,7 @@ public class CSARExporter {
 			refMap.put(imageJpgRef, targetDir + "image.jpg");
 		}
 
-		Application application = res.getApplication();
+		Application application = SelfServiceMetaDataUtils.getApplication(selfServiceMetaDataId);
 
 		// clear CSAR name as this may change.
 		application.setCsarName(null);
@@ -437,7 +435,7 @@ public class CSARExporter {
 
 		// make the patches to data.xml permanent
 		try {
-			res.persist();
+			BackendUtils.persist(application, SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId), MediaTypes.MEDIATYPE_TEXT_XML);
 		} catch (IOException e) {
 			LOGGER.error("Could not persist patches to data.xml", e);
 		}

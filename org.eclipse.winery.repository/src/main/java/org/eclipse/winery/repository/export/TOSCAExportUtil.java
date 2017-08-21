@@ -53,6 +53,7 @@ import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Policies;
 import org.eclipse.winery.model.tosca.TCapability;
@@ -82,6 +83,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
@@ -94,10 +96,6 @@ import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
-import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
@@ -191,7 +189,7 @@ public class TOSCAExportUtil {
 	 * @return a collection of TOSCAcomponentIds referenced by the given component
 	 * @throws RepositoryCorruptException if tcId does not exist
 	 */
-	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws JAXBException, RepositoryCorruptException {
+	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws JAXBException, RepositoryCorruptException, IOException {
 		final IRepository repository = RepositoryFactory.getRepository();
 		if (!repository.exists(tcId)) {
 			String error = "Component instance " + tcId.toString() + " does not exist.";
@@ -356,7 +354,7 @@ public class TOSCAExportUtil {
 	 *
 	 * @param id the id to search its children for referenced elements
 	 */
-	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(TOSCAComponentId id) throws RepositoryCorruptException {
+	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(TOSCAComponentId id) throws RepositoryCorruptException, IOException {
 		Collection<TOSCAComponentId> referencedTOSCAComponentIds;
 
 		// first of all, handle the concrete elements
@@ -521,16 +519,15 @@ public class TOSCAExportUtil {
 	/**
 	 * Synchronizes the plan model references and returns the referenced TOSCA Component Ids.
 	 */
-	private Collection<TOSCAComponentId> prepareForExport(ServiceTemplateId id) {
+	private Collection<TOSCAComponentId> prepareForExport(ServiceTemplateId id) throws IOException {
 		// We have to use a HashSet to ensure that no duplicate ids are added
 		// E.g., there may be multiple relationship templates having the same type
 		Collection<TOSCAComponentId> ids = new HashSet<>();
 
-
-		ServiceTemplateResource res = new ServiceTemplateResource(id);
+		TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(id);
 
 		// ensure that the plans stored locally are the same ones as stored in the definitions
-		res.synchronizeReferences();
+		BackendUtils.synchronizeReferences(id);
 
 		// add all plans as reference in the CSAR
 		// the data model is consistent with the repository
@@ -548,7 +545,7 @@ public class TOSCAExportUtil {
 		// add included things to export queue
 
 		TBoundaryDefinitions boundaryDefs;
-		if ((boundaryDefs = res.getServiceTemplate().getBoundaryDefinitions()) != null) {
+		if ((boundaryDefs = serviceTemplate.getBoundaryDefinitions()) != null) {
 			Policies policies = boundaryDefs.getPolicies();
 			if (policies != null) {
 				for (TPolicy policy : policies.getPolicy()) {
@@ -562,8 +559,8 @@ public class TOSCAExportUtil {
 			// reqs and caps don't have to be exported here as they are references to existing reqs/caps (of nested node templates)
 		}
 
-		if (res.getServiceTemplate().getTopologyTemplate() != null) {
-			for (TEntityTemplate entityTemplate : res.getServiceTemplate().getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
+		if (serviceTemplate.getTopologyTemplate() != null) {
+			for (TEntityTemplate entityTemplate : serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate()) {
 				QName qname = entityTemplate.getType();
 				if (entityTemplate instanceof TNodeTemplate) {
 					ids.add(new NodeTypeId(qname));
@@ -628,13 +625,13 @@ public class TOSCAExportUtil {
 	 *
 	 * @return a collection of referenced TOCSA Component Ids
 	 */
-	private Collection<TOSCAComponentId> prepareForExport(ArtifactTemplateId id) throws RepositoryCorruptException {
+	private Collection<TOSCAComponentId> prepareForExport(ArtifactTemplateId id) throws RepositoryCorruptException, IOException {
 		Collection<TOSCAComponentId> ids = new ArrayList<>();
 
-		ArtifactTemplateResource res = new ArtifactTemplateResource(id);
+		final TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(id);
 
 		// "Export" type
-		QName type = res.getType();
+		QName type = artifactTemplate.getType();
 		if (type == null) {
 			throw new RepositoryCorruptException("Type is null for " + id.toString());
 		}
@@ -644,7 +641,7 @@ public class TOSCAExportUtil {
 
 		// This method is called BEFORE the concrete definitions element is written.
 		// Therefore, we adapt the content of the attached files to the really existing files
-		res.synchronizeReferences();
+		BackendUtils.synchronizeReferences(id);
 
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(id);
 		SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
@@ -685,8 +682,7 @@ public class TOSCAExportUtil {
 			ids.add(ntiId);
 		}
 
-		RelationshipTypeResource res = new RelationshipTypeResource(id);
-		TRelationshipType relationshipType = (TRelationshipType) res.getElement();
+		final TRelationshipType relationshipType = RepositoryFactory.getRepository().getElement(id);
 
 		ValidSource validSource = relationshipType.getValidSource();
 		if (validSource != null) {
@@ -730,8 +726,7 @@ public class TOSCAExportUtil {
 			ids.add(ntiId);
 		}
 
-		NodeTypeResource res = new NodeTypeResource(id);
-		TNodeType nodeType = (TNodeType) res.getElement();
+		final TNodeType nodeType = RepositoryFactory.getRepository().getElement(id);
 
 		// add all referenced requirement types
 		RequirementDefinitions reqDefsContainer = nodeType.getRequirementDefinitions();

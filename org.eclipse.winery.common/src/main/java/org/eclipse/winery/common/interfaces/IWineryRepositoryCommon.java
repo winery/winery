@@ -19,6 +19,7 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
@@ -29,6 +30,7 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -64,6 +66,10 @@ public interface IWineryRepositoryCommon {
 
 	default TRelationshipTypeImplementation getElement(RelationshipTypeImplementationId id) {
 		return (TRelationshipTypeImplementation) this.getDefinitions(id).getElement();
+	}
+
+	default TNodeType getElement(NodeTypeId id) {
+		return (TNodeType) this.getDefinitions(id).getElement();
 	}
 
 	default TRelationshipType getElement(RelationshipTypeId id) {
