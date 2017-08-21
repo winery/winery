@@ -60,6 +60,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TConstraint;
@@ -817,6 +818,20 @@ public class RestUtils {
 		return persistWithResponseBuilder(res).build();
 	}
 
+	/**
+	 * Persists the given object
+	 */
+	public static Response persist(Application application, RepositoryFileReference data_xml_ref, String mimeType) {
+		Response r;
+		try {
+			BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType));
+		} catch (IOException e) {
+			LOGGER.debug("Could not persist resource", e);
+			throw new WebApplicationException(e);
+		}
+		return Response.noContent().build();
+	}
+
 	public static Response.ResponseBuilder persistWithResponseBuilder(IPersistable res) {
 		Response r;
 		try {
@@ -1103,4 +1118,5 @@ public class RestUtils {
 		}
 		return res;
 	}
+
 }

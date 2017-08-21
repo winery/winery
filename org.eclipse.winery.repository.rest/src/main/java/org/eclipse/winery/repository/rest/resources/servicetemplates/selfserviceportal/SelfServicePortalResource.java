@@ -33,10 +33,9 @@ import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
-import org.eclipse.winery.repository.rest.resources._support.IPersistable;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import com.sun.jersey.multipart.FormDataBodyPart;
@@ -45,7 +44,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SelfServicePortalResource implements IPersistable {
+public class SelfServicePortalResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SelfServicePortalResource.class);
 
@@ -89,7 +88,7 @@ public class SelfServicePortalResource implements IPersistable {
 		if (!RepositoryFactory.getRepository().exists(this.data_xml_ref)) {
 			// this.application is already initialized with a default value.
 			// So we just need to persist this resource
-			RestUtils.persist(this);
+			persist();
 		}
 	}
 
@@ -171,7 +170,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onPutOnDisplayName(Application value) {
 		this.application.setDisplayName(value.getDisplayName());
-		return RestUtils.persist(this);
+		return persist();
 	}
 
 	@Path("description")
@@ -179,7 +178,7 @@ public class SelfServicePortalResource implements IPersistable {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onPutOnDescription(Application value) {
 		this.application.setDescription(value.getDescription());
-		return RestUtils.persist(this);
+		return persist();
 	}
 
 	@Path("options/")
@@ -221,5 +220,9 @@ public class SelfServicePortalResource implements IPersistable {
 			res = RestUtils.getXMLAsString(this.getApplication());
 		}
 		return res;
+	}
+
+	public Response persist() {
+		return RestUtils.persist(this.application, this.data_xml_ref, MediaType.TEXT_XML);
 	}
 }
