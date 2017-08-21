@@ -141,7 +141,7 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class DerivedFrom {
+    public static class DerivedFrom implements HasType {
 
         @XmlAttribute(name = "relationshipTypeImplementationRef", required = true)
         protected QName relationshipTypeImplementationRef;
@@ -153,6 +153,16 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
 
         public void setRelationshipTypeImplementationRef(QName value) {
             this.relationshipTypeImplementationRef = value;
+        }
+
+        @Override
+        public QName getType() {
+            return this.getRelationshipTypeImplementationRef();
+        }
+
+        @Override
+        public void setType(QName type) {
+            this.setRelationshipTypeImplementationRef(type);
         }
     }
 

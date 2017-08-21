@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -31,11 +31,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.model.tosca.constants.QNames;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
@@ -53,8 +50,9 @@ import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeI
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasInheritance;
+import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Policies;
 import org.eclipse.winery.model.tosca.TCapability;
@@ -73,35 +71,34 @@ import org.eclipse.winery.model.tosca.TNodeTemplate.Requirements;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeType.CapabilityDefinitions;
 import org.eclipse.winery.model.tosca.TNodeType.RequirementDefinitions;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.constants.QNames;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.JAXBSupport;
-import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
-import org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates.PolicyTemplateResource;
-import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes.RequirementTypeResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Document;
@@ -133,11 +130,10 @@ public class TOSCAExportUtil {
 	/**
 	 * Writes the <em>complete</em> tosca xml into the given outputstream
 	 *
-	 * @param id the id of the TOSCA component instance to export
-	 * @param out outputstream to write to
+	 * @param id                  the id of the TOSCA component instance to export
+	 * @param out                 outputstream to write to
 	 * @param exportConfiguration the configuration map for the export.
-	 * @return a collection of TOSCAcomponentIds referenced by the given
-	 *         component
+	 * @return a collection of TOSCAcomponentIds referenced by the given component
 	 */
 	public Collection<TOSCAComponentId> exportTOSCA(TOSCAComponentId id, OutputStream out, Map<String, Object> exportConfiguration) throws IOException, JAXBException, RepositoryCorruptException {
 		this.exportConfiguration = exportConfiguration;
@@ -154,8 +150,7 @@ public class TOSCAExportUtil {
 	}
 
 	/**
-	 * Quick hack to set defaults. Typically, a configuration builder or similar
-	 * is used
+	 * Quick hack to set defaults. Typically, a configuration builder or similar is used
 	 */
 	private void setDefaultExportConfiguration() {
 		this.checkConfig(ExportProperties.INCLUDEXYCOORDINATES, Boolean.FALSE);
@@ -168,17 +163,14 @@ public class TOSCAExportUtil {
 	}
 
 	/**
-	 * Writes the <em>complete</em> TOSCA XML into the given outputstream.
-	 * Additionally, a the artifactMap is filled to enable the CSAR exporter to
-	 * create necessary entries in TOSCA-Meta and to add them to the CSAR itself
+	 * Writes the <em>complete</em> TOSCA XML into the given outputstream. Additionally, a the artifactMap is filled to
+	 * enable the CSAR exporter to create necessary entries in TOSCA-Meta and to add them to the CSAR itself
 	 *
-	 * @param id the component instance to export
-	 * @param out outputstream to write to
-	 * @param exportConfiguration Configures the exporter
-	 * @param referencesToPathInCSARMap collects the references to export. It is
-	 *            updated during the export
-	 * @return a collection of TOSCAcomponentIds referenced by the given
-	 *         component
+	 * @param id                        the component instance to export
+	 * @param out                       outputstream to write to
+	 * @param exportConfiguration       Configures the exporter
+	 * @param referencesToPathInCSARMap collects the references to export. It is updated during the export
+	 * @return a collection of TOSCAcomponentIds referenced by the given component
 	 */
 	protected Collection<TOSCAComponentId> exportTOSCA(TOSCAComponentId id, OutputStream out, Map<RepositoryFileReference, String> referencesToPathInCSARMap, Map<String, Object> exportConfiguration) throws IOException, JAXBException, RepositoryCorruptException {
 		this.referencesToPathInCSARMap = referencesToPathInCSARMap;
@@ -194,23 +186,20 @@ public class TOSCAExportUtil {
 	}
 
 	/**
-	 * Writes the Definitions belonging to the given TOSCA component to the
-	 * outputstream
+	 * Writes the Definitions belonging to the given TOSCA component to the outputstream
 	 *
-	 * @return a collection of TOSCAcomponentIds referenced by the given
-	 *         component
-	 *
+	 * @return a collection of TOSCAcomponentIds referenced by the given component
 	 * @throws RepositoryCorruptException if tcId does not exist
 	 */
 	private Collection<TOSCAComponentId> writeDefinitionsElement(TOSCAComponentId tcId, OutputStream out) throws JAXBException, RepositoryCorruptException {
-		if (!RepositoryFactory.getRepository().exists(tcId)) {
+		final IRepository repository = RepositoryFactory.getRepository();
+		if (!repository.exists(tcId)) {
 			String error = "Component instance " + tcId.toString() + " does not exist.";
 			TOSCAExportUtil.LOGGER.error(error);
 			throw new RepositoryCorruptException(error);
 		}
 
-		AbstractComponentInstanceResource res = AbstractComponentsResource.getComponentInstaceResource(tcId);
-		Definitions entryDefinitions = res.getDefinitions();
+		Definitions entryDefinitions = repository.getDefinitions(tcId);
 
 		// BEGIN: Definitions modification
 		// the "imports" collection contains the imports of Definitions, not of other definitions
@@ -252,10 +241,11 @@ public class TOSCAExportUtil {
 		}
 		entryDefinitions.getImport().addAll(imports);
 
-		if (res.getElement() instanceof TEntityType) {
+		if (entryDefinitions.getElement() instanceof TEntityType) {
+			TEntityType entityType = (TEntityType) entryDefinitions.getElement();
+
 			// we have an entity type with a possible properties definition
-			EntityTypeResource entityTypeRes = (EntityTypeResource) res;
-			WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(entityTypeRes.getEntityType());
+			WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(entityType);
 			if (wpd != null) {
 				if (wpd.getIsDerivedFromXSD() == null) {
 					// Write WPD only to file if it exists and is NOT derived from an XSD (which may happen during import)
@@ -296,7 +286,6 @@ public class TOSCAExportUtil {
 
 					// BEGIN: generate TOSCA conforming PropertiesDefinition
 
-					TEntityType entityType = entityTypeRes.getEntityType();
 					PropertiesDefinition propertiesDefinition = new PropertiesDefinition();
 					propertiesDefinition.setType(new QName(wrapperElementNamespace, wrapperElementLocalName));
 					entityType.setPropertiesDefinition(propertiesDefinition);
@@ -322,20 +311,23 @@ public class TOSCAExportUtil {
 	}
 
 	/**
-	 * There is now equivalent id class for
-	 * AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal,
-	 * therefore we take the super type and hope that the caller knows what he
-	 * does.
+	 * There is now equivalent id class for AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal, therefore
+	 * we take the super type and hope that the caller knows what he does.
 	 */
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIdOfParentForAnAbstractComponentsWithTypeReferenceResource(TOSCAComponentId id) {
-		AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res = (AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal) AbstractComponentsResource.getComponentInstaceResource(id);
-		String derivedFrom = res.getInheritanceManagement().getDerivedFrom();
-		if (StringUtils.isEmpty(derivedFrom)) {
+		final IRepository repository = RepositoryFactory.getRepository();
+		final HasInheritance element = (HasInheritance) repository.getDefinitions(id).getElement();
+		final HasType derivedFrom = element.getDerivedFrom();
+		QName derivedFromType = null;
+		if (derivedFrom != null) {
+			derivedFromType = derivedFrom.getType();
+		}
+
+		if (derivedFromType == null) {
 			return Collections.emptySet();
 		} else {
 			// Instantiate an id with the same class as the current id
 			TOSCAComponentId parentId;
-			QName qname = QName.valueOf(derivedFrom);
 
 			Constructor<? extends TOSCAComponentId> constructor;
 			try {
@@ -344,7 +336,7 @@ public class TOSCAExportUtil {
 				throw new IllegalStateException("Could get constructor to instantiate parent id", e1);
 			}
 			try {
-				parentId = constructor.newInstance(qname);
+				parentId = constructor.newInstance(derivedFromType);
 			} catch (InstantiationException | IllegalAccessException
 					| IllegalArgumentException | InvocationTargetException e) {
 				throw new IllegalStateException("Could not instantiate id for parent", e);
@@ -357,12 +349,10 @@ public class TOSCAExportUtil {
 	}
 
 	/**
-	 * This method is intended to be used by exportTOSCA. However,
-	 * org.eclipse.winery.repository.client requires an XML representation of a
-	 * component instances without a surrounding definitions element.
+	 * This method is intended to be used by exportTOSCA. However, org.eclipse.winery.repository.client requires an XML
+	 * representation of a component instances without a surrounding definitions element.
 	 *
-	 * We name this method differently to prevent wrong calling due to
-	 * inheritance
+	 * We name this method differently to prevent wrong calling due to inheritance
 	 *
 	 * @param id the id to search its children for referenced elements
 	 */
@@ -453,10 +443,10 @@ public class TOSCAExportUtil {
 		// There may be multiple DAs/IAs referencing the same type
 		Collection<TOSCAComponentId> ids = new HashSet<>();
 
-		NodeTypeImplementationResource res = new NodeTypeImplementationResource(id);
+		final TNodeTypeImplementation element = RepositoryFactory.getRepository().getElement(id);
 
 		// DAs
-		TDeploymentArtifacts deploymentArtifacts = res.getNTI().getDeploymentArtifacts();
+		TDeploymentArtifacts deploymentArtifacts = element.getDeploymentArtifacts();
 		if (deploymentArtifacts != null) {
 			for (TDeploymentArtifact da : deploymentArtifacts.getDeploymentArtifact()) {
 				QName qname;
@@ -468,7 +458,7 @@ public class TOSCAExportUtil {
 		}
 
 		// IAs
-		return this.getReferencedTOSCAComponentImplementationArtifactIds(ids, res.getNTI().getImplementationArtifacts(), id);
+		return this.getReferencedTOSCAComponentImplementationArtifactIds(ids, element.getImplementationArtifacts(), id);
 	}
 
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(RelationshipTypeImplementationId id) {
@@ -476,10 +466,10 @@ public class TOSCAExportUtil {
 		// There may be multiple IAs referencing the same type
 		Collection<TOSCAComponentId> ids = new HashSet<>();
 
-		RelationshipTypeImplementationResource res = new RelationshipTypeImplementationResource(id);
+		final TRelationshipTypeImplementation element = RepositoryFactory.getRepository().getElement(id);
 
 		// IAs
-		return this.getReferencedTOSCAComponentImplementationArtifactIds(ids, res.getRTI().getImplementationArtifacts(), id);
+		return this.getReferencedTOSCAComponentImplementationArtifactIds(ids, element.getImplementationArtifacts(), id);
 	}
 
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentImplementationArtifactIds(Collection<TOSCAComponentId> ids, TImplementationArtifacts implementationArtifacts, TOSCAComponentId id) {
@@ -502,8 +492,9 @@ public class TOSCAExportUtil {
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(RequirementTypeId id) {
 		Collection<TOSCAComponentId> ids = new ArrayList<>(1);
 
-		RequirementTypeResource res = new RequirementTypeResource(id);
-		QName requiredCapabilityType = res.getRequirementType().getRequiredCapabilityType();
+		final TRequirementType element = RepositoryFactory.getRepository().getElement(id);
+
+		QName requiredCapabilityType = element.getRequiredCapabilityType();
 		if (requiredCapabilityType != null) {
 			CapabilityTypeId capId = new CapabilityTypeId(requiredCapabilityType);
 			ids.add(capId);
@@ -521,19 +512,21 @@ public class TOSCAExportUtil {
 
 	private Collection<TOSCAComponentId> getReferencedTOSCAComponentIds(PolicyTemplateId id) {
 		Collection<TOSCAComponentId> ids = new ArrayList<>();
-		PolicyTemplateResource res = new PolicyTemplateResource(id);
-		ids.add(new PolicyTypeId(res.getType()));
+
+		final TPolicyTemplate element = RepositoryFactory.getRepository().getElement(id);
+		ids.add(new PolicyTypeId(element.getType()));
 		return ids;
 	}
 
 	/**
-	 * Synchronizes the plan model references and returns the referenced TOSCA
-	 * Component Ids.
+	 * Synchronizes the plan model references and returns the referenced TOSCA Component Ids.
 	 */
 	private Collection<TOSCAComponentId> prepareForExport(ServiceTemplateId id) {
 		// We have to use a HashSet to ensure that no duplicate ids are added
 		// E.g., there may be multiple relationship templates having the same type
 		Collection<TOSCAComponentId> ids = new HashSet<>();
+
+
 		ServiceTemplateResource res = new ServiceTemplateResource(id);
 
 		// ensure that the plans stored locally are the same ones as stored in the definitions
@@ -631,8 +624,7 @@ public class TOSCAExportUtil {
 	}
 
 	/**
-	 * Determines the referenced TOSCA Component Ids and also updates the
-	 * references in the Artifact Template
+	 * Determines the referenced TOSCA Component Ids and also updates the references in the Artifact Template
 	 *
 	 * @return a collection of referenced TOCSA Component Ids
 	 */
@@ -782,5 +774,4 @@ public class TOSCAExportUtil {
 			}
 		}
 	}
-
 }

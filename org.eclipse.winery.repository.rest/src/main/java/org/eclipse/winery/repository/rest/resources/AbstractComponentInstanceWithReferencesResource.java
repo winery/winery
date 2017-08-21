@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources;
 
+import java.io.IOException;
+
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
 
@@ -36,6 +38,6 @@ public abstract class AbstractComponentInstanceWithReferencesResource extends Ab
 	 * Synchronizes the artifact references with the files stored in the
 	 * repository
 	 */
-	protected abstract void synchronizeReferences();
+	protected abstract void synchronizeReferences() throws IOException;
 
 }

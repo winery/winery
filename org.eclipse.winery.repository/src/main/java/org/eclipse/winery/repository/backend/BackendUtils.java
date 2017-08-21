@@ -25,6 +25,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
@@ -33,9 +34,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 
 import javax.xml.XMLConstants;
@@ -48,17 +52,21 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
 import org.eclipse.winery.model.tosca.ObjectFactory;
+import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
@@ -70,6 +78,8 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TPlan;
+import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
@@ -111,8 +121,7 @@ import org.w3c.dom.ls.LSInput;
 /**
  * Contains generic utility functions for the Backend
  *
- * Contains everything that is useful for our ids etc. Does <em>not</em> contain
- * anything that has to do with resources
+ * Contains everything that is useful for our ids etc. Does <em>not</em> contain anything that has to do with resources
  */
 public class BackendUtils {
 
@@ -196,8 +205,7 @@ public class BackendUtils {
 	/**
 	 * Returns an XML representation of the definitions
 	 *
-	 * We return the complete definitions to allow the user changes to it, such
-	 * as adding imports, etc.
+	 * We return the complete definitions to allow the user changes to it, such as adding imports, etc.
 	 */
 	public static String getDefinitionsAsXMLString(TDefinitions definitions) {
 		StringWriter w = new StringWriter();
@@ -222,8 +230,8 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)}
-	 * or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
+	 * Do <em>not</em> use this for creating URLs. Use  {@link Utils#getURLforPathInsideRepo(java.lang.String)} or
+	 * {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
 	 * @return the path starting from the root element to the current element. Separated by "/", URLencoded, but
 	 * <b>not</b> double encoded. With trailing slash if sub-resources can exist
@@ -234,8 +242,8 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Do <em>not</em> use this for creating URLs. Use {@link Utils#getURLforPathInsideRepo(java.lang.String)}
-	 * or {@link Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
+	 * Do <em>not</em> use this for creating URLs. Use {@link Utils#getURLforPathInsideRepo(java.lang.String)} or {@link
+	 * Utils#getAbsoluteURL(org.eclipse.winery.common.ids.GenericId) instead.
 	 *
 	 * @return the path starting from the root element to the current element. Separated by "/", parent URLencoded.
 	 * Without trailing slash.
@@ -245,8 +253,7 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Returns the reference to the definitions XML storing the TOSCA for the
-	 * given id
+	 * Returns the reference to the definitions XML storing the TOSCA for the given id
 	 *
 	 * @param id the id to lookup
 	 * @return the reference
@@ -258,16 +265,14 @@ public class BackendUtils {
 	}
 
 	/**
-	 * @return Singular type name for the given id. E.g., "ServiceTemplateId"
-	 *         gets "ServiceTemplate"
+	 * @return Singular type name for the given id. E.g., "ServiceTemplateId" gets "ServiceTemplate"
 	 */
 	public static String getTypeForAdminId(Class<? extends AdminId> idClass) {
 		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
 
 	/**
-	 * Returns the reference to the properties file storing the TOSCA
-	 * information for the given id
+	 * Returns the reference to the properties file storing the TOSCA information for the given id
 	 *
 	 * @param id the id to lookup
 	 * @return the reference
@@ -298,8 +303,7 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Returns a list of the topology template nested in the given service
-	 * template
+	 * Returns a list of the topology template nested in the given service template
 	 */
 	public static List<TNodeTemplate> getAllNestedNodeTemplates(TServiceTemplate serviceTemplate) {
 		List<TNodeTemplate> l = new ArrayList<>();
@@ -387,10 +391,9 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Creates a new TDefintions element wrapping a TOSCA Component instance.
-	 * The namespace of the tosca component is used as namespace and
-	 * {@code winery-defs-for-} concatenated with the (unique) ns prefix and
-	 * idOfContainedElement is used as id
+	 * Creates a new TDefintions element wrapping a TOSCA Component instance. The namespace of the tosca component is
+	 * used as namespace and {@code winery-defs-for-} concatenated with the (unique) ns prefix and idOfContainedElement
+	 * is used as id
 	 *
 	 * @param tcId the id of the element the wrapper is used for
 	 * @param defs the definitions to update
@@ -413,7 +416,6 @@ public class BackendUtils {
 	}
 
 	/**
-	 *
 	 * @param topologyTemplate which should be cloned
 	 * @return Copy od topologyTemplate
 	 */
@@ -435,7 +437,6 @@ public class BackendUtils {
 	}
 
 	/**
-	 *
 	 * @param nodeTemplate which should be cloned
 	 * @return copy of nodeTemplate
 	 */
@@ -462,7 +463,6 @@ public class BackendUtils {
 	}
 
 	/**
-	 *
 	 * @param relationshipTemplate which should be cloned
 	 * @return copy of relationshipTemplate
 	 */
@@ -493,6 +493,16 @@ public class BackendUtils {
 		ObjectFactory of = new ObjectFactory();
 		Definitions defs = of.createDefinitions();
 		return updateWrapperDefinitions(tcId, defs);
+	}
+
+	/**
+	 * Regenerates wrapper definitions; thus all extensions at the wrapper definitions are lost
+	 *
+	 * @param id      the id of the TOSCA component to persist
+	 * @param element the element of the TOSCA component
+	 */
+	public static void persist(TOSCAComponentId id, TExtensibleElements element) throws IOException {
+		RepositoryFactory.getRepository().setElement(id, element);
 	}
 
 	/**
@@ -621,8 +631,7 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Derives Winery's Properties Definition from an existing properties
-	 * definition
+	 * Derives Winery's Properties Definition from an existing properties definition
 	 *
 	 * @param ci     the entity type to try to modify the WPDs
 	 * @param errors the list to add errors to
@@ -731,8 +740,8 @@ public class BackendUtils {
 	/**
 	 * Returns all components available of the given id type
 	 *
-	 * Similar functionality as {@link
-	 * IGenericRepository#getAllTOSCAComponentIds(java.lang.Class)}, but it crawls through the repository
+	 * Similar functionality as {@link IGenericRepository#getAllTOSCAComponentIds(java.lang.Class)}, but it crawls
+	 * through the repository
 	 *
 	 * This method is required as we do not use a database.
 	 *
@@ -752,8 +761,7 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Converts the given collection of TOSCA Component Ids to a collection of
-	 * QNames by using the getQName() method.
+	 * Converts the given collection of TOSCA Component Ids to a collection of QNames by using the getQName() method.
 	 *
 	 * This is required for QNameChooser.tag
 	 */
@@ -766,11 +774,10 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Detect the mime type of the stream. The stream is marked at the beginning
-	 * and reset at the end
+	 * Detect the mime type of the stream. The stream is marked at the beginning and reset at the end
 	 *
 	 * @param bis the stream
-	 * @param fn the fileName of the file belonging to the stream
+	 * @param fn  the fileName of the file belonging to the stream
 	 */
 	public static MediaType getMimeType(BufferedInputStream bis, String fn) throws IOException {
 		AutoDetectParser parser = new AutoDetectParser();
@@ -783,8 +790,7 @@ public class BackendUtils {
 	/**
 	 * Fixes the mediaType if it is too vague (such as application/octet-stream)
 	 *
-	 * @return a more fitting MediaType or the original one if it is appropriate
-	 *         enough
+	 * @return a more fitting MediaType or the original one if it is appropriate enough
 	 */
 	public static MediaType getFixedMimeType(BufferedInputStream is, String fileName, MediaType mediaType) {
 		if (mediaType.equals(MEDIATYPE_APPLICATION_OCTET_STREAM)) {
@@ -819,15 +825,16 @@ public class BackendUtils {
 	}
 
 	/**
-	 *
-	 * @param directoryId ArtifactTemplateDirectoryId of the ArtifactTemplate that should contain a reference to a git repository.
-	 * @return The URL and the branch/tag that contains the files for the ArtifactTemplate. null if no git information is given.
+	 * @param directoryId ArtifactTemplateDirectoryId of the ArtifactTemplate that should contain a reference to a git
+	 *                    repository.
+	 * @return The URL and the branch/tag that contains the files for the ArtifactTemplate. null if no git information
+	 * is given.
 	 */
 	public static GitInfo getGitInformation(ArtifactTemplateDirectoryId directoryId) {
 		if (!(directoryId.getParent() instanceof ArtifactTemplateId)) {
 			return null;
 		}
-		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId)directoryId.getParent());
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
 		try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
 			Definitions defs = ((Definitions) u.unmarshal(is));
@@ -891,4 +898,144 @@ public class BackendUtils {
 		return true;
 	}
 
+	/**
+	 * @param tcId                    The element type id to get the location for
+	 * @param uri                     uri to use if in XML export mode, null if in CSAR export mode
+	 * @param wrapperElementLocalName the local name of the wrapper element
+	 */
+	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
+		String loc = Util.getPathInsideRepo(tcId);
+		loc = loc + "propertiesdefinition/";
+		loc = Util.getUrlPath(loc);
+		if (uri == null) {
+			loc = loc + wrapperElementLocalName + ".xsd";
+			// for the import later, we need "../" in front
+			loc = "../" + loc;
+		} else {
+			loc = uri + loc + "xsd";
+		}
+		return loc;
+	}
+
+
+	public static void synchronizeReferences(ArtifactTemplateId id) throws IOException {
+		TArtifactTemplate template = RepositoryFactory.getRepository().getElement(id);
+
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(id);
+		SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
+		if (files.isEmpty()) {
+			// clear artifact references
+			template.setArtifactReferences(null);
+		} else {
+			TArtifactTemplate.ArtifactReferences artifactReferences = new TArtifactTemplate.ArtifactReferences();
+			template.setArtifactReferences(artifactReferences);
+			List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
+			for (RepositoryFileReference ref : files) {
+				// determine path
+				// path relative from the root of the CSAR is ok (COS01, line 2663)
+				String path = Util.getUrlPath(ref);
+
+				// put path into data structure
+				// we do not use Include/Exclude as we directly reference a concrete file
+				TArtifactReference artRef = new TArtifactReference();
+				artRef.setReference(path);
+				artRefList.add(artRef);
+			}
+		}
+
+		BackendUtils.persist(id, template);
+	}
+
+	/**
+	 * Synchronizes the known plans with the data in the XML. When there is a stored file, but no known entry in the
+	 * XML, we guess "BPEL" as language and "build plan" as type.
+	 */
+	public static void synchronizeReferences(ServiceTemplateId id) throws IOException {
+		final IRepository repository = RepositoryFactory.getRepository();
+		final TServiceTemplate serviceTemplate = repository.getElement(id);
+		// locally stored plans
+		TPlans plans = serviceTemplate.getPlans();
+
+		// plans stored in the repository
+		PlansId plansContainerId = new PlansId(id);
+		SortedSet<PlanId> nestedPlans = repository.getNestedIds(plansContainerId, PlanId.class);
+
+		Set<PlanId> plansToAdd = new HashSet<>();
+		plansToAdd.addAll(nestedPlans);
+
+
+		if (nestedPlans.isEmpty()) {
+			if (plans == null) {
+				// data on the file system equals the data -> no plans
+				return;
+			} else {
+				//noinspection StatementWithEmptyBody
+				// we have to check for equality later
+			}
+		}
+
+		if (plans == null) {
+			plans = new TPlans();
+			serviceTemplate.setPlans(plans);
+		}
+
+		for (Iterator<TPlan> iterator = plans.getPlan().iterator(); iterator.hasNext(); ) {
+			TPlan plan = iterator.next();
+			if (plan.getPlanModel() != null) {
+				// in case, a plan is directly contained in a Model element, we do not need to do anything
+				continue;
+			}
+			TPlan.PlanModelReference planModelReference;
+			if ((planModelReference = plan.getPlanModelReference()) != null) {
+				String ref = planModelReference.getReference();
+				if ((ref == null) || ref.startsWith("../")) {
+					// references to local plans start with "../"
+					// special case (due to errors in the importer): empty PlanModelReference field
+					if (plan.getId() == null) {
+						// invalid plan entry: no id.
+						// we remove the entry
+						iterator.remove();
+						continue;
+					}
+					PlanId planId = new PlanId(plansContainerId, new XMLId(plan.getId(), false));
+					if (nestedPlans.contains(planId)) {
+						// everything allright
+						// we do NOT need to add the plan on the HDD to the XML
+						plansToAdd.remove(planId);
+					} else {
+						// no local storage for the plan, we remove it from the XML
+						iterator.remove();
+					}
+				}
+			}
+		}
+
+		// add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
+		List<TPlan> thePlans = plans.getPlan();
+		for (PlanId planId : plansToAdd) {
+			SortedSet<RepositoryFileReference> files = repository.getContainedFiles(planId);
+			if (files.size() != 1) {
+				throw new IllegalStateException("Currently, only one file per plan is supported.");
+			}
+			RepositoryFileReference ref = files.iterator().next();
+
+			TPlan plan = new TPlan();
+			plan.setId(planId.getXmlId().getDecoded());
+			plan.setName(planId.getXmlId().getDecoded());
+			plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
+			plan.setPlanLanguage(Namespaces.URI_BPEL20_EXECUTABLE);
+
+			// create a PlanModelReferenceElement pointing to that file
+			String path = Util.getUrlPath(ref);
+			// path is relative from the definitions element
+			path = "../" + path;
+			TPlan.PlanModelReference pref = new TPlan.PlanModelReference();
+			pref.setReference(path);
+
+			plan.setPlanModelReference(pref);
+			thePlans.add(plan);
+		}
+
+		RepositoryFactory.getRepository().setElement(id, serviceTemplate);
+	}
 }

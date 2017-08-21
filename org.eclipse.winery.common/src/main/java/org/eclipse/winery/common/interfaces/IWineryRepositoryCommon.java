@@ -14,20 +14,25 @@
 package org.eclipse.winery.common.interfaces;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 
@@ -57,12 +62,24 @@ public interface IWineryRepositoryCommon {
 		return (TNodeTypeImplementation) this.getDefinitions(id).getElement();
 	}
 
+	default TRelationshipTypeImplementation getElement(RelationshipTypeImplementationId id) {
+		return (TRelationshipTypeImplementation) this.getDefinitions(id).getElement();
+	}
+
 	default TRelationshipType getElement(RelationshipTypeId id) {
 		return (TRelationshipType) this.getDefinitions(id).getElement();
 	}
 
 	default TServiceTemplate getElement(ServiceTemplateId id) {
 		return (TServiceTemplate) this.getDefinitions(id).getElement();
+	}
+
+	default TArtifactTemplate getElement(ArtifactTemplateId id) {
+		return (TArtifactTemplate) this.getDefinitions(id).getElement();
+	}
+
+	default TPolicyTemplate getElement(PolicyTemplateId id) {
+		return (TPolicyTemplate) this.getDefinitions(id).getElement();
 	}
 
 	default TCapabilityType getElement(CapabilityTypeId id) {
@@ -72,6 +89,7 @@ public interface IWineryRepositoryCommon {
 	default TRequirementType getElement(RequirementTypeId id) {
 		return (TRequirementType) this.getDefinitions(id).getElement();
 	}
+
 
 	/**
 	 * Deletes the TOSCA element <b>and all sub elements</b> referenced by the given id from the repository

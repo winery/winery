@@ -162,7 +162,7 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class DerivedFrom {
+    public static class DerivedFrom implements HasType {
 
         @XmlAttribute(name = "nodeTypeImplementationRef", required = true)
         protected QName nodeTypeImplementationRef;
@@ -184,6 +184,16 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
          */
         public void setNodeTypeImplementationRef(QName value) {
             this.nodeTypeImplementationRef = value;
+        }
+
+        @Override
+        public QName getType() {
+            return this.getNodeTypeImplementationRef();
+        }
+
+        @Override
+        public void setType(QName type) {
+            this.setNodeTypeImplementationRef(type);
         }
     }
 

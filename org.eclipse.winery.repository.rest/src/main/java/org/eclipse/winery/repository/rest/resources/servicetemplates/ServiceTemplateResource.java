@@ -17,12 +17,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -38,24 +34,16 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.elements.PlanId;
-import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources.IHasName;
@@ -318,95 +306,8 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		return new TServiceTemplate();
 	}
 
-	/**
-	 * Synchronizes the known plans with the data in the XML. When there is a
-	 * stored file, but no known entry in the XML, we guess "BPEL" as language
-	 * and "build plan" as type.
-	 */
 	@Override
-	public void synchronizeReferences() {
-		// locally stored plans
-		TPlans plans = this.getServiceTemplate().getPlans();
-
-		// plans stored in the repository
-		PlansId plansContainerId = new PlansId((ServiceTemplateId) this.getId());
-		SortedSet<PlanId> nestedPlans = RepositoryFactory.getRepository().getNestedIds(plansContainerId, PlanId.class);
-
-		Set<PlanId> plansToAdd = new HashSet<>();
-		plansToAdd.addAll(nestedPlans);
-
-		if (nestedPlans.isEmpty()) {
-			if (plans == null) {
-				// data on the file system equals the data -> no plans
-				return;
-			} else {
-				//noinspection StatementWithEmptyBody
-				// we have to check for equality later
-			}
-		}
-
-		if (plans == null) {
-			plans = new TPlans();
-			this.getServiceTemplate().setPlans(plans);
-		}
-
-		for (Iterator<TPlan> iterator = plans.getPlan().iterator(); iterator.hasNext();) {
-			TPlan plan = iterator.next();
-			if (plan.getPlanModel() != null) {
-				// in case, a plan is directly contained in a Model element, we do not need to do anything
-				continue;
-			}
-			PlanModelReference planModelReference;
-			if ((planModelReference = plan.getPlanModelReference()) != null) {
-				String ref = planModelReference.getReference();
-				if ((ref == null) || ref.startsWith("../")) {
-					// references to local plans start with "../"
-					// special case (due to errors in the importer): empty PlanModelReference field
-					if (plan.getId() == null) {
-						// invalid plan entry: no id.
-						// we remove the entry
-						iterator.remove();
-						continue;
-					}
-					PlanId planId = new PlanId(plansContainerId, new XMLId(plan.getId(), false));
-					if (nestedPlans.contains(planId)) {
-						// everything allright
-						// we do NOT need to add the plan on the HDD to the XML
-						plansToAdd.remove(planId);
-					} else {
-						// no local storage for the plan, we remove it from the XML
-						iterator.remove();
-					}
-				}
-			}
-		}
-
-		// add all plans locally stored, but not contained in the XML, as plan element to the plans of the service template.
-		List<TPlan> thePlans = plans.getPlan();
-		for (PlanId planId : plansToAdd) {
-			SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(planId);
-			if (files.size() != 1) {
-				throw new IllegalStateException("Currently, only one file per plan is supported.");
-			}
-			RepositoryFileReference ref = files.iterator().next();
-
-			TPlan plan = new TPlan();
-			plan.setId(planId.getXmlId().getDecoded());
-			plan.setName(planId.getXmlId().getDecoded());
-			plan.setPlanType(org.eclipse.winery.repository.Constants.TOSCA_PLANTYPE_BUILD_PLAN);
-			plan.setPlanLanguage(Namespaces.URI_BPEL20_EXECUTABLE);
-
-			// create a PlanModelReferenceElement pointing to that file
-			String path = Util.getUrlPath(ref);
-			// path is relative from the definitions element
-			path = "../" + path;
-			PlanModelReference pref = new PlanModelReference();
-			pref.setReference(path);
-
-			plan.setPlanModelReference(pref);
-			thePlans.add(plan);
-		}
-
-		RestUtils.persist(this);
+	public void synchronizeReferences() throws IOException {
+		BackendUtils.synchronizeReferences((ServiceTemplateId) this.id);
 	}
 }

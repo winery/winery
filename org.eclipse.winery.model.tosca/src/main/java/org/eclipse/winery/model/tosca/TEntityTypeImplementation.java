@@ -37,7 +37,7 @@ import org.eclipse.jdt.annotation.Nullable;
         TRelationshipTypeImplementation.class,
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class TEntityTypeImplementation extends TExtensibleElements implements HasName, HasType {
+public abstract class TEntityTypeImplementation extends TExtensibleElements implements HasName, HasType, HasInheritance {
 
     @XmlElement(name = "Tags")
     protected TTags tags;

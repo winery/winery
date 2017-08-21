@@ -86,7 +86,7 @@ import org.eclipse.jdt.annotation.Nullable;
         TArtifactType.class,
         TPolicyType.class
 })
-public class TEntityType extends TExtensibleElements implements HasName {
+public class TEntityType extends TExtensibleElements implements HasName, HasInheritance {
     @XmlElement(name = "Tags")
     protected TTags tags;
     @XmlElement(name = "DerivedFrom")
@@ -284,7 +284,7 @@ public class TEntityType extends TExtensibleElements implements HasName {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class DerivedFrom {
+    public static class DerivedFrom implements HasType {
 
         @XmlAttribute(name = "typeRef", required = true)
         protected QName typeRef;
@@ -306,6 +306,16 @@ public class TEntityType extends TExtensibleElements implements HasName {
          */
         public void setTypeRef(QName value) {
             this.typeRef = value;
+        }
+
+        @Override
+        public QName getType() {
+            return this.getTypeRef();
+        }
+
+        @Override
+        public void setType(QName type) {
+            this.setTypeRef(type);
         }
     }
 

@@ -208,7 +208,8 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	NamespaceManager getNamespaceManager();
 
 	/**
-	 * Updates the element belonging to the given TOSCAComponentId
+	 * Updates the element belonging to the given TOSCAComponentId Regenerates wrapper definitions; thus all extensions
+	 * at the wrapper definitions are lost
 	 *
 	 * @param id      the TOSCAComponentId to update
 	 * @param element the element to set

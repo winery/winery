@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -26,17 +27,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.model.tosca.TArtifactTemplate.ArtifactReferences;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -45,6 +42,7 @@ import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -116,34 +114,9 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		return new TArtifactTemplate();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	public void synchronizeReferences() {
-		TArtifactTemplate template = this.getTArtifactTemplate();
-
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId((ArtifactTemplateId) this.id);
-		SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
-		if (files.isEmpty()) {
-			// clear artifact references
-			template.setArtifactReferences(null);
-		} else {
-			ArtifactReferences artifactReferences = new ArtifactReferences();
-			template.setArtifactReferences(artifactReferences);
-			List<TArtifactReference> artRefList = artifactReferences.getArtifactReference();
-			for (RepositoryFileReference ref : files) {
-				// determine path
-				// path relative from the root of the CSAR is ok (COS01, line 2663)
-				String path = Util.getUrlPath(ref);
-
-				// put path into data structure
-				// we do not use Inlude/Exclude as we directly reference a concrete file
-				TArtifactReference artRef = new TArtifactReference();
-				artRef.setReference(path);
-				artRefList.add(artRef);
-			}
-		}
+	public void synchronizeReferences() throws IOException {
+		BackendUtils.synchronizeReferences((ArtifactTemplateId) this.id);
 	}
 
 	@Path("files/")

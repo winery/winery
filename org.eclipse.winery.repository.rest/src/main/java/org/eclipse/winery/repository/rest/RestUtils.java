@@ -55,7 +55,6 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
@@ -1087,25 +1086,6 @@ public class RestUtils {
 			RestUtils.persist(res);
 		}
 		return colorStr;
-	}
-
-	/**
-	 * @param tcId                    The element type id to get the location for
-	 * @param uri                     uri to use if in XML export mode, null if in CSAR export mode
-	 * @param wrapperElementLocalName the local name of the wrapper element
-	 */
-	public static String getImportLocationForWinerysPropertiesDefinitionXSD(EntityTypeId tcId, URI uri, String wrapperElementLocalName) {
-		String loc = Util.getPathInsideRepo(tcId);
-		loc = loc + "propertiesdefinition/";
-		loc = Util.getUrlPath(loc);
-		if (uri == null) {
-			loc = loc + wrapperElementLocalName + ".xsd";
-			// for the import later, we need "../" in front
-			loc = "../" + loc;
-		} else {
-			loc = uri + loc + "xsd";
-		}
-		return loc;
 	}
 
 	public static String Object2JSON(Object o) {
