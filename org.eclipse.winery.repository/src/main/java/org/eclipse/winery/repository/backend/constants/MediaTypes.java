@@ -21,5 +21,6 @@ import org.apache.tika.mime.MediaType;
 public class MediaTypes {
 
 	public static final MediaType MEDIATYPE_TOSCA_DEFINITIONS = MediaType.parse(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS);
+	public static final MediaType MEDIATYPE_APPLICATION_JSON = MediaType.parse("application/json");
 
 }

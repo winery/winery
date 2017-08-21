@@ -24,8 +24,8 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TRequirementType;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.apiData.AvailableSuperclassesApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.RequiredCapabilityTypeApiData;
 
@@ -55,7 +55,7 @@ public class RequiredCapabilityTypeResource {
 		if (RepositoryFactory.getRepository().exists(id)) {
 			// everything allright. Store new reference
 			this.getRequirementType().setRequiredCapabilityType(qname);
-			return BackendUtils.persist(this.requirementTypeResource);
+			return Utils.persist(this.requirementTypeResource);
 		} else {
 			throw new NotFoundException("Given QName could not be resolved to an existing capability type");
 		}
@@ -64,7 +64,7 @@ public class RequiredCapabilityTypeResource {
 	@DELETE
 	public Response deleteRequiredCapabilityType() {
 		this.getRequirementType().setRequiredCapabilityType(null);
-		return BackendUtils.persist(this.requirementTypeResource);
+		return Utils.persist(this.requirementTypeResource);
 	}
 
 	@GET

@@ -1043,6 +1043,10 @@ public class Utils {
 		return Response.noContent().build();
 	}
 
+	public static Response putContentToFile(RepositoryFileReference ref, String content, @SuppressWarnings("SameParameterValue") MediaType mediaType) {
+		return putContentToFile(ref, content, org.apache.tika.mime.MediaType.parse(mediaType.toString()));
+	}
+
 	public static Response putContentToFile(RepositoryFileReference ref, InputStream inputStream, org.apache.tika.mime.MediaType mediaType) {
 		try {
 			RepositoryFactory.getRepository().putContentToFile(ref, inputStream, mediaType);
@@ -1051,6 +1055,10 @@ public class Utils {
 			return Response.serverError().entity(e.getMessage()).build();
 		}
 		return Response.noContent().build();
+	}
+
+	public static Response putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) {
+		return putContentToFile(ref, inputStream, org.apache.tika.mime.MediaType.parse(mediaType.toString()));
 	}
 
 

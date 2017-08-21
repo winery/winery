@@ -21,13 +21,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 
 public class PropertiesResource {
@@ -54,7 +53,7 @@ public class PropertiesResource {
 	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
 	public Response setProperties(TEntityTemplate.Properties properties) {
 		this.template.setProperties(properties);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	/**

@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates.InstanceState;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.apiData.InstanceStateApiData;
 
 import org.apache.commons.lang3.StringUtils;
@@ -92,7 +92,7 @@ public class InstanceStatesResource {
 
 		iterator.remove();
 
-		return BackendUtils.persist(this.typeResource);
+		return Utils.persist(this.typeResource);
 	}
 
 	@POST
@@ -124,7 +124,7 @@ public class InstanceStatesResource {
 		instanceState.setState(state);
 		instanceStates.add(instanceState);
 
-		return BackendUtils.persist(this.typeResource);
+		return Utils.persist(this.typeResource);
 	}
 
 }

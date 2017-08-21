@@ -331,7 +331,7 @@ public class TopologyTemplateResource {
 	@Consumes(MediaType.TEXT_XML)
 	public Response setModel(TTopologyTemplate topologyTemplate) {
 		this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
-		return BackendUtils.persist(this.serviceTemplateRes);
+		return Utils.persist(this.serviceTemplateRes);
 	}
 
 	@PUT
@@ -340,7 +340,7 @@ public class TopologyTemplateResource {
 	public Response setModelJson(TTopologyTemplate topologyTemplate) throws Exception {
 		ModelUtilities.patchAnyAttributes(topologyTemplate.getNodeTemplates());
 		this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
-		return BackendUtils.persist(this.serviceTemplateRes);
+		return Utils.persist(this.serviceTemplateRes);
 	}
 
 	// @formatter:off

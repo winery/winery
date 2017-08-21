@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TConstraint;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources._support.collections.withoutid.EntityWithoutIdResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 
@@ -62,6 +62,6 @@ public class ConstraintResource extends EntityWithoutIdResource<TConstraint> {
 	@Consumes(MediaType.TEXT_PLAIN)
 	public Response putConstraintType(String constraintType) {
 		this.getConstraint().setConstraintType(constraintType);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 }

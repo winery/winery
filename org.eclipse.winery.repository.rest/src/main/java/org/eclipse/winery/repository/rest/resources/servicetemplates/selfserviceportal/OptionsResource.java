@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -23,10 +22,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
-import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -101,24 +98,14 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 		SelfServiceMetaDataId ssmdId = ((SelfServicePortalResource) this.res).getId();
 
 		RepositoryFileReference iconRef = new RepositoryFileReference(ssmdId, iconFileName);
-		try {
-			RepositoryFactory.getRepository().putContentToFile(iconRef, uploadedInputStream, body.getMediaType());
-		} catch (IOException e) {
-			OptionsResource.LOGGER.error(e.getMessage(), e);
-			return Response.serverError().entity(e.getMessage()).build();
-		}
+		Utils.putContentToFile(iconRef, uploadedInputStream, body.getMediaType());
 
 		RepositoryFileReference planInputMessageRef = new RepositoryFileReference(ssmdId, planInputMessageFileName);
-		try {
-			RepositoryFactory.getRepository().putContentToFile(planInputMessageRef, planInputMessage, MediaType.TEXT_XML_TYPE);
-		} catch (IOException e) {
-			OptionsResource.LOGGER.error(e.getMessage(), e);
-			return Response.serverError().entity(e.getMessage()).build();
-		}
+		Utils.putContentToFile(planInputMessageRef, planInputMessage, MediaType.TEXT_XML_TYPE);
 
 		// END: store icon and planInputMessage
 
 		this.list.add(option);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 }

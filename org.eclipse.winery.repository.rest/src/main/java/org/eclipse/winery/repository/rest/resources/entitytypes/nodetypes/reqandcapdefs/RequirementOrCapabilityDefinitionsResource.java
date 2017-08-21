@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.apiData.CapabilityDefinitionPostData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
@@ -120,7 +120,7 @@ public abstract class RequirementOrCapabilityDefinitionsResource<ReqDefOrCapDefR
 			this.list.add(def);
 		}
 
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	@Override

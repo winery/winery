@@ -128,16 +128,11 @@ public class SelfServicePortalResource implements IPersistable {
 		return app;
 	}
 
-	@Override
-	public void persist() throws IOException {
-		BackendUtils.persist(this.application, this.data_xml_ref, MediaType.TEXT_XML_TYPE);
-	}
-
 	@PUT
 	@Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
 	public Response onPutXML(Application data) {
 		String content = Utils.getXMLAsString(data);
-		return BackendUtils.putContentToFile(this.data_xml_ref, content, MediaType.TEXT_XML_TYPE);
+		return Utils.putContentToFile(this.data_xml_ref, content, MediaType.TEXT_XML_TYPE);
 	}
 
 	@Path("icon.jpg")
@@ -153,7 +148,7 @@ public class SelfServicePortalResource implements IPersistable {
 	public Response putIcon(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
 		ensureDataXmlExists();
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
-		return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+		return Utils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
 
 	@Path("image.jpg")
@@ -169,7 +164,7 @@ public class SelfServicePortalResource implements IPersistable {
 	public Response putImage(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
 		ensureDataXmlExists();
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
-		return BackendUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
+		return Utils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
 
 	@Path("displayname")

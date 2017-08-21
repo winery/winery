@@ -27,14 +27,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
-import org.eclipse.winery.repository.rest.Utils;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.NamespaceManager;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
-import org.eclipse.winery.repository.rest.resources.admin.NamespacesResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionEnum;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionResourceApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.XsdDefinitionsApiData;
@@ -109,7 +110,7 @@ public class PropertiesDefinitionResource {
 	public Response clearPropertiesDefinition() {
 		this.getEntityType().setPropertiesDefinition(null);
 		ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
-		return BackendUtils.persist(this.parentRes);
+		return Utils.persist(this.parentRes);
 	}
 
 	public boolean getIsWineryKeyValueProperties() {
@@ -140,7 +141,7 @@ public class PropertiesDefinitionResource {
 			for (String error : errors) {
 				PropertiesDefinitionResource.LOGGER.debug(error);
 			}
-			return BackendUtils.persist(this.parentRes);
+			return Utils.persist(this.parentRes);
 		} else if (data.selectedValue == PropertiesDefinitionEnum.Custom) {
 			TEntityType et = this.parentRes.getEntityType();
 
@@ -150,10 +151,11 @@ public class PropertiesDefinitionResource {
 			// create winery properties definition and persist it
 			ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
 			String namespace = data.winerysPropertiesDefinition.getNamespace();
-			if (!NamespacesResource.getInstance().getIsPrefixKnownForNamespace(namespace)) {
-				NamespacesResource.getInstance().addNamespace(namespace);
+			NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
+			if (!namespaceManager.hasPrefix(namespace)) {
+				namespaceManager.addNamespace(namespace);
 			}
-			return BackendUtils.persist(this.parentRes);
+			return Utils.persist(this.parentRes);
 		}
 
 		return Response.status(Status.BAD_REQUEST).entity("Wrong data submitted!").build();

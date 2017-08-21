@@ -26,8 +26,9 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -77,20 +78,20 @@ public class PlanFileResource {
 			persistanceNecessary = false;
 		} else {
 			// new filename sent
-			BackendUtils.delete(oldRef);
+			Utils.delete(oldRef);
 			PlansResource.setPlanModelReference(this.plan, this.planId, fileName);
 			persistanceNecessary = true;
 		}
 
 		// Really store it
 		try {
-			RepositoryFactory.getRepository().putContentToFile(ref, uploadedInputStream, body.getMediaType());
+			RepositoryFactory.getRepository().putContentToFile(ref, uploadedInputStream, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));
 		} catch (IOException e1) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
 		}
 
 		if (persistanceNecessary) {
-			return BackendUtils.persist(this.res);
+			return Utils.persist(this.res);
 		} else {
 			return Response.noContent().build();
 		}
@@ -101,7 +102,7 @@ public class PlanFileResource {
 	// @formatter:off
 	public Response onPutJSON(InputStream is) {
 		RepositoryFileReference ref = this.getFileRef();
-		return BackendUtils.putContentToFile(ref, is, MediaType.APPLICATION_JSON_TYPE);
+		return Utils.putContentToFile(ref, is, MediaTypes.MEDIATYPE_APPLICATION_JSON);
 	}
 
 	/**

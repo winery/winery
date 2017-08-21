@@ -23,7 +23,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.repository.rest.Utils;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 
 /**
@@ -117,7 +116,7 @@ public abstract class EntityResource<EntityT> {
 		} catch (IndexOutOfBoundsException e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not delete entity, even if it should exist").build();
 		}
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 }

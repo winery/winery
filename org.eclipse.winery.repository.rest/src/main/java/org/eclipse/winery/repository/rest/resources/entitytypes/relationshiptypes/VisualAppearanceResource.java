@@ -26,11 +26,12 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.constants.Defaults;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.GenericVisualAppearanceResource;
 import org.eclipse.winery.repository.rest.resources.apiData.RelationshipTypesVisualsApiData;
 
@@ -201,7 +202,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 		this.otherAttributes.put(VisualAppearanceResource.QNAME_DASH, data.dash);
 		this.otherAttributes.put(VisualAppearanceResource.QNAME_HOVER_COLOR, data.hoverColor);
 		this.otherAttributes.put(QNames.QNAME_COLOR, data.color);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	/* * * source arrow head * * */

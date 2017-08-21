@@ -26,7 +26,7 @@ import org.eclipse.winery.model.tosca.TExportedOperation;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
@@ -97,6 +97,6 @@ public class InterfacesResource extends EntityWithIdCollectionResource<ExportedI
 		this.list.clear();
 		this.list.addAll(Arrays.asList(exportedInterfacesList));
 
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 }

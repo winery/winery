@@ -19,13 +19,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.datatypes.select2.Select2OptGroup;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 
 public class ArtifactTypeResource extends EntityTypeResource {

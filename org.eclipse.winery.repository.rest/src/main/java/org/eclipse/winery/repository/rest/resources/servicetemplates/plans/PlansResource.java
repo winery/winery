@@ -158,6 +158,6 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			PlansResource.setPlanModelReference(tPlan, planId, fileName);
 		}
 
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 }

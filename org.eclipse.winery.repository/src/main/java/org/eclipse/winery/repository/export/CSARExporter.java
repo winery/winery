@@ -338,7 +338,7 @@ public class CSARExporter {
 							reference += "/" + include.getPattern();
 						}
 						reference = reference.substring(1);
-						included |= Utils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
+						included |= BackendUtils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
 					} else if (includeOrExclude instanceof TArtifactReference.Exclude) {
 						TArtifactReference.Exclude exclude = (TArtifactReference.Exclude)includeOrExclude;
 						String reference = artifactReference.getReference();
@@ -348,7 +348,7 @@ public class CSARExporter {
 							reference += "/" + exclude.getPattern();
 						}
 						reference = reference.substring(1);
-						excluded |= Utils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
+						excluded |= BackendUtils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
 					}
 				}
 			}

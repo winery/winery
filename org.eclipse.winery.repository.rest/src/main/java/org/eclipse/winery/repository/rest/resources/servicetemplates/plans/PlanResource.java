@@ -98,7 +98,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 			} catch (IOException e) {
 				return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not remove plan file").build();
 			}
-			return BackendUtils.persist(this.res);
+			return Utils.persist(this.res);
 		} else {
 			return res;
 		}
@@ -116,7 +116,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	@Override
 	public Response setName(@FormParam("value") String name) {
 		this.o.setName(name);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	@Path("file")
@@ -134,7 +134,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	@Path("type")
 	public Response setType(@FormParam("type") String type) {
 		this.o.setPlanType(type);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	@GET
@@ -147,7 +147,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	@Path("language")
 	public Response setLanguage(@FormParam("language") String language) {
 		this.o.setPlanType(language);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	@Path("inputparameters/")

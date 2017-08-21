@@ -27,7 +27,7 @@ import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TRelationshipType;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.apiData.InterfacesSelectApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
@@ -99,7 +99,7 @@ public class InterfacesResource {
 			throw new IllegalStateException("Interfaces are not supported for this element type!");
 		}
 
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	@GET

@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TOperation;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 
@@ -57,6 +57,6 @@ public class OperationsResource extends EntityWithIdCollectionResource<Operation
 		operation.setName(operationName);
 		this.list.add(operation);
 
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 }

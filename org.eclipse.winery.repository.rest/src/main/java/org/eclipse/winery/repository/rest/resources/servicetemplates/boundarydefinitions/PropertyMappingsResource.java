@@ -27,12 +27,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties.PropertyMappings;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TPropertyMapping;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.PropertyMapping;
 import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.PropertyMappingsApi;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
@@ -66,7 +66,7 @@ public class PropertyMappingsResource {
 			TPropertyMapping propertyMapping = iterator.next();
 			if (propertyMapping.getServiceTemplatePropertyRef().equals(serviceTemplatePropertyRef)) {
 				iterator.remove();
-				return BackendUtils.persist(this.res);
+				return Utils.persist(this.res);
 			}
 		}
 		// if the property mapping was not found, we reach this point
@@ -108,7 +108,7 @@ public class PropertyMappingsResource {
 				// just update it ...
 				this.updatePropertyMapping(propertyMapping, apiPropertyMapping.serviceTemplatePropertyRef, template, apiPropertyMapping.targetPropertyRef);
 				// ... and finish processing
-				return BackendUtils.persist(this.res);
+				return Utils.persist(this.res);
 			}
 		}
 
@@ -117,6 +117,6 @@ public class PropertyMappingsResource {
 		TPropertyMapping newPropertyMapping = new TPropertyMapping();
 		this.updatePropertyMapping(newPropertyMapping, apiPropertyMapping.serviceTemplatePropertyRef, template, apiPropertyMapping.targetPropertyRef);
 		this.propertyMappings.getPropertyMapping().add(newPropertyMapping);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 }

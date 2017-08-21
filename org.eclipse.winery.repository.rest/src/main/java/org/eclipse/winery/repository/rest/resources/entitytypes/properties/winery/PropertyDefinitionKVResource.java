@@ -20,7 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
@@ -55,6 +55,6 @@ public class PropertyDefinitionKVResource extends EntityWithIdResource<PropertyD
 	@Path("type")
 	public Response setType(@FormParam("type") String type) {
 		this.o.setType(type);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 }

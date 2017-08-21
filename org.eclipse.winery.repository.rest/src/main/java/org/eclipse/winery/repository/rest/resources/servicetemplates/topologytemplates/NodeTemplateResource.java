@@ -22,10 +22,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.repository.rest.Utils;
 import org.eclipse.winery.repository.rest.resources.INodeTemplateResourceOrNodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
@@ -61,7 +61,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 	public Response setMinInstances(@FormParam(value = "minInstances") String minInstances) {
 		int min = Integer.parseInt(minInstances);
 		this.o.setMinInstances(min);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	@GET
@@ -75,7 +75,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 	public Response setMaxInstances(@FormParam(value = "maxInstances") String maxInstances) {
 		// TODO: check for valid integer | "unbound"
 		this.o.setMaxInstances(maxInstances);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 
@@ -97,7 +97,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 	@PUT
 	public Response setX(String x) {
 		this.o.getOtherAttributes().put(this.qnameX, x);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	@Path("y")
@@ -112,7 +112,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 	@PUT
 	public Response setY(String y) {
 		this.o.getOtherAttributes().put(this.qnameY, y);
-		return BackendUtils.persist(this.res);
+		return Utils.persist(this.res);
 	}
 
 	@Override
