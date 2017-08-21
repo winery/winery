@@ -8,23 +8,28 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 
 /**
  * <p>Java class for tImplementationArtifacts complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="tImplementationArtifacts">
  *   &lt;complexContent>
@@ -44,40 +49,50 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImplementationArtifacts", propOrder = {
-    "implementationArtifact"
+        "implementationArtifact"
 })
 public class TImplementationArtifacts {
 
     @XmlElement(name = "ImplementationArtifact", required = true)
     protected List<TImplementationArtifacts.ImplementationArtifact> implementationArtifact;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TImplementationArtifacts)) return false;
+        TImplementationArtifacts that = (TImplementationArtifacts) o;
+        return Objects.equals(implementationArtifact, that.implementationArtifact);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(implementationArtifact);
+    }
+
     /**
      * Gets the value of the implementationArtifact property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the implementationArtifact property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getImplementationArtifact().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TImplementationArtifacts.ImplementationArtifact }
-     * 
-     * 
      */
+    @NonNull
     public List<TImplementationArtifacts.ImplementationArtifact> getImplementationArtifact() {
         if (implementationArtifact == null) {
             implementationArtifact = new ArrayList<TImplementationArtifacts.ImplementationArtifact>();
@@ -88,9 +103,9 @@ public class TImplementationArtifacts {
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -100,16 +115,12 @@ public class TImplementationArtifacts {
      *   &lt;/complexContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
     public static class ImplementationArtifact
-        extends TImplementationArtifact
-    {
+            extends TImplementationArtifact {
 
 
     }
-
 }
