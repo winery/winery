@@ -9,9 +9,11 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest;
+package org.eclipse.winery.repository.rest.resources;
 
 import java.io.IOException;
+
+import org.eclipse.winery.repository.rest.Prefs;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;

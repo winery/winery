@@ -23,5 +23,6 @@ public class MediaTypes {
 	public static final MediaType MEDIATYPE_TOSCA_DEFINITIONS = MediaType.parse(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS);
 	public static final MediaType MEDIATYPE_APPLICATION_JSON = MediaType.parse("application/json");
 	public static final MediaType MEDIATYPE_TEXT_XML = MediaType.parse("text/xml");
+	public static final MediaType MEDIATYPE_XSD = MediaType.parse(MimeTypes.MIMETYPE_XSD);
 
 }

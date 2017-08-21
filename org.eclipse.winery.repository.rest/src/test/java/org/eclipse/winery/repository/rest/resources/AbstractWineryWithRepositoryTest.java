@@ -9,7 +9,9 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest;
+package org.eclipse.winery.repository.rest.resources;
+
+import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;

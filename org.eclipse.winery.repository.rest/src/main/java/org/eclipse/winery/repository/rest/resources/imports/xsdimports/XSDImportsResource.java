@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
@@ -51,7 +51,7 @@ public class XSDImportsResource extends AbstractComponentsWithoutTypeReferenceRe
 		// returnElements is not read as either types or elements may be read
 		Set<String> allNCNames = this.getAllElementLocalNamesAsSet(nsString, returnTypes != null);
 		try {
-			return RestUtils.mapper.writeValueAsString(allNCNames);
+			return BackendUtils.mapper.writeValueAsString(allNCNames);
 		} catch (JsonProcessingException e) {
 			throw new IllegalStateException(e);
 		}

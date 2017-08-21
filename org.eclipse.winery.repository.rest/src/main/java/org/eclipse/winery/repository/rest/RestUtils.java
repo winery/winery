@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
@@ -57,7 +55,6 @@ import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -92,13 +89,8 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTy
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
-import org.eclipse.winery.repository.rest.resources.imports.xsdimports.XSDImportResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -108,7 +100,6 @@ import com.sun.jersey.multipart.FormDataBodyPart;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.taglibs.standard.functions.Functions;
-import org.apache.xerces.xs.XSConstants;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Element;
@@ -119,11 +110,6 @@ import org.w3c.dom.Element;
  * BackendUtils}
  */
 public class RestUtils {
-
-	/**
-	 * Shared object to map JSONs
-	 */
-	public static final ObjectMapper mapper = getObjectMapper();
 
 	private static final XLogger LOGGER = XLoggerFactory.getXLogger(RestUtils.class);
 
@@ -242,15 +228,6 @@ public class RestUtils {
 		sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
 		sb.append("\"");
 		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
-	}
-
-	private static ObjectMapper getObjectMapper() {
-		final ObjectMapper objectMapper = new ObjectMapper();
-		// DO NOT ACTIVE the following - JSON is serialized differently and thus, the JAX-B annotations must not be used
-		// For instance, "nodeTemplateOrRelationshipTemplate" is a bad thing for JSON as it cannot distinguish whether a child is a node template or a relationship template
-		// final JaxbAnnotationModule module = new JaxbAnnotationModule();
-		// objectMapper.registerModule(module);
-		return objectMapper;
 	}
 
 	/**
@@ -448,83 +425,6 @@ public class RestUtils {
 		@SuppressWarnings("unchecked")
 		Class<T> clazz = (Class<T>) obj.getClass();
 		return RestUtils.getXMLAsString(clazz, obj, includeProcessingInstruction);
-	}
-
-	public static String getAllXSDElementDefinitionsForTypeAheadSelection() {
-		RestUtils.LOGGER.entry();
-		try {
-			return RestUtils.getAllXSDefinitionsForTypeAheadSelection(XSConstants.ELEMENT_DECLARATION);
-		} finally {
-			RestUtils.LOGGER.exit();
-		}
-	}
-
-	public static String getAllXSDTypeDefinitionsForTypeAheadSelection() {
-		RestUtils.LOGGER.entry();
-		try {
-			return RestUtils.getAllXSDefinitionsForTypeAheadSelection(XSConstants.TYPE_DEFINITION);
-		} finally {
-			RestUtils.LOGGER.exit();
-		}
-	}
-
-	// TODO: maybe not necessary if everything is working with angular
-	public static String getAllXSDefinitionsForTypeAheadSelection(short type) {
-		try {
-			return RestUtils.mapper.writeValueAsString(RestUtils.getAllXSDefinitionsForTypeAheadSelectionRaw(type));
-		} catch (JsonProcessingException e) {
-			throw new IllegalStateException("Could not create JSON", e);
-		}
-	}
-
-	public static ArrayNode getAllXSDefinitionsForTypeAheadSelectionRaw(short type) {
-		SortedSet<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
-
-		Map<Namespace, Collection<String>> data = new HashMap<>();
-
-		for (XSDImportId id : allImports) {
-			XSDImportResource resource = new XSDImportResource(id);
-			Collection<String> allLocalNames = resource.getAllDefinedLocalNames(type);
-
-			Collection<String> list;
-			if ((list = data.get(id.getNamespace())) == null) {
-				// list does not yet exist
-				list = new ArrayList<>();
-				data.put(id.getNamespace(), list);
-			}
-			list.addAll(allLocalNames);
-		}
-
-		ArrayNode rootNode = RestUtils.mapper.createArrayNode();
-
-		// ensure ordering in JSON object
-		Collection<Namespace> allns = new TreeSet<>();
-		allns.addAll(data.keySet());
-
-		for (Namespace ns : allns) {
-			Collection<String> localNames = data.get(ns);
-			if (!localNames.isEmpty()) {
-				ObjectNode groupEntry = RestUtils.mapper.createObjectNode();
-				rootNode.add(groupEntry);
-				groupEntry.put("id", ns.getEncoded());
-				groupEntry.put("text", ns.getDecoded());
-				ArrayNode children = RestUtils.mapper.createArrayNode();
-				groupEntry.put("children", children);
-				Collection<String> sortedLocalNames = new TreeSet<>();
-				sortedLocalNames.addAll(localNames);
-				for (String localName : sortedLocalNames) {
-					String value = "{" + ns.getDecoded() + "}" + localName;
-					//noinspection UnnecessaryLocalVariable
-					String text = localName;
-					ObjectNode o = RestUtils.mapper.createObjectNode();
-					o.put("text", text);
-					o.put("id", value);
-					children.add(o);
-				}
-			}
-		}
-
-		return rootNode;
 	}
 
 	public static Response getResponseForException(Exception e) {
@@ -1070,7 +970,6 @@ public class RestUtils {
 		return putContentToFile(ref, inputStream, org.apache.tika.mime.MediaType.parse(mediaType.toString()));
 	}
 
-
 	/**
 	 * Updates the color if the color is not yet existent
 	 *
@@ -1086,17 +985,6 @@ public class RestUtils {
 			RestUtils.persist(res);
 		}
 		return colorStr;
-	}
-
-	public static String Object2JSON(Object o) {
-		String res;
-		try {
-			res = RestUtils.mapper.writeValueAsString(o);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage(), e);
-			return null;
-		}
-		return res;
 	}
 
 }

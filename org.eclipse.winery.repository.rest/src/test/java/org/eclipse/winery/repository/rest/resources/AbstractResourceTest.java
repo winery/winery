@@ -16,8 +16,6 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.AbstractWineryWithRepositoryTest;
-import org.eclipse.winery.repository.WineryUsingHttpServer;
 
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;

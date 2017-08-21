@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Oliver Kopp - initial API and implementation
+ *     Oliver Kopp - initial API, implementation, update 
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.XMLConstants;
@@ -30,9 +29,10 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
-import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -127,12 +127,12 @@ public class XSDImportResource extends GenericImportResource {
 
 			String cacheContent = null;
 			try {
-				cacheContent = RestUtils.mapper.writeValueAsString(result);
+				cacheContent = BackendUtils.mapper.writeValueAsString(result);
 			} catch (JsonProcessingException e) {
 				XSDImportResource.LOGGER.error("Could not generate cache content", e);
 			}
 			try {
-				RepositoryFactory.getRepository().putContentToFile(cacheRef, cacheContent, MediaType.APPLICATION_JSON_TYPE);
+				RepositoryFactory.getRepository().putContentToFile(cacheRef, cacheContent, MediaTypes.MEDIATYPE_APPLICATION_JSON);
 			} catch (IOException e) {
 				XSDImportResource.LOGGER.error("Could not update cache", e);
 			}
@@ -140,7 +140,7 @@ public class XSDImportResource extends GenericImportResource {
 			// read content from cache
 			// cache should contain most recent information
 			try (InputStream is = RepositoryFactory.getRepository().newInputStream(cacheRef)) {
-				result = RestUtils.mapper.readValue(is, java.util.List.class);
+				result = BackendUtils.mapper.readValue(is, java.util.List.class);
 			} catch (IOException e) {
 				XSDImportResource.LOGGER.error("Could not read from cache", e);
 				result = Collections.emptyList();

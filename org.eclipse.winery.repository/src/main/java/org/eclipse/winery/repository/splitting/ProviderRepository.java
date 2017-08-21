@@ -48,7 +48,7 @@ public class ProviderRepository {
 	public List<TTopologyTemplate> getAllTopologyFragmentsForLocationAndOfferingCapability(String targetLocation, TRequirement requirement) {
 		QName reqTypeQName = requirement.getType();
 		RequirementTypeId reqTypeId = new RequirementTypeId(reqTypeQName);
-		QName requiredCapabilityType = RepositoryFactory.getRepository().getElement(reqTypeId).get().getRequiredCapabilityType();
+		QName requiredCapabilityType = RepositoryFactory.getRepository().getElement(reqTypeId).getRequiredCapabilityType();
 
 		return getAllTopologyFragmentsForLocation(targetLocation).stream()
 				.filter(tf -> {
@@ -79,7 +79,7 @@ public class ProviderRepository {
 				.filter(id -> id.getNamespace().getDecoded().toLowerCase().startsWith(namespaceStr))
 				// get all contained node templates
 				.flatMap(id -> {
-					TTopologyTemplate topologyTemplate = RepositoryFactory.getRepository().getElement(id).get().getTopologyTemplate();
+					TTopologyTemplate topologyTemplate = RepositoryFactory.getRepository().getElement(id).getTopologyTemplate();
 					List<TNodeTemplate> matchedNodeTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
 							.filter(t -> t instanceof TNodeTemplate)
 							.map(TNodeTemplate.class::cast)

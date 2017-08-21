@@ -86,6 +86,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
@@ -542,7 +543,7 @@ public class CSARImporter {
 					// QUICK HACK. Alternative: Add new method Repository.INSTANCE.getOutputStream and transform DOM node to OuptputStream
 					String content = Util.getXMLAsString(element);
 					try {
-						RepositoryFactory.getRepository().putContentToFile(fileRef, content, MediaType.APPLICATION_XML_TYPE);
+						RepositoryFactory.getRepository().putContentToFile(fileRef, content, MediaTypes.MEDIATYPE_TEXT_XML);
 					} catch (IOException e) {
 						CSARImporter.LOGGER.debug("Could not put XML Schema definition to file " + fileRef.toString(), e);
 						errors.add("Could not put XML Schema definition to file " + fileRef.toString());
@@ -551,7 +552,7 @@ public class CSARImporter {
 					// add import to definitions
 
 					// adapt path - similar to importOtherImport
-					String newLoc = "../" + Util.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(fileRef));
+					String newLoc = "../" + Util.getUrlPath(fileRef);
 					imp.setLocation(newLoc);
 					defs.getImport().add(imp);
 				} else {
@@ -715,7 +716,7 @@ public class CSARImporter {
 	}
 
 	private void importIcons(Path rootPath, VisualAppearanceId visId, TOSCAMetaFile tmf, final List<String> errors) {
-		String pathInsideRepo = BackendUtils.getPathInsideRepo(visId);
+		String pathInsideRepo = Util.getPathInsideRepo(visId);
 		Path visPath = rootPath.resolve(pathInsideRepo);
 		this.importIcon(visId, visPath, Filename.FILENAME_BIG_ICON, tmf, rootPath, errors);
 	}
@@ -821,11 +822,11 @@ public class CSARImporter {
 		}
 		try (InputStream is = Files.newInputStream(p);
 				BufferedInputStream bis = new BufferedInputStream(is)) {
-			String mediaType = tmf.getMimeType(p.relativize(rootPath).toString());
+			MediaType mediaType = MediaType.parse(tmf.getMimeType(p.relativize(rootPath).toString()));
 			if (mediaType == null) {
 				// Manually find out mime type
 				try {
-					mediaType = Utils.getMimeType(bis, p.getFileName().toString());
+					mediaType = BackendUtils.getMimeType(bis, p.getFileName().toString());
 				} catch (IOException e) {
 					errors.add(String.format("No MimeType given for %1$s (%2$s)", p.getFileName(), e.getMessage()));
 					return;
@@ -836,7 +837,7 @@ public class CSARImporter {
 				}
 			}
 			try {
-				RepositoryFactory.getRepository().putContentToFile(fref, bis, MediaType.valueOf(mediaType));
+				RepositoryFactory.getRepository().putContentToFile(fref, bis, mediaType);
 			} catch (IllegalArgumentException | IOException e) {
 				throw new IllegalStateException(e);
 			}
@@ -1089,7 +1090,7 @@ public class CSARImporter {
 		// location is relative to Definitions/
 		// even if the import already exists, we have to adapt the path
 		// URIs are encoded
-		String newLoc = "../" + Utils.getURLforPathInsideRepo(BackendUtils.getPathInsideRepo(fileRef));
+		String newLoc = "../" + Util.getUrlPath(fileRef);
 		imp.setLocation(newLoc);
 
 		if (!importDataExistsInRepo || overwrite) {
@@ -1098,10 +1099,9 @@ public class CSARImporter {
 					BufferedInputStream bis = new BufferedInputStream(is)) {
 				MediaType mediaType;
 				if (type.equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
-					mediaType = MediaType.valueOf(MimeTypes.MIMETYPE_XSD);
+					mediaType = MediaTypes.MEDIATYPE_XSD;
 				} else {
-					String mimeType = Utils.getMimeType(bis, path.getFileName().toString());
-					mediaType = MediaType.valueOf(mimeType);
+					mediaType = BackendUtils.getMimeType(bis, path.getFileName().toString());
 				}
 				RepositoryFactory.getRepository().putContentToFile(fileRef, bis, mediaType);
 			} catch (IllegalArgumentException | IOException e) {
@@ -1118,7 +1118,7 @@ public class CSARImporter {
                     CSARImporter.LOGGER.debug("Updating XSD import cache data");
                     // We call the queries without storing the result:
                     // We use the SIDEEFFECT that a cache is created
-                    Utils.getAllXSDElementDefinitionsForTypeAheadSelection();
+                    BackendUtils.getAllXSDElementDefinitionsForTypeAheadSelection();
                     Utils.getAllXSDTypeDefinitionsForTypeAheadSelection();
                     CSARImporter.LOGGER.debug("Updated XSD import cache data");
                 });

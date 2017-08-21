@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBException;
@@ -59,6 +61,7 @@ import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
@@ -96,6 +99,10 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDire
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
@@ -104,6 +111,7 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.xs.XSImplementationImpl;
 import org.apache.xerces.xs.XSComplexTypeDefinition;
+import org.apache.xerces.xs.XSConstants;
 import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSImplementation;
 import org.apache.xerces.xs.XSLoader;
@@ -114,8 +122,8 @@ import org.apache.xerces.xs.XSParticle;
 import org.apache.xerces.xs.XSTerm;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.eclipse.jdt.annotation.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.ls.LSInput;
 
 /**
@@ -125,9 +133,24 @@ import org.w3c.dom.ls.LSInput;
  */
 public class BackendUtils {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BackendUtils.class);
+	/**
+	 * Shared object to map JSONs
+	 */
+	public static final ObjectMapper mapper = getObjectMapper();
+
+	private static final XLogger LOGGER = XLoggerFactory.getXLogger(BackendUtils.class);
 
 	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
+
+
+	private static ObjectMapper getObjectMapper() {
+		final ObjectMapper objectMapper = new ObjectMapper();
+		// DO NOT ACTIVE the following - JSON is serialized differently and thus, the JAX-B annotations must not be used
+		// For instance, "nodeTemplateOrRelationshipTemplate" is a bad thing for JSON as it cannot distinguish whether a child is a node template or a relationship template
+		// final JaxbAnnotationModule module = new JaxbAnnotationModule();
+		// objectMapper.registerModule(module);
+		return objectMapper;
+	}
 
 	/**
 	 * @return true if given fileDate is newer then the modified date (or modified is null)
@@ -1038,4 +1061,93 @@ public class BackendUtils {
 
 		RepositoryFactory.getRepository().setElement(id, serviceTemplate);
 	}
+
+	public static String getAllXSDElementDefinitionsForTypeAheadSelection() {
+		LOGGER.entry();
+		try {
+			return getAllXSDefinitionsForTypeAheadSelection(XSConstants.ELEMENT_DECLARATION);
+		} finally {
+			LOGGER.exit();
+		}
+	}
+
+	public static String getAllXSDTypeDefinitionsForTypeAheadSelection() {
+		LOGGER.entry();
+		try {
+			return getAllXSDefinitionsForTypeAheadSelection(XSConstants.TYPE_DEFINITION);
+		} finally {
+			LOGGER.exit();
+		}
+	}
+
+	// TODO: maybe not necessary if everything is working with angular
+	public static String getAllXSDefinitionsForTypeAheadSelection(short type) {
+		try {
+			return RestUtils.mapper.writeValueAsString(RestUtils.getAllXSDefinitionsForTypeAheadSelectionRaw(type));
+		} catch (JsonProcessingException e) {
+			throw new IllegalStateException("Could not create JSON", e);
+		}
+	}
+
+	public static ArrayNode getAllXSDefinitionsForTypeAheadSelectionRaw(short type) {
+		SortedSet<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
+
+		Map<Namespace, Collection<String>> data = new HashMap<>();
+
+		for (XSDImportId id : allImports) {
+			XSDImportResource resource = new XSDImportResource(id);
+			Collection<String> allLocalNames = resource.getAllDefinedLocalNames(type);
+
+			Collection<String> list;
+			if ((list = data.get(id.getNamespace())) == null) {
+				// list does not yet exist
+				list = new ArrayList<>();
+				data.put(id.getNamespace(), list);
+			}
+			list.addAll(allLocalNames);
+		}
+
+		ArrayNode rootNode = RestUtils.mapper.createArrayNode();
+
+		// ensure ordering in JSON object
+		Collection<Namespace> allns = new TreeSet<>();
+		allns.addAll(data.keySet());
+
+		for (Namespace ns : allns) {
+			Collection<String> localNames = data.get(ns);
+			if (!localNames.isEmpty()) {
+				ObjectNode groupEntry = RestUtils.mapper.createObjectNode();
+				rootNode.add(groupEntry);
+				groupEntry.put("id", ns.getEncoded());
+				groupEntry.put("text", ns.getDecoded());
+				ArrayNode children = RestUtils.mapper.createArrayNode();
+				groupEntry.put("children", children);
+				Collection<String> sortedLocalNames = new TreeSet<>();
+				sortedLocalNames.addAll(localNames);
+				for (String localName : sortedLocalNames) {
+					String value = "{" + ns.getDecoded() + "}" + localName;
+					//noinspection UnnecessaryLocalVariable
+					String text = localName;
+					ObjectNode o = RestUtils.mapper.createObjectNode();
+					o.put("text", text);
+					o.put("id", value);
+					children.add(o);
+				}
+			}
+		}
+
+		return rootNode;
+	}
+
+	public static String Object2JSON(Object o) {
+		String res;
+		try {
+			res = RestUtils.mapper.writeValueAsString(o);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(), e);
+			return null;
+		}
+		return res;
+	}
+
 }
