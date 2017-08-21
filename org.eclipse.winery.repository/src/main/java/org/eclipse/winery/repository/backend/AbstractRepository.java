@@ -15,7 +15,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
-import java.util.Optional;
 
 import javax.xml.bind.Unmarshaller;
 
@@ -112,15 +111,15 @@ public abstract class AbstractRepository implements IRepository {
 	}
 
 	@Override
-	public Optional<Definitions> getDefinitions(TOSCAComponentId id) {
+	public Definitions getDefinitions(TOSCAComponentId id) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		if (!exists(ref)) {
-			return Optional.empty();
+			return BackendUtils.createWrapperDefinitions(id);
 		}
 		try {
 			InputStream is = RepositoryFactory.getRepository().newInputStream(ref);
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			return Optional.of((Definitions) u.unmarshal(is));
+			return (Definitions) u.unmarshal(is);
 		} catch (Exception e) {
 			LOGGER.error("Could not read content from file " + ref, e);
 			throw new IllegalStateException(e);

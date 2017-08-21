@@ -302,10 +302,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 *                               in the prototype.
 	 */
 	private void load() {
-		this.definitions = RepositoryFactory.getRepository().getDefinitions(this.id).orElseThrow(() -> {
-			AbstractComponentInstanceResource.LOGGER.error("Could not read content from file " + this.ref);
-			return new IllegalStateException();
-		});
+		// makes use of the side effect that a wrapper definitions is created
+		this.definitions = RepositoryFactory.getRepository().getDefinitions(this.id);
 
 		try {
 			this.element = this.definitions.getElement();

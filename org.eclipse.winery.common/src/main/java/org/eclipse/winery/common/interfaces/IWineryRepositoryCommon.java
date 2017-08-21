@@ -42,33 +42,35 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 public interface IWineryRepositoryCommon {
 
 	/**
-	 * Loads the TDefinition element belonging to the given id. Undefined behavior if <code>!exists(id)</code>
+	 * Loads the TDefinition element belonging to the given id.
+	 *
+	 * Even if the given id does not exist in the repository (<code>!exists(id)</code>), an empty wrappter definitions
+	 * is generated
 	 *
 	 * @param id the TOSCAComponentId to load
-	 * @return Optional.empty() if the definition of the given id does not exist
 	 */
-	Optional<Definitions> getDefinitions(TOSCAComponentId id);
+	Definitions getDefinitions(TOSCAComponentId id);
 
 	// in case one needs a new element, just copy and paste one of the following methods and adapt it.
 
-	default Optional<TNodeTypeImplementation> getElement(NodeTypeImplementationId id) {
-		return this.getDefinitions(id).map(definitions -> (TNodeTypeImplementation) definitions.getElement());
+	default TNodeTypeImplementation getElement(NodeTypeImplementationId id) {
+		return (TNodeTypeImplementation) this.getDefinitions(id).getElement();
 	}
 
-	default Optional<TRelationshipType> getElement(RelationshipTypeId id) {
-		return this.getDefinitions(id).map(definitions -> (TRelationshipType) definitions.getElement());
+	default TRelationshipType getElement(RelationshipTypeId id) {
+		return (TRelationshipType) this.getDefinitions(id).getElement();
 	}
 
-	default Optional<TServiceTemplate> getElement(ServiceTemplateId id) {
-		return this.getDefinitions(id).map(definitions -> (TServiceTemplate) definitions.getElement());
+	default TServiceTemplate getElement(ServiceTemplateId id) {
+		return (TServiceTemplate) this.getDefinitions(id).getElement();
 	}
 
-	default Optional<TCapabilityType> getElement(CapabilityTypeId id) {
-		return this.getDefinitions(id).map(definitions -> (TCapabilityType) definitions.getElement());
+	default TCapabilityType getElement(CapabilityTypeId id) {
+		return (TCapabilityType) this.getDefinitions(id).getElement();
 	}
 
-	default Optional<TRequirementType> getElement(RequirementTypeId id) {
-		return this.getDefinitions(id).map(definitions -> (TRequirementType) definitions.getElement());
+	default TRequirementType getElement(RequirementTypeId id) {
+		return (TRequirementType) this.getDefinitions(id).getElement();
 	}
 
 	/**

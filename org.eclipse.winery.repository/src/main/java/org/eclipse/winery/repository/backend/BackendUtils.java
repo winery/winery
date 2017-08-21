@@ -208,9 +208,11 @@ public class BackendUtils {
 
 
 	public static String getName(TOSCAComponentId instanceId) throws RepositoryCorruptException {
-		TExtensibleElements instanceElement = RepositoryFactory.getRepository().getDefinitions(instanceId)
-				.orElseThrow(() -> new RepositoryCorruptException("Definitions does not exist for instance"))
-				.getElement();
+		IRepository repository = RepositoryFactory.getRepository();
+		if (!repository.exists(instanceId)) {
+			throw new RepositoryCorruptException("Definitions does not exist for instance");
+		}
+		TExtensibleElements instanceElement = RepositoryFactory.getRepository().getDefinitions(instanceId).getElement();
 		return ModelUtilities.getNameWithIdFallBack(instanceElement);
 	}
 
