@@ -490,8 +490,6 @@ There is the maxFormContentSize set in jetty web.xml, but it currently does not 
 If the Prefs class is not found, something is wrong with the libraries, tomcat config, eclipse environment (check
 the build path!), etc.
 
-In case, `Version.java` is not found, then run `mvn compile`, which should trigger a regeneration of Version.java.
-
 The error message
 `HTTP Status 500 - com.sun.jersey.api.container.ContainerException: org.apache.jasper.JasperException: The absolute uri: http://www.eclipse.org/winery/functions cannot be resolved in either web.xml or the jar files deployed with this application` indicates that `mvn generate-sources` was not run.
 
