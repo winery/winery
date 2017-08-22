@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
-import { SelectData } from "../../../wineryInterfaces/selectData";
+import { SelectData } from '../../../wineryInterfaces/selectData';
 
 @Injectable()
 export class PropertiesDefinitionService {
