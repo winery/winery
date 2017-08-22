@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections.withoutid;
 
-import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 
 public class IdDeterminationWithHashCode implements IIdDetermination<Object> {

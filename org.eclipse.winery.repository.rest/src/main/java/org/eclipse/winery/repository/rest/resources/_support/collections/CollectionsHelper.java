@@ -13,7 +13,7 @@ package org.eclipse.winery.repository.rest.resources._support.collections;
 
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 
 public class CollectionsHelper {
@@ -29,7 +29,7 @@ public class CollectionsHelper {
 	 * @return the new id id of the resource
 	 */
 	public static <X> Response persist(IPersistable resource, IIdDetermination<X> idDetermination, X entity, boolean isPost) {
-		Response.ResponseBuilder res = BackendUtils.persistWithResponseBuilder(resource);
+		Response.ResponseBuilder res = RestUtils.persistWithResponseBuilder(resource);
 		if (isPost) {
 			res = res.status(201);
 			String id = idDetermination.getId(entity);

@@ -540,7 +540,7 @@ public class CSARImporter {
 					RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(importId);
 					RepositoryFileReference fileRef = new RepositoryFileReference(ref.getParent(), fileName);
 					// convert element to document
-					// QUICK HACK. Alternative: Add new method Repository.INSTANCE.getOutputStream and transform DOM node to OuptputStream
+					// QUICK HACK. Alternative: Add new method RepositoryFactory.getRepository().getOutputStream and transform DOM node to OuptputStream
 					String content = Util.getXMLAsString(element);
 					try {
 						RepositoryFactory.getRepository().putContentToFile(fileRef, content, MediaTypes.MEDIATYPE_TEXT_XML);

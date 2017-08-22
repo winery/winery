@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConverter;
 import org.eclipse.winery.repository.rest.resources.entitytypes.ImplementationsOfOneType;
@@ -46,8 +46,7 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 	 *
 	 * Method similar top the one of ImplementationsOfOneNodeTypeResource
 	 *
-	 * @return for each node type implementation implementing the associated
-	 *         node type
+	 * @return for each node type implementation implementing the associated node type
 	 */
 	@Override
 	public String getImplementationsTableData() {
@@ -58,7 +57,7 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 			JsonGenerator jGenerator = jsonFactory.createGenerator(tableDataSW);
 			jGenerator.writeStartArray();
 
-			Collection<RelationshipTypeImplementationId> allNTIids = Repository.INSTANCE.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
+			Collection<RelationshipTypeImplementationId> allNTIids = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
 			for (RelationshipTypeImplementationId ntiID : allNTIids) {
 				jGenerator.writeStartArray();
 				jGenerator.writeString(ntiID.getNamespace().getDecoded());
@@ -88,7 +87,7 @@ public class ImplementationsOfOneRelationshipTypeResource extends Implementation
 
 	@Override
 	public Response getJSON() {
-		Collection<RelationshipTypeImplementationId> allImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
+		Collection<RelationshipTypeImplementationId> allImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, this.getTypeId().getQName());
 		List<QNameApiData> res = new ArrayList<>(allImplementations.size());
 		QNameConverter adapter = new QNameConverter();
 		for (RelationshipTypeImplementationId id : allImplementations) {

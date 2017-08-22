@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,18 +34,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.client.IWineryRepositoryClient;
 import org.eclipse.winery.repository.client.WineryRepositoryClientFactory;
+import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplatesResource;
 import org.eclipse.winery.repository.splitting.Splitting;
@@ -296,13 +295,7 @@ public class TopologyTemplateResource {
 						this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(rt);
 					});
 
-			try {
-				this.serviceTemplateRes.persist();
-				return Response.noContent().build();
-			} catch (IOException e) {
-				LOGGER.error("Could not persist", e);
-				return Response.serverError().entity(e.getMessage()).build();
-			}
+			return RestUtils.persist(this.serviceTemplateRes);
 		}
 	}
 

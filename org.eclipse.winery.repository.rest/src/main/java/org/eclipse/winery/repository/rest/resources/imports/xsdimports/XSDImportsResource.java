@@ -44,7 +44,7 @@ public class XSDImportsResource extends AbstractComponentsWithoutTypeReferenceRe
 			@QueryParam(value = "types") String returnTypes) {
 		// returnElements is not read as either types or elements may be read
 		return RepositoryFactory.getRepository().getXsdImportManager()
-				.getAllDeclaredElementLocalNames(new Namespace(nsString, true), (returnTypes != null));
+				.getAllDefinedLocalNames(new Namespace(nsString, true), (returnTypes != null));
 	}
 
 }

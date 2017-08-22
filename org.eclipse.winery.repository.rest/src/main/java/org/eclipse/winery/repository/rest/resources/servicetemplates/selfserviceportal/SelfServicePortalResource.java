@@ -29,6 +29,7 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
@@ -153,7 +154,7 @@ public class SelfServicePortalResource {
 			options = new Options();
 			this.application.setOptions(options);
 		}
-		return new OptionsResource(options.getOption(), this);
+		return new OptionsResource(options.getOption(), serviceTemplateResource);
 	}
 
 	/**

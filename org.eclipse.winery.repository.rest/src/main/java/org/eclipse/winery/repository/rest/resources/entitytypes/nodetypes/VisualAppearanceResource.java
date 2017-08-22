@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.constants.QNames;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -65,7 +64,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	@GET
 	@Path("bordercolor")
 	public String getBorderColor() {
-		return BackendUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_BORDER_COLOR, this.otherAttributes, this.res);
+		return RestUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_BORDER_COLOR, this.otherAttributes, this.res);
 	}
 
 	@PUT

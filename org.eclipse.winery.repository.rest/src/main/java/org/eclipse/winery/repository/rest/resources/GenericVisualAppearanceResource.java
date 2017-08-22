@@ -28,8 +28,8 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.constants.Filename;
+import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
@@ -65,7 +65,7 @@ public abstract class GenericVisualAppearanceResource {
 
 	@DELETE
 	public Response onDelete() {
-		return BackendUtils.delete(this.id);
+		return RestUtils.delete(this.id);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public abstract class GenericVisualAppearanceResource {
 	 */
 	protected Response putImage(String name, InputStream uploadedInputStream, MediaType mediaType) {
 		RepositoryFileReference target = this.getRepoFileRef(name);
-		return BackendUtils.putContentToFile(target, uploadedInputStream, mediaType);
+		return RestUtils.putContentToFile(target, uploadedInputStream, mediaType);
 	}
 
 	@GET

@@ -467,7 +467,7 @@ public class CSARExporter {
 
 	private void addSelfServiceMetaData(ServiceTemplateId serviceTemplateId, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream zos) throws IOException {
 		SelfServiceMetaDataId id = new SelfServiceMetaDataId(serviceTemplateId);
-		// We add the selfservice information regardless of the existance. - i.e., no "if (Repository.INSTANCE.exists(id)) {"
+		// We add the selfservice information regardless of the existance. - i.e., no "if (RepositoryFactory.getRepository().exists(id)) {"
 		// This ensures that the name of the application is
 		// add everything in the root of the CSAR
 		String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";

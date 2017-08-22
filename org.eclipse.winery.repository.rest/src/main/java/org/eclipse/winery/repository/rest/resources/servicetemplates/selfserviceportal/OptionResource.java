@@ -24,6 +24,7 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
 
@@ -57,14 +58,14 @@ public class OptionResource extends EntityWithIdResource<ApplicationOption> {
 	@GET
 	public Response getIcon(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.ssmdId, this.getFileNamePrefix() + OptionResource.ICON_JPG);
-		return Utils.returnRepoPath(ref, modified);
+		return RestUtils.returnRepoPath(ref, modified);
 	}
 
 	@Path("planinputmessage")
 	@GET
 	public Response getPlanInputMessage(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.ssmdId, this.getFileNamePrefix() + OptionResource.PLAN_INPUT_XML);
-		return Utils.returnRepoPath(ref, modified);
+		return RestUtils.returnRepoPath(ref, modified);
 	}
 
 	@Override

@@ -351,7 +351,7 @@ Example:
 
 NodeTypeId id = new NodeTypeId("http://www.example.com/NodeTypes", "NT1", false);
 RepositoryFileReference ref = new RepositoryFileReference(id, "NodeType.tosca");
-try (InputStream is = Repository.Instance.newInputStream (ref)){
+try (InputStream is = RepositoryFactory.getRepository().newInputStream (ref)){
   // do something
 }
 

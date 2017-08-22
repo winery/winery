@@ -32,8 +32,9 @@ import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
@@ -135,11 +136,8 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 			if (bpmn4toscaMode) {
 				fileName = tPlan.getId() + Constants.SUFFIX_BPMN4TOSCA;
 				RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
-				try {
-					RepositoryFactory.getRepository().putContentToFile(ref, "{}", MediaType.APPLICATION_JSON_TYPE);
-				} catch (IOException e1) {
-					return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create empty plan. " + e1.getMessage()).build();
-				}
+				// Errors are ignored in the following call
+				RestUtils.putContentToFile(ref, "{}", MediaTypes.MEDIATYPE_APPLICATION_JSON);
 			} else {
 				// We use the filename also as local file name. Alternatively, we could use the xml id
 				// With URL encoding, this should not be an issue
@@ -147,11 +145,8 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 
 				// Really store it
 				RepositoryFileReference ref = new RepositoryFileReference(planId, fileName);
-				try {
-					RepositoryFactory.getRepository().putContentToFile(ref, uploadedInputStream, body.getMediaType());
-				} catch (IOException e1) {
-					return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
-				}
+				// Errors are ignored in the following call
+				RestUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 			}
 
 			PlansResource.setPlanModelReference(tPlan, planId, fileName);

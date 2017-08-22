@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -25,6 +25,7 @@ import org.eclipse.winery.model.selfservice.ApplicationOption;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
@@ -38,8 +39,10 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsResource.class);
 
-
-	public OptionsResource(List<ApplicationOption> list, SelfServicePortalResource res) {
+	/**
+	 * @param res is the parent of the SelfServicePortalResource, which is a parent of this resource
+	 */
+	public OptionsResource(List<ApplicationOption> list, ServiceTemplateResource res) {
 		super(OptionResource.class, ApplicationOption.class, list, res);
 	}
 

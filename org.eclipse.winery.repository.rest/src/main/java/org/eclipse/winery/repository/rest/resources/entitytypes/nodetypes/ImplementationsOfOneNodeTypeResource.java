@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConverter;
 import org.eclipse.winery.repository.rest.resources.entitytypes.ImplementationsOfOneType;
@@ -63,7 +63,7 @@ public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneTy
 			JsonGenerator jGenerator = jsonFactory.createGenerator(tableDataSW);
 			jGenerator.writeStartArray();
 
-			Collection<NodeTypeImplementationId> allNodeTypeImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, this.getTypeId().getQName());
+			Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, this.getTypeId().getQName());
 			for (NodeTypeImplementationId ntiID : allNodeTypeImplementations) {
 				jGenerator.writeStartArray();
 				jGenerator.writeString(ntiID.getNamespace().getDecoded());
@@ -93,7 +93,7 @@ public class ImplementationsOfOneNodeTypeResource extends ImplementationsOfOneTy
 
 	@Override
 	public Response getJSON() {
-		Collection<NodeTypeImplementationId> allImplementations = Repository.INSTANCE.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, this.getTypeId().getQName());
+		Collection<NodeTypeImplementationId> allImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, this.getTypeId().getQName());
 		List<QNameApiData> res = new ArrayList<>(allImplementations.size());
 		QNameConverter adapter = new QNameConverter();
 		for (NodeTypeImplementationId id : allImplementations) {
