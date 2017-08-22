@@ -174,7 +174,7 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 
 		List<NamespaceAndDefinedLocalNames> result = Lists.mutable.empty();
 		data.forEachKeyMultiValues((namespace, strings) -> {
-			final NamespaceAndDefinedLocalNames namespaceAndDefinedLocalNames = new NamespaceAndDefinedLocalNames(namespace.getDecoded());
+			final NamespaceAndDefinedLocalNames namespaceAndDefinedLocalNames = new NamespaceAndDefinedLocalNames(namespace);
 			strings.forEach(localName -> namespaceAndDefinedLocalNames.addLocalName(localName));
 			result.add(namespaceAndDefinedLocalNames);
 		});

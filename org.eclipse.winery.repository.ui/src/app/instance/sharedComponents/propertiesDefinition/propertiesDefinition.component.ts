@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Lukas Harzenetter, Niko Stadelmaier- initial API and implementation
+ *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
@@ -84,7 +84,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Element;
         this.service.getXsdElementDefinitions()
             .subscribe(
-                data => this.selectItems = data.xsdDefinitions,
+                data => this.selectItems = data,
                 error => this.handleError(error)
             );
 
@@ -107,7 +107,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.resourceApiData.selectedValue = PropertiesDefinitionEnum.Type;
         this.service.getXsdTypeDefinitions()
             .subscribe(
-                data => this.selectItems = data.xsdDefinitions,
+                data => this.selectItems = data,
                 error => this.handleError(error)
             );
 

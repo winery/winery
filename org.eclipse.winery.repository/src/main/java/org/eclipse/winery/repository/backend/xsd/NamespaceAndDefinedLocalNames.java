@@ -13,21 +13,23 @@ package org.eclipse.winery.repository.backend.xsd;
 
 import java.util.List;
 
+import org.eclipse.winery.common.ids.Namespace;
+
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 
 public class NamespaceAndDefinedLocalNames {
 
-	private final String namespace;
+	private final Namespace namespace;
 
 	private final MutableList<String> definedLocalNames;
 
-	public NamespaceAndDefinedLocalNames(String namespace) {
+	public NamespaceAndDefinedLocalNames(Namespace namespace) {
 		this.namespace = namespace;
 		this.definedLocalNames = Lists.mutable.empty();
 	}
 
-	public String getNamespace() {
+	public Namespace getNamespace() {
 		return namespace;
 	}
 

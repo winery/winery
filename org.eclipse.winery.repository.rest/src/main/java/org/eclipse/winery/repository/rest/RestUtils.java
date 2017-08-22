@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
@@ -73,9 +74,11 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.export.CSARExporter;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
+import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
@@ -966,5 +969,11 @@ public class RestUtils {
 		TOSCAComponentId id = (TOSCAComponentId) res.getRepositoryFileReference().getParent();
 		final HasType element = (HasType) RepositoryFactory.getRepository().getDefinitions(id).getElement();
 		return element.getType();
+	}
+
+	public static List<NamespaceAndDefinedLocalNamesForAngular> convert(List<NamespaceAndDefinedLocalNames> list) {
+		return list.stream().map(namespaceAndDefinedLocalNames -> new NamespaceAndDefinedLocalNamesForAngular(
+				namespaceAndDefinedLocalNames.getNamespace(),
+				namespaceAndDefinedLocalNames.getDefinedLocalNames())).collect(Collectors.toList());
 	}
 }

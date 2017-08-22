@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.properties;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +22,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -34,14 +34,13 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionEnum;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionResourceApiData;
-import org.eclipse.winery.repository.rest.resources.apiData.XsdDefinitionsApiData;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.apache.xerces.xs.XSConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,24 +81,23 @@ public class PropertiesDefinitionResource {
 	@GET
 	@Path("{type}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public XsdDefinitionsApiData getXsdDefinitionJson(@PathParam("type") String type) {
-		ArrayNode definitions = null;
-
+	public List<NamespaceAndDefinedLocalNamesForAngular> getXsdDefinitionJson(@PathParam("type") String type) {
+		List<NamespaceAndDefinedLocalNames> allDeclaredElementsLocalNames = null;
 		switch (type) {
 			case "element":
-				definitions = RestUtils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.ELEMENT_DECLARATION);
+				allDeclaredElementsLocalNames = RepositoryFactory.getRepository().getXsdImportManager().getAllDeclaredElementsLocalNames();
 				break;
 			case "type":
-				definitions = RestUtils.getAllXSDefinitionsForTypeAheadSelectionRaw(XSConstants.TYPE_DEFINITION);
+				allDeclaredElementsLocalNames = RepositoryFactory.getRepository().getXsdImportManager().getAllDefinedTypesLocalNames();
 				break;
 		}
 
-		if (definitions == null) {
+		if (allDeclaredElementsLocalNames == null) {
 			LOGGER.error("No such parameter available in this call", type);
-			throw new InvalidParameterException("No such parameter available in this call");
+			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
 
-		return new XsdDefinitionsApiData(definitions);
+		return RestUtils.convert(allDeclaredElementsLocalNames);
 	}
 
 	public TEntityType getEntityType() {
