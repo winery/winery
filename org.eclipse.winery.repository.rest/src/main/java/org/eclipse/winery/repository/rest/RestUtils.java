@@ -57,6 +57,7 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -953,4 +954,17 @@ public class RestUtils {
 		return colorStr;
 	}
 
+	/**
+	 * This is a quick helper method. The code should be refactored to use HasType on the element directly instead of
+	 * going through the resource. The method was implemented, because it is not that easy to get the id of the element
+	 * belonging to a resource.
+	 *
+	 * @param res a resource, where the associated element has a type. Example: EntityTypeImplementationResource
+	 * @return the QName of the associated type
+	 */
+	public static QName getType(IPersistable res) {
+		TOSCAComponentId id = (TOSCAComponentId) res.getRepositoryFileReference().getParent();
+		final HasType element = (HasType) RepositoryFactory.getRepository().getDefinitions(id).getElement();
+		return element.getType();
+	}
 }

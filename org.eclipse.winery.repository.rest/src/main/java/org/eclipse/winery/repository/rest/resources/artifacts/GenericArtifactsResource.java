@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -42,8 +42,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
@@ -51,29 +49,26 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.generators.ia.Generator;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
-import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.repository.rest.resources.INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.apiData.GenerateArtifactApiData;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
-import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.EntityTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.NodeTemplateResource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -291,8 +286,8 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	}
 
 	/**
-	 * Generates a unique and valid name to be used for the generated maven
-	 * project name, java project name, class name, port type name.
+	 * Generates a unique and valid name to be used for the generated maven project name, java project name, class name,
+	 * port type name.
 	 */
 	private String generateName(NodeTypeId nodeTypeId, String interfaceName) {
 		String name = Util.namespaceToJavaPackage(nodeTypeId.getNamespace().getDecoded());
@@ -313,9 +308,10 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	}
 
 	/**
-	 * Generates the implementation artifact using the implementation artifact
-	 * generator. Also sets the proeprties according to the requirements of
-	 * OpenTOSCA.
+	 * Generates the implementation artifact using the implementation artifact generator. Also sets the proeprties
+	 * according to the requirements of OpenTOSCA.
+	 *
+	 * DOES NOT WORK FOR RELATION SHIP TYPE IMPLEMENTATIONS
 	 *
 	 * @param artifactTemplateResource the resource associated with the artifactTempalteId. If null, the object is
 	 *                                 created in this method
@@ -324,32 +320,22 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		TInterface iface;
 
 		assert (this instanceof ImplementationArtifactsResource);
-		HasType typeRes = (EntityTypeImplementationResource) this.res;
-		QName type = typeRes.getType();
-		TOSCAComponentId typeId;
-		TNodeType nodeType;
-		if (typeRes instanceof NodeTypeImplementationResource) {
-			// TODO: refactor: This is more a model/repo utilities thing than something which should happen here...
 
-			typeId = new NodeTypeId(type);
-			NodeTypeResource ntRes = (NodeTypeResource) AbstractComponentsResource.getComponentInstaceResource(typeId);
+		QName type = RestUtils.getType(this.res);
+		NodeTypeId typeId;
+		// required for IA Generation
+		typeId = new NodeTypeId(type);
+		TNodeType nodeType = RepositoryFactory.getRepository().getElement(typeId);
 
-			// required for IA Generation
-			nodeType = ntRes.getNodeType();
-
-			List<TInterface> interfaces = nodeType.getInterfaces().getInterface();
-			Iterator<TInterface> it = interfaces.iterator();
-			do {
-				iface = it.next();
-				if (iface.getName().equals(interfaceNameStr)) {
-					break;
-				}
-			} while (it.hasNext());
-			// iface now contains the right interface
-		} else {
-			assert (typeRes instanceof RelationshipTypeImplementationResource);
-			return Response.serverError().entity("IA creation for relation ship type implementations not yet possible").build();
-		}
+		List<TInterface> interfaces = nodeType.getInterfaces().getInterface();
+		Iterator<TInterface> it = interfaces.iterator();
+		do {
+			iface = it.next();
+			if (iface.getName().equals(interfaceNameStr)) {
+				break;
+			}
+		} while (it.hasNext());
+		// iface now contains the right interface
 
 		Path workingDir;
 		try {
@@ -368,7 +354,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			return Response.serverError().entity("Could not convert URI to URL").build();
 		}
 
-		String name = this.generateName((NodeTypeId) typeId, interfaceNameStr);
+		String name = this.generateName(typeId, interfaceNameStr);
 		Generator gen = new Generator(iface, javapackage, artifactTemplateFilesUrl, name, workingDir.toFile());
 		File zipFile = gen.generateProject();
 		if (zipFile == null) {
@@ -382,10 +368,8 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		RepositoryFileReference fref = new RepositoryFileReference(fileDir, zipFile.getName());
 		try (InputStream is = Files.newInputStream(zipFile.toPath());
 			 BufferedInputStream bis = new BufferedInputStream(is)) {
-			String mediaType = RestUtils.getMimeType(bis, zipFile.getName());
-			// TODO: do the catch thing as in CSARImporter
-
-			RepositoryFactory.getRepository().putContentToFile(fref, bis, MediaType.valueOf(mediaType));
+			org.apache.tika.mime.MediaType mediaType = BackendUtils.getMimeType(bis, zipFile.getName());
+			RepositoryFactory.getRepository().putContentToFile(fref, bis, mediaType);
 		} catch (IOException e1) {
 			throw new IllegalStateException("Could not import generated files", e1);
 		}
@@ -462,8 +446,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	public abstract Collection<ArtifactResource> getAllArtifactResources();
 
 	/**
-	 * Required by artifact.jsp to decide whether to display
-	 * "Deployment Artifact" or "Implementation Artifact"
+	 * Required by artifact.jsp to decide whether to display "Deployment Artifact" or "Implementation Artifact"
 	 */
 	public boolean getIsDeploymentArtifacts() {
 		return (this instanceof DeploymentArtifactsResource);
@@ -477,10 +460,8 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	}
 
 	/**
-	 * For saving resources, an AbstractComponentInstanceResource is required.
-	 * DAs may be attached to a node template, which is not an
-	 * AbstractComponentInstanceResource, but its grandparent resource
-	 * ServiceTemplate is
+	 * For saving resources, an AbstractComponentInstanceResource is required. DAs may be attached to a node template,
+	 * which is not an AbstractComponentInstanceResource, but its grandparent resource ServiceTemplate is
 	 *
 	 * @param res the resource to determine the the AbstractComponentInstanceResource for
 	 * @return the AbstractComponentInstanceResource where the given res is contained in
