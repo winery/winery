@@ -59,12 +59,6 @@ public class FilesResource {
 		this.fileDir = fileDir;
 	}
 
-	private String getData4jqueryFileUpload(List<FileMeta> metas) {
-		String data4jqueryFileUpload = RestUtils.Object2JSON(metas);
-		data4jqueryFileUpload = "{\"files\":" + data4jqueryFileUpload + "}";
-		return data4jqueryFileUpload;
-	}
-
 	/**
 	 * Handles the upload of a <em>single</em> file. Adds the given file to the current artifact template.
 	 *
@@ -108,7 +102,7 @@ public class FilesResource {
 
 		List<FileMeta> metas = new ArrayList<>();
 		metas.add(fileMeta);
-		return Response.created(RestUtils.createURI(URL)).entity(this.getData4jqueryFileUpload(metas)).build();
+		return Response.created(RestUtils.createURI(URL)).entity(this.getAllFileMetas()).build();
 	}
 
 	/**
@@ -116,8 +110,8 @@ public class FilesResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getJSON() {
-		return this.getData4jqueryFileUpload(this.getAllFileMetas());
+	public List<FileMeta> getJSON() {
+		return this.getAllFileMetas();
 	}
 
 	private List<FileMeta> getAllFileMetas() {
