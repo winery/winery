@@ -40,7 +40,7 @@ public class AdminTopResource {
 
 	@Path("namespaces/")
 	public NamespacesResource getNamespacesResource() {
-		return NamespacesResource.getInstance();
+		return new NamespacesResource();
 	}
 
 	@Path("repository/")

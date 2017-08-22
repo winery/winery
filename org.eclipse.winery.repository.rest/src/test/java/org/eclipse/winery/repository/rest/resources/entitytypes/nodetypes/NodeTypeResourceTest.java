@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes;
 
-import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.rest.resources.TestIds;
 
@@ -22,7 +22,7 @@ import org.xmlunit.matchers.CompareMatcher;
 public class NodeTypeResourceTest extends AbstractResourceTest {
 
 	@Test
-	public void baboabInitialExistsUsingResource() throws Exception {
+	public void baobabInitialExistsUsingResource() throws Exception {
 		this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779"); // repository containing boabab fruit only
 		NodeTypeResource nodeTypeResource = (NodeTypeResource) NodeTypesResource.getComponentInstaceResource(TestIds.ID_FRUIT_BAOBAB);
 		String testXml = BackendUtils.getXMLAsString(nodeTypeResource.getNodeType());
@@ -31,7 +31,7 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
-	public void baboabInitialExistsUsingRest() throws Exception {
+	public void baobabInitialExistsUsingRest() throws Exception {
 		this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779");
 		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/", "entitytypes/nodetypes/baobab_initial_with_definitions.xml");
 	}

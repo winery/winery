@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -14,11 +14,13 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.policytypes;
 import java.util.SortedSet;
 
 import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
 
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyType;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2OptGroup;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 
@@ -61,7 +63,11 @@ public final class PolicyTypeResource extends EntityTypeResource {
 
 	@Override
 	public SortedSet<Select2OptGroup> getListOfAllInstances() {
-		return this.getListOfAllInstances(PolicyTemplateId.class);
+		try {
+			return this.getListOfAllInstances(PolicyTemplateId.class);
+		} catch (RepositoryCorruptException e) {
+			throw new WebApplicationException(e);
+		}
 	}
 
 }

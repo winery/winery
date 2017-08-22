@@ -14,8 +14,8 @@ package org.eclipse.winery.repository.rest.resources.admin;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.common.ids.admin.AdminId;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 
 import org.apache.commons.configuration.Configuration;

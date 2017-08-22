@@ -54,7 +54,7 @@ public class NamespacesResource extends AbstractAdminResource {
 
 	private final NamespaceManager namespaceManager;
 
-	private NamespacesResource() {
+	public NamespacesResource() {
 		super(new NamespacesId());
 		namespaceManager = new ConfigurationBasedNamespaceManager(this.configuration);
 	}

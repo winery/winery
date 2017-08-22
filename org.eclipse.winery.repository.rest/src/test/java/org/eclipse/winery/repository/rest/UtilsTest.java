@@ -14,8 +14,7 @@ package org.eclipse.winery.repository.rest;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.BackendUtils;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -66,18 +65,12 @@ public class UtilsTest {
 	public void relationshipTemplateIsSerializedAsRefInJson() throws Exception {
 		JSONAssert.assertEquals(
 				minimalTopologyTemplateAsJsonString,
-				RestUtils.Object2JSON(minimalTopologyTemplate),
+				BackendUtils.Object2JSON(minimalTopologyTemplate),
 				true);
 	}
 
 	@Test
 	public void relationshipTemplateIsSerializedAsRefInXml() throws Exception {
-		// Initialize preferences
-		// We do not directly need the object, but constructing them has the side effect that Repository.INSTANCE is != null
-		// The initialized Repository.INSTANCE is required for the namespaces prefixes
-		new TestWithGitBackedRepository();
-		((GitBasedRepository) RepositoryFactory.getRepository()).setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
-
 		Assert.assertEquals(minimalTopologyTemplateAsXmlString, BackendUtils.getXMLAsString(minimalTopologyTemplate));
 	}
 }

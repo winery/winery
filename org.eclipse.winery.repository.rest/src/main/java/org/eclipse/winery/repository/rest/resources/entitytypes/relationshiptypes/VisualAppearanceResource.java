@@ -29,7 +29,6 @@ import org.eclipse.winery.common.constants.Defaults;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
-import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.GenericVisualAppearanceResource;
@@ -236,16 +235,10 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 
 	/* * * color * * */
 
-	/**
-	 * read by topologytemplateeditor.jsp via ${it.color}
-	 */
 	public String getColor() {
-		return BackendUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_COLOR, this.otherAttributes, this.res);
+		return RestUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_COLOR, this.otherAttributes, this.res);
 	}
 
-	/**
-	 * read by topologytemplateeditor.jsp via ${it.hoverColor}
-	 */
 	public String getHoverColor() {
 		return this.getOtherAttributeWithDefault(VisualAppearanceResource.QNAME_HOVER_COLOR, Defaults.DEFAULT_RT_HOVER_COLOR);
 	}
