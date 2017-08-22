@@ -45,7 +45,6 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
@@ -88,6 +87,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
+import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
@@ -1118,8 +1118,9 @@ public class CSARImporter {
                     CSARImporter.LOGGER.debug("Updating XSD import cache data");
                     // We call the queries without storing the result:
                     // We use the SIDEEFFECT that a cache is created
-                    BackendUtils.getAllXSDElementDefinitionsForTypeAheadSelection();
-					BackendUtils.getAllXSDTypeDefinitionsForTypeAheadSelection();
+					final XsdImportManager xsdImportManager = RepositoryFactory.getRepository().getXsdImportManager();
+					xsdImportManager.getAllDeclaredElementsLocalNames();
+					xsdImportManager.getAllDefinedTypesLocalNames();
                     CSARImporter.LOGGER.debug("Updated XSD import cache data");
                 });
 			}

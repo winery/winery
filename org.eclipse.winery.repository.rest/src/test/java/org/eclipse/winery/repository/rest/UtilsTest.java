@@ -75,7 +75,7 @@ public class UtilsTest {
 		// Initialize preferences
 		// We do not directly need the object, but constructing them has the side effect that Repository.INSTANCE is != null
 		// The initialized Repository.INSTANCE is required for the namespaces prefixes
-		new PrefsTestEnabledGitBackedRepository();
+		new TestWithGitBackedRepository();
 		((GitBasedRepository) RepositoryFactory.getRepository()).setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
 
 		Assert.assertEquals(minimalTopologyTemplateAsXmlString, BackendUtils.getXMLAsString(minimalTopologyTemplate));

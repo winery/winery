@@ -9,7 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository;
 
 import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
 
@@ -38,5 +38,4 @@ public class AbstractWineryWithRepositoryTest {
 				.setRef(ref)
 				.call();
 	}
-
 }

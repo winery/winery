@@ -13,7 +13,7 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqan
 
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
+import org.eclipse.winery.repository.rest.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 
@@ -52,7 +52,7 @@ public class RequirementDefinitionsTest {
 	@BeforeClass
 	public static void init() throws Exception {
 		// enable git-backed repository
-		new PrefsTestEnabledGitBackedRepository();
+		new TestWithGitBackedRepository();
 
 		// we use a half-filled repository
 		((GitBasedRepository) RepositoryFactory.getRepository()).setRevisionTo("97fa997b92965d8bc84e86274b0203f1db7495c5");

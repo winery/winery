@@ -9,13 +9,16 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest;
+package org.eclipse.winery.repository;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
+import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.TransportException;
@@ -24,15 +27,18 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PrefsTestEnabledGitBackedRepository extends PrefsTestEnabled {
+public abstract class TestWithGitBackedRepository {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PrefsTestEnabledGitBackedRepository.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TestWithGitBackedRepository.class);
 
 	public final Git git;
 
-	public PrefsTestEnabledGitBackedRepository() throws Exception {
-		super(false);
+	public final IRepository repository;
 
+	/**
+	 * Initializes the git repository from https://github.com/winery/test-repository into %TEMP%/test-repository
+	 */
+	public TestWithGitBackedRepository() throws Exception {
 		Path repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
 		if (!Files.exists(repositoryPath)) {
 			Files.createDirectory(repositoryPath);
@@ -57,7 +63,11 @@ public class PrefsTestEnabledGitBackedRepository extends PrefsTestEnabled {
 			}
 		}
 
-		this.repository = new GitBasedRepository(repositoryPath.toString());
-	}
+		// inject the current path to the repository factory
+		FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(repositoryPath.toString());
+		GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration = new GitBasedRepositoryConfiguration(false, fileBasedRepositoryConfiguration);
+		RepositoryFactory.reconfigure(gitBasedRepositoryConfiguration);
 
+		this.repository = RepositoryFactory.getRepository();
+	}
 }

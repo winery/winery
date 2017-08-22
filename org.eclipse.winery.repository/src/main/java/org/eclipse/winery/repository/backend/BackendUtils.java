@@ -96,6 +96,7 @@ import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
@@ -388,7 +389,7 @@ public class BackendUtils {
 		QName nodeTypeQName = nodeTemplate.getType();
 		Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
 		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-			TDeploymentArtifacts deploymentArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).get().getDeploymentArtifacts();
+			TDeploymentArtifacts deploymentArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getDeploymentArtifacts();
 			allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(deploymentArtifacts);
 			l.addAll(allReferencedArtifactTemplates);
 		}
@@ -403,7 +404,7 @@ public class BackendUtils {
 		QName nodeTypeQName = nodeTemplate.getType();
 		Collection<NodeTypeImplementationId> allNodeTypeImplementations = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(NodeTypeImplementationId.class, nodeTypeQName);
 		for (NodeTypeImplementationId nodeTypeImplementationId : allNodeTypeImplementations) {
-			TImplementationArtifacts implementationArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).get().getImplementationArtifacts();
+			TImplementationArtifacts implementationArtifacts = RepositoryFactory.getRepository().getElement(nodeTypeImplementationId).getImplementationArtifacts();
 			Collection<QName> allReferencedArtifactTemplates = BackendUtils.getAllReferencedArtifactTemplates(implementationArtifacts);
 			l.addAll(allReferencedArtifactTemplates);
 		}
@@ -675,8 +676,8 @@ public class BackendUtils {
 		} else {
 			BackendUtils.LOGGER.debug("Looking for the definition of {" + element.getNamespaceURI() + "}" + element.getLocalPart());
 			// fetch the XSD defining the element
-			XSDImportsResource importsRes = new XSDImportsResource();
-			Map<String, RepositoryFileReference> mapFromLocalNameToXSD = importsRes.getMapFromLocalNameToXSD(element.getNamespaceURI(), false);
+			final XsdImportManager xsdImportManager = RepositoryFactory.getRepository().getXsdImportManager();
+			Map<String, RepositoryFileReference> mapFromLocalNameToXSD = xsdImportManager.getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
 			RepositoryFileReference ref = mapFromLocalNameToXSD.get(element.getLocalPart());
 			if (ref == null) {
 				String msg = "XSD not found for " + element.getNamespaceURI() + " / " + element.getLocalPart();
@@ -685,7 +686,11 @@ public class BackendUtils {
 				return;
 			}
 
-			XSModel xsModel = BackendUtils.getXSModel(ref);
+			final Optional<XSModel> xsModelOptional = BackendUtils.getXSModel(ref);
+			if (!xsModelOptional.isPresent()) {
+				LOGGER.error("no XSModel found");
+			}
+			XSModel xsModel = xsModelOptional.get();
 			XSElementDeclaration elementDeclaration = xsModel.getElementDeclaration(element.getLocalPart(), element.getNamespaceURI());
 			if (elementDeclaration == null) {
 				String msg = "XSD model claimed to contain declaration for {" + element.getNamespaceURI() + "}" + element.getLocalPart() + ", but it did not.";

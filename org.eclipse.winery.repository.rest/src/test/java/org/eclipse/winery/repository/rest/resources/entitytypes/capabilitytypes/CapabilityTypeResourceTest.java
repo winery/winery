@@ -16,7 +16,7 @@ import java.io.IOException;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
+import org.eclipse.winery.repository.rest.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.rest.resources.ResourceTest;
@@ -36,7 +36,7 @@ public class CapabilityTypeResourceTest extends ResourceTest {
 	@BeforeClass
 	public static void init() throws Exception {
 		// enable git-backed repository
-		new PrefsTestEnabledGitBackedRepository();
+		new TestWithGitBackedRepository();
 	}
 
 	@Before

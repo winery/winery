@@ -12,7 +12,7 @@
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.repository.rest.PrefsTestEnabledGitBackedRepository;
+import org.eclipse.winery.repository.rest.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
@@ -29,7 +29,7 @@ public class ArtifactTemplateResourceTest {
 	@BeforeClass
 	public static void init() throws Exception {
 		// enable git-backed repository
-		new PrefsTestEnabledGitBackedRepository();
+		new TestWithGitBackedRepository();
 	}
 
 	@Before
