@@ -17,7 +17,6 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.backend.BackendUtils;
 
 public class ComponentsOfOneNamespaceResource {
 
@@ -32,6 +31,6 @@ public class ComponentsOfOneNamespaceResource {
 	@DELETE
 	public Response delete() {
 		Class<? extends TOSCAComponentId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.containerClass);
-		return BackendUtils.delete(idClass, namespace);
+		return RestUtils.delete(idClass, namespace);
 	}
 }

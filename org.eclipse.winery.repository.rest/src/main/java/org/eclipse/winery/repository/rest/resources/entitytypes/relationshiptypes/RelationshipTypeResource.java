@@ -29,7 +29,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType.TargetInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
-import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiDataSet;

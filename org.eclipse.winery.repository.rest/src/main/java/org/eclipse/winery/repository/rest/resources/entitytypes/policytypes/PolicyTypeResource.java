@@ -19,7 +19,7 @@ import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.repository.datatypes.select2.Select2OptGroup;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2OptGroup;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 
 import org.slf4j.Logger;

@@ -11,7 +11,7 @@
  */
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 
 enum ValidEndingsTypeEnum {
 	EVERYTHING, NODETYPE, REQTYPE, CAPTYPE;

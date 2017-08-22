@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.PlanModelReference;
-import org.eclipse.winery.repository.datatypes.TypeWithShortName;
+import org.eclipse.winery.repository.rest.datatypes.TypeWithShortName;
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesManager;
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
 

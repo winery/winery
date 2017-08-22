@@ -29,6 +29,7 @@ import java.util.SortedSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,6 +42,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
@@ -75,6 +77,7 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTy
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.NodeTemplateResource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,8 +179,8 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				if (artifactTemplateId == null) {
 					return Response.status(Status.NOT_ACCEPTABLE).entity("No artifactTemplate and no artifactType provided. Deriving the artifactType is not possible.").build();
 				}
-				artifactTemplateResource = new ArtifactTemplateResource(artifactTemplateId);
-				artifactTypeId = BackendUtils.getTOSCAcomponentId(ArtifactTypeId.class, artifactTemplateResource.getType());
+				@NonNull final QName type = RepositoryFactory.getRepository().getElement(artifactTemplateId).getType();
+				artifactTypeId = BackendUtils.getTOSCAcomponentId(ArtifactTypeId.class, type);
 			} else {
 				// artifactTypeStr is directly given, use that
 				artifactTypeId = BackendUtils.getTOSCAcomponentId(ArtifactTypeId.class, apiData.artifactType);
@@ -212,10 +215,13 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				return creationResult.getResponse();
 			}
 
-			// associate the type to the created artifact template
-			artifactTemplateResource = new ArtifactTemplateResource(artifactTemplateId);
-			// set the type. The resource is automatically persisted inside
-			artifactTemplateResource.setType(apiData.artifactType);
+			final TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(artifactTemplateId);
+			artifactTemplate.setType(apiData.artifactType);
+			try {
+				RepositoryFactory.getRepository().setElement(artifactTemplateId, artifactTemplate);
+			} catch (IOException e) {
+				throw new WebApplicationException(e);
+			}
 		}
 
 		// variable artifactTypeId is set
@@ -268,7 +274,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			resultingArtifact = (ArtifactT) a;
 		}
 
-		Response persistResponse = BackendUtils.persist(super.res);
+		Response persistResponse = RestUtils.persist(super.res);
 		// TODO: check for error and in case one found return that
 
 		if (StringUtils.isEmpty(apiData.autoGenerateIA)) {

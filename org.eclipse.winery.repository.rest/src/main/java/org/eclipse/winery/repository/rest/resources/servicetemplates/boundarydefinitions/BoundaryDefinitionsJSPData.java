@@ -29,8 +29,8 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.datatypes.TypeWithShortName;
-import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
+import org.eclipse.winery.repository.rest.datatypes.TypeWithShortName;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
 
 import org.apache.commons.lang3.StringEscapeUtils;

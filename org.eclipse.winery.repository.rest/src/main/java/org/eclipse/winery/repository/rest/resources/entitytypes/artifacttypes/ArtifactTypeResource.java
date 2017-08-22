@@ -16,6 +16,7 @@ import java.util.SortedSet;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
@@ -24,8 +25,9 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.repository.datatypes.select2.Select2OptGroup;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2OptGroup;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 
 public class ArtifactTypeResource extends EntityTypeResource {
@@ -37,8 +39,7 @@ public class ArtifactTypeResource extends EntityTypeResource {
 	}
 
 	/**
-	 * @return the file extension associated with this artifact type. May be
-	 *         null
+	 * @return the file extension associated with this artifact type. May be null
 	 */
 	@GET
 	@Path("/fileextension")
@@ -60,6 +61,10 @@ public class ArtifactTypeResource extends EntityTypeResource {
 
 	@Override
 	public SortedSet<Select2OptGroup> getListOfAllInstances() {
-		return this.getListOfAllInstances(ArtifactTemplateId.class);
+		try {
+			return this.getListOfAllInstances(ArtifactTemplateId.class);
+		} catch (RepositoryCorruptException e) {
+			throw new WebApplicationException(e);
+		}
 	}
 }

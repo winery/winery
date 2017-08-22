@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -32,9 +32,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.datatypes.TypeWithShortName;
 import org.eclipse.winery.common.ids.admin.TypesId;
-import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
+import org.eclipse.winery.repository.rest.datatypes.TypeWithShortName;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.resources.admin.AbstractAdminResource;
 import org.eclipse.winery.repository.rest.resources.apiData.TypeWithShortNameApiData;
 

@@ -14,7 +14,7 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import java.util.List;
 
-import org.eclipse.winery.repository.datatypes.select2.Select2DataItem;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 
 public class InterfacesSelectApiData extends Select2DataItem {
 	public List<String> operations;

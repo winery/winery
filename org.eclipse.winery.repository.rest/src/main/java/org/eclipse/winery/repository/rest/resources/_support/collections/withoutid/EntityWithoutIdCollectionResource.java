@@ -18,7 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
@@ -28,9 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class managing a list of entities. It is intended to manage subresources,
- * where the TOSCA specification did not specify a unique key. Currently, the
- * hashCode of the XML String representation is used. If other representation
+ * Class managing a list of entities. It is intended to manage subresources, where the TOSCA specification did not
+ * specify a unique key. Currently, the hashCode of the XML String representation is used. If other representation
  * should be used, the method {@code getEntityResource} has to be overriden.
  *
  * @param <EntityResourceT> the resource modeling the entity
@@ -49,8 +48,7 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 	}
 
 	/**
-	 * Method searching the list for an id with the hashcode instead of
-	 * getId(EntityT)
+	 * Method searching the list for an id with the hashcode instead of getId(EntityT)
 	 */
 	@Override
 	@Path("{id}/")
