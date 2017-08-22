@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 import org.eclipse.winery.common.Util;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -29,7 +30,7 @@ import org.xmlunit.matchers.CompareMatcher;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.Is.is;
 
-public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryTest {
+public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 
 	// with trailing /
 	private static final String PREFIX = "http://localhost:9080/winery/";
@@ -38,7 +39,6 @@ public abstract class AbstractResourceTest extends AbstractWineryWithRepositoryT
 
 	@BeforeClass
 	public static void init() throws Exception {
-		AbstractWineryWithRepositoryTest.init();
 		server = WineryUsingHttpServer.createHttpServer(9080);
 		server.start();
 	}
