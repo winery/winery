@@ -99,7 +99,7 @@ public class FileUtils {
 
 	// public static Response readContentFromFile(RepositoryFileReference ref) {
 	// try {
-	// Repository.INSTANCE.readContentFromFile(ref);
+	// RepositoryFactory.getRepository().readContentFromFile(ref);
 	// }
 	// }
 

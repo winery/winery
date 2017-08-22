@@ -15,62 +15,26 @@ package org.eclipse.winery.repository.driverspecificationandinjection;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
-import org.eclipse.winery.repository.WineryUsingHttpServer;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DriverInjectionTest {
-
-	private static Git git;
-	private static Server server;
-	
-	@BeforeClass
-	public static void init() throws Exception {
-		// enable git-backed repository
-		PrefsTestEnabledGitBackedRepository prefsTestEnabledGitBackedRepository = new PrefsTestEnabledGitBackedRepository();
-		git = prefsTestEnabledGitBackedRepository.git;
-		server = WineryUsingHttpServer.createHttpServer(9080);
-		server.start();
-	}
-
-	@AfterClass
-	public static void shutdown() throws Exception {
-		server.stop();
-	}
-
-	protected void setRevisionTo(String ref) throws GitAPIException {
-		// TODO: newer JGit version: setForce(true)
-		git.clean().setCleanDirectories(true).call();
-
-		this.git.reset()
-				.setMode(ResetCommand.ResetType.HARD)
-				.setRef(ref)
-				.call();
-	}
+public class DriverInjectionTest extends TestWithGitBackedRepository {
 
 	@Test
 	public void injectDriver() throws Exception {
 		setRevisionTo("d8ee55deecf37f5052d27807df691a7b70ec50f2");
 		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
-		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-		TTopologyTemplate topologyTemplate = serviceTemplateResource.getServiceTemplate().getTopologyTemplate();
+		TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
 				
 		TTopologyTemplate tTopologyTemplate = DriverInjection.injectDriver(topologyTemplate);
 
@@ -91,8 +55,7 @@ public class DriverInjectionTest {
 	public void setDriverProperty() throws Exception {
 		setRevisionTo("d8ee55deecf37f5052d27807df691a7b70ec50f2");
 		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
-		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-		TTopologyTemplate topologyTemplate = serviceTemplateResource.getServiceTemplate().getTopologyTemplate();
+		TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
 		TRelationshipTemplate relationshipTemplate = topologyTemplate.getRelationshipTemplate("con_71");
 		TDeploymentArtifact deploymentArtifact = topologyTemplate.getNodeTemplate("dressageequipment").getDeploymentArtifacts().getDeploymentArtifact().stream()
 				.filter(da -> da.getName().equalsIgnoreCase("DressageEquipment_Pony")).findFirst().get();

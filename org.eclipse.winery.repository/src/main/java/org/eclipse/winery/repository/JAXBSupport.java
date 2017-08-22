@@ -17,12 +17,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
-import org.eclipse.winery.repository.resources._support.dataadapter.InjectorReplaceData;
-import org.eclipse.winery.repository.resources.admin.NamespacesResource;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.slf4j.Logger;
@@ -50,12 +49,9 @@ public class JAXBSupport {
 	private final static PrefixMapper prefixMapper = new PrefixMapper();
 
 	/**
-	 * Follows
-	 * https://jaxb.java.net/2.2.5/docs/release-documentation.html#marshalling
-	 * -changing-prefixes
+	 * Follows https://jaxb.java.net/2.2.5/docs/release-documentation.html#marshalling -changing-prefixes
 	 *
-	 * See http://www.jarvana.com/jarvana/view/com/sun/xml/bind/jaxb-impl/2.2.2/
-	 * jaxb-impl-2.2.2-javadoc.jar!/com/sun/xml/bind/marshaller/
+	 * See http://www.jarvana.com/jarvana/view/com/sun/xml/bind/jaxb-impl/2.2.2/ jaxb-impl-2.2.2-javadoc.jar!/com/sun/xml/bind/marshaller/
 	 * NamespacePrefixMapper.html for a JavaDoc of the NamespacePrefixMapper
 	 */
 	private static class PrefixMapper extends NamespacePrefixMapper {
@@ -72,7 +68,7 @@ public class JAXBSupport {
 			//		return "";
 			//	}
 
-			return NamespacesResource.getPrefix(namespaceUri);
+			return RepositoryFactory.getRepository().getNamespaceManager().getPrefix(namespaceUri);
 		}
 	}
 
@@ -82,13 +78,13 @@ public class JAXBSupport {
 			// For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
 			// @formatter:off
 			context = JAXBContext.newInstance(
-					InjectorReplaceData.class,
-					TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
-					WinerysPropertiesDefinition.class,
-					// for the self-service portal
-					Application.class,
-					// MockXMLElement is added for testing purposes only.
-					MockXMLElement.class);
+				//InjectorReplaceData.class,
+				TDefinitions.class, // all other elements are referred by "@XmlSeeAlso"
+				WinerysPropertiesDefinition.class,
+				// for the self-service portal
+				Application.class,
+				// MockXMLElement is added for testing purposes only.
+				MockXMLElement.class);
 			// @formatter:on
 		} catch (JAXBException e) {
 			JAXBSupport.LOGGER.error("Could not initialize JAXBContext", e);
@@ -134,5 +130,4 @@ public class JAXBSupport {
 			throw new IllegalStateException(e);
 		}
 	}
-
 }

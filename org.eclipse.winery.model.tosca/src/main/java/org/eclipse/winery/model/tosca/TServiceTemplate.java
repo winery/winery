@@ -61,7 +61,7 @@ import org.eclipse.jdt.annotation.Nullable;
         "topologyTemplate",
         "plans"
 })
-public class TServiceTemplate extends HasId {
+public class TServiceTemplate extends HasId implements HasName, HasTargetNamespace {
 
     @XmlElement(name = "Tags")
     protected TTags tags;
@@ -196,59 +196,29 @@ public class TServiceTemplate extends HasId {
         this.plans = value;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
     @Nullable
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
     public void setName(String value) {
         this.name = value;
     }
 
-    /**
-     * Gets the value of the targetNamespace property.
-     *
-     * @return possible object is {@link String }
-     */
     @Nullable
     public String getTargetNamespace() {
         return targetNamespace;
     }
 
-    /**
-     * Sets the value of the targetNamespace property.
-     *
-     * @param value allowed object is {@link String }
-     */
     public void setTargetNamespace(String value) {
         this.targetNamespace = value;
     }
 
-    /**
-     * Gets the value of the substitutableNodeType property.
-     *
-     * @return possible object is {@link QName }
-     */
     @Nullable
     public QName getSubstitutableNodeType() {
         return substitutableNodeType;
     }
 
-    /**
-     * Sets the value of the substitutableNodeType property.
-     *
-     * @param value allowed object is {@link QName }
-     */
     public void setSubstitutableNodeType(QName value) {
         this.substitutableNodeType = value;
     }

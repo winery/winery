@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -25,6 +24,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSCAAnalyzer;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.NodeTemplateConnector;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.Utils;
@@ -39,8 +39,7 @@ public class RequirementCompleter {
 	/**
 	 * The constructor the class.
 	 *
-	 * @param topology
-	 * 			  the topology to be completed
+	 * @param topology the topology to be completed
 	 */
 	public RequirementCompleter(TTopologyTemplate topology) {
 		this.topology = topology;
@@ -49,11 +48,8 @@ public class RequirementCompleter {
 	/**
 	 * This method completes a topology containing {@link TRequirement}s in one step (without user interaction).
 	 *
-	 * @param unfulfilledRequirements
-	 *            all the unfulfilled requirements that has been found in the topology
-	 * @param toscaAnalyzer
-	 * 			  the {@link TOSCAAnalyzer} object to access the data model
-	 *
+	 * @param unfulfilledRequirements all the unfulfilled requirements that has been found in the topology
+	 * @param toscaAnalyzer           the {@link TOSCAAnalyzer} object to access the data model
 	 * @return the complete topology
 	 */
 	public List<TTopologyTemplate> completeRequirementTopology(Map<TRequirement, TNodeTemplate> unfulfilledRequirements, TOSCAAnalyzer toscaAnalyzer) {

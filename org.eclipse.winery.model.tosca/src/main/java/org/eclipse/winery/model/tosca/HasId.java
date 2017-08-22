@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-public abstract class HasId extends TExtensibleElements {
+public abstract class HasId extends TExtensibleElements implements HasIdInIdOrNameField {
 
     @XmlAttribute(name = "id", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)

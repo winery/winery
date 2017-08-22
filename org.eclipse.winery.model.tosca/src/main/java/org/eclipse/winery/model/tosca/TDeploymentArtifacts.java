@@ -14,6 +14,7 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,6 +22,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 
 /**
@@ -77,4 +79,17 @@ public class TDeploymentArtifacts {
         }
         return this.deploymentArtifact;
     }
+
+    /**
+     * @return deploymentArtifact having the given name. null if not found
+     */
+    @Nullable
+    public TDeploymentArtifact getDeploymentArtifact(String id) {
+        Objects.requireNonNull(id);
+        return this.getDeploymentArtifact().stream()
+                .filter(x -> id.equals(x.getName()))
+                .findAny()
+                .orElse(null);
+    }
+
 }

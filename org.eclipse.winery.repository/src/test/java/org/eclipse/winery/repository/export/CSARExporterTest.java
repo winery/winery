@@ -24,8 +24,8 @@ import org.eclipse.winery.Logger;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.AbstractWineryWithRepositoryTest;
-import org.eclipse.winery.repository.backend.Repository;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.junit.Assert;
@@ -37,20 +37,19 @@ import org.junit.runners.Parameterized;
 
 @Ignore("currently not working")
 @RunWith(Parameterized.class)
-public class CSARExporterTest extends AbstractWineryWithRepositoryTest {
+public class CSARExporterTest extends TestWithGitBackedRepository {
 
 	/**
 	 * Test multiple branches with different commits and all instances of all TOSCAComponents 
 	 */
 	@Parameterized.Parameters
-	public static Collection<Object[]> data() throws Exception {
-		AbstractWineryWithRepositoryTest.init();
+	public Collection<Object[]> data() throws Exception {
 		Set<Object[]> res = new UnifiedSet<>();
 		for (String commitId: Arrays.asList("black")) {
 			setRevisionTo(commitId);
 			for (Class<? extends TOSCAComponentId> idClass : new Class[]{
 					ArtifactTypeId.class, ServiceTemplateId.class}) {
-				Repository.INSTANCE.getAllTOSCAComponentIds(idClass).stream().sorted().forEach(id -> res.add(new Object[]{commitId, id}));
+				RepositoryFactory.getRepository().getAllTOSCAComponentIds(idClass).stream().sorted().forEach(id -> res.add(new Object[]{commitId, id}));
 			}
 		}
 		return res;

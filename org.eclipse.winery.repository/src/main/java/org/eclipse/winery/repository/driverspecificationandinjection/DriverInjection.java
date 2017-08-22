@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
@@ -29,22 +28,23 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
 
 public class DriverInjection {
 
-	public static TTopologyTemplate injectDriver (TTopologyTemplate topologyTemplate) throws Exception {
+	public static TTopologyTemplate injectDriver(TTopologyTemplate topologyTemplate) throws Exception {
 
 		List<TNodeTemplate> nodeTemplatesWithAbstractDA = DASpecification.getNodeTemplatesWithAbstractDAs(topologyTemplate);
 
 		for (TNodeTemplate nodeTemplateWithAbstractDA : nodeTemplatesWithAbstractDA) {
 			List<TDeploymentArtifact> abstractDAsAttachedToNodeTemplate = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().stream()
-					.filter(da -> DASpecification.getArtifactTypeOfDA(da).getAbstract() == TBoolean.YES)
-					.collect(Collectors.toList());
+				.filter(da -> DASpecification.getArtifactTypeOfDA(da).getAbstract() == TBoolean.YES)
+				.collect(Collectors.toList());
 			for (TDeploymentArtifact abstractDA : abstractDAsAttachedToNodeTemplate) {
 				Map<TRelationshipTemplate, TNodeTemplate> nodeTemplatesWithConcreteDA = DASpecification.getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode(nodeTemplateWithAbstractDA, abstractDA, topologyTemplate);
-				
+
 				if (nodeTemplatesWithConcreteDA != null) {
 					for (TRelationshipTemplate relationshipTemplate : nodeTemplatesWithConcreteDA.keySet()) {
 						TDeploymentArtifact concreteDeploymentArtifact = DASpecification.getSuitableConcreteDA(abstractDA, nodeTemplatesWithConcreteDA.get(relationshipTemplate));
@@ -60,20 +60,19 @@ public class DriverInjection {
 		}
 		return topologyTemplate;
 	}
-	
+
 	public static void setDriverProperty(TRelationshipTemplate relationshipTemplate, TDeploymentArtifact driverDeploymentArtifact) throws Exception {
 		QName DAArtifactTemplateQName = driverDeploymentArtifact.getArtifactRef();
 		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId(DAArtifactTemplateQName);
-		TArtifactTemplate artifactTemplate = (TArtifactTemplate) AbstractComponentsResource.getComponentInstaceResource(artifactTemplateId).getElement();
+		TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(artifactTemplateId);
 
 		Properties artifactProperties = ModelUtilities.getPropertiesKV(artifactTemplate);
 		Properties relationshipProperties = ModelUtilities.getPropertiesKV(relationshipTemplate);
-		
+
 		if ((artifactProperties != null) && (relationshipProperties != null) && artifactProperties.containsKey("Driver") && relationshipProperties.containsKey("Driver")) {
 			relationshipProperties.setProperty("Driver", artifactProperties.getProperty("Driver"));
 			RelationshipTypeId relationshipTypeId = new RelationshipTypeId(relationshipTemplate.getType());
-			TRelationshipType relationshipType = (TRelationshipType) AbstractComponentsResource
-					.getComponentInstaceResource(relationshipTypeId).getElement();
+			TRelationshipType relationshipType = RepositoryFactory.getRepository().getElement(relationshipTypeId);
 			ModelUtilities.setPropertiesKV(ModelUtilities.getWinerysPropertiesDefinition(relationshipType), relationshipTemplate, relationshipProperties);
 		} else {
 			throw new WineryRepositoryException("No Property found to set to the driver classname");

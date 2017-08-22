@@ -31,6 +31,7 @@ Table of contents:
   * [Project org.eclipse.winery.repository](#project-orgeclipsewineryrepository)
   * [Project org.eclipse.winery.repository.client](#project-orgeclipsewineryrepositoryclient)
   * [Project org.eclipse.winery.repository.configuration](#project-orgeclipsewineryrepositoryconfiguration)
+  * [Project org.eclipse.winery.repository.rest](#project-orgeclipsewineryrepositoryrest)
   * [Project org.eclipse.winery.repository.ui](#project-orgeclipsewineryrepositoryui)
   * [Project org.eclipse.winery.topologymodeler](#project-orgeclipsewinerytopologymodeler)
 - [TOSCA Definitions in Winery](#tosca-definitions-in-winery)
@@ -52,22 +53,22 @@ Table of contents:
   * [IGenericRepository](#igenericrepository)
   * [IRepository](#irepository)
   * [IWineryRepository](#iwineryrepository)
-- [Type, Template, and Artifact Management](#type-template-and-artifact-management)
 - [Topology Modeler](#topology-modeler)
-- [Debugging Hints](#debugging-hints)
-  * [Debugging JavaScript Code](#debugging-javascript-code)
+- [Debugging hints](#debugging-hints)
+  * [Debugging JavaScript code](#debugging-javascript-code)
     + [Chrome](#chrome)
     + [Firefox](#firefox)
-  * [Automatic Browser Refresh](#automatic-browser-refresh)
   * [Faster Redeployment](#faster-redeployment)
-- [Miscellaneous Hints](#miscellaneous-hints)
-  * [Generating the Right Output](#generating-the-right-output)
+- [Miscellaneous hints](#miscellaneous-hints)
+  * [Generating the right output](#generating-the-right-output)
   * [Trouble shooting IntelliJ](#trouble-shooting-intellij)
-  * [Other Troubleshootings](#other-troubleshootings)
+    + [Strange errors](#strange-errors)
+    + [Has issues with a new selfservice portal model](#has-issues-with-a-new-selfservice-portal-model)
+  * [Other troubleshootings](#other-troubleshootings)
   * ["name" vs. "id" at Entities](#name-vs-id-at-entities)
   * [Possible Attachments of Artifacts](#possible-attachments-of-artifacts)
-- [Example Repository](#example-repository)
-- [Recommended Programming Literature](#recommended-programming-literature)
+- [Example repository](#example-repository)
+- [Recommended programming literature](#recommended-programming-literature)
 - [Abbreviations](#abbreviations)
 - [References](#references)
 - [License](#license)
@@ -167,6 +168,10 @@ Winery repository.
 This project contains configurations used in the repository. Example are GitHub OAuth credentials. They must be 
 configured in order to use them locally!
 
+### Project org.eclipse.winery.repository.rest
+
+This project contains the REST resources.
+
 ### Project org.eclipse.winery.repository.ui
 
 This project contains the Angular ui for the repository. Here, the whole repository can be managed and
@@ -250,7 +255,7 @@ See [RepositoryLayout](RepositoryLayout).
 
 ### REST Resources
 
-All resources are implemented in classes in the package `org.eclipse.winery.repository.resources`.
+All resources are implemented in classes in the package `org.eclipse.winery.repository.rest.resources`.
 We call all elements directly nested in the definitions element "components".
 They are implemented using JAX RS 1.1 using [Jersey 1.x](https://jersey.github.io/documentation/1.19.1/index.html).
 
@@ -324,18 +329,27 @@ file references, it is not modeled as child of "AbstractComponentInstanceWithRef
 
 ## Working with the Repository
 
-Figure 8 shows all interfaces related to interactions with the repository. The general idea is to seperate the
-repository and the repository client. The repository itself is only accessed through the REST resources offered
-by org.eclipse.winery.repository. The repository client uses these REST resources to access content of the repository.
-
+Figure 8 shows all interfaces related to interactions with the repository.
+The general idea is to seperate the repository and the repository client.
+The repository itself is only accessed through the REST resources offered by `org.eclipse.winery.repository.rest`.
+The repository client uses these REST resources to access content of the repository.
 
 ![Repository Interfaces Inheritance](graphics/InheritanceOfInterfacesRelatedToTheRepository.png)  
 **Figure 8: Inheritance of interfaces related to the repository**
 
+Programmatic access in the backend itself can be done by `RepositoryFactory.getRepository()`.
+This implements `IRepository`.
+
 ### IWineryRepositoryCommon
 
-IWineryRepositoryCommon collects all methods available both to the REST resources and the client. Currently,
-only "forceDelete(GenericId)" is offered.
+IWineryRepositoryCommon collects all methods available both to the REST resources and the client.
+Currently, deletion, renaming, retrieving a definitions and elements is offerd.
+
+For instance, when seraching for an TArtifactTemplate, one uses following line:
+
+    TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(id);
+
+Thereby, `id` is the Id of the artifact template.  
 
 ### IGenericRepository
 
@@ -352,7 +366,7 @@ Example:
 
 NodeTypeId id = new NodeTypeId("http://www.example.com/NodeTypes", "NT1", false);
 RepositoryFileReference ref = new RepositoryFileReference(id, "NodeType.tosca");
-try (InputStream is = Repository.Instance.newInputStream (ref)){
+try (InputStream is = RepositoryFactory.getRepository().newInputStream (ref)){
   // do something
 }
 
@@ -473,6 +487,9 @@ Otherwise, Winery does not compile.
 
 When executing tests, winery logs its output in `winery-debug.log`, too.
 
+Q: Version.java is missing, what can I do? <br/>
+A: Execute `mvn resources:resources` in the project `org.eclipse.winery.repository.configuration`
+
 In case some JavaScript libraries cannot be found by the browser, execute `bower prune`, `bower install`, `bower update` in both `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler`.
 
 If `mvn package` does not work in a sub project, execute `mvn install` in the root. [Source](http://stackoverflow.com/q/29712865/873282)
@@ -486,8 +503,6 @@ There is the maxFormContentSize set in jetty web.xml, but it currently does not 
 
 If the Prefs class is not found, something is wrong with the libraries, tomcat config, eclipse environment (check
 the build path!), etc.
-
-In case, `Version.java` is not found, then run `mvn compile`, which should trigger a regeneration of Version.java.
 
 The error message
 `HTTP Status 500 - com.sun.jersey.api.container.ContainerException: org.apache.jasper.JasperException: The absolute uri: http://www.eclipse.org/winery/functions cannot be resolved in either web.xml or the jar files deployed with this application` indicates that `mvn generate-sources` was not run.

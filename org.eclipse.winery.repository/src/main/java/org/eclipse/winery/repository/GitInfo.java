@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -29,7 +29,7 @@ public class GitInfo {
 	 * @param url The URL of the git repository
 	 * @param branch The branch or tag that should be pulled from the repository
 	 */
-	GitInfo(String url, String branch) {
+	public GitInfo(String url, String branch) {
 		this.URL = url;
 		this.BRANCH = branch;
 	}

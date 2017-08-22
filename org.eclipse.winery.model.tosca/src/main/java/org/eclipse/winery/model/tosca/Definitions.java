@@ -39,7 +39,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Definitions")
 public class Definitions extends TDefinitions {
     public Definitions() {
-
     }
 
     public Definitions(Builder builder) {

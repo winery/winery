@@ -62,8 +62,7 @@ import org.w3c.dom.Element;
 @XmlSeeAlso({
         TImport.class,
         TServiceTemplate.class,
-        TNodeTypeImplementation.class,
-        TRelationshipTypeImplementation.class,
+        TEntityTypeImplementation.class,
         TOperation.class,
         TRequirementDefinition.class,
         TExtension.class,
@@ -88,7 +87,6 @@ public class TExtensibleElements {
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
     public TExtensibleElements() {
-
     }
 
     public TExtensibleElements(Builder builder) {
@@ -193,6 +191,12 @@ public class TExtensibleElements {
 
         public Builder() {
 
+        }
+        
+        public Builder(Builder builder) {
+            this.documentation = builder.documentation;
+            this.any = builder.any;
+            this.otherAttributes = builder.otherAttributes;
         }
 
         public Builder(TExtensibleElements extensibleElements) {

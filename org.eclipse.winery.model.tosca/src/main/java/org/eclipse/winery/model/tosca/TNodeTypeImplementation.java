@@ -20,10 +20,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -70,53 +67,31 @@ import org.eclipse.jdt.annotation.Nullable;
  * </pre>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+// by using @XmlTransient at TEntityTypeImplementation, this orders *all* elements, even if IntelliJ marks them in red
+// see https://stackoverflow.com/a/6790388/873282
 @XmlType(name = "tNodeTypeImplementation", propOrder = {
-        "tags",
-        "derivedFrom",
-        "requiredContainerFeatures",
-        "implementationArtifacts",
-        "deploymentArtifacts"
+    "tags",
+    "derivedFrom",
+    "requiredContainerFeatures",
+    "implementationArtifacts",
+    "deploymentArtifacts"
 })
-public class TNodeTypeImplementation extends TExtensibleElements {
-    @XmlElement(name = "Tags")
-    protected TTags tags;
-    @XmlElement(name = "DerivedFrom")
-    protected TNodeTypeImplementation.DerivedFrom derivedFrom;
-    @XmlElement(name = "RequiredContainerFeatures")
-    protected TRequiredContainerFeatures requiredContainerFeatures;
-    @XmlElement(name = "ImplementationArtifacts")
-    protected TImplementationArtifacts implementationArtifacts;
+public class TNodeTypeImplementation extends TEntityTypeImplementation {
+
     @XmlElement(name = "DeploymentArtifacts")
     protected TDeploymentArtifacts deploymentArtifacts;
-    @XmlAttribute(name = "name", required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlSchemaType(name = "NCName")
-    protected String name;
-    @XmlAttribute(name = "targetNamespace")
-    @XmlSchemaType(name = "anyURI")
-    protected String targetNamespace;
-    @XmlAttribute(name = "nodeType", required = true)
-    protected QName nodeType;
-    @XmlAttribute(name = "abstract")
-    protected TBoolean _abstract;
-    @XmlAttribute(name = "final")
-    protected TBoolean _final;
+
+    @XmlElement(name = "DerivedFrom")
+    protected TNodeTypeImplementation.DerivedFrom derivedFrom;
 
     public TNodeTypeImplementation() {
+        super();
     }
 
     public TNodeTypeImplementation(Builder builder) {
         super(builder);
-        this.tags = builder.tags;
         this.derivedFrom = builder.derivedFrom;
-        this.requiredContainerFeatures = builder.requiredContainerFeatures;
-        this.implementationArtifacts = builder.implementationArtifacts;
         this.deploymentArtifacts = builder.deploymentArtifacts;
-        this.name = builder.name;
-        this.targetNamespace = builder.targetNamespace;
-        this.nodeType = builder.nodeType;
-        this._abstract = builder._abstract;
-        this._final = builder._final;
     }
 
     @Override
@@ -126,220 +101,49 @@ public class TNodeTypeImplementation extends TExtensibleElements {
         if (!super.equals(o)) return false;
         TNodeTypeImplementation that = (TNodeTypeImplementation) o;
         return Objects.equals(tags, that.tags) &&
-                Objects.equals(derivedFrom, that.derivedFrom) &&
-                Objects.equals(requiredContainerFeatures, that.requiredContainerFeatures) &&
-                Objects.equals(implementationArtifacts, that.implementationArtifacts) &&
-                Objects.equals(deploymentArtifacts, that.deploymentArtifacts) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(targetNamespace, that.targetNamespace) &&
-                Objects.equals(nodeType, that.nodeType) &&
-                _abstract == that._abstract &&
-                _final == that._final;
+            Objects.equals(derivedFrom, that.derivedFrom) &&
+            Objects.equals(requiredContainerFeatures, that.requiredContainerFeatures) &&
+            Objects.equals(implementationArtifacts, that.implementationArtifacts) &&
+            Objects.equals(deploymentArtifacts, that.deploymentArtifacts) &&
+            _abstract == that._abstract &&
+            _final == that._final;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), tags, derivedFrom, requiredContainerFeatures, implementationArtifacts, deploymentArtifacts, name, targetNamespace, nodeType, _abstract, _final);
+        return Objects.hash(super.hashCode(), tags, derivedFrom, requiredContainerFeatures, implementationArtifacts, deploymentArtifacts, _abstract, _final);
     }
 
-    /**
-     * Gets the value of the tags property.
-     *
-     * @return possible object is {@link TTags }
-     */
-    @Nullable
-    public TTags getTags() {
-        return tags;
-    }
-
-    /**
-     * Sets the value of the tags property.
-     *
-     * @param value allowed object is {@link TTags }
-     */
-    public void setTags(TTags value) {
-        this.tags = value;
-    }
-
-    /**
-     * Gets the value of the derivedFrom property.
-     *
-     * @return possible object is {@link TNodeTypeImplementation.DerivedFrom }
-     */
-    /*@Nullable*/
-    public TNodeTypeImplementation.DerivedFrom getDerivedFrom() {
-        return derivedFrom;
-    }
-
-    /**
-     * Sets the value of the derivedFrom property.
-     *
-     * @param value allowed object is {@link TNodeTypeImplementation.DerivedFrom }
-     */
-    public void setDerivedFrom(TNodeTypeImplementation.DerivedFrom value) {
-        this.derivedFrom = value;
-    }
-
-    /**
-     * Gets the value of the requiredContainerFeatures property.
-     *
-     * @return possible object is {@link TRequiredContainerFeatures }
-     */
-    @Nullable
-    public TRequiredContainerFeatures getRequiredContainerFeatures() {
-        return requiredContainerFeatures;
-    }
-
-    /**
-     * Sets the value of the requiredContainerFeatures property.
-     *
-     * @param value allowed object is {@link TRequiredContainerFeatures }
-     */
-    public void setRequiredContainerFeatures(TRequiredContainerFeatures value) {
-        this.requiredContainerFeatures = value;
-    }
-
-    /**
-     * Gets the value of the implementationArtifacts property.
-     *
-     * @return possible object is {@link TImplementationArtifacts }
-     */
-    @Nullable
-    public TImplementationArtifacts getImplementationArtifacts() {
-        return implementationArtifacts;
-    }
-
-    /**
-     * Sets the value of the implementationArtifacts property.
-     *
-     * @param value allowed object is {@link TImplementationArtifacts }
-     */
-    public void setImplementationArtifacts(TImplementationArtifacts value) {
-        this.implementationArtifacts = value;
-    }
-
-    /**
-     * Gets the value of the deploymentArtifacts property.
-     *
-     * @return possible object is {@link TDeploymentArtifacts }
-     */
     @Nullable
     public TDeploymentArtifacts getDeploymentArtifacts() {
         return deploymentArtifacts;
     }
 
-    /**
-     * Sets the value of the deploymentArtifacts property.
-     *
-     * @param value allowed object is {@link TDeploymentArtifacts }
-     */
     public void setDeploymentArtifacts(TDeploymentArtifacts value) {
         this.deploymentArtifacts = value;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
-    @NonNull
-    public String getName() {
-        return name;
+    public TNodeTypeImplementation.DerivedFrom getDerivedFrom() {
+        return derivedFrom;
+    }
+
+    public void setDerivedFrom(TNodeTypeImplementation.DerivedFrom value) {
+        this.derivedFrom = value;
     }
 
     /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
+     * Returns the implemented type. We have to use different namings here as the XML Schema does not have
+     * TEntityTypeImplementation
      */
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    /**
-     * Gets the value of the targetNamespace property.
-     *
-     * @return possible object is {@link String }
-     */
-    @Nullable
-    public String getTargetNamespace() {
-        return targetNamespace;
-    }
-
-    /**
-     * Sets the value of the targetNamespace property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setTargetNamespace(String value) {
-        this.targetNamespace = value;
-    }
-
-    /**
-     * Gets the value of the nodeType property.
-     *
-     * @return possible object is {@link QName }
-     */
+    @XmlAttribute(name = "nodeType", required = true)
     @NonNull
     public QName getNodeType() {
-        return nodeType;
+        return this.implementedType;
     }
 
-    /**
-     * Sets the value of the nodeType property.
-     *
-     * @param value allowed object is {@link QName }
-     */
     public void setNodeType(QName value) {
-        this.nodeType = value;
+        this.implementedType = value;
     }
-
-    /**
-     * Gets the value of the abstract property.
-     *
-     * @return possible object is {@link TBoolean }
-     */
-    @NonNull
-    public TBoolean getAbstract() {
-        if (_abstract == null) {
-            return TBoolean.NO;
-        } else {
-            return _abstract;
-        }
-    }
-
-    /**
-     * Sets the value of the abstract property.
-     *
-     * @param value allowed object is {@link TBoolean }
-     */
-    public void setAbstract(TBoolean value) {
-        this._abstract = value;
-    }
-
-    /**
-     * Gets the value of the final property.
-     *
-     * @return possible object is {@link TBoolean }
-     */
-    @NonNull
-    public TBoolean getFinal() {
-        if (_final == null) {
-            return TBoolean.NO;
-        } else {
-            return _final;
-        }
-    }
-
-    /**
-     * Sets the value of the final property.
-     *
-     * @param value allowed object is {@link TBoolean }
-     */
-    public void setFinal(TBoolean value) {
-        this._final = value;
-    }
-
 
     /**
      * <p>Java class for anonymous complex type.
@@ -359,7 +163,7 @@ public class TNodeTypeImplementation extends TExtensibleElements {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class DerivedFrom {
+    public static class DerivedFrom implements HasType {
 
         @XmlAttribute(name = "nodeTypeImplementationRef", required = true)
         protected QName nodeTypeImplementationRef;
@@ -382,28 +186,37 @@ public class TNodeTypeImplementation extends TExtensibleElements {
         public void setNodeTypeImplementationRef(QName value) {
             this.nodeTypeImplementationRef = value;
         }
+
+        public QName getType() {
+            return this.getNodeTypeImplementationRef();
+        }
+
+        @Override
+        public QName getTypeAsQName() {
+            return this.getType();
+        }
+
+        @Override
+        public void setType(QName type) {
+            this.setNodeTypeImplementationRef(type);
+        }
     }
 
-    public static class Builder extends TExtensibleElements.Builder {
-        private final String name;
-        private final QName nodeType;
+    public static class Builder extends TEntityTypeImplementation.Builder {
         private TTags tags;
         private DerivedFrom derivedFrom;
         private TRequiredContainerFeatures requiredContainerFeatures;
         private TImplementationArtifacts implementationArtifacts;
         private TDeploymentArtifacts deploymentArtifacts;
-        private String targetNamespace;
         private TBoolean _abstract;
         private TBoolean _final;
 
-        public Builder(TExtensibleElements extensibleElements, String name, QName nodeType) {
-            super(extensibleElements);
-            this.name = name;
-            this.nodeType = nodeType;
+        public Builder(TExtensibleElements extensibleElements, String name, QName implementedNodeType) {
+            super(extensibleElements, name, implementedNodeType);
         }
 
-        public Builder(String name, QName nodeType) {
-            this(new TExtensibleElements(), name, nodeType);
+        public Builder(String name, QName implementedNodeType) {
+            super(name, implementedNodeType);
         }
 
         public Builder setTags(TTags tags) {
@@ -428,11 +241,6 @@ public class TNodeTypeImplementation extends TExtensibleElements {
 
         public Builder setDeploymentArtifacts(TDeploymentArtifacts deploymentArtifacts) {
             this.deploymentArtifacts = deploymentArtifacts;
-            return this;
-        }
-
-        public Builder setTargetNamespace(String targetNamespace) {
-            this.targetNamespace = targetNamespace;
             return this;
         }
 

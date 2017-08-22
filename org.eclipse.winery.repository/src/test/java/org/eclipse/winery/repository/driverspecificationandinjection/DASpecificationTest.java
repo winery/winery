@@ -26,64 +26,28 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.PrefsTestEnabledGitBackedRepository;
-import org.eclipse.winery.repository.WineryUsingHttpServer;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DASpecificationTest {
-
-	private static Git git;
-	private static Server server;
-
-	@BeforeClass
-	public static void init() throws Exception {
-		// enable git-backed repository
-		PrefsTestEnabledGitBackedRepository prefsTestEnabledGitBackedRepository = new PrefsTestEnabledGitBackedRepository();
-		git = prefsTestEnabledGitBackedRepository.git;
-		server = WineryUsingHttpServer.createHttpServer(9080);
-		server.start();
-	}
-
-	@AfterClass
-	public static void shutdown() throws Exception {
-		server.stop();
-	}
-
-	protected void setRevisionTo(String ref) throws GitAPIException {
-		// TODO: newer JGit version: setForce(true)
-		git.clean().setCleanDirectories(true).call();
-
-		this.git.reset()
-				.setMode(ResetCommand.ResetType.HARD)
-				.setRef(ref)
-				.call();
-	}
+public class DASpecificationTest extends TestWithGitBackedRepository {
 
 	@Test
 	public void getArtifactTypeOfDA() throws Exception {
 		setRevisionTo("af529e513388dc9358a8f700757d8dc59aba3a55");
 		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
-		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-		TTopologyTemplate topologyTemplate = serviceTemplateResource.getServiceTemplate().getTopologyTemplate();
+		TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
 
 		TNodeTemplate nodeTemplateWithAbstractDA = topologyTemplate.getNodeTemplate("shetland_pony");
 
 		TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0);
 		QName artifactTypeQName = deploymentArtifact.getArtifactType();
 		ArtifactTypeId artifactTypeId = new ArtifactTypeId(artifactTypeQName);
-		TArtifactType artifactType = (TArtifactType) AbstractComponentsResource.getComponentInstaceResource(artifactTypeId).getElement();
+
+		TArtifactType artifactType = this.repository.getElement(artifactTypeId);
 
 		assertEquals(artifactType.getTargetNamespace(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0)).getTargetNamespace());
 		assertEquals(artifactType.getName(), DASpecification.getArtifactTypeOfDA(nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0)).getName());
@@ -93,9 +57,7 @@ public class DASpecificationTest {
 	public void getNodeTemplatesWithAbstractDAs() throws Exception {
 		setRevisionTo("af529e513388dc9358a8f700757d8dc59aba3a55");
 		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
-		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-		TTopologyTemplate topologyTemplate = serviceTemplateResource.getServiceTemplate().getTopologyTemplate();
-
+		TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
 		List<TNodeTemplate> nodeTemplateWithAbstractDA = new ArrayList<>();
 		nodeTemplateWithAbstractDA.add(topologyTemplate.getNodeTemplate("shetland_pony"));
 		
@@ -108,9 +70,8 @@ public class DASpecificationTest {
 	public void getArtifactTypeHierarchy() throws Exception {
 		setRevisionTo("af529e513388dc9358a8f700757d8dc59aba3a55");
 		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
-		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-		TTopologyTemplate topologyTemplate = serviceTemplateResource.getServiceTemplate().getTopologyTemplate();
-
+		TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
+		
 		TNodeTemplate nodeTemplate = topologyTemplate.getNodeTemplate("westernequipment");
 		
 		List<TArtifactType> artifactTypes = DASpecification.getArtifactTypeHierarchy(DASpecification.getArtifactTypeOfDA(nodeTemplate.getDeploymentArtifacts().getDeploymentArtifact().get(0)));
@@ -126,9 +87,8 @@ public class DASpecificationTest {
 	public void getNodesWithSuitableConcreteDAs() throws Exception {
 		setRevisionTo("5f63267261584a513dd8a9b7960687cc3dda910a");
 		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
-		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-		TTopologyTemplate topologyTemplate = serviceTemplateResource.getServiceTemplate().getTopologyTemplate();
-
+		TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
+		
 		TNodeTemplate nodeTemplate = topologyTemplate.getNodeTemplate("ponycompetition");
 		TNodeTemplate nodeTemplateWithAbstractDA = topologyTemplate.getNodeTemplate("shetland_pony");
 		TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0);
@@ -143,9 +103,8 @@ public class DASpecificationTest {
 	public void getNodesWithSuitableConcreteDAAndTheDirectlyConnectedNode() throws Exception {
 		setRevisionTo("5f63267261584a513dd8a9b7960687cc3dda910a");
 		ServiceTemplateId id = new ServiceTemplateId("http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier", "DASpecificationTest", false);
-		ServiceTemplateResource serviceTemplateResource = new ServiceTemplateResource(id);
-		TTopologyTemplate topologyTemplate = serviceTemplateResource.getServiceTemplate().getTopologyTemplate();
-
+		TTopologyTemplate topologyTemplate = this.repository.getElement(id).getTopologyTemplate();
+		
 		TNodeTemplate nodeTemplateWithAbstractDA = topologyTemplate.getNodeTemplate("shetland_pony");
 		TDeploymentArtifact deploymentArtifact = nodeTemplateWithAbstractDA.getDeploymentArtifacts().getDeploymentArtifact().get(0);
 		TNodeTemplate nodeTemplateConcretDA1 = topologyTemplate.getNodeTemplate("dressageequipment");

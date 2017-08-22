@@ -25,7 +25,7 @@
 	<!-- from org.eclipse.winery.common.ModelUtilities -->
 	<function>
 		<name>winerysPropertiesDefinition</name>
-		<function-class>org.eclipse.winery.common.ModelUtilities</function-class>
+		<function-class>org.eclipse.winery.model.tosca.utils.ModelUtilities</function-class>
 		<function-signature>org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition getWinerysPropertiesDefinition(org.eclipse.winery.model.tosca.TEntityType)</function-signature>
 	</function>
 

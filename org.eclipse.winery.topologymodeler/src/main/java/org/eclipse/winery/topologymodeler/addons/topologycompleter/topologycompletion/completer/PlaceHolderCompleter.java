@@ -15,13 +15,13 @@ package org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycomp
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSCAAnalyzer;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.NodeTemplateConnector;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.placeholderhandling.PlaceHolderHandler;
@@ -54,8 +54,7 @@ public class PlaceHolderCompleter {
 	/**
 	 * The constructor of the class PlaceHolderCompleter.
 	 *
-	 * @param topology
-	 *            the {@link TTopologyTemplate} to be completed
+	 * @param topology the {@link TTopologyTemplate} to be completed
 	 */
 	public PlaceHolderCompleter(TTopologyTemplate topology) {
 		this.topology = topology;
@@ -65,11 +64,8 @@ public class PlaceHolderCompleter {
 	/**
 	 * This method completes a {@link TTopologyTemplate} containing place holders.
 	 *
-	 * @param placeHolders
-	 *            the contained place holders
-	 * @param toscaAnalyzer
-	 * 			  the {@link TOSCAAnalyzer} object to access the data model
-	 *
+	 * @param placeHolders  the contained place holders
+	 * @param toscaAnalyzer the {@link TOSCAAnalyzer} object to access the data model
 	 * @return the complete {@link TTopologyTemplate}
 	 */
 	public List<TTopologyTemplate> completePlaceholderTopology(List<TNodeTemplate> placeHolders, TOSCAAnalyzer toscaAnalyzer) {

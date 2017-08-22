@@ -40,18 +40,18 @@ import org.w3c.dom.NodeList;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityTemplate", propOrder = {
-        "properties",
-        "propertyConstraints"
+    "properties",
+    "propertyConstraints"
 })
 @XmlSeeAlso({
-        TArtifactTemplate.class,
-        TPolicyTemplate.class,
-        TCapability.class,
-        TRequirement.class,
-        TRelationshipTemplate.class,
-        TNodeTemplate.class
+    TArtifactTemplate.class,
+    TPolicyTemplate.class,
+    TCapability.class,
+    TRequirement.class,
+    TRelationshipTemplate.class,
+    TNodeTemplate.class
 })
-public abstract class TEntityTemplate extends HasId {
+public abstract class TEntityTemplate extends HasId implements HasType, HasName {
 
     @XmlElement(name = "Properties")
     protected TEntityTemplate.Properties properties;
@@ -84,8 +84,8 @@ public abstract class TEntityTemplate extends HasId {
         if (!super.equals(o)) return false;
         TEntityTemplate that = (TEntityTemplate) o;
         return Objects.equals(properties, that.properties) &&
-                Objects.equals(propertyConstraints, that.propertyConstraints) &&
-                Objects.equals(type, that.type);
+            Objects.equals(propertyConstraints, that.propertyConstraints) &&
+            Objects.equals(type, that.type);
     }
 
     @Override
@@ -117,7 +117,7 @@ public abstract class TEntityTemplate extends HasId {
      *
      * @return possible object is {@link TEntityTemplate.PropertyConstraints }
      */
-	/*@Nullable*/
+    /*@Nullable*/
     public TEntityTemplate.PropertyConstraints getPropertyConstraints() {
         return propertyConstraints;
     }
@@ -139,6 +139,11 @@ public abstract class TEntityTemplate extends HasId {
     @NonNull
     public QName getType() {
         return type;
+    }
+
+    @Override
+    public QName getTypeAsQName() {
+        return this.getType();
     }
 
     /**
@@ -169,7 +174,7 @@ public abstract class TEntityTemplate extends HasId {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "any"
+        "any"
     })
     public static class Properties {
 
@@ -250,7 +255,7 @@ public abstract class TEntityTemplate extends HasId {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "propertyConstraint"
+        "propertyConstraint"
     })
     public static class PropertyConstraints {
 
@@ -260,22 +265,17 @@ public abstract class TEntityTemplate extends HasId {
         /**
          * Gets the value of the propertyConstraint property.
          *
-         * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the propertyConstraint property.
+         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
+         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
+         * method for the propertyConstraint property.
          *
-         * <p>
-         * For example, to add a new item, do as follows:
+         * <p> For example, to add a new item, do as follows:
          * <pre>
          *    getPropertyConstraint().add(newItem);
          * </pre>
          *
          *
-         * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link TPropertyConstraint }
+         * <p> Objects of the following type(s) are allowed in the list {@link TPropertyConstraint }
          */
         @NonNull
         public List<TPropertyConstraint> getPropertyConstraint() {

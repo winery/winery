@@ -24,13 +24,12 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
@@ -104,7 +103,7 @@ import org.w3c.dom.Element;
 @XmlSeeAlso({
         Definitions.class
 })
-public class TDefinitions extends TExtensibleElements {
+public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     @XmlElement(name = "Extensions")
     protected TDefinitions.Extensions extensions;
     @XmlElement(name = "Import")
@@ -125,11 +124,7 @@ public class TDefinitions extends TExtensibleElements {
             @XmlElement(name = "PolicyType", type = TPolicyType.class)
     })
     protected List<TExtensibleElements> serviceTemplateOrNodeTypeOrNodeTypeImplementation;
-    @XmlAttribute(name = "id", required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlID
-    @XmlSchemaType(name = "ID")
-    protected String id;
+
     @XmlAttribute(name = "name")
     protected String name;
     @XmlAttribute(name = "targetNamespace", required = true)
@@ -145,7 +140,6 @@ public class TDefinitions extends TExtensibleElements {
         this._import = builder._import;
         this.types = builder.types;
         this.serviceTemplateOrNodeTypeOrNodeTypeImplementation = builder.getServiceTemplateOrNodeTypeOrNodeTypeImplementation();
-        this.id = builder.id;
         this.name = builder.name;
         this.targetNamespace = builder.target_namespace;
     }
@@ -154,19 +148,36 @@ public class TDefinitions extends TExtensibleElements {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TDefinitions)) return false;
+        if (!super.equals(o)) return false;
         TDefinitions that = (TDefinitions) o;
         return Objects.equals(extensions, that.extensions) &&
                 Objects.equals(_import, that._import) &&
                 Objects.equals(types, that.types) &&
                 Objects.equals(serviceTemplateOrNodeTypeOrNodeTypeImplementation, that.serviceTemplateOrNodeTypeOrNodeTypeImplementation) &&
-                Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(targetNamespace, that.targetNamespace);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(extensions, _import, types, serviceTemplateOrNodeTypeOrNodeTypeImplementation, id, name, targetNamespace);
+        return Objects.hash(super.hashCode(), extensions, _import, types, serviceTemplateOrNodeTypeOrNodeTypeImplementation, name, targetNamespace);
+    }
+
+    /**
+     * Convenience method for <code>this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0)</code>
+     */
+    @XmlTransient
+    @JsonIgnore
+    public TExtensibleElements getElement() {
+        return this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
+    }
+
+    /**
+     * Convenience method for clearing the current elements and setting the given one as single element
+     */
+    public void setElement(TExtensibleElements element) {
+        this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().clear();
+        this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(element);
     }
 
     /**
@@ -259,25 +270,6 @@ public class TDefinitions extends TExtensibleElements {
             serviceTemplateOrNodeTypeOrNodeTypeImplementation = new ArrayList<TExtensibleElements>();
         }
         return this.serviceTemplateOrNodeTypeOrNodeTypeImplementation;
-    }
-
-    /**
-     * Gets the value of the id property.
-     *
-     * @return possible object is {@link String }
-     */
-    @NonNull
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setId(String value) {
-        this.id = value;
     }
 
     /**
@@ -432,8 +424,7 @@ public class TDefinitions extends TExtensibleElements {
         }
     }
 
-    public static class Builder extends TExtensibleElements.Builder {
-        private final String id;
+    public static class Builder extends HasId.Builder {
         private final String target_namespace;
 
         private TDefinitions.Extensions extensions;
@@ -453,7 +444,7 @@ public class TDefinitions extends TExtensibleElements {
         private String name;
 
         public Builder(String id, String target_namespace) {
-            this.id = id;
+            super(id);
             this.target_namespace = target_namespace;
         }
 

@@ -10,8 +10,12 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 ## [unreleased]
 
+### Changed
+
 - Initial support for BPMN4TOSCA implemented using Angular
+- org.eclipse.winery.model.tosca was extended with builders and some helper classes
 - Fixed wrong output of "CSAR Export mode. Putting XSD into CSAR" if in CSAR export mode
+- New project `org.eclipse.winery.repository.rest` for separating REST resources from the backend
 
 ## [v2.0.0-M1] - 2017-07-03
 

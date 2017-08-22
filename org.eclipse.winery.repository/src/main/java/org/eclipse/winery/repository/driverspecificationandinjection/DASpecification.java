@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
@@ -32,9 +31,9 @@ import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public class DASpecification {
 		
@@ -52,7 +51,7 @@ public class DASpecification {
 	public static TArtifactType getArtifactTypeOfDA (TDeploymentArtifact deploymentArtifact) {
 		QName DAArtifactTypeQName = deploymentArtifact.getArtifactType();
 		ArtifactTypeId artifactTypeId = new ArtifactTypeId(DAArtifactTypeQName);
-		TArtifactType artifactType = (TArtifactType) AbstractComponentsResource.getComponentInstaceResource(artifactTypeId).getElement();
+		TArtifactType artifactType = RepositoryFactory.getRepository().getElement(artifactTypeId);
 		return artifactType;
 	}
 	
@@ -67,7 +66,7 @@ public class DASpecification {
 			if (basisArtifactType.getDerivedFrom() != null) {
 				QName parentArtifactTypeQName = basisArtifactType.getDerivedFrom().getTypeRef();
 				ArtifactTypeId parentArtifactTypeId = new ArtifactTypeId(parentArtifactTypeQName);
-				basisArtifactType = (TArtifactType) AbstractComponentsResource.getComponentInstaceResource(parentArtifactTypeId).getElement();
+				basisArtifactType = RepositoryFactory.getRepository().getElement(parentArtifactTypeId);
 				artifactTypeHierarchy.add(basisArtifactType);
 			} else {
 				basisArtifactType = null;
@@ -155,13 +154,10 @@ public class DASpecification {
 	}
 	
 	private static List<TNodeTypeImplementation> getmatchingNodeTypeImplementations (QName nodeTypeQName) {
-		return Repository.INSTANCE.getAllTOSCAComponentIds(NodeTypeImplementationId.class).stream()
-				.map(id -> {
-					NodeTypeImplementationResource nodeTypeImplementationResource = 
-							(NodeTypeImplementationResource) AbstractComponentsResource.getComponentInstaceResource(id);
-					TNodeTypeImplementation nodeTypeImplementation = nodeTypeImplementationResource.getNTI();
-					return nodeTypeImplementation;
-				}).filter(nti -> nti.getNodeType().equals(nodeTypeQName))
+		final IRepository repository = RepositoryFactory.getRepository();
+		return repository.getAllTOSCAComponentIds(NodeTypeImplementationId.class).stream()
+				.map(id -> repository.getElement(id))	
+				.filter(nti -> nti.getNodeType().equals(nodeTypeQName))
 				.collect(Collectors.toList());
 	}
 	
@@ -187,8 +183,7 @@ public class DASpecification {
 	 */
 	private static TRelationshipType getBasisRelationshipType(QName relationshipTypeQName) {
 		RelationshipTypeId parentRelationshipTypeId = new RelationshipTypeId(relationshipTypeQName);
-		TRelationshipType parentRelationshipType = (TRelationshipType) AbstractComponentsResource
-				.getComponentInstaceResource(parentRelationshipTypeId).getElement();
+		TRelationshipType parentRelationshipType = RepositoryFactory.getRepository().getElement(parentRelationshipTypeId);
 		TRelationshipType basisRelationshipType = null;
 
 		while (parentRelationshipType != null) {
@@ -197,8 +192,7 @@ public class DASpecification {
 			if (parentRelationshipType.getDerivedFrom() != null) {
 				QName tempRelationshipTypeQName = parentRelationshipType.getDerivedFrom().getTypeRef();
 				parentRelationshipTypeId = new RelationshipTypeId(tempRelationshipTypeQName);
-				parentRelationshipType = (TRelationshipType) AbstractComponentsResource
-						.getComponentInstaceResource(parentRelationshipTypeId).getElement();
+				parentRelationshipType = RepositoryFactory.getRepository().getElement(parentRelationshipTypeId);
 			} else {
 				parentRelationshipType = null;
 			}

@@ -24,7 +24,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TDefinitions;
@@ -33,6 +32,7 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -40,15 +40,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class contains methods for marshalling and unmarshalling a topology XML string via JAXB.
- *
  */
 public class JAXBHelper {
 
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(JAXBHelper.class.getName());
 
 	/**
-	 * This constant is used in the buildXML method which add coordinates to Node Templates so they
-	 * are arranged properly in the Winery topology modeler.
+	 * This constant is used in the buildXML method which add coordinates to Node Templates so they are arranged
+	 * properly in the Winery topology modeler.
 	 *
 	 * The x coordinate is constant because it is assumed that a stack of NodeTemplates is displayed.
 	 */
@@ -58,9 +57,7 @@ public class JAXBHelper {
 	 * This method creates an JAXB Unmarshaller used by the methods contained in this class.
 	 *
 	 * @return the JAXB unmarshaller object
-	 *
-	 * @throws JAXBException
-	 *             this exception can occur when the JAXBContext is created
+	 * @throws JAXBException this exception can occur when the JAXBContext is created
 	 */
 	private static Unmarshaller createUnmarshaller() throws JAXBException {
 		// initiate JaxB context
@@ -73,9 +70,7 @@ public class JAXBHelper {
 	/**
 	 * This method returns a {@link TTopologyTemplate} given as XML string as JaxBObject.
 	 *
-	 * @param xmlString
-	 *            the {@link TTopologyTemplate} to be unmarshalled
-	 *
+	 * @param xmlString the {@link TTopologyTemplate} to be unmarshalled
 	 * @return the unmarshalled {@link TTopologyTemplate}
 	 */
 	public static TTopologyTemplate getTopologyAsJaxBObject(String xmlString) {
@@ -92,7 +87,6 @@ public class JAXBHelper {
 			logger.info("Unmarshalling successful! ");
 
 			return serviceTemplate.getTopologyTemplate();
-
 		} catch (JAXBException e) {
 			logger.error(e.getLocalizedMessage());
 		}
@@ -102,9 +96,7 @@ public class JAXBHelper {
 	/**
 	 * This method returns {@link TRelationshipTemplate}s as a JaxBObject.
 	 *
-	 * @param xmlString
-	 *            the {@link TRelationshipTemplate} to be unmarshalled
-	 *
+	 * @param xmlString the {@link TRelationshipTemplate} to be unmarshalled
 	 * @return the unmarshalled {@link TRelationshipTemplate}
 	 */
 	public static List<TRelationshipTemplate> getRelationshipTemplatesAsJaxBObject(String xmlString) {
@@ -123,19 +115,16 @@ public class JAXBHelper {
 			}
 
 			return foundRTs;
-
 		} catch (JAXBException e) {
 			logger.error(e.getLocalizedMessage());
 		}
 		return null;
-
 	}
 
 	/**
 	 * Turns XML Strings into {@link TEntityTemplate} objects using JaxB.
 	 *
-	 * @param xmlString
-	 *            the XMLString to be parsed
+	 * @param xmlString the XMLString to be parsed
 	 * @return the parsed XMLString as {@link TEntityTemplate}
 	 */
 	public static List<TEntityTemplate> getEntityTemplatesAsJaxBObject(String xmlString) {
@@ -146,20 +135,16 @@ public class JAXBHelper {
 			TServiceTemplate serviceTemplate = (TServiceTemplate) jaxBDefinitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
 
 			return serviceTemplate.getTopologyTemplate().getNodeTemplateOrRelationshipTemplate();
-
 		} catch (JAXBException e) {
 			logger.error(e.getLocalizedMessage());
 		}
 		return null;
-
 	}
 
 	/**
 	 * Converts any object of the TOSCA data model to a JaxBObject.
 	 *
-	 * @param xmlString
-	 *            the {@link Definitions} object to be converted
-	 *
+	 * @param xmlString the {@link Definitions} object to be converted
 	 * @return the unmarshalled {@link Definitions} object
 	 */
 	public static Definitions getXasJaxBObject(String xmlString) {
@@ -168,29 +153,25 @@ public class JAXBHelper {
 			Definitions jaxBDefinitions = (Definitions) createUnmarshaller().unmarshal(reader);
 
 			return jaxBDefinitions;
-
 		} catch (JAXBException e) {
 			logger.error(e.getLocalizedMessage());
 		}
 		return null;
-
 	}
 
 	/**
-	 * This method adds a selection of {@link TNodeTemplate}- and {@link TRelationshipTemplate}-XML-Strings to a {@link TTopologyTemplate}-XML-String using JAXB.
-	 * After the templates have been added, the {@link TTopologyTemplate} object is re-marshalled to an XML-String.
+	 * This method adds a selection of {@link TNodeTemplate}- and {@link TRelationshipTemplate}-XML-Strings to a {@link
+	 * TTopologyTemplate}-XML-String using JAXB. After the templates have been added, the {@link TTopologyTemplate}
+	 * object is re-marshalled to an XML-String.
 	 *
-	 * This method is called by the selectionHandler.jsp after several Node or RelationshipTemplates have been chosen in a dialog.
+	 * This method is called by the selectionHandler.jsp after several Node or RelationshipTemplates have been chosen in
+	 * a dialog.
 	 *
-	 * @param topology
-	 *            the topology as XML string
-	 * @param allTemplateChoicesAsXML
-	 *            all possible template choices as TOSCA-XML strings containing the complete templates
-	 * @param selectedNodeTemplatesAsJSON
-	 *            the names of the selected NodeTemplates as JSONArray
-	 * @param selectedRelationshipTemplatesAsJSON
-	 *            the names of the selected RelationshipTemplates as JSONArray
-	 *
+	 * @param topology                            the topology as XML string
+	 * @param allTemplateChoicesAsXML             all possible template choices as TOSCA-XML strings containing the
+	 *                                            complete templates
+	 * @param selectedNodeTemplatesAsJSON         the names of the selected NodeTemplates as JSONArray
+	 * @param selectedRelationshipTemplatesAsJSON the names of the selected RelationshipTemplates as JSONArray
 	 * @return the complete topology XML string
 	 */
 	public static String addTemplatesToTopology(String topology, String allTemplateChoicesAsXML, String selectedNodeTemplatesAsJSON, String selectedRelationshipTemplatesAsJSON) {
@@ -226,7 +207,7 @@ public class JAXBHelper {
 
 								// due to the mapping of IDs in the selection dialog, the corresponding Relationship Template of the inserted Node Template misses its SourceElement.
 								// Re-add it to avoid errors.
-								for (TEntityTemplate entity: topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+								for (TEntityTemplate entity : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
 									if (entity instanceof TRelationshipTemplate) {
 										TRelationshipTemplate relationshipTemplate = (TRelationshipTemplate) entity;
 										if (relationshipTemplate.getSourceElement().getRef() == null) {
@@ -253,7 +234,6 @@ public class JAXBHelper {
 						}
 					}
 				}
-
 			} else {
 				// in this case only Relationship Templates have been selected
 				List<TRelationshipTemplate> allRelationshipTemplateChoices = JAXBHelper.getRelationshipTemplatesAsJaxBObject(allTemplateChoicesAsXML);
@@ -295,7 +275,6 @@ public class JAXBHelper {
 			m.marshal(definitions, stringWriter);
 
 			return stringWriter.toString();
-
 		} catch (JAXBException | IOException e) {
 			logger.error(e.getLocalizedMessage());
 		}
@@ -307,12 +286,8 @@ public class JAXBHelper {
 	/**
 	 * Marshalls a JAXB object of the TOSCA model to an XML string.
 	 *
-	 * @param clazz
-	 * 			 the class of the object
-	 * @param obj
-	 * 			 the object to be marshalled
-	 *
-	 * @return
+	 * @param clazz the class of the object
+	 * @param obj   the object to be marshalled
 	 */
 	public static String getXMLAsString(@SuppressWarnings("rawtypes") Class clazz, Object obj) {
 		try {
@@ -335,14 +310,12 @@ public class JAXBHelper {
 	}
 
 	/**
-	 * This methods alters the XML with JAXB so it can be imported in Winery. This is necessary because Winery needs additional information for the position of the templates in the
-	 * Winery-Modeler-UI.
+	 * This methods alters the XML with JAXB so it can be imported in Winery. This is necessary because Winery needs
+	 * additional information for the position of the templates in the Winery-Modeler-UI.
 	 *
 	 * This code is adapted from the org.eclipse.winery.repository.Utils.getXMLAsString() method.
 	 *
-	 * @param topology
-	 *            the {@link TTopologyTemplate} to be altered
-	 *
+	 * @param topology the {@link TTopologyTemplate} to be altered
 	 * @return the altered {@link TTopologyTemplate}
 	 */
 	public static TTopologyTemplate buildXML(TTopologyTemplate topology) {

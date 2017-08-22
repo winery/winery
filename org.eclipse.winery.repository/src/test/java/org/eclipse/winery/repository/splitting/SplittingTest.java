@@ -18,15 +18,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.repository.Prefs;
-import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -36,27 +36,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @Ignore("Needs to be updated to public test cases")
-public class SplittingTest {
+public class SplittingTest extends TestWithGitBackedRepository {
 
 	private Splitting splitting = new Splitting();
 	private TTopologyTemplate topologyTemplate;
 	private TTopologyTemplate topologyTemplate2;
+
+	public SplittingTest() throws Exception {
+		super();
+	}
 
 	@Before
 	public void initialize() throws Exception {
 		ServiceTemplateId id = new ServiceTemplateId("http://www.example.org", "ST", false);
 		ServiceTemplateId id2 = new ServiceTemplateId("http://opentosca.org/servicetemplates", "FlinkApp_Demo_Small_On_OpenStack", false);
 
-		// initialize the repo for testing
-		new Prefs(true);
+		assertTrue(RepositoryFactory.getRepository().exists(id));
+		assertTrue(RepositoryFactory.getRepository().exists(id2));
 
-		assertTrue(Repository.INSTANCE.exists(id));
-		assertTrue(Repository.INSTANCE.exists(id2));
-
-		ServiceTemplateResource res = new ServiceTemplateResource(id);
-		topologyTemplate = res.getServiceTemplate().getTopologyTemplate();
-
-		topologyTemplate2 = res.getServiceTemplate().getTopologyTemplate();
+		final TServiceTemplate serviceTemplate = this.repository.getElement(id);
+		topologyTemplate = serviceTemplate.getTopologyTemplate();
+		topologyTemplate2 = serviceTemplate.getTopologyTemplate();
 	}
 
 	@Test
@@ -283,13 +283,10 @@ public class SplittingTest {
 	public void testmatchingofSplittingTopology() throws Exception {
 		ServiceTemplateId serviceTemplateId = new ServiceTemplateId("http://opentosca.org/servicetemplates", "Abstract_PHPApp_MySQLDB_MotivatingScenario_Splitting-split", false);
 
-		// initialize the repo for testing
-		new Prefs(true);
+		assertTrue(this.repository.exists(serviceTemplateId));
 
-		assertTrue(Repository.INSTANCE.exists(serviceTemplateId));
-
-		ServiceTemplateResource resource = new ServiceTemplateResource(serviceTemplateId);
-		TTopologyTemplate topologyTemplateMatching = resource.getServiceTemplate().getTopologyTemplate();
+		final TServiceTemplate serviceTemplate = repository.getElement(serviceTemplateId);
+		TTopologyTemplate topologyTemplateMatching = serviceTemplate.getTopologyTemplate();
 
 		List<String> expectedIds = Arrays.asList("PHP-5-WebApplication", "Java7", "MySQL-DB", "PHP-5-Module", "Apache-2.4", "Ubuntu-14.04-VM-OnPremiseIAAS", "OpenStack-Liberty-12-OnPremiseIAAS", "AmazonBeanstalk", "AmazonRDS");
 		List<TNodeTemplate> NodeTemplates = splitting.hostMatchingWithDefaultHostSelection(topologyTemplateMatching).getNodeTemplateOrRelationshipTemplate().stream().filter(t -> t instanceof TNodeTemplate).map(TNodeTemplate.class::cast).collect(Collectors.toList());
@@ -301,6 +298,4 @@ public class SplittingTest {
 
 		assertEquals(expectedIds, Ids);
 	}
-
-
 }

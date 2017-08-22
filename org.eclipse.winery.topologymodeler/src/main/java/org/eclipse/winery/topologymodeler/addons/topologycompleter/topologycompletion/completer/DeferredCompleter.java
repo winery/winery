@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
@@ -28,6 +27,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSCAAnalyzer;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.NodeTemplateConnector;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.Utils;
@@ -50,8 +50,7 @@ public class DeferredCompleter {
 	/**
 	 * Constructor of the class.
 	 *
-	 * @param topology
-	 *            the {@link TTopologyTemplate} to be completed
+	 * @param topology the {@link TTopologyTemplate} to be completed
 	 */
 	public DeferredCompleter(TTopologyTemplate topology) {
 		this.topology = topology;
@@ -59,14 +58,12 @@ public class DeferredCompleter {
 	}
 
 	/**
-	 * Completes a {@link TTopologyTemplate} that contains deferred {@link TRelationshipTemplate}s with a depth search algorithm. A deferred {@link TRelationshipTemplate} serves as place holder for a
-	 * number of {@link TNodeTemplate}s and {@link TRelationshipTemplate}s.
+	 * Completes a {@link TTopologyTemplate} that contains deferred {@link TRelationshipTemplate}s with a depth search
+	 * algorithm. A deferred {@link TRelationshipTemplate} serves as place holder for a number of {@link TNodeTemplate}s
+	 * and {@link TRelationshipTemplate}s.
 	 *
-	 * @param deferredRelation
-	 *            all found deferred {@link TRelationshipTemplate}s in the topology
-	 * @param toscaAnalyzer
-	 * 			  the {@link TOSCAAnalyzer} object to access the data model
-	 *
+	 * @param deferredRelation all found deferred {@link TRelationshipTemplate}s in the topology
+	 * @param toscaAnalyzer    the {@link TOSCAAnalyzer} object to access the data model
 	 * @return the completed topology
 	 */
 	public List<TTopologyTemplate> completeDeferredTopology(TRelationshipTemplate deferredRelation, TOSCAAnalyzer toscaAnalyzer) {
@@ -92,16 +89,16 @@ public class DeferredCompleter {
 		 */
 		Set<TRequirement> keySet = removedRequirements.keySet();
 
-		for (TTopologyTemplate topologyTemplate: solutions) {
+		for (TTopologyTemplate topologyTemplate : solutions) {
 			boolean fulfilled = false;
-			for (TRequirement requirement: keySet) {
-				for (TEntityTemplate entity: topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+			for (TRequirement requirement : keySet) {
+				for (TEntityTemplate entity : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
 					if (entity instanceof TNodeTemplate) {
 						TNodeTemplate nodeTemplate = (TNodeTemplate) entity;
 						if (nodeTemplate.getCapabilities() != null) {
-							for (TCapability capability: nodeTemplate.getCapabilities().getCapability()) {
+							for (TCapability capability : nodeTemplate.getCapabilities().getCapability()) {
 								String reqCapaType = "";
-								for (TRequirementType reqType: toscaAnalyzer.getRequirementTypes()) {
+								for (TRequirementType reqType : toscaAnalyzer.getRequirementTypes()) {
 									if (reqType.getName().equals(requirement.getType().getLocalPart())) {
 										reqCapaType = reqType.getRequiredCapabilityType().getLocalPart();
 									}
@@ -114,7 +111,7 @@ public class DeferredCompleter {
 					}
 				}
 				if (!fulfilled) {
-					for (TEntityTemplate entity: topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
+					for (TEntityTemplate entity : topologyTemplate.getNodeTemplateOrRelationshipTemplate()) {
 						if (entity.equals(removedRequirements.get(requirement))) {
 							TNodeTemplate foundNT = (TNodeTemplate) entity;
 							foundNT.getRequirements().getRequirement().add(requirement);
@@ -130,17 +127,11 @@ public class DeferredCompleter {
 	/**
 	 * Runs a recursive depth search to find the path to the target NodeTemplate.
 	 *
-	 * @param source
-	 *            the source node of a given {@link TRelationshipTemplate}
-	 * @param target
-	 *            the target node of a given {@link TRelationshipTemplate}
-	 * @param path
-	 *            the current path to the target (can be incomplete)
-	 * @param solutions
-	 *			  list containing all possible solutions of the completion
-	 * @param toscaAnalyzer
-	 *  		  the {@link TOSCAAnalyzer} object to access the data model
-	 *
+	 * @param source        the source node of a given {@link TRelationshipTemplate}
+	 * @param target        the target node of a given {@link TRelationshipTemplate}
+	 * @param path          the current path to the target (can be incomplete)
+	 * @param solutions     list containing all possible solutions of the completion
+	 * @param toscaAnalyzer the {@link TOSCAAnalyzer} object to access the data model
 	 * @return the path to the target NodeTemplate
 	 */
 	private void runDepthFirstSearch(TNodeTemplate source, TNodeTemplate target, List<TEntityTemplate> path, List<TTopologyTemplate> solutions, TOSCAAnalyzer toscaAnalyzer) {
@@ -211,7 +202,6 @@ public class DeferredCompleter {
 				}
 				path.add(instantiatedNodeTemplate);
 				runDepthFirstSearch(instantiatedNodeTemplate, target, path, solutions, toscaAnalyzer);
-
 			}
 		}
 	}
