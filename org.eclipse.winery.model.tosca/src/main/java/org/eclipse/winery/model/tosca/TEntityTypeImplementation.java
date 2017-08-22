@@ -37,7 +37,7 @@ import org.eclipse.jdt.annotation.Nullable;
         TRelationshipTypeImplementation.class,
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class TEntityTypeImplementation extends TExtensibleElements implements HasName, HasType, HasInheritance {
+public abstract class TEntityTypeImplementation extends TExtensibleElements implements HasName, HasType, HasInheritance, HasTargetNamespace {
 
     @XmlElement(name = "Tags")
     protected TTags tags;
@@ -63,6 +63,7 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     @XmlAttribute(name = "final")
     protected TBoolean _final;
 
+    @XmlTransient
     protected QName implementedType;
     
     public TEntityTypeImplementation() {
@@ -176,6 +177,7 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     }
 
     @Override
+    @XmlTransient
     public QName getType() {
         return this.implementedType;
     }

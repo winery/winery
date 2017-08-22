@@ -12,22 +12,28 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources;
 
+import java.io.IOException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate>
- * as these templates are directly nested in a TDefinitionsElement
+ * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate> as these templates are directly nested in
+ * a TDefinitionsElement
  */
 public abstract class AbstractComponentsWithTypeReferenceResource<T extends AbstractComponentInstanceResource> extends AbstractComponentsResource<T> {
 
@@ -43,11 +49,15 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 			return creationResult.getResponse();
 		}
 		if (creationResult.getStatus().equals(Status.CREATED)) {
-			HasType resource = (HasType) AbstractComponentsResource.getComponentInstaceResource((TOSCAComponentId) creationResult.getId());
-			resource.setType(jsonData.type);
-			// we assume that setType succeeded and just return the result of the
-			// creation of the artifact template resource
-			// Thus, we do NOT change res
+			final TOSCAComponentId id = (TOSCAComponentId) creationResult.getId();
+			final Definitions definitions = RepositoryFactory.getRepository().getDefinitions(id);
+			final HasType element = (HasType) definitions.getElement();
+			element.setType(jsonData.type);
+			try {
+				BackendUtils.persist(id, definitions);
+			} catch (IOException e) {
+				throw new WebApplicationException(e);
+			}
 		}
 		return creationResult.getResponse();
 	}

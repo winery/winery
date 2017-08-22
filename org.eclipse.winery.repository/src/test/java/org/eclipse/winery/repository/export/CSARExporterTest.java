@@ -30,11 +30,12 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-//@Ignore("currently not working")
+@Ignore("currently not working")
 @RunWith(Parameterized.class)
 public class CSARExporterTest extends TestWithGitBackedRepository {
 

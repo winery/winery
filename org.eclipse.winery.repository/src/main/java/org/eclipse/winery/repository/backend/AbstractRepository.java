@@ -114,7 +114,7 @@ public abstract class AbstractRepository implements IRepository {
 	public Definitions getDefinitions(TOSCAComponentId id) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		if (!exists(ref)) {
-			return BackendUtils.createWrapperDefinitions(id);
+			return BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(id);
 		}
 		try {
 			InputStream is = RepositoryFactory.getRepository().newInputStream(ref);

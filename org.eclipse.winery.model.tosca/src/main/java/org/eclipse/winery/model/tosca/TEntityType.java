@@ -86,7 +86,7 @@ import org.eclipse.jdt.annotation.Nullable;
         TArtifactType.class,
         TPolicyType.class
 })
-public class TEntityType extends TExtensibleElements implements HasName, HasInheritance {
+public class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace {
     @XmlElement(name = "Tags")
     protected TTags tags;
     @XmlElement(name = "DerivedFrom")

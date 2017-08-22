@@ -51,8 +51,8 @@ public interface IWineryRepositoryCommon {
 	/**
 	 * Loads the TDefinition element belonging to the given id.
 	 *
-	 * Even if the given id does not exist in the repository (<code>!exists(id)</code>), an empty wrappter definitions
-	 * is generated
+	 * Even if the given id does not exist in the repository (<code>!exists(id)</code>), an empty wrapper definitions
+	 * with an empty element is generated
 	 *
 	 * @param id the TOSCAComponentId to load
 	 */

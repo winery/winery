@@ -45,7 +45,7 @@ public class WineryUsingHttpServer {
 
 	private static void addServlet(ServletContextHandler context, String s) {
 		ServletHolder h = context.addServlet(com.sun.jersey.spi.container.servlet.ServletContainer.class, "/*");
-		h.setInitParameter("com.sun.jersey.config.property.packages", "org.eclipse.winery.repository.resources");
+		h.setInitParameter("com.sun.jersey.config.property.packages", "org.eclipse.winery.repository.rest.resources");
 		h.setInitParameter("com.sun.jersey.config.feature.FilterForwardOn404", "false");
 		h.setInitParameter("com.sun.jersey.config.feature.CanonicalizeURIPath", "true");
 		h.setInitParameter("com.sun.jersey.config.feature.NormalizeURI", "true");

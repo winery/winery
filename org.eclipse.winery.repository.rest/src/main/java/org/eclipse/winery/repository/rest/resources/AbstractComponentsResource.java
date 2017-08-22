@@ -124,7 +124,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	@SuppressWarnings("unchecked")
 	private static Class<? extends AbstractComponentInstanceResource> getComponentInstanceResourceClassForType(String type) {
 		// Guess the package
-		String pkg = "org.eclipse.winery.repository.resources.";
+		String pkg = "org.eclipse.winery.repository.rest.resources.";
 
 		pkg += RestUtils.getIntermediateLocationStringForType(type, ".");
 

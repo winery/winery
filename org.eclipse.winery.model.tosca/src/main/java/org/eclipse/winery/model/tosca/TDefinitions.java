@@ -26,8 +26,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
@@ -164,6 +166,8 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     /**
      * Convenience method for <code>this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0)</code>
      */
+    @XmlTransient
+    @JsonIgnore
     public TExtensibleElements getElement() {
         return this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
     }

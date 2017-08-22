@@ -58,8 +58,16 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.PlanId;
@@ -71,6 +79,8 @@ import org.eclipse.winery.model.tosca.HasTargetNamespace;
 import org.eclipse.winery.model.tosca.ObjectFactory;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TArtifactType;
+import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
@@ -81,9 +91,16 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TPolicyTemplate;
+import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
@@ -515,6 +532,42 @@ public class BackendUtils {
 		ObjectFactory of = new ObjectFactory();
 		Definitions defs = of.createDefinitions();
 		return updateWrapperDefinitions(tcId, defs);
+	}
+
+	public static Definitions createWrapperDefinitionsAndInitialEmptyElement(TOSCAComponentId id) {
+		final Definitions definitions = createWrapperDefinitions(id);
+		HasIdInIdOrNameField element;
+		if (id instanceof RelationshipTypeImplementationId) {
+			element = new TRelationshipTypeImplementation();
+		} else if (id instanceof NodeTypeImplementationId) {
+			element = new TNodeTypeImplementation();
+		} else if (id instanceof RequirementTypeId) {
+			element = new TRequirementType();
+		} else if (id instanceof NodeTypeId) {
+			element = new TNodeType();
+		} else if (id instanceof RelationshipTypeId) {
+			element = new TRelationshipType();
+		} else if (id instanceof CapabilityTypeId) {
+			element = new TCapabilityType();
+		} else if (id instanceof ArtifactTypeId) {
+			element = new TArtifactType();
+		} else if (id instanceof PolicyTypeId) {
+			element = new TPolicyType();
+		} else if (id instanceof PolicyTemplateId) {
+			element = new TPolicyTemplate();
+		} else if (id instanceof ServiceTemplateId) {
+			element = new TServiceTemplate();
+		} else if (id instanceof ArtifactTemplateId) {
+			element = new TArtifactTemplate();
+		} else {
+			throw new IllegalStateException("Unhandled id branch. Could happen for XSDImportId");
+		}
+		element.setId(id.getXmlId().getDecoded());
+		if (element instanceof HasTargetNamespace) {
+			((HasTargetNamespace) element).setTargetNamespace(id.getNamespace().getDecoded());
+		}
+		definitions.setElement((TExtensibleElements) element);
+		return definitions;
 	}
 
 	/**
@@ -1115,5 +1168,4 @@ public class BackendUtils {
 		}
 		return w.toString();
 	}
-
 }

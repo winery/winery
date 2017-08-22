@@ -11,32 +11,36 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public interface HasIdInIdOrNameField {
 
-	/**
-	 * Returns the id
-	 */
-	default String getId() {
-		if (this instanceof HasId) {
-			return ((HasId) this).getId();
-		} else {
-			return ((HasName) this).getName();
-		}
-	}
+    /**
+     * Returns the id
+     */
+    @XmlTransient
+    @JsonIgnore
+    default String getId() {
+        if (this instanceof HasId) {
+            return ((HasId) this).getId();
+        } else {
+            return ((HasName) this).getName();
+        }
+    }
 
-	/**
-	 * Sets the id using the given string.
-	 * In case the class implements HasId, the id is set using HasId.setId.
-	 * Otherwise, the name attribute is set
-	 * 
-	 * @param id the id to set
-	 */
-	default void setId(String id) {
-		if (this instanceof HasId) {
-			((HasId) this).setId(id);
-		} else {
-			((HasName) this).setName(id);
-		}
-	}
-	
+    /**
+     * Sets the id using the given string. In case the class implements HasId, the id is set using HasId.setId.
+     * Otherwise, the name attribute is set
+     *
+     * @param id the id to set
+     */
+    default void setId(String id) {
+        if (this instanceof HasId) {
+            ((HasId) this).setId(id);
+        } else {
+            ((HasName) this).setName(id);
+        }
+    }
 }
