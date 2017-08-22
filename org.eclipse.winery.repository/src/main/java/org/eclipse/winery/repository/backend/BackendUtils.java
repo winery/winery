@@ -76,7 +76,6 @@ import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
-import org.eclipse.winery.model.tosca.ObjectFactory;
 import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
@@ -115,6 +114,7 @@ import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
@@ -222,7 +222,7 @@ public class BackendUtils {
 		try {
 			tcId = constructor.newInstance(namespace, id, URLencoded);
 		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
+			| IllegalArgumentException | InvocationTargetException e) {
 			BackendUtils.LOGGER.error("Could not create id instance", e);
 			throw new IllegalStateException(e);
 		}
@@ -529,8 +529,7 @@ public class BackendUtils {
 	 * @return a definitions element prepared for wrapping a TOSCA component instance
 	 */
 	public static Definitions createWrapperDefinitions(TOSCAComponentId tcId) {
-		ObjectFactory of = new ObjectFactory();
-		Definitions defs = of.createDefinitions();
+		Definitions defs = new Definitions();
 		return updateWrapperDefinitions(tcId, defs);
 	}
 
@@ -1006,7 +1005,7 @@ public class BackendUtils {
 	public static void synchronizeReferences(ArtifactTemplateId id) throws IOException {
 		TArtifactTemplate template = RepositoryFactory.getRepository().getElement(id);
 
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(id);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
 		SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
 		if (files.isEmpty()) {
 			// clear artifact references

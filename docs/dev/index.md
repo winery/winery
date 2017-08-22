@@ -4,6 +4,7 @@ This document provides (i) guides about development and (ii) design ideas of Win
 
 Other sources of information:
 
+- [Angular UI](angular-ui) - documentation recarding the user interface, which is written in Angular
 - [CodeHeaders](CodeHeaders) - documentation about required code headers
 - [Encoding](Encoding) - information about how percent-encoding is used at Winery
 - [RepositoryLayout](RepositoryLayout) - documents the layout of the repository (stored as plain text files)
@@ -435,6 +436,7 @@ You can use [JRebel](http://www.jrebel.com) for hot code replacement in the Tomc
 
 #### Strange errors
 I get strange errors:
+    `java.lang.NoClassDefFoundError: Lorg/slf4j/Logger`,
     `java.lang.ClassNotFoundException: com.sun.jersey.spi.container.servlet.ServletContainer`,
     `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already`,
     `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already. Could not load [org.apache.xerces.util.XMLGrammarPoolImpl].`, or
@@ -448,6 +450,17 @@ Solution 1:
 4. Build -> Rebuild Project
 
 Solution 2:
+
+1. Stop Tomcat
+2. Exit Eclipse
+3. Ensure that everything is committed and pushed. Double check with `git gui`.
+4. Reset everything in the repository as it was a clean checkout: `git clean -xdf`
+5. Execute the basic setup steps again:
+  - `mvn package install -DskipTests=true`
+  - Open `pom.xml` in the root folder using IntelliJ and "Import as Project"
+  - Setup Tomcat as usual
+
+Solution 3:
 
 Someone could have used an `ExecutorService` and not adhered the lifecycle.
 

@@ -32,20 +32,25 @@ Email your supervisor your GitHub username.
 
 ### First steps
 
-  1. Clone https://github.com/opentosca/winery (automatically it becomes the `origin`)
-  2. `git remote add upstream https://github.com/eclipse/winery.git`
+  1. Clone <https://github.com/opentosca/winery> (automatically it becomes the `origin`).
+     - We recommend that git repositories reside in `c:\git-repositories`.
+     - Use [ConEmu](https://conemu.github.io/) as program for all your shells: `choco install conemu`.
+       Install [chocolatey](https://chocolatey.org/) to use the `choco` command.
+     - Execute `git clone https://github.com/OpenTOSCA/winery.git` in `c:\git-repositories`.
+  2. Change into the newly created directory `winery`.
+  2. Add `upstream` as second remote: `git remote add upstream https://github.com/eclipse/winery.git`
 
 ### Steps for working on a topic
 
   1. Create a new branch for each topic (fix a bug, add functionality) and name it accordingly.
-  2. Sync with latest upstream/master: `git fetch upstream`
-  3. Create branch based on `upstream/master` and make it known publicly:
-     - `git checkout upstream/master`
-   - `git checkout -b [name]`
-   - `git push --set-upstream origin [name]`
+  2. Sync with latest changes on origin (especially master branch): `git fetch origin`.
+  3. Create branch based on `origin/master` and make it known publicly:
+     - `git checkout origin/master`
+     - `git checkout -b [name]`
+     - `git push --set-upstream origin [name]`
   4. Work on the branch with the specific name
-  5. Commit. Don't forget to sign the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui)
-  6. Push the changes to origin: `git push`
+  5. Commit. Don't forget to sign the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui).
+  6. Push the changes to origin: `git push`.
 
 You keep working and discuss with your supervisor how things go.
 For that, create a pull request to https://github.com/opentosca/winery to enable internal reviewing.
@@ -62,7 +67,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
 * Steps to prepare Pull Request:
   1. `git fetch upstream` - fetches all updates from https://github.com/eclipse/winery ("upstream") to the local git storage
   2. `git merge upstream/master` - merges all updates from upstream to the local branch
-  3. (Resolve merge conflicts) - required if there are confilicting changes
+  3. (Resolve merge conflicts) - required if there are conflicting changes
   4. Commit & Push with signed commit message (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui) - this ensures that you have the changes backuped in case something goes wrong at the next steps 
   5. `git reset upstream/master` - this prepares that all commits can be squashed together:
      The local checkout ("working tree") is left untouched, but the "pointer" of the current branch is reset to `upstream/master`.
@@ -76,7 +81,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
      - (Don't forget RESCAN to see the current changes)
   7. Add Changes/Fixed to `CHANGELOG.md` and add description to `docs/index.md` (if helpful)
   8. Press "Stage to Commit" 🡒 all changes are staged to Commit
-  9. Sign the Commit Message (<kbd>Ctrl</kbd>+<kbd>S</kbd>)
+  9. Sign the Commit Message (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui)
   10. Commit & Push with "force overwrite" since you changed the branch: `git push -f`
 
 ## GitHub - Create Pull Request
@@ -106,11 +111,12 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
   - Wait for a second review
   - In case everything is fine, squash the commits into one.
     See [GitHub - Prepare Pull Request](#github---prepare-pull-request).
-    Then, do a force push (`git push -f`)
+    Then, do a force push (`git push -f`).
 
 ## GitHub - After Pull Request Got Merged
 
-* Delete the branch on `origin`: `git push origin :[name]` or use GitHub's UI via <https://github.com/OpenTOSCA/winery/branches/active>.
+* Delete the branch locally.
+  The branch on origin (<https://github.com/OpenTOSCA/winery>) is deleted by the maintainer having done the merge.
 
 ## Excursus: Git
 

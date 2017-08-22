@@ -9,6 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Karoline Saatkamp - add get BadRequest test method
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources;
 
@@ -74,14 +75,20 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 		return (fileName.endsWith("txt"));
 	}
 
-	private ContentType getAccept(String fileName) {
+	private boolean isZip(String fileName) {
+		return (fileName.endsWith("zip"));
+	}
+
+	private String getAccept(String fileName) {
 		if (isXml(fileName)) {
-			return ContentType.XML;
+			return ContentType.XML.toString();
 		} else if (fileName.endsWith("-badrequest.txt")) {
 			// convention: we always expect JSON
-			return ContentType.JSON;
+			return ContentType.JSON.toString();
+		} else if (isZip(fileName)) {
+			return "application/zip";
 		} else {
-			return ContentType.JSON;
+			return ContentType.JSON.toString();
 		}
 	}
 
@@ -112,6 +119,9 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 					.asString();
 			if (isXml(fileName)) {
 				org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
+			} else if (isZip(fileName)) {
+				// TODO  @pmeyer: Cool ZIP equal test
+				Assert.assertNotNull(receivedStr);
 			} else {
 				JSONAssert.assertEquals(
 						expectedStr,
@@ -197,8 +207,8 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 	}
 
 	/**
-	 * Because some methods don't respond with a "created" status.
-	 * TODO: fix all methods which return "noContent" status so that this method can be deleted.
+	 * Because some methods don't respond with a "created" status. TODO: fix all methods which return "noContent" status
+	 * so that this method can be deleted.
 	 */
 	public void assertNoContentPost(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);

@@ -18,6 +18,7 @@ import java.io.IOException;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
@@ -29,6 +30,7 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -82,6 +84,10 @@ public interface IWineryRepositoryCommon {
 
 	default TArtifactTemplate getElement(ArtifactTemplateId id) {
 		return (TArtifactTemplate) this.getDefinitions(id).getElement();
+	}
+
+	default TArtifactType getElement(ArtifactTypeId id) {
+		return (TArtifactType) this.getDefinitions(id).getElement();
 	}
 
 	default TPolicyTemplate getElement(PolicyTemplateId id) {

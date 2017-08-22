@@ -9,6 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Karoline Saatkamp - add split API
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
@@ -344,7 +345,7 @@ public class TopologyTemplateResource {
 			"getTopologyTemplate(QName)} consumes this template</p>" +
 			"<p>@return The XML representation of the topology template <em>without</em>" +
 			"associated artifacts and without the parent service template </p>")
-	@Produces(MediaType.TEXT_XML)
+	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
 	// @formatter:on
 	public Response getComponentInstanceXML() {
 		return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate);

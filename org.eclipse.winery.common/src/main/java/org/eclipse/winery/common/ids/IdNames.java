@@ -31,8 +31,9 @@ public class IdNames {
 
 	// the files belonging to one artifact template are nested in the sub
 	// directory "files"
-	public static final String ARTIFACTTEMPLATEDIRECTORY = "files";
-
+	public static final String ARTIFACTTEMPLATEFILESDIRECTORY = "files";
+	public static final String ARTIFACTTEMPLATESRCDIRECTORY = "src";
+	
 	public static final String CONSTRAINTTYPES = "constrainttypes";
 	public static final String NAMESPACES = "namespaces";
 	public static final String PLANLANGUAGES = "planlanguages";

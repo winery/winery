@@ -10,6 +10,7 @@
  *     Oliver Kopp - initial API and implementation
  *     Nicole Keppler, Lukas Balzer - changes for angular frontend
  *     Armin Hüneburg - add initial git support
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.rest;
 
@@ -71,6 +72,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
@@ -227,6 +229,25 @@ public class RestUtils {
 		sb.append("attachment;filename=\"");
 		sb.append(resource.getXmlId().getEncoded());
 		sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
+		sb.append("\"");
+		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+	}
+
+	/**
+	 * Zipps the folder reference given by the id. As filename the parent id is used.
+	 */
+	public static Response getZippedContents(final GenericId id) {
+		StreamingOutput so = output -> {
+			try {
+				RepositoryFactory.getRepository().getZippedContents(id, output);
+			} catch (Exception e) {
+				throw new WebApplicationException(e);
+			}
+		};
+		StringBuilder sb = new StringBuilder();
+		sb.append("attachment;filename=\"");
+		sb.append(id.getParent().getXmlId().getEncoded());
+		sb.append(Constants.SUFFIX_ZIP);
 		sb.append("\"");
 		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
 	}
@@ -767,7 +788,7 @@ public class RestUtils {
 			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
 		}
-		return Response.ok().build();
+		return Response.noContent().build();
 	}
 
 	/**

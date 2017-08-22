@@ -14,8 +14,8 @@ package org.eclipse.winery.repository.rest.resources._support.dataadapter;
 
 import javax.xml.bind.annotation.XmlElement;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 //@XmlType
 public class Injection {
@@ -31,6 +31,5 @@ public class Injection {
 		this.nodeID = hostedNodeID;
 		this.injectedTopologyFragment = injectedTopologyFragment;
 	}
-
 }
 

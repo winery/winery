@@ -15,8 +15,10 @@ import org.eclipse.winery.common.exceptions.WineryException;
 
 /**
  * Base exception for all repository exceptions
+ * 
+ * To be used if a sub-class is not worth generating
  */
-public abstract class WineryRepositoryException extends WineryException {
+public class WineryRepositoryException extends WineryException {
 	
 	public WineryRepositoryException(String message, Throwable cause) {
 		super(message, cause);

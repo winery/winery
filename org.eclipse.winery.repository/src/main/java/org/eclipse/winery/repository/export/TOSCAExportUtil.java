@@ -9,6 +9,7 @@
  * Contributors:
  *     Kálmán Képes - initial API and implementation and/or initial documentation
  *     Oliver Kopp - adapted to new storage model and to TOSCA v1.0
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
@@ -94,6 +95,7 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
@@ -336,7 +338,7 @@ public class TOSCAExportUtil {
 			try {
 				parentId = constructor.newInstance(derivedFromType);
 			} catch (InstantiationException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException e) {
+				| IllegalArgumentException | InvocationTargetException e) {
 				throw new IllegalStateException("Could not instantiate id for parent", e);
 			}
 
@@ -643,7 +645,7 @@ public class TOSCAExportUtil {
 		// Therefore, we adapt the content of the attached files to the really existing files
 		BackendUtils.synchronizeReferences(id);
 
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(id);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
 		SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
 		for (RepositoryFileReference ref : files) {
 			// Even if writing a TOSCA only (!this.writingCSAR),

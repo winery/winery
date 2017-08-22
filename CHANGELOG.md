@@ -14,6 +14,8 @@ We refer to [GitHub issues](https://github.com/eclipse/winery/issues) by using `
 
 - Initial support for BPMN4TOSCA implemented using Angular
 - org.eclipse.winery.model.tosca was extended with builders and some helper classes
+- Fixed wrong output of "CSAR Export mode. Putting XSD into CSAR" if in CSAR export mode
+- New project `org.eclipse.winery.repository.rest` for separating REST resources from the backend
 
 ## [v2.0.0-M1] - 2017-07-03
 
@@ -29,6 +31,7 @@ Intermediate milestone build for the OpenTOSCA eco system.
 - **BREAKING**: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
 - Add support of [XaaS Packager](http://eclipse.github.io/winery/user/XaaSPackager)
 - Add support of [Splitting](http://eclipse.github.io/winery/user/Splitting)
+- Add support of [DASpecification](http://eclipse.github.io/winery/user/DASpecification)
 
 ## Initial Code Contribution - 2014-03-27
 

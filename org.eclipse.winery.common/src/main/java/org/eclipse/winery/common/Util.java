@@ -109,8 +109,7 @@ public class Util {
 	}
 
 	/**
-	 * Encodes the namespace and the localname of the given qname, separated by
-	 * "/"
+	 * Encodes the namespace and the localname of the given qname, separated by "/"
 	 *
 	 * @return <double encoded namespace>"/"<double encoded localname>
 	 */
@@ -133,7 +132,8 @@ public class Util {
 	}
 
 	/**
-	 * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(org.eclipse.winery.common.ids.GenericId) instead.
+	 * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(org.eclipse.winery.common.ids.GenericId)
+	 * instead.
 	 *
 	 * @return the path starting from the root element to the current element. Separated by "/", URLencoded, but
 	 * <b>not</b> double encoded. With trailing slash if sub-resources can exist
@@ -197,7 +197,6 @@ public class Util {
 			}
 		}
 	}
-
 
 
 	@SuppressWarnings("unchecked")
@@ -268,16 +267,14 @@ public class Util {
 	}
 
 	/**
-	 * @return Singular type name for the given id. E.g., "ServiceTemplateId"
-	 *         gets "ServiceTemplate"
+	 * @return Singular type name for the given id. E.g., "ServiceTemplateId" gets "ServiceTemplate"
 	 */
 	public static String getTypeForComponentId(Class<? extends TOSCAComponentId> idClass) {
 		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
 
 	/**
-	 * Returns the root path fragment for the given
-	 * AbstractComponentIntanceResource
+	 * Returns the root path fragment for the given AbstractComponentIntanceResource
 	 *
 	 * With trailing slash
 	 *
@@ -312,21 +309,19 @@ public class Util {
 	/**
 	 * Just calls @link{qname2href}
 	 *
-	 * Introduced because of JSP error
-	 * "The method qname2href(String, Class<? extends TExtensibleElements>, QName) in the type Util is not applicable for the arguments (String, Class<TNodeType>, QName, String)"
+	 * Introduced because of JSP error "The method qname2href(String, Class<? extends TExtensibleElements>, QName) in
+	 * the type Util is not applicable for the arguments (String, Class<TNodeType>, QName, String)"
 	 */
 	public static String qname2hrefWithName(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
 		return Util.qname2href(repositoryUrl, element, qname, name);
 	}
 
 	/**
-	 *
 	 * @param repositoryUrl the URL to the repository
-	 * @param element the element directly nested below a definitions element in
-	 *            XML
-	 * @param qname the QName of the element
-	 * @param name (optional) if not null, the name to display as text in the
-	 *            reference. Default: localName of the QName
+	 * @param element       the element directly nested below a definitions element in XML
+	 * @param qname         the QName of the element
+	 * @param name          (optional) if not null, the name to display as text in the reference. Default: localName of
+	 *                      the QName
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
 	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
@@ -353,11 +348,9 @@ public class Util {
 	}
 
 	/**
-	 *
 	 * @param repositoryUrl the URL to the repository
-	 * @param element the element directly nested below a definitions element in
-	 *            XML
-	 * @param qname the QName of the element
+	 * @param element       the element directly nested below a definitions element in XML
+	 * @param qname         the QName of the element
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
 	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname) {
@@ -444,13 +437,11 @@ public class Util {
 	}
 
 	/**
-	 * Method similar to {@link org.eclipse.winery.repository.Utils#getXMLAsString(java.lang.Class, java.lang.Object, boolean)}.
+	 * Method similar to {@link org.eclipse.winery.repository.Utils#getXMLAsString(java.lang.Class, java.lang.Object,
+	 * boolean)}.
 	 *
-	 * Differences:
-	 * <ul>
-	 * <li>XML processing instruction is not included in the header</li>
-	 * <li>JAXBcontext is created at each call</li>
-	 * </ul>
+	 * Differences: <ul> <li>XML processing instruction is not included in the header</li> <li>JAXBcontext is created at
+	 * each call</li> </ul>
 	 */
 	public static <T> String getXMLAsString(Class<T> clazz, T obj) throws Exception {
 		// copied from Utils java, but we create an own JAXBcontext here
@@ -461,7 +452,7 @@ public class Util {
 			// For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
 			// @formatter:off
 			context = JAXBContext.newInstance(
-					TEntityType.class);
+				TEntityType.class);
 			// @formatter:on
 		} catch (JAXBException e) {
 			throw new IllegalStateException(e);
@@ -504,16 +495,15 @@ public class Util {
 	}
 
 	/**
-	 * Determines whether the instance belonging to the given id supports the
-	 * "name" attribute. This cannot be done using the super class as the TOSCA
-	 * specification treats that differently in the case of EntityTemplates
+	 * Determines whether the instance belonging to the given id supports the "name" attribute. This cannot be done
+	 * using the super class as the TOSCA specification treats that differently in the case of EntityTemplates
 	 *
-	 * NOTE: The respective subclasses of AbstractComponentInstanceResource have
-	 * to implement {@link org.eclipse.winery.repository.resources.IHasName}
+	 * NOTE: The respective subclasses of AbstractComponentInstanceResource have to implement {@link
+	 * org.eclipse.winery.repository.resources.IHasName}
 	 *
 	 * @param idClass the class of the to test
-	 * @return true if the TOSCA model class belonging to the given id supports
-	 *         the method "getName()" in addition to "getId()"
+	 * @return true if the TOSCA model class belonging to the given id supports the method "getName()" in addition to
+	 * "getId()"
 	 */
 	public static boolean instanceSupportsNameAttribute(Class<? extends TOSCAComponentId> idClass) {
 		if (ServiceTemplateId.class.isAssignableFrom(idClass)) {
@@ -541,8 +531,7 @@ public class Util {
 	}
 
 	/**
-	 * Determines the name of the CSS class used for relationshipTypes at
-	 * nodeTemplateRenderer.tag
+	 * Determines the name of the CSS class used for relationshipTypes at nodeTemplateRenderer.tag
 	 */
 	public static String makeCSSName(String namespace, String localName) {
 		// according to http://stackoverflow.com/a/79022/873282 everything is allowed
@@ -604,24 +593,20 @@ public class Util {
 		// TODO: Integrate with other name cleaning functions. "." should not be replaced as it is used as separator in the java package name
 		// @formatter:off
 		return s.replace(":", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
-				.replace("/", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
-				.replace(" ", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
-				.replace("-", Util.FORBIDDEN_CHARACTER_REPLACEMENT);
+			.replace("/", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
+			.replace(" ", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
+			.replace("-", Util.FORBIDDEN_CHARACTER_REPLACEMENT);
 		// @formatter:on
 	}
 
 
 	/**
-	 * Removes all non-NCName characters from the given string and returns the
-	 * result
+	 * Removes all non-NCName characters from the given string and returns the result
 	 *
-	 * This function should be consistent with
-	 * org.eclipse.winery.common.Util.cleanName(String)
+	 * This function should be consistent with org.eclipse.winery.common.Util.cleanName(String)
 	 *
-	 * TODO: This method seems to be equal to {@link
-	 * org.eclipse.winery.repository.Utils.createXMLidAsString(String)}. These
-	 * methods should be merged.
-	 *
+	 * TODO: This method seems to be equal to {@link org.eclipse.winery.repository.Utils.createXMLidAsString(String)}.
+	 * These methods should be merged.
 	 */
 	public static String makeNCName(String text) {
 		if (StringUtils.isEmpty(text)) {
@@ -675,20 +660,17 @@ public class Util {
 	}
 
 	/**
-	 * Bridge to client.getType(). Just calls client getType(), used by
-	 * functions.tld.
+	 * Bridge to client.getType(). Just calls client getType(), used by functions.tld.
 	 *
-	 * We suppress compiler warnings as JSP 2.0 do not offer support for
-	 * generics, but we're using JSP 2.0...
+	 * We suppress compiler warnings as JSP 2.0 do not offer support for generics, but we're using JSP 2.0...
 	 *
 	 * @param client the repository client to use
-	 * @param qname the QName to resolve
-	 * @param clazz the class the QName is describing
+	 * @param qname  the QName to resolve
+	 * @param clazz  the class the QName is describing
 	 * @return {@inheritDoc}
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static org.eclipse.winery.model.tosca.TEntityType getType(org.eclipse.winery.common.interfaces.IWineryRepository client, javax.xml.namespace.QName qname, java.lang.Class clazz) {
 		return client.getType(qname, clazz);
 	}
-
 }

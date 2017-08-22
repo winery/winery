@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.artifacts;
 
@@ -60,6 +61,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
@@ -104,7 +106,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@RestDoc(methodDescription = "Creates a new implementation/deployment artifact. " +
-			"If an implementation artifact with the same name already exists, it is <em>overridden</em>.")
+		"If an implementation artifact with the same name already exists, it is <em>overridden</em>.")
 	@SuppressWarnings("unchecked")
 	public Response onPost(GenerateArtifactApiData apiData, @Context UriInfo uriInfo) {
 		// we assume that the parent ComponentInstance container exists
@@ -364,7 +366,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		// store it
 		// TODO: refactor: this is more a RepositoryUtils thing than a special thing here; see also importFile at CSARImporter
 
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId(artifactTemplateId);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
 		RepositoryFileReference fref = new RepositoryFileReference(fileDir, zipFile.getName());
 		try (InputStream is = Files.newInputStream(zipFile.toPath());
 			 BufferedInputStream bis = new BufferedInputStream(is)) {

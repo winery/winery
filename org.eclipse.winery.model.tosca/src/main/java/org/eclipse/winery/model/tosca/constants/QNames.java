@@ -15,9 +15,9 @@ import javax.xml.namespace.QName;
 
 public class QNames {
 
-	public static final QName QNAME_BORDER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "bordercolor");
-	public static final QName QNAME_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "color");
+    public static final QName QNAME_BORDER_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "bordercolor");
+    public static final QName QNAME_COLOR = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "color");
 
-	// Boolean flag to indicate that the import is generated via the Winery Properties Defintion
-	public static final QName QNAME_WINERYS_PROPERTIES_DEFINITION_ATTRIBUTE = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "wpd");
+    // Boolean flag to indicate that the import is generated via the Winery Properties Defintion
+    public static final QName QNAME_WINERYS_PROPERTIES_DEFINITION_ATTRIBUTE = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "wpd");
 }

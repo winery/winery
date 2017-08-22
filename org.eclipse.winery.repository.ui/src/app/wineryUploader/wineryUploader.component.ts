@@ -68,7 +68,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
     @Input() allowMultipleFiles = false;
 
     @Output() onFileDropped = new EventEmitter();
-    @Output() onSucces = new EventEmitter();
+    @Output() onSuccess = new EventEmitter();
     @Output() onError = new EventEmitter();
 
     constructor(public service: WineryUploaderService,
@@ -110,13 +110,18 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
                 if (!isNullOrUndefined(this.modalRef)) {
                     this.modalRef.hide();
                 }
-                this.onSucces.emit();
+                this.onSuccess.emit();
             } else {
                 this.notify.error('Error while uploading file ' + item.file.name);
                 this.onError.emit();
             }
 
             return {item, response, status, headers};
+        };
+
+        this.service.uploader.onCompleteAll = () => {
+            this.service.uploader.clearQueue();
+
         };
 
         this.service.uploader.uploadAll();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -9,6 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
+ *     Philipp Meyer - support for src directory
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
@@ -27,6 +28,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
@@ -45,6 +47,8 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSrcDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
@@ -60,14 +64,12 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemp
 /**
  * Models an Artifact Template with its artifact references
  *
- * The associated files (through tArtifactReference) are stored directly within
- * this resource. The element <ArtifactReference> is generated during export
- * only
+ * The associated files (through tArtifactReference) are stored directly within this resource. The element
+ * <ArtifactReference> is generated during export only
  *
- * This class inherits from AbstractComponentInstanceResourceDefinitionsBacked
- * and not from TEntityTemplateResource<TArtifactTemplate>, because
- * ArtifactTemplates are directly available under TDefinitions and we need the
- * generic resource handling
+ * This class inherits from AbstractComponentInstanceResourceDefinitionsBacked and not from
+ * TEntityTemplateResource<TArtifactTemplate>, because ArtifactTemplates are directly available under TDefinitions and
+ * we need the generic resource handling
  */
 
 public class ArtifactTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IEntityTemplateResource<TArtifactTemplate>, IHasName {
@@ -114,15 +116,28 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		return new TArtifactTemplate();
 	}
 
-	@Override
 	public void synchronizeReferences() throws IOException {
 		BackendUtils.synchronizeReferences((ArtifactTemplateId) this.id);
 	}
 
 	@Path("files/")
 	public FilesResource getFilesResource() {
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateDirectoryId((ArtifactTemplateId) this.id);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId((ArtifactTemplateId) this.id);
 		return new FilesResource(fileDir);
+	}
+
+	@Path("source/")
+	public FilesResource getSrcResource() {
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSrcDirectoryId((ArtifactTemplateId) this.id);
+		return new FilesResource(fileDir);
+	}
+
+	@GET
+	@Path("source/zip")
+	@Produces(MimeTypes.MIMETYPE_ZIP)
+	public Response getDefinitionsAsResponse() {
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSrcDirectoryId((ArtifactTemplateId) this.id);
+		return RestUtils.getZippedContents(fileDir);
 	}
 
 	@Override
@@ -211,16 +226,13 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	}
 
 	/**
-	 * Query parameter {@code type}:<br />
-	 * Returns the type of the artifact template
+	 * Query parameter {@code type}:<br /> Returns the type of the artifact template
 	 *
-	 * Query parameter {@code referenceCount}:<br />
-	 * Determines the number of elements known by the repository which point to
-	 * this resource. This method probably can be moved up the type hierarchy.
-	 * Currently, it is only required here by the topology modeler.
+	 * Query parameter {@code referenceCount}:<br /> Determines the number of elements known by the repository which
+	 * point to this resource. This method probably can be moved up the type hierarchy. Currently, it is only required
+	 * here by the topology modeler.
 	 *
-	 * @return the type of the artifact template OR the number of references
-	 *         pointing to this resource
+	 * @return the type of the artifact template OR the number of references pointing to this resource
 	 */
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -235,7 +247,6 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 			// we enforce the query parameter to be extensible to other queries
 			return Response.status(Status.BAD_REQUEST).entity("You have to pass the query parameter referenceCount or type").build();
 		}
-
 	}
 
 	/* not yet implemented */
@@ -252,5 +263,4 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		return Response.ok().entity(res).build();
 	}
 	*/
-
 }

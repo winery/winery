@@ -11,6 +11,7 @@
  *     Tino Stadelmaier, Philipp Meyer - rename id and/or namespace
  *     Lukas Harzentter - get namespaces for specific component
  *     Nicole Keppler - forceDelete for Namespaces
+ *     Philipp Meyer - support for source directory
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
@@ -71,14 +72,21 @@ import org.eclipse.winery.repository.backend.AbstractRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepositoryAdministration;
 import org.eclipse.winery.repository.backend.NamespaceManager;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.RepositoryBasedXsdImportManager;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
+import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.tika.mime.MediaType;
 import org.eclipse.jgit.dircache.InvalidPathException;
@@ -650,5 +658,27 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	public InputStream newInputStream(RepositoryFileReference ref) throws IOException {
 		Path path = this.ref2AbsolutePath(ref);
 		return Files.newInputStream(path);
+	}
+
+	@Override
+	public void getZippedContents(final GenericId id, OutputStream out) throws WineryRepositoryException {
+		Objects.requireNonNull(id);
+		Objects.requireNonNull(out);
+
+		SortedSet<RepositoryFileReference> containedFiles = this.getContainedFiles(id);
+
+		try (final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out)) {
+			for (RepositoryFileReference ref : containedFiles) {
+				zos.putArchiveEntry(new ZipArchiveEntry(ref.getFileName()));
+				try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
+					IOUtils.copy(is, zos);
+				}
+				zos.closeArchiveEntry();
+			}
+		} catch (ArchiveException e) {
+			throw new WineryRepositoryException("Internal error while generating archive", e);
+		} catch (IOException e) {
+			throw new WineryRepositoryException("I/O exception during export", e);
+		}
 	}
 }

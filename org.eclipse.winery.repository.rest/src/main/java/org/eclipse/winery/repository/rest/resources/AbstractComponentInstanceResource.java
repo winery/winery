@@ -33,10 +33,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
@@ -243,7 +245,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 */
 	@GET
 	@Produces({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
-	public Response getDefinitionsAsResponse(@QueryParam(value = "csar") String csar) {
+	public Response getDefinitionsAsResponse(
+			@QueryParam(value = "csar") String csar,
+			@Context UriInfo uriInfo
+	) {
 		if (!RepositoryFactory.getRepository().exists(this.id)) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
@@ -261,6 +266,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 				TOSCAExportUtil exporter = new TOSCAExportUtil();
 				// we include everything related
 				Map<String, Object> conf = new HashMap<>();
+				conf.put(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString(), uriInfo.getBaseUri());
 				try {
 					exporter.exportTOSCA(AbstractComponentInstanceResource.this.id, output, conf);
 				} catch (Exception e) {

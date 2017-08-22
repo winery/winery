@@ -16,7 +16,6 @@ import { Observable } from 'rxjs/Rx';
 import { isNullOrUndefined } from 'util';
 
 import { NodeTemplate } from '../model/nodetemplate';
-import { Operation } from '../model/operation';
 import { PageParameter } from '../model/page-parameter';
 import { Node } from '../model/workflow/node';
 import { HttpService } from '../util/http.service';
@@ -100,7 +99,7 @@ export class WineryService {
     public loadNodeTemplateOperationParameter(namespace: string,
                                               nodeType: string,
                                               interfaceName: string,
-                                              operation: string): Promise<{input:string[], output:string[]}> {
+                                              operation: string): Promise<{ input: string[], output: string[] }> {
         const relativePath = 'nodetypes/' + this.encode(namespace) + '/' + this.encode(nodeType)
             + '/interfaces/' + this.encode(interfaceName) + '/operations/' + this.encode(operation) + '/';
 
@@ -139,8 +138,6 @@ export class WineryService {
             + '/' + this.encode(this.serviceTemplateId) + '/plans/' + this.encode(this.plan) + '/file';
         this.httpService.get(this.getFullUrl(url)).subscribe(response => {
             const nodes = JSON.stringify(response) === '{}' ? [] : <Node[]>response;
-            console.log('load plan success');
-            console.log(nodes);
             this.broadcastService.broadcast(this.broadcastService.planModel, nodes);
         });
     }
