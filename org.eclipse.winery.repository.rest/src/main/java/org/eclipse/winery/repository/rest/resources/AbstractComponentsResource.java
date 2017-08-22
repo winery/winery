@@ -39,9 +39,9 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -52,12 +52,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Resource handling of a set of components. Each component has to provide a
- * class to handle the set. This is required to provide the correct instances of
- * TOSCAcomponentIds.
+ * Resource handling of a set of components. Each component has to provide a class to handle the set. This is required
+ * to provide the correct instances of TOSCAcomponentIds.
  *
- * TODO: Add generics here!
- * {@link RestUtils#getComponentIdClassForComponentContainer(java.lang.Class)} is then obsolete
+ * TODO: Add generics here! {@link RestUtils#getComponentIdClassForComponentContainer(java.lang.Class)} is then
+ * obsolete
  */
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
 
@@ -187,7 +186,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 		try {
 			newInstance = (AbstractComponentInstanceResource) constructors[0].newInstance(tcId);
 		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
+			| IllegalArgumentException | InvocationTargetException e) {
 			AbstractComponentsResource.LOGGER.error("Could not instantiate sub resource " + tcId);
 			throw new IllegalStateException("Could not instantiate sub resource", e);
 		}
@@ -211,9 +210,8 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	}
 
 	/**
-	 * Used by org.eclipse.winery.repository.repository.client and by the
-	 * artifactcreationdialog.tag. Especially the "name" field is used there at
-	 * the UI
+	 * Used by org.eclipse.winery.repository.repository.client and by the artifactcreationdialog.tag. Especially the
+	 * "name" field is used there at the UI
 	 *
 	 * @param grouped if given, the JSON output is grouped by namespace
 	 * @return A list of all ids of all instances of this component type. <br /> Format: <code>[({"namespace":

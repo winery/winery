@@ -17,14 +17,14 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 public class InjectionOption {
 	@XmlElement(name = "NodeID")
 	protected String nodeID;
 
-	@XmlElementWrapper (name = "InjectionOptions")
+	@XmlElementWrapper(name = "InjectionOptions")
 	@XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
 	protected List<TTopologyTemplate> injectionOptions;
 

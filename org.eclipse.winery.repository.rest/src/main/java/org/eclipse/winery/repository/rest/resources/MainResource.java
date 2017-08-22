@@ -30,9 +30,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.importing.CSARImporter;
 import org.eclipse.winery.repository.importing.ImportMetaInformation;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.API.APIResource;
 import org.eclipse.winery.repository.rest.resources.admin.AdminTopResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
@@ -146,9 +146,9 @@ public class MainResource {
 	@RestDocReturnCode(code = "200", description = "If the CSAR could be partially imported, the points where it failed are returned in the body")
 	// @formatter:off
 	public Response importCSAR(
-			@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
-			@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
-			@Context UriInfo uriInfo) {
+		@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
+		@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
+		@Context UriInfo uriInfo) {
 		// @formatter:on
 		CSARImporter importer = new CSARImporter();
 		boolean ow;

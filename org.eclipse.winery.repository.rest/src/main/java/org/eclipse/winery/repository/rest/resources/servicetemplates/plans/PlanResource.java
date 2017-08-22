@@ -29,8 +29,8 @@ import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlan.InputParameters;
 import org.eclipse.winery.model.tosca.TPlan.OutputParameters;
-import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
@@ -41,9 +41,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Does <em>not</em> implement
- * {@link org.eclipse.winery.repository.resources.IHasTypeReference}, because
- * the type of a plan is outside the system of TOSCA.
+ * Does <em>not</em> implement {@link org.eclipse.winery.repository.resources.IHasTypeReference}, because the type of a
+ * plan is outside the system of TOSCA.
  */
 public class PlanResource extends EntityWithIdResource<TPlan> implements IHasName {
 

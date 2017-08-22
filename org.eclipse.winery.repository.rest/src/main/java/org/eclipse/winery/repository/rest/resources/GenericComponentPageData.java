@@ -22,8 +22,8 @@ import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates.PolicyTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationsResource;
@@ -57,8 +57,7 @@ public final class GenericComponentPageData {
 	}
 
 	/**
-	 * Outputs the data for GenericComponentPage (Name / Id / Namespace) needed
-	 * for the genericcomponentpage.jsp
+	 * Outputs the data for GenericComponentPage (Name / Id / Namespace) needed for the genericcomponentpage.jsp
 	 */
 	public SortedSet<? extends TOSCAComponentId> getComponentInstanceIds() {
 		return this.componentInstanceIds;
@@ -94,8 +93,7 @@ public final class GenericComponentPageData {
 	/**
 	 * Required for genericcomponentpage.jsp -> addComponentInstance.jsp
 	 *
-	 * May only be used if the component supports the type (e.g., artifact
-	 * templates)
+	 * May only be used if the component supports the type (e.g., artifact templates)
 	 *
 	 * @return the list of all known <em>types</em>
 	 */

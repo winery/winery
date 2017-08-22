@@ -17,7 +17,8 @@ package org.eclipse.winery.model.tosca;
 public interface HasInheritance {
 
     public TBoolean getAbstract();
+
     public TBoolean getFinal();
+
     public HasType getDerivedFrom();
-    
 }

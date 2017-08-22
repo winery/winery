@@ -12,8 +12,8 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 
 public class PropertiesDefinitionResourceApiData {
 
@@ -21,11 +21,12 @@ public class PropertiesDefinitionResourceApiData {
 	public WinerysPropertiesDefinition winerysPropertiesDefinition;
 	public PropertiesDefinitionEnum selectedValue;
 
-	public PropertiesDefinitionResourceApiData() { }
+	public PropertiesDefinitionResourceApiData() {
+	}
 
 	public PropertiesDefinitionResourceApiData(
-			TEntityType.PropertiesDefinition propertiesDefinition,
-			WinerysPropertiesDefinition winerysPropertiesDefinition
+		TEntityType.PropertiesDefinition propertiesDefinition,
+		WinerysPropertiesDefinition winerysPropertiesDefinition
 	) {
 		this.propertiesDefinition = propertiesDefinition;
 		this.winerysPropertiesDefinition = winerysPropertiesDefinition;

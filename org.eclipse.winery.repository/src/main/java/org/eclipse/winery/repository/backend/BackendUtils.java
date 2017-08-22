@@ -158,7 +158,6 @@ public class BackendUtils {
 
 	private static final MediaType MEDIATYPE_APPLICATION_OCTET_STREAM = MediaType.parse("application/octet-stream");
 
-
 	private static ObjectMapper getObjectMapper() {
 		final ObjectMapper objectMapper = new ObjectMapper();
 		// DO NOT ACTIVE the following - JSON is serialized differently and thus, the JAX-B annotations must not be used
@@ -257,7 +256,6 @@ public class BackendUtils {
 		}
 		return w.toString();
 	}
-
 
 	public static String getName(TOSCAComponentId instanceId) throws RepositoryCorruptException {
 		IRepository repository = RepositoryFactory.getRepository();
@@ -1001,7 +999,6 @@ public class BackendUtils {
 		return loc;
 	}
 
-
 	public static void synchronizeReferences(ArtifactTemplateId id) throws IOException {
 		TArtifactTemplate template = RepositoryFactory.getRepository().getElement(id);
 
@@ -1046,7 +1043,6 @@ public class BackendUtils {
 
 		Set<PlanId> plansToAdd = new HashSet<>();
 		plansToAdd.addAll(nestedPlans);
-
 
 		if (nestedPlans.isEmpty()) {
 			if (plans == null) {

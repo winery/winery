@@ -13,21 +13,16 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 
 /**
@@ -71,10 +66,10 @@ import org.eclipse.jdt.annotation.Nullable;
 // by using @XmlTransient at TEntityTypeImplementation, this orders *all* elements, even if IntelliJ marks them in red
 // see https://stackoverflow.com/a/6790388/873282
 @XmlType(name = "tRelationshipTypeImplementation", propOrder = {
-        "tags",
-        "derivedFrom",
-        "requiredContainerFeatures",
-        "implementationArtifacts"
+    "tags",
+    "derivedFrom",
+    "requiredContainerFeatures",
+    "implementationArtifacts"
 })
 public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
 

@@ -29,8 +29,8 @@ import org.eclipse.winery.model.tosca.TRelationshipType.TargetInterfaces;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidSource;
 import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
-import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiDataSet;
 import org.eclipse.winery.repository.rest.resources.entitytypes.InstanceStatesResource;
@@ -107,8 +107,8 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		} else {
 			validSource = this.getRelationshipType().getValidSource();
 			validEndingsData.validSource = new ValidEndingsApiDataSet(
-					"nodeType",
-					new Select2DataItem(validSource.getTypeRef().toString(), validSource.getTypeRef().getLocalPart()));
+				"nodeType",
+				new Select2DataItem(validSource.getTypeRef().toString(), validSource.getTypeRef().getLocalPart()));
 		}
 		// ToDo enable validTarget as CapabilityType (not-yet-implemented)
 		ValidTarget validTarget;
@@ -117,8 +117,8 @@ public class RelationshipTypeResource extends TopologyGraphElementEntityTypeReso
 		} else {
 			validTarget = this.getRelationshipType().getValidTarget();
 			validEndingsData.validTarget = new ValidEndingsApiDataSet(
-					"nodeType",
-					new Select2DataItem(validTarget.getTypeRef().toString(), validTarget.getTypeRef().getLocalPart()));
+				"nodeType",
+				new Select2DataItem(validTarget.getTypeRef().toString(), validTarget.getTypeRef().getLocalPart()));
 		}
 		return validEndingsData;
 	}

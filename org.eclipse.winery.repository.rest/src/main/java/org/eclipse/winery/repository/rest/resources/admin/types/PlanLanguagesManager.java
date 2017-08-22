@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin.types;
 
-import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.common.ids.admin.PlanLanguagesId;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 public class PlanLanguagesManager extends AbstractTypesManager {
 
@@ -26,5 +26,4 @@ public class PlanLanguagesManager extends AbstractTypesManager {
 		this.addData(Namespaces.URI_BPMN20_MODEL, "BPMN 2.0");
 		this.addData(Namespaces.URI_BPMN4TOSCA_20, "BPMN4TOSCA 2.0");
 	}
-
 }

@@ -198,7 +198,6 @@ public class Util {
 		}
 	}
 
-
 	@SuppressWarnings("unchecked")
 	public static Class<? extends GenericId> getGenericIdClassForType(String typeIdType) {
 		Class<? extends GenericId> res;

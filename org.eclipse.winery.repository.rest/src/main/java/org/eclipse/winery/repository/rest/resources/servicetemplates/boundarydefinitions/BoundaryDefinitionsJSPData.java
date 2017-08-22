@@ -19,14 +19,13 @@ import java.util.SortedSet;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties;
 import org.eclipse.winery.model.tosca.TPlan;
 import org.eclipse.winery.model.tosca.TPlans;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.datatypes.TypeWithShortName;
@@ -69,9 +68,8 @@ public class BoundaryDefinitionsJSPData {
 	}
 
 	/**
-	 * Helper method to return an initialized properties object only containing
-	 * the user-defined properties. The TOSCA properties-element is not returned
-	 * as the TOSCA XSD allows a single element only
+	 * Helper method to return an initialized properties object only containing the user-defined properties. The TOSCA
+	 * properties-element is not returned as the TOSCA XSD allows a single element only
 	 */
 	public String getDefinedPropertiesAsEscapedHTML() {
 		String s = this.getDefinedProperties();

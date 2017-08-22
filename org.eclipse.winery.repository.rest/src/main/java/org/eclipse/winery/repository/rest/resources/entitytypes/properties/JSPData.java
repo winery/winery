@@ -13,9 +13,9 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.properties;
 
 import java.util.List;
 
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
-import org.eclipse.winery.model.tosca.TEntityType;
 
 /**
  * Collects data used by the JSP
@@ -81,5 +81,4 @@ public class JSPData {
 			return this.wpd.getNamespace();
 		}
 	}
-
 }
