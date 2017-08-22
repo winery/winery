@@ -1,33 +1,26 @@
 {
-  "documentation": [
-
-  ],
-  "any": [
-
-  ],
-  "otherAttributes": {
-
-  },
-  "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
-	{
-	  "documentation": [
-
-	  ],
-	  "any": [
-
-	  ],
-	  "otherAttributes": {
-
-	  },
-	  "name": "kiwi",
-	  "targetNamespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
-	  "abstract": "NO",
-	  "final": "NO"
-	}
-  ],
-  "id": "winery-defs-for_ns0-kiwi",
-  "targetNamespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
-  "import": [
-
-  ]
+	"documentation": [
+	],
+	"any": [
+	],
+	"otherAttributes": {
+	},
+	"id": "winery-defs-for_fruits-kiwi",
+	"serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+		{
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
+			"name": "kiwi",
+			"targetNamespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
+			"final": "NO",
+			"abstract": "NO"
+		}
+	],
+	"targetNamespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
+	"import": [
+	]
 }

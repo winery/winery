@@ -75,14 +75,14 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
 			return String.format("ns%d", round);
 		} else {
 			String result;
-			result = split[split.length-1].replaceAll("[^A-Za-z]+", "");
+			result = split[split.length - 1].replaceAll("[^A-Za-z]+", "");
 			if (result.isEmpty()) {
 				return String.format("ns%d", round);
 			} else {
 				if (round == 0) {
 					return result;
 				} else {
-					return String.format("%s$d", result, round);
+					return String.format("%s%d", result, round);
 				}
 			}
 		}

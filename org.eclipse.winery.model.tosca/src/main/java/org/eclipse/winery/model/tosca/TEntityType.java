@@ -308,9 +308,13 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
             this.typeRef = value;
         }
 
-        @Override
         public QName getType() {
             return this.getTypeRef();
+        }
+
+        @Override
+        public QName getTypeAsQName() {
+            return this.getType();
         }
 
         @Override

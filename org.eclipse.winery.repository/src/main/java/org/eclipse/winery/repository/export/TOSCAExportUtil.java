@@ -318,7 +318,7 @@ public class TOSCAExportUtil {
 		final HasType derivedFrom = element.getDerivedFrom();
 		QName derivedFromType = null;
 		if (derivedFrom != null) {
-			derivedFromType = derivedFrom.getType();
+			derivedFromType = derivedFrom.getTypeAsQName();
 		}
 
 		if (derivedFromType == null) {

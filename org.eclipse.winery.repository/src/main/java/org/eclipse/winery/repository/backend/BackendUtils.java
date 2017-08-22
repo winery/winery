@@ -562,10 +562,7 @@ public class BackendUtils {
 		} else {
 			throw new IllegalStateException("Unhandled id branch. Could happen for XSDImportId");
 		}
-		element.setId(id.getXmlId().getDecoded());
-		if (element instanceof HasTargetNamespace) {
-			((HasTargetNamespace) element).setTargetNamespace(id.getNamespace().getDecoded());
-		}
+		copyIdToFields(element, id);
 		definitions.setElement((TExtensibleElements) element);
 		return definitions;
 	}

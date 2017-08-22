@@ -229,7 +229,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 			String res = Integer.toString(this.getReferenceCount());
 			return Response.ok().entity(res).build();
 		} else if (type != null) {
-			String res = ((HasType) this.getElement()).getType().toString();
+			String res = ((HasType) this.getElement()).getTypeAsQName().toString();
 			return Response.ok().entity(res).build();
 		} else {
 			// we enforce the query parameter to be extensible to other queries

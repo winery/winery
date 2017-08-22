@@ -177,8 +177,7 @@ public abstract class TEntityTypeImplementation extends TExtensibleElements impl
     }
 
     @Override
-    @XmlTransient
-    public QName getType() {
+    public QName getTypeAsQName() {
         return this.implementedType;
     }
 

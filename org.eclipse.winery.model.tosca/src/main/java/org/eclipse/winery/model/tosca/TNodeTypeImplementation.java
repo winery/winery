@@ -70,11 +70,11 @@ import org.eclipse.jdt.annotation.Nullable;
 // by using @XmlTransient at TEntityTypeImplementation, this orders *all* elements, even if IntelliJ marks them in red
 // see https://stackoverflow.com/a/6790388/873282
 @XmlType(name = "tNodeTypeImplementation", propOrder = {
-        "tags",
-        "derivedFrom",
-        "requiredContainerFeatures",
-        "implementationArtifacts",
-        "deploymentArtifacts"
+    "tags",
+    "derivedFrom",
+    "requiredContainerFeatures",
+    "implementationArtifacts",
+    "deploymentArtifacts"
 })
 public class TNodeTypeImplementation extends TEntityTypeImplementation {
 
@@ -101,12 +101,12 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
         if (!super.equals(o)) return false;
         TNodeTypeImplementation that = (TNodeTypeImplementation) o;
         return Objects.equals(tags, that.tags) &&
-                Objects.equals(derivedFrom, that.derivedFrom) &&
-                Objects.equals(requiredContainerFeatures, that.requiredContainerFeatures) &&
-                Objects.equals(implementationArtifacts, that.implementationArtifacts) &&
-                Objects.equals(deploymentArtifacts, that.deploymentArtifacts) &&
-                _abstract == that._abstract &&
-                _final == that._final;
+            Objects.equals(derivedFrom, that.derivedFrom) &&
+            Objects.equals(requiredContainerFeatures, that.requiredContainerFeatures) &&
+            Objects.equals(implementationArtifacts, that.implementationArtifacts) &&
+            Objects.equals(deploymentArtifacts, that.deploymentArtifacts) &&
+            _abstract == that._abstract &&
+            _final == that._final;
     }
 
     @Override
@@ -132,7 +132,8 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
     }
 
     /**
-     * Returns the implemented type. We have to use different namings here as the XML Schema does not have TEntityTypeImplementation
+     * Returns the implemented type. We have to use different namings here as the XML Schema does not have
+     * TEntityTypeImplementation
      */
     @XmlAttribute(name = "nodeType", required = true)
     @NonNull
@@ -186,9 +187,13 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
             this.nodeTypeImplementationRef = value;
         }
 
-        @Override
         public QName getType() {
             return this.getNodeTypeImplementationRef();
+        }
+
+        @Override
+        public QName getTypeAsQName() {
+            return this.getType();
         }
 
         @Override
@@ -212,7 +217,7 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
 
         public Builder(String name, QName implementedNodeType) {
             super(name, implementedNodeType);
-       }
+        }
 
         public Builder setTags(TTags tags) {
             this.tags = tags;

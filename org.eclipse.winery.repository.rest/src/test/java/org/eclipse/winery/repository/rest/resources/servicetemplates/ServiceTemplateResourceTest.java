@@ -17,14 +17,12 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServiceTemplateResourceTest extends AbstractResourceTest {
 	
 	@Test
-	@Ignore
-	public void addServicetemplate() throws Exception {
+	public void addServiceTemplate() throws Exception {
 		this.setRevisionTo("337119ea2e694e70b994bcb3d97295856c0ab0f6");
 		this.assertPost("servicetemplates/", "entitytypes/servicetemplates/baobab_create_servicetemplate.json");
 		this.assertGet("servicetemplates/","entitytypes/servicetemplates/baobab_inital.json");

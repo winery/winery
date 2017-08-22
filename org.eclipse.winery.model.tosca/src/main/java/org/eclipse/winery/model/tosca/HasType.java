@@ -19,11 +19,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public interface HasType {
 
     /**
+     * This method is necessary, because the XSD schema sometimes uses "type", sometimes "implementedType", ... This
+     * here tries to bring in some consistency.
+     *
      * @return the QName of the type with full namespace, never null (according to spec)
      */
     @XmlTransient
     @JsonIgnore
-    QName getType();
+    QName getTypeAsQName();
 
     /**
      * Sets the type and directly persists the resource

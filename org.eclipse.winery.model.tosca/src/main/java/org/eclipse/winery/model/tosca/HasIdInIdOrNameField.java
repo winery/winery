@@ -22,7 +22,7 @@ public interface HasIdInIdOrNameField {
      */
     @XmlTransient
     @JsonIgnore
-    default String getId() {
+    default String getIdFromIdOrNameField() {
         if (this instanceof HasId) {
             return ((HasId) this).getId();
         } else {

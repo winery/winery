@@ -436,7 +436,7 @@ public class RestUtils {
 		// an id is required to instantiate the resource
 		String idClassName = "org.eclipse.winery.common.ids.definitions." + instanceResourceClassName + "Id";
 
-		String packageName = "org.eclipse.winery.repository.resources.entitytypes." + instanceResourceClassName.toLowerCase() + "s";
+		String packageName = "org.eclipse.winery.repository.rest.resources.entitytypes." + instanceResourceClassName.toLowerCase() + "s";
 		// convert from NodeType to NodeTypesResource
 		instanceResourceClassName += "Resource";
 		instanceResourceClassName = packageName + "." + instanceResourceClassName;
@@ -461,7 +461,7 @@ public class RestUtils {
 		try {
 			typeId = idConstructor.newInstance(type);
 		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
+			| IllegalArgumentException | InvocationTargetException e) {
 			throw new IllegalStateException("Could not instantiate type", e);
 		}
 
@@ -482,7 +482,7 @@ public class RestUtils {
 		try {
 			typeResource = resConstructor.newInstance(typeId);
 		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException e) {
+			| IllegalArgumentException | InvocationTargetException e) {
 			throw new IllegalStateException("Could not instantiate resoruce", e);
 		}
 
@@ -968,12 +968,12 @@ public class RestUtils {
 	public static QName getType(IPersistable res) {
 		TOSCAComponentId id = (TOSCAComponentId) res.getRepositoryFileReference().getParent();
 		final HasType element = (HasType) RepositoryFactory.getRepository().getDefinitions(id).getElement();
-		return element.getType();
+		return element.getTypeAsQName();
 	}
 
 	public static List<NamespaceAndDefinedLocalNamesForAngular> convert(List<NamespaceAndDefinedLocalNames> list) {
 		return list.stream().map(namespaceAndDefinedLocalNames -> new NamespaceAndDefinedLocalNamesForAngular(
-				namespaceAndDefinedLocalNames.getNamespace(),
-				namespaceAndDefinedLocalNames.getDefinedLocalNames())).collect(Collectors.toList());
+			namespaceAndDefinedLocalNames.getNamespace(),
+			namespaceAndDefinedLocalNames.getDefinedLocalNames())).collect(Collectors.toList());
 	}
 }

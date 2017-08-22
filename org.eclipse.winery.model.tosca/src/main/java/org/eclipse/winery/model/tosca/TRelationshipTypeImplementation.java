@@ -155,9 +155,13 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
             this.relationshipTypeImplementationRef = value;
         }
 
-        @Override
         public QName getType() {
             return this.getRelationshipTypeImplementationRef();
+        }
+
+        @Override
+        public QName getTypeAsQName() {
+            return this.getType();
         }
 
         @Override
