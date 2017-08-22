@@ -41,7 +41,6 @@ import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
@@ -70,7 +69,6 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
@@ -102,7 +100,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.taglibs.standard.functions.Functions;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
-import org.w3c.dom.Element;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
@@ -391,7 +388,7 @@ public class RestUtils {
 		// which can be directly passed as entity
 		// the issue is that we want to have a *formatted* XML
 		// Therefore, we serialize "by hand".
-		String xml = RestUtils.getXMLAsString(clazz, obj, false);
+		String xml = BackendUtils.getXMLAsString(clazz, obj, false);
 
 		return Response.ok().type(MediaType.TEXT_XML).entity(xml).build();
 	}

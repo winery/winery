@@ -86,7 +86,7 @@ public class SelfServicePortalResource {
 	@PUT
 	@Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
 	public Response onPutXML(Application data) {
-		String content = RestUtils.getXMLAsString(data);
+		String content = BackendUtils.getXMLAsString(data);
 		return RestUtils.putContentToFile(this.data_xml_ref, content, MediaType.TEXT_XML_TYPE);
 	}
 
@@ -182,7 +182,7 @@ public class SelfServicePortalResource {
 		} else {
 			// return skeleton for application
 			// application object is already filled with default values if no file exists in repo
-			res = RestUtils.getXMLAsString(this.getApplication());
+			res = BackendUtils.getXMLAsString(this.getApplication());
 		}
 		return res;
 	}

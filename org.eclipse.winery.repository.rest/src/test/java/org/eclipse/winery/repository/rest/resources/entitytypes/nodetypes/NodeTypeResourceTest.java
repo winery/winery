@@ -25,7 +25,7 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 	public void baboabInitialExistsUsingResource() throws Exception {
 		this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779"); // repository containing boabab fruit only
 		NodeTypeResource nodeTypeResource = (NodeTypeResource) NodeTypesResource.getComponentInstaceResource(TestIds.ID_FRUIT_BAOBAB);
-		String testXml = RestUtils.getXMLAsString(nodeTypeResource.getNodeType());
+		String testXml = BackendUtils.getXMLAsString(nodeTypeResource.getNodeType());
 		String controlXml = this.readFromClasspath("entitytypes/nodetypes/baobab_initial.xml");
 		org.hamcrest.MatcherAssert.assertThat(testXml, CompareMatcher.isIdenticalTo(controlXml).ignoreWhitespace());
 	}

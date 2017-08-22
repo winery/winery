@@ -21,7 +21,7 @@ public class IdDeterminationWithHashCode implements IIdDetermination<Object> {
 	@Override
 	public String getId(Object entity) {
 		// We assume that different Object serializations *always* have different hashCodes
-		int hash = RestUtils.getXMLAsString(entity).hashCode();
+		int hash = BackendUtils.getXMLAsString(entity).hashCode();
 		return Integer.toString(hash);
 	}
 

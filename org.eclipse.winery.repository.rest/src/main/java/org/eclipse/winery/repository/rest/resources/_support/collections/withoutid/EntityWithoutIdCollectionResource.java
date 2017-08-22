@@ -67,7 +67,7 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 		for (EntityT c : this.list) {
 			idx++;
 			// speed optimization - instead of using getId() we directly use the hash code
-			int hash = RestUtils.getXMLAsString(c).hashCode();
+			int hash = BackendUtils.getXMLAsString(c).hashCode();
 			if (hash == idInt) {
 				entity = c;
 				break;

@@ -1128,9 +1128,9 @@ public class CSARImporter {
 
 	private static void storeDefinitions(TOSCAComponentId id, TDefinitions defs) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
-		String s = Util.getXMLAsString(defs, true);
+		String s = BackendUtils.getXMLAsString(defs, true);
 		try {
-			RepositoryFactory.getRepository().putContentToFile(ref, s, MediaType.valueOf(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS));
+			RepositoryFactory.getRepository().putContentToFile(ref, s, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
 		} catch (IllegalArgumentException | IOException e) {
 			throw new IllegalStateException(e);
 		}

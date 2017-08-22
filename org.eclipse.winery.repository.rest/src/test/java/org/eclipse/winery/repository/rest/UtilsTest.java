@@ -78,6 +78,6 @@ public class UtilsTest {
 		new PrefsTestEnabledGitBackedRepository();
 		((GitBasedRepository) RepositoryFactory.getRepository()).setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
 
-		Assert.assertEquals(minimalTopologyTemplateAsXmlString, RestUtils.getXMLAsString(minimalTopologyTemplate));
+		Assert.assertEquals(minimalTopologyTemplateAsXmlString, BackendUtils.getXMLAsString(minimalTopologyTemplate));
 	}
 }

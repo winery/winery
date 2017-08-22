@@ -60,7 +60,7 @@ public class BoundaryDefinitionsJSPData {
 			return "";
 		} else {
 			// something stored --> return that
-			return RestUtils.getXMLAsString(p.getAny());
+			return BackendUtils.getXMLAsString(p.getAny());
 		}
 	}
 
@@ -90,12 +90,12 @@ public class BoundaryDefinitionsJSPData {
 	}
 
 	public String getBoundaryDefinitionsAsXMLStringEncoded() {
-		String res = RestUtils.getXMLAsString(this.defs);
+		String res = BackendUtils.getXMLAsString(this.defs);
 		return Functions.escapeXml(res);
 	}
 
 	public String getBoundaryDefinitionsAsXMLString() {
-		String res = RestUtils.getXMLAsString(this.defs);
+		String res = BackendUtils.getXMLAsString(this.defs);
 		return res;
 	}
 
