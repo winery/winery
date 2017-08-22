@@ -33,7 +33,6 @@ import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 
 import org.apache.tika.mime.MediaType;
@@ -223,7 +222,6 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 		// the client side has to use the REST method
 		Definitions definitions = BackendUtils.createWrapperDefinitions(id);
 		definitions.setElement(element);
-		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
-		BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+		BackendUtils.persist(id, definitions);
 	}
 }

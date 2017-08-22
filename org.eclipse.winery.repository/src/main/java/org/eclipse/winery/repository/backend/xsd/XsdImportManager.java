@@ -31,9 +31,11 @@ public interface XsdImportManager {
 	 */
 	Map<String, RepositoryFileReference> getMapFromLocalNameToXSD(Namespace namespace, final boolean getTypes);
 
-	/*
+	/**
+	 * Determines the declared local names - either XSD elements or XSD types
+	 *
 	 * @param namespace the namespace to search for
 	 * @param getTypes  true: get types, false: get elements
 	 */
-	List<String> getAllDeclaredElementLocalNames(Namespace namespace, final boolean getTypes);
+	List<String> getAllDefinedLocalNames(Namespace namespace, final boolean getTypes);
 }

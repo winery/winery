@@ -14,59 +14,73 @@ package org.eclipse.winery.repository.backend.xsd;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.ImportUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.xerces.xs.XSConstants;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSNamedMap;
 import org.apache.xerces.xs.XSObject;
+import org.eclipse.collections.api.multimap.MutableMultimap;
+import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.impl.factory.Multimaps;
+import org.eclipse.jdt.annotation.NonNull;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
 
 public class RepositoryBasedXsdImportManager implements XsdImportManager {
+
+	private static final XLogger LOGGER = XLoggerFactory.getXLogger(BackendUtils.class);
 
 	/**
 	 * Finds out all imports belonging to the given namespace
 	 */
-	private Set<XSDImportId> getImportsOfNS(final Namespace namespace) {
+	private Set<XSDImportId> getImportsOfNamespace(final Namespace namespace) {
 		Objects.requireNonNull(namespace);
-		
+
 		// implemented using a straight-forward solution: get ALL XSD definitions and filter out the matching ones
-		
+
 		Set<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
 		return allImports.stream().filter(imp -> imp.getNamespace().equals(namespace)).collect(Collectors.toSet());
+	}
+
+	private Optional<RepositoryFileReference> getXsdFileReference(final XSDImportId id) {
+		final Optional<String> location = ImportUtils.getLocation(id);
+		return location.map(l -> new RepositoryFileReference(id, l));
 	}
 
 	// we need "unchecked", because of the parsing of the cache
 	@SuppressWarnings("unchecked")
 	private List<String> getAllDefinedLocalNames(final XSDImportId id, final boolean getTypes) {
-		short type = getTypes ? XSConstants.TYPE_DEFINITION : XSConstants.ELEMENT_DECLARATION;
-		RepositoryFileReference ref = this.getXSDFileReference();
-		if (ref == null) {
-			return Collections.emptySet();
-		}
-		Date lastUpdate = RepositoryFactory.getRepository().getLastUpdate(ref);
+		Objects.requireNonNull(id);
 
-		String cacheFileName = "definedLocalNames " + Integer.toString(type) + ".cache";
-		RepositoryFileReference cacheRef = new RepositoryFileReference(this.id, cacheFileName);
+		Optional<RepositoryFileReference> ref = this.getXsdFileReference(id);
+		if (!ref.isPresent()) {
+			return Collections.emptyList();
+		}
+
+		short type = getTypes ? XSConstants.TYPE_DEFINITION : XSConstants.ELEMENT_DECLARATION;
+		Date lastUpdate = RepositoryFactory.getRepository().getLastUpdate(ref.get());
+
+		@NonNull final String cacheFileName = "definedLocalNames " + Integer.toString(type) + ".cache";
+		@NonNull final RepositoryFileReference cacheRef = new RepositoryFileReference(id, cacheFileName);
 		boolean cacheNeedsUpdate = true;
 		if (RepositoryFactory.getRepository().exists(cacheRef)) {
 			Date lastUpdateCache = RepositoryFactory.getRepository().getLastUpdate(cacheRef);
@@ -77,12 +91,11 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 
 		List<String> result;
 		if (cacheNeedsUpdate) {
-
-			XSModel model = this.getXSModel();
-			if (model == null) {
-				return Collections.emptySet();
+			final Optional<XSModel> model = BackendUtils.getXSModel(ref.get());
+			if (!model.isPresent()) {
+				return Collections.emptyList();
 			}
-			XSNamedMap components = model.getComponents(type);
+			XSNamedMap components = model.get().getComponents(type);
 			//@SuppressWarnings("unchecked")
 			int len = components.getLength();
 			result = new ArrayList<>(len);
@@ -90,7 +103,7 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 				XSObject item = components.item(i);
 				// if queried for TYPE_DEFINITION, then XSD base types (such as IDREF) are also returned
 				// We want to return only types defined in the namespace of this resource
-				if (item.getNamespace().equals(this.id.getNamespace().getDecoded())) {
+				if (item.getNamespace().equals(id.getNamespace().getDecoded())) {
 					result.add(item.getName());
 				}
 			}
@@ -99,12 +112,12 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 			try {
 				cacheContent = BackendUtils.mapper.writeValueAsString(result);
 			} catch (JsonProcessingException e) {
-				XSDImportResource.LOGGER.error("Could not generate cache content", e);
+				LOGGER.error("Could not generate cache content", e);
 			}
 			try {
 				RepositoryFactory.getRepository().putContentToFile(cacheRef, cacheContent, MediaTypes.MEDIATYPE_APPLICATION_JSON);
 			} catch (IOException e) {
-				XSDImportResource.LOGGER.error("Could not update cache", e);
+				LOGGER.error("Could not update cache", e);
 			}
 		} else {
 			// read content from cache
@@ -112,111 +125,70 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 			try (InputStream is = RepositoryFactory.getRepository().newInputStream(cacheRef)) {
 				result = BackendUtils.mapper.readValue(is, java.util.List.class);
 			} catch (IOException e) {
-				XSDImportResource.LOGGER.error("Could not read from cache", e);
+				LOGGER.error("Could not read from cache", e);
 				result = Collections.emptyList();
 			}
 		}
 		return result;
 	}
 
-
 	@Override
-	public List<String> getAllDeclaredElementLocalNames(final Namespace namespace, final boolean getTypes) {
-		return this.getImportsOfNS(namespace)
+	public List<String> getAllDefinedLocalNames(final Namespace namespace, final boolean getTypes) {
+		return this.getImportsOfNamespace(namespace)
 				.stream()
-				.flatMap(xsdImportId -> this.getAllDeclaredElementLocalNames(namespace, getTypes).stream())
+				.flatMap(xsdImportId -> this.getAllDefinedLocalNames(xsdImportId, getTypes).stream())
 				.sorted()
 				.collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public Map<String, RepositoryFileReference> getMapFromLocalNameToXSD(final Namespace namespace, final boolean getTypes) {
-		Set<XSDImportId> importsOfNS = this.getImportsOfNS(namespace);
+		Set<XSDImportId> importsOfNamespace = this.getImportsOfNamespace(namespace);
 		Map<String, RepositoryFileReference> result = new HashMap<>();
-		for (XSDImportId imp : importsOfNS) {
-			
-			XSDImportResource res = new XSDImportResource(imp);
-			Collection<String> col;
-			if (getTypes) {
-				col = res.getAllDefinedTypesLocalNames();
+		for (XSDImportId imp : importsOfNamespace) {
+			final List<String> allDefinedLocalNames = this.getAllDefinedLocalNames(namespace, getTypes);
+			Optional<RepositoryFileReference> ref = getXsdFileReference(imp);
+			if (!ref.isPresent()) {
+				LOGGER.error("Ref is not defined");
 			} else {
-				col = res.getAllDefinedElementsLocalNames();
-			}
-			RepositoryFileReference ref = res.getXSDFileReference();
-			for (String localName : col) {
-				result.put(localName, ref);
+				for (String localName : allDefinedLocalNames) {
+					result.put(localName, ref.get());
+				}
 			}
 		}
 		return result;
 	}
 
-	private Collection<String> getAllDefinedLocalNames(short type) {
-		
-	}
-
 	/**
-	 * @param type as XSConstants - either XSConstants.ELEMENT_DECLARATION or XSConstants.TYPE_DEFINITION
+	 * @param getType true: XSConstants.TYPE_DEFINITION; false: XSConstants.ELEMENT_DECLARATION
 	 */
-	private List<NamespaceAndDefinedLocalNames> getAllXsdDefinitions(short type) {
+	private List<NamespaceAndDefinedLocalNames> getAllXsdDefinitions(boolean getType) {
+		MutableMultimap<Namespace, String> data = Multimaps.mutable.list.empty();
+
 		SortedSet<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
 
-		allImports.stream().flatMap()
-
-
-		Map<Namespace, Collection<String>> data = new HashMap<>();
-
 		for (XSDImportId id : allImports) {
-			XSDImportResource resource = new XSDImportResource(id);
-			Collection<String> allLocalNames = resource.getAllDefinedLocalNames(type);
-
-			Collection<String> list;
-			if ((list = data.get(id.getNamespace())) == null) {
-				// list does not yet exist
-				list = new ArrayList<>();
-				data.put(id.getNamespace(), list);
-			}
-			list.addAll(allLocalNames);
+			final List<String> allDefinedLocalNames = getAllDefinedLocalNames(id, getType);
+			data.putAll(id.getNamespace(), allDefinedLocalNames);
 		}
 
-		ArrayNode rootNode = RestUtils.mapper.createArrayNode();
+		List<NamespaceAndDefinedLocalNames> result = Lists.mutable.empty();
+		data.forEachKeyMultiValues((namespace, strings) -> {
+			final NamespaceAndDefinedLocalNames namespaceAndDefinedLocalNames = new NamespaceAndDefinedLocalNames(namespace.getDecoded());
+			strings.forEach(localName -> namespaceAndDefinedLocalNames.addLocalName(localName));
+			result.add(namespaceAndDefinedLocalNames);
+		});
 
-		// ensure ordering in JSON object
-		Collection<Namespace> allns = new TreeSet<>();
-		allns.addAll(data.keySet());
-
-		for (Namespace ns : allns) {
-			Collection<String> localNames = data.get(ns);
-			if (!localNames.isEmpty()) {
-				ObjectNode groupEntry = RestUtils.mapper.createObjectNode();
-				rootNode.add(groupEntry);
-				groupEntry.put("id", ns.getEncoded());
-				groupEntry.put("text", ns.getDecoded());
-				ArrayNode children = RestUtils.mapper.createArrayNode();
-				groupEntry.put("children", children);
-				Collection<String> sortedLocalNames = new TreeSet<>();
-				sortedLocalNames.addAll(localNames);
-				for (String localName : sortedLocalNames) {
-					String value = "{" + ns.getDecoded() + "}" + localName;
-					//noinspection UnnecessaryLocalVariable
-					String text = localName;
-					ObjectNode o = RestUtils.mapper.createObjectNode();
-					o.put("text", text);
-					o.put("id", value);
-					children.add(o);
-				}
-			}
-		}
-
-		return rootNode;
+		return result;
 	}
 
 	@Override
 	public List<NamespaceAndDefinedLocalNames> getAllDeclaredElementsLocalNames() {
-		return this.getAllXsdDefinitions(XSConstants.ELEMENT_DECLARATION);
+		return this.getAllXsdDefinitions(false);
 	}
 
 	@Override
 	public List<NamespaceAndDefinedLocalNames> getAllDefinedTypesLocalNames() {
-		return this.getAllXsdDefinitions(XSConstants.TYPE_DEFINITION);
+		return this.getAllXsdDefinitions(true);
 	}
 }

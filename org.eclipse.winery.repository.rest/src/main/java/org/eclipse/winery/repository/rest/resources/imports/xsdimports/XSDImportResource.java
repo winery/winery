@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
+import java.util.Optional;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
@@ -18,14 +20,14 @@ import javax.ws.rs.core.Response.Status;
 import javax.xml.XMLConstants;
 
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
-import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.ImportUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
 
-import org.apache.xerces.xs.XSModel;
 import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,37 +53,16 @@ public class XSDImportResource extends GenericImportResource {
 		return imp;
 	}
 
-	/**
-	 * public required by XSDImportsResource
-	 *
-	 * @return null if XSD file does not exist
-	 */
-	public RepositoryFileReference getXSDFileReference() {
-		String loc = this.getLocation();
-		if (loc == null) {
-			return null;
-		}
-		return new RepositoryFileReference(this.id, loc);
-	}
-
-	/**
-	 * @return null if no file is associated
-	 */
-	private XSModel getXSModel() {
-		final RepositoryFileReference ref = this.getXSDFileReference();
-		return BackendUtils.getXSModel(ref);
-	}
-
 	@GET
 	@RestDoc(methodDescription = "May be used by the modeler to generate an XML editor based on the XML schema")
 	// we cannot use "MimeTypes.MIMETYPE_XSD" here as the latter is "text/xml" and org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsAsResponse() also produces text/xml
 	@Produces("text/xsd")
 	public Response getXSD() {
-		String location;
-		if ((location = this.getLocation()) == null) {
+		final Optional<String> location = ImportUtils.getLocation((GenericImportId) id);
+		if (!location.isPresent()) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
-		RepositoryFileReference ref = new RepositoryFileReference(this.id, location);
+		RepositoryFileReference ref = new RepositoryFileReference(this.id, location.get());
 		return RestUtils.returnRepoPath(ref, null);
 	}
 

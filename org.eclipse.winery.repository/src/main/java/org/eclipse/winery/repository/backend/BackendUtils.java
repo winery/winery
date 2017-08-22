@@ -34,15 +34,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
@@ -62,7 +62,6 @@ import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
@@ -96,14 +95,12 @@ import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
@@ -112,7 +109,6 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.xs.XSImplementationImpl;
 import org.apache.xerces.xs.XSComplexTypeDefinition;
-import org.apache.xerces.xs.XSConstants;
 import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSImplementation;
 import org.apache.xerces.xs.XSLoader;
@@ -531,6 +527,17 @@ public class BackendUtils {
 	}
 
 	/**
+	 * Persists the given definitions
+	 *
+	 * @param id          the id of the TOSCA component to persist
+	 * @param definitions the definitions to persist
+	 */
+	public static void persist(TOSCAComponentId id, Definitions definitions) throws IOException {
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+		BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+	}
+
+	/**
 	 * @throws IOException           if content could not be updated in the repository
 	 * @throws IllegalStateException if an JAXBException occurred. This should never happen.
 	 */
@@ -555,16 +562,14 @@ public class BackendUtils {
 	/**
 	 * @param ref the file to read from
 	 */
-	public static XSModel getXSModel(final RepositoryFileReference ref) {
-		if (ref == null) {
-			return null;
-		}
+	public static Optional<XSModel> getXSModel(final RepositoryFileReference ref) {
+		Objects.requireNonNull(ref);
 		final InputStream is;
 		try {
 			is = RepositoryFactory.getRepository().newInputStream(ref);
 		} catch (IOException e) {
 			BackendUtils.LOGGER.debug("Could not create input stream", e);
-			return null;
+			return Optional.empty();
 		}
 
 		// we rely on xerces to parse the XSD
@@ -652,7 +657,7 @@ public class BackendUtils {
 				return null;
 			}
 		};
-		return schemaLoader.load(input);
+		return Optional.ofNullable(schemaLoader.load(input));
 	}
 
 	/**
@@ -1105,7 +1110,5 @@ public class BackendUtils {
 		}
 		return w.toString();
 	}
-
-
 
 }
