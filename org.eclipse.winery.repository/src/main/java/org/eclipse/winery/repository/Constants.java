@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,7 +23,7 @@ public class Constants {
 	public static final String DEFAULT_REPO_NAME = "winery-repository";
 	// this directory is checked for existence. If it does not exist
 	// $HOME/DEFAULT_REPO_NAME is used
-	public static final String GLOBAL_REPO_PATH_WINDOWS = "C:\\" + Constants.DEFAULT_REPO_NAME;
+	public static final Path GLOBAL_REPO_PATH_WINDOWS = Paths.get("C:/" + Constants.DEFAULT_REPO_NAME);
 
 	/** file-system in general **/
 	public static final String newline = System.getProperty("line.separator");

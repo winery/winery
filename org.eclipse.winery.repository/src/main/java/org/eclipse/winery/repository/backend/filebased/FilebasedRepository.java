@@ -148,19 +148,12 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		return this.id2AbsolutePath(ref.getParent()).resolve(ref.getFileName());
 	}
 
-	protected Path determineRepositoryPath(String repositoryLocation) {
+	protected Path determineRepositoryPath(final Path configuredRepositoryPath) {
 		Path repositoryPath;
-		if (repositoryLocation == null) {
+		if (configuredRepositoryPath == null) {
 			if (SystemUtils.IS_OS_WINDOWS) {
-				if (new File(Constants.GLOBAL_REPO_PATH_WINDOWS).exists()) {
-					repositoryLocation = Constants.GLOBAL_REPO_PATH_WINDOWS;
-					File repo = new File(repositoryLocation);
-					try {
-						org.apache.commons.io.FileUtils.forceMkdir(repo);
-					} catch (IOException e) {
-						FilebasedRepository.LOGGER.error("Could not create repository directory", e);
-					}
-					repositoryPath = repo.toPath();
+				if (Files.exists(Constants.GLOBAL_REPO_PATH_WINDOWS)) {
+					repositoryPath = Constants.GLOBAL_REPO_PATH_WINDOWS;
 				} else {
 					repositoryPath = this.createDefaultRepositoryPath();
 				}
@@ -168,13 +161,12 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				repositoryPath = this.createDefaultRepositoryPath();
 			}
 		} else {
-			File repo = new File(repositoryLocation);
 			try {
-				org.apache.commons.io.FileUtils.forceMkdir(repo);
+				org.apache.commons.io.FileUtils.forceMkdir(configuredRepositoryPath.toFile());
 			} catch (IOException e) {
 				FilebasedRepository.LOGGER.error("Could not create repository directory", e);
 			}
-			repositoryPath = repo.toPath();
+			repositoryPath = configuredRepositoryPath;
 		}
 		return repositoryPath;
 	}
