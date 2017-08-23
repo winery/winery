@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/badge/License-EPL%201.0-red.svg)](https://opensource.org/licenses/EPL-1.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-# Eclipse Winery - OpenTOSCA fork
+# Eclipse Winery – OpenTOSCA fork
 
 This is a fork of [Eclipse Winery](https://github.com/eclipse/winery) and might include current research results not yet approved by Eclipse legal.
 Find out more about the OpenTOSCA eco system at [www.opentosca.org](http://www.opentosca.org/).
@@ -30,7 +30,7 @@ Precondition:
 
     git remote add upstream https://github.com/eclipse/winery.git
 
-## Haftung
+## Haftungsausschluss
 
 Dies ist ein Forschungsprototyp.
 Die Haftung für entgangenen Gewinn, Produktionsausfall, Betriebsunterbrechung, entgangene Nutzungen, Verlust von Daten und Informationen, Finanzierungsaufwendungen sowie sonstige Vermögens- und Folgeschäden ist, außer in Fällen von grober Fahrlässigkeit, Vorsatz und Personenschäden ausgeschlossen.
