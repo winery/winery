@@ -7,7 +7,7 @@
  * Contributors: 
  * - Michael Wurster - initial API and implementation
  */
-package org.eclipse.winery.repository;
+package org.eclipse.winery.repository.rest;
 
 import java.util.Optional;
 import org.eclipse.winery.repository.configuration.Environment;

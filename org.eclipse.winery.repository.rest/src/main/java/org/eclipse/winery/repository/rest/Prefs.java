@@ -82,15 +82,6 @@ public class Prefs implements ServletContextListener {
 		// they will be overwritten with the configuration later
 		initializeUrlConfigurationWithDefaultValues(ctx);
 
-		try {
-			String fileName = ctx.getRealPath("/WEB-INF/classes/winery.properties");
-			// InputStream inStream = ctx.getResourceAsStream(fn);
-			// alternative: InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("winery.properties");
-			Environment.copyConfiguration(new File(fileName).toPath());
-		} catch (Exception e) {
-			LOGGER.debug("Error during initialization", e);
-		}
-
 		// overwrite configuration with local configuration in all cases
 		// if winery.property exists in the root of the default repository path (~/winery-repository), load it
 		File propFile = new File(FilebasedRepository.getDefaultRepositoryFilePath(), "winery.properties");
