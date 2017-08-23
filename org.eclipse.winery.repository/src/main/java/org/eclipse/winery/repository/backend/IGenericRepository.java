@@ -118,19 +118,19 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	/**
 	 * Creates a stream of a ZIP file containing all files contained in the given id
 	 *
-	 * @param id the id whose children should be zipped
+	 * @param id  the id whose children should be zipped
 	 * @param out the outputstream to write to
 	 */
 	void getZippedContents(final GenericId id, OutputStream out) throws WineryRepositoryException;
 
 
-		/**
-         * Returns the size of the file referenced by ref
-         *
-         * @param ref a refernce to the file stored in the repository
-         * @return the size in bytes
-         * @throws IOException if something goes wrong
-         */
+	/**
+	 * Returns the size of the file referenced by ref
+	 *
+	 * @param ref a refernce to the file stored in the repository
+	 * @return the size in bytes
+	 * @throws IOException if something goes wrong
+	 */
 	long getSize(RepositoryFileReference ref) throws IOException;
 
 	/**
@@ -209,16 +209,16 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 		// we do not use any database system,
 		// therefore we have to crawl through each node type implementation by ourselves
 		return RepositoryFactory.getRepository().getAllTOSCAComponentIds(clazz)
-				.stream()
-				// The resource may have been freshly initialized due to existence of a directory
-				// then it has no node type assigned leading to ntiRes.getType() being null
-				// we ignore this error here
-				.filter(id -> ((HasType) this.getDefinitions(id).getElement()).getTypeAsQName().equals(qNameOfTheType))
-				.collect(Collectors.toList());
+			.stream()
+			// The resource may have been freshly initialized due to existence of a directory
+			// then it has no node type assigned leading to ntiRes.getType() being null
+			// we ignore this error here
+			.filter(id -> ((HasType) this.getDefinitions(id).getElement()).getTypeAsQName().equals(qNameOfTheType))
+			.collect(Collectors.toList());
 	}
 
 	NamespaceManager getNamespaceManager();
-	
+
 	XsdImportManager getXsdImportManager();
 
 	/**
