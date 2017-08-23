@@ -12,6 +12,8 @@
 package org.eclipse.winery.repository.backend;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
@@ -84,5 +86,14 @@ public class RepositoryFactory {
 			reconfigure(new FileBasedRepositoryConfiguration());
 		}
 		return repository;
+	}
+
+	/**
+	 * Generates a new IRepository working on the specifed path. No git support, just plain file system
+	 */
+	public static IRepository getRepositoryForPath(Path path) {
+		Objects.requireNonNull(path);
+		FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(path);
+		return new FilebasedRepository(fileBasedRepositoryConfiguration);
 	}
 }
