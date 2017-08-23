@@ -41,7 +41,7 @@
 		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>org.eclipse.winery.repository.resources</param-value>
+			<param-value>org.eclipse.winery.repository.rest.resources</param-value>
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.feature.FilterForwardOn404</param-name>
