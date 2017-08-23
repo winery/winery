@@ -13,6 +13,7 @@ package org.eclipse.winery.repository.configuration;
 
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.apache.commons.configuration2.BaseConfiguration;
@@ -121,7 +122,9 @@ public class Environment {
 
 	public static Optional<FileBasedRepositoryConfiguration> getFilebasedRepositoryConfiguration() {
 		if (CONFIGURATION.containsKey(KEY_REPOSITORY_PATH)) {
-			return Optional.of(new FileBasedRepositoryConfiguration(CONFIGURATION.getString(KEY_REPOSITORY_PATH)));
+			final String configuredPath = CONFIGURATION.getString(KEY_REPOSITORY_PATH);
+			final Path path = Paths.get(configuredPath);
+			return Optional.of(new FileBasedRepositoryConfiguration(path));
 		} else {
 			return Optional.empty();
 		}

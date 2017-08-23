@@ -1,9 +1,11 @@
 package org.eclipse.winery.repository.configuration;
 
+import java.nio.file.Path;
+
 public class FileBasedRepositoryConfiguration {
 
 	// may be null, because org.eclipse.winery.repository.backend.filebased.FilebasedRepository() determines the location automatically if no path exists
-	private String repositoryPath = null;
+	private Path repositoryPath = null;
 
 	/**
 	 * There are no required values for the configuration
@@ -11,15 +13,15 @@ public class FileBasedRepositoryConfiguration {
 	public FileBasedRepositoryConfiguration() {
 	}
 
-	public FileBasedRepositoryConfiguration(String repositoryPath) {
+	public FileBasedRepositoryConfiguration(Path repositoryPath) {
 		this.repositoryPath = repositoryPath;
 	}
 
-	public String getRepositoryPath() {
+	public Path getRepositoryPath() {
 		return repositoryPath;
 	}
 
-	public void setRepositoryPath(String repositoryPath) {
+	public void setRepositoryPath(Path repositoryPath) {
 		this.repositoryPath = repositoryPath;
 	}
 
