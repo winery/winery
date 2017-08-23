@@ -18,8 +18,8 @@ before_install:
   - mvn resources:resources -pl org.eclipse.winery.repository.configuration
 
 script:
-  - mvn package --fail-at-end
-#  - mvn jacoco:report-aggregate
+  - mvn package
+  # - mvn jacoco:report-aggregate
   - mkdir build
   - mv org.eclipse.winery.repository.rest/target/*.war build/
   - mv org.eclipse.winery.repository.ui/target/*.war build/

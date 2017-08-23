@@ -10,7 +10,7 @@ RUN rm /dev/random && ln -s /dev/urandom /dev/random \
 
 WORKDIR /tmp/winery
 COPY . /tmp/winery
-RUN mvn package --fail-at-end
+RUN mvn package
 RUN unzip /tmp/winery/org.eclipse.winery.repository.rest/target/winery.war -d /opt/winery \
     && sed -i "sXbpmn4toscamodelerBaseURI=.*Xbpmn4toscamodelerBaseURI=/winery-workflowmodelerX" /opt/winery/WEB-INF/classes/winery.properties \
     && sed -i "sX#repositoryPath=.*XrepositoryPath=/var/opentosca/repositoryX" /opt/winery/WEB-INF/classes/winery.properties
