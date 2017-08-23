@@ -7,6 +7,7 @@
  * Contributors: 
  * - Lukas Harzenetter - initial API and implementation 
  * - Oliver Kopp - separate configuration types
+ * - Michael Wurster - Add classloader fallback and fix 
  */
 package org.eclipse.winery.repository.configuration;
 
@@ -50,10 +51,18 @@ public class Environment {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Environment.class);
 
 	static {
-		final URL wineryPropertiesResource = Environment.class.getClassLoader().getResource("winery.properties");
+		final String filename = "winery.properties";
+		URL wineryPropertiesResource = Environment.class.getClassLoader().getResource(filename);
+		if (wineryPropertiesResource == null) {
+			wineryPropertiesResource = Thread.currentThread().getContextClassLoader()
+				.getResource(filename);
+			if (wineryPropertiesResource == null) {
+				wineryPropertiesResource = ClassLoader.getSystemClassLoader().getResource(filename);
+			}
+		}
 		Configurations configs = new Configurations();
 		try {
-			configs.properties(wineryPropertiesResource);
+			CONFIGURATION = configs.properties(wineryPropertiesResource);
 		} catch (ConfigurationException e) {
 			LOGGER.debug("Could not load by using getResource", e);
 		}
