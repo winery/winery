@@ -9,6 +9,8 @@
  */
 package org.eclipse.winery.repository.rest;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
@@ -22,7 +24,7 @@ public class EnvironmentTest {
 		final Optional<FileBasedRepositoryConfiguration> filebasedRepositoryConfiguration = Environment
 			.getFilebasedRepositoryConfiguration();
 		Assert.assertTrue(filebasedRepositoryConfiguration.isPresent());
-		Assert.assertEquals("/tmp/winery-repository",
-			filebasedRepositoryConfiguration.get().getRepositoryPath());
+		final Path repositoryPath = filebasedRepositoryConfiguration.get().getRepositoryPath();
+		Assert.assertEquals(Paths.get("/tmp/winery-repository"), repositoryPath);
 	}
 }
