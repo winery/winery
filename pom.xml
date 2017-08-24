@@ -62,7 +62,7 @@
 		<repository>
 			<id>internal.repo</id>
 			<name>Temporary Staging Repository</name>
-			<url>file://${session.executionRootDirectory}/target/mvn-repo</url>
+			<url>file://${basedir}/target/mvn-repo</url>
 		</repository>
 	</distributionManagement>
 	<properties>
@@ -134,7 +134,7 @@
 					<noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
 					<force>true</force>
 					<merge>true</merge>
-					<outputDirectory>${session.executionRootDirectory}/target/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
+					<outputDirectory>${basedir}/target/mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
 					<branch>refs/heads/master</branch>           <!-- remote branch name -->
 					<includes><include>**/*</include></includes>
 					<repositoryOwner>opentosca</repositoryOwner> <!-- github username  -->
