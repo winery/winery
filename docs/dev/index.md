@@ -103,7 +103,7 @@ You can start bower manually in `org.eclipse.winery.repository` and `org.eclipse
 
 There are four WARs generated:
 
-* `org.eclipse.winery.repository/target/winery.war` - the repository
+* `org.eclipse.winery.repository.rest/target/winery.war` - the REST interface to the repository
 * `org.eclipse.winery.repository.ui/target/winery-ui.war` - the UI for the repository
 * `org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war` - the topology modeler
 * `org.eclipse.winery.workflowmodeler/target/winery-workflowmodeler.war` - the workflow modeler
