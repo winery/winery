@@ -9,14 +9,15 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Oliver Kopp - add hint on preview being unavailable
  */
 -->
 <div>
     <a [href]="editorUrl" target="_blank" class="btn btn-primary">Open Editor</a>
-    <a [href]="templateUrl" target="_blank" class="btn btn-info">Open View</a>
 </div>
-<br>
-<div *ngIf="loading">
-    <winery-loader></winery-loader>
+<div>
+    <p class="help-block">
+        Preview not available.
+        Please open the editor.
+    </p>
 </div>
-<iframe class="topologyTemplatePreviewSizing" [src]="templateUrl" width="100%" height="500px" (load)="loading = false"></iframe>

@@ -4,7 +4,7 @@
 
 ## Example to understand double encoding of URIs in Winery
 
-In file systems, characteers `/` and `:` are not allowed [source](https://stackoverflow.com/a/31976060/873282).
+In file systems, characters `/` and `:` are not allowed [source](https://stackoverflow.com/a/31976060/873282).
 The [design decision](../adr/0002-filesystem-folder-structure-using-type-namespace-id-structure) is that all files (node types, imports in CSARs, ...) are stored and structured using directories with human readable names.
 Therefore, the namespace URI must be used in a encoded form, otherwise the name would not be valid (`http://www...`). 
 An example for such a directory name is `http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema`.
@@ -57,7 +57,6 @@ Summary: Because the namespace is part of the used URIs and the ns itself is a U
 Copyright (c) 2017 University of Stuttgart.
 
 All rights reserved. Made available under the terms of the [Eclipse Public License v1.0] and the [Apache License v2.0] which both accompany this distribution.
-
 
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
