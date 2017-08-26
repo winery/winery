@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
+ *     Oliver Kopp - quick fix to enable IA generation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { isNullOrUndefined } from 'util';
@@ -192,6 +193,10 @@ export class InterfacesComponent implements OnInit {
 
         this.generateArtifactApiData.autoCreateArtifactTemplate = 'yes';
         this.generateArtifactApiData.interfaceName = this.selectedInterface.name;
+
+        // enable autogenreation of the implementation artifact
+        // currently works for node types only, not for relationship types
+        this.generateArtifactApiData.autoGenerateIA = 'yes';
 
         this.implementation.name = this.sharedData.selectedComponentId + '_impl';
         this.implementation.namespace = this.sharedData.selectedNamespace;

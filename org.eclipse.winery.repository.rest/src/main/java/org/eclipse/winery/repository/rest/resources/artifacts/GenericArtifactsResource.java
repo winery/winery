@@ -108,7 +108,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	@RestDoc(methodDescription = "Creates a new implementation/deployment artifact. " +
 		"If an implementation artifact with the same name already exists, it is <em>overridden</em>.")
 	@SuppressWarnings("unchecked")
-	public Response onPost(GenerateArtifactApiData apiData, @Context UriInfo uriInfo) {
+	public Response generateArtifact(GenerateArtifactApiData apiData, @Context UriInfo uriInfo) {
 		// we assume that the parent ComponentInstance container exists
 
 		// @formatter:on
