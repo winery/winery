@@ -50,21 +50,9 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://www.eclipse.org/orion/editor/releases/current/built-editor.min.js</url>
-                            <outputFileName>built-editor.min.js</outputFileName>
-                            <outputDirectory>${project.basedir}/build/</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <id>download-orion-editor-styles</id>
-                        <goals>
-                            <goal>wget</goal>
-                        </goals>
-                        <configuration>
-                            <url>http://www.eclipse.org/orion/editor/releases/current/built-editor.css</url>
-                            <outputFileName>built-editor.css</outputFileName>
-                            <outputDirectory>${project.basedir}/build/</outputDirectory>
+                            <url>http://www.mirrorservice.org/sites/download.eclipse.org/eclipseMirror/orion/drops/R-8.0-201502161823/built-editor.zip</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.basedir}/build/orion</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

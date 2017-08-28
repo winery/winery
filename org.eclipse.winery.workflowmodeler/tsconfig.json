@@ -9,6 +9,7 @@
         "removeComments": false,
         "noImplicitAny": false,
         "suppressImplicitAnyIndexErrors": true,
+        "skipLibCheck": true,
         "typingOptions": {
             "enableAutoDiscovery": false,
             "include": [],
