@@ -9,7 +9,7 @@
 
 	<logger name="org.eclipse.winery" level="DEBUG"/>
 
-	<root level="info">
+	<root level="DEBUG">
 		<appender-ref ref="STDOUT" />
 	</root>
 </configuration>
