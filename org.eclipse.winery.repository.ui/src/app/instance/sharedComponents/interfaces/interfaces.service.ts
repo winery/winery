@@ -64,7 +64,7 @@ export class InterfacesService {
     }
 
     createArtifactTemplate(implementationName: string, implementationNamespace: string,
-                                 generateArtifactApiData: GenerateArtifactApiData) {
+                                 generateArtifactApiData: GenerateArtifactApiData): Observable<Response> {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 

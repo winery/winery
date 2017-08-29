@@ -11,6 +11,7 @@
  *     Oliver Kopp - quick fix to enable IA generation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Response } from '@angular/http';
 import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../../../configuration';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
@@ -308,9 +309,24 @@ export class InterfacesComponent implements OnInit {
     private handleSave() {
         this.loading = false;
         this.notify.success('Changes saved!');
+
+        // If there is a generation of implementations in progress, generate those now.
+        if (this.generating) {
+            if (this.implementation.createComponent) {
+                this.service.createImplementation(this.implementation.name, this.implementation.namespace)
+                    .subscribe(
+                        data => this.handleGeneratedImplementation(data),
+                        error => this.handleError(error)
+                    );
+            } else if (!this.implementation.createComponent && this.artifactTemplate.createComponent) {
+                this.handleGeneratedImplementation();
+            } else {
+                this.generating = false;
+            }
+        }
     }
 
-    private handleError(error: any) {
+    private handleError(error: Error) {
         this.loading = false;
         this.generating = false;
         this.notify.error(error.toString());
@@ -337,11 +353,11 @@ export class InterfacesComponent implements OnInit {
 
     private handleGeneratedImplementation(data?: any) {
         if (this.artifactTemplate.createComponent) {
-            this.generateArtifactApiData.artifactTemplateName = this.generateArtifactApiData.artifactName =  this.artifactTemplate.name;
+            this.generateArtifactApiData.artifactTemplateName = this.generateArtifactApiData.artifactName = this.artifactTemplate.name;
             this.generateArtifactApiData.artifactTemplateNamespace = this.artifactTemplate.namespace;
             this.service.createArtifactTemplate(this.implementation.name, this.implementation.namespace, this.generateArtifactApiData)
                 .subscribe(
-                    () => this.handleGeneratedArtifact(),
+                    (response) => this.handleGeneratedArtifact(response),
                     error => this.handleError(error)
                 );
         } else {
@@ -353,10 +369,13 @@ export class InterfacesComponent implements OnInit {
         }
     }
 
-    private handleGeneratedArtifact() {
+    private handleGeneratedArtifact(response: Response) {
         this.generating = false;
         this.generateImplModal.hide();
-        this.notify.success('Successfully created Artifact!');
+        this.notify.success(
+            'It\'s available for download at <a style="color: black;" href="' + response.headers.get('Location') + '">' + this.implementation.name + ' source</a>.',
+            'Successfully created Artifact!',
+            { enableHTML: true });
     }
 
     // endregion
