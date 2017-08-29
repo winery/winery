@@ -56,9 +56,6 @@ and the [Apache License v2.0] which both accompany this distribution,
 and are available at http://www.eclipse.org/legal/epl-v10.html
 and http://www.apache.org/licenses/LICENSE-2.0
 
-Contributors:
-* Oliver Kopp - initial API and implementation
-
   [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
   [bug421284]: https://bugs.eclipse.org/bugs/show_bug.cgi?id=421284
   [bower]: https://github.com/bower/bower
