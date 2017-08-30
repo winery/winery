@@ -9,14 +9,16 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
+import { ToscaTypes } from './enums';
+
 export interface SectionResolverData {
-    section: string;
+    section: ToscaTypes;
     namespace: string;
     path: string;
 }
 
 export interface InstanceResolverData extends SectionResolverData {
-    instanceId: string;
+    localName: string;
 }
 
 export interface PropertiesDefinitionResolverData {

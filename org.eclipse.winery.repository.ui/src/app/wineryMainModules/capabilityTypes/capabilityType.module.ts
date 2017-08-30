@@ -7,16 +7,17 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Michael Wurster - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CapabilityTypeRouterModule } from './capabilityTypeRouter.module';
 
-// Angular 2
-import '@angular/common';
-import '@angular/core';
-import '@angular/http';
-import '@angular/platform-browser';
-import '@angular/platform-browser-dynamic';
-import '@angular/router';
-
-// RxJS
-import 'rxjs';
+@NgModule({
+    imports: [
+        CommonModule,
+        CapabilityTypeRouterModule
+    ],
+})
+export class CapabilityTypeModule {
+}

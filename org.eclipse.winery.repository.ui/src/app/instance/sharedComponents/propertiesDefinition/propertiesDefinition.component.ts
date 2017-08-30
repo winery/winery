@@ -150,7 +150,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         }
 
         if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.namespace)) {
-            this.resourceApiData.winerysPropertiesDefinition.namespace = this.sharedData.selectedNamespace + '/properties';
+            this.resourceApiData.winerysPropertiesDefinition.namespace = this.sharedData.toscaComponent.namespace + '/properties';
         }
         if (isNullOrUndefined(this.resourceApiData.winerysPropertiesDefinition.elementName)) {
             this.resourceApiData.winerysPropertiesDefinition.elementName = 'properties';

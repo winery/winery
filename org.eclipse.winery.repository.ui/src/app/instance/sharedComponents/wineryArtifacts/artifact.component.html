@@ -19,8 +19,7 @@
         <div>
             <label>Available {{name}} Artifacts</label>
         </div>
-        <winery-table [title]="title"
-                      [columns]="columns"
+        <winery-table [columns]="columns"
                       [data]="artifactsData"
                       (addBtnClicked)="onAddClick()"
                       (removeBtnClicked)="onRemoveClick($event)">

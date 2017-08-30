@@ -14,3 +14,21 @@ export enum YesNoEnum {
     YES = 'YES',
     NO = 'NO'
 }
+
+// If you add a new TOSCA Type, you also need to adjust the utils.ts file.
+// Default is assumed ToscaTypes.Admin.
+export enum ToscaTypes {
+    ServiceTemplate = 'servicetemplates',
+    NodeType = 'nodetypes',
+    RelationshipType = 'relationshiptypes',
+    ArtifactType = 'artifacttypes',
+    ArtifactTemplate = 'artifacttemplates',
+    RequirementType = 'requirementtypes',
+    CapabilityType = 'capabilitytypes',
+    NodeTypeImplementation = 'nodetypeimplementations',
+    RelationshipTypeImplementation = 'relationshiptypeimplementations',
+    PolicyType = 'policytypes',
+    PolicyTemplate = 'policytemplates',
+    Imports = 'imports',
+    Admin = 'admin'
+}

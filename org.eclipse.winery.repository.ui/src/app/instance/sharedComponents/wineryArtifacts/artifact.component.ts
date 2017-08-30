@@ -24,6 +24,8 @@ import { backendBaseURL, hostURL } from '../../../configuration';
 import { WineryArtifactFilesService } from './artifact.files.service.';
 import { Router } from '@angular/router';
 import { FilesApiData } from '../../artifactTemplates/filesTag/files.service.';
+import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
 
 @Component({
     selector: 'winery-artifact',
@@ -55,8 +57,6 @@ export class WineryArtifactComponent implements OnInit {
     fileToRemove: FilesApiData;
     noneSelected = true;
     isDeploymentArtifact = false;
-
-    @Input() title: string;
 
     commonColumns = [
         { title: 'Name', name: 'name' },
@@ -102,15 +102,15 @@ export class WineryArtifactComponent implements OnInit {
 
     onAddClick() {
         this.resetArtifactCreationData();
-        if (this.sharedData.selectedNamespace.endsWith('/')) {
-            this.artifact.namespace = this.sharedData.selectedNamespace.slice(0, this.sharedData.selectedNamespace.length - 1);
+        if (this.sharedData.toscaComponent.namespace.endsWith('/')) {
+            this.artifact.namespace = this.sharedData.toscaComponent.namespace
+                .slice(0, this.sharedData.toscaComponent.namespace.length - 1);
         } else {
-            this.artifact.namespace = this.sharedData.selectedNamespace;
+            this.artifact.namespace = this.sharedData.toscaComponent.namespace;
         }
         const deployment = this.isDeploymentArtifact ? 'Deployment' : '';
-        this.artifact.name = this.sharedData.selectedComponentId + deployment + 'Artifact';
-        this.artifact.selectedResource = 'Artifact';
-        this.artifact.selectedResourceType = 'Template';
+        this.artifact.name = this.sharedData.toscaComponent.localName + deployment + 'Artifact';
+        this.artifact.toscaType = ToscaTypes.ArtifactTemplate;
         this.addArtifactModal.show();
     }
 
@@ -225,13 +225,13 @@ export class WineryArtifactComponent implements OnInit {
         this.artifactsData = this.artifactsData.map(
             obj => {
                 if (!isNullOrUndefined(obj.artifactType)) {
-                    obj.artifactTypeLocalName = '<a target="_blank"' + ' href="' + this.createArtifactTypeUrl(obj.artifactType) +
+                    obj.artifactTypeLocalName = '<a target="_blank"' + ' href="#' + this.createArtifactTypeUrl(obj.artifactType) +
                         '">' + this.getLocalName(obj.artifactType) + '</a>';
                 } else {
                     obj.artifactTypeLocalName = '';
                 }
                 if (!isNullOrUndefined(obj.artifactRef)) {
-                    obj.artifactRefLocalName = '<a target="_blank"' + ' href="' + this.createArtifactTemplateUrl(obj.artifactRef) +
+                    obj.artifactRefLocalName = '<a target="_blank"' + ' href="#' + this.createArtifactTemplateUrl(obj.artifactRef) +
                         '">' + this.getLocalName(obj.artifactRef) + '</a>';
                 } else {
                     obj.artifactRefLocalName = '';
@@ -367,13 +367,4 @@ export class WineryArtifactComponent implements OnInit {
 
     }
 
-}
-
-export class GenerateData {
-    createComponent: boolean;
-    namespace: string;
-    name: string;
-    selectedResource: string;
-    selectedResourceType: string;
-    url: string;
 }

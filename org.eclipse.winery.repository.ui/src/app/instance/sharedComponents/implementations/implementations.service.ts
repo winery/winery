@@ -21,11 +21,18 @@ import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 
 @Injectable()
 export class ImplementationService {
+
     private path: string;
+    private implementationType: string;
 
     constructor(private http: Http,
                 private route: Router) {
         this.path = decodeURIComponent(this.route.url);
+        if (this.path.includes('/relationshiptypes/')) {
+            this.implementationType = '/relationshiptypeimplementations/';
+        } else {
+            this.implementationType = '/nodetypeimplementations/';
+        }
     }
 
     getImplementationData(): Observable<ImplementationAPIData[]> {
@@ -45,13 +52,13 @@ export class ImplementationService {
     postImplementation(implApiData: ImplementationWithTypeAPIData): Observable<Response> {
         const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
-        return this.http.post(backendBaseURL + '/nodetypeimplementations/', JSON.stringify(implApiData), options);
+        return this.http.post(backendBaseURL + this.implementationType, JSON.stringify(implApiData), options);
     }
 
     deleteImplementations(implToDelete: ImplementationAPIData) {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
-        const pathAddition = '/nodetypeimplementations/'
+        const pathAddition = this.implementationType
             + encodeURIComponent(encodeURIComponent(implToDelete.namespace)) + '/'
             + implToDelete.localname + '/';
         return this.http.delete(backendBaseURL + pathAddition, options);
