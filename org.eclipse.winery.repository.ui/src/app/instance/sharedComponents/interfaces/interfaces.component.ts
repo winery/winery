@@ -11,6 +11,7 @@
  *     Oliver Kopp - quick fix to enable IA generation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Response } from '@angular/http';
 import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../../../configuration';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
@@ -318,7 +319,7 @@ export class InterfacesComponent implements OnInit {
         }
     }
 
-    private handleError(error: any) {
+    private handleError(error: Error) {
         this.loading = false;
         this.generating = false;
         this.notify.error(error.toString());
@@ -349,7 +350,7 @@ export class InterfacesComponent implements OnInit {
             this.generateArtifactApiData.artifactTemplateNamespace = this.artifactTemplate.namespace;
             this.service.createArtifactTemplate(this.implementation.name, this.implementation.namespace, this.generateArtifactApiData)
                 .subscribe(
-                    () => this.handleGeneratedArtifact(),
+                    (response) => this.handleGeneratedArtifact(response),
                     error => this.handleError(error)
                 );
         } else {
@@ -361,10 +362,13 @@ export class InterfacesComponent implements OnInit {
         }
     }
 
-    private handleGeneratedArtifact() {
+    private handleGeneratedArtifact(response: Response) {
         this.generating = false;
         this.generateImplModal.hide();
-        this.notify.success('Successfully created Artifact!');
+        this.notify.success(
+            'It\'s available for download at <a style="color: black;" href="' + response.headers.get('Location') + '">' + this.implementation.name + ' source</a>.',
+            'Successfully created Artifact!',
+            { enableHTML: true });
     }
 
     // endregion

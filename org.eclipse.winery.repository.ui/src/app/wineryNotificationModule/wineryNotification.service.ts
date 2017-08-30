@@ -48,8 +48,8 @@ export class WineryNotificationService {
      * @param message
      * @param title
      */
-    success(message: string, title = 'Success') {
-        this.toastr.success(message, title);
+    success(message: string, title = 'Success', options = {}) {
+        this.toastr.success(message, title, options);
         this.notifications.push({title: title, message: message, type: 'success', createdOn: this.getCurrentDate()});
     }
 
@@ -77,7 +77,7 @@ export class WineryNotificationService {
      * returns the current date
      * @returns {string}
      */
-    getCurrentDate() {
+    private getCurrentDate() {
         return this.datePipe.transform(Date.now(), 'short');
     }
 }
