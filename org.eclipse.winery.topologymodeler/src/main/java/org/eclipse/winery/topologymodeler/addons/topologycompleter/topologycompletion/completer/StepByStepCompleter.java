@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -26,6 +25,7 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.analyzer.TOSCAAnalyzer;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.NodeTemplateConnector;
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.Utils;
@@ -54,8 +54,7 @@ public class StepByStepCompleter {
 	/**
 	 * The constructor of the class.
 	 *
-	 * @param topology
-	 *            the {@link TTopologyTemplate} to be completed
+	 * @param topology the {@link TTopologyTemplate} to be completed
 	 */
 	public StepByStepCompleter(TTopologyTemplate topology) {
 		this.topology = topology;
@@ -64,12 +63,9 @@ public class StepByStepCompleter {
 	/**
 	 * This method is called when a topology containing {@link TRequirement}s is completed step by step.
 	 *
-	 * @param unfulfilledRequirements
-	 *            a list of unfulfilled requirements
-	 * @param placeHolders
-	 *            a list of place holders to be fulfilled
-	 * @param toscaAnalyzer
-	 * 			  the {@link TOSCAAnalyzer} object to access the data model
+	 * @param unfulfilledRequirements a list of unfulfilled requirements
+	 * @param placeHolders            a list of place holders to be fulfilled
+	 * @param toscaAnalyzer           the {@link TOSCAAnalyzer} object to access the data model
 	 */
 	public void completeTopologyStepByStep(Map<TRequirement, TNodeTemplate> unfulfilledRequirements, TOSCAAnalyzer toscaAnalyzer) {
 
@@ -116,16 +112,13 @@ public class StepByStepCompleter {
 			// let the user decide which template shall be inserted
 			break;
 		}
-
 	}
 
 	/**
 	 * Completes a place holder {@link TTopologyTemplate} step by step.
 	 *
-	 * @param placeHolders
-	 *            the place holders of the topology
-	 * @param toscaAnalyzer
-	 *            the {@link TOSCAAnalyzer} object to access the data model.
+	 * @param placeHolders  the place holders of the topology
+	 * @param toscaAnalyzer the {@link TOSCAAnalyzer} object to access the data model.
 	 * @return the generic {@link TRelationshipTemplate} which connects to the place holder.
 	 */
 	public TRelationshipTemplate completeWildcardTopologyStepByStep(List<TNodeTemplate> placeHolders, TOSCAAnalyzer toscaAnalyzer) {
@@ -180,7 +173,6 @@ public class StepByStepCompleter {
 		this.placeHolder = placeHolder;
 
 		return connectingRelationshipTemplate;
-
 	}
 
 	/**

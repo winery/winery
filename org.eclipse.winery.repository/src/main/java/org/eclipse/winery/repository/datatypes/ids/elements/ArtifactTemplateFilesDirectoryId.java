@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
+import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.repository.datatypes.ids.IdNames;
 
 public class ArtifactTemplateFilesDirectoryId extends ArtifactTemplateDirectoryId {
 

@@ -58,9 +58,6 @@
 		<developerConnection>scm:git:https://github.com/eclipse/winery.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
-    <prerequisites>
-        <maven>3.0.3</maven>
-    </prerequisites>
 	<distributionManagement>
 		<repository>
 			<id>internal.repo</id>
@@ -83,6 +80,7 @@
 		<module>org.eclipse.winery.repository</module>
 		<module>org.eclipse.winery.repository.client</module>
 		<module>org.eclipse.winery.repository.configuration</module>
+		<module>org.eclipse.winery.repository.rest</module>
 		<module>org.eclipse.winery.repository.ui</module>
 		<module>org.eclipse.winery.topologymodeler</module>
 		<module>org.eclipse.winery.workflowmodeler</module>

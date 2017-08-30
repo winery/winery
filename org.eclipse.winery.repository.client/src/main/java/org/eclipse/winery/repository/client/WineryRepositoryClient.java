@@ -52,11 +52,12 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
 import org.eclipse.winery.common.interfaces.QNameWithName;
-import org.eclipse.winery.common.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -372,9 +373,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		return name;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public <T extends TExtensibleElements> List<QName> getQNameListOfAllTypes(Class<T> className) {
 		String path = Util.getURLpathFragmentForCollection(className);
@@ -402,17 +400,17 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	// does not work without compiler error
 	@SuppressWarnings("unchecked")
 	private <T extends TExtensibleElements> Collection<T> getAllTypes(String path, Class<T> className) {
-		Map<WebResource, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
+		Map<WebResource, List<NamespaceIdOptionalName>> wrToNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
 		// now we now all QNames. We have to fetch the full content now
 
 		Collection<T> res = new LinkedList<T>();
-		for (WebResource wr : wRtoNamespaceAndIdListMapOfAllTypes.keySet()) {
+		for (WebResource wr : wrToNamespaceAndIdListMapOfAllTypes.keySet()) {
 			WebResource componentListResource = wr.path(path);
 
 			// go through all ids and fetch detailed information on each
 			// type
 
-			for (NamespaceIdOptionalName nsAndId : wRtoNamespaceAndIdListMapOfAllTypes.get(wr)) {
+			for (NamespaceIdOptionalName nsAndId : wrToNamespaceAndIdListMapOfAllTypes.get(wr)) {
 				TDefinitions definitions = WineryRepositoryClient.getDefinitions(componentListResource, nsAndId.getNamespace(), nsAndId.getId());
 				if (definitions == null) {
 					// try next one
@@ -543,6 +541,24 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		return res;
 	}
 
+	@Override
+	public Definitions getDefinitions(TOSCAComponentId id) {
+		for (WebResource wr : this.repositoryResources) {
+			String path = Util.getUrlPath(id);
+			Definitions definitions = WineryRepositoryClient.getDefinitions(wr.path(path));
+			if (definitions == null) {
+				// in case of an error, just try the next one
+				continue;
+			}
+			TExtensibleElements element = definitions.getElement();
+			if (element instanceof TEntityType) {
+				this.cache((TEntityType) element, id.getQName());
+				return definitions;
+			}
+		}
+		return new Definitions();
+	}
+
 	/**
 	 * Tries to retrieve a TDefinitions from the given resource / encoded(ns) /
 	 * encoded(localPart)
@@ -552,6 +568,27 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	private static TDefinitions getDefinitions(WebResource wr, String path, String ns, String localPart) {
 		WebResource componentListResource = wr.path(path);
 		return WineryRepositoryClient.getDefinitions(componentListResource, ns, localPart);
+	}
+	
+	private static Definitions getDefinitions(WebResource instanceResource) {
+		// TODO: org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsWithAssociatedThings() could be used to do the resolving at the server
+
+		ClientResponse response = instanceResource.accept(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS).get(ClientResponse.class);
+		if (response.getStatus() != 200) {
+			// also handles 404
+			return null;
+		}
+
+		Definitions definitions;
+		try {
+			Unmarshaller um = WineryRepositoryClient.createUnmarshaller();
+			definitions = (Definitions) um.unmarshal(response.getEntityInputStream());
+		} catch (JAXBException e) {
+			LOGGER.error("Could not unmarshal Definitions", e);
+			// try next service
+			return null;
+		}
+		return definitions;
 	}
 
 	/**
@@ -566,25 +603,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		String idEncoded = Util.DoubleURLencode(localPart);
 
 		WebResource instanceResource = componentListResource.path(nsEncoded).path(idEncoded);
-
-		// TODO: org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsWithAssociatedThings() could be used to do the resolving at the server
-
-		ClientResponse response = instanceResource.accept(MimeTypes.MIMETYPE_TOSCA_DEFINITIONS).get(ClientResponse.class);
-		if (response.getStatus() != 200) {
-			// also handles 404
-			return null;
-		}
-
-		TDefinitions definitions;
-		try {
-			Unmarshaller um = WineryRepositoryClient.createUnmarshaller();
-			definitions = (TDefinitions) um.unmarshal(response.getEntityInputStream());
-		} catch (JAXBException e) {
-			LOGGER.error("Could not umarshal TDefinitions", e);
-			// try next service
-			return null;
-		}
-		return definitions;
+		return getDefinitions(instanceResource);
 	}
 
 	/**

@@ -1,0 +1,27 @@
+{
+	"documentation": [
+	],
+	"any": [
+	],
+	"otherAttributes": {
+	},
+	"id": "winery-defs-for_fruits-baobab_impl",
+	"serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+		{
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
+			"targetNamespace": "http://winery.opentosca.org/test/nodetypeimplementations/fruits",
+			"name": "baobab_impl",
+			"nodeType": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
+			"abstract": "NO",
+			"final": "NO"
+		}
+	],
+	"targetNamespace": "http://winery.opentosca.org/test/nodetypeimplementations/fruits",
+	"import": [
+	]
+}

@@ -16,10 +16,13 @@ import java.util.List;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.xmlunit.matchers.CompareMatcher;
 
 public class BackendUtilsTest {
 
@@ -42,4 +45,56 @@ public class BackendUtilsTest {
 		List<TEntityTemplate> entityTemplatesClone = clone.getNodeTemplateOrRelationshipTemplate();
 		Assert.assertEquals(entityTemplates, entityTemplatesClone);
 	}
+
+	@Test
+	public void relationshipTemplateIsSerializedAsRefInXml() throws Exception {
+		TTopologyTemplate minimalTopologyTemplate = new TTopologyTemplate();
+
+		TNodeTemplate nt1 = new TNodeTemplate("nt1");
+		minimalTopologyTemplate.addNodeTemplate(nt1);
+
+		TNodeTemplate nt2 = new TNodeTemplate("nt2");
+		minimalTopologyTemplate.addNodeTemplate(nt2);
+
+		TRelationshipTemplate rt = new TRelationshipTemplate("rt");
+		minimalTopologyTemplate.addRelationshipTemplate(rt);
+		rt.setSourceNodeTemplate(nt1);
+		rt.setTargetNodeTemplate(nt2);
+
+		String minimalTopologyTemplateAsXmlString = "<tosca:TopologyTemplate xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\" xmlns:ns1=\"http://www.eclipse.org/winery/model/selfservice\">\n" +
+			"    <tosca:NodeTemplate id=\"nt1\"/>\n" +
+			"    <tosca:NodeTemplate id=\"nt2\"/>\n" +
+			"    <tosca:RelationshipTemplate id=\"rt\">\n" +
+			"        <tosca:SourceElement ref=\"nt1\"/>\n" +
+			"        <tosca:TargetElement ref=\"nt2\"/>\n" +
+			"    </tosca:RelationshipTemplate>\n" +
+			"</tosca:TopologyTemplate>";
+
+		org.hamcrest.MatcherAssert.assertThat(BackendUtils.getXMLAsString(minimalTopologyTemplate), CompareMatcher.isIdenticalTo(minimalTopologyTemplateAsXmlString).ignoreWhitespace());
+	}
+
+	@Test
+	public void relationshipTemplateIsSerializedAsRefInJson() throws Exception {
+		TTopologyTemplate minimalTopologyTemplate = new TTopologyTemplate();
+
+		TNodeTemplate nt1 = new TNodeTemplate("nt1");
+		minimalTopologyTemplate.addNodeTemplate(nt1);
+
+		TNodeTemplate nt2 = new TNodeTemplate("nt2");
+		minimalTopologyTemplate.addNodeTemplate(nt2);
+
+		TRelationshipTemplate rt = new TRelationshipTemplate("rt");
+		minimalTopologyTemplate.addRelationshipTemplate(rt);
+		rt.setSourceNodeTemplate(nt1);
+		rt.setTargetNodeTemplate(nt2);
+
+		String minimalTopologyTemplateAsJsonString = "{\"documentation\":[],\"any\":[],\"otherAttributes\":{},\"nodeTemplates\":[{\"id\":\"nt1\",\"documentation\":[],\"any\":[],\"otherAttributes\":{},\"minInstances\":1,\"maxInstances\":\"1\"},{\"id\":\"nt2\",\"documentation\":[],\"any\":[],\"otherAttributes\":{},\"minInstances\":1,\"maxInstances\":\"1\"}],\"relationshipTemplates\":[{\"documentation\":[],\"any\":[],\"otherAttributes\":{},\"id\":\"rt\",\"sourceElement\":{\"ref\":\"nt1\"},\"targetElement\":{\"ref\":\"nt2\"}}]}";
+
+		JSONAssert.assertEquals(
+			minimalTopologyTemplateAsJsonString,
+			BackendUtils.Object2JSON(minimalTopologyTemplate),
+			true);
+	}
+
+
 }

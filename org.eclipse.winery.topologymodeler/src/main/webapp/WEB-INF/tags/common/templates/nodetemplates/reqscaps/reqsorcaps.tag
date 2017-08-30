@@ -28,7 +28,7 @@
 <%@attribute name="client" required="true" description="IWineryRepository" type="org.eclipse.winery.common.interfaces.IWineryRepository"%>
 <%@attribute name="pathToImages" required="true" description="The path (URI path) to the image/ url, where xml.png is available. Has to end with '/'"%>
 
-<%@tag import="org.eclipse.winery.common.ModelUtilities"%>
+<%@tag import="org.eclipse.winery.model.tosca.utils.ModelUtilities"%>
 
 <div class="${cssClassPrefix}Container">
 	<div class="header">${headerLabel}</div>

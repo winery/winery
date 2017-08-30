@@ -8,12 +8,14 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,6 +28,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -36,223 +40,310 @@ import org.w3c.dom.NodeList;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityTemplate", propOrder = {
-		"properties",
-		"propertyConstraints"
+    "properties",
+    "propertyConstraints"
 })
 @XmlSeeAlso({
-		TArtifactTemplate.class,
-		TPolicyTemplate.class,
-		TCapability.class,
-		TRequirement.class,
-		TRelationshipTemplate.class,
-		TNodeTemplate.class
+    TArtifactTemplate.class,
+    TPolicyTemplate.class,
+    TCapability.class,
+    TRequirement.class,
+    TRelationshipTemplate.class,
+    TNodeTemplate.class
 })
-public abstract class TEntityTemplate extends HasId {
+public abstract class TEntityTemplate extends HasId implements HasType, HasName {
 
-	@XmlElement(name = "Properties")
-	protected TEntityTemplate.Properties properties;
+    @XmlElement(name = "Properties")
+    protected TEntityTemplate.Properties properties;
 
-	@XmlElement(name = "PropertyConstraints")
-	protected TEntityTemplate.PropertyConstraints propertyConstraints;
+    @XmlElement(name = "PropertyConstraints")
+    protected TEntityTemplate.PropertyConstraints propertyConstraints;
 
-	@XmlAttribute(name = "type", required = true)
-	protected QName type;
+    @XmlAttribute(name = "type", required = true)
+    protected QName type;
 
-	public TEntityTemplate() {
-		super();
-	}
+    public TEntityTemplate() {
+        super();
+    }
 
-	public TEntityTemplate(String id) {
-		super(id);
-	}
+    public TEntityTemplate(String id) {
+        super(id);
+    }
 
-	/**
-	 * Gets the value of the properties property.
-	 *
-	 * @return possible object is {@link TEntityTemplate.Properties }
-	 */
-	public TEntityTemplate.Properties getProperties() {
-		return properties;
-	}
+    public TEntityTemplate(Builder builder) {
+        super(builder);
+        this.properties = builder.properties;
+        this.propertyConstraints = builder.propertyConstraints;
+        this.type = builder.type;
+    }
 
-	/**
-	 * Sets the value of the properties property.
-	 *
-	 * @param value allowed object is {@link TEntityTemplate.Properties }
-	 */
-	public void setProperties(TEntityTemplate.Properties value) {
-		this.properties = value;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TEntityTemplate)) return false;
+        if (!super.equals(o)) return false;
+        TEntityTemplate that = (TEntityTemplate) o;
+        return Objects.equals(properties, that.properties) &&
+            Objects.equals(propertyConstraints, that.propertyConstraints) &&
+            Objects.equals(type, that.type);
+    }
 
-	/**
-	 * Gets the value of the propertyConstraints property.
-	 *
-	 * @return possible object is {@link TEntityTemplate.PropertyConstraints }
-	 */
-	public TEntityTemplate.PropertyConstraints getPropertyConstraints() {
-		return propertyConstraints;
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), properties, propertyConstraints, type);
+    }
 
-	/**
-	 * Sets the value of the propertyConstraints property.
-	 *
-	 * @param value allowed object is {@link TEntityTemplate.PropertyConstraints }
-	 */
-	public void setPropertyConstraints(TEntityTemplate.PropertyConstraints value) {
-		this.propertyConstraints = value;
-	}
+    /**
+     * Gets the value of the properties property.
+     *
+     * @return possible object is {@link TEntityTemplate.Properties }
+     */
+    /*@Nullable*/
+    public TEntityTemplate.Properties getProperties() {
+        return properties;
+    }
 
-	/**
-	 * Gets the value of the type property.
-	 *
-	 * @return possible object is {@link QName }
-	 */
-	public QName getType() {
-		return type;
-	}
+    /**
+     * Sets the value of the properties property.
+     *
+     * @param value allowed object is {@link TEntityTemplate.Properties }
+     */
+    public void setProperties(TEntityTemplate.Properties value) {
+        this.properties = value;
+    }
 
-	/**
-	 * Sets the value of the type property.
-	 *
-	 * @param value allowed object is {@link QName }
-	 */
-	public void setType(QName value) {
-		this.type = value;
-	}
+    /**
+     * Gets the value of the propertyConstraints property.
+     *
+     * @return possible object is {@link TEntityTemplate.PropertyConstraints }
+     */
+    /*@Nullable*/
+    public TEntityTemplate.PropertyConstraints getPropertyConstraints() {
+        return propertyConstraints;
+    }
+
+    /**
+     * Sets the value of the propertyConstraints property.
+     *
+     * @param value allowed object is {@link TEntityTemplate.PropertyConstraints }
+     */
+    public void setPropertyConstraints(TEntityTemplate.PropertyConstraints value) {
+        this.propertyConstraints = value;
+    }
+
+    /**
+     * Gets the value of the type property.
+     *
+     * @return possible object is {@link QName }
+     */
+    @NonNull
+    public QName getType() {
+        return type;
+    }
+
+    @Override
+    public QName getTypeAsQName() {
+        return this.getType();
+    }
+
+    /**
+     * Sets the value of the type property.
+     *
+     * @param value allowed object is {@link QName }
+     */
+    public void setType(QName value) {
+        this.type = value;
+    }
+
+    /**
+     * <p>Java class for anonymous complex type.
+     *
+     * <p>The following schema fragment specifies the expected content contained within this class.
+     *
+     * <pre>
+     * &lt;complexType>
+     *   &lt;complexContent>
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *       &lt;sequence>
+     *         &lt;any processContents='lax' namespace='##other'/>
+     *       &lt;/sequence>
+     *     &lt;/restriction>
+     *   &lt;/complexContent>
+     * &lt;/complexType>
+     * </pre>
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "any"
+    })
+    public static class Properties {
+
+        @XmlAnyElement(lax = true)
+        protected Object any;
+
+        /**
+         * Gets the value of the any property.
+         *
+         * @return possible object is {@link Element } {@link Object }
+         */
+        @Nullable
+        public Object getAny() {
+            return any;
+        }
+
+        /**
+         * Sets the value of the any property.
+         *
+         * @param value allowed object is {@link Element } {@link Object }
+         */
+        public void setAny(Object value) {
+            this.any = value;
+        }
+
+        /**
+         * This is a special method for Winery. Winery allows to define a property by specifying name/value values.
+         * Instead of parsing the XML contained in TNodeType, this method is a convenience method to access this
+         * information Assumes the properties are key/value pairs (see WinerysPropertiesDefinition), all other cases are
+         * not implemented yet.
+         *
+         * The return type "Properties" is used because of the key/value properties.
+         */
+        @XmlTransient
+        @JsonIgnore
+        public java.util.Properties getKVProperties() {
+            java.util.Properties properties = new java.util.Properties();
+            org.eclipse.winery.model.tosca.TEntityTemplate.Properties tprops = this;
+            if (tprops != null) {
+                // no checking for validity, just reading
+                Element el = (Element) tprops.getAny();
+                if (el == null) {
+                    // somehow invalid .tosca. We return empty properties instead of throwing a NPE
+                    return properties;
+                }
+                NodeList childNodes = el.getChildNodes();
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    Node item = childNodes.item(i);
+                    if (item instanceof Element) {
+                        String key = item.getLocalName();
+                        String value = item.getTextContent();
+                        properties.put(key, value);
+                    }
+                }
+            }
+            return properties;
+        }
+    }
 
 
-	/**
-	 * <p>Java class for anonymous complex type.
-	 *
-	 * <p>The following schema fragment specifies the expected content contained within this class.
-	 *
-	 * <pre>
-	 * &lt;complexType>
-	 *   &lt;complexContent>
-	 *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-	 *       &lt;sequence>
-	 *         &lt;any processContents='lax' namespace='##other'/>
-	 *       &lt;/sequence>
-	 *     &lt;/restriction>
-	 *   &lt;/complexContent>
-	 * &lt;/complexType>
-	 * </pre>
-	 */
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = {
-			"any"
-	})
-	public static class Properties {
+    /**
+     * <p>Java class for anonymous complex type.
+     *
+     * <p>The following schema fragment specifies the expected content contained within this class.
+     *
+     * <pre>
+     * &lt;complexType>
+     *   &lt;complexContent>
+     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+     *       &lt;sequence>
+     *         &lt;element name="PropertyConstraint" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tPropertyConstraint"
+     * maxOccurs="unbounded"/>
+     *       &lt;/sequence>
+     *     &lt;/restriction>
+     *   &lt;/complexContent>
+     * &lt;/complexType>
+     * </pre>
+     */
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "", propOrder = {
+        "propertyConstraint"
+    })
+    public static class PropertyConstraints {
 
-		@XmlAnyElement(lax = true)
-		protected Object any;
+        @XmlElement(name = "PropertyConstraint", required = true)
+        protected List<TPropertyConstraint> propertyConstraint;
 
-		/**
-		 * Gets the value of the any property.
-		 *
-		 * @return possible object is {@link Element } {@link Object }
-		 */
-		public Object getAny() {
-			return any;
-		}
+        /**
+         * Gets the value of the propertyConstraint property.
+         *
+         * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
+         * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
+         * method for the propertyConstraint property.
+         *
+         * <p> For example, to add a new item, do as follows:
+         * <pre>
+         *    getPropertyConstraint().add(newItem);
+         * </pre>
+         *
+         *
+         * <p> Objects of the following type(s) are allowed in the list {@link TPropertyConstraint }
+         */
+        @NonNull
+        public List<TPropertyConstraint> getPropertyConstraint() {
+            if (propertyConstraint == null) {
+                propertyConstraint = new ArrayList<TPropertyConstraint>();
+            }
+            return this.propertyConstraint;
+        }
+    }
 
-		/**
-		 * Sets the value of the any property.
-		 *
-		 * @param value allowed object is {@link Element } {@link Object }
-		 */
-		public void setAny(Object value) {
-			this.any = value;
-		}
+    public static class Builder extends HasId.Builder {
+        private final QName type;
+        private TEntityTemplate.Properties properties;
+        private TEntityTemplate.PropertyConstraints propertyConstraints;
 
-		/**
-		 * This is a special method for Winery. Winery allows to define a property
-		 * by specifying name/value values. Instead of parsing the XML contained in
-		 * TNodeType, this method is a convenience method to access this information
-		 * Assumes the properties are key/value pairs (see WinerysPropertiesDefinition), all other cases are not implemented yet.
-		 * 
-		 * The return type "Properties" is used because of the key/value properties.
-		 */
-		@XmlTransient
-		@JsonIgnore
-		public java.util.Properties getKVProperties() {
-			java.util.Properties properties = new java.util.Properties();
-			org.eclipse.winery.model.tosca.TEntityTemplate.Properties tprops = this;
-			if (tprops != null) {
-				// no checking for validity, just reading
-				Element el = (Element) tprops.getAny();
-				if (el == null) {
-					// somehow invalid .tosca. We return empty properties instead of throwing a NPE
-					return properties;
-				}
-				NodeList childNodes = el.getChildNodes();
-				for (int i = 0; i < childNodes.getLength(); i++) {
-					Node item = childNodes.item(i);
-					if (item instanceof Element) {
-						String key = item.getLocalName();
-						String value = item.getTextContent();
-						properties.put(key, value);
-					}
-				}
-			}
-			return properties;
-		}
-		
-	}
+        public Builder(String id, QName type) {
+            super(id);
+            this.type = type;
+        }
 
+        public Builder(TEntityTemplate entityTemplate) {
+            super(entityTemplate);
+            this.type = entityTemplate.getType();
+            this.properties = entityTemplate.getProperties();
+            this.addPropertyConstraints(entityTemplate.getPropertyConstraints());
+        }
 
-	/**
-	 * <p>Java class for anonymous complex type.
-	 *
-	 * <p>The following schema fragment specifies the expected content contained within this class.
-	 *
-	 * <pre>
-	 * &lt;complexType>
-	 *   &lt;complexContent>
-	 *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-	 *       &lt;sequence>
-	 *         &lt;element name="PropertyConstraint" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tPropertyConstraint"
-	 * maxOccurs="unbounded"/>
-	 *       &lt;/sequence>
-	 *     &lt;/restriction>
-	 *   &lt;/complexContent>
-	 * &lt;/complexType>
-	 * </pre>
-	 */
-	@XmlAccessorType(XmlAccessType.FIELD)
-	@XmlType(name = "", propOrder = {
-			"propertyConstraint"
-	})
-	public static class PropertyConstraints {
+        public Builder setProperties(TEntityTemplate.Properties properties) {
+            this.properties = properties;
+            return this;
+        }
 
-		@XmlElement(name = "PropertyConstraint", required = true)
-		protected List<TPropertyConstraint> propertyConstraint;
+        public Builder setPropertyConstraints(TEntityTemplate.PropertyConstraints propertyConstraints) {
+            this.propertyConstraints = propertyConstraints;
+            return this;
+        }
 
-		/**
-		 * Gets the value of the propertyConstraint property.
-		 *
-		 * <p>
-		 * This accessor method returns a reference to the live list,
-		 * not a snapshot. Therefore any modification you make to the
-		 * returned list will be present inside the JAXB object.
-		 * This is why there is not a <CODE>set</CODE> method for the propertyConstraint property.
-		 *
-		 * <p>
-		 * For example, to add a new item, do as follows:
-		 * <pre>
-		 *    getPropertyConstraint().add(newItem);
-		 * </pre>
-		 *
-		 *
-		 * <p>
-		 * Objects of the following type(s) are allowed in the list
-		 * {@link TPropertyConstraint }
-		 */
-		public List<TPropertyConstraint> getPropertyConstraint() {
-			if (propertyConstraint == null) {
-				propertyConstraint = new ArrayList<TPropertyConstraint>();
-			}
-			return this.propertyConstraint;
-		}
-	}
+        public Builder addPropertyConstraints(TEntityTemplate.PropertyConstraints propertyConstraints) {
+            if (propertyConstraints == null || propertyConstraints.getPropertyConstraint().isEmpty()) {
+                return this;
+            }
+
+            if (this.propertyConstraints == null) {
+                this.propertyConstraints = propertyConstraints;
+            } else {
+                this.propertyConstraints.getPropertyConstraint().addAll(propertyConstraints.getPropertyConstraint());
+            }
+            return this;
+        }
+
+        public Builder addPropertyConstraints(List<TPropertyConstraint> propertyConstraints) {
+            if (propertyConstraints == null) {
+                return this;
+            }
+
+            TEntityTemplate.PropertyConstraints tmp = new TEntityTemplate.PropertyConstraints();
+            tmp.getPropertyConstraint().addAll(propertyConstraints);
+            return addPropertyConstraints(tmp);
+        }
+
+        public Builder addPropertyConstraints(TPropertyConstraint propertyConstraints) {
+            if (propertyConstraints == null) {
+                return this;
+            }
+
+            TEntityTemplate.PropertyConstraints tmp = new TEntityTemplate.PropertyConstraints();
+            tmp.getPropertyConstraint().add(propertyConstraints);
+            return addPropertyConstraints(tmp);
+        }
+    }
 }

@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -44,6 +45,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.IdUtil;
+import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
@@ -54,9 +57,9 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
-import org.eclipse.winery.model.tosca.Namespaces;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.taglibs.standard.functions.Functions;
@@ -67,6 +70,8 @@ import org.w3c.dom.Element;
 public class Util {
 
 	public static final String FORBIDDEN_CHARACTER_REPLACEMENT = "_";
+
+	public static final String slashEncoded = Util.URLencode("/");
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
 
@@ -104,8 +109,7 @@ public class Util {
 	}
 
 	/**
-	 * Encodes the namespace and the localname of the given qname, separated by
-	 * "/"
+	 * Encodes the namespace and the localname of the given qname, separated by "/"
 	 *
 	 * @return <double encoded namespace>"/"<double encoded localname>
 	 */
@@ -125,6 +129,115 @@ public class Util {
 			return false;
 		}
 		return !u.isAbsolute();
+	}
+
+	/**
+	 * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(org.eclipse.winery.common.ids.GenericId)
+	 * instead.
+	 *
+	 * @return the path starting from the root element to the current element. Separated by "/", URLencoded, but
+	 * <b>not</b> double encoded. With trailing slash if sub-resources can exist
+	 * @throws IllegalStateException if id is of an unknown subclass of id
+	 */
+	public static String getPathInsideRepo(GenericId id) {
+		Objects.requireNonNull(id);
+
+		// for creating paths see also org.eclipse.winery.repository.Utils.getIntermediateLocationStringForType(String, String)
+		// and org.eclipse.winery.common.Util.getRootPathFragment(Class<? extends TOSCAcomponentId>)
+		if (id instanceof AdminId) {
+			return "admin/" + id.getXmlId().getEncoded() + "/";
+		} else if (id instanceof GenericImportId) {
+			GenericImportId i = (GenericImportId) id;
+			String res = "imports/";
+			res = res + Util.URLencode(i.getType()) + "/";
+			res = res + i.getNamespace().getEncoded() + "/";
+			res = res + i.getXmlId().getEncoded() + "/";
+			return res;
+		} else if (id instanceof TOSCAComponentId) {
+			return IdUtil.getPathFragment(id);
+		} else if (id instanceof TOSCAElementId) {
+			// we cannot reuse IdUtil.getPathFragment(id) as this TOSCAelementId
+			// might be nested in an AdminId
+			return getPathInsideRepo(id.getParent()) + id.getXmlId().getEncoded() + "/";
+		} else {
+			throw new IllegalStateException("Unknown subclass of GenericId " + id.getClass());
+		}
+	}
+
+	public static Class<? extends TOSCAComponentId> getComponentIdClassForTExtensibleElements(Class<? extends TExtensibleElements> clazz) {
+		// we assume that the clazzName always starts with a T.
+		// Therefore, we fetch everything after the last dot (plus offest 1)
+		String idClassName = clazz.getName();
+		int dotIndex = idClassName.lastIndexOf('.');
+		assert (dotIndex >= 0);
+		idClassName = idClassName.substring(dotIndex + 2) + "Id";
+
+		return getComponentIdClass(idClassName);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Class<? extends TOSCAComponentId> getComponentIdClass(String idClassName) {
+		String pkg = "org.eclipse.winery.common.ids.definitions.";
+		if (idClassName.contains("Import")) {
+			// quick hack to handle imports, which reside in their own package
+			pkg = pkg + "imports.";
+		}
+		String fullClassName = pkg + idClassName;
+		try {
+			return (Class<? extends TOSCAComponentId>) Class.forName(fullClassName);
+		} catch (ClassNotFoundException e) {
+			// quick hack for Ids local to winery repository
+			try {
+				fullClassName = "org.eclipse.winery.repository.datatypes.ids.admin." + idClassName;
+				return (Class<? extends TOSCAComponentId>) Class.forName(fullClassName);
+			} catch (ClassNotFoundException e2) {
+				String errorMsg = "Could not find id class for component container, " + fullClassName;
+				LOGGER.error(errorMsg);
+				throw new IllegalStateException(errorMsg);
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Class<? extends GenericId> getGenericIdClassForType(String typeIdType) {
+		Class<? extends GenericId> res;
+		// quick hack - we only need definitions right now
+		String pkg = "org.eclipse.winery.repository.datatypes.ids.definitions.";
+		String className = typeIdType;
+		className = pkg + className;
+		try {
+			res = (Class<? extends GenericId>) Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			LOGGER.error("Could not find id class for id type", e);
+			res = null;
+		}
+		return res;
+	}
+
+
+	/**
+	 * @param id the GenericId to determine the path for
+	 * @return the path correctly URL encoded
+	 */
+	public static String getUrlPath(GenericId id) {
+		String pathInsideRepo = getPathInsideRepo(id);
+		// first encode the whole string
+		String res = Util.URLencode(pathInsideRepo);
+		// issue: "/" is also encoded. This has to be undone:
+		res = res.replaceAll(slashEncoded, "/");
+		return res;
+	}
+
+	public static String getUrlPath(String pathInsideRepo) {
+		// first encode the whole string
+		String res = Util.URLencode(pathInsideRepo);
+		// issue: "/" is also encoded. This has to be undone:
+		res = res.replaceAll(slashEncoded, "/");
+		return res;
+	}
+
+	public static String getUrlPath(RepositoryFileReference ref) {
+		return getUrlPath(ref.getParent()) + Util.URLencode(ref.getFileName());
 	}
 
 	/**
@@ -153,16 +266,14 @@ public class Util {
 	}
 
 	/**
-	 * @return Singular type name for the given id. E.g., "ServiceTemplateId"
-	 *         gets "ServiceTemplate"
+	 * @return Singular type name for the given id. E.g., "ServiceTemplateId" gets "ServiceTemplate"
 	 */
 	public static String getTypeForComponentId(Class<? extends TOSCAComponentId> idClass) {
 		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
 
 	/**
-	 * Returns the root path fragment for the given
-	 * AbstractComponentIntanceResource
+	 * Returns the root path fragment for the given AbstractComponentIntanceResource
 	 *
 	 * With trailing slash
 	 *
@@ -197,21 +308,19 @@ public class Util {
 	/**
 	 * Just calls @link{qname2href}
 	 *
-	 * Introduced because of JSP error
-	 * "The method qname2href(String, Class<? extends TExtensibleElements>, QName) in the type Util is not applicable for the arguments (String, Class<TNodeType>, QName, String)"
+	 * Introduced because of JSP error "The method qname2href(String, Class<? extends TExtensibleElements>, QName) in
+	 * the type Util is not applicable for the arguments (String, Class<TNodeType>, QName, String)"
 	 */
 	public static String qname2hrefWithName(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
 		return Util.qname2href(repositoryUrl, element, qname, name);
 	}
 
 	/**
-	 *
 	 * @param repositoryUrl the URL to the repository
-	 * @param element the element directly nested below a definitions element in
-	 *            XML
-	 * @param qname the QName of the element
-	 * @param name (optional) if not null, the name to display as text in the
-	 *            reference. Default: localName of the QName
+	 * @param element       the element directly nested below a definitions element in XML
+	 * @param qname         the QName of the element
+	 * @param name          (optional) if not null, the name to display as text in the reference. Default: localName of
+	 *                      the QName
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
 	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
@@ -238,11 +347,9 @@ public class Util {
 	}
 
 	/**
-	 *
 	 * @param repositoryUrl the URL to the repository
-	 * @param element the element directly nested below a definitions element in
-	 *            XML
-	 * @param qname the QName of the element
+	 * @param element       the element directly nested below a definitions element in XML
+	 * @param qname         the QName of the element
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
 	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname) {
@@ -329,13 +436,11 @@ public class Util {
 	}
 
 	/**
-	 * Method similar to {@link org.eclipse.winery.repository.Utils#getXMLAsString(java.lang.Class, java.lang.Object, boolean)}.
+	 * Method similar to {@link org.eclipse.winery.repository.Utils#getXMLAsString(java.lang.Class, java.lang.Object,
+	 * boolean)}.
 	 *
-	 * Differences:
-	 * <ul>
-	 * <li>XML processing instruction is not included in the header</li>
-	 * <li>JAXBcontext is created at each call</li>
-	 * </ul>
+	 * Differences: <ul> <li>XML processing instruction is not included in the header</li> <li>JAXBcontext is created at
+	 * each call</li> </ul>
 	 */
 	public static <T> String getXMLAsString(Class<T> clazz, T obj) throws Exception {
 		// copied from Utils java, but we create an own JAXBcontext here
@@ -346,7 +451,7 @@ public class Util {
 			// For winery classes, eventually the package+jaxb.index method could be better. See http://stackoverflow.com/a/3628525/873282
 			// @formatter:off
 			context = JAXBContext.newInstance(
-					TEntityType.class);
+				TEntityType.class);
 			// @formatter:on
 		} catch (JAXBException e) {
 			throw new IllegalStateException(e);
@@ -389,16 +494,15 @@ public class Util {
 	}
 
 	/**
-	 * Determines whether the instance belonging to the given id supports the
-	 * "name" attribute. This cannot be done using the super class as the TOSCA
-	 * specification treats that differently in the case of EntityTemplates
+	 * Determines whether the instance belonging to the given id supports the "name" attribute. This cannot be done
+	 * using the super class as the TOSCA specification treats that differently in the case of EntityTemplates
 	 *
-	 * NOTE: The respective subclasses of AbstractComponentInstanceResource have
-	 * to implement {@link org.eclipse.winery.repository.resources.IHasName}
+	 * NOTE: The respective subclasses of AbstractComponentInstanceResource have to implement {@link
+	 * org.eclipse.winery.repository.resources.IHasName}
 	 *
 	 * @param idClass the class of the to test
-	 * @return true if the TOSCA model class belonging to the given id supports
-	 *         the method "getName()" in addition to "getId()"
+	 * @return true if the TOSCA model class belonging to the given id supports the method "getName()" in addition to
+	 * "getId()"
 	 */
 	public static boolean instanceSupportsNameAttribute(Class<? extends TOSCAComponentId> idClass) {
 		if (ServiceTemplateId.class.isAssignableFrom(idClass)) {
@@ -426,23 +530,7 @@ public class Util {
 	}
 
 	/**
-	 * Determines a color belonging to the given name
-	 */
-	public static String getColor(String name) {
-		int hash = name.hashCode();
-		// trim to 3*8=24 bits
-		hash = hash & 0xFFFFFF;
-		// check if color is more than #F0F0F0, i.e., too light
-		if (((hash & 0xF00000) >= 0xF00000) && (((hash & 0x00F000) >= 0x00F000) && ((hash & 0x0000F0) >= 0x0000F0))) {
-			// set one high bit to zero for each channel. That makes the overall color darker
-			hash = hash & 0xEFEFEF;
-		}
-		return String.format("#%06x", hash);
-	}
-
-	/**
-	 * Determines the name of the CSS class used for relationshipTypes at
-	 * nodeTemplateRenderer.tag
+	 * Determines the name of the CSS class used for relationshipTypes at nodeTemplateRenderer.tag
 	 */
 	public static String makeCSSName(String namespace, String localName) {
 		// according to http://stackoverflow.com/a/79022/873282 everything is allowed
@@ -504,24 +592,20 @@ public class Util {
 		// TODO: Integrate with other name cleaning functions. "." should not be replaced as it is used as separator in the java package name
 		// @formatter:off
 		return s.replace(":", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
-				.replace("/", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
-				.replace(" ", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
-				.replace("-", Util.FORBIDDEN_CHARACTER_REPLACEMENT);
+			.replace("/", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
+			.replace(" ", Util.FORBIDDEN_CHARACTER_REPLACEMENT)
+			.replace("-", Util.FORBIDDEN_CHARACTER_REPLACEMENT);
 		// @formatter:on
 	}
 
 
 	/**
-	 * Removes all non-NCName characters from the given string and returns the
-	 * result
+	 * Removes all non-NCName characters from the given string and returns the result
 	 *
-	 * This function should be consistent with
-	 * org.eclipse.winery.common.Util.cleanName(String)
+	 * This function should be consistent with org.eclipse.winery.common.Util.cleanName(String)
 	 *
-	 * TODO: This method seems to be equal to {@link
-	 * org.eclipse.winery.repository.Utils.createXMLidAsString(String)}. These
-	 * methods should be merged.
-	 *
+	 * TODO: This method seems to be equal to {@link org.eclipse.winery.repository.Utils.createXMLidAsString(String)}.
+	 * These methods should be merged.
 	 */
 	public static String makeNCName(String text) {
 		if (StringUtils.isEmpty(text)) {
@@ -575,15 +659,13 @@ public class Util {
 	}
 
 	/**
-	 * Bridge to client.getType(). Just calls client getType(), used by
-	 * functions.tld.
+	 * Bridge to client.getType(). Just calls client getType(), used by functions.tld.
 	 *
-	 * We suppress compiler warnings as JSP 2.0 do not offer support for
-	 * generics, but we're using JSP 2.0...
+	 * We suppress compiler warnings as JSP 2.0 do not offer support for generics, but we're using JSP 2.0...
 	 *
 	 * @param client the repository client to use
-	 * @param qname the QName to resolve
-	 * @param clazz the class the QName is describing
+	 * @param qname  the QName to resolve
+	 * @param clazz  the class the QName is describing
 	 * @return {@inheritDoc}
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked"})

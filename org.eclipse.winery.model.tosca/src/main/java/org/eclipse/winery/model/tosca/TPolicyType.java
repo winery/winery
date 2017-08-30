@@ -8,9 +8,12 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
+
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,12 +22,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 
 /**
  * <p>Java class for tPolicyType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="tPolicyType">
  *   &lt;complexContent>
@@ -38,42 +43,57 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPolicyType", propOrder = {
-    "appliesTo"
+        "appliesTo"
 })
-public class TPolicyType
-    extends TEntityType
-{
-
+public class TPolicyType extends TEntityType {
     @XmlElement(name = "AppliesTo")
     protected TAppliesTo appliesTo;
     @XmlAttribute(name = "policyLanguage")
     @XmlSchemaType(name = "anyURI")
     protected String policyLanguage;
 
+    public TPolicyType() {
+
+    }
+
+    public TPolicyType(Builder builder) {
+        super(builder);
+        this.appliesTo = builder.appliesTo;
+        this.policyLanguage = builder.policyLanguage;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TPolicyType)) return false;
+        if (!super.equals(o)) return false;
+        TPolicyType that = (TPolicyType) o;
+        return Objects.equals(appliesTo, that.appliesTo) &&
+                Objects.equals(policyLanguage, that.policyLanguage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), appliesTo, policyLanguage);
+    }
+
     /**
      * Gets the value of the appliesTo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TAppliesTo }
-     *     
+     *
+     * @return possible object is {@link TAppliesTo }
      */
+    @Nullable
     public TAppliesTo getAppliesTo() {
         return appliesTo;
     }
 
     /**
      * Sets the value of the appliesTo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TAppliesTo }
-     *     
+     *
+     * @param value allowed object is {@link TAppliesTo }
      */
     public void setAppliesTo(TAppliesTo value) {
         this.appliesTo = value;
@@ -81,26 +101,47 @@ public class TPolicyType
 
     /**
      * Gets the value of the policyLanguage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
+    @Nullable
     public String getPolicyLanguage() {
         return policyLanguage;
     }
 
     /**
      * Sets the value of the policyLanguage property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setPolicyLanguage(String value) {
         this.policyLanguage = value;
     }
 
+    public static class Builder extends TEntityType.Builder {
+        private TAppliesTo appliesTo;
+        private String policyLanguage;
+
+        public Builder(String name) {
+            super(name);
+        }
+
+        public Builder(TEntityType entityType) {
+            super(entityType);
+        }
+
+        public Builder setAppliesTo(TAppliesTo appliesTo) {
+            this.appliesTo = appliesTo;
+            return this;
+        }
+
+        public Builder setPolicyLanguage(String policyLanguage) {
+            this.policyLanguage = policyLanguage;
+            return this;
+        }
+
+        public TPolicyType build() {
+            return new TPolicyType(this);
+        }
+    }
 }

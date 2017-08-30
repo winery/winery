@@ -16,15 +16,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
-import javax.ws.rs.core.MediaType;
+import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.Constants;
-import org.eclipse.winery.repository.Utils;
+import org.eclipse.winery.repository.JAXBSupport;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.IOUtils;
+import org.apache.tika.mime.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +50,6 @@ public abstract class AbstractRepository implements IRepository {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
 	 * This is a simple implementation using the information put by
 	 * setMimeType(RepositoryFileReference ref) or determining the mime type
 	 * using Utils.getMimeType. If the latter is done, the mime type is
@@ -65,15 +66,18 @@ public abstract class AbstractRepository implements IRepository {
 		} else {
 			// repository has been manipulated manually,
 			// create mimetype information
+			MediaType mediaType;
 			try (InputStream is = this.newInputStream(ref);
 					BufferedInputStream bis = new BufferedInputStream(is)) {
-				mimeType = Utils.getMimeType(bis, ref.getFileName());
+				mediaType = BackendUtils.getMimeType(bis, ref.getFileName());
 			}
-			if (mimeType != null) {
+			if (mediaType != null) {
 				// successful execution
-				this.setMimeType(ref, MediaType.valueOf(mimeType));
+				this.setMimeType(ref, mediaType);
+				mimeType = mediaType.toString();
 			} else {
 				AbstractRepository.LOGGER.debug("Could not determine mimetype");
+				mimeType = null;
 			}
 		}
 		return mimeType;
@@ -106,4 +110,19 @@ public abstract class AbstractRepository implements IRepository {
 		return this.getConfiguration(ref);
 	}
 
+	@Override
+	public Definitions getDefinitions(TOSCAComponentId id) {
+		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
+		if (!exists(ref)) {
+			return BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(id);
+		}
+		try {
+			InputStream is = RepositoryFactory.getRepository().newInputStream(ref);
+			Unmarshaller u = JAXBSupport.createUnmarshaller();
+			return (Definitions) u.unmarshal(is);
+		} catch (Exception e) {
+			LOGGER.error("Could not read content from file " + ref, e);
+			throw new IllegalStateException(e);
+		}
+	}
 }

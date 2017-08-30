@@ -8,8 +8,11 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code contribution
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
+
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
@@ -17,27 +20,60 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-public abstract class HasId extends TExtensibleElements {
+import org.eclipse.jdt.annotation.NonNull;
 
-	@XmlAttribute(name = "id", required = true)
-	@XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-	@XmlID
-	@XmlSchemaType(name = "ID")
-	private String id;
+public abstract class HasId extends TExtensibleElements implements HasIdInIdOrNameField {
 
-	public HasId() {
-	}
+    @XmlAttribute(name = "id", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlID
+    @XmlSchemaType(name = "ID")
+    private String id;
 
-	public HasId(String id) {
-		this.setId(id);
-	}
+    public HasId() {
+    }
 
-	public String getId() {
-		return id;
-	}
+    public HasId(String id) {
+        this.setId(id);
+    }
 
-	public void setId(String value) {
-		this.id = value;
-	}
+    public HasId(Builder builder) {
+        super(builder);
+        this.id = builder.id;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HasId)) return false;
+        HasId hasId = (HasId) o;
+        return Objects.equals(id, hasId.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String value) {
+        this.id = value;
+    }
+
+    public static class Builder extends TExtensibleElements.Builder {
+        private final String id;
+
+        public Builder(String id) {
+            this.id = id;
+        }
+
+        public Builder(HasId hasId) {
+            super(hasId);
+            this.id = hasId.id;
+        }
+    }
 }

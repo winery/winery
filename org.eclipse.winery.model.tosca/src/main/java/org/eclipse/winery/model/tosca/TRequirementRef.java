@@ -8,9 +8,12 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
+
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,12 +22,14 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 
 /**
  * <p>Java class for tRequirementRef complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="tRequirementRef">
  *   &lt;complexContent>
@@ -35,8 +40,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirementRef")
@@ -49,25 +52,34 @@ public class TRequirementRef {
     @XmlSchemaType(name = "IDREF")
     protected Object ref;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TRequirementRef)) return false;
+        TRequirementRef that = (TRequirementRef) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(ref, that.ref);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, ref);
+    }
+
     /**
      * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
+    /*@Nullable*/
     public String getName() {
         return name;
     }
 
     /**
      * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setName(String value) {
         this.name = value;
@@ -75,26 +87,20 @@ public class TRequirementRef {
 
     /**
      * Gets the value of the ref property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
+     *
+     * @return possible object is {@link Object }
      */
+    @NonNull
     public Object getRef() {
         return ref;
     }
 
     /**
      * Sets the value of the ref property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+     *
+     * @param value allowed object is {@link Object }
      */
     public void setRef(Object value) {
         this.ref = value;
     }
-
 }

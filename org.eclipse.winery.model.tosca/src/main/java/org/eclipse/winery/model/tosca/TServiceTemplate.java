@@ -8,9 +8,13 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
+
+import java.util.List;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,6 +23,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 
 /**
@@ -32,7 +39,8 @@ import javax.xml.namespace.QName;
  *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtensibleElements">
  *       &lt;sequence>
  *         &lt;element name="Tags" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tTags" minOccurs="0"/>
- *         &lt;element name="BoundaryDefinitions" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tBoundaryDefinitions" minOccurs="0"/>
+ *         &lt;element name="BoundaryDefinitions" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tBoundaryDefinitions"
+ * minOccurs="0"/>
  *         &lt;element name="TopologyTemplate" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tTopologyTemplate"/>
  *         &lt;element name="Plans" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tPlans" minOccurs="0"/>
  *       &lt;/sequence>
@@ -45,17 +53,15 @@ import javax.xml.namespace.QName;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tServiceTemplate", propOrder = {
-    "tags",
-    "boundaryDefinitions",
-    "topologyTemplate",
-    "plans"
+        "tags",
+        "boundaryDefinitions",
+        "topologyTemplate",
+        "plans"
 })
-public class TServiceTemplate extends HasId {
+public class TServiceTemplate extends HasId implements HasName, HasTargetNamespace {
 
     @XmlElement(name = "Tags")
     protected TTags tags;
@@ -79,14 +85,47 @@ public class TServiceTemplate extends HasId {
     @XmlAttribute(name = "substitutableNodeType")
     protected QName substitutableNodeType;
 
+    public TServiceTemplate() {
+
+    }
+
+    public TServiceTemplate(Builder builder) {
+        super(builder);
+        this.tags = builder.tags;
+        this.boundaryDefinitions = builder.boundaryDefinitions;
+        this.topologyTemplate = builder.topologyTemplate;
+        this.plans = builder.plans;
+        this.name = builder.name;
+        this.targetNamespace = builder.targetNamespace;
+        this.substitutableNodeType = builder.substitutableNodeType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TServiceTemplate)) return false;
+        if (!super.equals(o)) return false;
+        TServiceTemplate that = (TServiceTemplate) o;
+        return Objects.equals(tags, that.tags) &&
+                Objects.equals(boundaryDefinitions, that.boundaryDefinitions) &&
+                Objects.equals(topologyTemplate, that.topologyTemplate) &&
+                Objects.equals(plans, that.plans) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(targetNamespace, that.targetNamespace) &&
+                Objects.equals(substitutableNodeType, that.substitutableNodeType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), tags, boundaryDefinitions, topologyTemplate, plans, name, targetNamespace, substitutableNodeType);
+    }
+
     /**
      * Gets the value of the tags property.
      *
-     * @return
-     *     possible object is
-     *     {@link TTags }
-     *
+     * @return possible object is {@link TTags }
      */
+    @Nullable
     public TTags getTags() {
         return tags;
     }
@@ -94,10 +133,7 @@ public class TServiceTemplate extends HasId {
     /**
      * Sets the value of the tags property.
      *
-     * @param value
-     *     allowed object is
-     *     {@link TTags }
-     *
+     * @param value allowed object is {@link TTags }
      */
     public void setTags(TTags value) {
         this.tags = value;
@@ -106,11 +142,9 @@ public class TServiceTemplate extends HasId {
     /**
      * Gets the value of the boundaryDefinitions property.
      *
-     * @return
-     *     possible object is
-     *     {@link TBoundaryDefinitions }
-     *
+     * @return possible object is {@link TBoundaryDefinitions }
      */
+    @Nullable
     public TBoundaryDefinitions getBoundaryDefinitions() {
         return boundaryDefinitions;
     }
@@ -118,10 +152,7 @@ public class TServiceTemplate extends HasId {
     /**
      * Sets the value of the boundaryDefinitions property.
      *
-     * @param value
-     *     allowed object is
-     *     {@link TBoundaryDefinitions }
-     *
+     * @param value allowed object is {@link TBoundaryDefinitions }
      */
     public void setBoundaryDefinitions(TBoundaryDefinitions value) {
         this.boundaryDefinitions = value;
@@ -130,11 +161,9 @@ public class TServiceTemplate extends HasId {
     /**
      * Gets the value of the topologyTemplate property.
      *
-     * @return
-     *     possible object is
-     *     {@link TTopologyTemplate }
-     *
+     * @return possible object is {@link TTopologyTemplate }
      */
+    @NonNull
     public TTopologyTemplate getTopologyTemplate() {
         return topologyTemplate;
     }
@@ -142,10 +171,7 @@ public class TServiceTemplate extends HasId {
     /**
      * Sets the value of the topologyTemplate property.
      *
-     * @param value
-     *     allowed object is
-     *     {@link TTopologyTemplate }
-     *
+     * @param value allowed object is {@link TTopologyTemplate }
      */
     public void setTopologyTemplate(TTopologyTemplate value) {
         this.topologyTemplate = value;
@@ -154,11 +180,9 @@ public class TServiceTemplate extends HasId {
     /**
      * Gets the value of the plans property.
      *
-     * @return
-     *     possible object is
-     *     {@link TPlans }
-     *
+     * @return possible object is {@link TPlans }
      */
+    @Nullable
     public TPlans getPlans() {
         return plans;
     }
@@ -166,85 +190,119 @@ public class TServiceTemplate extends HasId {
     /**
      * Sets the value of the plans property.
      *
-     * @param value
-     *     allowed object is
-     *     {@link TPlans }
-     *
+     * @param value allowed object is {@link TPlans }
      */
     public void setPlans(TPlans value) {
         this.plans = value;
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Nullable
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setName(String value) {
         this.name = value;
     }
 
-    /**
-     * Gets the value of the targetNamespace property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    @Nullable
     public String getTargetNamespace() {
         return targetNamespace;
     }
 
-    /**
-     * Sets the value of the targetNamespace property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setTargetNamespace(String value) {
         this.targetNamespace = value;
     }
 
-    /**
-     * Gets the value of the substitutableNodeType property.
-     *
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *
-     */
+    @Nullable
     public QName getSubstitutableNodeType() {
         return substitutableNodeType;
     }
 
-    /**
-     * Sets the value of the substitutableNodeType property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *
-     */
     public void setSubstitutableNodeType(QName value) {
         this.substitutableNodeType = value;
     }
 
+    public static class Builder extends HasId.Builder {
+        private final TTopologyTemplate topologyTemplate;
+
+        private TTags tags;
+        private TBoundaryDefinitions boundaryDefinitions;
+        private TPlans plans;
+        private String name;
+        private String targetNamespace;
+        private QName substitutableNodeType;
+
+        public Builder(String id, TTopologyTemplate topologyTemplate) {
+            super(id);
+            this.topologyTemplate = topologyTemplate;
+        }
+
+        public Builder setTags(TTags tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public Builder setBoundaryDefinitions(TBoundaryDefinitions boundaryDefinitions) {
+            this.boundaryDefinitions = boundaryDefinitions;
+            return this;
+        }
+
+        public Builder setPlans(TPlans plans) {
+            this.plans = plans;
+            return this;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setTargetNamespace(String targetNamespace) {
+            this.targetNamespace = targetNamespace;
+            return this;
+        }
+
+        public Builder setSubstitutableNodeType(QName substitutableNodeType) {
+            this.substitutableNodeType = substitutableNodeType;
+            return this;
+        }
+
+        public Builder addTags(TTags tags) {
+            if (tags == null || tags.getTag().isEmpty()) {
+                return this;
+            }
+
+            if (this.tags == null) {
+                this.tags = tags;
+            } else {
+                this.tags.getTag().addAll(tags.getTag());
+            }
+            return this;
+        }
+
+        public Builder addTags(List<TTag> tags) {
+            if (tags == null) {
+                return this;
+            }
+
+            TTags tmp = new TTags();
+            tmp.getTag().addAll(tags);
+            return addTags(tmp);
+        }
+
+        public Builder addTags(TTag tags) {
+            if (tags == null) {
+                return this;
+            }
+
+            TTags tmp = new TTags();
+            tmp.getTag().add(tags);
+            return addTags(tmp);
+        }
+
+        public TServiceTemplate build() {
+            return new TServiceTemplate(this);
+        }
+    }
 }

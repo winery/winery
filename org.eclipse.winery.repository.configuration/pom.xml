@@ -25,38 +25,41 @@
 		<maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/templates</directory>
+				<includes>
+					<include>Version.java</include>
+				</includes>
+				<filtering>true</filtering>
+				<targetPath>${project.build.directory}/generated-sources/java/org/eclipse/winery/repository/configuration</targetPath>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-all</artifactId>
-						<version>2.1.7</version>
-					</dependency>
-				</dependencies>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.12</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
-						<id>default-cli</id>
-						<configuration>
-							<target>
-								<copy file="${project.basedir}/src/main/resources/environments/config.default.json" overwrite="false" 
-									  toFile="${project.basedir}/src/main/resources/environments/config.json" />
-							</target>
-						</configuration>
 						<goals>
-							<goal>run</goal>
+							<goal>add-source</goal>
 						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources</source>
+							</sources>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -69,9 +72,15 @@
 			<version>1.7.13</version>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.7.3</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-configuration2</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+		<!-- indirect dependency required by org.apache.commons when using builders - see https://stackoverflow.com/a/42864846/873282 and https://commons.apache.org/proper/commons-configuration/dependencies.html -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.3</version>
 		</dependency>
 	</dependencies>
 </project>

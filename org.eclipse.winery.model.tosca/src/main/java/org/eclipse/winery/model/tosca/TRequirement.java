@@ -8,37 +8,62 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
+
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.eclipse.jdt.annotation.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequirement")
 @JsonTypeInfo(
-		defaultImpl = TRequirement.class,
-		use = JsonTypeInfo.Id.NAME,
-		include = JsonTypeInfo.As.EXISTING_PROPERTY,
-		property = "fakeJacksonType")
+        defaultImpl = TRequirement.class,
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "fakeJacksonType")
 public class TRequirement extends RelationshipSourceOrTarget {
 
     @XmlAttribute(name = "name", required = true)
     protected String name;
 
+    public TRequirement() {
+    }
+
+    public TRequirement(Builder builder) {
+        super(builder);
+        this.name = builder.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TRequirement)) return false;
+        if (!super.equals(o)) return false;
+        TRequirement that = (TRequirement) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name);
+    }
+
     /**
      * Gets the value of the name property.
      *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
+     * @return possible object is {@link String }
      */
+    @NonNull
     public String getName() {
         return name;
     }
@@ -46,17 +71,28 @@ public class TRequirement extends RelationshipSourceOrTarget {
     /**
      * Sets the value of the name property.
      *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
+     * @param value allowed object is {@link String }
      */
     public void setName(String value) {
         this.name = value;
     }
 
-	@Override
-	public String getFakeJacksonType() {
-		return "requirement";
-	}
+    @Override
+    @NonNull
+    public String getFakeJacksonType() {
+        return "requirement";
+    }
+
+    public static class Builder extends RelationshipSourceOrTarget.Builder {
+        private final String name;
+
+        public Builder(String id, QName type) {
+            super(id, type);
+            this.name = id;
+        }
+
+        public TRequirement build() {
+            return new TRequirement(this);
+        }
+    }
 }

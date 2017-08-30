@@ -8,9 +8,12 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
+
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,12 +25,15 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 
 /**
  * <p>Java class for tImplementationArtifact complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="tImplementationArtifact">
  *   &lt;complexContent>
@@ -42,18 +48,13 @@ import javax.xml.namespace.QName;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImplementationArtifact")
 @XmlSeeAlso({
-    org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact.class
+        org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact.class
 })
-public class TImplementationArtifact
-    extends TExtensibleElements
-{
-
+public class TImplementationArtifact extends TExtensibleElements {
     @XmlAttribute(name = "name")
     protected String name;
     @XmlAttribute(name = "interfaceName")
@@ -68,25 +69,51 @@ public class TImplementationArtifact
     @XmlAttribute(name = "artifactRef")
     protected QName artifactRef;
 
+    public TImplementationArtifact() {
+
+    }
+
+    public TImplementationArtifact(Builder builder) {
+        super(builder);
+        this.name = builder.name;
+        this.interfaceName = builder.interfaceName;
+        this.operationName = builder.operationName;
+        this.artifactType = builder.artifactType;
+        this.artifactRef = builder.artifactRef;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TImplementationArtifact)) return false;
+        if (!super.equals(o)) return false;
+        TImplementationArtifact that = (TImplementationArtifact) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(interfaceName, that.interfaceName) &&
+                Objects.equals(operationName, that.operationName) &&
+                Objects.equals(artifactType, that.artifactType) &&
+                Objects.equals(artifactRef, that.artifactRef);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, interfaceName, operationName, artifactType, artifactRef);
+    }
+
     /**
      * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
+    @Nullable
     public String getName() {
         return name;
     }
 
     /**
      * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setName(String value) {
         this.name = value;
@@ -94,23 +121,18 @@ public class TImplementationArtifact
 
     /**
      * Gets the value of the interfaceName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
+    @Nullable
     public String getInterfaceName() {
         return interfaceName;
     }
 
     /**
      * Sets the value of the interfaceName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setInterfaceName(String value) {
         this.interfaceName = value;
@@ -118,23 +140,18 @@ public class TImplementationArtifact
 
     /**
      * Gets the value of the operationName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
+    @Nullable
     public String getOperationName() {
         return operationName;
     }
 
     /**
      * Sets the value of the operationName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setOperationName(String value) {
         this.operationName = value;
@@ -142,23 +159,18 @@ public class TImplementationArtifact
 
     /**
      * Gets the value of the artifactType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+     *
+     * @return possible object is {@link QName }
      */
+    @NonNull
     public QName getArtifactType() {
         return artifactType;
     }
 
     /**
      * Sets the value of the artifactType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
+     *
+     * @param value allowed object is {@link QName }
      */
     public void setArtifactType(QName value) {
         this.artifactType = value;
@@ -166,26 +178,57 @@ public class TImplementationArtifact
 
     /**
      * Gets the value of the artifactRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+     *
+     * @return possible object is {@link QName }
      */
+    @Nullable
     public QName getArtifactRef() {
         return artifactRef;
     }
 
     /**
      * Sets the value of the artifactRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
+     *
+     * @param value allowed object is {@link QName }
      */
     public void setArtifactRef(QName value) {
         this.artifactRef = value;
     }
 
+    public static class Builder extends TExtensibleElements.Builder {
+        private final QName artifactType;
+
+        private String name;
+        private String interfaceName;
+        private String operationName;
+        private QName artifactRef;
+
+        public Builder(QName artifactType) {
+            this.artifactType = artifactType;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setInterfaceName(String interfaceName) {
+            this.interfaceName = interfaceName;
+            return this;
+        }
+
+        public Builder setOperationName(String operationName) {
+            this.operationName = operationName;
+            return this;
+        }
+
+        public Builder setArtifactRef(QName artifactRef) {
+            this.artifactRef = artifactRef;
+            return this;
+        }
+
+        public TImplementationArtifact build() {
+            return new TImplementationArtifact(this);
+        }
+    }
 }

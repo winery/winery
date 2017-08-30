@@ -9,8 +9,27 @@
 *
 * Contributors:
 *     Niko Stadelmaier - initial API and implementation
+*     Lukas Balzer - corrected image upload of SelfServicePortal
 */
 -->
-<winery-image-upload></winery-image-upload>
-
-<winery-image-upload></winery-image-upload>
+<div [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div class="content" *ngIf="!loading">
+    <b>Icon</b><br>
+    <div class="typeIcon"><img [src]="iconPath" height="16" width="16"></div>
+    <winery-uploader #uploaderIcon id="selfServiceIconUploader"
+                     [uploadUrl]="iconPath"
+                     [uploadMethod]="'PUT'"
+                     (onSuccess)="onUploadSuccess('Icon')">
+    </winery-uploader>
+    <br/>
+    <b>Preview</b><br>
+    <div class="typeIcon"><img src="{{imagePath}}" height="16" width="16"></div>
+    <winery-uploader #uploaderImage id="selfServiceImageUploader"
+                     [uploadUrl]="imagePath"
+                     [uploadMethod]="'PUT'"
+                     (onSuccess)="onUploadSuccess('Preview image')">
+    </winery-uploader>
+    <br/>
+</div>

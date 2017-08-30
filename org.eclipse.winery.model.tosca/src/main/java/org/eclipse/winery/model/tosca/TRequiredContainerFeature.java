@@ -8,9 +8,12 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
+
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,12 +21,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.jdt.annotation.NonNull;
+
 
 /**
  * <p>Java class for tRequiredContainerFeature complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="tRequiredContainerFeature">
  *   &lt;complexContent>
@@ -33,8 +38,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRequiredContainerFeature")
@@ -44,28 +47,35 @@ public class TRequiredContainerFeature {
     @XmlSchemaType(name = "anyURI")
     protected String feature;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TRequiredContainerFeature)) return false;
+        TRequiredContainerFeature that = (TRequiredContainerFeature) o;
+        return Objects.equals(feature, that.feature);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(feature);
+    }
+
     /**
      * Gets the value of the feature property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is {@link String }
      */
+    @NonNull
     public String getFeature() {
         return feature;
     }
 
     /**
      * Sets the value of the feature property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is {@link String }
      */
     public void setFeature(String value) {
         this.feature = value;
     }
-
 }

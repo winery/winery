@@ -8,6 +8,7 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ *    Christoph Kleine - Builder implementation
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -19,9 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for tCapabilityType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="tCapabilityType">
  *   &lt;complexContent>
@@ -31,14 +32,28 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tCapabilityType")
-public class TCapabilityType
-    extends TEntityType
-{
+public class TCapabilityType extends TEntityType {
+    public TCapabilityType() {
+    }
 
+    public TCapabilityType(Builder builder) {
+        super(builder);
+    }
 
+    public static class Builder extends TEntityType.Builder {
+        public Builder(String name) {
+            super(name);
+        }
+
+        public Builder(TEntityType entityType) {
+            super(entityType);
+        }
+
+        public TCapabilityType build() {
+            return new TCapabilityType(this);
+        }
+    }
 }

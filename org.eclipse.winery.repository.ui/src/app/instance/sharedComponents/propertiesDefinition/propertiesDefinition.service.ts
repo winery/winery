@@ -1,5 +1,5 @@
 /**
- * Copyright (c) -2017 University of Stuttgart.
+ * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Niko Stadelmaier - initial API and implementation
+ *     Oliver Kopp - switch from XsdDefinitionsApiData to SelectData[]
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
@@ -15,7 +16,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
-import { XsdDefinitionsApiData } from './xsdDefinitionsApiData';
+import { SelectData } from '../../../wineryInterfaces/selectData';
 
 @Injectable()
 export class PropertiesDefinitionService {
@@ -50,19 +51,15 @@ export class PropertiesDefinitionService {
 
     /**
      * Gets the items for the select box for the XML Element.
-     *
-     * @returns {Observable<XsdDefinitionsApiData>}
      */
-    getXsdElementDefinitions(): Observable<XsdDefinitionsApiData> {
+    getXsdElementDefinitions(): Observable<SelectData[]> {
         return this.sendJsonRequest(this.path + '/element');
     }
 
     /**
      * Gets the items for the select box for the XML Type.
-     *
-     * @returns {Observable<XsdDefinitionsApiData>}
      */
-    getXsdTypeDefinitions(): Observable<XsdDefinitionsApiData> {
+    getXsdTypeDefinitions(): Observable<SelectData[]> {
         return this.sendJsonRequest(this.path + '/type');
     }
 

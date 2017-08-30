@@ -21,7 +21,6 @@ public class Namespace extends StringEncodedAndDecoded {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Namespace.class);
 
-
 	public Namespace(String uri, boolean URLencoded) {
 		super(uri, URLencoded);
 		if (StringUtils.isEmpty(uri)) {
@@ -29,5 +28,4 @@ public class Namespace extends StringEncodedAndDecoded {
 			// throw new IllegalArgumentException("uri must not be empty or null.");
 		}
 	}
-
 }

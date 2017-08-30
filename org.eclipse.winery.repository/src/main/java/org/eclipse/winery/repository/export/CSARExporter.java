@@ -40,6 +40,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
@@ -50,15 +51,14 @@ import org.eclipse.winery.model.tosca.TArtifactReference;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
-import org.eclipse.winery.repository.Prefs;
-import org.eclipse.winery.repository.Utils;
-import org.eclipse.winery.repository.backend.Repository;
-import org.eclipse.winery.repository.datatypes.ids.admin.NamespacesId;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.resources.admin.NamespacesResource;
-import org.eclipse.winery.repository.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -97,7 +97,7 @@ public class CSARExporter {
 	private static String getDefinitionsName(TOSCAComponentId id) {
 		// the prefix is globally unique and the id locally in a namespace
 		// therefore a concatenation of both is also unique
-		return NamespacesResource.getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
+		return RepositoryFactory.getRepository().getNamespaceManager().getPrefix(id.getNamespace()) + "__" + id.getXmlId().getEncoded();
 	}
 
 	public static String getDefinitionsFileName(TOSCAComponentId id) {
@@ -193,10 +193,10 @@ public class CSARExporter {
 	 * @throws IOException thrown when the temporary directory can not be created
 	 */
 	private void addArtifactTemplateToZipFile(ArchiveOutputStream zos, RepositoryFileReference ref, String archivePath) throws IOException {
-		GitInfo gitInfo = Utils.getGitInformation((ArtifactTemplateDirectoryId)ref.getParent());
+		GitInfo gitInfo = BackendUtils.getGitInformation((ArtifactTemplateDirectoryId)ref.getParent());
 
 		if (gitInfo == null) {
-            try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+            try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
                 if (is != null) {
                     ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
                     zos.putArchiveEntry(archiveEntry);
@@ -222,7 +222,7 @@ public class CSARExporter {
                     + "/"
                     + ((ArtifactTemplateId)ref.getParent().getParent()).getQName().getLocalPart()
                     + "/files/";
-			TArtifactTemplate template = Utils.getTArtifactTemplate((ArtifactTemplateDirectoryId) ref.getParent());
+			TArtifactTemplate template = BackendUtils.getTArtifactTemplate((ArtifactTemplateDirectoryId) ref.getParent());
 			addWorkingTreeToArchive(zos, template, tempDir, path);
         } catch (GitAPIException e) {
             CSARExporter.LOGGER.error(String.format("Error while cloning repo: %s / %s", gitInfo.URL, gitInfo.BRANCH), e);
@@ -238,7 +238,7 @@ public class CSARExporter {
 	 * @param archivePath Path inside the archive to the file
 	 */
 	private void addFileToZipArchive(ArchiveOutputStream zos, RepositoryFileReference ref, String archivePath) {
-		try (InputStream is = Repository.INSTANCE.newInputStream(ref)) {
+		try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
             ArchiveEntry archiveEntry = new ZipArchiveEntry(archivePath);
             zos.putArchiveEntry(archiveEntry);
             IOUtils.copy(is, zos);
@@ -338,7 +338,7 @@ public class CSARExporter {
 							reference += "/" + include.getPattern();
 						}
 						reference = reference.substring(1);
-						included |= Utils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
+						included |= BackendUtils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
 					} else if (includeOrExclude instanceof TArtifactReference.Exclude) {
 						TArtifactReference.Exclude exclude = (TArtifactReference.Exclude)includeOrExclude;
 						String reference = artifactReference.getReference();
@@ -348,7 +348,7 @@ public class CSARExporter {
 							reference += "/" + exclude.getPattern();
 						}
 						reference = reference.substring(1);
-						excluded |= Utils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
+						excluded |= BackendUtils.isGlobMatch(reference, rootDir.relativize(file.toPath()));
 					}
 				}
 			}
@@ -375,7 +375,7 @@ public class CSARExporter {
 	 * @throws IOException
 	 */
 	private void addNamespacePrefixes(ArchiveOutputStream zos) throws IOException {
-		Configuration configuration = Repository.INSTANCE.getConfiguration(new NamespacesId());
+		Configuration configuration = RepositoryFactory.getRepository().getConfiguration(new NamespacesId());
 		if (configuration instanceof PropertiesConfiguration) {
 			// Quick hack: direct serialization only works for PropertiesConfiguration
 			PropertiesConfiguration pconf = (PropertiesConfiguration) configuration;
@@ -398,28 +398,30 @@ public class CSARExporter {
 	 * @param targetDir the directory in the CSAR where to put the content to
 	 * @param refMap is used later to create the CSAR
 	 */
-	private void addSelfServiceMetaData(ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) {
-		SelfServicePortalResource res = new SelfServicePortalResource(entryId);
+	private void addSelfServiceMetaData(ServiceTemplateId entryId, String targetDir, Map<RepositoryFileReference, String> refMap) throws IOException {
+		final SelfServiceMetaDataId selfServiceMetaDataId = new SelfServiceMetaDataId(entryId);
 
 		// This method is also called if the directory SELFSERVICE-Metadata exists without content and even if the directory does not exist at all,
 		// but the ServiceTemplate itself exists.
 		// The current assumption is that this is enough for an existence.
 		// Thus, we have to take care of the case of an empty directory and add a default data.xml
-		res.ensureDataXmlExists();
-
-		refMap.put(res.data_xml_ref, targetDir + "data.xml");
+		SelfServiceMetaDataUtils.ensureDataXmlExists(selfServiceMetaDataId);
+		
+		refMap.put(SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId), targetDir + "data.xml");
 
 		// The schema says that the images have to exist
 		// However, at a quick modeling, there might be no images
 		// Therefore, we check for existence
-		if (Repository.INSTANCE.exists(res.icon_jpg_ref)) {
-			refMap.put(res.icon_jpg_ref, targetDir + "icon.jpg");
+		final RepositoryFileReference iconJpgRef = SelfServiceMetaDataUtils.getIconJpgRef(selfServiceMetaDataId);
+		if (RepositoryFactory.getRepository().exists(iconJpgRef)) {
+			refMap.put(iconJpgRef, targetDir + "icon.jpg");
 		}
-		if (Repository.INSTANCE.exists(res.image_jpg_ref)) {
-			refMap.put(res.image_jpg_ref, targetDir + "image.jpg");
+		final RepositoryFileReference imageJpgRef = SelfServiceMetaDataUtils.getImageJpgRef(selfServiceMetaDataId);
+		if (RepositoryFactory.getRepository().exists(imageJpgRef)) {
+			refMap.put(imageJpgRef, targetDir + "image.jpg");
 		}
 
-		Application application = res.getApplication();
+		Application application = SelfServiceMetaDataUtils.getApplication(selfServiceMetaDataId);
 
 		// clear CSAR name as this may change.
 		application.setCsarName(null);
@@ -433,7 +435,7 @@ public class CSARExporter {
 
 		// make the patches to data.xml permanent
 		try {
-			res.persist();
+			BackendUtils.persist(application, SelfServiceMetaDataUtils.getDataXmlRef(selfServiceMetaDataId), MediaTypes.MEDIATYPE_TEXT_XML);
 		} catch (IOException e) {
 			LOGGER.error("Could not persist patches to data.xml", e);
 		}
@@ -456,7 +458,7 @@ public class CSARExporter {
 
 	private void putRefIntoRefMap(String targetDir, Map<RepositoryFileReference, String> refMap, SelfServiceMetaDataId id, String url) {
 		RepositoryFileReference ref = new RepositoryFileReference(id, url);
-		if (Repository.INSTANCE.exists(ref)) {
+		if (RepositoryFactory.getRepository().exists(ref)) {
             refMap.put(ref, targetDir + url);
         } else {
             CSARExporter.LOGGER.error("Data corrupt: pointing to non-existent file " + ref);
@@ -465,7 +467,7 @@ public class CSARExporter {
 
 	private void addSelfServiceMetaData(ServiceTemplateId serviceTemplateId, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream zos) throws IOException {
 		SelfServiceMetaDataId id = new SelfServiceMetaDataId(serviceTemplateId);
-		// We add the selfservice information regardless of the existance. - i.e., no "if (Repository.INSTANCE.exists(id)) {"
+		// We add the selfservice information regardless of the existance. - i.e., no "if (RepositoryFactory.getRepository().exists(id)) {"
 		// This ensures that the name of the application is
 		// add everything in the root of the CSAR
 		String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
@@ -480,7 +482,7 @@ public class CSARExporter {
 		// Setting Versions
 		pw.println("TOSCA-Meta-Version: 1.0");
 		pw.println("CSAR-Version: 1.0");
-		String versionString = "Created-By: Winery " + Prefs.INSTANCE.getVersion();
+		String versionString = "Created-By: Winery " + Environment.getVersion();
 		pw.println(versionString);
 		// Winery currently is unaware of tDefinitions, therefore, we use the
 		// name of the service template
@@ -502,7 +504,7 @@ public class CSARExporter {
 			if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
 				mimeType = MimeTypes.MIMETYPE_XSD;
 			} else {
-				mimeType = Repository.INSTANCE.getMimeType(ref);
+				mimeType = RepositoryFactory.getRepository().getMimeType(ref);
 			}
 			pw.println("Content-Type: " + mimeType);
 			pw.println();
