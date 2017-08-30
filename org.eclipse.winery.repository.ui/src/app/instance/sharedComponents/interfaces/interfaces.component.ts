@@ -24,6 +24,8 @@ import { InputParameters, InterfaceParameter, OutputParameters } from '../../../
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
 import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { Utils } from '../../../wineryUtils/utils';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -57,7 +59,7 @@ export class InterfacesComponent implements OnInit {
 
     @ViewChild('generateImplModal') generateImplModal: ModalDirective;
     generateArtifactApiData = new GenerateArtifactApiData();
-    selectedResource: string;
+    toscaType: ToscaTypes;
     createImplementation = true;
     createArtifactTemplate = true;
     implementationName: string = null;
@@ -75,8 +77,8 @@ export class InterfacesComponent implements OnInit {
                 data => this.handleInterfacesApiData(data),
                 error => this.handleError(error)
             );
-        this.selectedResource = this.sharedData.selectedResource.charAt(0).toUpperCase() + this.sharedData.selectedResource.slice(1);
-        this.isServiceTemplate = this.selectedResource === 'ServiceTemplate';
+        this.toscaType = this.sharedData.toscaComponent.toscaType;
+        this.isServiceTemplate = this.toscaType === ToscaTypes.ServiceTemplate;
     }
 
     // region ########### Template Callbacks ##########
@@ -183,10 +185,9 @@ export class InterfacesComponent implements OnInit {
     // region ########## Generate Implementation ##########
     showGenerateImplementationModal(): void {
         this.artifactTemplate.name =
-            this.sharedData.selectedComponentId + '_' + this.selectedInterface.name.replace(/\W/g, '_') + '_IA';
-        this.artifactTemplate.namespace = this.sharedData.selectedNamespace;
-        this.artifactTemplate.selectedResource = 'Artifact';
-        this.artifactTemplate.selectedResourceType = 'Template';
+            this.sharedData.toscaComponent.localName + '_' + this.selectedInterface.name.replace(/\W/g, '_') + '_IA';
+        this.artifactTemplate.namespace = this.sharedData.toscaComponent.namespace;
+        this.artifactTemplate.toscaType = ToscaTypes.ArtifactTemplate;
 
         this.generateArtifactApiData = new GenerateArtifactApiData();
         this.generateArtifactApiData.javaPackage = this.getPackageNameFromNamespace();
@@ -198,10 +199,9 @@ export class InterfacesComponent implements OnInit {
         // currently works for node types only, not for relationship types
         this.generateArtifactApiData.autoGenerateIA = 'yes';
 
-        this.implementation.name = this.sharedData.selectedComponentId + '_impl';
-        this.implementation.namespace = this.sharedData.selectedNamespace;
-        this.implementation.selectedResource = this.sharedData.selectedResource;
-        this.implementation.selectedResourceType = 'Implementation';
+        this.implementation.name = this.sharedData.toscaComponent.localName + '_impl';
+        this.implementation.namespace = this.sharedData.toscaComponent.namespace;
+        this.implementation.toscaType = Utils.getToscaOfTypeOrImplementation(this.toscaType);
 
         this.generateImplModal.show();
     }
@@ -209,15 +209,8 @@ export class InterfacesComponent implements OnInit {
     generateImplementationArtifact(): void {
         this.generating = true;
         this.generateArtifactApiData.artifactName = this.generateArtifactApiData.artifactTemplateName;
-        if (this.implementation.createComponent) {
-            this.service.createImplementation(this.implementation.name, this.implementation.namespace)
-                .subscribe(
-                    data => this.handleGeneratedImplementation(data),
-                    error => this.handleError(error)
-                );
-        } else if (!this.implementation.createComponent && this.artifactTemplate.createComponent) {
-            this.handleGeneratedImplementation();
-        }
+        // Save the current interfaces & operations first in order to prevent inconsistencies.
+        this.save();
     }
 
     // endregion
@@ -251,7 +244,7 @@ export class InterfacesComponent implements OnInit {
     checkImplementationExists(): void {
         if (!this.implementationNamespace.endsWith('/')) {
             this.existService.check(backendBaseURL + '/'
-                + this.selectedResource.replace(' ', '').toLowerCase() + 'implementations/'
+                + Utils.getTypeOrImplementationOf(this.toscaType)
                 + encodeURIComponent(encodeURIComponent(this.implementationNamespace)) + '/'
                 + this.implementationName + '/'
             ).subscribe(
@@ -308,6 +301,21 @@ export class InterfacesComponent implements OnInit {
     private handleSave() {
         this.loading = false;
         this.notify.success('Changes saved!');
+
+        // If there is a generation of implementations in progress, generate those now.
+        if (this.generating) {
+            if (this.implementation.createComponent) {
+                this.service.createImplementation(this.implementation.name, this.implementation.namespace)
+                    .subscribe(
+                        data => this.handleGeneratedImplementation(data),
+                        error => this.handleError(error)
+                    );
+            } else if (!this.implementation.createComponent && this.artifactTemplate.createComponent) {
+                this.handleGeneratedImplementation();
+            } else {
+                this.generating = false;
+            }
+        }
     }
 
     private handleError(error: any) {
@@ -318,7 +326,7 @@ export class InterfacesComponent implements OnInit {
 
     private getPackageNameFromNamespace(): string {
         // to only get the relevant information, without the 'http://'
-        const namespaceArray = this.sharedData.selectedNamespace.split('/').slice(2);
+        const namespaceArray = this.sharedData.toscaComponent.namespace.split('/').slice(2);
         const domainArray = namespaceArray[0].split('.');
 
         let javaPackage = '';
@@ -337,7 +345,7 @@ export class InterfacesComponent implements OnInit {
 
     private handleGeneratedImplementation(data?: any) {
         if (this.artifactTemplate.createComponent) {
-            this.generateArtifactApiData.artifactTemplateName = this.generateArtifactApiData.artifactName =  this.artifactTemplate.name;
+            this.generateArtifactApiData.artifactTemplateName = this.generateArtifactApiData.artifactName = this.artifactTemplate.name;
             this.generateArtifactApiData.artifactTemplateNamespace = this.artifactTemplate.namespace;
             this.service.createArtifactTemplate(this.implementation.name, this.implementation.namespace, this.generateArtifactApiData)
                 .subscribe(

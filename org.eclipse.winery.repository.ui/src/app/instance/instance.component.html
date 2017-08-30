@@ -11,17 +11,15 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 -->
-<div class="mainContentContainer {{ selectedResource }}">
+<div class="mainContentContainer {{ toscaComponent.toscaType | toscaTypeToCamelCase}}">
     <winery-instance-header
         [imageUrl]="imageUrl"
-        [selectedResource]="selectedResource"
-        [selectedComponentId]="selectedComponentId"
-        [selectedNamespace]="selectedNamespace"
+        [toscaComponent]="toscaComponent"
         [typeOf]="typeOf"
         [typeUrl]="typeUrl"
         [typeId]="typeId"
         [subMenu]="availableTabs"
-        (deleteConfirmed)="delete();">
+        (deleteConfirmed)="deleteComponent();">
     </winery-instance-header>
     <div class="middle" id="ccontainer">
         <router-outlet></router-outlet>

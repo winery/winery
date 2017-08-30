@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     ZTE - initial API and implementation and/or initial documentation
+ *     Lukas Harzenetter - fix TSLint errors
  */
 import { AfterViewInit, Component, Input } from '@angular/core';
 
@@ -21,7 +22,7 @@ import { WineryService } from '../../services/winery.service';
  * This component will be used in the property component while the corresponding workflow node is calling the node template's operation
  */
 @Component({
-    selector: 'b4t-node-template',
+    selector: 'winery-b4t-node-template',
     templateUrl: 'node-template.component.html',
 })
 export class WmNodeTemplateComponent implements AfterViewInit {

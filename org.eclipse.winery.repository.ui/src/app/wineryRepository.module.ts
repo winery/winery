@@ -17,19 +17,30 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { NotFoundComponent } from './404/notFound.component';
 import { HeaderComponent } from './header/header.component';
-import { InstanceModule } from './instance/instance.module';
 import { WineryLoaderModule } from './wineryLoader/wineryLoader.module';
 import { WineryNotificationModule } from './wineryNotificationModule/wineryNotification.module';
 import { WineryCustomOption } from './wineryNotificationModule/wineryNotificationOptions';
 import { OtherComponent } from './other/other.component';
 import { SectionModule } from './section/section.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { WineryModalModule } from './wineryModalModule/winery.modal.module';
 import { WineryRepositoryComponent } from './wineryRepository.component';
 import { WineryRepositoryRoutingModule } from './wineryRepositoryRouting.module';
 import { ExistService } from './wineryUtils/existService';
 import { WineryOAuthComponent } from './header/wineryOauth/wineryOAuth.component';
 import { TooltipModule } from 'ngx-bootstrap';
+import { NodeTypeModule } from './wineryMainModules/nodeTypes/nodeType.module';
+import { ServiceTemplateModule } from './wineryMainModules/serviceTemplates/serviceTemplate.module';
+import { RelationshipTypeModule } from './wineryMainModules/relationshipTypes/relationshipType.module';
+import { WineryModalModule } from './wineryModalModule/winery.modal.module';
+import { ArtifactTypeModule } from './wineryMainModules/artifactTypes/artifactType.module';
+import { AdminModule } from './wineryMainModules/admin/admin.module';
+import { PolicyTypeModule } from './wineryMainModules/policyTypes/policyType.module';
+import { RequirementTypeModule } from './wineryMainModules/requirementTypes/requirementType.module';
+import { ArtifactTemplateModule } from './wineryMainModules/artictTemplates/artifactTemplate.module';
+import { CapabilityTypeModule } from './wineryMainModules/capabilityTypes/capabilityType.module';
+import { NodeTypeImplementationModule } from './wineryMainModules/nodeTypeImplementations/nodeTypeImplementation.module';
+import { RelationshipTypeImplementationModule } from './wineryMainModules/relationshipTypeImplementations/relationshipTypeImplementation.module';
+import { PolicyTemplateModule } from './wineryMainModules/policyTemplates/policyTemplate.module';
 
 @NgModule({
     imports: [
@@ -37,15 +48,27 @@ import { TooltipModule } from 'ngx-bootstrap';
         FormsModule,
         CommonModule,
         BrowserAnimationsModule,
-        InstanceModule,
         WineryLoaderModule,
-        WineryModalModule,
         ToastModule.forRoot(),
         WineryNotificationModule.forRoot(),
         SectionModule,
         WineryModalModule,
-        WineryRepositoryRoutingModule,
         TooltipModule.forRoot(),
+
+        ServiceTemplateModule,
+        NodeTypeModule,
+        RelationshipTypeModule,
+        ArtifactTypeModule,
+        AdminModule,
+        PolicyTypeModule,
+        RequirementTypeModule,
+        ArtifactTemplateModule,
+        CapabilityTypeModule,
+        NodeTypeImplementationModule,
+        RelationshipTypeImplementationModule,
+        PolicyTemplateModule,
+
+        WineryRepositoryRoutingModule,
     ],
     declarations: [
         HeaderComponent,
@@ -55,7 +78,7 @@ import { TooltipModule } from 'ngx-bootstrap';
         WineryOAuthComponent,
     ],
     providers: [
-        {provide: ToastOptions, useClass: WineryCustomOption},
+        { provide: ToastOptions, useClass: WineryCustomOption },
         ExistService
     ],
     bootstrap: [WineryRepositoryComponent]

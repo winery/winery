@@ -12,12 +12,11 @@
  */
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
 import { BoundaryDefinitionsComponent } from './boundaryDefinitions.component';
 import { FileUploadModule } from 'ng2-file-upload';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { InstanceService } from '../../instance.service';
 import { PropertyMappingsComponent } from './propertyMappings/propertyMappings.component';
 import { PropertyConstraintsComponent } from './propertyConstraints/propertyConstraints.component';
@@ -34,7 +33,7 @@ import { WineryEditXMLModule } from '../../sharedComponents/editXML/editXML.modu
 import { InterfacesComponent } from '../../sharedComponents/interfaces/interfaces.component';
 import { InterfacesModule } from '../../sharedComponents/interfaces/interfaces.module';
 
-export const boundaryDefinitionsRoutes = [
+export const boundaryDefinitionsRoutes: Routes = [
     { path: 'properties', component: EditXMLComponent },
     { path: 'propertymappings', component: PropertyMappingsComponent },
     { path: 'propertyconstraints', component: PropertyConstraintsComponent },
@@ -48,8 +47,6 @@ export const boundaryDefinitionsRoutes = [
 
 @NgModule({
     imports: [
-        RouterModule,
-        BrowserModule,
         FormsModule,
         WineryLoaderModule,
         CommonModule,
@@ -59,9 +56,13 @@ export const boundaryDefinitionsRoutes = [
         InterfacesModule,
         WineryTableModule,
         WineryDuplicateValidatorModule,
-        WineryEditXMLModule
+        WineryEditXMLModule,
+        RouterModule
+        // RouterModule.forChild(boundaryDefinitionsRoutes),
     ],
-    exports: [],
+    exports: [
+        RouterModule
+    ],
     declarations: [
         BoundaryDefinitionsComponent,
         PoliciesComponent,
@@ -71,7 +72,9 @@ export const boundaryDefinitionsRoutes = [
         CapabilitiesComponent,
         RequirementsOrCapabilitiesComponent,
     ],
-    providers: [ InstanceService ]
+    providers: [
+        InstanceService
+    ]
 })
 export class BoundaryDefinitionsModule {
 }

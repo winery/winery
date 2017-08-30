@@ -16,6 +16,7 @@ import { ExistService } from '../../wineryUtils/existService';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { EntityContainterService } from './entityContainter.service';
+import { ToscaTypes } from '../../wineryInterfaces/enums';
 
 @Component({
     selector: 'winery-entity-container',
@@ -28,7 +29,7 @@ import { EntityContainterService } from './entityContainter.service';
 export class EntityContainerComponent implements OnInit {
 
     @Input() data: SectionData;
-    @Input() resourceType: string;
+    @Input() toscaType: ToscaTypes;
     @Output() deleted = new EventEmitter<string>();
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
@@ -41,10 +42,10 @@ export class EntityContainerComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.backendLink = backendBaseURL + '/' + this.resourceType.toLowerCase() + 's/'
+        this.backendLink = backendBaseURL + '/' + this.toscaType + '/'
             + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/' + this.data.id;
 
-        if (this.resourceType === 'nodeType' && this.data.id) {
+        if (this.toscaType === ToscaTypes.NodeType && this.data.id) {
             const img = this.backendLink + '/visualappearance/50x50';
 
             this.existService.check(img)
@@ -58,14 +59,14 @@ export class EntityContainerComponent implements OnInit {
                 );
         }
 
-        if (this.resourceType === 'serviceTemplate') {
+        if (this.toscaType === ToscaTypes.ServiceTemplate) {
             this.editButtonToolTip += ' Hold CTRL to directly edit the topology template.';
         }
     }
 
     onClick() {
-        let url = '/' + this.resourceType.toLocaleLowerCase() + 's/' +
-            encodeURIComponent(encodeURIComponent(encodeURIComponent(this.data.namespace)));
+        let url = '/' + this.toscaType + '/' +
+            encodeURIComponent(encodeURIComponent(this.data.namespace));
         if (this.data.id) {
             url +=  '/' + this.data.id;
         }
@@ -83,7 +84,7 @@ export class EntityContainerComponent implements OnInit {
 
     editComponent(event: MouseEvent) {
         event.stopPropagation();
-        if (this.resourceType === 'serviceTemplate' && event.ctrlKey) {
+        if (this.toscaType === ToscaTypes.ServiceTemplate && event.ctrlKey) {
             const topologyModeler = backendBaseURL + '-topologymodeler/'
             + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
             + '&uiURL=' + encodeURIComponent(window.location.origin)
@@ -91,7 +92,7 @@ export class EntityContainerComponent implements OnInit {
             + '&id=' + this.data.id;
             window.open(topologyModeler, '_blank');
         } else {
-            this.router.navigateByUrl('/' + this.resourceType.toLocaleLowerCase() + 's/' +
+            this.router.navigateByUrl('/' + this.toscaType + '/' +
             encodeURIComponent(encodeURIComponent(encodeURIComponent(this.data.namespace))) + '/'
             + this.data.id);
         }

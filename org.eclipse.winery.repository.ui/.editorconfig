@@ -1,5 +1,4 @@
-# http://editorconfig.org
-
+# Editor configuration, see http://editorconfig.org
 root = true
 
 [*]
@@ -16,5 +15,6 @@ USE_DOUBLE_QUOTES = false
 KEEP_BLANK_LINES_IN_CODE = 1
 
 [*.md]
+max_line_length = off
 insert_final_newline = false
 trim_trailing_whitespace = false

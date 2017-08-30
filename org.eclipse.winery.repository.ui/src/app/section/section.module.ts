@@ -19,14 +19,13 @@ import { SelectModule } from 'ng2-select';
 import { EntityContainerComponent } from './entityContainer/entityContainer.component';
 import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
 import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
-import { UrlDecodePipe } from '../wineryPipes/urlDecode.pipe';
-import { UrlEncodePipe } from '../wineryPipes/urlEncode.pipe';
 import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplicateValidator.module';
 import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { SectionComponent } from './section.component';
 import { SectionPipe } from './section.pipe';
 import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
 import { TooltipModule } from 'ngx-bootstrap';
+import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 
 @NgModule({
     imports: [
@@ -41,14 +40,13 @@ import { TooltipModule } from 'ngx-bootstrap';
         RouterModule,
         SelectModule,
         WineryUploaderModule,
-        TooltipModule
+        TooltipModule,
+        WineryPipesModule,
     ],
     exports: [SectionComponent],
     declarations: [
         SectionComponent,
         EntityContainerComponent,
-        UrlDecodePipe,
-        UrlEncodePipe,
         SectionPipe
     ],
     providers: [],
