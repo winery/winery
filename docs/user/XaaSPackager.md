@@ -28,31 +28,35 @@ To add the necessary Tags to a ServiceTemplate the following steps have to be co
 
 The steps 2-4 have to be completed for each of the XaaS Packager specific tags specified above.
 
-
-
 For example, the input of:
-- **name:** xaasPackageArtifactType, **value:** {http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}
-- **name:** xaasPackageDeploymentArtifact, **value:** HelloWorldDA
-- **name:** xaasPackageNode, **value:** PythonApp_2_7
 
+- **name:** `xaasPackageArtifactType`, **value:** `{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}`
+- **name:** `xaasPackageDeploymentArtifact`, **value:** `HelloWorldDA`
+- **name:** `xaasPackageNode`, **value:** `PythonApp_2_7`
 
- would generate the xml:
+generates the following XML:
 
  ``` xml
-<tosca:Tags> <tosca:Tag name="xaasPackageArtifactType" value="{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ScriptArtifact"/> <tosca:Tag name="xaasPackageDeploymentArtifact" value="HelloWorldDA"/> <tosca:Tag name="xaasPackageNode" value="PythonApp_2_7"/> </tosca:Tags>
+<tosca:Tags>
+  <tosca:Tag name="xaasPackageArtifactType" value="{http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes}ScriptArtifact"/>
+  <tosca:Tag name="xaasPackageDeploymentArtifact" value="HelloWorldDA"/>
+  <tosca:Tag name="xaasPackageNode" value="PythonApp_2_7"/>
+</tosca:Tags>
 ```
 ## XaaS Packger with Winery
+
 The functionality of the XaaS Packager is available in the Winery application and can be used as follows:
 
+1. Click on the tab *ServiceTemplates* at the top of the page.
+2. Then click on the button *create from artifact* from the menu to the right.
+   A dialog will show up contaning the following inputs:
 
-1. click on the tab *ServiceTemplates* at the top of the page.
-2. then click on the button *create from artifact* from the menu to the right.  A dialog will show up contaning the following inputs:
-- **Type**: the user has to select the appropriate Artifact Type out of the available *xaasPackagerArtifactTypes*.
-- **Select Artifact**: here u can upload the Deployment Artifact that will replace the existing Artifact in the specified Node Type.
-- **Tags**: additional tags can be added to the Service Template.
-- **NodeTypes**(optional): allows the selection of additional Node Types that MUST be used inside the selected topology.
+  - **Type**: the user has to select the appropriate Artifact Type out of the available *xaasPackagerArtifactTypes*.
+  - **Select Artifact**: here the user upload the Deployment Artifact that will replace the existing Artifact in the specified Node Type.
+  - **Tags**: additional tags can be added to the resulting Service Template.
+  - **NodeTypes** (optional): allows the selection of additional Node Types that MUST be used inside the selected topology.
 
-After setting all required inputs, a click on the *add* button trigger a search for a suitable cloud topology into which the artifact can be wrapped.
+After setting all required inputs, a click on the *add* button triggers a search for a suitable cloud topology into which the artifact can be wrapped.
 
 ## License
 
