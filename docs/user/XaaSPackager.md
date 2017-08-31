@@ -4,12 +4,12 @@
 
 The goal of this feature is to provide an easy way to deploy a new Deployment Artifact (e.g. web application) by reusing an existing Service Template and replacing the Deployment Artifact in the specified Node Type with the new Deployment Artifact.
 
-## Enabling a ServiceTemplate to be reused with the Xaas Packager
-To enable a Service Template to be reusable by the Xaas Packager you can either:
+## Enabling a ServiceTemplate to be reused with the XaaS Packager
 
-1. create a new Service Template according to your requirements and specifications.
+To enable a Service Template to be reusable by the XaaS Packager you can either:
 
-2. or use an already existing Service Template that satisfies your needs.
+1. Create a new Service Template according to your requirements and specifications or
+2. Use an already existing Service Template that satisfies your needs.
 
 However, in both cases you have to add the following Tags to the ServiceTemplate so the XaaS Packager can work with them:
 
