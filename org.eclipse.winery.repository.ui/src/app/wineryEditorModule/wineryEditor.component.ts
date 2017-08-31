@@ -55,7 +55,7 @@ declare var requirejs: any;
 })
 export class WineryEditorComponent implements ControlValueAccessor, OnInit {
 
-    @Input() dataEditorLang: any = 'application/xml';
+    @Input() dataEditorLang = 'application/xml';
     @Input() height = 500;
 
     loading = true;
@@ -74,7 +74,7 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
 
     ngOnInit() {
         requirejs(['orion/editor/edit'], function (edit: any) {
-            this.orionEditor = edit({ className: 'editor', parent: 'xml' })[0];
+            this.orionEditor = edit({ className: 'editor', parent: 'xml', contentType: this.dataEditorLang })[0];
             this.orionEditor.setText(this.innerValue);
         }.bind(this));
     }

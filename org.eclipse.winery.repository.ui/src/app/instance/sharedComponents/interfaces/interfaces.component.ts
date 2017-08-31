@@ -363,12 +363,13 @@ export class InterfacesComponent implements OnInit {
     }
 
     private handleGeneratedArtifact(response: Response) {
+        const message = 'It\'s available for download at ' +
+            '<a style="color: black;" href="' + response.headers.get('Location') + '">'
+            + this.implementation.name
+            + ' source</a>.';
         this.generating = false;
         this.generateImplModal.hide();
-        this.notify.success(
-            'It\'s available for download at <a style="color: black;" href="' + response.headers.get('Location') + '">' + this.implementation.name + ' source</a>.',
-            'Successfully created Artifact!',
-            { enableHTML: true });
+        this.notify.success(message, 'Successfully created Artifact!', { enableHTML: true });
     }
 
     // endregion
