@@ -27,8 +27,8 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
-import org.restdoc.annotations.RestDocParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class ParametersResource extends EntityWithIdCollectionResource<Parameter
 	public Response createParamter(
 			@FormParam("name") String name,
 			@FormParam("type") String type,
-			@FormParam("required") @RestDocParam(description = "type tYesNo, not Boolean. For convenience, on/off is also supported. In case this parameter is not provided, 'off' is assumed. This is in contrast to the specification, but it eases implementing the UI") String required) {
+			@FormParam("required") @ApiParam(value = "type tYesNo, not Boolean. For convenience, on/off is also supported. In case this parameter is not provided, 'off' is assumed. This is in contrast to the specification, but it eases implementing the UI") String required) {
 		// @formatter:on
 		if (StringUtils.isEmpty(name)) {
 			return Response.status(Status.BAD_REQUEST).entity("name must not be null").build();

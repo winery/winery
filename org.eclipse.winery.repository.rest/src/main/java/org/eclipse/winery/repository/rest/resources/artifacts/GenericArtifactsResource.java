@@ -73,9 +73,9 @@ import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesRe
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.NodeTemplateResource;
 
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
-import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -105,7 +105,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@RestDoc(methodDescription = "Creates a new implementation/deployment artifact. " +
+	@ApiOperation(value = "Creates a new implementation/deployment artifact. " +
 		"If an implementation artifact with the same name already exists, it is <em>overridden</em>.")
 	@SuppressWarnings("unchecked")
 	public Response generateArtifact(GenerateArtifactApiData apiData, @Context UriInfo uriInfo) {

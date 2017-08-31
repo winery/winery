@@ -36,8 +36,8 @@ import org.eclipse.winery.repository.rest.resources.apiData.RelationshipTypesVis
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +57,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
 	}
 
 	@GET
-	@RestDoc(methodDescription = "@return JSON object to be used at jsPlumb.registerConnectionType('NAME', <data>)")
+	@ApiOperation(value = "@return JSON object to be used at jsPlumb.registerConnectionType('NAME', <data>)")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getConnectionTypeForJsPlumbData() {
 		JsonFactory jsonFactory = new JsonFactory();

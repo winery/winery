@@ -56,7 +56,7 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytem
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.splitting.SplittingException;
 
-import org.restdoc.annotations.RestDoc;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -126,7 +126,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 
 	// @formatter:off
 	@GET
-	@RestDoc(methodDescription = "Returns the associated node type, which can be substituted by this service template.<br />" +
+	@ApiOperation(value = "Returns the associated node type, which can be substituted by this service template.<br />" +
 	"@return a QName of the form {namespace}localName is returned.")
 	@Path("substitutableNodeType")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -149,7 +149,7 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	}
 
 	@DELETE
-	@RestDoc(methodDescription = "Removes the association to substitutable node type")
+	@ApiOperation(value = "Removes the association to substitutable node type")
 	@Path("substitutableNodeType")
 	public Response deleteSubstitutableNodeType() {
 		this.getServiceTemplate().setSubstitutableNodeType(null);

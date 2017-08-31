@@ -28,7 +28,7 @@ import org.eclipse.winery.repository.backend.ImportUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
 
-import org.restdoc.annotations.RestDoc;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public class XSDImportResource extends GenericImportResource {
 	}
 
 	@GET
-	@RestDoc(methodDescription = "May be used by the modeler to generate an XML editor based on the XML schema")
+	@ApiOperation(value = "May be used by the modeler to generate an XML editor based on the XML schema")
 	// we cannot use "MimeTypes.MIMETYPE_XSD" here as the latter is "text/xml" and org.eclipse.winery.repository.resources.AbstractComponentInstanceResource.getDefinitionsAsResponse() also produces text/xml
 	@Produces("text/xsd")
 	public Response getXSD() {

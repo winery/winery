@@ -19,7 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.restdoc.annotations.RestDoc;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Ensures that the AbstractComponentInstance has a getName method
@@ -29,7 +29,7 @@ public interface IHasName {
 	@GET
 	@Path("name")
 	// @formatter:off
-	@RestDoc(methodDescription = "Returns the name of the element. " +
+	@ApiOperation(value = "Returns the name of the element. " +
 	"Defaults to the ID of the element. " +
 	"Some other ComponentInstances either carry a name or an ID. ")
 	// @formatter:on

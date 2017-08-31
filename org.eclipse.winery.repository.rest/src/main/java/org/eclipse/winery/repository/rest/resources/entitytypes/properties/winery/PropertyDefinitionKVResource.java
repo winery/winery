@@ -26,7 +26,7 @@ import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
 
-import org.restdoc.annotations.RestDoc;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Models a definition of one property
@@ -44,14 +44,14 @@ public class PropertyDefinitionKVResource extends EntityWithIdResource<PropertyD
 	}
 
 	@GET
-	@RestDoc(methodDescription = "@return type is the 'id' of the type ('shortType'), not the full type name")
+	@ApiOperation(value = "@return type is the 'id' of the type ('shortType'), not the full type name")
 	@Path("type")
 	public String getType() {
 		return this.o.getType();
 	}
 
 	@PUT
-	@RestDoc(methodDescription = "@return type is the 'id' of the type ('shortType'), not the full type name")
+	@ApiOperation(value = "@return type is the 'id' of the type ('shortType'), not the full type name")
 	@Path("type")
 	public Response setType(@FormParam("type") String type) {
 		this.o.setType(type);
