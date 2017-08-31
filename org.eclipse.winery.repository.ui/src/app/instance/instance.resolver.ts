@@ -13,40 +13,20 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 import { isNullOrUndefined } from 'util';
-import { sections } from '../configuration';
 import { InstanceResolverData } from '../wineryInterfaces/resolverData';
+import { Utils } from '../wineryUtils/utils';
+import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
 
 @Injectable()
-export class InstanceResolver implements Resolve<InstanceResolverData> {
+export class InstanceResolver implements Resolve<ToscaComponent> {
     constructor(private router: Router) {
     }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): InstanceResolverData {
-        const section = sections[route.params['section']];
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): ToscaComponent {
+        const section = Utils.getToscaTypeFromString(route.url[0].path);
         const namespace = route.params['namespace'];
-        const instanceId = route.params['instanceId'];
+        const localName = route.params['localName'];
 
-        if (!isNullOrUndefined(instanceId) && !isNullOrUndefined(namespace) && !isNullOrUndefined(section)) {
-            return {
-                section: section,
-                namespace: decodeURIComponent(decodeURIComponent(namespace)),
-                instanceId: instanceId,
-                path: state.url,
-            };
-        } else { // id not found, no section ,check if admin
-            if (isNullOrUndefined(section) && state.url.match('/admin')) {
-
-                return {
-                    section: 'admin',
-                    namespace: isNullOrUndefined(state.url.split('/')[2]) ? state.url.split('/')[2] : '',
-                    instanceId: '',
-                    path: state.url
-                };
-                // no id and not admin
-            } else {
-                this.router.navigate(['/notfound']);
-                return null;
-            }
-        }
+        return new ToscaComponent(section, decodeURIComponent(decodeURIComponent(namespace)), localName);
     }
 }

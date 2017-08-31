@@ -14,21 +14,22 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './404/notFound.component';
 import { OtherComponent } from './other/other.component';
-import { SectionComponent } from './section/section.component';
 import { SectionResolver } from './section/section.resolver';
 
 const appRoutes: Routes = [
-    {path: 'other', component: OtherComponent},
-    {path: 'notfound', component: NotFoundComponent},
-    {path: ':section/:namespace', component: SectionComponent, resolve: {resolveData: SectionResolver}},
-    {path: ':section', component: SectionComponent, resolve: {resolveData: SectionResolver}},
-    {path: '', redirectTo: '/servicetemplates', pathMatch: 'full'},
-    {path: '**', component: NotFoundComponent},
+    { path: 'other', component: OtherComponent },
+    { path: 'notfound', component: NotFoundComponent },
+    { path: '', redirectTo: '/servicetemplates', pathMatch: 'full' },
+    { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(appRoutes, {useHash: true}),
+        RouterModule.forRoot(appRoutes,
+            {
+                useHash: true,
+                // enableTracing: !environment.production // uncomment if not needed during development
+            }),
     ],
     exports: [
         RouterModule

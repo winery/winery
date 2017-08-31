@@ -20,36 +20,35 @@
     <nav id="mainMenuContainer">
         <a class="styledTabMenuButton"
            [routerLink]="['/servicetemplates']"
-           [class.selected]="router.isActive('servicetemplates')"
-        >
+           [routerLinkActive]="['selected']">
             <div class="left"></div>
             <div class="center">Service Templates</div>
             <div class="right"></div>
         </a>
         <a class="styledTabMenuButton"
            [routerLink]="['/nodetypes']"
-           [class.selected]="router.isActive('nodetypes')">
+           [routerLinkActive]="['selected']">
             <div class="left"></div>
             <div class="center">Node Types</div>
             <div class="right"></div>
         </a>
         <a class="styledTabMenuButton"
            [routerLink]="['/relationshiptypes']"
-           [class.selected]="router.isActive('relationshiptypes')">
+           [routerLinkActive]="['selected']">
             <div class="left"></div>
             <div class="center">Relationship Types</div>
             <div class="right"></div>
         </a>
         <a class="styledTabMenuButton"
            [routerLink]="['/other']"
-           [class.selected]="router.isActive('other')">
+           [routerLinkActive]="['selected']">
             <div class="left"></div>
             <div class="center">Other Elements{{ selectedOtherComponent }}</div>
             <div class="right"></div>
         </a>
         <a class="styledTabMenuButton"
            [routerLink]="['/admin']"
-           [class.selected]="router.isActive('admin')">
+           [routerLinkActive]="['selected']">
             <div class="left"></div>
             <div class="center">Administration</div>
             <div class="right"></div>

@@ -55,14 +55,14 @@ declare var requirejs: any;
 })
 export class WineryEditorComponent implements ControlValueAccessor, OnInit {
 
-    @Input() dataEditorLang: any = 'application/xml';
+    @Input() dataEditorLang = 'application/xml';
     @Input() height = 500;
 
     loading = true;
     orionEditor: any = undefined;
 
     // The internal data model
-    private innerValue: any = '1';
+    private innerValue: any = '';
 
     // Placeholders for the callbacks which are later provided
     // by the Control Value Accessor
@@ -73,16 +73,10 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
     }
 
     ngOnInit() {
-        Promise.all([
-            require('http://www.eclipse.org/orion/editor/releases/current/built-editor.min.js'),
-            require('http://eclipse.org/orion/editor/releases/current/built-editor.css')
-        ]).then(function () {
-            requirejs(['orion/editor/edit'], function (edit: any) {
-                this.orionEditor = edit({className: 'editor', parent: 'xml'})[0];
-                this.orionEditor.setText(this.innerValue);
-            }.bind(this));
+        requirejs(['orion/editor/edit'], function (edit: any) {
+            this.orionEditor = edit({ className: 'editor', parent: 'xml', contentType: this.dataEditorLang })[0];
+            this.orionEditor.setText(this.innerValue);
         }.bind(this));
-
     }
 
     // get accessor

@@ -259,7 +259,7 @@ export class CapOrReqDefComponent implements OnInit {
      * If no constraint is selected a new constraint is created
      * @param constraint to be edited
      */
-    openEditConstraintModal(constraint: Constraint) {
+    openEditConstraintModal(constraint?: Constraint) {
         const re = /\#\#/;
         const xmlDef = /<\?xml.*>\n/;
 

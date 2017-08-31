@@ -12,7 +12,7 @@
  */
 -->
 <div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
-     class="entityContainer {{ resourceType }}"
+     class="entityContainer {{ toscaType | toscaTypeToCamelCase }}"
      (click)="onClick()">
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     <div class="left">

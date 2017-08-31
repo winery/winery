@@ -13,16 +13,11 @@
 
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { environment } from './environments/environment';
 
 import { WineryRepositoryModule } from './app/wineryRepository.module';
 
-import 'ng2-toastr/ng2-toastr.css';
-import './css/bootstrap.min.css';
-import './css/wineryCommon.css';
-import './css/wineryRepository.css';
-require('font-awesome/css/font-awesome.css');
-
-if (process.env.ENV === 'production') {
+if (environment.production) {
     enableProdMode();
 }
 

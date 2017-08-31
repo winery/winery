@@ -18,6 +18,7 @@ import { InterfacesApiData } from './interfacesApiData';
 import { InstanceService } from '../../instance.service';
 import { backendBaseURL } from '../../../configuration';
 import { isNullOrUndefined } from 'util';
+import { Utils } from '../../../wineryUtils/utils';
 
 @Injectable()
 export class InterfacesService {
@@ -28,7 +29,7 @@ export class InterfacesService {
     constructor(private http: Http,
                 private route: Router, private sharedData: InstanceService) {
         this.path = decodeURIComponent(this.route.url);
-        this.implementationsUrl = this.sharedData.selectedResource.replace(' ', '').toLowerCase() + 'implementations/';
+        this.setImplementationsUrl();
     }
 
     getInterfaces(url?: string, relationshipInterfaces = false): Observable<InterfacesApiData[]> {
@@ -51,22 +52,26 @@ export class InterfacesService {
     }
 
     createImplementation(implementationName: string, implementationNamespace: string): Observable<any> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
+
+        this.setImplementationsUrl();
 
         return this.http.post(backendBaseURL + '/' + this.implementationsUrl,
             JSON.stringify({
                 localname: implementationName,
                 namespace: implementationNamespace,
-                type: '{' + this.sharedData.selectedNamespace + '}' + this.sharedData.selectedComponentId
+                type: '{' + this.sharedData.toscaComponent.namespace + '}' + this.sharedData.toscaComponent.localName
             }),
             options);
     }
 
     createArtifactTemplate(implementationName: string, implementationNamespace: string,
-                                 generateArtifactApiData: GenerateArtifactApiData) {
+                                 generateArtifactApiData: GenerateArtifactApiData): Observable<Response> {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
+
+        this.setImplementationsUrl();
 
         return this.http.post(backendBaseURL + '/' + this.implementationsUrl
             + encodeURIComponent(encodeURIComponent(implementationNamespace)) + '/'
@@ -87,10 +92,20 @@ export class InterfacesService {
             });
     }
 
-    private get(url: string): Observable<any> {
+    private get (url: string): Observable<any> {
         const headers = new Headers({ 'Accept': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 
         return this.http.get(backendBaseURL + url, options);
+    }
+
+    /**
+     * Because <code>this.sharedData.toscaComponent</code> can be null on initialisation, we need to get the URL shortly before
+     * we use it again.
+     */
+    private setImplementationsUrl() {
+        if (isNullOrUndefined(this.implementationsUrl) && !isNullOrUndefined(this.sharedData.toscaComponent)) {
+            this.implementationsUrl = Utils.getToscaOfTypeOrImplementation(this.sharedData.toscaComponent.toscaType) + '/';
+        }
     }
 }

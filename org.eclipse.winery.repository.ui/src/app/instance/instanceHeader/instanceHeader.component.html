@@ -15,16 +15,16 @@
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon">
     <div class="informationContainer">
         <div id="component_name" class="name editable editable-click">
-            {{ selectedComponentId }}
+            {{ toscaComponent.localName }}
         </div>
         <div id="component_namespace" class="namespace editable editable-click">
-            {{ selectedNamespace }}
+            {{ toscaComponent.namespace }}
         </div>
     </div>
     <div class="managementButtons">
         <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
-        <a class="btn btn-info" target="_blank" href="{{ backendLink }}?definitions">XML</a>
-        <a class="btn btn-info" href="{{ backendLink }}?csar">CSAR</a>
+        <a class="btn btn-info" target="_blank" href="{{ toscaComponent.path }}?definitions">XML</a>
+        <a class="btn btn-info" href="{{ toscaComponent.path }}?csar">CSAR</a>
         <div *ngIf="typeUrl">
             {{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a>
         </div>
@@ -47,7 +47,7 @@
     </winery-modal-header>
     <winery-modal-body>
         <p>
-            Do you want to delete <span style="font-weight:bold;">{{ selectedComponentId }}</span>?
+            Do you want to delete <span style="font-weight:bold;">{{ toscaComponent.localName }}</span>?
         </p>
     </winery-modal-body>
     <winery-modal-footer (onOk)="deleteConfirmed.emit();"
