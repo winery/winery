@@ -53,3 +53,14 @@ The functionality of the XaaS Packager is available in the Winery application an
 - **NodeTypes**(optional): allows the selection of additional Node Types that MUST be used inside the selected topology.
 
 After setting all required inputs, a click on the *add* button trigger a search for a suitable cloud topology into which the artifact can be wrapped.
+
+## License
+
+Copyright (c) 2017 University of Stuttgart.
+
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the [Eclipse Public License v1.0]
+and the [Apache License v2.0] which both accompany this distribution.
+
+  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
+  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
