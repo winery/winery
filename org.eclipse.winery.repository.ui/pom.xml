@@ -50,7 +50,8 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>http://www.mirrorservice.org/sites/download.eclipse.org/eclipseMirror/orion/drops/R-8.0-201502161823/built-editor.zip</url>
+                            <url>https://www.eclipse.org/downloads/download.php?file=/orion/drops/R-8.0-201502161823/built-editor.zip&amp;mirror_id=1</url>
+                            <outputFileName>built-editor.zip</outputFileName>
                             <unpack>true</unpack>
                             <outputDirectory>${project.basedir}/build/orion</outputDirectory>
                         </configuration>
