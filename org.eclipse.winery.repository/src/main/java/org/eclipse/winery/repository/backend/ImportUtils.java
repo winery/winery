@@ -96,6 +96,6 @@ public class ImportUtils {
 	}
 
 	public static Optional<String> getLocation(GenericImportId id) {
-		return getTheImport(id).map(TImport::getLocation).filter(Objects::isNull);
+		return getTheImport(id).map(TImport::getLocation).filter(Objects::nonNull);
 	}
 }
