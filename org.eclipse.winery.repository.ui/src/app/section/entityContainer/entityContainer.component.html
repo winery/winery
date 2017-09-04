@@ -9,13 +9,14 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Lukas Balzer - moved img element in left div to be displayed correctly
  */
 -->
 <div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
      class="entityContainer {{ toscaType | toscaTypeToCamelCase }}"
      (click)="onClick()">
-    <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     <div class="left">
+        <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     </div>
     <div class="center">
         <div class="informationContainer">
@@ -27,7 +28,7 @@
             <a class="exportButton" (click)="exportComponent($event)"
                tooltip="Export CSAR. Hold CTRL to export XML."></a>
             <a class="editButton" (click)="editComponent($event)"
-               tooltip="{{editButtonToolTip}}" ></a>
+               tooltip="{{editButtonToolTip}}"></a>
             <a class="deleteButton" (click)="showRemoveDialog($event)" tooltip="Delete"></a>
         </div>
     </div>
