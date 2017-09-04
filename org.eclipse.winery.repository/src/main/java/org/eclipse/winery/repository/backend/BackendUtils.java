@@ -70,6 +70,7 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationI
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
@@ -89,6 +90,7 @@ import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
+import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -556,6 +558,11 @@ public class BackendUtils {
 			element = new TServiceTemplate();
 		} else if (id instanceof ArtifactTemplateId) {
 			element = new TArtifactTemplate();
+		} else if (id instanceof XSDImportId) {
+			// TImport has no id; thus directly generating it without setting an id
+			TImport tImport = new TImport();
+			definitions.setElement(tImport);
+			return definitions;
 		} else {
 			throw new IllegalStateException("Unhandled id branch. Could happen for XSDImportId");
 		}

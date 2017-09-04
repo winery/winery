@@ -103,7 +103,7 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 				XSObject item = components.item(i);
 				// if queried for TYPE_DEFINITION, then XSD base types (such as IDREF) are also returned
 				// We want to return only types defined in the namespace of this resource
-				if (item.getNamespace().equals(id.getNamespace().getDecoded())) {
+				if (id.getNamespace().getDecoded().equals(item.getNamespace())) {
 					result.add(item.getName());
 				}
 			}
