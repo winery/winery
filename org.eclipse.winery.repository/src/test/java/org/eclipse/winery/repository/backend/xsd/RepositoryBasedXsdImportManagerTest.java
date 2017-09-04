@@ -13,7 +13,6 @@ import java.util.List;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RepositoryBasedXsdImportManagerTest extends TestWithGitBackedRepository {
@@ -29,9 +28,8 @@ public class RepositoryBasedXsdImportManagerTest extends TestWithGitBackedReposi
 	}
 
 	@Test
-	@Ignore("Not yet implemented.")
 	public void getAllDefinedLocalNamesForElementsTest() throws Exception {
-		this.setRevisionTo("5fdcffa9ccd17743d5498cab0914081fc33606e9");
+		this.setRevisionTo("3465576f5b46079bb26f5c8e93663424440421a0");
 
 		RepositoryBasedXsdImportManager manager = (RepositoryBasedXsdImportManager) this.repository.getXsdImportManager();
 		List<NamespaceAndDefinedLocalNames> list = manager.getAllDefinedTypesLocalNames();
