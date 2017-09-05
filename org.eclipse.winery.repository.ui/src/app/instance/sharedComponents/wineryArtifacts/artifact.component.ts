@@ -225,13 +225,13 @@ export class WineryArtifactComponent implements OnInit {
         this.artifactsData = this.artifactsData.map(
             obj => {
                 if (!isNullOrUndefined(obj.artifactType)) {
-                    obj.artifactTypeLocalName = '<a target="_blank"' + ' href="#' + this.createArtifactTypeUrl(obj.artifactType) +
+                    obj.artifactTypeLocalName = '<a href="#' + this.createArtifactTypeUrl(obj.artifactType) +
                         '">' + this.getLocalName(obj.artifactType) + '</a>';
                 } else {
                     obj.artifactTypeLocalName = '';
                 }
                 if (!isNullOrUndefined(obj.artifactRef)) {
-                    obj.artifactRefLocalName = '<a target="_blank"' + ' href="#' + this.createArtifactTemplateUrl(obj.artifactRef) +
+                    obj.artifactRefLocalName = '<a href="#' + this.createArtifactTemplateUrl(obj.artifactRef) +
                         '">' + this.getLocalName(obj.artifactRef) + '</a>';
                 } else {
                     obj.artifactRefLocalName = '';
