@@ -10,7 +10,7 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
+import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { PlansApiData } from './plansApiData';
 import { PlansService } from './plans.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
@@ -21,6 +21,8 @@ import { SelectItem } from 'ng2-select';
 import { InputParameters, OutputParameters } from '../../../wineryInterfaces/parameters';
 import { backendBaseURL, workflowModelerURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
+
+const bpmn4tosca = 'http://www.opentosca.org/bpmn4tosca';
 
 @Component({
     selector: 'winery-plans',
@@ -50,6 +52,7 @@ export class PlansComponent implements OnInit {
     plansApiData: PlansApiData[] = null;
     linkedPlans: any[] = null;
     elementToRemove: PlansApiData;
+    enableEditButton = false;
 
     planTypes: SelectData[];
     selectedPlanType: SelectData = new SelectData();
@@ -78,7 +81,7 @@ export class PlansComponent implements OnInit {
     }
 
     // region ########## Callbacks ##########
-    // region ########## Table buttons ##########
+    // region ########## Table ##########
     onAddPlanType() {
         this.refreshPlanLanguages();
         this.refreshPlanTypes();
@@ -113,6 +116,11 @@ export class PlansComponent implements OnInit {
         this.ioModal.show();
     }
 
+    onCellSelected(plan: WineryRowData) {
+        const selected: PlansApiData = plan.row;
+        this.enableEditButton = selected.planLanguage.includes(bpmn4tosca);
+    }
+
     // endregion
 
     // region ########## Add Modal ##########
@@ -144,7 +152,7 @@ export class PlansComponent implements OnInit {
     }
 
     planLanguageSelected(event: SelectItem) {
-        if (event.id.includes('http://www.opentosca.org/bpmn4tosca')) {
+        if (event.id.includes(bpmn4tosca)) {
             this.fileDropped = true;
             this.showArchiveUpload = false;
         } else if (!isNullOrUndefined(this.fileToUpload)) {
@@ -232,7 +240,7 @@ export class PlansComponent implements OnInit {
 
     private handlePlanCreated() {
         this.loading = true;
-        this.uploaderUrl = this.service.path + '/' + this.newPlan.name + '/file';
+        this.uploaderUrl = this.service.path + this.newPlan.name + '/file';
         if (!this.showArchiveUpload) {
             this.handlePlanSaved();
         } else {
@@ -246,7 +254,7 @@ export class PlansComponent implements OnInit {
         this.getPlanTypesData();
     }
 
-    private handleError(error: any) {
+    handleError(error: any) {
         this.notify.error(error);
         this.loading = false;
     }

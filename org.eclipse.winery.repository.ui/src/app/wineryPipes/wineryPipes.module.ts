@@ -14,17 +14,20 @@ import { UrlEncodePipe } from './urlEncode.pipe';
 import { UrlDecodePipe } from './urlDecode.pipe';
 import { RemoveWhiteSpacesPipe } from './removeWhiteSpaces.pipe';
 import { ToscaTypeToCamelCase } from './toscaTypeToCamelCase.pipe';
+import { ToscaTypeToReadableNamePipe } from './toscaTypeToReadableName.pipe';
 
 @NgModule({
     imports: [],
     exports: [
         ToscaTypeToCamelCase,
+        ToscaTypeToReadableNamePipe,
         RemoveWhiteSpacesPipe,
         UrlDecodePipe,
         UrlEncodePipe
     ],
     declarations: [
         ToscaTypeToCamelCase,
+        ToscaTypeToReadableNamePipe,
         RemoveWhiteSpacesPipe,
         UrlDecodePipe,
         UrlEncodePipe,

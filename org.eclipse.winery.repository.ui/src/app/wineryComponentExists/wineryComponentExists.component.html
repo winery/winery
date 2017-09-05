@@ -14,7 +14,7 @@
 <div class="form-group-grouping typeimplementation">
     <div class="form-group">
         <label for="implName" class="control-label">
-            {{ generateData.toscaType }} Name
+            {{ generateData.toscaType | toscaTypeToReadableName }} Name
         </label>
         <input type="text" name="implementationName" [(ngModel)]="generateData.name"
                class="form-control" (input)="checkImplementationExists();"

@@ -47,7 +47,7 @@ export class PlansService {
     }
 
     deletePlan(id: string): Observable<Response> {
-        return this.http.delete(this.path + id);
+        return this.http.delete(this.path + id + '/');
     }
 
     private getJson(path: string): Observable<any> {
@@ -62,6 +62,6 @@ export class PlansService {
         const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
 
-        return this.http.put(this.path + '/' + plan.id, JSON.stringify(plan), options);
+        return this.http.put(this.path + plan.id + '/', JSON.stringify(plan), options);
     }
 }

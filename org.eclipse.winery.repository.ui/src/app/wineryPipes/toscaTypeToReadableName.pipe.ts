@@ -9,17 +9,19 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Pipe, PipeTransform } from '@angular/core';
+import { ToscaTypes } from '../wineryInterfaces/enums';
+import { Utils } from '../wineryUtils/utils';
 
-@Injectable()
-export class EntityContainerService {
-
-    constructor(private http: Http) {
-    }
-
-    deleteComponent(url: string, id: string): Observable<Response> {
-        return this.http.delete(url + '/');
+@Pipe({
+    name: 'toscaTypeToReadableName'
+})
+export class ToscaTypeToReadableNamePipe implements PipeTransform {
+    transform(value: ToscaTypes, args: any[]): string {
+        if (value) {
+            return Utils.getToscaTypeNameFromToscaType(value);
+        } else {
+            return '';
+        }
     }
 }
