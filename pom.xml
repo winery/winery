@@ -29,10 +29,6 @@
 		<name>Eclipse.org - Winery Project</name>
 		<url>http://www.eclipse.org/winery</url>
 	</organization>
-	<issueManagement>
-		<system>bugzilla</system>
-		<url>https://bugs.eclipse.org/bugs/enter_bug.cgi?product=Winery</url>
-	</issueManagement>
 	<inceptionYear>2012</inceptionYear>
 	<mailingLists>
 		<mailingList>
