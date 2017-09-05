@@ -30,8 +30,8 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemp
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.restdoc.annotations.RestDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 	}
 
 	@POST
-	@RestDoc(methodDescription = "Adds a new option<p>TODO: @return JSON with .tableData: Array with row data for dataTable</p>")
+	@ApiOperation(value = "Adds a new option<p>TODO: @return JSON with .tableData: Array with row data for dataTable</p>")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	// @formatter:off
 	public Response onPost(

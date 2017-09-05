@@ -50,10 +50,12 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemp
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ResponseHeader;
 import org.apache.commons.io.FileUtils;
-import org.restdoc.annotations.RestDoc;
-import org.restdoc.annotations.RestDocParam;
-import org.restdoc.annotations.RestDocReturnCode;
 
 /**
  * All paths listed here have to be listed in Jersey's filter configuration
@@ -142,12 +144,15 @@ public class MainResource {
 
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@RestDoc(methodDescription = "Imports the given CSAR (sent by simplesinglefileupload.jsp)")
-	@RestDocReturnCode(code = "200", description = "If the CSAR could be partially imported, the points where it failed are returned in the body")
+	@ApiOperation(value = "Imports the given CSAR (sent by simplesinglefileupload.jsp)")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, message = "success",
+			responseHeaders = @ResponseHeader(description = "If the CSAR could be partially imported, the points where it failed are returned in the body"))
+	})
 	// @formatter:off
 	public Response importCSAR(
 		@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail,
-		@FormDataParam("overwrite") @RestDocParam(description = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
+		@FormDataParam("overwrite") @ApiParam(value = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
 		@Context UriInfo uriInfo) {
 		// @formatter:on
 		CSARImporter importer = new CSARImporter();

@@ -37,8 +37,8 @@ import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.
 import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.PropertyMappingsApi;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
-import org.restdoc.annotations.RestDoc;
 
 public class PropertyMappingsResource {
 
@@ -80,7 +80,7 @@ public class PropertyMappingsResource {
 		propertyMapping.setTargetPropertyRef(targetPropertyRef);
 	}
 
-	@RestDoc(methodDescription = "Creates or updates a property mapping with the given fields")
+	@ApiOperation(value = "Creates or updates a property mapping with the given fields")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	// @formatter:off
