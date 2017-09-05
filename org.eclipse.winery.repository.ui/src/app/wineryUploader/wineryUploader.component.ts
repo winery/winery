@@ -113,7 +113,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
                 this.onSuccess.emit();
             } else {
                 this.notify.error('Error while uploading file ' + item.file.name);
-                this.onError.emit();
+                this.onError.emit(new Error('Error while uploading file ' + item.file.name));
             }
 
             return {item, response, status, headers};

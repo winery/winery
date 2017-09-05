@@ -104,7 +104,7 @@
     <winery-modal-header [title]="'Add CSAR'"></winery-modal-header>
     <winery-modal-body>
         <winery-uploader [modalRef]="addCsarModal" [uploadUrl]="fileUploadUrl"
-                         (onSuccess)="getSectionsData();"></winery-uploader>
+                         (onSuccess)="getSectionsData()"></winery-uploader>
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="addCsarModal.hide()">Cancel</button>

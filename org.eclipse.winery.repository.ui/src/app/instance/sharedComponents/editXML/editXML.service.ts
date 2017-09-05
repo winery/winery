@@ -11,11 +11,10 @@
  *     Niko Stadelmaier - get path from url
  */
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
-import { InstanceService } from '../../instance.service';
 
 @Injectable()
 export class EditXMLService {
@@ -31,21 +30,22 @@ export class EditXMLService {
     }
 
     getXmlData(): Observable<string> {
-        const headers = new Headers({'Accept': 'application/xml'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Accept': 'application/xml' });
+        const options = new RequestOptions({ headers: headers });
 
         let getPath = this.path;
-        if (!getPath.endsWith('properties')) {
-            getPath += '/xml';
+        if (!getPath.endsWith('properties') && !getPath.endsWith(('selfserviceportal/'))) {
+            getPath += 'xml/';
         }
-        return this.http.get(backendBaseURL + getPath   , options)
+
+        return this.http.get(backendBaseURL + getPath, options)
             .map(res => res.text());
     }
 
-    saveXmlData(xmlData: String): Observable<any> {
-        const headers = new Headers({'Content-Type': 'text/xml'});
-        const options = new RequestOptions({headers: headers});
+    saveXmlData(xmlData: String): Observable<Response> {
+        const headers = new Headers({ 'Content-Type': 'application/xml' });
+        const options = new RequestOptions({ headers: headers });
 
-        return this.http.put(backendBaseURL + this.path + '/', xmlData, options);
+        return this.http.put(backendBaseURL + this.path, xmlData, options);
     }
 }

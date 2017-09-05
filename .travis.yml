@@ -38,3 +38,4 @@ deploy:
   region: eu-central-1
   on:
     all_branches: true
+    condition: $AWSAccessKeyId

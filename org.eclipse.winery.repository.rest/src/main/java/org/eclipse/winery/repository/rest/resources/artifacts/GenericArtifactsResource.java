@@ -315,7 +315,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 *
 	 * DOES NOT WORK FOR RELATION SHIP TYPE IMPLEMENTATIONS
 	 *
-	 * @param artifactTemplateResource the resource associated with the artifactTempalteId. If null, the object is
+	 * @param artifactTemplateResource the resource associated with the artifactTemplateId. If null, the object is
 	 *                                 created in this method
 	 */
 	private Response generateImplementationArtifact(String interfaceNameStr, String javapackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId, ArtifactTemplateResource artifactTemplateResource) {

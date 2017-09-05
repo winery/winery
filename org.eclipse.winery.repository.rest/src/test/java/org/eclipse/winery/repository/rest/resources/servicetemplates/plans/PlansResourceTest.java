@@ -45,4 +45,9 @@ public class PlansResourceTest extends AbstractResourceTest {
 		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/plans/", "entitytypes/servicetemplates/plans/baobab_updated_plans.json");
 	}
 
+	@Test
+	public void addFile() throws Exception {
+		this.setRevisionTo("3465576f5b46079bb26f5c8e93663424440421a0");
+		this.assertUploadBinary("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/plans/harvest_Plan/file", "servicetemplates/plan.zip");
+	}
 }

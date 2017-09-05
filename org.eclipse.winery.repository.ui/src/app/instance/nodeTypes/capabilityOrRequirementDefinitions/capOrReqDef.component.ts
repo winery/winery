@@ -158,7 +158,7 @@ export class CapOrReqDefComponent implements OnInit {
             type.substring(type.lastIndexOf('{') + 1, type.lastIndexOf('}'))
         ));
         const absoluteURL = '/' + this.types + '/' + namespaceEncoded + '/' + name;
-        return '<a target="_blank"' + ' href="' + absoluteURL + '">' + name + '</a>';
+        return '<a' + ' [routerLink]="[\'' + absoluteURL + '\']">' + name + '</a>';
     }
 
     private getTypeURI(type: string): string {
