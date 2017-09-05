@@ -11,10 +11,13 @@
  */
 import { isNullOrUndefined } from 'util';
 import { ToscaTypes } from './enums';
+import { backendBaseURL } from '../configuration';
 
 export class ToscaComponent {
 
     readonly path: string;
+    readonly xmlPath: string;
+    readonly csarPath: string;
 
     constructor(public readonly toscaType: ToscaTypes,
                 public readonly namespace: string,
@@ -24,6 +27,8 @@ export class ToscaComponent {
             this.path += '/' + encodeURIComponent(encodeURIComponent(this.namespace));
             if (!isNullOrUndefined(this.localName)) {
                 this.path += '/' + this.localName;
+                this.xmlPath = backendBaseURL + this.path;
+                this.csarPath = this.xmlPath + '/?csar';
             }
         }
     }

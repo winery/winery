@@ -16,6 +16,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.rest.resources.TestIds;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xmlunit.matchers.CompareMatcher;
 
@@ -130,12 +131,9 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
-	public void baboabHasNoImage() throws Exception {
+	public void baobabHasNoImage() throws Exception {
 		this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779");
-		start()
-				.get(callURL("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/visualappearance/50x50"))
-				.then()
-				.statusCode(404);
+		this.assertNotFound("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/visualappearance/50x50");
 	}
 
 	@Test
@@ -145,4 +143,10 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/interfaces/", "entitytypes/nodetypes/baobab_initial_interface.json");
 	}
 
+	@Test
+	@Ignore("Test repository corrupt, needs resolving first!")
+	public void baobabGetCsar() throws Exception {
+		this.setRevisionTo("3465576f5b46079bb26f5c8e93663424440421a0");
+		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/?csar", "entitytypes/nodetypes/baobab.csar");
+	}
 }
