@@ -76,7 +76,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 	}
 
 	private boolean isZip(String fileName) {
-		return (fileName.endsWith("zip"));
+		return (fileName.endsWith("zip") || fileName.endsWith(".csar"));
 	}
 
 	private String getAccept(String fileName) {
