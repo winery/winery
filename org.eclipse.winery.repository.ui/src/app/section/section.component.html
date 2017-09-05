@@ -20,6 +20,9 @@
         <input type="text" id="searchBox" [(ngModel)]="filterString">
     </div>
     <div id="sectionsOverviewShadow">
+        <div id="gcprightcolumn"></div>
+        <div id="overviewtopshadow"></div>
+        <div id="overviewbottomshadow"></div>
     </div>
     <div class="floatSection" id="sectionsComponentContainer">
         <winery-entity-container
@@ -42,7 +45,7 @@
         </button>
     </div>
     <div id="sectionsFooterContainer">
-        <label for="selectItemsPerPage">Items per Page:</label>
+        <label id="sectionPaginationLabel" for="selectItemsPerPage">Items per Page:</label>
         <select id="selectItemsPerPage" [(ngModel)]="itemsPerPage">
             <option value="10">10</option>
             <option value="25">25</option>

@@ -48,7 +48,6 @@
     -ms-grid-row-span: 2;
     -ms-grid-row: 1;
     grid-row: 1 / span 2;
-    background-image: url("../../assets/img/overviewShadowBottom.jpg");
 }
 
 #sectionSidebar {
@@ -99,9 +98,26 @@
     -ms-grid-row-span: 1;
     -ms-grid-row: 4;
     grid-row: 4 / span 1;
-    grid-template-columns: auto 200px auto;
+    display: -ms-grid;
+    display: grid;
+    grid-template-columns: 200px 50px 250px;
     grid-auto-rows: 30px;
     grid-row-gap: 5px;
+    justify-self: center;
+    -ms-grid-column-align: center;
+}
+
+#sectionPaginationLabel {
+    justify-self: right;
+    -ms-grid-column-align: end;
+}
+
+pagination-controls {
+    justify-self: left;
+    -ms-grid-column-align: start;
+}
+
+#selectItemsPerPage {
     justify-self: center;
     -ms-grid-column-align: center;
 }
