@@ -84,6 +84,10 @@ public class BoundaryDefinitionsResource {
 		return new BoundaryDefinitionsJSPData(this.serviceTemplateResource.getServiceTemplate(), uriInfo.getBaseUri()).getPropertiesAsXMLString();
 	}
 
+	/**
+	 * The well-formedness of the XML element is done using the framework. If you see <code>[Fatal Error] :1:19: The
+	 * prefix "tosca" for element "tosca:properties" is not bound.</code> in the console, it is an indicator that the XML element is not well-formed.
+	 */
 	@Path("properties/")
 	@PUT
 	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})

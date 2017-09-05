@@ -8,15 +8,100 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Lukas Balzer - enhanced stylesheet with css grid
  */
 
-.sidebar {
-    display: table-caption;
-    padding-bottom: 30px;
-    padding-left: 100px;
+#sectionsContentContainer {
+    min-height: 300px;
+    overflow: auto;
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 700px 30px auto;
+    grid-template-columns: 700px 30px auto;
+    -ms-grid-rows: 50px 219px auto 100px;
+    grid-template-rows: 50px 219px auto 100px;
+    grid-column-gap: 5px;
 }
 
-.sidebar-btn {
-    width: 100%;
-    margin-bottom: 3px;
+#searchBoxContainer {
+    -ms-grid-column-span: 2;
+    -ms-grid-column: 1;
+    grid-column: 1 / span 1;
+    -ms-grid-row-span: 1;
+    -ms-grid-row: 1;
+    grid-row: 1 / span 1;
+}
+
+#sectionsComponentContainer {
+    -ms-grid-column-span: 2;
+    -ms-grid-column: 1;
+    grid-column: 1 / span 2;
+    -ms-grid-row-span: 2;
+    -ms-grid-row: 2;
+    grid-row: 2 / span 2;
+}
+
+#sectionsOverviewShadow {
+    -ms-grid-column-span: 1;
+    -ms-grid-column: 2;
+    grid-column: 2 / span 1;
+    -ms-grid-row-span: 2;
+    -ms-grid-row: 1;
+    grid-row: 1 / span 2;
+    background-image: url("../../assets/img/overviewShadowBottom.jpg");
+}
+
+#sectionSidebar {
+    -ms-grid-column-span: 1;
+    -ms-grid-column: 3;
+    grid-column: 3 / span 1;
+    -ms-grid-row-span: 3;
+    -ms-grid-row: 1;
+    grid-row: 1 / span 3;
+    display: inline-grid;
+    grid-template-columns: auto 200px auto;
+    -ms-grid-rows: auto;
+    grid-auto-rows: 30px;
+    grid-row-gap: 5px;
+}
+
+#sectionsAddNewBtn {
+    -ms-grid-column-span: 1;
+    -ms-grid-column: 2;
+    grid-column: 2 / span 1;
+    -ms-grid-row-span: 1;
+    -ms-grid-row: 1;
+    grid-row: 1 / span 1;
+}
+
+#sectionsImportCsarBtn {
+    -ms-grid-column-span: 1;
+    -ms-grid-column: 2;
+    grid-column: 2 / span 1;
+    -ms-grid-row-span: 1;
+    -ms-grid-row: 2;
+    grid-row: 2 / span 1;
+}
+
+#sectionsGroupBtn {
+    -ms-grid-column-span: 1;
+    -ms-grid-column: 2;
+    grid-column: 2 / span 1;
+    -ms-grid-row-span: 1;
+    -ms-grid-row: 3;
+    grid-row: 3 / span 1;
+}
+
+#sectionsFooterContainer {
+    -ms-grid-column-span: 3;
+    -ms-grid-column: 1;
+    grid-column: 1 / span 3;
+    -ms-grid-row-span: 1;
+    -ms-grid-row: 4;
+    grid-row: 4 / span 1;
+    grid-template-columns: auto 200px auto;
+    grid-auto-rows: 30px;
+    grid-row-gap: 5px;
+    justify-self: center;
+    -ms-grid-column-align: center;
 }

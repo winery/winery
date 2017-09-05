@@ -445,7 +445,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			if (sb.length() > 0) {
 				// some error happened
 				// doc is not null, because the parser parses even if it is not XSD conforming
-				LOGGER.debug("some error happened", sb.toString());
+				LOGGER.debug("some error happened: {}", sb.toString());
 				return Response.status(Status.BAD_REQUEST).entity(sb.toString()).build();
 			}
 		} catch (SAXException | IOException e) {
