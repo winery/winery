@@ -103,8 +103,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	public FilebasedRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
 		Objects.requireNonNull(fileBasedRepositoryConfiguration);
 		if (fileBasedRepositoryConfiguration.getRepositoryPath().isPresent()) {
-			this.repositoryRoot = fileBasedRepositoryConfiguration.getRepositoryPath().get();
-			this.createRepositoryPath(this.repositoryRoot);
+			this.repositoryRoot = this.makeAbsoluteAndCreateRepositoryPath(fileBasedRepositoryConfiguration.getRepositoryPath().get());
 		} else {
 			this.repositoryRoot = this.determineAndCreateRepositoryPath();
 		}
@@ -162,14 +161,15 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		return repositoryPath;
 	}
 
-	protected Path createRepositoryPath(final Path configuredRepositoryPath) {
+	protected Path makeAbsoluteAndCreateRepositoryPath(final Path configuredRepositoryPath) {
 		Objects.requireNonNull(configuredRepositoryPath);
+		Path repositoryPath = configuredRepositoryPath.toAbsolutePath().normalize();
 		try {
-			org.apache.commons.io.FileUtils.forceMkdir(configuredRepositoryPath.toFile());
+			org.apache.commons.io.FileUtils.forceMkdir(repositoryPath.toFile());
 		} catch (IOException e) {
 			FilebasedRepository.LOGGER.error("Could not create repository directory", e);
 		}
-		return configuredRepositoryPath;
+		return repositoryPath;
 	}
 
 	public static File getDefaultRepositoryFilePath() {
