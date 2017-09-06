@@ -50,7 +50,11 @@
                             <goal>wget</goal>
                         </goals>
                         <configuration>
-                            <url>https://www.eclipse.org/downloads/download.php?file=/orion/drops/R-8.0-201502161823/built-editor.zip&amp;mirror_id=96</url>
+                            <!-- we have to use the mirror URL as
+                            (1) https://www.eclipse.org/downloads/download.php?file=/orion/drops/R-8.0-201502161823/built-editor.zip&amp;mirror_id=96 leads to an HTML page
+                            (2) downloads.eclipse.org suffers from DDoS attacks from time to time - see https://bugs.eclipse.org/bugs/show_bug.cgi?id=515596#c73
+                            -->
+                            <url>http://www.mirrorservice.org/sites/download.eclipse.org/eclipseMirror/orion/drops/R-8.0-201502161823/built-editor.zip</url>
                             <outputFileName>built-editor.zip</outputFileName>
                             <unpack>true</unpack>
                             <outputDirectory>${project.basedir}/build/orion</outputDirectory>
