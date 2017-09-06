@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -128,10 +128,13 @@ public abstract class TOSCAComponentId extends GenericId {
 	@Override
 	public int compareTo(GenericId o1) {
 		if (o1 instanceof TOSCAComponentId) {
-			TOSCAComponentId o = (TOSCAComponentId) o1;
-			int res = this.getXmlId().compareTo(o.getXmlId());
+			int res = this.getClass().getName().compareTo(o1.getClass().toString());
 			if (res == 0) {
-				res = this.getNamespace().compareTo(o.getNamespace());
+				TOSCAComponentId o = (TOSCAComponentId) o1;
+				res = this.getXmlId().compareTo(o.getXmlId());
+				if (res == 0) {
+					res = this.getNamespace().compareTo(o.getNamespace());
+				}
 			}
 			return res;
 		} else {
