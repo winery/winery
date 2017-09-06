@@ -25,6 +25,7 @@ script:
   - mv org.eclipse.winery.repository.ui/target/*.war build/
   - mv org.eclipse.winery.topologymodeler/target/*.war build/
   - mv org.eclipse.winery.workflowmodeler/target/*.war build/
+  - mv org.eclipse.winery.cli/target/winery.jar build/
 
 deploy:
   - provider: s3
