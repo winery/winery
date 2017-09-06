@@ -95,13 +95,13 @@ public class WineryCli {
 
 	private static Optional<String> checkCorruptionUsingCsarExport(IRepository repository, Verbosity verbosity) {
 		CSARExporter exporter = new CSARExporter();
-		try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-			SortedSet<TOSCAComponentId> allToscaComponentIds = repository.getAllToscaComponentIds();
-			System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
-			if (verbosity == Verbosity.NOTHING) {
-				System.out.print("Checking ");
-			}
-			for (TOSCAComponentId id : allToscaComponentIds) {
+		SortedSet<TOSCAComponentId> allToscaComponentIds = repository.getAllToscaComponentIds();
+		System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
+		if (verbosity == Verbosity.NOTHING) {
+			System.out.print("Checking ");
+		}
+		for (TOSCAComponentId id : allToscaComponentIds) {
+			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 				if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
 					System.out.format("Checking %s...\n", id.toReadableString());
 				} else {
@@ -117,24 +117,23 @@ public class WineryCli {
 						}
 					}
 				}
+			} catch (ArchiveException | JAXBException | IOException e) {
+				if (verbosity == Verbosity.NOTHING) {
+					System.out.println();
+				}
+				LOGGER.debug("Error during checking ZIP", e);
+				return Optional.of(e.getMessage());
+			} catch (RepositoryCorruptException e) {
+				if (verbosity == Verbosity.NOTHING) {
+					System.out.println();
+				}
+				LOGGER.debug("Repository is corrupt", e);
+				return Optional.of(e.getMessage());
 			}
-			if (verbosity == Verbosity.NOTHING) {
-				System.out.println();
-			}
-		} catch (ArchiveException | JAXBException | IOException e) {
-			if (verbosity == Verbosity.NOTHING) {
-				System.out.println();
-			}
-			LOGGER.debug("Error during checking ZIP", e);
-			return Optional.of(e.getMessage());
-		} catch (RepositoryCorruptException e) {
-			if (verbosity == Verbosity.NOTHING) {
-				System.out.println();
-			}
-			LOGGER.debug("Repository is corrupt", e);
-			return Optional.of(e.getMessage());
 		}
-
+		if (verbosity == Verbosity.NOTHING) {
+			System.out.println();
+		}
 		// no error during checking
 		return Optional.empty();
 	}
