@@ -24,7 +24,7 @@ public class EnvironmentTest {
 		final Optional<FileBasedRepositoryConfiguration> filebasedRepositoryConfiguration = Environment
 			.getFilebasedRepositoryConfiguration();
 		Assert.assertTrue(filebasedRepositoryConfiguration.isPresent());
-		final Path repositoryPath = filebasedRepositoryConfiguration.get().getRepositoryPath();
+		final Path repositoryPath = filebasedRepositoryConfiguration.get().getRepositoryPath().get();
 		Assert.assertEquals(Paths.get("/tmp/winery-repository"), repositoryPath);
 	}
 }

@@ -20,8 +20,9 @@
                   [title]="'Embedded Plans'"
                   [columns]="embeddedPlansColumns"
                   [data]="plansApiData"
-                  [enableEditButton]="true"
+                  [enableEditButton]="enableEditButton"
                   [enableIOButton]="true"
+                  (cellSelected)="onCellSelected($event)"
                   (addBtnClicked)="onAddPlanType();"
                   (editBtnClicked)="onEditPlan($event);"
                   (removeBtnClicked)="onRemovePlan($event);"
@@ -81,7 +82,8 @@
                                  (onFileDropped)="onFileDropped($event);"
                                  [uploadImmediately]="false"
                                  [uploadMethod]="'PUT'"
-                                 (onSuccess)="getPlanTypesData();">
+                                 (onSuccess)="getPlanTypesData()"
+                                 (onError)="handleError($event)">
                 </winery-uploader>
             </div>
         </form>

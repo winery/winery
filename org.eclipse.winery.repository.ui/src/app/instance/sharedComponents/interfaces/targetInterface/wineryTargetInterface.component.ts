@@ -37,7 +37,7 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
     @Input() operation: InterfaceOperationApiData;
 
     loading = false;
-    referenceData: WineryTemplate[] = [];
+    referenceData: WineryTemplate[];
     plans: WineryTemplate[];
     activeReference: WineryTemplate;
     interfaces: InterfacesApiData[];
@@ -276,7 +276,12 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
             tmp.setValuesFromPlan(plan);
             this.plans.push(tmp);
         }
+
+        if (this.currentSelected === CurrentSelectedEnum.plan) {
+            this.onPlanSelected();
+        }
     }
+
 }
 
 enum CurrentSelectedEnum {

@@ -29,10 +29,6 @@
 		<name>Eclipse.org - Winery Project</name>
 		<url>http://www.eclipse.org/winery</url>
 	</organization>
-	<issueManagement>
-		<system>bugzilla</system>
-		<url>https://bugs.eclipse.org/bugs/enter_bug.cgi?product=Winery</url>
-	</issueManagement>
 	<inceptionYear>2012</inceptionYear>
 	<mailingLists>
 		<mailingList>
@@ -71,6 +67,7 @@
 	<modules>
 		<module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
 		<module>org.eclipse.winery.common</module>
+		<module>org.eclipse.winery.cli</module>
 		<module>org.eclipse.winery.generators.ia</module>
 		<module>org.eclipse.winery.highlevelrestapi</module>
 		<module>org.eclipse.winery.model.bpmn4tosca</module>

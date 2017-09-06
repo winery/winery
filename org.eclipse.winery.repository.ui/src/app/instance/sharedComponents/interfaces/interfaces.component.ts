@@ -210,6 +210,9 @@ export class InterfacesComponent implements OnInit {
     generateImplementationArtifact(): void {
         this.generating = true;
         this.generateArtifactApiData.artifactName = this.generateArtifactApiData.artifactTemplateName;
+        if (this.toscaType !== ToscaTypes.NodeType) {
+            delete this.generateArtifactApiData.autoGenerateIA;
+        }
         // Save the current interfaces & operations first in order to prevent inconsistencies.
         this.save();
     }
@@ -363,10 +366,13 @@ export class InterfacesComponent implements OnInit {
     }
 
     private handleGeneratedArtifact(response: Response) {
-        const message = 'It\'s available for download at ' +
-            '<a style="color: black;" href="' + response.headers.get('Location') + '">'
-            + this.implementation.name
-            + ' source</a>.';
+        let message = '';
+        if (this.toscaType === ToscaTypes.NodeType) {
+            message = 'It\'s available for download at ' +
+                '<a style="color: black;" href="' + response.headers.get('Location') + '">'
+                + this.implementation.name
+                + ' source</a>.';
+        }
         this.generating = false;
         this.generateImplModal.hide();
         this.notify.success(message, 'Successfully created Artifact!', { enableHTML: true });

@@ -54,8 +54,8 @@ import org.eclipse.winery.repository.splitting.Splitting;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource.Builder;
 import com.sun.jersey.api.view.Viewable;
-import org.restdoc.annotations.RestDoc;
-import org.restdoc.annotations.RestDocParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,12 +126,12 @@ public class TopologyTemplateResource {
 	}
 
 	@GET
-	@RestDoc(methodDescription = "?edit is used in the URL to get the jsPlumb-based editor")
+	@ApiOperation(value = "?edit is used in the URL to get the jsPlumb-based editor")
 	@Produces(MediaType.TEXT_HTML)
 	// @formatter:off
 	public Response getHTML(
 			@QueryParam(value = "edit") String edit,
-			@QueryParam(value = "script") @RestDocParam(description = "the script to include in a <script> tag. The function wineryViewExternalScriptOnLoad if it is defined. Only available if 'view' is also set") String script,
+			@QueryParam(value = "script") @ApiParam(value = "the script to include in a <script> tag. The function wineryViewExternalScriptOnLoad if it is defined. Only available if 'view' is also set") String script,
 			@QueryParam(value = "view") String view,
 			@QueryParam(value = "autoLayoutOnLoad") String autoLayoutOnLoad,
 			@Context UriInfo uriInfo) {
@@ -222,7 +222,7 @@ public class TopologyTemplateResource {
 
 	// @formatter:off
 	@GET
-	@RestDoc(methodDescription = "Returns a JSON representation of the topology template. <br />" +
+	@ApiOperation(value = "Returns a JSON representation of the topology template. <br />" +
 			"X and Y coordinates are embedded as attributes. QName string with Namespace: <br />" +
 			"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} <br />" +
 			"@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
@@ -320,7 +320,7 @@ public class TopologyTemplateResource {
 	}
 
 	@PUT
-	@RestDoc(methodDescription = "Replaces the topology by the information given in the XML")
+	@ApiOperation(value = "Replaces the topology by the information given in the XML")
 	@Consumes(MediaType.TEXT_XML)
 	public Response setModel(TTopologyTemplate topologyTemplate) {
 		this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
@@ -328,7 +328,7 @@ public class TopologyTemplateResource {
 	}
 
 	@PUT
-	@RestDoc(methodDescription = "Replaces the topology by the information given in the XML")
+	@ApiOperation(value = "Replaces the topology by the information given in the XML")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response setModelJson(TTopologyTemplate topologyTemplate) throws Exception {
 		ModelUtilities.patchAnyAttributes(topologyTemplate.getNodeTemplates());
@@ -338,7 +338,7 @@ public class TopologyTemplateResource {
 
 	// @formatter:off
 	@GET
-	@RestDoc(methodDescription = "<p>Returns an XML representation of the topology template." +
+	@ApiOperation(value = "<p>Returns an XML representation of the topology template." +
 			" X and Y coordinates are embedded as attributes. Namespace:" +
 			"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} </p>" +
 			"<p>{@link org.eclipse.winery.repository.client.WineryRepositoryClient." +

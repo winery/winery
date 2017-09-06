@@ -15,15 +15,16 @@ import { SectionData } from '../sectionData';
 import { ExistService } from '../../wineryUtils/existService';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
-import { EntityContainterService } from './entityContainter.service';
+import { EntityContainerService } from './entityContainter.service';
 import { ToscaTypes } from '../../wineryInterfaces/enums';
+import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 
 @Component({
     selector: 'winery-entity-container',
     templateUrl: './entityContainer.component.html',
     styleUrls: ['./entityContainer.component.css'],
     providers: [
-        EntityContainterService
+        EntityContainerService
     ]
 })
 export class EntityContainerComponent implements OnInit {
@@ -38,7 +39,8 @@ export class EntityContainerComponent implements OnInit {
     backendLink: string;
     editButtonToolTip = 'Edit.';
 
-    constructor(private existService: ExistService, private router: Router, private service: EntityContainterService) {
+    constructor(private existService: ExistService, private router: Router,
+                private service: EntityContainerService, private notify: WineryNotificationService) {
     }
 
     ngOnInit(): void {
@@ -68,7 +70,7 @@ export class EntityContainerComponent implements OnInit {
         let url = '/' + this.toscaType + '/' +
             encodeURIComponent(encodeURIComponent(this.data.namespace));
         if (this.data.id) {
-            url +=  '/' + this.data.id;
+            url += '/' + this.data.id;
         }
         this.router.navigateByUrl(url);
     }
@@ -86,15 +88,15 @@ export class EntityContainerComponent implements OnInit {
         event.stopPropagation();
         if (this.toscaType === ToscaTypes.ServiceTemplate && event.ctrlKey) {
             const topologyModeler = backendBaseURL + '-topologymodeler/'
-            + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
-            + '&uiURL=' + encodeURIComponent(window.location.origin)
-            + '&ns=' + encodeURIComponent(this.data.namespace)
-            + '&id=' + this.data.id;
+                + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
+                + '&uiURL=' + encodeURIComponent(window.location.origin)
+                + '&ns=' + encodeURIComponent(this.data.namespace)
+                + '&id=' + this.data.id;
             window.open(topologyModeler, '_blank');
         } else {
             this.router.navigateByUrl('/' + this.toscaType + '/' +
-            encodeURIComponent(encodeURIComponent(encodeURIComponent(this.data.namespace))) + '/'
-            + this.data.id);
+                encodeURIComponent(encodeURIComponent(encodeURIComponent(this.data.namespace))) + '/'
+                + this.data.id);
         }
     }
 
@@ -104,7 +106,16 @@ export class EntityContainerComponent implements OnInit {
     }
 
     deleteConfirmed() {
-        this.service.deleteComponent(this.backendLink, this.data.id);
+        this.service.deleteComponent(this.backendLink, this.data.id)
+            .subscribe(
+                data => this.success(),
+                error => this.notify.error('Error deleting ' + this.data.id)
+            );
+    }
+
+    private success() {
+        this.notify.success('Successfully deleted ' + this.data.id);
         this.deleted.emit(this.data.id);
+
     }
 }

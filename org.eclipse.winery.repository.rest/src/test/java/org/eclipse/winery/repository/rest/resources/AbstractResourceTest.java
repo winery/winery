@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Scanner;
 
@@ -57,13 +58,13 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 		return new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
 	}
 
-	protected RequestSpecification start() {
+	private RequestSpecification start() {
 		return given()
-				.log()
-				.ifValidationFails();
+			.log()
+			.ifValidationFails();
 	}
 
-	protected String callURL(String restURL) {
+	private String callURL(String restURL) {
 		return PREFIX + Util.URLdecode(restURL);
 	}
 
@@ -76,7 +77,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 	}
 
 	private boolean isZip(String fileName) {
-		return (fileName.endsWith("zip"));
+		return (fileName.endsWith("zip") || fileName.endsWith(".csar"));
 	}
 
 	private String getAccept(String fileName) {
@@ -92,12 +93,12 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 		}
 	}
 
-	public void assertNotFound(String restURL) {
+	protected void assertNotFound(String restURL) {
 		try {
 			start()
-					.get(callURL(restURL))
-					.then()
-					.statusCode(404);
+				.get(callURL(restURL))
+				.then()
+				.statusCode(404);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -107,16 +108,16 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 		try {
 			String expectedStr = readFromClasspath(fileName);
 			final String receivedStr = start()
-					.accept(getAccept(fileName))
-					.get(callURL(restURL))
-					.then()
-					.log()
-					.ifValidationFails()
-					.statusCode(200)
-					.extract()
-					.response()
-					.getBody()
-					.asString();
+				.accept(getAccept(fileName))
+				.get(callURL(restURL))
+				.then()
+				.log()
+				.ifValidationFails()
+				.statusCode(200)
+				.extract()
+				.response()
+				.getBody()
+				.asString();
 			if (isXml(fileName)) {
 				org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
 			} else if (isZip(fileName)) {
@@ -124,119 +125,126 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 				Assert.assertNotNull(receivedStr);
 			} else {
 				JSONAssert.assertEquals(
-						expectedStr,
-						receivedStr,
-						true);
+					expectedStr,
+					receivedStr,
+					true);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void assertGetExpectBadRequestResponse(String restURL, String fileName) {
+	protected void assertGetExpectBadRequestResponse(String restURL, String fileName) {
 		try {
 			String expectedStr = readFromClasspath(fileName);
 			final String receivedStr = start()
-					.accept(getAccept(fileName))
-					.get(callURL(restURL))
-					.then()
-					.log()
-					.ifValidationFails()
-					.statusCode(400)
-					.extract()
-					.response()
-					.getBody()
-					.asString();
+				.accept(getAccept(fileName))
+				.get(callURL(restURL))
+				.then()
+				.log()
+				.ifValidationFails()
+				.statusCode(400)
+				.extract()
+				.response()
+				.getBody()
+				.asString();
 			if (isXml(fileName)) {
 				org.hamcrest.MatcherAssert.assertThat(receivedStr, CompareMatcher.isIdenticalTo(expectedStr).ignoreWhitespace());
 			} else if (isTxt(fileName)) {
 				Assert.assertEquals(expectedStr, receivedStr);
 			} else {
 				JSONAssert.assertEquals(
-						expectedStr,
-						receivedStr,
-						true);
+					expectedStr,
+					receivedStr,
+					true);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void assertGetSize(String restURL, int size) {
+	protected void assertGetSize(String restURL, int size) {
 		start()
-				.accept(ContentType.JSON)
-				.get(callURL(restURL))
-				.then()
-				.log()
-				.ifValidationFails()
-				.statusCode(200)
-				.body("size()", is(size));
+			.accept(ContentType.JSON)
+			.get(callURL(restURL))
+			.then()
+			.log()
+			.ifValidationFails()
+			.statusCode(200)
+			.body("size()", is(size));
 	}
 
 	public void assertPut(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);
 		start()
-				.body(contents)
-				.contentType(getAccept(fileName))
-				.put(callURL(restURL))
-				.then()
-				.statusCode(204);
+			.body(contents)
+			.contentType(getAccept(fileName))
+			.put(callURL(restURL))
+			.then()
+			.statusCode(204);
 	}
 
 	/**
 	 * Maybe remove in order to force JSON.
 	 */
-	public void assertPutText(String restURL, String content) {
+	protected void assertPutText(String restURL, String content) {
 		start()
-				.body(content)
-				.contentType(ContentType.TEXT)
-				.put(callURL(restURL))
-				.then()
-				.statusCode(204);
+			.body(content)
+			.contentType(ContentType.TEXT)
+			.put(callURL(restURL))
+			.then()
+			.statusCode(204);
 	}
 
-	public void assertPost(String restURL, String fileName) {
+	protected void assertPost(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);
 		start()
-				.body(contents)
-				.contentType(getAccept(fileName))
-				.accept(getAccept(fileName))
-				.post(callURL(restURL))
-				.then()
-				.statusCode(201);
+			.body(contents)
+			.contentType(getAccept(fileName))
+			.accept(getAccept(fileName))
+			.post(callURL(restURL))
+			.then()
+			.statusCode(201);
 	}
 
 	/**
 	 * Because some methods don't respond with a "created" status. TODO: fix all methods which return "noContent" status
 	 * so that this method can be deleted.
 	 */
-	public void assertNoContentPost(String restURL, String fileName) {
+	protected void assertNoContentPost(String restURL, String fileName) {
 		String contents = readFromClasspath(fileName);
 		start()
-				.body(contents)
-				.contentType(getAccept(fileName))
-				.post(callURL(restURL))
-				.then()
-				.statusCode(204);
+			.body(contents)
+			.contentType(getAccept(fileName))
+			.post(callURL(restURL))
+			.then()
+			.statusCode(204);
 	}
 
-	public void assertPost(String restURL, String namespace, String name) {
+	protected void assertPost(String restURL, String namespace, String name) {
 		start()
-				.formParam("namespace", namespace)
-				.formParam("name", name)
-				.post(callURL(restURL))
-				.then()
-				.statusCode(201);
+			.formParam("namespace", namespace)
+			.formParam("name", name)
+			.post(callURL(restURL))
+			.then()
+			.statusCode(201);
 	}
 
 	protected void assertDelete(String restURL) {
 		try {
 			start()
-					.delete(callURL(restURL))
-					.then()
-					.statusCode(204);
+				.delete(callURL(restURL))
+				.then()
+				.statusCode(204);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	protected void assertUploadBinary(String restURL, String fileName) {
+		given()
+			.multiPart(new File(fileName))
+			.then()
+			.statusCode(204);
 	}
 }

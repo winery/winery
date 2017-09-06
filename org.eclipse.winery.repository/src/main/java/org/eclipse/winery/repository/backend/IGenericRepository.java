@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -165,6 +166,19 @@ interface IGenericRepository extends IWineryRepositoryCommon {
 	 * @return empty set if no ids are available
 	 */
 	<T extends TOSCAComponentId> SortedSet<T> getAllTOSCAComponentIds(Class<T> idClass);
+
+	/**
+	 * Returns all component instances existing in the repository
+	 *
+	 * @return empty set if no ids are available
+	 */
+	default SortedSet<TOSCAComponentId> getAllToscaComponentIds() {
+		return TOSCAComponentId.ALL_TOSCA_COMPONENT_ID_CLASSES
+			.stream()
+			.flatMap(idClass -> this.getAllTOSCAComponentIds(idClass).stream())
+			.collect(Collectors.toCollection(() -> new TreeSet<>()));
+	}
+
 
 	/**
 	 * Returns the set of <em>all</em> ids nested in the given reference

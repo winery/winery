@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2013 Rene Trefft.
+ * Copyright (c) 2017 University of Stuttgart
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *    Rene Trefft - initial API and implementation and/or initial documentation
+ *    Oliver Kopp - unified LOGGER name
  *******************************************************************************/
 package org.eclipse.winery.model.csar.toscametafile;
 
@@ -36,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TOSCAMetaFileParser {
 
-	final private static Logger LOG = LoggerFactory.getLogger(TOSCAMetaFileParser.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TOSCAMetaFileParser.class);
 
 
 	/**
@@ -62,7 +64,7 @@ public class TOSCAMetaFileParser {
 
 			parser = new RecoveringManifestParser();
 			reader = new FileReader(toscaMetaFile.toFile());
-			TOSCAMetaFileParser.LOG.debug("Parsing TOSCA meta file \"{}\"...", toscaMetaFile.getFileName().toString());
+			TOSCAMetaFileParser.LOGGER.debug("Parsing TOSCA meta file \"{}\"...", toscaMetaFile.getFileName().toString());
 			manifestContent = parser.parse(reader);
 			reader.close();
 
@@ -75,22 +77,22 @@ public class TOSCAMetaFileParser {
 			numErrors += this.validateFileBlocks(manifestContent);
 
 			if (numErrors == 0) {
-				TOSCAMetaFileParser.LOG.debug("Parsing TOSCA meta file \"{}\" completed without errors. TOSCA meta file is valid.", toscaMetaFile.getFileName().toString());
+				TOSCAMetaFileParser.LOGGER.debug("Parsing TOSCA meta file \"{}\" completed without errors. TOSCA meta file is valid.", toscaMetaFile.getFileName().toString());
 				toscaMetaFileContent = new TOSCAMetaFile(manifestContent);
 			} else {
-				TOSCAMetaFileParser.LOG.error("Parsing TOSCA meta file \"{}\" failed - {} error(s) occured. TOSCA meta file is invalid.", toscaMetaFile.getFileName().toString(), numErrors);
+				TOSCAMetaFileParser.LOGGER.error("Parsing TOSCA meta file \"{}\" failed - {} error(s) occured. TOSCA meta file is invalid.", toscaMetaFile.getFileName().toString(), numErrors);
 			}
 
 		} catch (FileNotFoundException exc) {
-			TOSCAMetaFileParser.LOG.error("\"{}\" doesn't exist or is not a file.", toscaMetaFile, exc);
+			TOSCAMetaFileParser.LOGGER.error("\"{}\" doesn't exist or is not a file.", toscaMetaFile, exc);
 		} catch (IOException exc) {
-			TOSCAMetaFileParser.LOG.error("An IO Exception occured.", exc);
+			TOSCAMetaFileParser.LOGGER.error("An IO Exception occured.", exc);
 		} finally {
 			if (reader != null) {
 				try {
 					reader.close();
 				} catch (IOException exc) {
-					TOSCAMetaFileParser.LOG.warn("An IOException occured.", exc);
+					TOSCAMetaFileParser.LOGGER.warn("An IOException occured.", exc);
 				}
 			}
 		}
@@ -247,7 +249,7 @@ public class TOSCAMetaFileParser {
 	 * @param blockNr
 	 */
 	private void logAttrMissing(String attributeName, int blockNr) {
-		TOSCAMetaFileParser.LOG.warn("Required attribute {} in block {} is missing.", attributeName, blockNr);
+		TOSCAMetaFileParser.LOGGER.warn("Required attribute {} in block {} is missing.", attributeName, blockNr);
 	}
 
 	/**
@@ -260,7 +262,7 @@ public class TOSCAMetaFileParser {
 	 * @param correctValue
 	 */
 	private void logAttrWrongVal(String attributeName, int blockNr, String correctValue) {
-		TOSCAMetaFileParser.LOG.warn("Attribute {} in block {} has an invalid value. Must be {}.", attributeName, blockNr, correctValue);
+		TOSCAMetaFileParser.LOGGER.warn("Attribute {} in block {} has an invalid value. Must be {}.", attributeName, blockNr, correctValue);
 	}
 
 	/**
@@ -271,7 +273,7 @@ public class TOSCAMetaFileParser {
 	 * @param blockNr
 	 */
 	private void logAttrWrongVal(String attributeName, int blockNr) {
-		TOSCAMetaFileParser.LOG.warn("Attribute {} in block {} has an invalid value.", attributeName, blockNr);
+		TOSCAMetaFileParser.LOGGER.warn("Attribute {} in block {} has an invalid value.", attributeName, blockNr);
 	}
 
 	/**
@@ -282,7 +284,7 @@ public class TOSCAMetaFileParser {
 	 * @param blockNr
 	 */
 	private void logAttrValEmpty(String attributeName, int blockNr) {
-		TOSCAMetaFileParser.LOG.warn("Attribute {} in block {} has a empty value.", attributeName, blockNr);
+		TOSCAMetaFileParser.LOGGER.warn("Attribute {} in block {} has a empty value.", attributeName, blockNr);
 	}
 
 	/**
@@ -291,7 +293,7 @@ public class TOSCAMetaFileParser {
 	 * @param problem
 	 */
 	private void logManifestProblem(ManifestProblem problem) {
-		TOSCAMetaFileParser.LOG.warn(problem.toString());
+		TOSCAMetaFileParser.LOGGER.warn(problem.toString());
 	}
 
 }

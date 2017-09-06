@@ -79,7 +79,7 @@ public class SelfServicePortalResource {
 	}
 
 	@GET
-	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_XML})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_XML, MediaType.APPLICATION_XML})
 	public Application getData() {
 		return SelfServiceMetaDataUtils.getApplication(this.id);
 	}

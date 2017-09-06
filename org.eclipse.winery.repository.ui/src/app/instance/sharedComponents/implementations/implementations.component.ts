@@ -19,6 +19,7 @@ import { ImplementationAPIData } from './implementationAPIData';
 import { ImplementationService } from './implementations.service';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 import { ModalDirective } from 'ngx-bootstrap';
+import { Utils } from '../../../wineryUtils/utils';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -112,6 +113,13 @@ export class ImplementationsComponent implements OnInit {
 
     private handleData(impl: ImplementationAPIData[]) {
         this.implementationData = impl;
+        this.implementationData = this.implementationData.map(item => {
+            const url = '#/' + Utils.getToscaOfTypeOrImplementation(this.sharedData.toscaComponent.toscaType)
+                + '/' + encodeURIComponent(encodeURIComponent(item.namespace))
+                + '/' + item.localname;
+            item.localname = '<a href="' + url + '">' + item.localname + '</a>';
+            return item;
+        });
         this.loading = false;
     }
 

@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.eclipse.jdt.annotation.NonNull;
 
 
@@ -53,7 +55,8 @@ import org.eclipse.jdt.annotation.NonNull;
  *           &lt;complexType>
  *             &lt;complexContent>
  *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;attribute name="relationshipRef" use="required" type="{http://www.w3.org/2001/XMLSchema}IDREF" />
+ *                 &lt;attribute name="relationshipRef" use="required" type="{http://www.w3.org/2001/XMLSchema}IDREF"
+ * />
  *                 &lt;attribute name="interfaceName" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
  *                 &lt;attribute name="operationName" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *               &lt;/restriction>
@@ -78,10 +81,11 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExportedOperation", propOrder = {
-        "nodeOperation",
-        "relationshipOperation",
-        "plan"
+    "nodeOperation",
+    "relationshipOperation",
+    "plan"
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TExportedOperation {
 
     @XmlElement(name = "NodeOperation")
@@ -101,9 +105,9 @@ public class TExportedOperation {
         if (!(o instanceof TExportedOperation)) return false;
         TExportedOperation that = (TExportedOperation) o;
         return Objects.equals(nodeOperation, that.nodeOperation) &&
-                Objects.equals(relationshipOperation, that.relationshipOperation) &&
-                Objects.equals(plan, that.plan) &&
-                Objects.equals(name, that.name);
+            Objects.equals(relationshipOperation, that.relationshipOperation) &&
+            Objects.equals(plan, that.plan) &&
+            Objects.equals(name, that.name);
     }
 
     @Override
@@ -207,15 +211,19 @@ public class TExportedOperation {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NodeOperation {
 
         @XmlAttribute(name = "nodeRef", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
+        @JsonIdentityReference(alwaysAsId = true)
         protected Object nodeRef;
+
         @XmlAttribute(name = "interfaceName", required = true)
         @XmlSchemaType(name = "anyURI")
         protected String interfaceName;
+
         @XmlAttribute(name = "operationName", required = true)
         @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
         @XmlSchemaType(name = "NCName")
@@ -297,11 +305,13 @@ public class TExportedOperation {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Plan {
 
         @XmlAttribute(name = "planRef", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
+        @JsonIdentityReference(alwaysAsId = true)
         protected Object planRef;
 
         /**
@@ -344,15 +354,19 @@ public class TExportedOperation {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RelationshipOperation {
 
         @XmlAttribute(name = "relationshipRef", required = true)
         @XmlIDREF
         @XmlSchemaType(name = "IDREF")
+        @JsonIdentityReference(alwaysAsId = true)
         protected Object relationshipRef;
+
         @XmlAttribute(name = "interfaceName", required = true)
         @XmlSchemaType(name = "anyURI")
         protected String interfaceName;
+
         @XmlAttribute(name = "operationName", required = true)
         @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
         @XmlSchemaType(name = "NCName")

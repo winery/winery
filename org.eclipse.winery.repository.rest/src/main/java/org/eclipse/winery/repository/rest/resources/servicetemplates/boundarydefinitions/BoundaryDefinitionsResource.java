@@ -41,8 +41,8 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydef
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.reqscaps.CapabilitiesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.reqscaps.RequirementsResource;
 
-import org.restdoc.annotations.RestDoc;
-import org.restdoc.annotations.RestDocParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.w3c.dom.Document;
 
 public class BoundaryDefinitionsResource {
@@ -70,7 +70,7 @@ public class BoundaryDefinitionsResource {
 	}
 
 	@PUT
-	@RestDoc(methodDescription = "Replaces the boundary definitions by the information given in the XML")
+	@ApiOperation(value = "Replaces the boundary definitions by the information given in the XML")
 	@Consumes({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
 	public Response setModel(TBoundaryDefinitions boundaryDefinitions) {
 		this.serviceTemplateResource.getServiceTemplate().setBoundaryDefinitions(boundaryDefinitions);
@@ -91,8 +91,8 @@ public class BoundaryDefinitionsResource {
 	@Path("properties/")
 	@PUT
 	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
-	@RestDoc(resourceDescription = "Models the user-defined properties. The property mappings go into a separate resource propertymappings.")
-	public Response putProperties(@RestDocParam(description = "Stored properties. The XSD allows a single element only. Therefore, we go for the contained element") Document doc) {
+	@ApiOperation(value = "saves properties of boundary definitions", notes = "Models the user-defined properties. The property mappings go into a separate resource propertymappings.")
+	public Response putProperties(@ApiParam(value = "Stored properties. The XSD allows a single element only. Therefore, we go for the contained element") Document doc) {
 		org.eclipse.winery.model.tosca.TBoundaryDefinitions.Properties properties = ModelUtilities.getProperties(this.boundaryDefinitions);
 		properties.setAny(doc.getDocumentElement());
 		return RestUtils.persist(this.serviceTemplateResource);

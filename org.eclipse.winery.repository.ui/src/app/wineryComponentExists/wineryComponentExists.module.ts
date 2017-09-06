@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { ExistService } from '../wineryUtils/existService';
 import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
+import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 
 @NgModule({
     imports: [
@@ -24,6 +25,7 @@ import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/winery
         FormsModule,
         CommonModule,
         WineryNamespaceSelectorModule,
+        WineryPipesModule,
     ],
     exports: [WineryComponentExistsComponent],
     declarations: [WineryComponentExistsComponent],

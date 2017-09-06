@@ -19,7 +19,7 @@ public class GitBasedRepositoryConfiguration extends FileBasedRepositoryConfigur
 	private boolean autoCommit;
 
 	public GitBasedRepositoryConfiguration(boolean autoCommit, FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
-		super(Objects.requireNonNull(fileBasedRepositoryConfiguration).getRepositoryPath());
+		super(Objects.requireNonNull(fileBasedRepositoryConfiguration));
 		this.autoCommit = autoCommit;
 	}
 

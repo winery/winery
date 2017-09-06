@@ -34,7 +34,7 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemp
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
-import org.restdoc.annotations.RestDoc;
+import io.swagger.annotations.ApiOperation;
 
 public class PlanFileResource {
 
@@ -60,7 +60,7 @@ public class PlanFileResource {
 
 	@PUT
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
-	@RestDoc(methodDescription = "Resource currently works for BPMN4TOSCA plans only")
+	@ApiOperation(value = "Resource currently works for BPMN4TOSCA plans only")
 	// @formatter:off
 	public Response onPutFile(
 		@FormDataParam("file") InputStream uploadedInputStream,

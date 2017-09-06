@@ -9,10 +9,14 @@
  * Contributors:
  *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
  */
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { EditXMLService } from './editXML.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
+import { InstanceService } from '../../instance.service';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { Router } from '@angular/router';
+import { isNullOrUndefined } from 'util';
 
 declare var requirejs: any;
 
@@ -37,6 +41,8 @@ export class EditXMLComponent implements OnInit {
     height = 500;
 
     constructor(private service: EditXMLService,
+                private sharedData: InstanceService,
+                private router: Router,
                 private notify: WineryNotificationService) {
     }
 
@@ -72,7 +78,16 @@ export class EditXMLComponent implements OnInit {
 
     private handleXmlData(xml: string) {
         this.loading = false;
-        this.xmlData = xml;
+        if (!isNullOrUndefined(xml)
+            && xml.length === 0
+            && this.sharedData.toscaComponent.toscaType === ToscaTypes.ServiceTemplate
+            && this.router.url.endsWith('properties')) {
+            this.xmlData = `<tosca:properties xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12">
+
+</tosca:properties>`;
+        } else {
+            this.xmlData = xml;
+        }
     }
 
     private handleError(error: any): void {

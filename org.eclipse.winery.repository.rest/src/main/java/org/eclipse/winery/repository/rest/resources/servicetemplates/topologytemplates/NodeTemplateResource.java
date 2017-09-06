@@ -33,7 +33,7 @@ import org.eclipse.winery.repository.rest.resources.artifacts.DeploymentArtifact
 import org.eclipse.winery.repository.rest.resources.entitytemplates.TEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
-import org.restdoc.annotations.RestDoc;
+import io.swagger.annotations.ApiOperation;
 
 public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate> implements INodeTemplateResourceOrNodeTypeImplementationResource {
 
@@ -50,7 +50,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 	}
 
 	@GET
-	@RestDoc(methodDescription = "* The following methods are currently *not* used by the topology modeler.<br />" + "The modeler is using the repository client to interact with the repository")
+	@ApiOperation(value = "* The following methods are currently *not* used by the topology modeler.<br />" + "The modeler is using the repository client to interact with the repository")
 	@Path("minInstances")
 	public String getMinInstances() {
 		return Integer.toString(this.o.getMinInstances());
@@ -87,7 +87,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 
 	@Path("x")
 	@GET
-	@RestDoc(methodDescription = "@return the x coordinate of the node template")
+	@ApiOperation(value = "@return the x coordinate of the node template")
 	public String getX() {
 		Map<QName, String> otherAttributes = this.o.getOtherAttributes();
 		return otherAttributes.get(this.qnameX);
@@ -102,7 +102,7 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 
 	@Path("y")
 	@GET
-	@RestDoc(methodDescription = "@return the y coordinate of the node template")
+	@ApiOperation(value = "@return the y coordinate of the node template")
 	public String getY() {
 		Map<QName, String> otherAttributes = this.o.getOtherAttributes();
 		return otherAttributes.get(this.qnameY);

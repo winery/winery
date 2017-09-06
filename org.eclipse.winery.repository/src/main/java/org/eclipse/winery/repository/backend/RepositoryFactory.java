@@ -89,11 +89,15 @@ public class RepositoryFactory {
 	}
 
 	/**
-	 * Generates a new IRepository working on the specifed path. No git support, just plain file system
+	 * Generates a new IRepository working on the specified path. No git support, just plain file system
 	 */
-	public static IRepository getRepositoryForPath(Path path) {
+	public static IRepository getRepository(Path path) {
 		Objects.requireNonNull(path);
 		FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration = new FileBasedRepositoryConfiguration(path);
-		return new FilebasedRepository(fileBasedRepositoryConfiguration);
+		return getRepository(fileBasedRepositoryConfiguration);
+	}
+
+	public static IRepository getRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
+		return new FilebasedRepository(Objects.requireNonNull(fileBasedRepositoryConfiguration));
 	}
 }

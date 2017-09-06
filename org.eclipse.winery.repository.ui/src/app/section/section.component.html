@@ -20,6 +20,9 @@
         <input type="text" id="searchBox" [(ngModel)]="filterString">
     </div>
     <div id="sectionsOverviewShadow">
+        <div id="gcprightcolumn"></div>
+        <div id="overviewtopshadow"></div>
+        <div id="overviewbottomshadow"></div>
     </div>
     <div class="floatSection" id="sectionsComponentContainer">
         <winery-entity-container
@@ -42,7 +45,7 @@
         </button>
     </div>
     <div id="sectionsFooterContainer">
-        <label for="selectItemsPerPage">Items per Page:</label>
+        <label id="sectionPaginationLabel" for="selectItemsPerPage">Items per Page:</label>
         <select id="selectItemsPerPage" [(ngModel)]="itemsPerPage">
             <option value="10">10</option>
             <option value="25">25</option>
@@ -101,7 +104,7 @@
     <winery-modal-header [title]="'Add CSAR'"></winery-modal-header>
     <winery-modal-body>
         <winery-uploader [modalRef]="addCsarModal" [uploadUrl]="fileUploadUrl"
-                         (onSuccess)="getSectionsData();"></winery-uploader>
+                         (onSuccess)="getSectionsData()"></winery-uploader>
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="addCsarModal.hide()">Cancel</button>

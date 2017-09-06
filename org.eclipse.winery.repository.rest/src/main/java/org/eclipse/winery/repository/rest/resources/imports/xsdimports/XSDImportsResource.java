@@ -24,7 +24,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
-import org.restdoc.annotations.RestDoc;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * Manages all imports of type XML Schema Definition <br />
@@ -36,7 +36,7 @@ public class XSDImportsResource extends AbstractComponentsWithoutTypeReferenceRe
 
 	@Path("{namespace}/")
 	@GET
-	@RestDoc(methodDescription = "Returns all available local names of defined elements in this namespace")
+	@ApiOperation(value = "Returns all available local names of defined elements in this namespace")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<String> getAllElementLocalNames(
 			@PathParam("namespace") String nsString,
