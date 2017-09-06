@@ -20,12 +20,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ServiceTemplateResourceTest extends AbstractResourceTest {
-	
+
 	@Test
 	public void addServiceTemplate() throws Exception {
 		this.setRevisionTo("337119ea2e694e70b994bcb3d97295856c0ab0f6");
 		this.assertPost("servicetemplates/", "entitytypes/servicetemplates/baobab_create_servicetemplate.json");
-		this.assertGet("servicetemplates/","entitytypes/servicetemplates/baobab_inital.json");
+		this.assertGet("servicetemplates/", "entitytypes/servicetemplates/baobab_inital.json");
 	}
 
 	@Test
@@ -38,13 +38,19 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
 	@Test
 	public void getServicetemplate() throws Exception {
 		this.setRevisionTo("a5fd2da6845e9599138b7c20c1fd9d727c1df66f");
-		this.assertGet("servicetemplates/","entitytypes/servicetemplates/baobab_inital.json");
+		this.assertGet("servicetemplates/", "entitytypes/servicetemplates/baobab_inital.json");
+	}
+
+	@Test
+	public void getServiceTemplateWithProperties() throws Exception {
+		this.setRevisionTo("3465576f5b46079bb26f5c8e93663424440421a0");
+		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/topologytemplate", "entitytypes/servicetemplates/DriverInjection.json");
 	}
 
 	@Test
 	public void updateTopology() throws Exception {
 		this.setRevisionTo("a5fd2da6845e9599138b7c20c1fd9d727c1df66f");
-		this.assertGet("servicetemplates/","entitytypes/servicetemplates/baobab_inital.json");
+		this.assertGet("servicetemplates/", "entitytypes/servicetemplates/baobab_inital.json");
 	}
 
 	@Test
@@ -85,5 +91,4 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
 		this.setRevisionTo("c25aa724201824fce6eddcc7c35a666c6e015880");
 		this.assertPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/injector/replace", "servicetemplates/ServiceTemplateResource-injectNodeTemplates-input-DriverInjectionTest.json");
 	}
-	
 }
