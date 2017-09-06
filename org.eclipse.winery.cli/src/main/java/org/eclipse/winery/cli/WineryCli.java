@@ -97,12 +97,15 @@ public class WineryCli {
 		CSARExporter exporter = new CSARExporter();
 		try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 			SortedSet<TOSCAComponentId> allToscaComponentIds = repository.getAllToscaComponentIds();
-			if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
-				System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
+			System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
+			if (verbosity == Verbosity.NOTHING) {
+				System.out.print("Checking ");
 			}
 			for (TOSCAComponentId id : allToscaComponentIds) {
 				if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
 					System.out.format("Checking %s...\n", id.toReadableString());
+				} else {
+					System.out.print(".");
 				}
 				exporter.writeCSAR(id, os);
 				try (InputStream is = new ByteArrayInputStream(os.toByteArray());
@@ -115,10 +118,19 @@ public class WineryCli {
 					}
 				}
 			}
+			if (verbosity == Verbosity.NOTHING) {
+				System.out.println();
+			}
 		} catch (ArchiveException | JAXBException | IOException e) {
+			if (verbosity == Verbosity.NOTHING) {
+				System.out.println();
+			}
 			LOGGER.debug("Error during checking ZIP", e);
 			return Optional.of(e.getMessage());
 		} catch (RepositoryCorruptException e) {
+			if (verbosity == Verbosity.NOTHING) {
+				System.out.println();
+			}
 			LOGGER.debug("Repository is corrupt", e);
 			return Optional.of(e.getMessage());
 		}
