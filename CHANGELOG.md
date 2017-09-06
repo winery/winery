@@ -17,6 +17,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ### Changed
 
 - Initial support for BPMN4TOSCA implemented using Angular
+- Added initial CLI. Current funtionality: Consistency check of the repository.
 - Rewrote the Backend UI using Angular
 - org.eclipse.winery.model.tosca was extended with builders and some helper classes
 - Fixed wrong output of "CSAR Export mode. Putting XSD into CSAR" if in CSAR export mode
