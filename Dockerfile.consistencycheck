@@ -3,6 +3,7 @@ FROM maven:3-jdk-8 as builder
 WORKDIR /tmp/winery
 COPY . /tmp/winery
 RUN mvn package -pl org.eclipse.winery.cli -am
+RUN chmod u+x /tmp/winery/org.eclipse.winery.cli/target/winery.jar
 
 FROM openjdk:8-jre
 LABEL maintainer "Oliver Kopp <kopp.dev@gmail.com>"

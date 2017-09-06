@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar /usr/local/bin/winery.jar
+java -jar /usr/local/bin/winery.jar "$@"
