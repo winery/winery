@@ -1,0 +1,23 @@
+FROM maven:3-jdk-8 as builder
+
+RUN rm /dev/random && ln -s /dev/urandom /dev/random \
+    && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
+    && apt-get update -qq && apt-get install -qqy \
+        nodejs \
+        unzip \
+    && rm -rf /var/lib/apt/lists/* \
+    && echo '{ "allow_root": true }' > /root/.bowerrc
+
+WORKDIR /tmp/winery
+COPY . /tmp/winery
+RUN mvn package
+RUN unzip /tmp/winery/org.eclipse.winery.repository.rest/target/winery.war -d /opt/winery \
+    && sed -i "sXbpmn4toscamodelerBaseURI=.*Xbpmn4toscamodelerBaseURI=/winery-workflowmodelerX" /opt/winery/WEB-INF/classes/winery.properties \
+    && sed -i "sX#repositoryPath=.*XrepositoryPath=/var/opentosca/repositoryX" /opt/winery/WEB-INF/classes/winery.properties
+
+
+FROM openjdk:8-jre
+LABEL maintainer "Oliver Kopp <kopp.dev@gmail.com>"
+
+COPY --from=builder /tmp/winery/org.eclipse.winery.cli/target/winery.jar /opt/winery
+COPY winery /usr/local/bin

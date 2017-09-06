@@ -1,0 +1,2 @@
+#!/bin/bash
+java -jar /opt/winery/winery.jar

@@ -9,8 +9,14 @@ Find out more about the OpenTOSCA eco system at [www.opentosca.org](http://www.o
 
 ## Running via docker
 
-1. `docker build -t winery .`. In case, there are issues, you can also try `docker build --no-cache -t winery .`
+1. `docker build -t winery .`.
+   In case, there are issues, you can also try `docker build --no-cache -t winery Dockerfiles/full`
 2. `docker run -p 9999:8080 winery` to run winery on http://localhost:9999/
+
+## Running CLI via docker
+
+1. `docker build -t winerycli -f Dockerfile.cli .`
+2. `docker run -v ${pwd}:/root/winery-repository -it winerycli`
 
 ## Differences to Eclipse Winery
 
