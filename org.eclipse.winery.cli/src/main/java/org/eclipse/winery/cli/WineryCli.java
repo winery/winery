@@ -45,12 +45,19 @@ public class WineryCli {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WineryCli.class);
 
+	private enum Verbosity {
+		NOTHING,
+		OUTPUT_CURRENT_TOSCA_COMPONENT_ID
+	}
+
 	public static void main(String[] args) throws ParseException {
 		Option repositoryPathOption = new Option("p", "path", true, "use given path as repository path");
+		Option verboseOption = new Option("v", "verbose", false, "be verbose: Output the checked elements");
 		Option helpOption = new Option("h", "help", false, "prints this help");
 
 		Options options = new Options();
 		options.addOption(repositoryPathOption);
+		options.addOption(verboseOption);
 		options.addOption(helpOption);
 		CommandLineParser parser = new DefaultParser();
 		CommandLine line = parser.parse(options, args);
@@ -68,21 +75,35 @@ public class WineryCli {
 			repository = RepositoryFactory.getRepository();
 		}
 		System.out.println("Using repository path " + ((FilebasedRepository) repository).getRepositoryRoot() + "...");
-		Optional<String> error = checkCorruptionUsingCsarExport(repository);
+
+		Verbosity verbosity;
+		if (line.hasOption("v")) {
+			verbosity = Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID;
+		} else {
+			verbosity = Verbosity.NOTHING;
+		}
+
+		Optional<String> error = checkCorruptionUsingCsarExport(repository, verbosity);
 		if (error.isPresent()) {
-			System.out.println("Error in repository found");
+			System.out.println("Error in repository found:");
 			System.out.println(error.get());
 			System.exit(1);
 		} else {
-			System.out.println("No error exists");
+			System.out.println("No errors exist.");
 		}
 	}
 
-	private static Optional<String> checkCorruptionUsingCsarExport(IRepository repository) {
+	private static Optional<String> checkCorruptionUsingCsarExport(IRepository repository, Verbosity verbosity) {
 		CSARExporter exporter = new CSARExporter();
 		try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 			SortedSet<TOSCAComponentId> allToscaComponentIds = repository.getAllToscaComponentIds();
+			if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
+				System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
+			}
 			for (TOSCAComponentId id : allToscaComponentIds) {
+				if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
+					System.out.format("Checking %s...\n", id.toReadableString());
+				}
 				exporter.writeCSAR(id, os);
 				try (InputStream is = new ByteArrayInputStream(os.toByteArray());
 					 ZipInputStream zis = new ZipInputStream(is)) {
