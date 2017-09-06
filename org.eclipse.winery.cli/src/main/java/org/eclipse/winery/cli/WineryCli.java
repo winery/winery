@@ -85,7 +85,7 @@ public class WineryCli {
 		if (line.hasOption("v")) {
 			verbosity = EnumSet.of(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS, Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID, Verbosity.OUTPUT_ERROS);
 		} else {
-			verbosity = EnumSet.of(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS, Verbosity.OUTPUT_ERROS);
+			verbosity = EnumSet.of(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS);
 		}
 
 		List<String> errors = checkCorruptionUsingCsarExport(repository, verbosity);
@@ -95,6 +95,7 @@ public class WineryCli {
 			System.out.println("No errors exist.");
 		} else {
 			System.out.println("Errors in repository found:");
+			System.out.println();
 			for (String error: errors) {
 				System.out.println(error);
 			}
@@ -173,10 +174,11 @@ public class WineryCli {
 				LOGGER.debug("Repository is corrupt", e);
 				final String error = "Corrupt: " + e.getMessage();
 				if (verbosity.contains(Verbosity.OUTPUT_ERROS)) {
-					if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
-						System.out.println();
+					if (verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
+						System.out.println(error);
+					} else {
+						System.out.println(id.toReadableString() + ": " + error);
 					}
-					System.out.println(error);
 				}
 				res.add(id.toReadableString() + ": " + error);
 			}
