@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
@@ -105,6 +106,12 @@ public abstract class TOSCAComponentId extends GenericId {
 	public String toString() {
 		QName qn = this.getQName();
 		return this.getClass().toString() + " / " + qn.toString();
+	}
+
+	public String toReadableString() {
+		QName qn = this.getQName();
+		String name = Util.getEverythingBetweenTheLastDotAndBeforeId(this.getClass());
+		return String.format("%1$s %3$s in namespace %2$s", name, qn.getNamespaceURI(), qn.getLocalPart());
 	}
 
 	@Override
