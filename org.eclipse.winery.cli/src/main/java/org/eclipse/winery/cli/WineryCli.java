@@ -33,6 +33,7 @@ import org.eclipse.winery.repository.export.CSARExporter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -45,20 +46,24 @@ public class WineryCli {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WineryCli.class);
 
 	public static void main(String[] args) throws ParseException {
-		Option logfile = Option.builder()
-			.argName("file")
-			.longOpt("file")
-			.hasArg()
-			.desc("use given file for log")
-			.build();
+		Option repositoryPathOption = new Option("p", "path", true, "use given path as repository path");
+		Option helpOption = new Option("h", "help", false, "prints this help");
+
 		Options options = new Options();
-		options.addOption(logfile);
+		options.addOption(repositoryPathOption);
+		options.addOption(helpOption);
 		CommandLineParser parser = new DefaultParser();
 		CommandLine line = parser.parse(options, args);
 
+		if (line.hasOption("h")) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp("winery", options);
+			System.exit(0);
+		}
+
 		IRepository repository;
-		if (line.hasOption(logfile.getArgName())) {
-			repository = RepositoryFactory.getRepository(Paths.get(line.getOptionValue(logfile.getArgName())));
+		if (line.hasOption("p")) {
+			repository = RepositoryFactory.getRepository(Paths.get(line.getOptionValue("p")));
 		} else {
 			repository = RepositoryFactory.getRepository();
 		}
