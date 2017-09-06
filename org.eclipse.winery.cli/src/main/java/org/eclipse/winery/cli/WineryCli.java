@@ -11,11 +11,13 @@
  *******************************************************************************/
 package org.eclipse.winery.cli;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.zip.ZipEntry;
@@ -95,18 +97,35 @@ public class WineryCli {
 
 	private static Optional<String> checkCorruptionUsingCsarExport(IRepository repository, Verbosity verbosity) {
 		CSARExporter exporter = new CSARExporter();
-		try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-			SortedSet<TOSCAComponentId> allToscaComponentIds = repository.getAllToscaComponentIds();
+		SortedSet<TOSCAComponentId> allToscaComponentIds = repository.getAllToscaComponentIds();
+		System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
+		if (verbosity == Verbosity.NOTHING) {
+			System.out.print("Checking ");
+		}
+		final Path tempCsar;
+		try {
+			tempCsar = Files.createTempFile("Export", ".csar");
+		} catch (IOException e) {
+			LOGGER.debug("Could not create temp CSAR file", e);
+			return Optional.of("Could not create temp CSAR file");
+		}
+		for (TOSCAComponentId id : allToscaComponentIds) {
 			if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
-				System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
+				System.out.format("Checking %s...\n", id.toReadableString());
+			} else {
+				System.out.print(".");
 			}
-			for (TOSCAComponentId id : allToscaComponentIds) {
-				if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
-					System.out.format("Checking %s...\n", id.toReadableString());
-				}
-				exporter.writeCSAR(id, os);
-				try (InputStream is = new ByteArrayInputStream(os.toByteArray());
-					 ZipInputStream zis = new ZipInputStream(is)) {
+			final OutputStream outputStream;
+			try {
+				 outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+			} catch (IOException e) {
+				LOGGER.debug("Could not write to temp CSAR file", e);
+				return Optional.of("Could not write to temp CSAR file");
+			}
+			try {
+				exporter.writeCSAR(id, outputStream);
+				try (InputStream inputStream = Files.newInputStream(tempCsar);
+					 ZipInputStream zis = new ZipInputStream(inputStream)) {
 					ZipEntry entry;
 					while ((entry = zis.getNextEntry()) != null) {
 						if (entry.getName() == null) {
@@ -114,15 +133,23 @@ public class WineryCli {
 						}
 					}
 				}
+			} catch (ArchiveException | JAXBException | IOException e) {
+				if (verbosity == Verbosity.NOTHING) {
+					System.out.println();
+				}
+				LOGGER.debug("Error during checking ZIP", e);
+				return Optional.of(e.getMessage());
+			} catch (RepositoryCorruptException e) {
+				if (verbosity == Verbosity.NOTHING) {
+					System.out.println();
+				}
+				LOGGER.debug("Repository is corrupt", e);
+				return Optional.of(e.getMessage());
 			}
-		} catch (ArchiveException | JAXBException | IOException e) {
-			LOGGER.debug("Error during checking ZIP", e);
-			return Optional.of(e.getMessage());
-		} catch (RepositoryCorruptException e) {
-			LOGGER.debug("Repository is corrupt", e);
-			return Optional.of(e.getMessage());
 		}
-
+		if (verbosity == Verbosity.NOTHING) {
+			System.out.println();
+		}
 		// no error during checking
 		return Optional.empty();
 	}
