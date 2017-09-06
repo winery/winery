@@ -98,6 +98,9 @@ public class RepositoryFactory {
 	}
 
 	public static IRepository getRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
+		// FIXME: currently, the CSAR export does not reuse the repository instance returned here. Thus, we have to reconfigure the repository.
+		// This should be fixed by always passing IRepository when working with the repository
+		reconfigure(fileBasedRepositoryConfiguration);
 		return new FilebasedRepository(Objects.requireNonNull(fileBasedRepositoryConfiguration));
 	}
 }

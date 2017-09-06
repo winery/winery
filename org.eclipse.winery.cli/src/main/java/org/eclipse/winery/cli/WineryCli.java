@@ -18,7 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -48,8 +50,9 @@ public class WineryCli {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WineryCli.class);
 
 	private enum Verbosity {
-		NOTHING,
-		OUTPUT_CURRENT_TOSCA_COMPONENT_ID
+		OUTPUT_NUMBER_OF_TOSCA_COMPONENTS,
+		OUTPUT_CURRENT_TOSCA_COMPONENT_ID,
+		OUTPUT_ERROS
 	}
 
 	public static void main(String[] args) throws ParseException {
@@ -78,28 +81,35 @@ public class WineryCli {
 		}
 		System.out.println("Using repository path " + ((FilebasedRepository) repository).getRepositoryRoot() + "...");
 
-		Verbosity verbosity;
+		EnumSet<Verbosity> verbosity;
 		if (line.hasOption("v")) {
-			verbosity = Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID;
+			verbosity = EnumSet.of(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS, Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID, Verbosity.OUTPUT_ERROS);
 		} else {
-			verbosity = Verbosity.NOTHING;
+			verbosity = EnumSet.of(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS, Verbosity.OUTPUT_ERROS);
 		}
 
-		Optional<String> error = checkCorruptionUsingCsarExport(repository, verbosity);
-		if (error.isPresent()) {
-			System.out.println("Error in repository found:");
-			System.out.println(error.get());
-			System.exit(1);
-		} else {
+		List<String> errors = checkCorruptionUsingCsarExport(repository, verbosity);
+
+		System.out.println();
+		if (errors.isEmpty()) {
 			System.out.println("No errors exist.");
+		} else {
+			System.out.println("Errors in repository found:");
+			for (String error: errors) {
+				System.out.println(error);
+			}
+			System.exit(1);
 		}
 	}
 
-	private static Optional<String> checkCorruptionUsingCsarExport(IRepository repository, Verbosity verbosity) {
+	private static List<String> checkCorruptionUsingCsarExport(IRepository repository, EnumSet<Verbosity> verbosity) {
+		List<String> res = new ArrayList<>();
 		CSARExporter exporter = new CSARExporter();
 		SortedSet<TOSCAComponentId> allToscaComponentIds = repository.getAllToscaComponentIds();
-		System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
-		if (verbosity == Verbosity.NOTHING) {
+		if (verbosity.contains(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS)) {
+			System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
+		}
+		if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
 			System.out.print("Checking ");
 		}
 		final Path tempCsar;
@@ -107,10 +117,11 @@ public class WineryCli {
 			tempCsar = Files.createTempFile("Export", ".csar");
 		} catch (IOException e) {
 			LOGGER.debug("Could not create temp CSAR file", e);
-			return Optional.of("Could not create temp CSAR file");
+			res.add("Could not create temp CSAR file");
+			return res;
 		}
 		for (TOSCAComponentId id : allToscaComponentIds) {
-			if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
+			if (verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
 				System.out.format("Checking %s...\n", id.toReadableString());
 			} else {
 				System.out.print(".");
@@ -119,8 +130,16 @@ public class WineryCli {
 			try {
 				 outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 			} catch (IOException e) {
-				LOGGER.debug("Could not write to temp CSAR file", e);
-				return Optional.of("Could not write to temp CSAR file");
+				final String error = "Could not write to temp CSAR file";
+				LOGGER.debug(error, e);
+				res.add(error);
+				if (verbosity.contains(Verbosity.OUTPUT_ERROS)) {
+					if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
+						System.out.println();
+					}
+					System.out.println(error);
+				}
+				continue;
 			}
 			try {
 				exporter.writeCSAR(id, outputStream);
@@ -129,28 +148,44 @@ public class WineryCli {
 					ZipEntry entry;
 					while ((entry = zis.getNextEntry()) != null) {
 						if (entry.getName() == null) {
-							return Optional.of("Empty filename in zip file");
+							final String error = "Empty filename in zip file";
+							if (verbosity.contains(Verbosity.OUTPUT_ERROS)) {
+								if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
+									System.out.println();
+								}
+								System.out.println(error);
+							}
+							res.add(id.toReadableString() + ": " + error);
 						}
 					}
 				}
 			} catch (ArchiveException | JAXBException | IOException e) {
-				if (verbosity == Verbosity.NOTHING) {
-					System.out.println();
-				}
 				LOGGER.debug("Error during checking ZIP", e);
-				return Optional.of(e.getMessage());
-			} catch (RepositoryCorruptException e) {
-				if (verbosity == Verbosity.NOTHING) {
-					System.out.println();
+				final String error = "Invalid zip file";
+				if (verbosity.contains(Verbosity.OUTPUT_ERROS)) {
+					if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
+						System.out.println();
+					}
+					System.out.println(error);
 				}
+				res.add(id.toReadableString() + ": " + error);
+			} catch (RepositoryCorruptException e) {
 				LOGGER.debug("Repository is corrupt", e);
-				return Optional.of(e.getMessage());
+				final String error = "Corrupt: " + e.getMessage();
+				if (verbosity.contains(Verbosity.OUTPUT_ERROS)) {
+					if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
+						System.out.println();
+					}
+					System.out.println(error);
+				}
+				res.add(id.toReadableString() + ": " + error);
 			}
 		}
-		if (verbosity == Verbosity.NOTHING) {
-			System.out.println();
+		if (verbosity.contains(Verbosity.OUTPUT_ERROS)) {
+			if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
+				System.out.println();
+			}
 		}
-		// no error during checking
-		return Optional.empty();
+		return res;
 	}
 }
