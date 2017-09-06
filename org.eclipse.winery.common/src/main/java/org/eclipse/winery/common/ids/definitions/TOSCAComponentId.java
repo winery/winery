@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.GenericId;
@@ -35,6 +38,20 @@ import org.eclipse.winery.common.ids.XMLId;
  */
 public abstract class TOSCAComponentId extends GenericId {
 
+	public static final List<Class<? extends TOSCAComponentId>> ALL_TOSCA_COMPONENT_ID_CLASSES = Arrays.asList(
+		ArtifactTemplateId.class,
+		ArtifactTypeId.class,
+		CapabilityTypeId.class,
+		NodeTypeId.class,
+		NodeTypeImplementationId.class,
+		PolicyTemplateId.class,
+		PolicyTypeId.class,
+		RelationshipTypeId.class,
+		RelationshipTypeImplementationId.class,
+		RequirementTypeId.class,
+		ServiceTemplateId.class
+	);
+
 	private final Namespace namespace;
 
 
@@ -44,13 +61,11 @@ public abstract class TOSCAComponentId extends GenericId {
 	}
 
 	/**
-	 * Creates a new id based on strings. This constructor is required for
-	 * {@link org.eclipse.winery.repository.resources.AbstractComponentsResource}
+	 * Creates a new id based on strings. This constructor is required for {@link org.eclipse.winery.repository.resources.AbstractComponentsResource}
 	 *
-	 * @param ns the namespace to be used
-	 * @param id the id to be used
-	 * @param URLencoded true: both Strings are URLencoded, false: both Strings
-	 *            are not URLencoded
+	 * @param ns         the namespace to be used
+	 * @param id         the id to be used
+	 * @param URLencoded true: both Strings are URLencoded, false: both Strings are not URLencoded
 	 */
 	public TOSCAComponentId(String ns, String id, boolean URLencoded) {
 		this(new Namespace(ns, URLencoded), new XMLId(id, URLencoded));

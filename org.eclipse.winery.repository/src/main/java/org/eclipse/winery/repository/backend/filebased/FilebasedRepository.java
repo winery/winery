@@ -35,7 +35,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -52,17 +51,6 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.elements.TOSCAElementId;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -114,7 +102,12 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	 */
 	public FilebasedRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
 		Objects.requireNonNull(fileBasedRepositoryConfiguration);
-		this.repositoryRoot = this.determineRepositoryPath(fileBasedRepositoryConfiguration.getRepositoryPath());
+		if (fileBasedRepositoryConfiguration.getRepositoryPath().isPresent()) {
+			this.repositoryRoot = fileBasedRepositoryConfiguration.getRepositoryPath().get();
+			this.createRepositoryPath(this.repositoryRoot);
+		} else {
+			this.repositoryRoot = this.determineAndCreateRepositoryPath();
+		}
 		this.fileSystem = this.repositoryRoot.getFileSystem();
 		this.provider = this.fileSystem.provider();
 		LOGGER.debug("Repository root: {}", this.repositoryRoot);
@@ -122,6 +115,13 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
 	private Path makeAbsolute(Path relativePath) {
 		return this.repositoryRoot.resolve(relativePath);
+	}
+
+	/**
+	 * @return the currently configured repository root
+	 */
+	public Path getRepositoryRoot() {
+		return repositoryRoot;
 	}
 
 	@Override
@@ -148,27 +148,28 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		return this.id2AbsolutePath(ref.getParent()).resolve(ref.getFileName());
 	}
 
-	protected Path determineRepositoryPath(final Path configuredRepositoryPath) {
+	protected Path determineAndCreateRepositoryPath() {
 		Path repositoryPath;
-		if (configuredRepositoryPath == null) {
-			if (SystemUtils.IS_OS_WINDOWS) {
-				if (Files.exists(Constants.GLOBAL_REPO_PATH_WINDOWS)) {
-					repositoryPath = Constants.GLOBAL_REPO_PATH_WINDOWS;
-				} else {
-					repositoryPath = this.createDefaultRepositoryPath();
-				}
+		if (SystemUtils.IS_OS_WINDOWS) {
+			if (Files.exists(Constants.GLOBAL_REPO_PATH_WINDOWS)) {
+				repositoryPath = Constants.GLOBAL_REPO_PATH_WINDOWS;
 			} else {
 				repositoryPath = this.createDefaultRepositoryPath();
 			}
 		} else {
-			try {
-				org.apache.commons.io.FileUtils.forceMkdir(configuredRepositoryPath.toFile());
-			} catch (IOException e) {
-				FilebasedRepository.LOGGER.error("Could not create repository directory", e);
-			}
-			repositoryPath = configuredRepositoryPath;
+			repositoryPath = this.createDefaultRepositoryPath();
 		}
 		return repositoryPath;
+	}
+
+	protected Path createRepositoryPath(final Path configuredRepositoryPath) {
+		Objects.requireNonNull(configuredRepositoryPath);
+		try {
+			org.apache.commons.io.FileUtils.forceMkdir(configuredRepositoryPath.toFile());
+		} catch (IOException e) {
+			FilebasedRepository.LOGGER.error("Could not create repository directory", e);
+		}
+		return configuredRepositoryPath;
 	}
 
 	public static File getDefaultRepositoryFilePath() {
@@ -373,9 +374,9 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 						try {
 							id = constructor.newInstance(ns, xmlId);
 						} catch (InstantiationException
-								| IllegalAccessException
-								| IllegalArgumentException
-								| InvocationTargetException e) {
+							| IllegalAccessException
+							| IllegalArgumentException
+							| InvocationTargetException e) {
 							FilebasedRepository.LOGGER.debug("Internal error at invocation of id constructor", e);
 							// abort everything, return invalid result
 							return res;
@@ -482,7 +483,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				try {
 					id = constructor.newInstance(ref, xmlId);
 				} catch (InstantiationException | IllegalAccessException
-						| IllegalArgumentException | InvocationTargetException e) {
+					| IllegalArgumentException | InvocationTargetException e) {
 					FilebasedRepository.LOGGER.debug("Internal error at invocation of id constructor", e);
 					// abort everything, return invalid result
 					return res;
@@ -496,28 +497,8 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	}
 
 	@Override
-	// below, toscaComponents is an array, which is used in an iterator
-	// As Java does not allow generic arrays, we have to suppress the warning when fetching an element out of the list
-	@SuppressWarnings("unchecked")
 	public Collection<Namespace> getUsedNamespaces() {
-		// @formatter:off
-		@SuppressWarnings("rawtypes")
-		Collection<Class<? extends TOSCAComponentId>> toscaComponentIds = Arrays.asList(
-				ArtifactTemplateId.class,
-				ArtifactTypeId.class,
-				CapabilityTypeId.class,
-				NodeTypeId.class,
-				NodeTypeImplementationId.class,
-				PolicyTemplateId.class,
-				PolicyTypeId.class,
-				RelationshipTypeId.class,
-				RelationshipTypeImplementationId.class,
-				RequirementTypeId.class,
-				ServiceTemplateId.class
-		);
-		// @formatter:on
-
-		return getNamespaces(toscaComponentIds);
+		return getNamespaces(TOSCAComponentId.ALL_TOSCA_COMPONENT_ID_CLASSES);
 	}
 
 	@Override
