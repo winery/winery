@@ -15,8 +15,8 @@ Find out more about the OpenTOSCA eco system at [www.opentosca.org](http://www.o
 
 ## Running CLI via docker
 
-1. `docker build -t winerycli -f Dockerfile.cli .`
-2. `docker run -v ${pwd}:/root/winery-repository -it winerycli`
+1. `docker build -t winery-consistencycheck -f Dockerfile.consistencycheck .`
+2. `docker run -v ${pwd}:/root/winery-repository -it winery-consistencycheck` to che
 
 ## Differences to Eclipse Winery
 
