@@ -16,7 +16,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.eclipse.winery.repository.rest.resources.TestIds;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xmlunit.matchers.CompareMatcher;
 
@@ -151,9 +150,8 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
-	@Ignore("Test repository corrupt, needs resolving first!")
 	public void baobabGetCsar() throws Exception {
-		this.setRevisionTo("3465576f5b46079bb26f5c8e93663424440421a0");
+		this.setRevisionTo("85e157a2ebc512d760ce3def9fa1728ccef319b0");
 		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/?csar", "entitytypes/nodetypes/baobab.csar");
 	}
 }
