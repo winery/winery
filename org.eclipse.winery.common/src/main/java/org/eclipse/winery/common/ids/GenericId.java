@@ -46,14 +46,23 @@ public abstract class GenericId implements Comparable<GenericId> {
 	}
 
 	@Override
-	public abstract boolean equals(Object obj);
-
-	@Override
-	public abstract int hashCode();
-
-	@Override
 	public String toString() {
 		String idName = Util.getEverythingBetweenTheLastDotAndBeforeId(this.getClass());
 		return idName + " / " + this.getXmlId().toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof GenericId)) return false;
+
+		GenericId genericId = (GenericId) o;
+
+		return xmlId.equals(genericId.xmlId);
+	}
+
+	@Override
+	public int hashCode() {
+		return xmlId.hashCode();
 	}
 }
