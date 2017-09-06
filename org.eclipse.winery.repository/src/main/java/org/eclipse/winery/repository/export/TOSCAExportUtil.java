@@ -635,7 +635,7 @@ public class TOSCAExportUtil {
 		// "Export" type
 		QName type = artifactTemplate.getType();
 		if (type == null) {
-			throw new RepositoryCorruptException("Type is null for " + id.toString());
+			throw new RepositoryCorruptException("Type is null for " + id.toReadableString());
 		}
 		ids.add(new ArtifactTypeId(type));
 
