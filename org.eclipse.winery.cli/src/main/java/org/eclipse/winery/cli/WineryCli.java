@@ -11,11 +11,13 @@
  *******************************************************************************/
 package org.eclipse.winery.cli;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Optional;
 import java.util.SortedSet;
 import java.util.zip.ZipEntry;
@@ -100,16 +102,30 @@ public class WineryCli {
 		if (verbosity == Verbosity.NOTHING) {
 			System.out.print("Checking ");
 		}
+		final Path tempCsar;
+		try {
+			tempCsar = Files.createTempFile("Export", ".csar");
+		} catch (IOException e) {
+			LOGGER.debug("Could not create temp CSAR file", e);
+			return Optional.of("Could not create temp CSAR file");
+		}
 		for (TOSCAComponentId id : allToscaComponentIds) {
-			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-				if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
-					System.out.format("Checking %s...\n", id.toReadableString());
-				} else {
-					System.out.print(".");
-				}
-				exporter.writeCSAR(id, os);
-				try (InputStream is = new ByteArrayInputStream(os.toByteArray());
-					 ZipInputStream zis = new ZipInputStream(is)) {
+			if (verbosity == Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID) {
+				System.out.format("Checking %s...\n", id.toReadableString());
+			} else {
+				System.out.print(".");
+			}
+			final OutputStream outputStream;
+			try {
+				 outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+			} catch (IOException e) {
+				LOGGER.debug("Could not write to temp CSAR file", e);
+				return Optional.of("Could not write to temp CSAR file");
+			}
+			try {
+				exporter.writeCSAR(id, outputStream);
+				try (InputStream inputStream = Files.newInputStream(tempCsar);
+					 ZipInputStream zis = new ZipInputStream(inputStream)) {
 					ZipEntry entry;
 					while ((entry = zis.getNextEntry()) != null) {
 						if (entry.getName() == null) {
