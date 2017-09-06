@@ -22,6 +22,9 @@ LABEL maintainer "Johannes Wettinger <jowettinger@gmail.com>, Oliver Kopp <kopp.
 RUN rm /dev/random && ln -s /dev/urandom /dev/random \
     && rm -rf ${CATALINA_HOME}/webapps/*
 
+# ensure that /var/opentosca/repository exists to enable external directory binding
+RUN mkdir -p /var/opentosca/repository
+
 COPY --from=builder /opt/winery ${CATALINA_HOME}/webapps/winery
 COPY --from=builder /tmp/winery/org.eclipse.winery.repository.ui/target/winery-ui.war ${CATALINA_HOME}/webapps/ROOT.war
 COPY --from=builder /tmp/winery/org.eclipse.winery.topologymodeler/target/winery-topologymodeler.war ${CATALINA_HOME}/webapps
