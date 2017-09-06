@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Bpmn4JsonParser extends Parser {
 
-	private static Logger log = LoggerFactory.getLogger(Bpmn4JsonParser.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Bpmn4JsonParser.class);
 
 	@Override
 	public ManagementFlow parse(URI jsonFileUrl) throws ParseException {
@@ -66,16 +66,15 @@ public class Bpmn4JsonParser extends Parser {
 			JsonNode rootNode = mapper.readValue(jsonFileUrl.toURL(), JsonNode.class);
 
 			String prettyPrintedJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
-			log.debug("Creating management flow from following Json model:" + prettyPrintedJson);
+			LOGGER.debug("Creating management flow from following Json model:" + prettyPrintedJson);
 
 			Map<String, Node> nodeMap = new HashMap<String, Node>();
 			/* Contains the ids (values) of the target nodes of a certain node
 			 * (key is node id of this node) */
 			Map<String, Set<String>> nodeWithTargetsMap = new HashMap<String, Set<String>>();
-			
-			
+
 			/* Create model objects from Json nodes */
-			log.debug("Creating node models...");
+			LOGGER.debug("Creating node models...");
 			Iterator<JsonNode> iter = rootNode.iterator();
 			while (iter.hasNext()) {
 				JsonNode jsonNode = (JsonNode) iter.next();
@@ -95,7 +94,7 @@ public class Bpmn4JsonParser extends Parser {
 					nodeWithTargetsMap.put(node.getId(), extractNodeTargetIds(jsonNode));
 				} else {
 					String ignoredJsonNode = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonNode);
-					log.warn("No model element could be created from following node due to missing or invalid keys/values :" + ignoredJsonNode);
+					LOGGER.warn("No model element could be created from following node due to missing or invalid keys/values :" + ignoredJsonNode);
 				}
 			}
 
@@ -107,7 +106,7 @@ public class Bpmn4JsonParser extends Parser {
 			return managementFlow;
 
 		} catch (Exception e) {
-			log.error("Error while creating management flow : " + e.getMessage());
+			LOGGER.error("Error while creating management flow : " + e.getMessage());
 			throw new ParseException(e);
 		}
 
@@ -117,7 +116,7 @@ public class Bpmn4JsonParser extends Parser {
 		// TODO check if type attributes are set and are correct
 
 		if (!hasRequiredFields(jsonNode, Arrays.asList(JsonKeys.TYPE, JsonKeys.NAME, JsonKeys.ID))) {
-			log.warn("Ignoring gateway/task/event node: One of the fields '" + JsonKeys.TYPE + "', '" + JsonKeys.NAME + "' or '"
+			LOGGER.warn("Ignoring gateway/task/event node: One of the fields '" + JsonKeys.TYPE + "', '" + JsonKeys.NAME + "' or '"
 					+ JsonKeys.ID + "' is missing");
 			return null;
 		}
@@ -127,7 +126,7 @@ public class Bpmn4JsonParser extends Parser {
 		String nodeName = jsonNode.get(JsonKeys.NAME).asText();
 		String nodeId = jsonNode.get(JsonKeys.ID).asText();
 
-		log.debug("Parsing JSON task or event node with id '" + nodeId + "', name '" + nodeName + "', type '" + nodeType
+		LOGGER.debug("Parsing JSON task or event node with id '" + nodeId + "', name '" + nodeName + "', type '" + nodeType
 				+ "'");
 
 		switch (nodeType) {
@@ -147,7 +146,7 @@ public class Bpmn4JsonParser extends Parser {
 			node = createOrGatewayMergeFromJson(jsonNode);
 			break;
 		default:
-			log.warn("Ignoring node: type '" + nodeType + "' is unkown");
+			LOGGER.warn("Ignoring node: type '" + nodeType + "' is unkown");
 			return null;
 		}
 
@@ -155,13 +154,13 @@ public class Bpmn4JsonParser extends Parser {
 		node.setId(nodeId);
 		node.setName(nodeName);
 		node.setType(nodeType);
-		if(node instanceof Task) {
+		if (node instanceof Task) {
 			loadParameter4Task((Task)node, jsonNode);
 		}
 
 		return node;
 	}
-	
+
 	private void loadParameter4Task(Task task, JsonNode jsonNode) {
 		/* Add input parameters to task */
 		JsonNode inputParams = jsonNode.get(JsonKeys.INPUT);
@@ -182,7 +181,7 @@ public class Bpmn4JsonParser extends Parser {
 				task.addInputParameter(inputParam);
 			}
 		} else {
-			log.debug("No input parameters found for node with id '" + taskId + "'");
+			LOGGER.debug("No input parameters found for node with id '" + taskId + "'");
 		}
 
 		/* Add output Parameters to task */
@@ -196,7 +195,7 @@ public class Bpmn4JsonParser extends Parser {
 			}
 
 		} else {
-			log.debug("No output parameters found for node with id '" + taskId + "'");
+			LOGGER.debug("No output parameters found for node with id '" + taskId + "'");
 		}
 	}
 
@@ -207,21 +206,21 @@ public class Bpmn4JsonParser extends Parser {
 	protected EndTask createEndTaskFromJson(JsonNode endTaskNode) {
 		return new EndTask();
 	}
-	
+
 	protected OrGatewaySplit createOrGatewaySplitFromJson(JsonNode jsonNode) {
 		OrGatewaySplit gatewaySplit = new OrGatewaySplit();
 		JsonNode conditionsNode = jsonNode.findValue(JsonKeys.CONDITIONS);
-		
+
 		ConditionBranch defaultBranch = null;
-		
+
 		if (conditionsNode != null && conditionsNode.isArray()) {
 			Iterator<JsonNode> iter = conditionsNode.iterator();
 			while (iter.hasNext()) {
 				JsonNode entry = (JsonNode) iter.next();
 				if (hasRequiredFields(entry, Arrays.asList(JsonKeys.ID))) {
-					
+
 					String id = entry.get(JsonKeys.ID).asText();
-					
+
 					String condition = "";
 					if (entry.has(JsonKeys.CONDITION)) {
 						condition = entry.get(JsonKeys.CONDITION).asText();
@@ -242,25 +241,22 @@ public class Bpmn4JsonParser extends Parser {
 				}
 			}
 		}
-		
 
 		if (defaultBranch != null) {
 			gatewaySplit.getBranchList().add(defaultBranch);
 		}
 		return gatewaySplit;
 	}
-	
-	
+
 	protected OrGatewayMerge createOrGatewayMergeFromJson(JsonNode jsonNode) {
 		OrGatewayMerge gatewaySplit = new OrGatewayMerge();
 		return gatewaySplit;
 	}
 
-
 	protected ManagementTask createManagementTaskFromJson(JsonNode managementTaskNode) {
 
 		if (!hasRequiredFields(managementTaskNode, Arrays.asList(JsonKeys.NODE_TEMPLATE, JsonKeys.NODE_OPERATION))) {
-			log.warn("Ignoring mangement node: One of the fields '" + JsonKeys.NODE_TEMPLATE +  "' or '"
+			LOGGER.warn("Ignoring mangement node: One of the fields '" + JsonKeys.NODE_TEMPLATE +  "' or '"
 					+ JsonKeys.NODE_OPERATION + "' is missing");
 			return null;
 		}
@@ -268,8 +264,8 @@ public class Bpmn4JsonParser extends Parser {
 		String nodeInterfaceName = managementTaskNode.get(JsonKeys.NODE_INTERFACE_NAME).asText();
 		String nodeOperation = managementTaskNode.get(JsonKeys.NODE_OPERATION).asText();
 
-		log.debug("Creating management task with id '" + managementTaskNode.get(JsonKeys.ID) + "', name '" + managementTaskNode.get(JsonKeys.NAME)
-					+ "', node template '" + nodeTemplate + "', node operation '"+ "', node operation '" + nodeOperation + "'");
+		LOGGER.debug("Creating management task with id '" + managementTaskNode.get(JsonKeys.ID) + "', name '" + managementTaskNode.get(JsonKeys.NAME)
+					+ "', node template '" + nodeTemplate + "', node operation '" + "', node operation '" + nodeOperation + "'");
 
 		ManagementTask task = new ManagementTask();
 		task.setNodeTemplateId(QName.valueOf(nodeTemplate));
@@ -283,14 +279,14 @@ public class Bpmn4JsonParser extends Parser {
 	protected Parameter createParameterFromJson(String paramName, JsonNode paramNode) {
 
 		if (!hasRequiredFields(paramNode, Arrays.asList(JsonKeys.TYPE, JsonKeys.VALUE))) {
-			log.warn("Ignoring parameter node: One of the fields '" + JsonKeys.TYPE +  "' or '"
+			LOGGER.warn("Ignoring parameter node: One of the fields '" + JsonKeys.TYPE +  "' or '"
 					+ JsonKeys.VALUE + "' is missing");
 			return null;
 		}
 		String paramType = paramNode.get(JsonKeys.TYPE).asText();
 		String paramValue = paramNode.get(JsonKeys.VALUE).asText();
 
-		log.debug("Parsing JSON parameter node with name '" + paramName + "', type '" + paramType + "' and value '" + paramValue + "'");
+		LOGGER.debug("Parsing JSON parameter node with name '" + paramName + "', type '" + paramType + "' and value '" + paramValue + "'");
 
 		Parameter param = null;
 		switch (paramType) {
@@ -313,7 +309,7 @@ public class Bpmn4JsonParser extends Parser {
 			param = new TopologyParameter();
 			break;
 		default:
-			log.warn("JSON parameter type '" + paramType + "' unknown");
+			LOGGER.warn("JSON parameter type '" + paramType + "' unknown");
 			return null;
 		}
 
@@ -349,7 +345,7 @@ public class Bpmn4JsonParser extends Parser {
 
 			}
 		} else {
-			log.debug("Node with id '" + node.get(JsonKeys.ID) + "' has no connections to other nodes");
+			LOGGER.debug("Node with id '" + node.get(JsonKeys.ID) + "' has no connections to other nodes");
 			return null;
 		}
 		return linkTargetIds;
