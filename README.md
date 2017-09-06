@@ -16,7 +16,26 @@ Find out more about the OpenTOSCA eco system at [www.opentosca.org](http://www.o
 ## Running CLI via docker
 
 1. `docker build -t winery-consistencycheck -f Dockerfile.consistencycheck .`
-2. `docker run -v ${pwd}:/root/winery-repository -it winery-consistencycheck` to che
+2. `docker run -v ${pwd}:/root/winery-repository -it winery-consistencycheck` to check `${pwd}` for consistency.
+
+You can also use the pre-built image:
+
+- Linux: ` docker run -it -v ${pwd}:/root/winery-repository opentosca/winery:consistencycheck`
+- Windows: `docker run -it -v C:/winery-repository:/root/winery-repository opentosca/winery:consistencycheck`
+
+In case you want to have verbose information, you can execute following:
+
+- Linux: ` docker run -it -v ${pwd}:/root/winery-repository opentosca/winery:consistencycheck winery -v`
+- Windows: `docker run -it -v C:/winery-repository:/root/winery-repository opentosca/winery:consistencycheck winery -v`
+
+Currently supported CLI arguments:
+
+```
+usage: winery
+ -h,--help         prints this help
+ -p,--path <arg>   use given path as repository path
+ -v,--verbose      be verbose: Output the checked elements
+ ```
 
 ## Differences to Eclipse Winery
 
