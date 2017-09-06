@@ -85,21 +85,27 @@ public abstract class TOSCAComponentId extends GenericId {
 	}
 
 	@Override
-	public int hashCode() {
-		return this.namespace.hashCode() ^ this.getXmlId().hashCode();
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof TOSCAComponentId)) return false;
+
+		// only the same component instances might be equal
+		if (!o.getClass().equals(this.getClass())) {
+			return false;
+		}
+
+		if (!super.equals(o)) return false;
+
+		TOSCAComponentId that = (TOSCAComponentId) o;
+
+		return namespace.equals(that.namespace);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof TOSCAComponentId)) {
-			return false;
-		} else {
-			TOSCAComponentId other = (TOSCAComponentId) obj;
-			return this.getXmlId().equals(other.getXmlId()) && this.namespace.equals(other.namespace);
-		}
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + namespace.hashCode();
+		return result;
 	}
 
 	@Override
