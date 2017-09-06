@@ -1,5 +1,14 @@
 # Eclipse Winery™ User Guide
 
+<!-- toc -->
+
+- [Overview](#overview)
+- [Quickstart](#quickstart)
+- [Features](#features)
+- [License](#license)
+
+<!-- tocstop -->
+
 ## Overview
 
 Eclipse Winery™ is a Web-based environment to graphically model [OASIS TOSCA](../tosca/) topologies and plans managing these topologies.
@@ -23,6 +32,20 @@ This part is currently in development and not part of the opensourced code of Wi
 
 The repository stores TOSCA models and allows managing their content. For instance, node types, policy types, and artifact templates are managed by the repository.
 The repository is also responsible for importing and  exporting CSARs, the exchange format of TOSCA files and related artifacts.
+
+## Quickstart
+
+On Windows:
+
+1. `mkdir c:\winery-repository`
+2. `cd c:\winery-repository`
+3. `git clone https://github.com/OpenTOSCA/tosca-definitions/ .`
+4. `git remote add test-repository https://github.com/winery/test-repository.git`
+5. `git fetch test-repository`
+6. `git checkout black`
+
+Now you are at the [test repository](https://github.com/winery/test-repository) containing testing types.
+If you do `git checkout master`, you are seeing the [OpenTOSCA TOSCA Definitions repository](https://github.com/OpenTOSCA/tosca-definitions/).
 
 ## Features
 
