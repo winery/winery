@@ -63,6 +63,7 @@ import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
@@ -92,13 +93,11 @@ import org.xml.sax.SAXParseException;
  * ). A component is directly nested in a TDefinitions element. See also
  * {@link org.eclipse.winery.common.ids.definitions.TOSCAComponentId}
  *
- * Bundles all operations required for all components. e.g., namespace+XMLid,
- * object comparison, import, export, tags
+ * Bundles all operations required for all components. e.g., namespace+XMLid, object comparison, import, export, tags
  *
  * Uses a TDefinitions document as storage.
  *
- * Additional setters and getters are added if it comes to Winery's extensions
- * such as the color of a relationship type
+ * Additional setters and getters are added if it comes to Winery's extensions such as the color of a relationship type
  */
 public abstract class AbstractComponentInstanceResource implements Comparable<AbstractComponentInstanceResource>, IPersistable {
 
@@ -115,11 +114,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	private Definitions definitions = null;
 
 	/**
-	 * Instantiates the resource. Assumes that the resource should exist
-	 * (assured by the caller)
+	 * Instantiates the resource. Assumes that the resource should exist (assured by the caller)
 	 *
-	 * The caller should <em>not</em> create the resource by other ways. E.g.,
-	 * by instantiating this resource and then adding data.
+	 * The caller should <em>not</em> create the resource by other ways. E.g., by instantiating this resource and then
+	 * adding data.
 	 */
 	public AbstractComponentInstanceResource(TOSCAComponentId id) {
 		this.id = id;
@@ -238,16 +236,15 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	}
 
 	/**
-	 * Returns the definitions of this resource. Includes required imports of
-	 * other definitions
+	 * Returns the definitions of this resource. Includes required imports of other definitions
 	 *
 	 * @param csar used because plan generator's GET request lands here
 	 */
 	@GET
 	@Produces({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
 	public Response getDefinitionsAsResponse(
-			@QueryParam(value = "csar") String csar,
-			@Context UriInfo uriInfo
+		@QueryParam(value = "csar") String csar,
+		@Context UriInfo uriInfo
 	) {
 		if (!RepositoryFactory.getRepository().exists(this.id)) {
 			return Response.status(Status.NOT_FOUND).build();
@@ -349,8 +346,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	/**
 	 * Creates an empty instance of an Element.
 	 *
-	 * The implementors do <em>not</em>have to copy the ns and the id to the
-	 * appropriate fields.
+	 * The implementors do <em>not</em>have to copy the ns and the id to the appropriate fields.
 	 *
 	 * we have two implementation possibilities:
 	 * <ul>
@@ -364,13 +360,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	protected abstract TExtensibleElements createNewElement();
 
 	/**
-	 * Returns the Element belonging to this resource. As Java does not allow
-	 * overriding returned classes, we expect the caller to either cast right or
-	 * to use "getXY" defined by each subclass, where XY is the concrete type
+	 * Returns the Element belonging to this resource. As Java does not allow overriding returned classes, we expect the
+	 * caller to either cast right or to use "getXY" defined by each subclass, where XY is the concrete type
 	 *
-	 * Shortcut for
-	 * getDefinitions().getServiceTemplateOrNodeTypeOrNodeTypeImplementation
-	 * ().get(0);
+	 * Shortcut for getDefinitions().getServiceTemplateOrNodeTypeOrNodeTypeImplementation ().get(0);
 	 *
 	 * @return TCapabilityType|...
 	 */
@@ -393,8 +386,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	/**
 	 * Returns an XML representation of the definitions
 	 *
-	 * We return the complete definitions to allow the user changes to it, such
-	 * as adding imports, etc.
+	 * We return the complete definitions to allow the user changes to it, such as adding imports, etc.
 	 */
 	public String getDefinitionsAsXMLString() {
 		return BackendUtils.getDefinitionsAsXMLString(this.getDefinitions());
@@ -419,35 +411,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		Document doc;
 		final StringBuilder sb = new StringBuilder();
 		try {
-			DocumentBuilder db = TOSCADocumentBuilderFactory.INSTANCE.getTOSCADocumentBuilder();
-			db.setErrorHandler(new ErrorHandler() {
-
-				@Override
-				public void warning(SAXParseException exception) throws SAXException {
-					// we don't care
-				}
-
-				@Override
-				public void fatalError(SAXParseException exception) throws SAXException {
-					sb.append("Fatal Error: ");
-					sb.append(exception.getMessage());
-					sb.append("\n");
-				}
-
-				@Override
-				public void error(SAXParseException exception) throws SAXException {
-					sb.append("Fatal Error: ");
-					sb.append(exception.getMessage());
-					sb.append("\n");
-				}
-			});
+			DocumentBuilder db = TOSCADocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
+			db.setErrorHandler(BackendUtils.getErrorHandler(sb));
 			doc = db.parse(requestBodyStream);
-			if (sb.length() > 0) {
-				// some error happened
-				// doc is not null, because the parser parses even if it is not XSD conforming
-				LOGGER.debug("some error happened: {}", sb.toString());
-				return Response.status(Status.BAD_REQUEST).entity(sb.toString()).build();
-			}
+			// doc is not null, because the parser parses even if it is not XSD conforming
 		} catch (SAXException | IOException e) {
 			AbstractComponentInstanceResource.LOGGER.debug("Could not parse XML", e);
 			return RestUtils.getResponseForException(e);
@@ -485,7 +452,19 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		// TODO: future work: raise error if user changed id or namespace
 		BackendUtils.copyIdToFields((HasIdInIdOrNameField) element, this.getId());
 
-		return RestUtils.persist(this);
+		try {
+			BackendUtils.persist(this.getDefinitions(), this.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
+		} catch (IOException e) {
+			throw new WebApplicationException(e);
+		}
+
+		String validationError = sb.toString();
+		if (validationError.isEmpty()) {
+			return Response.noContent().build();
+		} else {
+			// ADR-0005: well-formed XML, but non-schema-conforming XML is saved, but triggers warning at the iser
+			return Response.ok().entity(validationError).build();
+		}
 	}
 
 	@GET
