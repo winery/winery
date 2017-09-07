@@ -328,23 +328,23 @@ public class RestUtils {
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
 	public static String getHREF(TOSCAComponentId id) {
-		return "<a href=\"" + RestUtils.getAbsoluteURL(id) + "\">" + Functions.escapeXml(id.getXmlId().getDecoded()) + "</a>";
+		return "<a href=\"" + Environment.getUrlConfiguration().getRepositoryUiUrl() + "/" + Util.getUrlPath(id) + "\">" + Functions.escapeXml(id.getXmlId().getDecoded()) + "</a>";
 	}
 
 	public static String artifactTypeQName2href(QName qname) {
-		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryApiUrl(), TArtifactType.class, qname);
+		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryUiUrl(), TArtifactType.class, qname);
 	}
 
 	public static String nodeTypeQName2href(QName qname) {
-		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryApiUrl(), TNodeType.class, qname);
+		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryUiUrl(), TNodeType.class, qname);
 	}
 
 	public static String relationshipTypeQName2href(QName qname) {
-		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryApiUrl(), TRelationshipType.class, qname);
+		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryUiUrl(), TRelationshipType.class, qname);
 	}
 
 	public static String policyTypeQName2href(QName qname) {
-		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryApiUrl(), TPolicyType.class, qname);
+		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryUiUrl(), TPolicyType.class, qname);
 	}
 
 	/**
