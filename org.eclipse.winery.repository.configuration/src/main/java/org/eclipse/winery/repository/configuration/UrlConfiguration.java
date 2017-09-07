@@ -1,10 +1,14 @@
 package org.eclipse.winery.repository.configuration;
 
+import java.util.Objects;
+
 import org.apache.commons.configuration2.Configuration;
 
 public class UrlConfiguration {
 
 	private String repositoryApiUrl = "http://localhost:8080/winery";
+
+	private String repositoryUiUrl = "http://localhost:8080/#/";
 	private String bpmn4ToscaModelerUrl = "http://localhost:8080/winery-topoloymodeler";
 	private String topologyModelerUrl = "http://localhost:8080/winery-workflowmodeler";
 
@@ -21,7 +25,15 @@ public class UrlConfiguration {
 	}
 
 	public void setRepositoryApiUrl(String repositoryApiUrl) {
-		this.repositoryApiUrl = repositoryApiUrl;
+		this.repositoryApiUrl = Objects.requireNonNull(repositoryApiUrl);
+	}
+
+	public String getRepositoryUiUrl() {
+		return repositoryUiUrl;
+	}
+
+	public void setRepositoryUiUrl(String repositoryUiUrl) {
+		this.repositoryUiUrl = Objects.requireNonNull(repositoryUiUrl);
 	}
 
 	public String getBpmn4ToscaModelerUrl() {
@@ -29,7 +41,7 @@ public class UrlConfiguration {
 	}
 
 	public void setBpmn4ToscaModelerUrl(String bpmn4ToscaModelerUrl) {
-		this.bpmn4ToscaModelerUrl = bpmn4ToscaModelerUrl;
+		this.bpmn4ToscaModelerUrl = Objects.requireNonNull(bpmn4ToscaModelerUrl);
 	}
 
 	/*
@@ -41,7 +53,7 @@ public class UrlConfiguration {
 	}
 
 	public void setTopologyModelerUrl(String topologyModelerUrl) {
-		this.topologyModelerUrl = topologyModelerUrl;
+		this.topologyModelerUrl = Objects.requireNonNull(topologyModelerUrl);
 	}
 
 	public void update(Configuration configuration) {

@@ -63,6 +63,8 @@ import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.taglibs.standard.functions.Functions;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -311,30 +313,29 @@ public class Util {
 	 * Introduced because of JSP error "The method qname2href(String, Class<? extends TExtensibleElements>, QName) in
 	 * the type Util is not applicable for the arguments (String, Class<TNodeType>, QName, String)"
 	 */
-	public static String qname2hrefWithName(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
-		return Util.qname2href(repositoryUrl, element, qname, name);
+	public static String qname2hrefWithName(String repositoryUiUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
+		return Util.qname2href(repositoryUiUrl, element, qname, name);
 	}
 
 	/**
-	 * @param repositoryUrl the URL to the repository
-	 * @param element       the element directly nested below a definitions element in XML
-	 * @param qname         the QName of the element
-	 * @param name          (optional) if not null, the name to display as text in the reference. Default: localName of
-	 *                      the QName
+	 * @param repositoryUiUrl the URL to the repository UI
+	 * @param element         the element directly nested below a definitions element in XML
+	 * @param qname           the QName of the element
+	 * @param name            (optional) if not null, the name to display as text in the reference. Default: localName
+	 *                        of the QName
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
-	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
-		if (StringUtils.isEmpty(repositoryUrl)) {
+	public static String qname2href(@NonNull String repositoryUiUrl, @NonNull Class<? extends TExtensibleElements> element, @Nullable QName qname, @Nullable String name) {
+		if (StringUtils.isEmpty(Objects.requireNonNull(repositoryUiUrl))) {
 			throw new IllegalArgumentException("Repository URL must not be empty.");
 		}
-		if (element == null) {
-			throw new IllegalArgumentException("Element class must not be null.");
-		}
+		Objects.requireNonNull(element);
+
 		if (qname == null) {
 			return "(none)";
 		}
 
-		String absoluteURL = repositoryUrl + "/" + Util.getURLpathFragmentForCollection(element) + "/" + Util.DoubleURLencode(qname.getNamespaceURI()) + "/" + Util.DoubleURLencode(qname.getLocalPart());
+		String absoluteURL = repositoryUiUrl + "/#/" + Util.getURLpathFragmentForCollection(element) + "/" + Util.DoubleURLencode(qname.getNamespaceURI()) + "/" + Util.DoubleURLencode(qname.getLocalPart());
 
 		if (name == null) {
 			// fallback if no name is given
@@ -347,13 +348,13 @@ public class Util {
 	}
 
 	/**
-	 * @param repositoryUrl the URL to the repository
-	 * @param element       the element directly nested below a definitions element in XML
-	 * @param qname         the QName of the element
+	 * @param repositoryUiUrl the URL to the repository
+	 * @param element         the element directly nested below a definitions element in XML
+	 * @param qname           the QName of the element
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
-	public static String qname2href(String repositoryUrl, Class<? extends TExtensibleElements> element, QName qname) {
-		return Util.qname2href(repositoryUrl, element, qname, null);
+	public static String qname2href(String repositoryUiUrl, Class<? extends TExtensibleElements> element, QName qname) {
+		return Util.qname2href(repositoryUiUrl, element, qname, null);
 	}
 
 	/**

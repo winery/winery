@@ -170,13 +170,17 @@
 
 <div id="loading">
 	loading... <br>
+	
 	Fetching all relationship types...
 	<%
+		out.flush();
 		Collection<TRelationshipType> relationshipTypes = client.getAllTypes(TRelationshipType.class);
 	%>
 	Done. <br>
+
 	Fetching all service templates...
 	<%
+		out.flush();
 		List<QName> allServiceTemplates = client.getQNameListOfAllTypes(TServiceTemplate.class);
 	%>
 	Done <br>
