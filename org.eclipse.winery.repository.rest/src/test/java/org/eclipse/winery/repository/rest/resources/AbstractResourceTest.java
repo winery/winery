@@ -128,8 +128,8 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 				JSONAssert.assertEquals(
 					expectedStr,
 					receivedStr,
-					// we allow different ordering in lists and also extensible JSON. That means, more elements are OK.
-					JSONCompareMode.LENIENT);
+					// we allow different ordering in lists, but not extensible JSON. That means, more elements are NOT OK. The tests need to be adapted in case new elements come in
+					JSONCompareMode.NON_EXTENSIBLE);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

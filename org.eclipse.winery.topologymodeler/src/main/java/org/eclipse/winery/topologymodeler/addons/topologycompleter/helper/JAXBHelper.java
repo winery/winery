@@ -32,7 +32,6 @@ import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
@@ -334,8 +333,8 @@ public class JAXBHelper {
 					nodeTemplate.setRequirements(null);
 				}
 
-				ModelUtilities.setLeft(nodeTemplate, NODETEMPLATE_X_COORDINATE);
-				ModelUtilities.setTop(nodeTemplate, Integer.toString(yCoordinates));
+				nodeTemplate.setX(NODETEMPLATE_X_COORDINATE);
+				nodeTemplate.setY(Integer.toString(yCoordinates));
 
 				yCoordinates += 150;
 			}

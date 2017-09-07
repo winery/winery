@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import org.eclipse.jdt.annotation.NonNull;
 
 
@@ -47,12 +48,16 @@ import org.eclipse.jdt.annotation.NonNull;
 @XmlType(name = "tPropertyMapping")
 public class TPropertyMapping {
 
+    @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "serviceTemplatePropertyRef", required = true)
     protected String serviceTemplatePropertyRef;
+
+    @JsonIdentityReference(alwaysAsId = true)
     @XmlAttribute(name = "targetObjectRef", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     protected Object targetObjectRef;
+
     @XmlAttribute(name = "targetPropertyRef", required = true)
     protected String targetPropertyRef;
 

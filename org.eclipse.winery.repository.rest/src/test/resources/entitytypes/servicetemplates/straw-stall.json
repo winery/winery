@@ -1,91 +1,122 @@
 {
-  "documentation": [
-	{
-	  "content": [
-		"Stack of Node Template straw from Provider Repository StallProvider"
-	  ],
-	  "source": null,
-	  "lang": null
-	}
-  ],
-  "any": [
-
-  ],
-  "otherAttributes": {
-
-  },
-  "nodeTemplates": [
-	{
-	  "documentation": [
-
-	  ],
-	  "any": [
-
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "StallProvider",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "909",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "62"
-	  },
-	  "id": "straw",
-	  "type": "{http://winery.opentosca.org/test/ponyuniverse}straw",
-	  "requirements": {
-		"requirement": [
-		  {
-			"documentation": [
-
+	"documentation": [
+		{
+			"content": [
+				"Stack of Node Template straw from Provider Repository StallProvider"
 			],
-			"any": [
+			"source": null,
+			"lang": null
+		}
+	],
+	"any": [
 
-			],
-			"otherAttributes": {
+	],
+	"otherAttributes": {
 
-			},
-			"id": "hosting",
-			"type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostStraw",
-			"name": "ReqCanHostStraw"
-		  }
-		]
-	  },
-	  "capabilities": {
-		"capability": [
-		  {
-			"documentation": [
-
-			],
-			"any": [
-
-			],
-			"otherAttributes": {
-
-			},
-			"id": "providesAWarmGround",
-			"type": "{http://winery.opentosca.org/test/ponyuniverse}CapWarmFloor",
-			"name": "CapWarmFloor"
-		  }
-		]
-	  },
-	  "name": "straw",
-	  "minInstances": 1,
-	  "maxInstances": "1"
 	},
-	{
-	  "documentation": [
+	"nodeTemplates": [
+		{
+			"id": "straw",
+			"documentation": [
 
-	  ],
-	  "any": [
+			],
+			"any": [
 
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "StallProvider",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "911",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "485"
-	  },
-	  "id": "stall",
-	  "type": "{http://winery.opentosca.org/test/ponyuniverse}stall",
-	  "capabilities": {
-		"capability": [
-		  {
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "StallProvider",
+				"x": "909",
+				"y": "62",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "909",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "62"
+			},
+			"type": "{http://winery.opentosca.org/test/ponyuniverse}straw",
+			"requirements": {
+				"requirement": [
+					{
+						"id": "hosting",
+						"documentation": [
+
+						],
+						"any": [
+
+						],
+						"otherAttributes": {
+
+						},
+						"type": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostStraw",
+						"name": "ReqCanHostStraw"
+					}
+				]
+			},
+			"capabilities": {
+				"capability": [
+					{
+						"id": "providesAWarmGround",
+						"documentation": [
+
+						],
+						"any": [
+
+						],
+						"otherAttributes": {
+
+						},
+						"type": "{http://winery.opentosca.org/test/ponyuniverse}CapWarmFloor",
+						"name": "CapWarmFloor"
+					}
+				]
+			},
+			"name": "straw",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "909",
+			"y": "62"
+		},
+		{
+			"id": "stall",
+			"documentation": [
+
+			],
+			"any": [
+
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "StallProvider",
+				"x": "911",
+				"y": "485",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "911",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "485"
+			},
+			"type": "{http://winery.opentosca.org/test/ponyuniverse}stall",
+			"capabilities": {
+				"capability": [
+					{
+						"id": "providesAhost",
+						"documentation": [
+
+						],
+						"any": [
+
+						],
+						"otherAttributes": {
+
+						},
+						"type": "{http://winery.opentosca.org/test/ponyuniverse}CapCanHostStraw",
+						"name": "CapCanHostStraw"
+					}
+				]
+			},
+			"name": "stall",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "911",
+			"y": "485"
+		}
+	],
+	"relationshipTemplates": [
+		{
+			"id": "con_19",
 			"documentation": [
 
 			],
@@ -95,37 +126,14 @@
 			"otherAttributes": {
 
 			},
-			"id": "providesAhost",
-			"type": "{http://winery.opentosca.org/test/ponyuniverse}CapCanHostStraw",
-			"name": "CapCanHostStraw"
-		  }
-		]
-	  },
-	  "name": "stall",
-	  "minInstances": 1,
-	  "maxInstances": "1"
-	}
-  ],
-  "relationshipTemplates": [
-	{
-	  "documentation": [
-
-	  ],
-	  "any": [
-
-	  ],
-	  "otherAttributes": {
-
-	  },
-	  "id": "con_19",
-	  "type": "{http://winery.opentosca.org/test/ponyuniverse}hostedOn",
-	  "sourceElement": {
-		"ref": "straw"
-	  },
-	  "targetElement": {
-		"ref": "stall"
-	  },
-	  "name": "con_19"
-	}
-  ]
+			"type": "{http://winery.opentosca.org/test/ponyuniverse}hostedOn",
+			"sourceElement": {
+				"ref": "straw"
+			},
+			"targetElement": {
+				"ref": "stall"
+			},
+			"name": "con_19"
+		}
+	]
 }

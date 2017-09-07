@@ -547,29 +547,6 @@ public class ModelUtilities {
     }
 
     /**
-     * Sets the x coordinate of a {@link TNodeTemplate}.
-     *
-     * @param nodeTemplate the nodeTemplate to be altered
-     * @param coordinate   the value of the coordinate to be set
-     */
-    public static void setLeft(TNodeTemplate nodeTemplate, String coordinate) {
-        Map<QName, String> otherNodeTemplateAttributes = nodeTemplate.getOtherAttributes();
-        otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"), coordinate);
-    }
-
-    /**
-     * Sets the y coordinate of a {@link TNodeTemplate}.
-     *
-     * @param nodeTemplate the nodeTemplate to be altered
-     * @param coordinate   the value of the coordinate to be set
-     * @return the altered {@link TNodeTemplate}
-     */
-    public static void setTop(TNodeTemplate nodeTemplate, String coordinate) {
-        Map<QName, String> otherNodeTemplateAttributes = nodeTemplate.getOtherAttributes();
-        otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"), coordinate);
-    }
-
-    /**
      * This method instantiates a {@link TNodeTemplate} for a given {@link TNodeType}.
      *
      * @param nodeType the {@link TNodeType} used for the {@link TNodeTemplate} instantiation.

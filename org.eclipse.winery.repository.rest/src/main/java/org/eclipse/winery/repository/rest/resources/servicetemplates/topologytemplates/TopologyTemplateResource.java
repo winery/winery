@@ -278,7 +278,7 @@ public class TopologyTemplateResource {
 						idMapping.put(nt.getId(), newId);
 						nt.setId(newId);
 						int newLeft = Integer.valueOf(ModelUtilities.getLeft((TNodeTemplate) nt)) + shiftLeft.get();
-						ModelUtilities.setLeft((TNodeTemplate) nt, Integer.toString(newLeft));
+						((TNodeTemplate) nt).setX(Integer.toString(newLeft));
 						this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(nt);
 					});
 
