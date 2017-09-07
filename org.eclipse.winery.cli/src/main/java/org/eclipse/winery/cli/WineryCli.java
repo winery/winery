@@ -28,8 +28,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.parsers.DocumentBuilder;
 
+import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
@@ -46,6 +50,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 public class WineryCli {
 
@@ -132,6 +137,7 @@ public class WineryCli {
 			}
 
 			checkId(res, verbosity, id);
+			checkXmlSchemaValidation(repository, res, verbosity, id);
 			checkCsar(res, verbosity, id, tempCsar);
 		}
 
@@ -143,6 +149,24 @@ public class WineryCli {
 		}
 
 		return res;
+	}
+
+	private static void checkXmlSchemaValidation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, TOSCAComponentId id) {
+		try (InputStream inputStream = repository.newInputStream(BackendUtils.getRefOfDefinitions(id))) {
+			Definitions definitions = repository.getDefinitions(id);
+			DocumentBuilder documentBuilder = TOSCADocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
+			StringBuilder errorStringBuilder = new StringBuilder();
+			documentBuilder.setErrorHandler(BackendUtils.getErrorHandler(errorStringBuilder));
+			documentBuilder.parse(inputStream);
+			String errors = errorStringBuilder.toString();
+			if (!errors.isEmpty()) {
+				printAndAddError(res, verbosity, id, errors);
+			}
+		} catch (IOException e) {
+			printAndAddError(res, verbosity, id, "I/O error during XML validation " + e.getMessage());
+		} catch (SAXException e) {
+			printAndAddError(res, verbosity, id, "SAX error during XML validation: " + e.getMessage());
+		}
 	}
 
 	private static void checkId(List<String> res, EnumSet<Verbosity> verbosity, TOSCAComponentId id) {

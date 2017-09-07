@@ -143,6 +143,9 @@ import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Contains generic utility functions for the Backend
@@ -1167,4 +1170,29 @@ public class BackendUtils {
 		}
 		return w.toString();
 	}
+
+	public static ErrorHandler getErrorHandler(StringBuilder sb) {
+		return new ErrorHandler() {
+
+			@Override
+			public void warning(SAXParseException exception) throws SAXException {
+				// we don't care
+			}
+
+			@Override
+			public void fatalError(SAXParseException exception) throws SAXException {
+				sb.append("Fatal Error: ");
+				sb.append(exception.getMessage());
+				sb.append("\n");
+			}
+
+			@Override
+			public void error(SAXParseException exception) throws SAXException {
+				sb.append("Fatal Error: ");
+				sb.append(exception.getMessage());
+				sb.append("\n");
+			}
+		};
+	}
+
 }

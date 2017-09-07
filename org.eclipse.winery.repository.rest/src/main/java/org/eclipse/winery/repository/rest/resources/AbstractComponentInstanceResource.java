@@ -412,7 +412,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		final StringBuilder sb = new StringBuilder();
 		try {
 			DocumentBuilder db = TOSCADocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
-			db.setErrorHandler(getErrorHandler(sb));
+			db.setErrorHandler(BackendUtils.getErrorHandler(sb));
 			doc = db.parse(requestBodyStream);
 			// doc is not null, because the parser parses even if it is not XSD conforming
 		} catch (SAXException | IOException e) {
@@ -465,30 +465,6 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			// ADR-0005: well-formed XML, but non-schema-conforming XML is saved, but triggers warning at the iser
 			return Response.ok().entity(validationError).build();
 		}
-	}
-
-	private ErrorHandler getErrorHandler(StringBuilder sb) {
-		return new ErrorHandler() {
-
-			@Override
-			public void warning(SAXParseException exception) throws SAXException {
-				// we don't care
-			}
-
-			@Override
-			public void fatalError(SAXParseException exception) throws SAXException {
-				sb.append("Fatal Error: ");
-				sb.append(exception.getMessage());
-				sb.append("\n");
-			}
-
-			@Override
-			public void error(SAXParseException exception) throws SAXException {
-				sb.append("Fatal Error: ");
-				sb.append(exception.getMessage());
-				sb.append("\n");
-			}
-		};
 	}
 
 	@GET
