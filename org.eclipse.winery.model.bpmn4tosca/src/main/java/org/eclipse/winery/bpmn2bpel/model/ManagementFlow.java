@@ -16,7 +16,6 @@ import java.util.Iterator;
 
 import org.jgrapht.graph.SimpleDirectedGraph;
 
-
 @SuppressWarnings("serial")
 public class ManagementFlow extends SimpleDirectedGraph<Node, Link> {
 
@@ -36,9 +35,6 @@ public class ManagementFlow extends SimpleDirectedGraph<Node, Link> {
 //		addEdge(src, target);
 //	}
 
-
-
-
 	/**
 	 * @param id
 	 * @return The node with the given id or <code>null</code> if a node with this id cannot be found
@@ -46,7 +42,6 @@ public class ManagementFlow extends SimpleDirectedGraph<Node, Link> {
 	public Node getNode(String id) {
 		return findNodeById(id);
 	}
-
 
 	protected Node findNodeById(String id) {
 		Iterator<Node> iter = vertexSet().iterator();
@@ -64,8 +59,5 @@ public class ManagementFlow extends SimpleDirectedGraph<Node, Link> {
 		// TODO Auto-generated method stub
 		return super.toStringFromSets(vertexSet, edgeSet, directed);
 	}
-
-
-
 
 }
