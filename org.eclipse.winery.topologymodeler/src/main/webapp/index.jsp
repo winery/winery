@@ -158,8 +158,9 @@
 	<!-- x-editable -->
 	<link type="text/css" href="components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css" media="all" rel="stylesheet" />
 
-	<link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/6.0/built-editor.css"/>
-	<!--  Winery as last: Winrey also overwrites some definitions from above -->
+	<link rel="stylesheet" type="text/css" href="orion/built-editor.css"/>
+
+	<!--  Winery as last: Winery also overwrites some definitions from above -->
 	<link rel="stylesheet" href="css/winery-common.css" />
 	<link rel="stylesheet" href="css/topologytemplatecontent.css" />
 	<link rel="stylesheet" href="css/topologymodeler.css" />
@@ -201,7 +202,7 @@
 			"jsplumb": "../components/jsPlumb/dist/js/jquery.jsPlumb-1.5.4",
 
 			"keyboardjs": "../components/KeyboardJS/keyboard",
-			"orioneditor": "http://eclipse.org/orion/editor/releases/6.0/built-editor-amd",
+			"orioneditor": "../orion/built-editor-amd",
 			"pnotify": "../components/pnotify/jquery.pnotify",
 			"bootstrap3-typeahead": "../components/bootstrap3-typeahead/bootstrap3-typeahead",
 			"tmpl": "../components/blueimp-tmpl/js/tmpl",
