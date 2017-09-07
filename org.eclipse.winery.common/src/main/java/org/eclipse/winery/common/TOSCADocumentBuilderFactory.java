@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -34,16 +34,16 @@ public class TOSCADocumentBuilderFactory {
 	public static final TOSCADocumentBuilderFactory INSTANCE = new TOSCADocumentBuilderFactory();
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
-	private final DocumentBuilderFactory factory;
+
+	private final DocumentBuilderFactory schemaAwareFactory;
+	private final DocumentBuilderFactory plainFactory;
 
 
 	public TOSCADocumentBuilderFactory() {
-		this.factory = DocumentBuilderFactory.newInstance();
-
-		this.factory.setNamespaceAware(true);
-
+		this.schemaAwareFactory = DocumentBuilderFactory.newInstance();
+		this.schemaAwareFactory.setNamespaceAware(true);
 		// we do not need DTD validation
-		this.factory.setValidating(false);
+		this.schemaAwareFactory.setValidating(false);
 
 		// we do XSD validation
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -52,22 +52,35 @@ public class TOSCADocumentBuilderFactory {
 		try {
 			// takes a few seconds to load
 			schema = schemaFactory.newSchema(resource);
-			this.factory.setSchema(schema);
+			this.schemaAwareFactory.setSchema(schema);
 		} catch (SAXException e) {
 			// TODO: load xml.xsd in offline mode
-			TOSCADocumentBuilderFactory.LOGGER.error("Schema could not be initalized", e);
+			TOSCADocumentBuilderFactory.LOGGER.error("Schema could not be initialized", e);
 			TOSCADocumentBuilderFactory.LOGGER.debug("We continue nevertheless to enable offline usage");
 		}
+
+		this.plainFactory = DocumentBuilderFactory.newInstance();
+		this.plainFactory.setNamespaceAware(true);
+		this.plainFactory.setValidating(false);
 	}
 
-	public DocumentBuilder getTOSCADocumentBuilder() {
+	public DocumentBuilder getSchemaAwareToscaDocumentBuilder() {
 		DocumentBuilder db;
 		try {
-			db = this.factory.newDocumentBuilder();
+			db = this.schemaAwareFactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			throw new IllegalStateException("document builder could not be initalized", e);
+			throw new IllegalStateException("document builder could not be initialized", e);
 		}
 		return db;
 	}
 
+	public DocumentBuilder getPlainToscaDocumentBuilder() {
+		DocumentBuilder db;
+		try {
+			db = this.schemaAwareFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			throw new IllegalStateException("document builder could not be initialized", e);
+		}
+		return db;
+	}
 }
