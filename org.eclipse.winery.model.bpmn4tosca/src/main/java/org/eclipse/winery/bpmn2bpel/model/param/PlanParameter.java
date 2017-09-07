@@ -11,13 +11,11 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.model.param;
 
-
 public class PlanParameter extends Parameter {
 
 	private String startTaskName;
 
 	private String parameterName;
-
 
 	public String getStartTaskName() {
 		return startTaskName;
@@ -35,10 +33,8 @@ public class PlanParameter extends Parameter {
 		this.parameterName = parameterName;
 	}
 
-
 	@Override
 	public ParamType getType() {
 		return ParamType.PLAN;
 	}
-
 }

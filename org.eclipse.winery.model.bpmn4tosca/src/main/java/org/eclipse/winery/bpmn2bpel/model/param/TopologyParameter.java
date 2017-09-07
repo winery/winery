@@ -14,10 +14,8 @@ package org.eclipse.winery.bpmn2bpel.model.param;
 import javax.xml.namespace.QName;
 
 /**
- * Represents a topology parameter.<br>
- * To initialize the fields nodeType and property accordingly, the expected
- * value parameter format is <code>$NodeTypeName.$PropertyName</code>, e.g.
- * <code>UbuntuVM.ImageName</code>
+ * Represents a topology parameter.<br> To initialize the fields nodeType and property accordingly, the expected value
+ * parameter format is <code>$NodeTypeName.$PropertyName</code>, e.g. <code>UbuntuVM.ImageName</code>
  */
 public class TopologyParameter extends Parameter {
 
@@ -25,13 +23,13 @@ public class TopologyParameter extends Parameter {
 
 	private String property;
 
-
 	public QName getNodeTemplateId() {
 		return nodeTemplateId;
 	}
 
 	/**
 	 * Set the node template id
+	 *
 	 * @param name - the node template id with template prefix.
 	 */
 	public void setNodeTemplateId(QName name) {
@@ -70,6 +68,5 @@ public class TopologyParameter extends Parameter {
 		setNodeTemplateId(QName.valueOf(nodeTemplateName));
 		setProperty(properyName);
 		super.setValue(value);
-
 	}
 }

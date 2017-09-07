@@ -21,13 +21,12 @@ import java.util.Map;
 
 import org.eclipse.winery.bpmn2bpel.model.param.Parameter;
 
-
 public abstract class Task extends Node {
 
 	private Map<String, Parameter> inputParams = new HashMap<String, Parameter>();
 
 	private Map<String, Parameter> outputParams = new HashMap<String, Parameter>();
-	
+
 	public void addInputParameter(Parameter param) {
 		inputParams.put(param.getName(), param);
 	}
@@ -37,7 +36,6 @@ public abstract class Task extends Node {
 		while (iter.hasNext()) {
 			Parameter param = (Parameter) iter.next();
 			this.inputParams.put(param.getName(), param);
-
 		}
 	}
 
@@ -66,10 +64,6 @@ public abstract class Task extends Node {
 		while (iter.hasNext()) {
 			Parameter param = (Parameter) iter.next();
 			this.outputParams.put(param.getName(), param);
-
 		}
 	}
-
-
-
 }

@@ -17,7 +17,6 @@ public abstract class Parameter {
 
 	private String value;
 
-
 	public String getValue() {
 		return value;
 	}
@@ -35,5 +34,4 @@ public abstract class Parameter {
 	}
 
 	public abstract ParamType getType();
-
 }
