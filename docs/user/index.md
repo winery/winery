@@ -47,6 +47,8 @@ On Windows:
 Now you are at the [test repository](https://github.com/winery/test-repository) containing testing types.
 If you do `git checkout master`, you are seeing the [OpenTOSCA TOSCA Definitions repository](https://github.com/OpenTOSCA/tosca-definitions/).
 
+In case you start from a fresh repository, please ensure that the Artifact Type `WAR` in the namespace `http://opentosca.org/artifacttypes` exists.
+
 ## Features
 
 - [Splitting](Splitting) - splitting functionality
