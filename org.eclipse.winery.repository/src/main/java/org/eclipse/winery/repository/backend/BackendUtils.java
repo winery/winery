@@ -181,7 +181,7 @@ public class BackendUtils {
 
 		assert (Locale.getDefault() == Locale.ENGLISH);
 		try {
-			modifiedDate = DateUtils.parseDate(modified, org.apache.http.impl.cookie.DateUtils.DEFAULT_PATTERNS);
+			modifiedDate = DateUtils.parseDate(modified, org.eclipse.winery.repository.DateUtils.DEFAULT_PATTERNS);
 		} catch (ParseException e) {
 			BackendUtils.LOGGER.error(e.getMessage(), e);
 		}

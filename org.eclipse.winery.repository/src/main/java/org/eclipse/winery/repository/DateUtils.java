@@ -29,7 +29,7 @@
  *
  */
 
-package org.apache.http.impl.cookie;
+package org.eclipse.winery.repository;
 
 /**
  * A utility class for parsing and formatting HTTP dates as used in cookies and
@@ -40,6 +40,7 @@ package org.apache.http.impl.cookie;
  * @author Michael Becke
  *
  * Shortened by Oliver Kopp to contain DEFAULT_PATTERNS and related artifacts only.
+ * Moved to package org.eclipse.winery.repository.
  */
 public final class DateUtils {
 
