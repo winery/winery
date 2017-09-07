@@ -15,14 +15,18 @@ package org.eclipse.winery.model.tosca;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -315,6 +319,38 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
      */
     public void setMaxInstances(String value) {
         this.maxInstances = value;
+    }
+
+    /**
+     * Sets the left coordinate of a {@link TNodeTemplate}.
+     *
+     * @param x   the value of the x-coordinate to be set
+     */
+    public void setX(String x) {
+        Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
+        otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"), x);
+    }
+    
+    @XmlTransient
+    public String getX() {
+        Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
+        return otherNodeTemplateAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"));
+    }
+
+    /**
+     * Sets the top coordinate of a {@link TNodeTemplate}.
+     *
+     * @param y   the value of the coordinate to be set
+     */
+    public void setY(String y) {
+        Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
+        otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"), y);
+    }
+    
+    @XmlTransient
+    public String getY() {
+        Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
+        return otherNodeTemplateAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"));
     }
 
 

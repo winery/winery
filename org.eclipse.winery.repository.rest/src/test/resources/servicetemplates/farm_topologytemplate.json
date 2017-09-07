@@ -1,275 +1,290 @@
 {
-  "documentation": [
-  ],
-  "any": [
-  ],
-  "otherAttributes": {
-  },
-  "relationshipTemplates": [
-	{
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-	  },
-	  "id": "con_23",
-	  "type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
-	  "sourceElement": {
-		"ref": "baobab"
-	  },
-	  "targetElement": {
-		"ref": "tree"
-	  },
-	  "name": "con_23"
+	"documentation": [
+	],
+	"any": [
+	],
+	"otherAttributes": {
 	},
-	{
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-	  },
-	  "id": "con_35",
-	  "type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
-	  "sourceElement": {
-		"ref": "baobab_2"
-	  },
-	  "targetElement": {
-		"ref": "tree"
-	  },
-	  "name": "con_35"
-	},
-	{
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-	  },
-	  "id": "con_47",
-	  "type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
-	  "sourceElement": {
-		"ref": "baobab_3"
-	  },
-	  "targetElement": {
-		"ref": "tree"
-	  },
-	  "name": "con_47"
-	},
-	{
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-	  },
-	  "id": "con_59",
-	  "type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
-	  "sourceElement": {
-		"ref": "orange"
-	  },
-	  "targetElement": {
-		"ref": "tree_2"
-	  },
-	  "name": "con_59"
-	},
-	{
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-	  },
-	  "id": "con_71",
-	  "type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
-	  "sourceElement": {
-		"ref": "orange_2"
-	  },
-	  "targetElement": {
-		"ref": "tree_2"
-	  },
-	  "name": "con_71"
-	},
-	{
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-	  },
-	  "id": "con_85",
-	  "type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
-	  "sourceElement": {
-		"ref": "tree_2"
-	  },
-	  "targetElement": {
-		"ref": "plantage"
-	  },
-	  "name": "con_85"
-	},
-	{
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-	  },
-	  "id": "con_97",
-	  "type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
-	  "sourceElement": {
-		"ref": "tree"
-	  },
-	  "targetElement": {
-		"ref": "plantage"
-	  },
-	  "name": "con_97"
-	}
-  ],
-  "nodeTemplates": [
-	{
-	  "id": "plantage",
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "958",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "894"
-	  },
-	  "type": "{http://winery.opentosca.org/test/nodetypes/fruits}plantage",
-	  "name": "plantage",
-	  "minInstances": 1,
-	  "maxInstances": "1"
-	},
-	{
-	  "id": "tree",
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "606",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "671"
-	  },
-	  "type": "{http://winery.opentosca.org/test/nodetypes/fruits}tree",
-	  "name": "tree",
-	  "minInstances": 1,
-	  "maxInstances": "1"
-	},
-	{
-	  "id": "tree_2",
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "1441",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "645"
-	  },
-	  "type": "{http://winery.opentosca.org/test/nodetypes/fruits}tree",
-	  "name": "tree_3",
-	  "minInstances": 1,
-	  "maxInstances": "1"
-	},
-	{
-	  "id": "baobab",
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "324",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "333"
-	  },
-	  "properties": {
-		"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:BaobabProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:BaobabProperties>"
-	  },
-	  "type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
-	  "name": "baobab",
-	  "minInstances": 1,
-	  "maxInstances": "1"
-	},
-	{
-	  "id": "orange",
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "1284",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "331"
-	  },
-	  "properties": {
-		"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:OrangeProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:OrangeProperties>"
-	  },
-	  "type": "{http://winery.opentosca.org/test/nodetypes/fruits}orange",
-	  "name": "orange",
-	  "minInstances": 1,
-	  "maxInstances": "1"
-	},
-	{
-	  "id": "orange_2",
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "1599",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "329"
-	  },
-	  "properties": {
-		"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:OrangeProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:OrangeProperties>"
-	  },
-	  "type": "{http://winery.opentosca.org/test/nodetypes/fruits}orange",
-	  "name": "orange_3",
-	  "minInstances": 1,
-	  "maxInstances": "1"
-	},
-	{
-	  "id": "baobab_2",
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "606",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "219"
-	  },
-	  "properties": {
-		"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:BaobabProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:BaobabProperties>"
-	  },
-	  "type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
-	  "name": "baobab_3",
-	  "minInstances": 1,
-	  "maxInstances": "1"
-	},
-	{
-	  "id": "baobab_3",
-	  "documentation": [
-	  ],
-	  "any": [
-	  ],
-	  "otherAttributes": {
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "900",
-		"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "325"
-	  },
-	  "properties": {
-		"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:BaobabProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:BaobabProperties>"
-	  },
-	  "type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
-	  "name": "baobab_4",
-	  "minInstances": 1,
-	  "maxInstances": "1"
-	}
-  ]
+	"nodeTemplates": [
+		{
+			"id": "plantage",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "958",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "894"
+			},
+			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}plantage",
+			"name": "plantage",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "958",
+			"y": "894"
+		},
+		{
+			"id": "tree",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "606",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "671"
+			},
+			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}tree",
+			"name": "tree",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "606",
+			"y": "671"
+		},
+		{
+			"id": "tree_2",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "1441",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "645"
+			},
+			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}tree",
+			"name": "tree_3",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "1441",
+			"y": "645"
+		},
+		{
+			"id": "baobab",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "324",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "333"
+			},
+			"properties": {
+				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:BaobabProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:BaobabProperties>"
+			},
+			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
+			"name": "baobab",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "324",
+			"y": "333"
+		},
+		{
+			"id": "orange",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "1284",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "331"
+			},
+			"properties": {
+				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:OrangeProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:OrangeProperties>"
+			},
+			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}orange",
+			"name": "orange",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "1284",
+			"y": "331"
+		},
+		{
+			"id": "orange_2",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "1599",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "329"
+			},
+			"properties": {
+				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:OrangeProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:OrangeProperties>"
+			},
+			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}orange",
+			"name": "orange_3",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "1599",
+			"y": "329"
+		},
+		{
+			"id": "baobab_2",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "606",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "219"
+			},
+			"properties": {
+				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:BaobabProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:BaobabProperties>"
+			},
+			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
+			"name": "baobab_3",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "606",
+			"y": "219"
+		},
+		{
+			"id": "baobab_3",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "900",
+				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "325"
+			},
+			"properties": {
+				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:BaobabProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:BaobabProperties>"
+			},
+			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
+			"name": "baobab_4",
+			"minInstances": 1,
+			"maxInstances": "1",
+			"x": "900",
+			"y": "325"
+		}
+	],
+	"relationshipTemplates": [
+		{
+			"id": "con_23",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
+			"type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
+			"sourceElement": {
+				"ref": "baobab"
+			},
+			"targetElement": {
+				"ref": "tree"
+			},
+			"name": "con_23"
+		},
+		{
+			"id": "con_35",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
+			"type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
+			"sourceElement": {
+				"ref": "baobab_2"
+			},
+			"targetElement": {
+				"ref": "tree"
+			},
+			"name": "con_35"
+		},
+		{
+			"id": "con_47",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
+			"type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
+			"sourceElement": {
+				"ref": "baobab_3"
+			},
+			"targetElement": {
+				"ref": "tree"
+			},
+			"name": "con_47"
+		},
+		{
+			"id": "con_59",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
+			"type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
+			"sourceElement": {
+				"ref": "orange"
+			},
+			"targetElement": {
+				"ref": "tree_2"
+			},
+			"name": "con_59"
+		},
+		{
+			"id": "con_71",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
+			"type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
+			"sourceElement": {
+				"ref": "orange_2"
+			},
+			"targetElement": {
+				"ref": "tree_2"
+			},
+			"name": "con_71"
+		},
+		{
+			"id": "con_85",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
+			"type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
+			"sourceElement": {
+				"ref": "tree_2"
+			},
+			"targetElement": {
+				"ref": "plantage"
+			},
+			"name": "con_85"
+		},
+		{
+			"id": "con_97",
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
+			"type": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn",
+			"sourceElement": {
+				"ref": "tree"
+			},
+			"targetElement": {
+				"ref": "plantage"
+			},
+			"name": "con_97"
+		}
+	]
 }
-
