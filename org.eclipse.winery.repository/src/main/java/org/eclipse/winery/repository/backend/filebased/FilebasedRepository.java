@@ -607,12 +607,20 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			while ((entry = zis.getNextEntry()) != null) {
 				if (!entry.isDirectory()) {
 					Path path = this.repositoryRoot.resolve(entry.getName());
-					FileUtils.createDirectory(path.getParent());
-					Files.copy(zis, path);
+					try {
+						FileUtils.createDirectory(path.getParent());
+						try {
+							Files.copy(zis, path, StandardCopyOption.REPLACE_EXISTING);
+						} catch (IOException e) {
+							FilebasedRepository.LOGGER.error("Files.copy did not succeed", e);
+						}
+					} catch (IOException e) {
+						FilebasedRepository.LOGGER.error("Directory creation did not succeed", e);
+					}
 				}
 			}
 		} catch (IOException e) {
-			FilebasedRepository.LOGGER.error(e.getMessage());
+			FilebasedRepository.LOGGER.error("Unzipping did not succeed", e);
 		}
 	}
 
