@@ -1,4 +1,4 @@
-# Architectural Decision Records
+# Architectural Decision Log
 
 This lists the architectural decisions for Eclipse Winery™
 
