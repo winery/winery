@@ -22,6 +22,8 @@ import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapability;
 import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -70,4 +72,19 @@ public class GetType {
 		return repository.getElement(new RequirementTypeId(template.getTypeAsQName()));
 	}
 
+	public static TEntityType getType(IWineryRepositoryCommon repository, TEntityTemplate template) {
+		if (template instanceof TArtifactTemplate) {
+			return getType(repository, (TArtifactTemplate) template);
+		} else if (template instanceof TCapability) {
+			return getType(repository, (TCapability) template);
+		} else if (template instanceof TNodeTemplate) {
+			return getType(repository, (TNodeTemplate) template);
+		} else if (template instanceof TPolicyTemplate) {
+			return getType(repository, (TPolicyTemplate) template);
+		} else if (template instanceof TRelationshipTemplate) {
+			return getType(repository, (TRelationshipTemplate) template);
+		}
+
+		return null;
+	}
 }

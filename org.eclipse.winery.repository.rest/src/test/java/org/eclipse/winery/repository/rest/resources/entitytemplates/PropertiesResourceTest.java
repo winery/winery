@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- * Lukas Harzenetter - initial API and implementation
+ *     Lukas Harzenetter - initial API and implementation
  */
 
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
@@ -21,13 +21,25 @@ public class PropertiesResourceTest extends AbstractResourceTest {
 	@Test
 	public void getPropertiesJsonList() throws Exception {
 		this.setRevisionTo("2fb90960edfb32e337a440c115976ff4bd7a5634");
-		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/", "entitytemplates/initialProperties.json");
+		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/",
+			"entitytemplates/initialProperties.json");
 	}
 
 	@Test
-	public void postProperties() throws Exception {
+	public void postJsonProperties() throws Exception {
 		this.setRevisionTo("2fb90960edfb32e337a440c115976ff4bd7a5634");
-		this.assertPut("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/", "entitytemplates/updateProperty.xml");
-		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/", "entitytemplates/updatedProperties.json");
+		this.assertPut("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/",
+			"entitytemplates/updatedProperties.json");
+		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/",
+			"entitytemplates/updatedProperties.json");
+	}
+
+	@Test
+	public void postXMLProperties() throws Exception {
+		this.setRevisionTo("2fb90960edfb32e337a440c115976ff4bd7a5634");
+		this.assertPut("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/",
+			"entitytemplates/updateProperty.xml");
+		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/",
+			"entitytemplates/updatedProperties.json");
 	}
 }
