@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Tino Stadelmaier, Philipp Meyer - initial API and implementation
+ *     Lukas Harzenetter - HTTP message in notification
  */
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Response } from '@angular/http';
@@ -76,14 +77,18 @@ export class EditXMLComponent implements OnInit {
         this.xmlData = xml;
     }
 
-    private handleError(error: any): void {
+    private handleError(error: string): void {
         this.loading = false;
-        this.notify.error(error.toString());
+        this.notify.error(error);
     }
 
-    private handlePutResponse(response: any) {
+    private handlePutResponse(response: Response) {
         this.loading = false;
         this.notify.success('Successfully saved data!');
+
+        if (response.text()) {
+            this.notify.warning(response.text());
+        }
     }
 
 }
