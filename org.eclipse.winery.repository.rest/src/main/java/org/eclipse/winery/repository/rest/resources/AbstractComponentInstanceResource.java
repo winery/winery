@@ -25,7 +25,6 @@ import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -67,6 +66,7 @@ import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.documentation.DocumentationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
@@ -206,21 +206,23 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	}
 
 	@POST
-	@Path("id")
-	public Response putId(@FormParam("id") String id, @FormParam("namespace") String namespace) {
+	@Path("localName")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response putId(QNameApiData data) {
 		TOSCAComponentId newId;
-		if (namespace == null) {
-			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), this.getId().getNamespace().getDecoded(), id, false);
+		if (data.namespace == null) {
+			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), this.getId().getNamespace().getDecoded(), data.localname, false);
 		} else {
-			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().toString(), false);
+			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), data.namespace, this.getId().getXmlId().toString(), false);
 		}
 		return RestUtils.rename(this.getId(), newId);
 	}
 
 	@POST
 	@Path("namespace")
-	public Response putNamespace(@FormParam("ns") String namespace) {
-		TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().getDecoded(), false);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response putNamespace(QNameApiData data) {
+		TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), data.namespace, this.getId().getXmlId().getDecoded(), false);
 		return RestUtils.rename(this.getId(), newId);
 	}
 

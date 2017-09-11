@@ -14,12 +14,8 @@
 <div class="top" [class.twolines]="needTwoLines">
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon">
     <div class="informationContainer">
-        <div id="component_name" class="name editable editable-click">
-            {{ toscaComponent.localName }}
-        </div>
-        <div id="component_namespace" class="namespace editable editable-click">
-            {{ toscaComponent.namespace }}
-        </div>
+        <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"></winery-property-rename>
+        <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'namespace'"></winery-property-rename>
     </div>
     <div class="managementButtons">
         <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
@@ -51,7 +47,7 @@
         </p>
     </winery-modal-body>
     <winery-modal-footer (onOk)="deleteConfirmed.emit();"
-                        [closeButtonLabel]="'Cancel'"
-                        [okButtonLabel]="'Delete'">
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
     </winery-modal-footer>
 </winery-modal>

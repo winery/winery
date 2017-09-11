@@ -18,6 +18,9 @@ import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
 import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { PropertyRenameComponent } from './instanceHeader/propertyRename/propertyRename.component';
+import { FormsModule } from '@angular/forms';
+import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplicateValidator.module';
 
 @NgModule({
     imports: [
@@ -25,12 +28,14 @@ import { CommonModule } from '@angular/common';
         RouterModule,
         WineryLoaderModule,
         WineryModalModule,
-        WineryPipesModule
+        WineryPipesModule,
+        FormsModule
     ],
     exports: [InstanceComponent],
     declarations: [
         InstanceComponent,
         InstanceHeaderComponent,
+        PropertyRenameComponent
     ],
     providers: [],
 })
