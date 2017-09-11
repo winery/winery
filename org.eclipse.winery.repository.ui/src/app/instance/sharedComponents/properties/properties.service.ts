@@ -35,26 +35,8 @@ export class PropertiesService {
     }
 
     public saveProperties(properties: any): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/xml'});
+        const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
-        /* because the backend doesn't support saving json requests yet, we need to construct an xml file and
-         * put it to the server
-         */
-        const keys = Object.keys(properties);
-        let xml = '<?xml version="1.0" encoding="utf-8" ?>\n'
-            + '<Properties xmlns="http://docs.oasis-open.org/tosca/ns/2011/12">\n\t'
-            + '<Properties xmlns="http://opentosca.org/artifacttypes/propertiesdefinition/winery">\n\t';
-
-        for (const key of keys) {
-            xml += '\t<' + key + '>';
-            if (properties[key]) {
-                xml += '<![CDATA[' + properties[key] + ']]>';
-            }
-            xml += '</' + key + '>\n\t';
-        }
-
-        xml += '</Properties>\n</Properties>';
-
-        return this.http.put(this.path, xml, options);
+        return this.http.put(this.path, properties, options);
     }
 }

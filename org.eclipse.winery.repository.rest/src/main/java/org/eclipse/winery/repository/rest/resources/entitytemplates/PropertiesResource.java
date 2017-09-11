@@ -26,6 +26,8 @@ import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.GetType;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 
@@ -44,20 +46,25 @@ public class PropertiesResource {
 		this.res = res;
 	}
 
-	/**
-	 * Currently, properties can only be updated as a whole XML fragment
-	 *
-	 * Getting/setting a fragment of properties is not possible yet
-	 */
 	@PUT
-	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+	@Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
 	public Response setProperties(TEntityTemplate.Properties properties) {
 		this.template.setProperties(properties);
 		return RestUtils.persist(this.res);
 	}
 
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response setProperties(Properties properties) {
+		TEntityType type = GetType.getType(RepositoryFactory.getRepository(), this.template);
+		WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(type);
+		ModelUtilities.setPropertiesKV(wpd, this.template, properties);
+		return RestUtils.persist(this.res);
+	}
+
 	/**
-	 * @return Key/Value map in the case of Winery WPD mode - else instance of XML Element in case of non-key/value properties
+	 * @return Key/Value map in the case of Winery WPD mode - else instance of XML Element in case of non-key/value
+	 * properties
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -89,6 +96,5 @@ public class PropertiesResource {
 			}
 			return properties;
 		}
-
 	}
 }
