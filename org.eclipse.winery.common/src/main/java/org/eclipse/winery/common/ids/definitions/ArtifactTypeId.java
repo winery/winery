@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
+import java.util.Objects;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.Namespace;
@@ -27,7 +29,7 @@ public class ArtifactTypeId extends EntityTypeId {
 	}
 
 	public ArtifactTypeId(QName qname) {
-		this(new Namespace(qname.getNamespaceURI(), false), new XMLId(qname.getLocalPart(), false));
+		this(new Namespace(Objects.requireNonNull(qname).getNamespaceURI(), false), new XMLId(Objects.requireNonNull(qname).getLocalPart(), false));
 	}
 
 }

@@ -625,7 +625,7 @@ public class TOSCAExportUtil {
 	/**
 	 * Determines the referenced TOSCA Component Ids and also updates the references in the Artifact Template
 	 *
-	 * @return a collection of referenced TOCSA Component Ids
+	 * @return a collection of referenced TOSCA Component Ids
 	 */
 	private Collection<TOSCAComponentId> prepareForExport(ArtifactTemplateId id) throws RepositoryCorruptException, IOException {
 		Collection<TOSCAComponentId> ids = new ArrayList<>();
@@ -636,8 +636,9 @@ public class TOSCAExportUtil {
 		QName type = artifactTemplate.getType();
 		if (type == null) {
 			throw new RepositoryCorruptException("Type is null for " + id.toReadableString());
+		} else {
+			ids.add(new ArtifactTypeId(type));
 		}
-		ids.add(new ArtifactTypeId(type));
 
 		// Export files
 

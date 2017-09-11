@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids;
 
+import java.util.Objects;
+
 import org.eclipse.winery.common.Util;
 
 /**
@@ -29,7 +31,7 @@ public abstract class GenericId implements Comparable<GenericId> {
 
 
 	protected GenericId(XMLId xmlId) {
-		this.xmlId = xmlId;
+		this.xmlId = Objects.requireNonNull(xmlId);
 	}
 
 	/**
