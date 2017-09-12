@@ -275,7 +275,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public TExtensibleElements getElementAsJson() {
+	public Definitions getElementAsJson() {
 		if (!RepositoryFactory.getRepository().exists(this.id)) {
 			throw new NotFoundException();
 		}
@@ -294,7 +294,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			exporter.exportTOSCA(this.id, bos, conf);
 			String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation))).getElement();
+			return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
 		} catch (Exception e) {
 			throw new WebApplicationException(e);
 		}
