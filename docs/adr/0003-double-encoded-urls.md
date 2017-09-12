@@ -1,4 +1,4 @@
-# <Short Title of the Issue>
+# Double Encoded URLs
 
 URLs should be human-readable, slashes are not allowed.
 Encoded slahes are not enabled as default due to security reasons.
