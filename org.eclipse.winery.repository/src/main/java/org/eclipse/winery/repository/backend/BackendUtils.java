@@ -1024,6 +1024,7 @@ public class BackendUtils {
 			for (RepositoryFileReference ref : files) {
 				// determine path
 				// path relative from the root of the CSAR is ok (COS01, line 2663)
+				// double encoded - see ADR-0003
 				String path = Util.getUrlPath(ref);
 
 				// put path into data structure

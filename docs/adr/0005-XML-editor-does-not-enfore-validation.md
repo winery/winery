@@ -1,4 +1,4 @@
-# Optional XML validation
+# XML editor does not enforce validation
 
 **UserStory:** Winery offers editing the stored XML of the TOSCA definitions. What to do with validation?
 

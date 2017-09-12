@@ -1,0 +1,35 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contributors:
+ *     Lukas Balzer - initial API and implementation
+ */
+-->
+<div id="propertyRenameContainer">
+    <div *ngIf="editMode">
+        <form #renameComponentForm="ngForm">
+            <input type="text"
+                   class="input-sm"
+                   id="renamePropertyInput"
+                   name="propertyInput"
+                   #renameName="ngModel"
+                   [(ngModel)]="propertyValue"
+                   required>
+            <button class="btn btn-primary btn-xs" (click)="onSaveValue()" type="button"
+                    [disabled]="!(renameComponentForm?.form.valid || propertyValue?.length > 0)">Save
+            </button>
+            <button class="btn btn-danger btn-xs" (click)="onCancel()">Cancel</button>
+        </form>
+    </div>
+    <div *ngIf="!editMode">
+        <span (click)="onClickEdit()" *ngIf="propertyName === 'localName'">{{toscaComponent.localName}}</span>
+        <span (click)="onClickEdit()" *ngIf="propertyName === 'namespace'">{{toscaComponent.namespace}}</span>
+        <i *ngIf="!canEdit" class="fa fa-pencil-square-o" (click)="onClickEdit()"></i>
+    </div>
+</div>

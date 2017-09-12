@@ -25,7 +25,6 @@ import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -52,7 +51,6 @@ import org.eclipse.winery.common.ids.XMLId;
 import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
-import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
@@ -67,6 +65,7 @@ import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.export.TOSCAExportUtil;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.documentation.DocumentationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
@@ -206,21 +205,23 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	}
 
 	@POST
-	@Path("id")
-	public Response putId(@FormParam("id") String id, @FormParam("namespace") String namespace) {
+	@Path("localName")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response putId(QNameApiData data) {
 		TOSCAComponentId newId;
-		if (namespace == null) {
-			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), this.getId().getNamespace().getDecoded(), id, false);
+		if (data.namespace == null) {
+			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), this.getId().getNamespace().getDecoded(), data.localname, false);
 		} else {
-			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().toString(), false);
+			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), data.namespace, this.getId().getXmlId().toString(), false);
 		}
 		return RestUtils.rename(this.getId(), newId);
 	}
 
 	@POST
 	@Path("namespace")
-	public Response putNamespace(@FormParam("ns") String namespace) {
-		TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), namespace, this.getId().getXmlId().getDecoded(), false);
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response putNamespace(QNameApiData data) {
+		TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), data.namespace, this.getId().getXmlId().getDecoded(), false);
 		return RestUtils.rename(this.getId(), newId);
 	}
 
@@ -274,24 +275,26 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public TDefinitions getDefinitionsAsJson() {
+	public TExtensibleElements getElementAsJson() {
 		if (!RepositoryFactory.getRepository().exists(this.id)) {
 			throw new NotFoundException();
 		}
 
 		// idea: get the XML, parse it, return it
 		// the conversion to JSON is made by Jersey automatically
-		// future work: force TOSCAExportUtil to return TDefinitions directly
+		// TODO: future work: force TOSCAExportUtil to return TDefinitions directly
+
+		// Have to use TOScAExportUtil to have the imports correctly set
 
 		TOSCAExportUtil exporter = new TOSCAExportUtil();
 		// we include everything related
 		Map<String, Object> conf = new HashMap<>();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			exporter.exportTOSCA(AbstractComponentInstanceResource.this.id, bos, conf);
+			exporter.exportTOSCA(this.id, bos, conf);
 			String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			return (Definitions) u.unmarshal(new StringReader(xmlRepresentation));
+			return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation))).getElement();
 		} catch (Exception e) {
 			throw new WebApplicationException(e);
 		}

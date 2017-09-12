@@ -13,6 +13,7 @@ package org.eclipse.winery.common.ids.definitions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
@@ -58,7 +59,7 @@ public abstract class TOSCAComponentId extends GenericId {
 
 	public TOSCAComponentId(Namespace namespace, XMLId xmlId) {
 		super(xmlId);
-		this.namespace = namespace;
+		this.namespace = Objects.requireNonNull(namespace);
 	}
 
 	/**

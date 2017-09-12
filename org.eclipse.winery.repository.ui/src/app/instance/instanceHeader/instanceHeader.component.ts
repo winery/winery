@@ -11,9 +11,7 @@
  */
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { backendBaseURL } from '../../configuration';
 import { RemoveWhiteSpacesPipe } from '../../wineryPipes/removeWhiteSpaces.pipe';
-import { InstanceService } from '../instance.service';
 import { ModalDirective } from 'ngx-bootstrap';
 import { ToscaComponent } from '../../wineryInterfaces/toscaComponent';
 
