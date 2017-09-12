@@ -35,4 +35,16 @@ public class ArtifactTemplateResourceTest extends AbstractResourceTest {
 		this.setRevisionTo("88e5ccd6c35aeffdebc19c8dda9cd76f432538f8");
 		this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source/zip", "entitytemplates/artifacttemplates/MyTinyTest_src.zip");
 	}
+
+	@Test
+	public void artifactTemplateContainsFileReferenceInJson() throws Exception {
+		this.setRevisionTo("6aabc1c52ad74ab2692e7d59dbe22a263667e2c9");
+		this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest", "entitytemplates/artifacttemplates/MyTinyTest.json");
+	}
+
+	@Test
+	public void artifactTemplateContainsFileReferenceInXml() throws Exception {
+		this.setRevisionTo("6aabc1c52ad74ab2692e7d59dbe22a263667e2c9");
+		this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest", "entitytemplates/artifacttemplates/MyTinyTest.xml");
+	}
 }
