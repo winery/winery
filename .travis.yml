@@ -21,6 +21,8 @@ script:
   - mvn package
   # - mvn jacoco:report-aggregate
   - mkdir build
+  - mv org.eclipse.winery.cli/target/*.jar build/
+  - mv org.eclipse.winery.repository.client/target/*.jar build/
   - mv org.eclipse.winery.repository.rest/target/*.war build/
   - mv org.eclipse.winery.repository.ui/target/*.war build/
   - mv org.eclipse.winery.topologymodeler/target/*.war build/

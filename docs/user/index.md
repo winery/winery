@@ -39,10 +39,11 @@ On Windows:
 
 1. `mkdir c:\winery-repository`
 2. `cd c:\winery-repository`
-3. `git clone https://github.com/OpenTOSCA/tosca-definitions/ .`
-4. `git remote add test-repository https://github.com/winery/test-repository.git`
-5. `git fetch test-repository`
-6. `git checkout black`
+2. `git config --global core.longpaths true` to enable long paths. Works perfectly on Windows.
+3. `git clone https://github.com/winery/test-repository.git .` to clone the [test repository](https://github.com/winery/test-repository).
+4. `git remote add production-repository https://github.com/OpenTOSCA/tosca-definitions/` to make the [production repository](https://github.com/OpenTOSCA/tosca-definitions/) known
+5. `git fetch production-repository` - to fetch the production repository
+6. `git checkout black` - to switch to the main branch of the test repository
 
 Now you are at the [test repository](https://github.com/winery/test-repository) containing testing types.
 If you do `git checkout master`, you are seeing the [OpenTOSCA TOSCA Definitions repository](https://github.com/OpenTOSCA/tosca-definitions/).

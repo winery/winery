@@ -201,5 +201,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>winery-repository-client</finalName>
 	</build>
 </project>

@@ -499,7 +499,7 @@ appears, right click on the project then **Properties**, **Project Facets** and 
 There, select the Apache Tomcat Runtime. Click "**Apply**", then "**OK**".
 
 When running in the jetty 9.0.5, there is always the error message "Request Entity Too Large" when uploading a file.
-There is the maxFormContentSize set in jetty web.xml, but it currently does not help to solve this issue.
+There is the `maxFormContentSize` set in `jetty web.xml`, but it currently does not help to solve this issue.
 
 If the Prefs class is not found, something is wrong with the libraries, tomcat config, eclipse environment (check
 the build path!), etc.
@@ -510,11 +510,16 @@ The error message
 In case `javax.servlet.jsp.PageContext` cannot be found:
 Project -> right click -> Properties -> Project Facets -> Dynamic Web Module -> "Runtimes" -> "New..."
 
-When running in jetty 9.0.5, there is always the error message "Request Entity Too Large" when uploading a file.
-There is the `maxFormContentSize` set in `jetty-web.xml`, but it currently does not help to solve this issue.
-
 When doing a copy-libs-to-tomcat hack, possibly "W3C_XML_SCHEMA_NS_URI cannot be resolved or is not a field" appears.
 Remove `stax-api-1.0.1.jar` out of `tomcat8/lib`: Java's `rt.jar` should be used instead for `javax.xml.XMLConstants`.
+
+Q: At `org.eclipse.winery.backend.ui`: Some strange errors
+A: Execute in THAT directory
+- `git clean -xdf` to remove all ignored and additional elements
+- <s>`npm i -g npm` to update npm to the latest version</s>
+- set npm verison to 5.3 `npm install -g npm@5.3` to work-around https://github.com/npm/npm/issues/18380
+- `npm install` to install everything
+- <s>`npm i webpack --save-dev`</s>
 
 ### "name" vs. "id" at Entities
 
