@@ -1,4 +1,4 @@
-# Eclipse Winery™ Developer Guide
+# Eclipse Winery Developer Guide
 
 This document provides (i) guides about development and (ii) design ideas of Winery.
 
@@ -492,7 +492,9 @@ A: Execute `mvn resources:resources` in the project `org.eclipse.winery.reposito
 
 In case some JavaScript libraries cannot be found by the browser, execute `bower prune`, `bower install`, `bower update` in both `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler`.
 
-If `mvn package` does not work in a sub project, execute `mvn install` in the root. [Source](http://stackoverflow.com/q/29712865/873282)
+If `mvn package` does not work in a sub project, please remember to use `-am` and execute it in the root folder. Example:
+
+     mvn package -pl org.eclipse.winery.cli -am
 
 When “The superclass "javax.servlet.jsp.tagext.SimpleTagSupport" was not found on the Java Build Path.”
 appears, right click on the project then **Properties**, **Project Facets** and finally **Runtime**.
