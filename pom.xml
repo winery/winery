@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /*******************************************************************************
- * Copyright (c) 2013 University of Stuttgart.
+ * Copyright (c) 2013-2017 University of Stuttgart.
  * Copyright (c) 2017 ZTE Corporation.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,16 +14,20 @@
  *    Oliver Kopp - refinements
  *    Tobias Binz - Adds support for building fatJars (including all dependencies) and profile for fatJars
  *    Lv Bo - add workflow-modeler module
+ *    Christoph Kleine - Add model.yaml module
  *******************************************************************************/
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.winery</groupId>
 	<artifactId>winery</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Winery</name>
-	<description>Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these topologies.</description>
+	<description>Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these
+		topologies.
+	</description>
 	<url>http://www.eclipse.org/winery</url>
 	<organization>
 		<name>Eclipse.org - Winery Project</name>
@@ -81,6 +85,8 @@
 		<module>org.eclipse.winery.repository.ui</module>
 		<module>org.eclipse.winery.topologymodeler</module>
 		<module>org.eclipse.winery.workflowmodeler</module>
+		<module>org.eclipse.winery.model.tosca.yaml</module>
+		<module>org.eclipse.winery.yaml.common</module>
 	</modules>
 	<build>
 		<plugins>

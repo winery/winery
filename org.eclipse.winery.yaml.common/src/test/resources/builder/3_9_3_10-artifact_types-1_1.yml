@@ -1,0 +1,22 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+artifact_types:
+  comp.artifacttypes.FileTypeX:
+    derived_from: tosca.artifacts.File
+    
+  my_atype:
+    description: >
+      Super Long Description
+      asdasd asd asd asddsa asd
+      asd
+    derived_from: tosca.artifacts.Root
+    mime_type: application/java-archive
+    file_ext: [ jar ]
+    properties:
+      test:
+        type: string
+        description: Testing Entity type properties
+        constraints:
+          - less_or_equal: 2
+          - in_range: [ 2, 3 ]
+          - valid_values: [ a, b, c ]

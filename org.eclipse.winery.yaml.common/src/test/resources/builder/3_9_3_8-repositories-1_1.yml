@@ -1,0 +1,13 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+repositories:
+  my_project_artifact_repo:
+    description: development repository for TAR arhcives and Bash scripts
+    url: http://mycompany.com/repository/myproject/
+    credential:
+      token_type: password
+      token: 12345äö
+      keys:
+        key1: fkey
+        key2: skey
+  my_short_repo: http://github.com/kleinech/exampleproject/
