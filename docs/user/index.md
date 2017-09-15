@@ -1,4 +1,4 @@
-# Eclipse Winery™ User Guide
+# Eclipse Winery User Guide
 
 <!-- toc -->
 
@@ -11,7 +11,7 @@
 
 ## Overview
 
-Eclipse Winery™ is a Web-based environment to graphically model [OASIS TOSCA](../tosca/) topologies and plans managing these topologies.
+Eclipse Winery is a Web-based environment to graphically model [OASIS TOSCA](../tosca/) topologies and plans managing these topologies.
 It is an Eclipse project and thus support is available through its project page <https://projects.eclipse.org/projects/soa.winery>.
 Winery is also part of the OpenTOSCA ecosystem where more information is available at <http://www.opentosca.org>.
 

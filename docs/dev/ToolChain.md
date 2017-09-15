@@ -1,4 +1,4 @@
-# Eclipse Winery™ Toolchain
+# Eclipse Winery Toolchain
 
 <!-- toc -->
 
@@ -55,7 +55,7 @@ Email your supervisor your GitHub username.
 You keep working and discuss with your supervisor how things go.
 For that, create a pull request to https://github.com/opentosca/winery to enable internal reviewing.
 
-## GitHub - Preparation First Pull Request to offical Eclipse Winery™ repository
+## GitHub - Preparation First Pull Request to offical Eclipse Winery repository
 
 * Check [CONTRIBUTING.md](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md) and carefully read the instructions
 * http://wiki.eclipse.org/Development_Resources/Contributing_via_Git 🡒 Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])

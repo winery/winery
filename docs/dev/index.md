@@ -1,4 +1,4 @@
-# Eclipse Winery™ Developer Guide
+# Eclipse Winery Developer Guide
 
 This document provides (i) guides about development and (ii) design ideas of Winery.
 

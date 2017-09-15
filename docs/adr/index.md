@@ -1,6 +1,6 @@
 # Architectural Decision Log
 
-This lists the architectural decisions for Eclipse Winery™
+This lists the architectural decisions for Eclipse Winery
 
 - [0000 - Use Architectural Decision Records](0000-use-architectural-decision-records)
 - [0001 - Use filesystem as backend](0001-use-filesystem-as-backend)

@@ -1,4 +1,4 @@
-# Eclipse Winery™ Workflow Modeler
+# Eclipse Winery Workflow Modeler
 
 This project is an implementation of a workflow modeler for creating and maintaining [TOSCA] compatible management plans.
 

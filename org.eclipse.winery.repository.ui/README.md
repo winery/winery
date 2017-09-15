@@ -1,4 +1,4 @@
-# Eclipse Winery™ UI
+# Eclipse Winery UI
 
 This is the repository UI. You find documentation regarding the code at <https://eclipse.github.io/winery/dev/angular-ui>.
 

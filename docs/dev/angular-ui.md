@@ -1,4 +1,4 @@
-# Eclipse Winery™ Angular UI
+# Eclipse Winery Angular UI
 
 ## Prerequisites
 1. Install [git](https://git-scm.com)
