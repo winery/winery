@@ -65,8 +65,8 @@ Table of contents:
     + [Strange errors](#strange-errors)
     + [Has issues with a new selfservice portal model](#has-issues-with-a-new-selfservice-portal-model)
   * [Other troubleshootings](#other-troubleshootings)
-  * ["name" vs. "id" at Entities](#name-vs-id-at-entities)
-  * [Possible Attachments of Artifacts](#possible-attachments-of-artifacts)
+  * ["name" vs. "id" at entities](#name-vs-id-at-entities)
+  * [Possible attachments of artifacts](#possible-attachments-of-artifacts)
 - [Example repository](#example-repository)
 - [Recommended programming literature](#recommended-programming-literature)
 - [Abbreviations](#abbreviations)
@@ -417,6 +417,10 @@ whereby "tmpl" is bound to "/WEB-INF/tags/common/templates". the property on the
 **Figure 13: Winery's topology modeler**
 
 
+Do NOT update to jsPlumb 1.5.5.
+The new connection type determination does not play well together with Winery's usage of jsPlumb. See [jsPlumb#165].
+
+
 ## Debugging hints
 
 ### Debugging JavaScript code
@@ -523,12 +527,12 @@ A: Execute in THAT directory
 - `npm install` to install everything
 - <s>`npm i webpack --save-dev`</s>
 
-### "name" vs. "id" at Entities
+### "name" vs. "id" at entities
 
 Some entities carry a name, some an id and some both
  A justification is available at [TOSCA issue 47](https://issues.oasis-open.org/browse/TOSCA-47).
 
-### Possible Attachments of Artifacts
+### Possible attachments of artifacts
 
 Implementation Artifacts (IAs) may be attached at
 
@@ -569,9 +573,10 @@ This can be directly cloned into `c:\winery-repository`.
 
 Copyright (c) 2013-2017 University of Stuttgart.
 
-All rights reserved. Made available under the terms of the [Eclipse Public License v1.0] and the [Apache License v2.0] which both accompany this distribution.
+All rights reserved. Made available under the terms of the [Eclipse Public License v2.0] and the [Apache License v2.0] which both accompany this distribution.
 
  [Apache Maven]: https://maven.apache.org/
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
  [bower]: https://bower.io/
- [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
+ [Eclipse Public License v2.0]: http://www.eclipse.org/legal/epl-v20.html
+ [jsPlumb#165]: https://github.com/jsplumb/jsPlumb/issues/165

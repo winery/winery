@@ -15,8 +15,8 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
         {
-            "type": "Eclipse Public License-1.0",
-            "url": "http://www.eclipse.org/legal/epl-v10.html"
+            "type": "Eclipse Public License-2.0",
+            "url": "http://www.eclipse.org/legal/epl-v20.html"
         }
     ],
     "dependencies": {

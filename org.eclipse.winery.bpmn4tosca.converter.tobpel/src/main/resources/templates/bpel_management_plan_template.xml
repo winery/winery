@@ -4,9 +4,9 @@
      * Copyright (c) 2015-2017 University of Stuttgart.
      * Copyright (c) 2017 ZTE Corporation.
      * All rights reserved. This program and the accompanying materials
-     * are made available under the terms of the Eclipse Public License v1.0
+     * are made available under the terms of the Eclipse Public License v2.0
      * and the Apache License 2.0 which both accompany this distribution,
-     * and are available at http://www.eclipse.org/legal/epl-v10.html
+     * and are available at http://www.eclipse.org/legal/epl-v20.html
      * and http://www.apache.org/licenses/LICENSE-2.0
      *
      * Contributors:
@@ -23,7 +23,7 @@
 	targetNamespace="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
 	xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
 	xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight"
-	xmlns:si="http://siserver.org/wsdl" 
+	xmlns:si="http://siserver.org/wsdl"
 	xmlns:sischema="http://siserver.org/schema"
 	xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:ode="http://www.apache.org/ode/type/extension">
@@ -44,19 +44,19 @@
 
 		<partnerLink name="serviceInvokerPL"
 			initializePartnerRole="yes" partnerLinkType="tns:OpenTOSCAServiceInvokerPLT"
-			myRole="ServiceInvokerClient"  partnerRole="ServiceInvoker"  />	
-	</partnerLinks> 
+			myRole="ServiceInvokerClient"  partnerRole="ServiceInvoker"  />
+	</partnerLinks>
 
 	<variables>
 		<variable name="input" messageType="tns:planInputMessage" />
 		<variable name="output" messageType="tns:planOutputMessage" />
 		<variable name="instanceDataAPIUrl" type="xsd:string" />
 
-		<!-- The values for these variables must be provided in the instantiating 
+		<!-- The values for these variables must be provided in the instantiating
 			input message -->
 		<variable name="containerAPIServiceInstanceURL" type="xsd:string" />
 		<variable name="csarId" type="xsd:string" />
-		<!-- TODO: Should be derived from serviceTemplateIdNamespaceURI and serviceTemplateIdLocalPart 
+		<!-- TODO: Should be derived from serviceTemplateIdNamespaceURI and serviceTemplateIdLocalPart
 			(or vice versa) -->
 		<variable name="serviceTemplateId" type="xsd:string" />
 		<variable name="serviceTemplateIdNamespaceURI" type="xsd:string" />
@@ -64,7 +64,7 @@
 		<variable name="serviceInstanceId" type="xsd:string" />
 		<variable name="correlationId" type="xsd:string" />
 		<variable name="planCallbackUrl" type="xsd:string" />
-		
+
 		<!-- Holds response of service instance creation performed by activity createServiceInstance  -->
 		<variable name="serviceInstanceCreationResponse" type="xsd:string" />
 
@@ -76,10 +76,10 @@
 		<!-- Variable to store service invoker requests and responses -->
 		<variable name="siAsynchInput" messageType="si:invokeOperationAsyncMessage" />
 		<variable name="siResponse" messageType="si:invokeResponse" />
-		
+
 		<!--  Variables for debugging purposes -->
 		<variable name="dbg_mangementOperationRequest" messageType="si:invokeOperationAsyncMessage" />
-		
+
 	</variables>
 
 	<correlationSets>
@@ -93,8 +93,8 @@
 		<receive createInstance="yes" name="initiate" operation="initiatePlan"
 			partnerLink="clientPL" portType="tns:ManagementPlanPT" variable="input" />
 
-		<!-- Get values for variables 'instanceDataAPIUrl', 'csarId', 'serviceTemplateId', 
-			'serviceInstanceId' from input message These values are required to read/write 
+		<!-- Get values for variables 'instanceDataAPIUrl', 'csarId', 'serviceTemplateId',
+			'serviceInstanceId' from input message These values are required to read/write
 			properties of the service instance the plan is working on -->
 		<assign name="initFromInputMsg" validate="no">
 			<copy>
@@ -127,7 +127,7 @@
 				</from>
 				<to variable="serviceTemplateIdLocalPart" />
 			</copy>
-			<!-- <copy> <from variable="input" part="payload"> <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='serviceInstanceId']/text()]]></query> 
+			<!-- <copy> <from variable="input" part="payload"> <query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[//*[local-name()='serviceInstanceId']/text()]]></query>
 				</from> <to variable="serviceInstanceId" /> </copy> -->
 			<copy>
 				<from variable="input" part="payload">
@@ -136,12 +136,12 @@
 				<to variable="planCallbackUrl" />
 			</copy>
 			<!-- Copy input parameters defined in start event -->
-			
+
 		</assign>
 
 
-		<!-- If no serviceInstanceId was passed with the plan input message it 
-			is assumed that this is a build plan Hence, a service instance has to be 
+		<!-- If no serviceInstanceId was passed with the plan input message it
+			is assumed that this is a build plan Hence, a service instance has to be
 			created before excuting management operations -->
 		<if>
 			<condition expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
