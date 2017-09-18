@@ -57,18 +57,10 @@ and are available at http://www.eclipse.org/legal/epl-v10.html
 and http://www.apache.org/licenses/LICENSE-2.0
 
   [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
-  [bug421284]: https://bugs.eclipse.org/bugs/show_bug.cgi?id=421284
-  [bower]: https://github.com/bower/bower
-  [chocolatey]: http://chocolatey.org/
   [CloudCycle]: http://www.cloudcycle.org/en/
   [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
-  [Eclipse IDE for Java EE Developers]: https://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/neon2
   [Federal Ministry for Economic Affairs and Energy]: http://www.bmwi.de/EN/
-  [frontend-maven-plugin]: https://github.com/eirslett/frontend-maven-plugin
   [jsPlumb#165]: https://github.com/jsplumb/jsPlumb/issues/165
-  [m2e-wtp]: http://eclipse.org/m2e-wtp/
-  [m2eclipse]: http://eclipse.org/m2e/
-  [nodejs]: http://nodejs.org/download/
   [Scalable JavaScript Application Architecture]: http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012
   [SmartOrchestra]: http://smartorchestra.de/en/
   [SePiA.Pro]: http://projekt-sepiapro.de/en/
