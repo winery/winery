@@ -32,14 +32,8 @@ This follows Nicholas Zakas' "[Scalable JavaScript Application Architecture]".
 * **The XSD of OASIS TOSCA v1.0 has been modified** - see https://github.com/eclipse/winery/issues/71
 ** An Implementation Artifact may carry a `name` attribute
 ** The contents of properties of Boundary Definitions are processed in `lax` mode
+* See https://github.com/eclipse/winery/issues
 
-#### Libraries
-
-* Do NOT update to jQuery 2.1.0.
-  When using with firefox, line 5571 in jquery.js fails: `divStyle is null`.
-  That means `window.getComputedStyle( div, null );` returned `null`, too.
-* Do NOT update to jsPlumb 1.5.5.
-  The new connection type determination does not play well together with Winery's usage of jsPlumb. See [jsPlumb#165].
 
 ## Acknowledgements
 
@@ -60,7 +54,6 @@ and http://www.apache.org/licenses/LICENSE-2.0
   [CloudCycle]: http://www.cloudcycle.org/en/
   [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
   [Federal Ministry for Economic Affairs and Energy]: http://www.bmwi.de/EN/
-  [jsPlumb#165]: https://github.com/jsplumb/jsPlumb/issues/165
   [Scalable JavaScript Application Architecture]: http://www.slideshare.net/nzakas/scalable-javascript-application-architecture-2012
   [SmartOrchestra]: http://smartorchestra.de/en/
   [SePiA.Pro]: http://projekt-sepiapro.de/en/
