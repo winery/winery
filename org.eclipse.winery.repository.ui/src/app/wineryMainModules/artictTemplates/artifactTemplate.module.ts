@@ -20,6 +20,10 @@ import { CommonModule } from '@angular/common';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { ArtifactSourceComponent } from '../../instance/artifactTemplates/artifactSource/artifactSource.component';
+import { TabsModule } from 'ngx-bootstrap';
+import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
+import { WineryDuplicateValidatorModule } from '../../wineryValidators/wineryDuplicateValidator.module';
 
 @NgModule({
     imports: [
@@ -30,10 +34,14 @@ import { HttpModule } from '@angular/http';
         WineryModalModule,
         WineryTableModule,
         WineryUploaderModule,
-        ArtifactTemplateRouterModule
+        TabsModule,
+        WineryEditorModule,
+        WineryDuplicateValidatorModule,
+        ArtifactTemplateRouterModule,
     ],
     declarations: [
         FilesComponent,
+        ArtifactSourceComponent,
         PropertiesComponent,
     ]
 })

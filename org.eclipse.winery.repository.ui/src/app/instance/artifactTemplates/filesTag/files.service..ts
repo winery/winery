@@ -25,7 +25,7 @@ export class FilesService {
         this.path = backendBaseURL + this.sharedData.path + '/files/';
     }
 
-    getFiles(): Observable<FilesApiData[]> {
+    getFiles(): Observable<{ files: FilesApiData[] }> {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
 

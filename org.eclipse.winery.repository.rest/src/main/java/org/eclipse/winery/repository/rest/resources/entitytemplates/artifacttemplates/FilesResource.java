@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -40,6 +40,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.FileMeta;
+import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourceApiData;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
@@ -110,8 +111,10 @@ public class FilesResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<FileMeta> getJSON() {
-		return this.getAllFileMetas();
+	public String getJSON() {
+		String json = BackendUtils.Object2JSON(this.getAllFileMetas());
+		json = "{\"files\":" + json + "}";
+		return json;
 	}
 
 	private List<FileMeta> getAllFileMetas() {
@@ -142,5 +145,16 @@ public class FilesResource {
 	public Response deleteFile(@PathParam("fileName") String fileName) {
 		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
 		return RestUtils.delete(ref);
+	}
+
+	@POST
+	@Path("/{fileName}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response postFile(@PathParam("fileName") String fileName, ArtifactResourceApiData data) {
+		if (StringUtils.isEmpty(fileName)) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		RepositoryFileReference ref = this.fileName2fileRef(fileName, false);
+		return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
 	}
 }

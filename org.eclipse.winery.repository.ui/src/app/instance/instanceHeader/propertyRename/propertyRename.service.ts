@@ -32,7 +32,6 @@ export class PropertyRenameService {
 
     setToscaComponent(toscaComponent: ToscaComponent) {
         this.toscaComponent = toscaComponent;
-        console.log(toscaComponent);
     }
 
     setPropertyValue(value: string): Observable<Response> {
