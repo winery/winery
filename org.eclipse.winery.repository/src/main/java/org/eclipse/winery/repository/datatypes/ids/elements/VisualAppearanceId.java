@@ -11,18 +11,18 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 
 /**
  * ID for a pseudo-TOSCA-Element holding the data for the visual appearance
  * (e.g., icons for node types)
  */
-public class VisualAppearanceId extends TOSCAElementId {
+public class VisualAppearanceId extends ToscaElementId {
 
 	public VisualAppearanceId(TopologyGraphElementEntityTypeId parent) {
-		super(parent, new XMLId("appearance", true));
+		super(parent, new XmlId("appearance", true));
 	}
 
 }

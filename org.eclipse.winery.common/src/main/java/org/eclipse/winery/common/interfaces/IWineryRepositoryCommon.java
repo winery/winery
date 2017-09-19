@@ -14,6 +14,14 @@
 package org.eclipse.winery.common.interfaces;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
@@ -28,10 +36,13 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasInheritance;
+import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
@@ -39,6 +50,7 @@ import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 
@@ -58,9 +70,9 @@ public interface IWineryRepositoryCommon {
 	 * Even if the given id does not exist in the repository (<code>!exists(id)</code>), an empty wrapper definitions
 	 * with an empty element is generated
 	 *
-	 * @param id the TOSCAComponentId to load
+	 * @param id the DefinitionsChildId to load
 	 */
-	Definitions getDefinitions(TOSCAComponentId id);
+	Definitions getDefinitions(DefinitionsChildId id);
 
 	// in case one needs a new element, just copy and paste one of the following methods and adapt it.
 
@@ -108,7 +120,6 @@ public interface IWineryRepositoryCommon {
 		return (TPolicyType) this.getDefinitions(id).getElement();
 	}
 
-
 	/**
 	 * Deletes the TOSCA element <b>and all sub elements</b> referenced by the given id from the repository
 	 *
@@ -117,18 +128,18 @@ public interface IWineryRepositoryCommon {
 	void forceDelete(GenericId id) throws IOException;
 
 	/**
-	 * Renames a TOSCA component id
+	 * Renames a definition child id
 	 *
 	 * @param oldId the old id
 	 * @param newId the new id
 	 */
-	void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException;
+	void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException;
 
 	/**
-	 * Deletes all TOSCA components nested in the given namespace
+	 * Deletes all definition children nested in the given namespace
 	 *
-	 * @param toscaComponentIdClazz the type of TOSCA components to delete
+	 * @param definitionsChildIdClazz the type of definition children to delete
 	 * @param namespace             the namespace to delete
 	 */
-	void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException;
+	void forceDelete(Class<? extends DefinitionsChildId> definitionsChildIdClazz, Namespace namespace) throws IOException;
 }

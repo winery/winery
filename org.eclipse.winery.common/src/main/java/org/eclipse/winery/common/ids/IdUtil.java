@@ -12,8 +12,8 @@
 package org.eclipse.winery.common.ids;
 
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 
 /**
  * Helper methods for Winery's Id system
@@ -22,17 +22,17 @@ public class IdUtil {
 
 	/**
 	 * Returns the namespace where the given Id is nested in. As the id is not a
-	 * TOSCAComponentId, it cannot be directly asked for its parent. Merely, the
+	 * DefinitionsChildId, it cannot be directly asked for its parent. Merely, the
 	 * parent has to be asked for its namespace. The parent, in turn, if it is
-	 * no TOSCAComponentId has to ask his parent.
+	 * no DefinitionsChildId has to ask his parent.
 	 *
 	 * @param id the id refering to an element, where the namespace has to be
 	 *            checked for
 	 * @return the namespace of the element denoted by id
 	 */
 	public static Namespace getNamespace(GenericId id) {
-		if (id instanceof TOSCAComponentId) {
-			return ((TOSCAComponentId) id).getNamespace();
+		if (id instanceof DefinitionsChildId) {
+			return ((DefinitionsChildId) id).getNamespace();
 		} else {
 			return IdUtil.getNamespace(id.getParent());
 		}
@@ -47,9 +47,9 @@ public class IdUtil {
 	 */
 	private static String getPathFragment(final GenericId id, final boolean doubleEncode) {
 		String toInsert;
-		if (id instanceof TOSCAComponentId) {
+		if (id instanceof DefinitionsChildId) {
 			// @return "[ComponentName]s/{namespace}/{id}/"
-			TOSCAComponentId tId = (TOSCAComponentId) id;
+			DefinitionsChildId tId = (DefinitionsChildId) id;
 			String res = Util.getRootPathFragment(tId.getClass());
 			toInsert = tId.getNamespace().getEncoded();
 			if (doubleEncode) {
@@ -62,7 +62,7 @@ public class IdUtil {
 			}
 			res = res + toInsert + "/";
 			return res;
-		} else if (id instanceof TOSCAElementId) {
+		} else if (id instanceof ToscaElementId) {
 			toInsert = id.getXmlId().getEncoded();
 			if (doubleEncode) {
 				toInsert = Util.URLencode(toInsert);

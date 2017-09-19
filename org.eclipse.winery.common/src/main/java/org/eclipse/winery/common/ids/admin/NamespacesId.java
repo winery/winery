@@ -12,11 +12,11 @@
 package org.eclipse.winery.common.ids.admin;
 
 import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 public class NamespacesId extends AdminId {
 
-	private final static XMLId xmlId = new XMLId(IdNames.NAMESPACES, false);
+	private final static XmlId xmlId = new XmlId(IdNames.NAMESPACES, false);
 
 
 	public NamespacesId() {

@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.admin;
 
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 public abstract class TypesId extends AdminId {
 
-	protected TypesId(XMLId xmlId) {
+	protected TypesId(XmlId xmlId) {
 		super(xmlId);
 	}
 

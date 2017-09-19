@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
@@ -50,7 +50,7 @@ public abstract class GenericVisualAppearanceResource {
 
 	protected final Map<QName, String> otherAttributes;
 	protected final TopologyGraphElementEntityTypeResource res;
-	protected final TOSCAElementId id;
+	protected final ToscaElementId id;
 
 
 	/**
@@ -80,7 +80,7 @@ public abstract class GenericVisualAppearanceResource {
 	}
 
 	//@JsonIgnore
-	public TOSCAElementId getId() {
+	public ToscaElementId getId() {
 		return this.id;
 	}
 

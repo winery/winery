@@ -791,7 +791,7 @@ public class Splitting {
 
 		TRelationshipType matchingRelationshipType = null;
 
-		SortedSet<RelationshipTypeId> relTypeIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(RelationshipTypeId.class);
+		SortedSet<RelationshipTypeId> relTypeIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(RelationshipTypeId.class);
 		List<TRelationshipType> relationshipTypes = new ArrayList<>();
 		for (RelationshipTypeId id : relTypeIds) {
 			relationshipTypes.add(RepositoryFactory.getRepository().getElement(id));

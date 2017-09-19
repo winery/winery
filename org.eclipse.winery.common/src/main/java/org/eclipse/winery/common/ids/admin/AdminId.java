@@ -12,7 +12,7 @@
 package org.eclipse.winery.common.ids.admin;
 
 import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 /**
  * The Id for the single admin resource holding administrative things such as
@@ -20,7 +20,7 @@ import org.eclipse.winery.common.ids.XMLId;
  */
 public abstract class AdminId extends GenericId {
 
-	protected AdminId(XMLId xmlId) {
+	protected AdminId(XmlId xmlId) {
 		super(xmlId);
 	}
 

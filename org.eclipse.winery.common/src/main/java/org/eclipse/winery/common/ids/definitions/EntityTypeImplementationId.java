@@ -12,11 +12,11 @@
 package org.eclipse.winery.common.ids.definitions;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
-public abstract class EntityTypeImplementationId extends TOSCAComponentId {
+public abstract class EntityTypeImplementationId extends DefinitionsChildId {
 
-	public EntityTypeImplementationId(Namespace namespace, XMLId xmlId) {
+	public EntityTypeImplementationId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);
 	}
 

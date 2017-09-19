@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public abstract class EntityTypeImplementationResource extends AbstractComponent
 	private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeImplementationResource.class);
 
 
-	protected EntityTypeImplementationResource(TOSCAComponentId id) {
+	protected EntityTypeImplementationResource(DefinitionsChildId id) {
 		super(id);
 	}
 

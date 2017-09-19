@@ -12,7 +12,7 @@
 package org.eclipse.winery.repository.rest.resources;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 
 public class TestIds {
@@ -21,6 +21,6 @@ public class TestIds {
 
 	public static final Namespace NS_TEST_FRUITS = new Namespace("http://winery.opentosca.org/test/nodetypes/fruits", false);
 
-	public static final NodeTypeId ID_FRUIT_BAOBAB = new NodeTypeId(NS_TEST_FRUITS, new XMLId("baobab", false));
+	public static final NodeTypeId ID_FRUIT_BAOBAB = new NodeTypeId(NS_TEST_FRUITS, new XmlId("baobab", false));
 
 }

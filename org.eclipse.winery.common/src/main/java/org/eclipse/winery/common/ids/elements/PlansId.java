@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.elements;
 
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 
 /**
@@ -19,10 +19,10 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
  *
  * results in the path "plans/"
  */
-public class PlansId extends TOSCAElementId {
+public class PlansId extends ToscaElementId {
 
 	public PlansId(ServiceTemplateId parent) {
-		super(parent, new XMLId("plans", true));
+		super(parent, new XmlId("plans", true));
 	}
 
 }

@@ -22,7 +22,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
@@ -83,7 +83,7 @@ public class PlanResource extends EntityWithIdResource<TPlan> implements IHasNam
 	private PlanId getId() {
 		ServiceTemplateId sId = (ServiceTemplateId) this.getServiceTemplateResource().getId();
 		PlansId psId = new PlansId(sId);
-		return new PlanId(psId, new XMLId(this.o.getId(), false));
+		return new PlanId(psId, new XmlId(this.o.getId(), false));
 	}
 
 	@Override

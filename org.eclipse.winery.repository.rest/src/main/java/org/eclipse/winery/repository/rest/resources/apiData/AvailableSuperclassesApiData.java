@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 
@@ -28,17 +28,17 @@ public class AvailableSuperclassesApiData {
 		this.generateList(res.getId().getClass(), res.getId());
 	}
 
-	public AvailableSuperclassesApiData(Class<? extends TOSCAComponentId> clazz) {
+	public AvailableSuperclassesApiData(Class<? extends DefinitionsChildId> clazz) {
 		this.generateList(clazz, null);
 	}
 
-	private void generateList(Class<? extends TOSCAComponentId> clazz, TOSCAComponentId classToExclude) {
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(clazz);
+	private void generateList(Class<? extends DefinitionsChildId> clazz, DefinitionsChildId classToExclude) {
+		SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(clazz);
 		if (classToExclude != null) {
-			allTOSCAcomponentIds.remove(classToExclude);
+			allDefinitionsChildIds.remove(classToExclude);
 		}
 		this.classes = new ArrayList<>();
-		for (TOSCAComponentId id : allTOSCAcomponentIds) {
+		for (DefinitionsChildId id : allDefinitionsChildIds) {
 			NameAndQNameApiData q = new NameAndQNameApiData(id);
 			this.classes.add(q);
 		}

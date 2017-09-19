@@ -38,7 +38,7 @@ Table of contents:
 - [Uniqueness of QNames](#uniqueness-of-qnames)
 - [Winery's Id System](#winerys-id-system)
   * [AdminId](#adminid)
-  * [TOSCAComponentId](#toscacomponentid)
+  * [DefinitionsChildId](#toscacomponentid)
   * [Filesystem Layout](#filesystem-layout)
   * [REST Resources](#rest-resources)
   * [URL Structure](#url-structure)
@@ -193,7 +193,7 @@ That means, it is not possible to specify custom definitions bundling a customiz
 Intentionally, a QName should be unique within the repository.
 We did not follow this assumption, but only require that QNames are unique within a type.
 That means, the repository allows `{http://www.example.org}id` for both a service template and a node type.
-We introduced TOSCAcomponentId uniquely identifying a TOSCA element.
+We introduced DefinitionsChildId uniquely identifying a TOSCA element.
 Future versions might redesign the backend to use a QName as the unique key.
 
 ## Winery's Id System
@@ -205,7 +205,7 @@ All Ids inherit from GenericId.
 Figure 2 shows the inheritance hierarchy of `GenericId`.
 The child `AdminId` is used for all administrative elements required for internal management.
 `DummyParentForGeneratedXSDRef` is required during the export of generated XML Schema Definitions due to the use of Winery's key/value properties.
-`TOSCAComponentId` is the parent element for all TOSCA Elements which may be defined directly as child of a "Definitions" element.
+`DefinitionsChildId` is the parent element for all TOSCA Elements which may be defined directly as child of a "Definitions" element.
 All other elements have "TOSCAElementId" as parent.
 
 ![GenericId Hierarchy](graphics/GenericIdHierarchy.png)  
@@ -224,14 +224,14 @@ Therefore, Winery manages all known types for itself.
 ![AdminId Hierarchy](graphics/AdminIdHierarchy.png)  
 **Figure 3: Inheritance hierarchy of AdminId**
 
-### TOSCAComponentId
+### DefinitionsChildId
 
 This Id class is used for all entities directly nested in a TDefinitions element. They all have a namespace and an
-id attribute. This is ensured by ToscaComponentId. Figure 4 shows the inheritance hierarchy for TOSCAComponentId.
+id attribute. This is ensured by DefinitionsChildId. Figure 4 shows the inheritance hierarchy for DefinitionsChildId.
 
 
 ![ComponentId Hierarchy](graphics/ComponentIdHierarchy.png)  
-**Figure 4: inheritance hierarchy of ToscaComponentId**
+**Figure 4: inheritance hierarchy of DefinitionsChildId**
 
 
 `EntityTemplateId` collects all Entity Templates directly nested in a Definitions element.

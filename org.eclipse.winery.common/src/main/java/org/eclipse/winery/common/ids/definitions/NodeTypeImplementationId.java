@@ -12,11 +12,11 @@
 package org.eclipse.winery.common.ids.definitions;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 public final class NodeTypeImplementationId extends EntityTypeImplementationId {
 
-	public NodeTypeImplementationId(Namespace namespace, XMLId xmlId) {
+	public NodeTypeImplementationId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);
 	}
 

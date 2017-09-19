@@ -22,9 +22,9 @@ import org.junit.Test;
 public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 
 	@Test
-	public void getAllTOSCAComponentIds() throws Exception {
+	public void getAllDefinitionsChildIds() throws Exception {
 		this.setRevisionTo("5fdcffa9ccd17743d5498cab0914081fc33606e9");
-		SortedSet<XSDImportId> allImports = this.repository.getAllTOSCAComponentIds(XSDImportId.class);
+		SortedSet<XSDImportId> allImports = this.repository.getAllDefinitionsChildIds(XSDImportId.class);
 		Assert.assertEquals(1, allImports.size());
 	}
 

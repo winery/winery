@@ -19,11 +19,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore("not finished - CSARExporterTest is currently the way to go")
-public class TOSCAExportUtilTest {
+public class ToscaExportUtilTest {
 
 	@Test
 	public void exportTOSCA() throws Exception {
-		TOSCAExportUtil exporter = new TOSCAExportUtil();
+		ToscaExportUtil exporter = new ToscaExportUtil();
 		// we include everything related
 		Map<String, Object> conf = new HashMap<>();
 		NullOutputStream out = new NullOutputStream();

@@ -14,11 +14,11 @@ package org.eclipse.winery.common.ids.definitions;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
-public abstract class EntityTypeId extends TOSCAComponentId {
+public abstract class EntityTypeId extends DefinitionsChildId {
 
-	public EntityTypeId(Namespace namespace, XMLId xmlId) {
+	public EntityTypeId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);
 	}
 

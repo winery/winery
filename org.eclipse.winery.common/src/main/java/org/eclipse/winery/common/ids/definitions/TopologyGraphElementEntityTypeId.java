@@ -14,14 +14,14 @@ package org.eclipse.winery.common.ids.definitions;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 /**
  * An instance of this class is either a NodeTypeId or a RelationShipTypeId
  */
 public abstract class TopologyGraphElementEntityTypeId extends EntityTypeId {
 
-	public TopologyGraphElementEntityTypeId(Namespace namespace, XMLId xmlId) {
+	public TopologyGraphElementEntityTypeId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);
 	}
 

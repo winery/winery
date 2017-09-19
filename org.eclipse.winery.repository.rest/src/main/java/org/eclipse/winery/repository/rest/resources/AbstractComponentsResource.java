@@ -38,7 +38,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Resource handling of a set of components. Each component has to provide a class to handle the set. This is required
- * to provide the correct instances of TOSCAcomponentIds.
+ * to provide the correct instances of DefinitionsChildIds.
  *
  * TODO: Add generics here! {@link RestUtils#getComponentIdClassForComponentContainer(java.lang.Class)} is then
  * obsolete
@@ -79,9 +79,9 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 			res = new ResourceCreationResult(Status.BAD_REQUEST);
 		} else {
 			String id = RestUtils.createXMLidAsString(name);
-			TOSCAComponentId tcId;
+			DefinitionsChildId tcId;
 			try {
-				tcId = this.getTOSCAcomponentId(namespace, id, false);
+				tcId = this.getDefinitionsChildId(namespace, id, false);
 				res = this.createComponentInstance(tcId);
 				// in case the resource additionally supports a name attribute, we set the original name
 				if (res.getStatus().equals(Status.CREATED)) {
@@ -101,13 +101,13 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	}
 
 	/**
-	 * Creates a TOSCAcomponentId for the given namespace / id combination
+	 * Creates a DefinitionsChildId for the given namespace / id combination
 	 *
 	 * Uses reflection to create a new instance
 	 */
-	protected TOSCAComponentId getTOSCAcomponentId(String namespace, String id, boolean URLencoded) {
-		Class<? extends TOSCAComponentId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
-		return BackendUtils.getTOSCAcomponentId(idClass, namespace, id, URLencoded);
+	protected DefinitionsChildId getDefinitionsChildId(String namespace, String id, boolean URLencoded) {
+		Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
+		return BackendUtils.getDefinitionsChildId(idClass, namespace, id, URLencoded);
 	}
 
 	/**
@@ -116,7 +116,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * @return <ul> <li>Status.CREATED (201) if the resource has been created,</li> <li>Status.CONFLICT if the resource
 	 * already exists,</li> <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li> </ul>
 	 */
-	protected ResourceCreationResult createComponentInstance(TOSCAComponentId tcId) {
+	protected ResourceCreationResult createComponentInstance(DefinitionsChildId tcId) {
 		return RestUtils.create(tcId);
 	}
 
@@ -153,9 +153,9 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 */
 	@SuppressWarnings("unchecked")
 	protected R getComponentInstaceResource(String namespace, String id, boolean encoded) {
-		TOSCAComponentId tcId;
+		DefinitionsChildId tcId;
 		try {
-			tcId = this.getTOSCAcomponentId(namespace, id, encoded);
+			tcId = this.getDefinitionsChildId(namespace, id, encoded);
 		} catch (Exception e) {
 			throw new IllegalStateException("Could not create id instance", e);
 		}
@@ -173,11 +173,11 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * @return an instance of the requested resource
 	 * @throws NotFoundException if resource doesn't exist.
 	 */
-	public static AbstractComponentInstanceResource getComponentInstaceResource(TOSCAComponentId tcId) {
+	public static AbstractComponentInstanceResource getComponentInstaceResource(DefinitionsChildId tcId) {
 		String type = Util.getTypeForComponentId(tcId.getClass());
 		if (!RepositoryFactory.getRepository().exists(tcId)) {
-			AbstractComponentsResource.LOGGER.debug("TOSCA component id " + tcId.toString() + " not found");
-			throw new NotFoundException("TOSCA component id " + tcId.toString() + " not found");
+			AbstractComponentsResource.LOGGER.debug("Definition child id " + tcId.toString() + " not found");
+			throw new NotFoundException("Definition child id " + tcId.toString() + " not found");
 		}
 		Class<? extends AbstractComponentInstanceResource> newResource = AbstractComponentsResource.getComponentInstanceResourceClassForType(type);
 		Constructor<?>[] constructors = newResource.getConstructors();
@@ -199,10 +199,10 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * Required by topologytemplateedit.jsp
 	 */
 	public Collection<AbstractComponentInstanceResource> getAll() {
-		Class<? extends TOSCAComponentId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(idClass);
-		ArrayList<AbstractComponentInstanceResource> res = new ArrayList<>(allTOSCAcomponentIds.size());
-		for (TOSCAComponentId id : allTOSCAcomponentIds) {
+		Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
+		SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(idClass);
+		ArrayList<AbstractComponentInstanceResource> res = new ArrayList<>(allDefinitionsChildIds.size());
+		for (DefinitionsChildId id : allDefinitionsChildIds) {
 			AbstractComponentInstanceResource r = AbstractComponentsResource.getComponentInstaceResource(id);
 			res.add(r);
 		}
@@ -222,9 +222,9 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getListOfAllIds(@QueryParam("grouped") String grouped) {
-		Class<? extends TOSCAComponentId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
+		Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
 		boolean supportsNameAttribute = Util.instanceSupportsNameAttribute(idClass);
-		SortedSet<? extends TOSCAComponentId> allTOSCAcomponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(idClass);
+		SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(idClass);
 		JsonFactory jsonFactory = new JsonFactory();
 		StringWriter sw = new StringWriter();
 		try {
@@ -233,7 +233,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 			// Refactoring could move this class to common and fill it here
 			if (grouped == null) {
 				jg.writeStartArray();
-				for (TOSCAComponentId id : allTOSCAcomponentIds) {
+				for (DefinitionsChildId id : allDefinitionsChildIds) {
 					jg.writeStartObject();
 					jg.writeStringField("namespace", id.getNamespace().getDecoded());
 					jg.writeStringField("id", id.getXmlId().getDecoded());
@@ -251,7 +251,7 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 				jg.writeEndArray();
 			} else {
 				jg.writeStartArray();
-				Map<Namespace, ? extends List<? extends TOSCAComponentId>> groupedIds = allTOSCAcomponentIds.stream().collect(Collectors.groupingBy(id -> id.getNamespace()));
+				Map<Namespace, ? extends List<? extends DefinitionsChildId>> groupedIds = allDefinitionsChildIds.stream().collect(Collectors.groupingBy(id -> id.getNamespace()));
 				groupedIds.keySet().stream().sorted().forEach(namespace -> {
 					try {
 						jg.writeStartObject();

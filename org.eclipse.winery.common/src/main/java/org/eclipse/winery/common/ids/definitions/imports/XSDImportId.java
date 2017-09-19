@@ -14,7 +14,7 @@ package org.eclipse.winery.common.ids.definitions.imports;
 import javax.xml.XMLConstants;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 /**
  * Models an import of type XML Schema Definition
@@ -27,7 +27,7 @@ public class XSDImportId extends GenericImportId {
 		super(ns, id, encoded, XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	}
 
-	public XSDImportId(Namespace ns, XMLId id) {
+	public XSDImportId(Namespace ns, XmlId id) {
 		super(ns, id, XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	}
 

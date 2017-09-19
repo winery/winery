@@ -74,7 +74,7 @@ public class ProviderRepository {
 			namespaceStr = NS_NAME_START + targetLocation.toLowerCase();
 		}
 
-		return RepositoryFactory.getRepository().getAllTOSCAComponentIds(ServiceTemplateId.class).stream()
+		return RepositoryFactory.getRepository().getAllDefinitionsChildIds(ServiceTemplateId.class).stream()
 				// get all service templates in the namespace
 				.filter(id -> id.getNamespace().getDecoded().toLowerCase().startsWith(namespaceStr))
 				// get all contained node templates

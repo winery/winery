@@ -12,12 +12,12 @@
 package org.eclipse.winery.repository.export;
 
 import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 public class DummyParentForGeneratedXSDRef extends GenericId {
 
 	protected DummyParentForGeneratedXSDRef() {
-		super(new XMLId("dummy", false));
+		super(new XmlId("dummy", false));
 	}
 
 	@Override

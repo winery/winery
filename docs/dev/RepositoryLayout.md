@@ -38,7 +38,7 @@ More information on encoding is given at [Encoding](Encoding).
 
 ## Typical layout
 
-Typically, all TOSCA components have the path `componenttype/ns/id`.
+Typically, all definitions children have the path `componenttype/ns/id`.
 
 The `component type` is nodetypes, relationshiptypes, servicetemplates, ...
 `ns` is the namespace.
@@ -81,7 +81,7 @@ Currently, ii is not implemented and the storage is used as mirror only to be ab
 a) offer choice of known XML Schema definitions
 b) generate a UI for known XML Schemas (current idea: use http://sourceforge.net/projects/xsd2gui/)
 
-Typically, all TOSCA components have the path `componenttype/ns/id`.
+Typically, all definitions children have the path `type/ns/id`.
 We add `imports` before to group the imports.
 The chosen ordering allows to present all available imports for a given import type
 by just querying the contents of `<encoded importtype>`.

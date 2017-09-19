@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 
-public class ArtifactTemplateDirectoryId extends TOSCAElementId {
+public class ArtifactTemplateDirectoryId extends ToscaElementId {
 
 
 	public ArtifactTemplateDirectoryId(ArtifactTemplateId parent, String directoryId) {
-		super(parent, new XMLId(directoryId, false));
+		super(parent, new XmlId(directoryId, false));
 	}
 }
