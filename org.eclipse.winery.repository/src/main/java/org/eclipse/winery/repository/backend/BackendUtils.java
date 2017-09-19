@@ -60,6 +60,7 @@ import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
@@ -69,7 +70,6 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
@@ -433,9 +433,9 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Creates a new TDefintions element wrapping a definition child. The namespace of the tosca component is
-	 * used as namespace and {@code winery-defs-for-} concatenated with the (unique) ns prefix and idOfContainedElement
-	 * is used as id
+	 * Creates a new TDefintions element wrapping a definition child. The namespace of the tosca component is used as
+	 * namespace and {@code winery-defs-for-} concatenated with the (unique) ns prefix and idOfContainedElement is used
+	 * as id
 	 *
 	 * @param tcId the id of the element the wrapper is used for
 	 * @param defs the definitions to update
@@ -853,7 +853,8 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Converts the given collection of definition children Ids to a collection of QNames by using the getQName() method.
+	 * Converts the given collection of definition children Ids to a collection of QNames by using the getQName()
+	 * method.
 	 *
 	 * This is required for QNameChooser.tag
 	 */
@@ -1195,5 +1196,4 @@ public class BackendUtils {
 			}
 		};
 	}
-
 }

@@ -49,8 +49,6 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationI
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.elements.PlanId;
-import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -495,7 +493,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 
 		return ids;
 	}
-	
+
 	default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(ServiceTemplateId id) {
 		// We have to use a HashSet to ensure that no duplicate ids are added
 		// E.g., there may be multiple relationship templates having the same type
@@ -596,7 +594,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 			referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ArtifactTemplateId) id);
 		} else if (id instanceof PolicyTemplateId) {
 			referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((PolicyTemplateId) id);
-		} else if (id instanceof GenericImportId || id instanceof PolicyTypeId || id instanceof  CapabilityTypeId) {
+		} else if (id instanceof GenericImportId || id instanceof PolicyTypeId || id instanceof CapabilityTypeId) {
 			// in case of imports, policy types, and capability types, there are no other ids referenced
 			referencedDefinitionsChildIds = Collections.emptyList();
 		} else {
