@@ -22,7 +22,7 @@ The `SectionComponent` is responsible for displaying all instances available for
 components and group them by namespace.
 
 ### Other
-The `OtherComponent` only provides some links to reach all tosca components.
+The `OtherComponent` only provides some links to reach all definitions children.
 
 ### Instance
 The `InstanceComponent` is a container to display all TOSCA specific content, including the admin section, equally.
@@ -34,10 +34,10 @@ Components for the management of the repository are declared here. Internally, t
 (`winery-instance-type-with-short-name`) which gets the backend-urls depending on the current route. 
 
 #### ArtifactTemplates, ..., ServiceTemplates
-Here, all components specific to one TOSCA component are declared.
+Here, all components specific to one definitions children are declared.
 
 #### Shared Components
-All components which are used in more than one TOSCA component are declared here.
+All components which are used in more than one definitions children are declared here.
 
 ### Winery Modules
 There are some modules which are used in almost every component, like the `WineryModalModule` or `WineryNotificationService`.

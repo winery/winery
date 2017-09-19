@@ -24,7 +24,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
@@ -120,7 +120,7 @@ public class PlansResource extends EntityWithIdCollectionResource<PlanResource, 
 		if (uploadedInputStream != null || bpmn4toscaMode) {
 			// Determine Id
 			PlansId plansId = new PlansId((ServiceTemplateId) ((ServiceTemplateResource) this.res).getId());
-			PlanId planId = new PlanId(plansId, new XMLId(tPlan.getId(), false));
+			PlanId planId = new PlanId(plansId, new XmlId(tPlan.getId(), false));
 			// Ensure overwriting
 			if (RepositoryFactory.getRepository().exists(planId)) {
 				try {

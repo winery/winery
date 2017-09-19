@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.datatypes.ids.elements;
 
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 
-public class SelfServiceMetaDataId extends TOSCAElementId {
+public class SelfServiceMetaDataId extends ToscaElementId {
 
 	public SelfServiceMetaDataId(ServiceTemplateId parent) {
-		super(parent, new XMLId("SELFSERVICE-Metadata", true));
+		super(parent, new XmlId("SELFSERVICE-Metadata", true));
 	}
 
 }

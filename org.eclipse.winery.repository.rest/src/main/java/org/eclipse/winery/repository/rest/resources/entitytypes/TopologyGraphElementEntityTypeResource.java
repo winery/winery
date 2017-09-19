@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 
 public abstract class TopologyGraphElementEntityTypeResource extends EntityTypeResource {
 
-	protected TopologyGraphElementEntityTypeResource(TOSCAComponentId id) {
+	protected TopologyGraphElementEntityTypeResource(DefinitionsChildId id) {
 		super(id);
 	}
 

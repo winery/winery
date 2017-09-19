@@ -20,7 +20,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
+import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.configuration.Environment;
@@ -107,7 +107,7 @@ public class Prefs implements ServletContextListener {
 		// If we do not do it here, the first save by a user takes a few seconds, which is inconvenient
 		Prefs.LOGGER.debug("Initializing XML validation");
 		@SuppressWarnings("unused")
-		TOSCADocumentBuilderFactory tdbf = TOSCADocumentBuilderFactory.INSTANCE;
+		ToscaDocumentBuilderFactory tdbf = ToscaDocumentBuilderFactory.INSTANCE;
 		Prefs.LOGGER.debug("Initialized XML validation");
 	}
 

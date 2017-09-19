@@ -32,6 +32,8 @@ public abstract class AbstractAdminResource {
 	private final AdminId id;
 
 	/**
+	 * Constructor used by child classes.
+	 * 
 	 * @param id the id of the element rendered by this resource
 	 */
 	protected AbstractAdminResource(AdminId id) {

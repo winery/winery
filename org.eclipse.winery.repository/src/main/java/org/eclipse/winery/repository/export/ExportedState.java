@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Queue;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 
 /**
  * Holds the state of ids regarding the export <br />
@@ -29,19 +29,19 @@ import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
  */
 public class ExportedState {
 
-	private final Collection<TOSCAComponentId> exported = new HashSet<>();
-	private final Queue<TOSCAComponentId> exportRequired = new ArrayDeque<>();
+	private final Collection<DefinitionsChildId> exported = new HashSet<>();
+	private final Queue<DefinitionsChildId> exportRequired = new ArrayDeque<>();
 
 
 	/**
-	 * @return the first tosca component id to be exported, null if no more
+	 * @return the first definition child id to be exported, null if no more
 	 *         elements are in the queue
 	 */
-	public TOSCAComponentId pop() {
+	public DefinitionsChildId pop() {
 		return this.exportRequired.poll();
 	}
 
-	public void flagAsExported(TOSCAComponentId id) {
+	public void flagAsExported(DefinitionsChildId id) {
 		this.exportRequired.remove(id);
 		this.exported.add(id);
 	}
@@ -51,14 +51,14 @@ public class ExportedState {
 	 *
 	 * @param id the id to flag
 	 */
-	public void flagAsExportRequired(TOSCAComponentId id) {
+	public void flagAsExportRequired(DefinitionsChildId id) {
 		if (!this.exported.contains(id)) {
 			this.exportRequired.add(id);
 		}
 	}
 
-	public void flagAsExportRequired(Collection<TOSCAComponentId> ids) {
-		for (TOSCAComponentId id : ids) {
+	public void flagAsExportRequired(Collection<DefinitionsChildId> ids) {
+		for (DefinitionsChildId id : ids) {
 			if ((!this.exported.contains(id)) && (!this.exportRequired.contains(id))) {
 				this.exportRequired.add(id);
 			}

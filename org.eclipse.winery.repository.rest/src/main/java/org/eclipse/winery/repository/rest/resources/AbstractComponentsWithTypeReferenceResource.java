@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -49,7 +49,7 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 			return creationResult.getResponse();
 		}
 		if (creationResult.getStatus().equals(Status.CREATED)) {
-			final TOSCAComponentId id = (TOSCAComponentId) creationResult.getId();
+			final DefinitionsChildId id = (DefinitionsChildId) creationResult.getId();
 			final Definitions definitions = RepositoryFactory.getRepository().getDefinitions(id);
 			final HasType element = (HasType) definitions.getElement();
 			element.setType(jsonData.type);

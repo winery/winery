@@ -46,13 +46,13 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
@@ -93,7 +93,7 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDire
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
-import org.eclipse.winery.repository.export.CSARExporter;
+import org.eclipse.winery.repository.export.CsarExporter;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -243,7 +243,7 @@ public class CSARImporter {
 	 */
 	private void importNamespacePrefixes(Path rootPath) {
 		NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
-		Path properties = rootPath.resolve(CSARExporter.PATH_TO_NAMESPACES_PROPERTIES);
+		Path properties = rootPath.resolve(CsarExporter.PATH_TO_NAMESPACES_PROPERTIES);
 		if (Files.exists(properties)) {
 			PropertiesConfiguration pconf;
 			try {
@@ -426,8 +426,8 @@ public class CSARImporter {
 			String id = ModelUtilities.getId(ci);
 
 			// Determine WineryId
-			Class<? extends TOSCAComponentId> widClass = Util.getComponentIdClassForTExtensibleElements(ci.getClass());
-			final TOSCAComponentId wid = BackendUtils.getTOSCAcomponentId(widClass, namespace, id, false);
+			Class<? extends DefinitionsChildId> widClass = Util.getComponentIdClassForTExtensibleElements(ci.getClass());
+			final DefinitionsChildId wid = BackendUtils.getDefinitionsChildId(widClass, namespace, id, false);
 
 			if (RepositoryFactory.getRepository().exists(wid)) {
 				if (overwrite) {
@@ -507,7 +507,7 @@ public class CSARImporter {
 					id = id + "-" + Integer.toHexString(element.hashCode());
 
 					// set importId
-					TOSCAComponentId importId;
+					DefinitionsChildId importId;
 					String ns;
 					if (element.getNamespaceURI().equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
 						ns = element.getAttribute("targetNamespace");
@@ -676,7 +676,7 @@ public class CSARImporter {
 							}
 						}
 						PlansId plansId = new PlansId(wid);
-						PlanId pid = new PlanId(plansId, new XMLId(plan.getId(), false));
+						PlanId pid = new PlanId(plansId, new XmlId(plan.getId(), false));
 						if (Files.isDirectory(path)) {
 							errors.add(String.format("Reference %1$s is a directory and Winery currently does not support importing directories", ref));
 							continue;
@@ -1111,7 +1111,7 @@ public class CSARImporter {
 		}
 	}
 
-	private static void storeDefinitions(TOSCAComponentId id, TDefinitions defs) {
+	private static void storeDefinitions(DefinitionsChildId id, TDefinitions defs) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		String s = BackendUtils.getXMLAsString(defs, true);
 		try {

@@ -75,7 +75,7 @@ public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenc
 	 * This is more a DAO method
 	 */
 	public ArtifactTypeResource getArtifactTypeForExtension(String extension) {
-		SortedSet<ArtifactTypeId> allArtifactTypeIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(ArtifactTypeId.class);
+		SortedSet<ArtifactTypeId> allArtifactTypeIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(ArtifactTypeId.class);
 		ArtifactTypeResource res = null;
 		for (ArtifactTypeId id : allArtifactTypeIds) {
 			ArtifactTypeResource r = new ArtifactTypeResource(id);

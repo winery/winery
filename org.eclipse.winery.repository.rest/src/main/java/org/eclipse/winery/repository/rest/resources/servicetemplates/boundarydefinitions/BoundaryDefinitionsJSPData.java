@@ -102,8 +102,8 @@ public class BoundaryDefinitionsJSPData {
 	}
 
 	public Collection<QName> getAllPolicyTypes() {
-		SortedSet<PolicyTypeId> allTOSCAComponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(PolicyTypeId.class);
-		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
+		SortedSet<PolicyTypeId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(PolicyTypeId.class);
+		return BackendUtils.convertDefinitionsChildIdCollectionToQNameCollection(allDefinitionsChildIds);
 	}
 
 	public String getRepositoryURL() {

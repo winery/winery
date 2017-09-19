@@ -30,7 +30,7 @@ One has no global control which names are given to Node Types.
 Thus, there might be two different Node Types with the same name.
 The namespaces provide a natural structuring and Winery reuses this idea.
 
-The *third structuring element* are the ids of the respective TOSCA component (type, template, ...):
+The *third structuring element* are the ids of the respective definitions child (type, template, ...):
 Each element has an id contained in the respective namespace.
 This id can be directly used as folder name.
 

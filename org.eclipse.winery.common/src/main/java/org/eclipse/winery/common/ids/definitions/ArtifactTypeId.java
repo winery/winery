@@ -16,11 +16,11 @@ import java.util.Objects;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 public class ArtifactTypeId extends EntityTypeId {
 
-	public ArtifactTypeId(Namespace namespace, XMLId xmlId) {
+	public ArtifactTypeId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);
 	}
 
@@ -29,7 +29,7 @@ public class ArtifactTypeId extends EntityTypeId {
 	}
 
 	public ArtifactTypeId(QName qname) {
-		this(new Namespace(Objects.requireNonNull(qname).getNamespaceURI(), false), new XMLId(Objects.requireNonNull(qname).getLocalPart(), false));
+		this(new Namespace(Objects.requireNonNull(qname).getNamespaceURI(), false), new XmlId(Objects.requireNonNull(qname).getLocalPart(), false));
 	}
 
 }

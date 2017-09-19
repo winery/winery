@@ -12,19 +12,19 @@
 package org.eclipse.winery.common.ids.elements;
 
 import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 /**
- * Models an ID of a TOSCA element, which is NOT a TOSCAcomponentId
+ * Models an ID of a TOSCA element, which is NOT a DefinitionsChildId
  *
  * It has a parent and an xmlId
  */
-public abstract class TOSCAElementId extends GenericId {
+public abstract class ToscaElementId extends GenericId {
 
 	private final GenericId parent;
 
 
-	public TOSCAElementId(GenericId parent, XMLId xmlId) {
+	public ToscaElementId(GenericId parent, XmlId xmlId) {
 		super(xmlId);
 		this.parent = parent;
 	}
@@ -36,8 +36,8 @@ public abstract class TOSCAElementId extends GenericId {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof TOSCAElementId) {
-			TOSCAElementId otherId = (TOSCAElementId) obj;
+		if (obj instanceof ToscaElementId) {
+			ToscaElementId otherId = (ToscaElementId) obj;
 			// the XML id has to be equal and the parents have to be equal
 			return (otherId.getXmlId().equals(this.getXmlId())) && (otherId.getParent().equals(this.getParent()));
 		} else {
@@ -47,8 +47,8 @@ public abstract class TOSCAElementId extends GenericId {
 
 	@Override
 	public int compareTo(GenericId o1) {
-		if (o1 instanceof TOSCAElementId) {
-			TOSCAElementId o = (TOSCAElementId) o1;
+		if (o1 instanceof ToscaElementId) {
+			ToscaElementId o = (ToscaElementId) o1;
 			if (this.getParent().equals(o.getParent())) {
 				return this.getXmlId().compareTo(o.getXmlId());
 			} else {

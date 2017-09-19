@@ -57,7 +57,7 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 
 		// implemented using a straight-forward solution: get ALL XSD definitions and filter out the matching ones
 
-		Set<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
+		Set<XSDImportId> allImports = RepositoryFactory.getRepository().getAllDefinitionsChildIds(XSDImportId.class);
 		return allImports.stream().filter(imp -> imp.getNamespace().equals(namespace)).collect(Collectors.toSet());
 	}
 
@@ -165,7 +165,7 @@ public class RepositoryBasedXsdImportManager implements XsdImportManager {
 	private List<NamespaceAndDefinedLocalNames> getAllXsdDefinitions(boolean getType) {
 		MutableMultimap<Namespace, String> data = Multimaps.mutable.list.empty();
 
-		SortedSet<XSDImportId> allImports = RepositoryFactory.getRepository().getAllTOSCAComponentIds(XSDImportId.class);
+		SortedSet<XSDImportId> allImports = RepositoryFactory.getRepository().getAllDefinitionsChildIds(XSDImportId.class);
 
 		for (XSDImportId id : allImports) {
 			final List<String> allDefinedLocalNames = getAllDefinedLocalNames(id, getType);

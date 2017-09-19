@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -34,7 +34,7 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.properties.Prope
 
 public abstract class EntityTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
 
-	protected EntityTypeResource(TOSCAComponentId id) {
+	protected EntityTypeResource(DefinitionsChildId id) {
 		super(id);
 	}
 
@@ -57,12 +57,12 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 	/**
 	 * Used by children to implement getListOfAllInstances()
 	 */
-	protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends TOSCAComponentId> clazz) throws RepositoryCorruptException {
+	protected SortedSet<Select2OptGroup> getListOfAllInstances(Class<? extends DefinitionsChildId> clazz) throws RepositoryCorruptException {
 		Select2DataWithOptGroups data = new Select2DataWithOptGroups();
 
-		Collection<? extends TOSCAComponentId> instanceIds = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(clazz, this.id.getQName());
+		Collection<? extends DefinitionsChildId> instanceIds = RepositoryFactory.getRepository().getAllElementsReferencingGivenType(clazz, this.id.getQName());
 
-		for (TOSCAComponentId instanceId : instanceIds) {
+		for (DefinitionsChildId instanceId : instanceIds) {
 			String groupText = instanceId.getNamespace().getDecoded();
 			String text = BackendUtils.getName(instanceId);
 			data.add(groupText, instanceId.getQName().toString(), text);

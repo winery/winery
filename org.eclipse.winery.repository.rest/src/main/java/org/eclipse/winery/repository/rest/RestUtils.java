@@ -52,11 +52,11 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
@@ -78,8 +78,8 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.export.CSARExporter;
-import org.eclipse.winery.repository.export.TOSCAExportUtil;
+import org.eclipse.winery.repository.export.CsarExporter;
+import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
@@ -153,8 +153,8 @@ public class RestUtils {
 	 * Valid NCNames: http://www.w3.org/TR/REC-xml-names/#NT-NCName / http://www.w3.org/TR/xml/#NT-Name
 	 * http://www.w3.org/TR/xml/#NT-Name
 	 */
-	public static XMLId createXMLid(String name) {
-		return new XMLId(RestUtils.createXMLidAsString(name), false);
+	public static XmlId createXMLid(String name) {
+		return new XmlId(RestUtils.createXMLidAsString(name), false);
 	}
 
 	/**
@@ -190,12 +190,12 @@ public class RestUtils {
 	 * Returns the plain XML for the selected resource
 	 */
 	public static Response getDefinitionsOfSelectedResource(final AbstractComponentInstanceResource resource, final URI uri) {
-		final TOSCAExportUtil exporter = new TOSCAExportUtil();
+		final ToscaExportUtil exporter = new ToscaExportUtil();
 		StreamingOutput so = output -> {
 			Map<String, Object> conf = new HashMap<>();
-			conf.put(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
+			conf.put(ToscaExportUtil.ExportProperties.REPOSITORY_URI.toString(), uri);
 			try {
-				exporter.exportTOSCA(resource.getId(), output, conf);
+				exporter.exportTOSCA(RepositoryFactory.getRepository(), resource.getId(), output, conf);
 			} catch (Exception e) {
 				throw new WebApplicationException(e);
 			}
@@ -217,10 +217,10 @@ public class RestUtils {
 	}
 
 	public static Response getCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
-		final CSARExporter exporter = new CSARExporter();
+		final CsarExporter exporter = new CsarExporter();
 		StreamingOutput so = output -> {
 			try {
-				exporter.writeCSAR(resource.getId(), output);
+				exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output);
 			} catch (Exception e) {
 				throw new WebApplicationException(e);
 			}
@@ -278,7 +278,7 @@ public class RestUtils {
 	/**
 	 * Returns a class object for ids of components nested in the given AbstractComponentsResource
 	 */
-	public static Class<? extends TOSCAComponentId> getComponentIdClassForComponentContainer(Class<? extends AbstractComponentsResource> containerClass) {
+	public static Class<? extends DefinitionsChildId> getComponentIdClassForComponentContainer(Class<? extends AbstractComponentsResource> containerClass) {
 		// the name of the id class is the type + "Id"
 		String idClassName = RestUtils.getTypeForComponentContainer(containerClass) + "Id";
 
@@ -327,7 +327,7 @@ public class RestUtils {
 	 * @param id the id to create an <code>a href</code> element for
 	 * @return an <code>a</code> HTML element pointing to the given id
 	 */
-	public static String getHREF(TOSCAComponentId id) {
+	public static String getHREF(DefinitionsChildId id) {
 		return "<a href=\"" + Environment.getUrlConfiguration().getRepositoryUiUrl() + "/" + Util.getUrlPath(id) + "\">" + Functions.escapeXml(id.getXmlId().getDecoded()) + "</a>";
 	}
 
@@ -466,19 +466,19 @@ public class RestUtils {
 		RestUtils.LOGGER.debug("className: {}", instanceResourceClassName);
 
 		// Get instance of id class having "type" as id
-		Class<? extends TOSCAComponentId> idClass;
+		Class<? extends DefinitionsChildId> idClass;
 		try {
-			idClass = (Class<? extends TOSCAComponentId>) Class.forName(idClassName);
+			idClass = (Class<? extends DefinitionsChildId>) Class.forName(idClassName);
 		} catch (ClassNotFoundException e) {
 			throw new IllegalStateException("Could not determine id class", e);
 		}
-		Constructor<? extends TOSCAComponentId> idConstructor;
+		Constructor<? extends DefinitionsChildId> idConstructor;
 		try {
 			idConstructor = idClass.getConstructor(QName.class);
 		} catch (NoSuchMethodException | SecurityException e) {
 			throw new IllegalStateException("Could not get QName id constructor", e);
 		}
-		TOSCAComponentId typeId;
+		DefinitionsChildId typeId;
 		try {
 			typeId = idConstructor.newInstance(type);
 		} catch (InstantiationException | IllegalAccessException
@@ -733,7 +733,7 @@ public class RestUtils {
 		return Response.noContent();
 	}
 
-	public static Response rename(TOSCAComponentId oldId, TOSCAComponentId newId) {
+	public static Response rename(DefinitionsChildId oldId, DefinitionsChildId newId) {
 		try {
 			RepositoryFactory.getRepository().rename(oldId, newId);
 		} catch (IOException e) {
@@ -748,10 +748,10 @@ public class RestUtils {
 	/**
 	 * Deletes the whole namespace in the component
 	 */
-	public static Response delete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, String namespaceStr) {
+	public static Response delete(Class<? extends DefinitionsChildId> definitionsChildIdClazz, String namespaceStr) {
 		Namespace namespace = new Namespace(namespaceStr, true);
 		try {
-			RepositoryFactory.getRepository().forceDelete(toscaComponentIdClazz, namespace);
+			RepositoryFactory.getRepository().forceDelete(definitionsChildIdClazz, namespace);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 			return Response.serverError().entity(e.getMessage()).build();
@@ -816,18 +816,18 @@ public class RestUtils {
 				// Does not work: String path = Environment.getUrlConfiguration().getRepositoryApiUrl()
 				// + "/" +
 				// Utils.getUrlPathForPathInsideRepo(id.getPathInsideRepo());
-				// We distinguish between two cases: TOSCAcomponentId and
+				// We distinguish between two cases: DefinitionsChildId and
 				// TOSCAelementId
 				// @formatter:on
 				String path;
-				if (id instanceof TOSCAComponentId) {
+				if (id instanceof DefinitionsChildId) {
 					// here, we return namespace + id, as it is only possible to
-					// post on the TOSCA component*s* resource to create an
-					// instance of a TOSCA component
-					TOSCAComponentId tcId = (TOSCAComponentId) id;
+					// post on the definition child*s* resource to create an
+					// instance of a definition child
+					DefinitionsChildId tcId = (DefinitionsChildId) id;
 					path = tcId.getNamespace().getEncoded() + "/" + tcId.getXmlId().getEncoded() + "/";
 				} else {
-					assert (id instanceof TOSCAElementId);
+					assert (id instanceof ToscaElementId);
 					// We just return the id as we assume that only the parent
 					// of this id may create sub elements
 					path = id.getXmlId().getEncoded() + "/";
@@ -987,7 +987,7 @@ public class RestUtils {
 	 * @return the QName of the associated type
 	 */
 	public static QName getType(IPersistable res) {
-		TOSCAComponentId id = (TOSCAComponentId) res.getRepositoryFileReference().getParent();
+		DefinitionsChildId id = (DefinitionsChildId) res.getRepositoryFileReference().getParent();
 		final HasType element = (HasType) RepositoryFactory.getRepository().getDefinitions(id).getElement();
 		return element.getTypeAsQName();
 	}

@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TEntityType.DerivedFrom;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -45,7 +45,7 @@ public abstract class AbstractComponentInstanceResourceWithNameDerivedFromAbstra
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal.class);
 
-	protected AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal(TOSCAComponentId id) {
+	protected AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal(DefinitionsChildId id) {
 		super(id);
 	}
 

@@ -37,7 +37,7 @@ public class CapabilityDefinitionsResource extends RequirementOrCapabilityDefini
 
 	@Override
 	public Collection<QName> getAllTypes() {
-		SortedSet<CapabilityTypeId> allTOSCAComponentIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(CapabilityTypeId.class);
-		return BackendUtils.convertTOSCAComponentIdCollectionToQNameCollection(allTOSCAComponentIds);
+		SortedSet<CapabilityTypeId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(CapabilityTypeId.class);
+		return BackendUtils.convertDefinitionsChildIdCollectionToQNameCollection(allDefinitionsChildIds);
 	}
 }

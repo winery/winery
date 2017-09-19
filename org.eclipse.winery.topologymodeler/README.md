@@ -21,7 +21,7 @@ This code is in a prototypcial status. These are the main issues:
 
 ### Trouble shooting
 When the topology modeler does not fully load (i.e., a white background is still there), look at the TOMCAT log file (of the repository).
-You'll see something like `TOSCA component id class org.eclipse.winery.common.ids.definitions.NodeTypeId / {http://www.example.org/tosca/nodetypes}VirtualMachine not found`.
+You'll see something like `Definitions Child id class org.eclipse.winery.common.ids.definitions.NodeTypeId / {http://www.example.org/tosca/nodetypes}VirtualMachine not found`.
 This is in indicator that you manually edited a `.definitions` file and did not change the location in the repository.
 The directory structure and the namespace and id/name settings in the `.definitions` file have to be in sync.
 As quick solution, you can open the type, switch to the XML tab and press "Save".

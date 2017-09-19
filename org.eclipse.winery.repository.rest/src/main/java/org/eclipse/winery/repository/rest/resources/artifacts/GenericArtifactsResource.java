@@ -44,11 +44,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.generators.ia.Generator;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
@@ -169,7 +169,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			// no auto creation
 			if (!StringUtils.isEmpty(apiData.artifactTemplateName) && !StringUtils.isEmpty(apiData.artifactTemplateNamespace)) {
 				QName artifactTemplateQName = new QName(apiData.artifactTemplateNamespace, apiData.artifactTemplateName);
-				artifactTemplateId = BackendUtils.getTOSCAcomponentId(ArtifactTemplateId.class, artifactTemplateQName);
+				artifactTemplateId = BackendUtils.getDefinitionsChildId(ArtifactTemplateId.class, artifactTemplateQName);
 			}
 			if (StringUtils.isEmpty(apiData.artifactType)) {
 				// derive the type from the artifact template
@@ -177,10 +177,10 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 					return Response.status(Status.NOT_ACCEPTABLE).entity("No artifactTemplate and no artifactType provided. Deriving the artifactType is not possible.").build();
 				}
 				@NonNull final QName type = RepositoryFactory.getRepository().getElement(artifactTemplateId).getType();
-				artifactTypeId = BackendUtils.getTOSCAcomponentId(ArtifactTypeId.class, type);
+				artifactTypeId = BackendUtils.getDefinitionsChildId(ArtifactTypeId.class, type);
 			} else {
 				// artifactTypeStr is directly given, use that
-				artifactTypeId = BackendUtils.getTOSCAcomponentId(ArtifactTypeId.class, apiData.artifactType);
+				artifactTypeId = BackendUtils.getDefinitionsChildId(ArtifactTypeId.class, apiData.artifactType);
 			}
 		} else {
 			// do the artifact template auto creation magic
@@ -190,7 +190,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			}
 
 			// we assume that the type points to a valid artifact type
-			artifactTypeId = BackendUtils.getTOSCAcomponentId(ArtifactTypeId.class, apiData.artifactType);
+			artifactTypeId = BackendUtils.getDefinitionsChildId(ArtifactTypeId.class, apiData.artifactType);
 
 			if (StringUtils.isEmpty(apiData.artifactTemplateName) || StringUtils.isEmpty(apiData.artifactTemplateNamespace)) {
 				// no explicit name provided
@@ -201,7 +201,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				// element
 				Namespace namespace = this.resWithNamespace.getNamespace();
 
-				artifactTemplateId = new ArtifactTemplateId(namespace, new XMLId(apiData.artifactName + "artifactTemplate", false));
+				artifactTemplateId = new ArtifactTemplateId(namespace, new XmlId(apiData.artifactName + "artifactTemplate", false));
 			} else {
 				QName artifactTemplateQName = new QName(apiData.artifactTemplateNamespace, apiData.artifactTemplateName);
 				artifactTemplateId = new ArtifactTemplateId(artifactTemplateQName);
@@ -389,7 +389,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		return Response.created(url).build();
 	}
 
-	private void storeProperties(ArtifactTemplateResource artifactTemplateResource, TOSCAComponentId typeId, String name) {
+	private void storeProperties(ArtifactTemplateResource artifactTemplateResource, DefinitionsChildId typeId, String name) {
 		// We generate the properties by hand instead of using JAX-B as using JAX-B causes issues at org.eclipse.winery.common.ModelUtilities.getPropertiesKV(TEntityTemplate):
 		// getAny() does not always return "w3c.dom.element" anymore
 
@@ -432,7 +432,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 * @return list of known artifact types.
 	 */
 	public List<QName> getAllArtifactTypes() {
-		SortedSet<ArtifactTypeId> allArtifactTypes = RepositoryFactory.getRepository().getAllTOSCAComponentIds(ArtifactTypeId.class);
+		SortedSet<ArtifactTypeId> allArtifactTypes = RepositoryFactory.getRepository().getAllDefinitionsChildIds(ArtifactTypeId.class);
 		List<QName> res = new ArrayList<>(allArtifactTypes.size());
 		for (ArtifactTypeId id : allArtifactTypes) {
 			res.add(id.getQName());

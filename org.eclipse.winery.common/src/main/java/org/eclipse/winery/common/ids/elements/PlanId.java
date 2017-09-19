@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.elements;
 
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
-public class PlanId extends TOSCAElementId {
+public class PlanId extends ToscaElementId {
 
-	public PlanId(PlansId parent, XMLId xmlId) {
+	public PlanId(PlansId parent, XmlId xmlId) {
 		super(parent, xmlId);
 	}
 

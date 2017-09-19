@@ -12,11 +12,11 @@
 package org.eclipse.winery.common.ids.admin;
 
 import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 public class ConstraintTypesId extends TypesId {
 
-	private final static XMLId xmlId = new XMLId(IdNames.CONSTRAINTTYPES, false);
+	private final static XmlId xmlId = new XmlId(IdNames.CONSTRAINTTYPES, false);
 
 
 	public ConstraintTypesId() {

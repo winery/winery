@@ -155,7 +155,7 @@ public class DASpecification {
 	
 	private static List<TNodeTypeImplementation> getmatchingNodeTypeImplementations (QName nodeTypeQName) {
 		final IRepository repository = RepositoryFactory.getRepository();
-		return repository.getAllTOSCAComponentIds(NodeTypeImplementationId.class).stream()
+		return repository.getAllDefinitionsChildIds(NodeTypeImplementationId.class).stream()
 				.map(id -> repository.getElement(id))	
 				.filter(nti -> nti.getNodeType().equals(nodeTypeQName))
 				.collect(Collectors.toList());

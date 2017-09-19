@@ -15,12 +15,12 @@ import java.io.IOException;
 
 import javax.ws.rs.WebApplicationException;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
 
 public abstract class AbstractComponentInstanceWithReferencesResource extends AbstractComponentInstanceResource {
 
-	protected AbstractComponentInstanceWithReferencesResource(TOSCAComponentId id) {
+	protected AbstractComponentInstanceWithReferencesResource(DefinitionsChildId id) {
 		super(id);
 	}
 

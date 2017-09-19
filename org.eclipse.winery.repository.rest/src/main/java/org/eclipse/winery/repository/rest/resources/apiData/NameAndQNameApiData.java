@@ -13,7 +13,7 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 
 public class NameAndQNameApiData {
 	public String name;
@@ -22,7 +22,7 @@ public class NameAndQNameApiData {
 	public NameAndQNameApiData() {
 	}
 
-	public NameAndQNameApiData(TOSCAComponentId id) {
+	public NameAndQNameApiData(DefinitionsChildId id) {
 		this.name = id.getXmlId().getDecoded();
 		this.qName = id.getQName();
 	}

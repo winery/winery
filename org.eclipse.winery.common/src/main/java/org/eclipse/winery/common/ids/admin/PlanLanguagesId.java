@@ -12,11 +12,11 @@
 package org.eclipse.winery.common.ids.admin;
 
 import org.eclipse.winery.common.ids.IdNames;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 public class PlanLanguagesId extends TypesId {
 
-	private final static XMLId xmlId = new XMLId(IdNames.PLANLANGUAGES, false);
+	private final static XmlId xmlId = new XmlId(IdNames.PLANLANGUAGES, false);
 
 
 	public PlanLanguagesId() {

@@ -20,7 +20,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
@@ -111,7 +111,7 @@ public abstract class AbstractRepository implements IRepository {
 	}
 
 	@Override
-	public Definitions getDefinitions(TOSCAComponentId id) {
+	public Definitions getDefinitions(DefinitionsChildId id) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		if (!exists(ref)) {
 			return BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(id);

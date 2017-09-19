@@ -23,9 +23,9 @@ import org.eclipse.winery.common.StringEncodedAndDecoded;
  * OK as, for instance, properties make use of this fact and store the name as
  * ID
  */
-public class XMLId extends StringEncodedAndDecoded {
+public class XmlId extends StringEncodedAndDecoded {
 
-	public XMLId(String id, boolean URLencoded) {
+	public XmlId(String id, boolean URLencoded) {
 		super(id, URLencoded);
 	}
 

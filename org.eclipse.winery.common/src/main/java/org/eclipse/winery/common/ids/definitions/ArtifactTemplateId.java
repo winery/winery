@@ -14,11 +14,11 @@ package org.eclipse.winery.common.ids.definitions;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 public class ArtifactTemplateId extends EntityTemplateId {
 
-	public ArtifactTemplateId(Namespace namespace, XMLId xmlId) {
+	public ArtifactTemplateId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);
 	}
 

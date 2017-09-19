@@ -14,11 +14,11 @@ package org.eclipse.winery.common.ids.definitions;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 public final class CapabilityTypeId extends EntityTypeId {
 
-	public CapabilityTypeId(Namespace namespace, XMLId xmlId) {
+	public CapabilityTypeId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);
 	}
 
