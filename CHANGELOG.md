@@ -24,6 +24,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 - New project `org.eclipse.winery.repository.rest` for separating REST resources from the backend
 - Add support of [Splitting](http://eclipse.github.io/winery/user/Splitting)
 - Add support of [DASpecification](http://eclipse.github.io/winery/user/DASpecification)
+- Add support of configuration of git autocommit: `repository.git.autocommit=true` in `winery.properties`
 - **BREAKING**: in the tosca model `SourceElement` and `TargetElement` are combined into `SourceOrTargetElement` due to serialization issues with JSON
 
 ## [v1.0.0] - not yet released
