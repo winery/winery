@@ -121,7 +121,7 @@ public class ToscaExportUtil {
 	}
 
 	/**
-	 * Writes the <em>complete</em> TOSCA XML into the given outputstream. Additionally, a the artifactMap is filled to
+	 * Writes the <em>complete</em> TOSCA XML into the given output stream. Additionally, a the artifactMap is filled to
 	 * enable the CSAR exporter to create necessary entries in TOSCA-Meta and to add them to the CSAR itself
 	 *
 	 * @param id                        the component instance to export
