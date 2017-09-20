@@ -152,7 +152,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 	 * Creates an opened inputStream of the contents referenced by ref. The stream has to be closed by the caller.
 	 *
 	 * @param ref the reference to the file
-	 * @return an inputstream
+	 * @return an input stream
 	 * @throws IOException if something goes wrong
 	 */
 	InputStream newInputStream(RepositoryFileReference ref) throws IOException;
@@ -161,7 +161,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 	 * Creates a stream of a ZIP file containing all files contained in the given id
 	 *
 	 * @param id  the id whose children should be zipped
-	 * @param out the outputstream to write to
+	 * @param out the output stream to write to
 	 */
 	void getZippedContents(final GenericId id, OutputStream out) throws WineryRepositoryException;
 

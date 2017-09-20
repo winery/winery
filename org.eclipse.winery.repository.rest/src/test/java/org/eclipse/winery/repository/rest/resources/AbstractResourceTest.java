@@ -223,6 +223,13 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 			.statusCode(204);
 	}
 
+	/**
+	 * Posts a form having the given namespace and name to the given URL
+	 *
+	 * @param restURL   the suffix appended to the main URL
+	 * @param namespace the namespace
+	 * @param name      the name
+	 */
 	protected void assertPost(String restURL, String namespace, String name) {
 		start()
 			.formParam("namespace", namespace)

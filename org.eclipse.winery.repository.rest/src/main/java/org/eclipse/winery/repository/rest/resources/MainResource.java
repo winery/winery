@@ -30,7 +30,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.eclipse.winery.repository.importing.CSARImporter;
+import org.eclipse.winery.repository.importing.CsarImporter;
 import org.eclipse.winery.repository.importing.ImportMetaInformation;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.API.APIResource;
@@ -155,7 +155,7 @@ public class MainResource {
 		@FormDataParam("overwrite") @ApiParam(value = "true: content of CSAR overwrites existing content. false (default): existing content is kept") Boolean overwrite,
 		@Context UriInfo uriInfo) {
 		// @formatter:on
-		CSARImporter importer = new CSARImporter();
+		CsarImporter importer = new CsarImporter();
 		boolean ow;
 		ow = (overwrite != null) && overwrite;
 		ImportMetaInformation importMetaInformation;
@@ -184,7 +184,7 @@ public class MainResource {
 		File toscaFile;
 		toscaFile = File.createTempFile("TOSCA", ".tosca");
 		FileUtils.copyInputStreamToFile(is, toscaFile);
-		CSARImporter importer = new CSARImporter();
+		CsarImporter importer = new CsarImporter();
 		List<String> errors = new ArrayList<>();
 		importer.importDefinitions(null, toscaFile.toPath(), errors, false, true);
 		if (errors.isEmpty()) {

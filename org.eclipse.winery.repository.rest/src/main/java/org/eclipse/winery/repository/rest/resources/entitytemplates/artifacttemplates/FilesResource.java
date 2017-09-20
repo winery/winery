@@ -14,9 +14,8 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttem
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -26,6 +25,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -34,7 +34,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.Constants;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
@@ -44,7 +44,6 @@ import org.eclipse.winery.repository.rest.datatypes.FileMeta;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,20 +87,13 @@ public class FilesResource {
 			return response;
 		}
 
-		// create FileMeta object
-		String URL = RestUtils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
-		String thumbnailURL = uriInfo.getBaseUriBuilder().path(Constants.PATH_MIMETYPEIMAGES).path(FilenameUtils.getExtension(fileName) + Constants.SUFFIX_MIMETYPEIMAGES).build().toString();
-		long size;
 		try {
-			size = RepositoryFactory.getRepository().getSize(ref);
+			BackendUtils.synchronizeReferences((ArtifactTemplateId) fileDir.getParent());
 		} catch (IOException e) {
-			FilesResource.LOGGER.error(e.getMessage(), e);
-			return Response.serverError().entity(e.getMessage()).build();
+			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
 		}
-		FileMeta fileMeta = new FileMeta(fileName, size, URL, thumbnailURL);
 
-		List<FileMeta> metas = new ArrayList<>();
-		metas.add(fileMeta);
+		String URL = RestUtils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
 		return Response.created(RestUtils.createURI(URL)).entity(this.getAllFileMetas()).build();
 	}
 
@@ -115,12 +107,11 @@ public class FilesResource {
 	}
 
 	private List<FileMeta> getAllFileMetas() {
-		List<FileMeta> res = new ArrayList<>();
-		SortedSet<RepositoryFileReference> fileRefs = RepositoryFactory.getRepository().getContainedFiles(this.fileDir);
-		for (RepositoryFileReference ref : fileRefs) {
-			res.add(new FileMeta(ref));
-		}
-		return res;
+		return RepositoryFactory.getRepository()
+			.getContainedFiles(this.fileDir)
+			.stream()
+			.map(ref -> new FileMeta(ref))
+			.collect(Collectors.toList());
 	}
 
 	private RepositoryFileReference fileName2fileRef(String fileName, boolean encoded) {
