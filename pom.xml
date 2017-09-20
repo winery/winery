@@ -58,11 +58,12 @@
 		<repository>
 			<id>internal.repo</id>
 			<name>Temporary Staging Repository</name>
-			<url>file://${session.executionRootDirectory}/target/mvn-repo</url>
+			<url>file://${project.basedir}/target/mvn-repo</url>
 		</repository>
 	</distributionManagement>
 	<properties>
 		<github.global.server>github</github.global.server>
+		<main.basedir>${project.basedir}</main.basedir>
 	</properties>
 	<modules>
 		<module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
