@@ -529,8 +529,8 @@ A: Execute in THAT directory
 
 ### "name" vs. "id" at entities
 
-Some entities carry a name, some an id and some both
- A justification is available at [TOSCA issue 47](https://issues.oasis-open.org/browse/TOSCA-47).
+Some entities carry a name, some an id and some both.
+A justification is available at [TOSCA issue 47](https://issues.oasis-open.org/browse/TOSCA-47).
 
 ### Possible attachments of artifacts
 
