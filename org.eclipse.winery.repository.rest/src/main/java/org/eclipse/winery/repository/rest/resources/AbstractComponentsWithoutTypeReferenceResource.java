@@ -43,7 +43,7 @@ public abstract class AbstractComponentsWithoutTypeReferenceResource<T extends A
 	 *
 	 * @param namespace plain namespace
 	 * @param name      plain id
-	 * @param ignored   this parameter is ignored, but necessary for {@link ArtifactTemplatesResource} to be able to
+	 * @param ignored   this parameter is ignored, but necessary for {@link org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource} to be able to
 	 *                  accept the artifact type at a post
 	 */
 	@POST
