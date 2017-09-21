@@ -23,6 +23,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -180,13 +181,17 @@ public class WineryCli {
 		}
 	}
 
-	private static void checkUri(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String UriStr) {
-		if (!UriStr.trim().equals(UriStr)) {
+	private static void checkUri(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String uriStr) {
+		Objects.requireNonNull(res);
+		Objects.requireNonNull(verbosity);
+		Objects.requireNonNull(id);
+		Objects.requireNonNull(uriStr);
+		if (!uriStr.trim().equals(uriStr)) {
 			printAndAddError(res, verbosity, id, "Namespace starts or ends with white spaces");
 		}
 		URI uri;
 		try {
-			uri = new URI(UriStr);
+			uri = new URI(uriStr);
 		} catch (URISyntaxException e) {
 			LOGGER.debug("Invalid URI", e);
 			printAndAddError(res, verbosity, id, "Invalid URI: " + e.getMessage());
@@ -194,6 +199,9 @@ public class WineryCli {
 		}
 		if (!uri.isAbsolute()) {
 			printAndAddError(res, verbosity, id, "URI is relative");
+		}
+		if ((uriStr.startsWith("http://www.opentosca.org/") && (!uriStr.toLowerCase().equals(uriStr)))) {
+			printAndAddError(res, verbosity, id, "opentosca URI is not lowercase");
 		}
 	}
 
