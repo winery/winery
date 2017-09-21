@@ -46,19 +46,21 @@ public class GitBasedRepository extends FilebasedRepository {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
 
 	private final Git git;
+	private final GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration;
 
 	/**
 	 * @param gitBasedRepositoryConfiguration the configuration of the repository
-	 * @throws IOException thrown if repository does not exist
-	 * @throws GitAPIException thrown if there was an error while checking the status of the repository
+	 * @throws IOException         thrown if repository does not exist
+	 * @throws GitAPIException     thrown if there was an error while checking the status of the repository
 	 * @throws NoWorkTreeException thrown if the directory is not a git work tree
 	 */
 	public GitBasedRepository(GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration) throws IOException, NoWorkTreeException, GitAPIException {
 		super(Objects.requireNonNull(gitBasedRepositoryConfiguration));
+		this.gitBasedRepositoryConfiguration = gitBasedRepositoryConfiguration;
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository gitRepo = builder.setWorkTree(this.repositoryRoot.toFile()).setMustExist(false).build();
 		if (!Files.exists(this.repositoryRoot.resolve(".git"))) {
-		    gitRepo.create();
+			gitRepo.create();
 		}
 		this.git = new Git(gitRepo);
 		if (!this.git.status().call().isClean()) {
@@ -67,9 +69,9 @@ public class GitBasedRepository extends FilebasedRepository {
 	}
 
 	/**
-	 * This method is synchronized with an extra static object (meaning all instances are locked).
-	 * The same lock object is also used in {@link #addCommit(RepositoryFileReference)}.
-	 * This is to ensure that every commit only has one change.
+	 * This method is synchronized with an extra static object (meaning all instances are locked). The same lock object
+	 * is also used in {@link #addCommit(RepositoryFileReference)}. This is to ensure that every commit only has one
+	 * change.
 	 *
 	 * @param message The message that is used in the commit.
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
@@ -87,9 +89,8 @@ public class GitBasedRepository extends FilebasedRepository {
 	}
 
 	/**
-	 * This method is synchronized with an extra static object (meaning all instances are locked).
-	 * The same lock object is also used in {@link #addCommit(String)}.
-	 * This is to ensure that every commit only has one change.
+	 * This method is synchronized with an extra static object (meaning all instances are locked). The same lock object
+	 * is also used in {@link #addCommit(String)}. This is to ensure that every commit only has one change.
 	 *
 	 * @param ref RepositoryFileReference to the file that was changed.
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
@@ -97,12 +98,12 @@ public class GitBasedRepository extends FilebasedRepository {
 	public void addCommit(RepositoryFileReference ref) throws GitAPIException {
 		synchronized (COMMIT_LOCK) {
 			String message;
-            if (ref == null) {
-                message = "Files changed externally.";
-            } else {
-                message = ref.toString() + " was updated";
-            }
-            addCommit(message);
+			if (ref == null) {
+				message = "Files changed externally.";
+			} else {
+				message = ref.toString() + " was updated";
+			}
+			addCommit(message);
 		}
 	}
 
@@ -137,7 +138,9 @@ public class GitBasedRepository extends FilebasedRepository {
 	public void putContentToFile(RepositoryFileReference ref, InputStream inputStream, MediaType mediaType) throws IOException {
 		super.putContentToFile(ref, inputStream, mediaType);
 		try {
-			this.addCommit(ref);
+			if (gitBasedRepositoryConfiguration.isAutoCommit()) {
+				this.addCommit(ref);
+			}
 		} catch (GitAPIException e) {
 			LOGGER.trace(e.getMessage(), e);
 		}
