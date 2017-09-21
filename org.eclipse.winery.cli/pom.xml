@@ -132,11 +132,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
-							<minimizeJar>true</minimizeJar>
-							<createDependencyReducedPom>true</createDependencyReducedPom>
-							<dependencyReducedPomLocation>
-								${java.io.tmpdir}/dependency-reduced-pom.xml
-							</dependencyReducedPomLocation>
+							<minimizeJar>false</minimizeJar>
 						</configuration>
 					</execution>
 				</executions>
