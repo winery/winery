@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -46,13 +46,13 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
@@ -93,7 +93,7 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDire
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
-import org.eclipse.winery.repository.export.CSARExporter;
+import org.eclipse.winery.repository.export.CsarExporter;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -117,9 +117,9 @@ import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
  *
  * One instance for each import
  */
-public class CSARImporter {
+public class CsarImporter {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CSARImporter.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CsarImporter.class);
 
 	// ExecutorService for XSD schema initialization
 	// Threads set to 1 to avoid testing for parallel processing of the same XSD file
@@ -153,7 +153,7 @@ public class CSARImporter {
 			}
 			return this.importFromDir(csarDir, overwrite, asyncWPDParsing);
 		} catch (Exception e) {
-			CSARImporter.LOGGER.debug("Could not import CSAR", e);
+			CsarImporter.LOGGER.debug("Could not import CSAR", e);
 			throw e;
 		} finally {
 			// cleanup: delete all contents of the temporary directory
@@ -214,7 +214,7 @@ public class CSARImporter {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 					try {
-						CSARImporter.this.importDefinitions(tmf, file, importMetaInformation.errors, overwrite, asyncWPDParsing);
+						CsarImporter.this.importDefinitions(tmf, file, importMetaInformation.errors, overwrite, asyncWPDParsing);
 					} catch (IOException e) {
 						exceptions.add(e);
 						return FileVisitResult.TERMINATE;
@@ -243,13 +243,13 @@ public class CSARImporter {
 	 */
 	private void importNamespacePrefixes(Path rootPath) {
 		NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
-		Path properties = rootPath.resolve(CSARExporter.PATH_TO_NAMESPACES_PROPERTIES);
+		Path properties = rootPath.resolve(CsarExporter.PATH_TO_NAMESPACES_PROPERTIES);
 		if (Files.exists(properties)) {
 			PropertiesConfiguration pconf;
 			try {
 				pconf = new PropertiesConfiguration(properties.toFile());
 			} catch (ConfigurationException e) {
-				CSARImporter.LOGGER.debug(e.getMessage(), e);
+				CsarImporter.LOGGER.debug(e.getMessage(), e);
 				return;
 			}
 			Iterator<String> namespaces = pconf.getKeys();
@@ -260,7 +260,7 @@ public class CSARImporter {
 					String storedPrefix = namespaceManager.getPrefix(namespace);
 					// QUICK HACK to check whether the prefix is a generated one
 					// We assume we know the internal generation routine
-					Matcher m = CSARImporter.GENERATED_PREFIX_PATTERN.matcher(storedPrefix);
+					Matcher m = CsarImporter.GENERATED_PREFIX_PATTERN.matcher(storedPrefix);
 					if (m.matches()) {
 						// the stored prefix is a generated one
 						// replace it by the one stored in the exported properties
@@ -285,11 +285,11 @@ public class CSARImporter {
 	private void importSelfServiceMetaData(final TOSCAMetaFile tmf, final Path rootPath, Path entryDefinitions, final List<String> errors) {
 		final Path selfServiceDir = rootPath.resolve(Constants.DIRNAME_SELF_SERVICE_METADATA);
 		if (!Files.exists(selfServiceDir)) {
-			CSARImporter.LOGGER.debug("Self-service Portal directory does not exist in CSAR");
+			CsarImporter.LOGGER.debug("Self-service Portal directory does not exist in CSAR");
 			return;
 		}
 		if (!Files.exists(entryDefinitions)) {
-			CSARImporter.LOGGER.debug("Entry definitions does not exist.");
+			CsarImporter.LOGGER.debug("Entry definitions does not exist.");
 			return;
 		}
 
@@ -352,15 +352,15 @@ public class CSARImporter {
 									org.apache.commons.io.FileUtils.writeStringToFile(file.toFile(), newContent, "UTF-8");
 								}
 							} catch (IOException e) {
-								CSARImporter.LOGGER.debug("Could not replace content in data.xml", e);
+								CsarImporter.LOGGER.debug("Could not replace content in data.xml", e);
 							}
 						}
-						CSARImporter.this.importFile(file, ref, tmf, rootPath, errors);
+						CsarImporter.this.importFile(file, ref, tmf, rootPath, errors);
 						return FileVisitResult.CONTINUE;
 					}
 				});
 			} catch (IOException e) {
-				CSARImporter.LOGGER.debug(e.getMessage(), e);
+				CsarImporter.LOGGER.debug(e.getMessage(), e);
 				errors.add("Self-service Meta Data: " + e.getMessage());
 			}
 		}
@@ -397,7 +397,7 @@ public class CSARImporter {
 				cause = cause.getCause();
 			} while (cause != null);
 			errors.add("Could not unmarshal definitions " + defsPath.getFileName() + " " + eMsg);
-			CSARImporter.LOGGER.debug("Unmarshalling error", e);
+			CsarImporter.LOGGER.debug("Unmarshalling error", e);
 			return Optional.empty();
 		} catch (ClassCastException e) {
 			errors.add("Definitions " + defsPath.getFileName() + " is not a TDefinitions " + e.getMessage());
@@ -426,17 +426,17 @@ public class CSARImporter {
 			String id = ModelUtilities.getId(ci);
 
 			// Determine WineryId
-			Class<? extends TOSCAComponentId> widClass = Util.getComponentIdClassForTExtensibleElements(ci.getClass());
-			final TOSCAComponentId wid = BackendUtils.getTOSCAcomponentId(widClass, namespace, id, false);
+			Class<? extends DefinitionsChildId> widClass = Util.getComponentIdClassForTExtensibleElements(ci.getClass());
+			final DefinitionsChildId wid = BackendUtils.getDefinitionsChildId(widClass, namespace, id, false);
 
 			if (RepositoryFactory.getRepository().exists(wid)) {
 				if (overwrite) {
 					RepositoryFactory.getRepository().forceDelete(wid);
 					String msg = String.format("Deleted %1$s %2$s to enable replacement", ci.getClass().getName(), wid.getQName().toString());
-					CSARImporter.LOGGER.debug(msg);
+					CsarImporter.LOGGER.debug(msg);
 				} else {
 					String msg = String.format("Skipped %1$s %2$s, because it already exists", ci.getClass().getName(), wid.getQName().toString());
-					CSARImporter.LOGGER.debug(msg);
+					CsarImporter.LOGGER.debug(msg);
 					// this is not displayed in the UI as we currently do not distinguish between pre-existing types and types created during the import.
 					continue;
 				}
@@ -470,17 +470,17 @@ public class CSARImporter {
 				if (asyncWPDParsing) {
 					// Adjusting takes a long time
 					// Therefore, we first save the type as is and convert to Winery-Property-Definitions in the background
-					CSARImporter.storeDefinitions(wid, newDefs);
-					CSARImporter.entityTypeAdjestmentService.submit(() -> {
-						CSARImporter.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
-						CSARImporter.storeDefinitions(wid, newDefs);
+					CsarImporter.storeDefinitions(wid, newDefs);
+					CsarImporter.entityTypeAdjestmentService.submit(() -> {
+						CsarImporter.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
+						CsarImporter.storeDefinitions(wid, newDefs);
 					});
 				} else {
-					CSARImporter.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
-					CSARImporter.storeDefinitions(wid, newDefs);
+					CsarImporter.adjustEntityType((TEntityType) ci, (EntityTypeId) wid, newDefs, errors);
+					CsarImporter.storeDefinitions(wid, newDefs);
 				}
 			} else {
-				CSARImporter.storeDefinitions(wid, newDefs);
+				CsarImporter.storeDefinitions(wid, newDefs);
 			}
 		}
 
@@ -507,7 +507,7 @@ public class CSARImporter {
 					id = id + "-" + Integer.toHexString(element.hashCode());
 
 					// set importId
-					TOSCAComponentId importId;
+					DefinitionsChildId importId;
 					String ns;
 					if (element.getNamespaceURI().equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
 						ns = element.getAttribute("targetNamespace");
@@ -527,7 +527,7 @@ public class CSARImporter {
 					imp.setImportType(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 					imp.setNamespace(ns);
 					wrapperDefs.getImport().add(imp);
-					CSARImporter.storeDefinitions(importId, wrapperDefs);
+					CsarImporter.storeDefinitions(importId, wrapperDefs);
 
 					// put the file itself to the repo
 					// ref is required to generate fileRef
@@ -539,7 +539,7 @@ public class CSARImporter {
 					try {
 						RepositoryFactory.getRepository().putContentToFile(fileRef, content, MediaTypes.MEDIATYPE_TEXT_XML);
 					} catch (IOException e) {
-						CSARImporter.LOGGER.debug("Could not put XML Schema definition to file " + fileRef.toString(), e);
+						CsarImporter.LOGGER.debug("Could not put XML Schema definition to file " + fileRef.toString(), e);
 						errors.add("Could not put XML Schema definition to file " + fileRef.toString());
 					}
 
@@ -610,7 +610,7 @@ public class CSARImporter {
 							try {
 								RepositoryFactory.getRepository().forceDelete(importId);
 							} catch (IOException e) {
-								CSARImporter.LOGGER.debug("Could not delete Winery's generated XSD definition", e);
+								CsarImporter.LOGGER.debug("Could not delete Winery's generated XSD definition", e);
 								errors.add("Could not delete Winery's generated XSD definition");
 							}
 						} else {
@@ -676,7 +676,7 @@ public class CSARImporter {
 							}
 						}
 						PlansId plansId = new PlansId(wid);
-						PlanId pid = new PlanId(plansId, new XMLId(plan.getId(), false));
+						PlanId pid = new PlanId(plansId, new XmlId(plan.getId(), false));
 						if (Files.isDirectory(path)) {
 							errors.add(String.format("Reference %1$s is a directory and Winery currently does not support importing directories", ref));
 							continue;
@@ -774,7 +774,7 @@ public class CSARImporter {
 					// include all files and then exclude the files matched by the pattern
 					allFiles = this.getAllFiles(localRoot);
 				} else {
-					// semantics if include lited as first:
+					// semantics if include listed as first:
 					// same as listed at other places
 					allFiles = new HashSet<>();
 				}
@@ -801,12 +801,12 @@ public class CSARImporter {
 	/**
 	 * Imports a file from the filesystem to the repository
 	 *
-	 * @param p        the file to read from
-	 * @param fref     the "file" to put the content to
-	 * @param tmf      the TOSCAMetaFile object used to determine the mimetype. Must not be null.
-	 * @param rootPath used to relativize p to determine the mime type
+	 * @param p                       the file to read from
+	 * @param repositoryFileReference the "file" to put the content to
+	 * @param tmf                     the TOSCAMetaFile object used to determine the mimetype. Must not be null.
+	 * @param rootPath                used to relativize p to determine the mime type
 	 */
-	private void importFile(Path p, RepositoryFileReference fref, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
+	private void importFile(Path p, RepositoryFileReference repositoryFileReference, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
 		if (tmf == null) {
 			throw new IllegalStateException("tmf must not be null");
 		}
@@ -827,7 +827,7 @@ public class CSARImporter {
 				}
 			}
 			try {
-				RepositoryFactory.getRepository().putContentToFile(fref, bis, mediaType);
+				RepositoryFactory.getRepository().putContentToFile(repositoryFileReference, bis, mediaType);
 			} catch (IllegalArgumentException | IOException e) {
 				throw new IllegalStateException(e);
 			}
@@ -881,7 +881,7 @@ public class CSARImporter {
 				@Override
 				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 					if (pathMatcher.matches(dir)) {
-						Set<Path> filesToAdd = CSARImporter.this.getAllFiles(dir);
+						Set<Path> filesToAdd = CsarImporter.this.getAllFiles(dir);
 						allFiles.addAll(filesToAdd);
 						return SKIP_SUBTREE;
 					} else {
@@ -1063,7 +1063,7 @@ public class CSARImporter {
 			imp.setLocation(fileName);
 
 			// put the definitions file to the repository
-			CSARImporter.storeDefinitions(rid, defs);
+			CsarImporter.storeDefinitions(rid, defs);
 		}
 
 		// put the file itself to the repo
@@ -1098,20 +1098,20 @@ public class CSARImporter {
 				// We do not check whether the XSD has already been checked
 				// We cannot just checck whether an XSD already has been handled since the XSD could change over time
 				// Synchronization at org.eclipse.winery.repository.resources.imports.xsdimports.XSDImportResource.getAllDefinedLocalNames(short) also isn't feasible as the backend doesn't support locks
-				CSARImporter.xsdParsingService.submit(() -> {
-					CSARImporter.LOGGER.debug("Updating XSD import cache data");
+				CsarImporter.xsdParsingService.submit(() -> {
+					CsarImporter.LOGGER.debug("Updating XSD import cache data");
 					// We call the queries without storing the result:
 					// We use the SIDEEFFECT that a cache is created
 					final XsdImportManager xsdImportManager = RepositoryFactory.getRepository().getXsdImportManager();
 					xsdImportManager.getAllDeclaredElementsLocalNames();
 					xsdImportManager.getAllDefinedTypesLocalNames();
-					CSARImporter.LOGGER.debug("Updated XSD import cache data");
+					CsarImporter.LOGGER.debug("Updated XSD import cache data");
 				});
 			}
 		}
 	}
 
-	private static void storeDefinitions(TOSCAComponentId id, TDefinitions defs) {
+	private static void storeDefinitions(DefinitionsChildId id, TDefinitions defs) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		String s = BackendUtils.getXMLAsString(defs, true);
 		try {

@@ -31,22 +31,22 @@ You can also directly embed it into Winery. Note the [assumptions made by the wi
 Copyright (c) 2017 ZTE Corporation.
 
 All rights reserved. This program and the accompanying materials
-are made available under the terms of the [Eclipse Public License v1.0]
+are made available under the terms of the [Eclipse Public License v2.0]
 and the [Apache License v2.0] which both accompany this distribution,
-and are available at http://www.eclipse.org/legal/epl-v10.html
+and are available at http://www.eclipse.org/legal/epl-v20.html
 and http://www.apache.org/licenses/LICENSE-2.0.
 
 Please check the [EPL FAQ](https://eclipse.org/legal/eplfaq.php#DUALLIC) for implications.
 
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
- [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
+ [Eclipse Public License v2.0]: http://www.eclipse.org/legal/epl-v20.html
 
 ## Literature
 
 See http://www.opentosca.org/#publications for a list of publications in the OpenTOSCA ecosystem.
 
  [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
- [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
+ [Eclipse Public License v2.0]: http://www.eclipse.org/legal/epl-v20.html
  [Ein Modellierungswerkzeug für BPMN4TOSCA]: http://elib.uni-stuttgart.de/opus/volltexte/2015/9943/
  [TOSCA]: https://www.oasis-open.org/committees/tosca/
  [BPMN4TOSCA: A Domain-Specific Language to Model Management Plans for Composite Applications]: https://link.springer.com/chapter/10.1007/978-3-642-33155-8_4

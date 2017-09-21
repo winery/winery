@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -29,17 +29,17 @@ import org.xml.sax.SAXException;
  *
  * In a separate class as TOSCA XSD loading takes a few seconds
  */
-public class TOSCADocumentBuilderFactory {
+public class ToscaDocumentBuilderFactory {
 
-	public static final TOSCADocumentBuilderFactory INSTANCE = new TOSCADocumentBuilderFactory();
+	public static final ToscaDocumentBuilderFactory INSTANCE = new ToscaDocumentBuilderFactory();
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TOSCADocumentBuilderFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ToscaDocumentBuilderFactory.class);
 
 	private final DocumentBuilderFactory schemaAwareFactory;
 	private final DocumentBuilderFactory plainFactory;
 
 
-	public TOSCADocumentBuilderFactory() {
+	public ToscaDocumentBuilderFactory() {
 		this.schemaAwareFactory = DocumentBuilderFactory.newInstance();
 		this.schemaAwareFactory.setNamespaceAware(true);
 		// we do not need DTD validation
@@ -55,8 +55,8 @@ public class TOSCADocumentBuilderFactory {
 			this.schemaAwareFactory.setSchema(schema);
 		} catch (SAXException e) {
 			// TODO: load xml.xsd in offline mode
-			TOSCADocumentBuilderFactory.LOGGER.error("Schema could not be initialized", e);
-			TOSCADocumentBuilderFactory.LOGGER.debug("We continue nevertheless to enable offline usage");
+			ToscaDocumentBuilderFactory.LOGGER.error("Schema could not be initialized", e);
+			ToscaDocumentBuilderFactory.LOGGER.debug("We continue nevertheless to enable offline usage");
 		}
 
 		this.plainFactory = DocumentBuilderFactory.newInstance();

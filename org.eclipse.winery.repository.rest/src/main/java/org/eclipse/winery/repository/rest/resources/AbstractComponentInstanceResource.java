@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -44,11 +44,11 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
+import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.XmlId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -60,9 +60,10 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.export.TOSCAExportUtil;
+import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
@@ -88,7 +89,7 @@ import org.xml.sax.SAXException;
  * <li>EntityTemplates</li>
  * </ul>
  * ). A component is directly nested in a TDefinitions element. See also
- * {@link org.eclipse.winery.common.ids.definitions.TOSCAComponentId}
+ * {@link DefinitionsChildId}
  *
  * Bundles all operations required for all components. e.g., namespace+XMLid, object comparison, import, export, tags
  *
@@ -100,7 +101,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractComponentInstanceResource.class);
 
-	protected final TOSCAComponentId id;
+	protected final DefinitionsChildId id;
 
 	// shortcut for this.definitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().get(0);
 	protected TExtensibleElements element = null;
@@ -116,7 +117,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 * The caller should <em>not</em> create the resource by other ways. E.g., by instantiating this resource and then
 	 * adding data.
 	 */
-	public AbstractComponentInstanceResource(TOSCAComponentId id) {
+	public AbstractComponentInstanceResource(DefinitionsChildId id) {
 		this.id = id;
 
 		// the resource itself exists
@@ -143,7 +144,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	/**
 	 * Convenience method for getId().getXmlId()
 	 */
-	public final XMLId getXmlId() {
+	public final XmlId getXmlId() {
 		return this.id.getXmlId();
 	}
 
@@ -160,7 +161,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	/**
 	 * Returns the id associated with this resource
 	 */
-	public final TOSCAComponentId getId() {
+	public final DefinitionsChildId getId() {
 		return this.id;
 	}
 
@@ -208,11 +209,11 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@Path("localName")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response putId(QNameApiData data) {
-		TOSCAComponentId newId;
+		DefinitionsChildId newId;
 		if (data.namespace == null) {
-			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), this.getId().getNamespace().getDecoded(), data.localname, false);
+			newId = BackendUtils.getDefinitionsChildId(this.getId().getClass(), this.getId().getNamespace().getDecoded(), data.localname, false);
 		} else {
-			newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), data.namespace, this.getId().getXmlId().toString(), false);
+			newId = BackendUtils.getDefinitionsChildId(this.getId().getClass(), data.namespace, this.getId().getXmlId().toString(), false);
 		}
 		return RestUtils.rename(this.getId(), newId);
 	}
@@ -221,7 +222,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@Path("namespace")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response putNamespace(QNameApiData data) {
-		TOSCAComponentId newId = BackendUtils.getTOSCAcomponentId(this.getId().getClass(), data.namespace, this.getId().getXmlId().getDecoded(), false);
+		DefinitionsChildId newId = BackendUtils.getDefinitionsChildId(this.getId().getClass(), data.namespace, this.getId().getXmlId().getDecoded(), false);
 		return RestUtils.rename(this.getId(), newId);
 	}
 
@@ -245,7 +246,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		@QueryParam(value = "csar") String csar,
 		@Context UriInfo uriInfo
 	) {
-		if (!RepositoryFactory.getRepository().exists(this.id)) {
+		final IRepository repository = RepositoryFactory.getRepository();
+		if (!repository.exists(this.id)) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
@@ -259,12 +261,12 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 			@Override
 			public void write(OutputStream output) throws IOException, WebApplicationException {
-				TOSCAExportUtil exporter = new TOSCAExportUtil();
+				ToscaExportUtil exporter = new ToscaExportUtil();
 				// we include everything related
 				Map<String, Object> conf = new HashMap<>();
-				conf.put(TOSCAExportUtil.ExportProperties.REPOSITORY_URI.toString(), uriInfo.getBaseUri());
+				conf.put(ToscaExportUtil.ExportProperties.REPOSITORY_URI.toString(), uriInfo.getBaseUri());
 				try {
-					exporter.exportTOSCA(AbstractComponentInstanceResource.this.id, output, conf);
+					exporter.exportTOSCA(repository, AbstractComponentInstanceResource.this.id, output, conf);
 				} catch (Exception e) {
 					throw new WebApplicationException(e);
 				}
@@ -276,7 +278,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Definitions getElementAsJson() {
-		if (!RepositoryFactory.getRepository().exists(this.id)) {
+		final IRepository repository = RepositoryFactory.getRepository();
+		if (!repository.exists(this.id)) {
 			throw new NotFoundException();
 		}
 
@@ -286,12 +289,12 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 		// Have to use TOScAExportUtil to have the imports correctly set
 
-		TOSCAExportUtil exporter = new TOSCAExportUtil();
+		ToscaExportUtil exporter = new ToscaExportUtil();
 		// we include everything related
 		Map<String, Object> conf = new HashMap<>();
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			exporter.exportTOSCA(this.id, bos, conf);
+			exporter.exportTOSCA(repository, this.id, bos, conf);
 			String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
 			return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
@@ -412,7 +415,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		Document doc;
 		final StringBuilder sb = new StringBuilder();
 		try {
-			DocumentBuilder db = TOSCADocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
+			DocumentBuilder db = ToscaDocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
 			db.setErrorHandler(BackendUtils.getErrorHandler(sb));
 			doc = db.parse(requestBodyStream);
 			// doc is not null, because the parser parses even if it is not XSD conforming

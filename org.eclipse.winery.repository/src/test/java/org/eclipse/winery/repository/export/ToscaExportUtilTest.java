@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -19,11 +19,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore("not finished - CSARExporterTest is currently the way to go")
-public class TOSCAExportUtilTest {
+public class ToscaExportUtilTest {
 
 	@Test
 	public void exportTOSCA() throws Exception {
-		TOSCAExportUtil exporter = new TOSCAExportUtil();
+		ToscaExportUtil exporter = new ToscaExportUtil();
 		// we include everything related
 		Map<String, Object> conf = new HashMap<>();
 		NullOutputStream out = new NullOutputStream();

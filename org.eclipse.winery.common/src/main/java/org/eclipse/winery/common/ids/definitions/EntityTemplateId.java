@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -14,8 +14,8 @@ package org.eclipse.winery.common.ids.definitions;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.XmlId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 
 /**
  * ArtifactTemplates, PolicyTemplates, and ServiceTemplates are
@@ -23,11 +23,11 @@ import org.eclipse.winery.common.ids.elements.TOSCAElementId;
  * NodeTemplates are not. When approaching an EntityTemplateId, it is a thing
  * directly nested in a Definitions element.
  *
- * The others have {@link TOSCAElementId} as parent
+ * The others have {@link ToscaElementId} as parent
  */
-public abstract class EntityTemplateId extends TOSCAComponentId {
+public abstract class EntityTemplateId extends DefinitionsChildId {
 
-	public EntityTemplateId(Namespace namespace, XMLId xmlId) {
+	public EntityTemplateId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);
 	}
 

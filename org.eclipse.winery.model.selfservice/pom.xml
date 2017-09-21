@@ -2,9 +2,9 @@
 /*******************************************************************************
  * Copyright (c) 2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -16,19 +16,21 @@
 	<groupId>org.eclipse.winery</groupId>
 	<artifactId>org.eclipse.winery.model.selfservice</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
+	<parent>
+		<groupId>org.eclipse.winery</groupId>
+		<artifactId>winery</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
+		<main.basedir>${project.parent.basedir}</main.basedir>
 	</properties>
 	<url>http://www.eclipse.org/winery</url>
 	<organization>
 		<name>Eclipse.org - Winery Project</name>
 		<url>http://www.eclipse.org/winery</url>
 	</organization>
-	<issueManagement>
-		<system>bugzilla</system>
-		<url>https://bugs.eclipse.org/bugs</url>
-	</issueManagement>
 	<inceptionYear>2012</inceptionYear>
 	<mailingLists>
 		<mailingList>
@@ -39,8 +41,8 @@
 	</mailingLists>
 	<licenses>
 		<license>
-			<name>Eclipse Public License v1.0</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
+			<name>Eclipse Public License v2.0</name>
+			<url>http://www.eclipse.org/legal/epl-v20.html</url>
 			<distribution>repo</distribution>
 			<comments>Standard Eclipse Licence</comments>
 		</license>
@@ -54,7 +56,7 @@
 		<repository>
 			<id>internal.repo</id>
 			<name>Temporary Staging Repository</name>
-			<url>file://${basedir}/../target/mvn-repo</url>
+			<url>file://${main.basedir}/target/mvn-repo</url>
 		</repository>
 	</distributionManagement>
 	<build>
@@ -97,7 +99,7 @@
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.8.1</version>
 				<configuration>
-					<altDeploymentRepository>internal.repo::default::file://${basedir}/../target/mvn-repo</altDeploymentRepository>
+					<altDeploymentRepository>internal.repo::default::file://${main.basedir}/target/mvn-repo</altDeploymentRepository>
 				</configuration>
 			</plugin>
 		</plugins>

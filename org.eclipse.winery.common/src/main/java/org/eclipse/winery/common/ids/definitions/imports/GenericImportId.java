@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -13,8 +13,8 @@ package org.eclipse.winery.common.ids.definitions.imports;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.XmlId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TImport;
 
 import org.apache.commons.io.FilenameUtils;
@@ -24,7 +24,7 @@ import org.apache.commons.io.FilenameUtils;
  *
  * // Convention: id of import is filename without extension
  */
-public class GenericImportId extends TOSCAComponentId {
+public class GenericImportId extends DefinitionsChildId {
 
 	private final String type;
 
@@ -32,7 +32,7 @@ public class GenericImportId extends TOSCAComponentId {
 	/**
 	 * @param type the importType (e.g., MimeTypes.MIMETYPE_XSD)
 	 */
-	public GenericImportId(Namespace namespace, XMLId xmlId, String type) {
+	public GenericImportId(Namespace namespace, XmlId xmlId, String type) {
 		super(namespace, xmlId);
 		this.type = type;
 	}

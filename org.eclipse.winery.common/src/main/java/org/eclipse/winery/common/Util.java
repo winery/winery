@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -48,15 +48,15 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdUtil;
 import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
@@ -145,7 +145,7 @@ public class Util {
 		Objects.requireNonNull(id);
 
 		// for creating paths see also org.eclipse.winery.repository.Utils.getIntermediateLocationStringForType(String, String)
-		// and org.eclipse.winery.common.Util.getRootPathFragment(Class<? extends TOSCAcomponentId>)
+		// and org.eclipse.winery.common.Util.getRootPathFragment(Class<? extends DefinitionsChildId>)
 		if (id instanceof AdminId) {
 			return "admin/" + id.getXmlId().getEncoded() + "/";
 		} else if (id instanceof GenericImportId) {
@@ -155,9 +155,9 @@ public class Util {
 			res = res + i.getNamespace().getEncoded() + "/";
 			res = res + i.getXmlId().getEncoded() + "/";
 			return res;
-		} else if (id instanceof TOSCAComponentId) {
+		} else if (id instanceof DefinitionsChildId) {
 			return IdUtil.getPathFragment(id);
-		} else if (id instanceof TOSCAElementId) {
+		} else if (id instanceof ToscaElementId) {
 			// we cannot reuse IdUtil.getPathFragment(id) as this TOSCAelementId
 			// might be nested in an AdminId
 			return getPathInsideRepo(id.getParent()) + id.getXmlId().getEncoded() + "/";
@@ -166,7 +166,7 @@ public class Util {
 		}
 	}
 
-	public static Class<? extends TOSCAComponentId> getComponentIdClassForTExtensibleElements(Class<? extends TExtensibleElements> clazz) {
+	public static Class<? extends DefinitionsChildId> getComponentIdClassForTExtensibleElements(Class<? extends TExtensibleElements> clazz) {
 		// we assume that the clazzName always starts with a T.
 		// Therefore, we fetch everything after the last dot (plus offest 1)
 		String idClassName = clazz.getName();
@@ -178,7 +178,7 @@ public class Util {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Class<? extends TOSCAComponentId> getComponentIdClass(String idClassName) {
+	public static Class<? extends DefinitionsChildId> getComponentIdClass(String idClassName) {
 		String pkg = "org.eclipse.winery.common.ids.definitions.";
 		if (idClassName.contains("Import")) {
 			// quick hack to handle imports, which reside in their own package
@@ -186,12 +186,12 @@ public class Util {
 		}
 		String fullClassName = pkg + idClassName;
 		try {
-			return (Class<? extends TOSCAComponentId>) Class.forName(fullClassName);
+			return (Class<? extends DefinitionsChildId>) Class.forName(fullClassName);
 		} catch (ClassNotFoundException e) {
 			// quick hack for Ids local to winery repository
 			try {
 				fullClassName = "org.eclipse.winery.repository.datatypes.ids.admin." + idClassName;
-				return (Class<? extends TOSCAComponentId>) Class.forName(fullClassName);
+				return (Class<? extends DefinitionsChildId>) Class.forName(fullClassName);
 			} catch (ClassNotFoundException e2) {
 				String errorMsg = "Could not find id class for component container, " + fullClassName;
 				LOGGER.error(errorMsg);
@@ -263,14 +263,14 @@ public class Util {
 		return res.substring(dotIndex + 1, res.length() - "Id".length());
 	}
 
-	public static String getTypeForElementId(Class<? extends TOSCAElementId> idClass) {
+	public static String getTypeForElementId(Class<? extends ToscaElementId> idClass) {
 		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
 
 	/**
 	 * @return Singular type name for the given id. E.g., "ServiceTemplateId" gets "ServiceTemplate"
 	 */
-	public static String getTypeForComponentId(Class<? extends TOSCAComponentId> idClass) {
+	public static String getTypeForComponentId(Class<? extends DefinitionsChildId> idClass) {
 		return Util.getEverythingBetweenTheLastDotAndBeforeId(idClass);
 	}
 
@@ -281,7 +281,7 @@ public class Util {
 	 *
 	 * @return [ComponentName]s/
 	 */
-	public static String getRootPathFragment(Class<? extends TOSCAComponentId> idClass) {
+	public static String getRootPathFragment(Class<? extends DefinitionsChildId> idClass) {
 		// quick handling of imports special case
 		// in the package naming, all other component instances have a this intermediate location, but not in the URLs
 		// The package handling is in {@link org.eclipse.winery.repository.Utils.getIntermediateLocationStringForType(String, String)}
@@ -505,7 +505,7 @@ public class Util {
 	 * @return true if the TOSCA model class belonging to the given id supports the method "getName()" in addition to
 	 * "getId()"
 	 */
-	public static boolean instanceSupportsNameAttribute(Class<? extends TOSCAComponentId> idClass) {
+	public static boolean instanceSupportsNameAttribute(Class<? extends DefinitionsChildId> idClass) {
 		if (ServiceTemplateId.class.isAssignableFrom(idClass)) {
 			return true;
 		} else if ((EntityTypeId.class.isAssignableFrom(idClass)) || (EntityTypeImplementationId.class.isAssignableFrom(idClass))) {

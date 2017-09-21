@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -23,9 +23,9 @@ import org.eclipse.winery.common.StringEncodedAndDecoded;
  * OK as, for instance, properties make use of this fact and store the name as
  * ID
  */
-public class XMLId extends StringEncodedAndDecoded {
+public class XmlId extends StringEncodedAndDecoded {
 
-	public XMLId(String id, boolean URLencoded) {
+	public XmlId(String id, boolean URLencoded) {
 		super(id, URLencoded);
 	}
 

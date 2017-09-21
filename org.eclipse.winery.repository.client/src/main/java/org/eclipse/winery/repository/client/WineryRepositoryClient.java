@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -49,7 +49,7 @@ import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdUtil;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
 import org.eclipse.winery.common.interfaces.QNameWithName;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -480,7 +480,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<QNameWithName> getListOfAllInstances(Class<? extends TOSCAComponentId> clazz) {
+	public Collection<QNameWithName> getListOfAllInstances(Class<? extends DefinitionsChildId> clazz) {
 		// inspired by getQNameListOfAllTypes
 		String path = Util.getRootPathFragment(clazz);
 		Map<WebResource, List<NamespaceIdOptionalName>> wRtoNamespaceAndIdListMapOfAllTypes = this.getWRtoNamespaceAndIdListMapOfAllTypes(path);
@@ -542,7 +542,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	}
 
 	@Override
-	public Definitions getDefinitions(TOSCAComponentId id) {
+	public Definitions getDefinitions(DefinitionsChildId id) {
 		for (WebResource wr : this.repositoryResources) {
 			String path = Util.getUrlPath(id);
 			Definitions definitions = WineryRepositoryClient.getDefinitions(wr.path(path));
@@ -721,7 +721,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createComponent(QName qname, Class<? extends TOSCAComponentId> idClass) throws QNameAlreadyExistsException {
+	public void createComponent(QName qname, Class<? extends DefinitionsChildId> idClass) throws QNameAlreadyExistsException {
 		WebResource resource = this.primaryWebResource.path(Util.getRootPathFragment(idClass));
 		MultivaluedMap<String, String> map = new MultivaluedMapImpl();
 		map.putSingle("namespace", qname.getNamespaceURI());
@@ -757,7 +757,7 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	 * @param newId the new id
 	 */
 	@Override
-	public void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException {
+	public void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException {
 		String pathFragment = IdUtil.getURLPathFragment(oldId);
 		NamespaceAndIdAsString namespaceAndIdAsString = new NamespaceAndIdAsString();
 		namespaceAndIdAsString.namespace = newId.getNamespace().getDecoded();
@@ -766,13 +766,13 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			// TODO: Check whether namespaceAndIdAsString is the correct data type expected at the resource
 			ClientResponse response = wr.path(pathFragment).path("id").post(ClientResponse.class, namespaceAndIdAsString);
 			if ((response.getClientResponseStatus() != ClientResponse.Status.NO_CONTENT) || (response.getClientResponseStatus() != ClientResponse.Status.NOT_FOUND)) {
-				LOGGER.debug(String.format("Error %d when renaming TOSCAComponentId %s to %s at %s", response.getStatus(), oldId.toString(), newId.toString(), wr.getURI().toString()));
+				LOGGER.debug(String.format("Error %d when renaming DefinitionsChildId %s to %s at %s", response.getStatus(), oldId.toString(), newId.toString(), wr.getURI().toString()));
 			}
 		}
 	}
 
 	@Override
-	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException {
+	public void forceDelete(Class<? extends DefinitionsChildId> definitionsChildIdClazz, Namespace namespace) throws IOException {
 		throw new IllegalStateException("not yet implemented");
 	}
 

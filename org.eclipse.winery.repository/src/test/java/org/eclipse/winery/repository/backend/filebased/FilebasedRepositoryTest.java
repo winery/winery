@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2017 University of Stuttgart. All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 and the Apache License 2.0 which both accompany this
- * distribution, and are available at http://www.eclipse.org/legal/epl-v10.html and
+ * available under the terms of the Eclipse Public License v2.0 and the Apache License 2.0 which both accompany this
+ * distribution, and are available at http://www.eclipse.org/legal/epl-v20.html and
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -22,9 +22,9 @@ import org.junit.Test;
 public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 
 	@Test
-	public void getAllTOSCAComponentIds() throws Exception {
+	public void getAllDefinitionsChildIds() throws Exception {
 		this.setRevisionTo("5fdcffa9ccd17743d5498cab0914081fc33606e9");
-		SortedSet<XSDImportId> allImports = this.repository.getAllTOSCAComponentIds(XSDImportId.class);
+		SortedSet<XSDImportId> allImports = this.repository.getAllDefinitionsChildIds(XSDImportId.class);
 		Assert.assertEquals(1, allImports.size());
 	}
 

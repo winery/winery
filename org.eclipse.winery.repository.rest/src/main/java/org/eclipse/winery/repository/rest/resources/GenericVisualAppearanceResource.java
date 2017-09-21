@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -27,7 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
@@ -50,7 +50,7 @@ public abstract class GenericVisualAppearanceResource {
 
 	protected final Map<QName, String> otherAttributes;
 	protected final TopologyGraphElementEntityTypeResource res;
-	protected final TOSCAElementId id;
+	protected final ToscaElementId id;
 
 
 	/**
@@ -80,7 +80,7 @@ public abstract class GenericVisualAppearanceResource {
 	}
 
 	//@JsonIgnore
-	public TOSCAElementId getId() {
+	public ToscaElementId getId() {
 		return this.id;
 	}
 

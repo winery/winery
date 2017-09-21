@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -30,15 +30,15 @@ import java.util.zip.ZipInputStream;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.eclipse.winery.common.TOSCADocumentBuilderFactory;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.export.CSARExporter;
+import org.eclipse.winery.repository.export.CsarExporter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -112,9 +112,9 @@ public class WineryCli {
 
 	private static List<String> checkCorruptionUsingCsarExport(IRepository repository, EnumSet<Verbosity> verbosity) {
 		List<String> res = new ArrayList<>();
-		SortedSet<TOSCAComponentId> allToscaComponentIds = repository.getAllToscaComponentIds();
+		SortedSet<DefinitionsChildId> allDefintionsChildIds = repository.getAllDefinitionsChildIds();
 		if (verbosity.contains(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS)) {
-			System.out.format("Number of TOSCA definitions to check: %d\n", allToscaComponentIds.size());
+			System.out.format("Number of TOSCA definitions to check: %d\n", allDefintionsChildIds.size());
 		}
 		if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
 			System.out.print("Checking ");
@@ -129,7 +129,7 @@ public class WineryCli {
 			return res;
 		}
 
-		for (TOSCAComponentId id : allToscaComponentIds) {
+		for (DefinitionsChildId id : allDefintionsChildIds) {
 			if (verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
 				System.out.format("Checking %s...\n", id.toReadableString());
 			} else {
@@ -151,10 +151,10 @@ public class WineryCli {
 		return res;
 	}
 
-	private static void checkXmlSchemaValidation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, TOSCAComponentId id) {
+	private static void checkXmlSchemaValidation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
 		try (InputStream inputStream = repository.newInputStream(BackendUtils.getRefOfDefinitions(id))) {
 			Definitions definitions = repository.getDefinitions(id);
-			DocumentBuilder documentBuilder = TOSCADocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
+			DocumentBuilder documentBuilder = ToscaDocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
 			StringBuilder errorStringBuilder = new StringBuilder();
 			documentBuilder.setErrorHandler(BackendUtils.getErrorHandler(errorStringBuilder));
 			documentBuilder.parse(inputStream);
@@ -169,18 +169,18 @@ public class WineryCli {
 		}
 	}
 
-	private static void checkId(List<String> res, EnumSet<Verbosity> verbosity, TOSCAComponentId id) {
+	private static void checkId(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
 		checkUri(res, verbosity, id, id.getNamespace().getDecoded());
 		checkNcname(res, verbosity, id, id.getXmlId().getDecoded());
 	}
 
-	private static void checkNcname(List<String> res, EnumSet<Verbosity> verbosity, TOSCAComponentId id, String ncname) {
+	private static void checkNcname(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String ncname) {
 		if (!ncname.trim().equals(ncname)) {
 			printAndAddError(res, verbosity, id, "local name starts or ends with white spaces");
 		}
 	}
 
-	private static void checkUri(List<String> res, EnumSet<Verbosity> verbosity, TOSCAComponentId id, String UriStr) {
+	private static void checkUri(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String UriStr) {
 		if (!UriStr.trim().equals(UriStr)) {
 			printAndAddError(res, verbosity, id, "Namespace starts or ends with white spaces");
 		}
@@ -197,8 +197,8 @@ public class WineryCli {
 		}
 	}
 
-	private static void checkCsar(List<String> res, EnumSet<Verbosity> verbosity, TOSCAComponentId id, Path tempCsar) {
-		CSARExporter exporter = new CSARExporter();
+	private static void checkCsar(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
+		CsarExporter exporter = new CsarExporter();
 		final OutputStream outputStream;
 		try {
 			outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -209,7 +209,7 @@ public class WineryCli {
 			return;
 		}
 		try {
-			exporter.writeCSAR(id, outputStream);
+			exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream);
 			try (InputStream inputStream = Files.newInputStream(tempCsar);
 				 ZipInputStream zis = new ZipInputStream(inputStream)) {
 				ZipEntry entry;
@@ -228,7 +228,7 @@ public class WineryCli {
 		}
 	}
 
-	public static void printAndAddError(List<String> res, EnumSet<Verbosity> verbosity, TOSCAComponentId id, String error) {
+	public static void printAndAddError(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String error) {
 		if (verbosity.contains(Verbosity.OUTPUT_ERROS)) {
 			if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
 				System.out.println();

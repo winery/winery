@@ -1,9 +1,9 @@
 /**
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -20,6 +20,10 @@ import { CommonModule } from '@angular/common';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { ArtifactSourceComponent } from '../../instance/artifactTemplates/artifactSource/artifactSource.component';
+import { TabsModule } from 'ngx-bootstrap';
+import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
+import { WineryDuplicateValidatorModule } from '../../wineryValidators/wineryDuplicateValidator.module';
 
 @NgModule({
     imports: [
@@ -30,10 +34,14 @@ import { HttpModule } from '@angular/http';
         WineryModalModule,
         WineryTableModule,
         WineryUploaderModule,
-        ArtifactTemplateRouterModule
+        TabsModule,
+        WineryEditorModule,
+        WineryDuplicateValidatorModule,
+        ArtifactTemplateRouterModule,
     ],
     declarations: [
         FilesComponent,
+        ArtifactSourceComponent,
         PropertiesComponent,
     ]
 })

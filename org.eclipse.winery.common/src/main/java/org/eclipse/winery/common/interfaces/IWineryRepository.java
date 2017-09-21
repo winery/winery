@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -18,7 +18,7 @@ import java.util.SortedSet;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -34,7 +34,7 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 public interface IWineryRepository extends IWineryRepositoryCommon {
 
 	/**
-	 * Returns all namespaces used by all known TOSCA components and namespaces
+	 * Returns all namespaces used by all known definition children and namespaces
 	 * where a prefix is defined for
 	 *
 	 * String is used as return type as Java's QName also uses String as
@@ -73,7 +73,7 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
 	 * @param type the type to get all instances of
 	 * @return a collection of QName/name pairs
 	 */
-	Collection<QNameWithName> getListOfAllInstances(Class<? extends TOSCAComponentId> type);
+	Collection<QNameWithName> getListOfAllInstances(Class<? extends DefinitionsChildId> type);
 
 	/**
 	 * Returns the associated name for the given id.
@@ -137,7 +137,7 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
 	/**
 	 * Creates a component of the type idClass.
 	 */
-	void createComponent(QName qname, Class<? extends TOSCAComponentId> idClass) throws QNameAlreadyExistsException;
+	void createComponent(QName qname, Class<? extends DefinitionsChildId> idClass) throws QNameAlreadyExistsException;
 
 	/**
 	 * Creates the specified artifact template

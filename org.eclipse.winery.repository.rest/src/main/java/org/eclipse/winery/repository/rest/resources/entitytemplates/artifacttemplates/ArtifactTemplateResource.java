@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -160,7 +160,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		Collection<TImplementationArtifact> allIAs = new HashSet<>();
 
 		// handle Node Type Implementation, which contains DAs and IAs
-		SortedSet<NodeTypeImplementationId> nodeTypeImplementations = RepositoryFactory.getRepository().getAllTOSCAComponentIds(NodeTypeImplementationId.class);
+		SortedSet<NodeTypeImplementationId> nodeTypeImplementations = RepositoryFactory.getRepository().getAllDefinitionsChildIds(NodeTypeImplementationId.class);
 		for (NodeTypeImplementationId ntiId : nodeTypeImplementations) {
 			NodeTypeImplementationResource ntiRes = (NodeTypeImplementationResource) AbstractComponentsResource.getComponentInstaceResource(ntiId);
 			TDeploymentArtifacts deploymentArtifacts = ntiRes.getNTI().getDeploymentArtifacts();
@@ -174,7 +174,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		}
 
 		// check all Relationshiptype Implementations for IAs
-		SortedSet<RelationshipTypeImplementationId> relationshipTypeImplementations = RepositoryFactory.getRepository().getAllTOSCAComponentIds(RelationshipTypeImplementationId.class);
+		SortedSet<RelationshipTypeImplementationId> relationshipTypeImplementations = RepositoryFactory.getRepository().getAllDefinitionsChildIds(RelationshipTypeImplementationId.class);
 		for (RelationshipTypeImplementationId rtiId : relationshipTypeImplementations) {
 			RelationshipTypeImplementationResource rtiRes = (RelationshipTypeImplementationResource) AbstractComponentsResource.getComponentInstaceResource(rtiId);
 			TImplementationArtifacts implementationArtifacts = rtiRes.getRTI().getImplementationArtifacts();
@@ -184,7 +184,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		}
 
 		// check all node templates for DAs
-		SortedSet<ServiceTemplateId> serviceTemplates = RepositoryFactory.getRepository().getAllTOSCAComponentIds(ServiceTemplateId.class);
+		SortedSet<ServiceTemplateId> serviceTemplates = RepositoryFactory.getRepository().getAllDefinitionsChildIds(ServiceTemplateId.class);
 		for (ServiceTemplateId sid : serviceTemplates) {
 			ServiceTemplateResource serviceTemplateRes = (ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(sid);
 			TTopologyTemplate topologyTemplate = serviceTemplateRes.getServiceTemplate().getTopologyTemplate();

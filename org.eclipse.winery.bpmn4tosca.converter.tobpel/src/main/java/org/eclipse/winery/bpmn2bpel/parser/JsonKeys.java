@@ -3,9 +3,9 @@
  * Copyright (c) 2015-2017 University of Stuttgart.
  * Copyright (c) 2017 ZTE Corporation.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -41,11 +41,11 @@ public interface JsonKeys {
 	public static final String NODE_INTERFACE_NAME = "interface";
 
 	public static final String CONNECTIONS = "connections";
-	
+
 	public static final String CONDITIONS = "conditions";
-	
+
 	public static final String CONDITION = "condition";
-	
+
 	public static final String DEFAULT = "default";
 
 
@@ -58,9 +58,9 @@ public interface JsonKeys {
 	public static final String NODE_TYPE_START_EVENT = "StartEvent";
 
 	public static final String NODE_TYPE_END_EVENT = "EndEvent";
-	
+
 	public static final String NODE_TYPE_GATEWAY_EXCLUSIVE = "ExclusiveGateway";
-	
+
 	public static final String NODE_TYPE_GATEWAY_EXCLUSIVE_END = "ExclusiveGatewayEnd";
 
 

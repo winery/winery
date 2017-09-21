@@ -1,0 +1,165 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ */
+-->
+
+<div class="right">
+    <a href="{{srcPath}}">
+        <button class="btn btn-primary" name="zip">ZIP</button>
+    </a>
+</div>
+<div *ngIf="!loading">
+    <div>
+        <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true">
+        </winery-uploader>
+    </div>
+    <br>
+    <div id="fileGridHeader">
+        <h5 id="gridHeaderText">Already includ Files:</h5>
+        <button id="gridHeaderNewBtn" class="btn btn-sm btn-toolbar" (click)="onCreateNewFile()">Add New</button>
+        <button class="btn btn-sm btn-toolbar"
+                [disabled]="selectedFile == null"
+                (click)="undoFileChanges()">Reload from Server
+        </button>
+        <button class="btn btn-sm btn-danger" [disabled]="selectedFile == null" (click)="removeElementModal.show();">
+            Delete
+        </button>
+        <button class="btn btn-sm btn-toolbar" [disabled]="selectedFile == null" (click)="openRenameDialog()">Rename
+        </button>
+        <span></span>
+        <button id="gridHeaderPostToFiles" class="btn btn-sm btn-toolbar" (click)="copyAllSrc()">Copy all to Files
+        </button>
+        <button class="btn btn-sm btn-primary"
+                [disabled]="selectedFile == null"
+                (click)="saveEditorContent()">Save
+        </button>
+    </div>
+    <div id="fileGridBody">
+        <div id="leftEditContent">
+            <table role="presentation">
+                <tbody class="files">
+                <div id="filesList">
+                    <tr *ngFor="let file of filesList" [ngClass]="{selected: file.name === selectedFile?.name}"
+                        (click)="editFile(file)">
+                        <td>
+                                <span class="preview"><a href="{{baseUrl + file.url}}" download="{{file.name}}"
+                                                         title="{{file.name}}"><img
+                                    src="{{file.thumbnailUrl}}"></a></span>
+                        </td>
+                        <td id="srcNameCell">
+                            <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}"
+                                               title="{{file.name}}">{{file.name}}</a>
+                            </p>
+                        </td>
+                        <td>
+                            <span class="size">{{file.size / 1024 | number: '1.2-2'}} KB</span>
+                        </td>
+                    </tr>
+                </div>
+                </tbody>
+            </table>
+        </div>
+        <div id="rightEditHeader">
+            <span *ngIf="fileContent != null && (fileContent !== editor?.getData())">*</span>
+            {{selectedFile?.name}}
+        </div>
+        <div id="rightEditContent">
+            <winery-editor #artifactsEditor></winery-editor>
+        </div>
+    </div>
+</div>
+
+
+<winery-modal bsModal #removeElementModal="bs-modal" [modalRef]="removeElementModal">
+    <winery-modal-header [title]="'Delete File'"></winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Are you sure you want to remove <span style="font-weight:bold;">{{ selectedFile?.name }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
+                         (onOk)="onRemoveElement()">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #saveCurrentFileModal="bs-modal" [modalRef]="saveCurrentFileModal">
+    <winery-modal-header [title]="'Save Changes'"></winery-modal-header>
+    <winery-modal-body>
+        <p>
+            There are unsaved changes to the currently opened File,
+            do you want to save them?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Save'"
+                         (onOk)="saveEditorContent()">
+        <button class="btn btn-default" name="undoChanges" (click)="undoFileChanges()">Undo Changes</button>
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #createNewFileModal="bs-modal" [modalRef]="createNewFileModel">
+    <winery-modal-header [title]="'Create New File'"></winery-modal-header>
+    <winery-modal-body>
+        <form #addImplForm="ngForm" id="createFile">
+            <div class="form-group">
+                <label class="control-label" for="fileName">Name</label>
+                <input #localNameInput="ngModel"
+                       id="fileName"
+                       class="form-control"
+                       name="fileName"
+                       required
+                       [(ngModel)]="newFileName"
+                       [wineryDuplicateValidator]="validatorObject"
+                />
+                <div *ngIf="localNameInput.errors && (localNameInput.dirty || localNameInput.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!localNameInput.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!localNameInput.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Create'"
+                         (onOk)="createNewFile()">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #renameFileModal="bs-modal" [modalRef]="renameFileModal">
+    <winery-modal-header [title]="'Rename File'"></winery-modal-header>
+    <winery-modal-body>
+        <form #addImplForm="ngForm" id="renameFile">
+            <div class="form-group">
+                <label class="control-label" for="name">Name</label>
+                <input #localNameInput="ngModel"
+                       id="name"
+                       class="form-control"
+                       name="name"
+                       required
+                       [(ngModel)]="renameFileName"
+                       [wineryDuplicateValidator]="validatorObject"
+                />
+                <div *ngIf="localNameInput.errors && (localNameInput.dirty || localNameInput.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!localNameInput.errors.wineryDuplicateValidator">
+                        No duplicates allowed!
+                    </div>
+                    <div [hidden]="!localNameInput.errors.required">
+                        Name is required!
+                    </div>
+                </div>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Rename'"
+                         (onOk)="renameSelection()">
+    </winery-modal-footer>
+</winery-modal>

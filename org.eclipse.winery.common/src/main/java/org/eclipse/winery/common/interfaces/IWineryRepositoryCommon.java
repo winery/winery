@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2013-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
@@ -28,7 +29,6 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
@@ -58,9 +58,9 @@ public interface IWineryRepositoryCommon {
 	 * Even if the given id does not exist in the repository (<code>!exists(id)</code>), an empty wrapper definitions
 	 * with an empty element is generated
 	 *
-	 * @param id the TOSCAComponentId to load
+	 * @param id the DefinitionsChildId to load
 	 */
-	Definitions getDefinitions(TOSCAComponentId id);
+	Definitions getDefinitions(DefinitionsChildId id);
 
 	// in case one needs a new element, just copy and paste one of the following methods and adapt it.
 
@@ -108,7 +108,6 @@ public interface IWineryRepositoryCommon {
 		return (TPolicyType) this.getDefinitions(id).getElement();
 	}
 
-
 	/**
 	 * Deletes the TOSCA element <b>and all sub elements</b> referenced by the given id from the repository
 	 *
@@ -117,18 +116,18 @@ public interface IWineryRepositoryCommon {
 	void forceDelete(GenericId id) throws IOException;
 
 	/**
-	 * Renames a TOSCA component id
+	 * Renames a definition child id
 	 *
 	 * @param oldId the old id
 	 * @param newId the new id
 	 */
-	void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException;
+	void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException;
 
 	/**
-	 * Deletes all TOSCA components nested in the given namespace
+	 * Deletes all definition children nested in the given namespace
 	 *
-	 * @param toscaComponentIdClazz the type of TOSCA components to delete
-	 * @param namespace             the namespace to delete
+	 * @param definitionsChildIdClazz the type of definition children to delete
+	 * @param namespace               the namespace to delete
 	 */
-	void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) throws IOException;
+	void forceDelete(Class<? extends DefinitionsChildId> definitionsChildIdClazz, Namespace namespace) throws IOException;
 }

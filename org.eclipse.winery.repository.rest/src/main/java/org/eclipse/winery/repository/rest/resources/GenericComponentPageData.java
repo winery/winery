@@ -1,15 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation, improvements
  *     Lukas Harzenetter - added showAllItems member
- *     Nicole Keppler - Bugfixes, added get-Method for TOSCAComponentId
+ *     Nicole Keppler - Bugfixes, added get-Method for DefinitionsChildId
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources;
 
@@ -18,10 +18,10 @@ import java.util.Collections;
 import java.util.SortedSet;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
@@ -36,19 +36,19 @@ public final class GenericComponentPageData {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GenericComponentPageData.class);
 
-	private final SortedSet<? extends TOSCAComponentId> componentInstanceIds;
+	private final SortedSet<? extends DefinitionsChildId> componentInstanceIds;
 
 	private final Class<? extends AbstractComponentsResource> resourceClass;
 	private String namespace;
 	private final boolean showAllItems;
 
-	private final Class<? extends TOSCAComponentId> cIdClass;
+	private final Class<? extends DefinitionsChildId> cIdClass;
 
 	public GenericComponentPageData(Class<? extends AbstractComponentsResource> resourceClass, boolean showAllItems) {
 		this.resourceClass = resourceClass;
 		this.showAllItems = showAllItems;
 		this.cIdClass = RestUtils.getComponentIdClassForComponentContainer(resourceClass);
-		this.componentInstanceIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(cIdClass);
+		this.componentInstanceIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(cIdClass);
 	}
 
 	public GenericComponentPageData(Class<? extends AbstractComponentsResource> resourceClass, String namespace) {
@@ -59,7 +59,7 @@ public final class GenericComponentPageData {
 	/**
 	 * Outputs the data for GenericComponentPage (Name / Id / Namespace) needed for the genericcomponentpage.jsp
 	 */
-	public SortedSet<? extends TOSCAComponentId> getComponentInstanceIds() {
+	public SortedSet<? extends DefinitionsChildId> getComponentInstanceIds() {
 		return this.componentInstanceIds;
 	}
 
@@ -67,7 +67,7 @@ public final class GenericComponentPageData {
 		return RestUtils.getTypeForComponentContainer(this.resourceClass);
 	}
 
-	public Class<? extends TOSCAComponentId> getTOSCAComponentId() {
+	public Class<? extends DefinitionsChildId> getDefinitionsChildId() {
 		return RestUtils.getComponentIdClassForComponentContainer(this.resourceClass);
 	}
 
@@ -97,8 +97,8 @@ public final class GenericComponentPageData {
 	 *
 	 * @return the list of all known <em>types</em>
 	 */
-	public Collection<? extends TOSCAComponentId> getTypeSelectorData() {
-		Class<? extends TOSCAComponentId> typeIdClass;
+	public Collection<? extends DefinitionsChildId> getTypeSelectorData() {
+		Class<? extends DefinitionsChildId> typeIdClass;
 		if (this.resourceClass == ArtifactTemplatesResource.class) {
 			typeIdClass = ArtifactTypeId.class;
 		} else if (this.resourceClass == NodeTypeImplementationsResource.class) {
@@ -110,7 +110,7 @@ public final class GenericComponentPageData {
 		} else {
 			return Collections.emptyList();
 		}
-		return RepositoryFactory.getRepository().getAllTOSCAComponentIds(typeIdClass);
+		return RepositoryFactory.getRepository().getAllDefinitionsChildIds(typeIdClass);
 	}
 
 	public boolean isShowAllItems() {
@@ -121,7 +121,7 @@ public final class GenericComponentPageData {
 		return namespace;
 	}
 
-	public Class<? extends TOSCAComponentId> getTOSCAComponentIdClass() {
+	public Class<? extends DefinitionsChildId> getDefinitionsChildIdClass() {
 		return cIdClass;
 	}
 }

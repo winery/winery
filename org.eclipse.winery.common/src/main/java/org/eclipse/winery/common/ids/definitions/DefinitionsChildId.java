@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2013-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -20,13 +20,13 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 
 /**
- * Identifies a TOSCA component. Each component is required to be identified
+ * Identifies a definitions child. Each component is required to be identified
  * subclasses this class
  *
- * A TOSCAcomponentId has a namespace and an id within that namespace. In XML,
+ * A DefinitionsChildId has a namespace and an id within that namespace. In XML,
  * the ID might be serialized as NCName (in the case of EntityTypes and
  * EntityTemplates) and as xs:id (in the case of EntityTypeImplementations)
  *
@@ -38,9 +38,9 @@ import org.eclipse.winery.common.ids.XMLId;
  * <li>EntityTemplates</li>
  * </ul>
  */
-public abstract class TOSCAComponentId extends GenericId {
+public abstract class DefinitionsChildId extends GenericId {
 
-	public static final List<Class<? extends TOSCAComponentId>> ALL_TOSCA_COMPONENT_ID_CLASSES = Arrays.asList(
+	public static final List<Class<? extends DefinitionsChildId>> ALL_TOSCA_COMPONENT_ID_CLASSES = Arrays.asList(
 		ArtifactTemplateId.class,
 		ArtifactTypeId.class,
 		CapabilityTypeId.class,
@@ -57,7 +57,7 @@ public abstract class TOSCAComponentId extends GenericId {
 	private final Namespace namespace;
 
 
-	public TOSCAComponentId(Namespace namespace, XMLId xmlId) {
+	public DefinitionsChildId(Namespace namespace, XmlId xmlId) {
 		super(xmlId);
 		this.namespace = Objects.requireNonNull(namespace);
 	}
@@ -69,11 +69,11 @@ public abstract class TOSCAComponentId extends GenericId {
 	 * @param id         the id to be used
 	 * @param URLencoded true: both Strings are URLencoded, false: both Strings are not URLencoded
 	 */
-	public TOSCAComponentId(String ns, String id, boolean URLencoded) {
-		this(new Namespace(ns, URLencoded), new XMLId(id, URLencoded));
+	public DefinitionsChildId(String ns, String id, boolean URLencoded) {
+		this(new Namespace(ns, URLencoded), new XmlId(id, URLencoded));
 	}
 
-	public TOSCAComponentId(QName qname) {
+	public DefinitionsChildId(QName qname) {
 		this(qname.getNamespaceURI(), qname.getLocalPart(), false);
 	}
 
@@ -88,7 +88,7 @@ public abstract class TOSCAComponentId extends GenericId {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof TOSCAComponentId)) return false;
+		if (!(o instanceof DefinitionsChildId)) return false;
 
 		// only the same component instances might be equal
 		if (!o.getClass().equals(this.getClass())) {
@@ -97,7 +97,7 @@ public abstract class TOSCAComponentId extends GenericId {
 
 		if (!super.equals(o)) return false;
 
-		TOSCAComponentId that = (TOSCAComponentId) o;
+		DefinitionsChildId that = (DefinitionsChildId) o;
 
 		return namespace.equals(that.namespace);
 	}
@@ -128,10 +128,10 @@ public abstract class TOSCAComponentId extends GenericId {
 
 	@Override
 	public int compareTo(GenericId o1) {
-		if (o1 instanceof TOSCAComponentId) {
+		if (o1 instanceof DefinitionsChildId) {
 			int res = this.getClass().getName().compareTo(o1.getClass().toString());
 			if (res == 0) {
-				TOSCAComponentId o = (TOSCAComponentId) o1;
+				DefinitionsChildId o = (DefinitionsChildId) o1;
 				res = this.getXmlId().compareTo(o.getXmlId());
 				if (res == 0) {
 					res = this.getNamespace().compareTo(o.getNamespace());

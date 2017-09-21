@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -15,7 +15,7 @@ package org.eclipse.winery.repository.rest.resources;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.rest.RestUtils;
 
 public class ComponentsOfOneNamespaceResource {
@@ -30,7 +30,7 @@ public class ComponentsOfOneNamespaceResource {
 
 	@DELETE
 	public Response delete() {
-		Class<? extends TOSCAComponentId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.containerClass);
+		Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.containerClass);
 		return RestUtils.delete(idClass, namespace);
 	}
 }

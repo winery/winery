@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -49,7 +49,7 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 			return creationResult.getResponse();
 		}
 		if (creationResult.getStatus().equals(Status.CREATED)) {
-			final TOSCAComponentId id = (TOSCAComponentId) creationResult.getId();
+			final DefinitionsChildId id = (DefinitionsChildId) creationResult.getId();
 			final Definitions definitions = RepositoryFactory.getRepository().getDefinitions(id);
 			final HasType element = (HasType) definitions.getElement();
 			element.setType(jsonData.type);

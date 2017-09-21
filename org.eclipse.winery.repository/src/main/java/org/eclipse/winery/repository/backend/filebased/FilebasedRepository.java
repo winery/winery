@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -49,10 +49,10 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.repository.Constants;
@@ -234,7 +234,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	}
 
 	@Override
-	public void rename(TOSCAComponentId oldId, TOSCAComponentId newId) throws IOException {
+	public void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException {
 		Objects.requireNonNull(oldId);
 		Objects.requireNonNull(newId);
 
@@ -275,10 +275,10 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		}
 	}
 
-	public void forceDelete(Class<? extends TOSCAComponentId> toscaComponentIdClazz, Namespace namespace) {
-		// instantiate new tosca component id with "ID" as id
+	public void forceDelete(Class<? extends DefinitionsChildId> definitionsChildIdClazz, Namespace namespace) {
+		// instantiate new definitions child id with "ID" as id
 		// this is used to get the absolute path
-		TOSCAComponentId id = BackendUtils.getTOSCAcomponentId(toscaComponentIdClazz, namespace.getEncoded(), "ID", true);
+		DefinitionsChildId id = BackendUtils.getDefinitionsChildId(definitionsChildIdClazz, namespace.getEncoded(), "ID", true);
 
 		Path path = this.id2AbsolutePath(id);
 
@@ -342,7 +342,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	}
 
 	@Override
-	public <T extends TOSCAComponentId> SortedSet<T> getAllTOSCAComponentIds(Class<T> idClass) {
+	public <T extends DefinitionsChildId> SortedSet<T> getAllDefinitionsChildIds(Class<T> idClass) {
 		SortedSet<T> res = new TreeSet<>();
 		String rootPathFragment = Util.getRootPathFragment(idClass);
 		Path dir = this.repositoryRoot.resolve(rootPathFragment);
@@ -361,10 +361,10 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 				Namespace ns = new Namespace(nsP.getFileName().toString(), true);
 				try (DirectoryStream<Path> idDS = Files.newDirectoryStream(nsP, onhdf)) {
 					for (Path idP : idDS) {
-						XMLId xmlId = new XMLId(idP.getFileName().toString(), true);
+						XmlId xmlId = new XmlId(idP.getFileName().toString(), true);
 						Constructor<T> constructor;
 						try {
-							constructor = idClass.getConstructor(Namespace.class, XMLId.class);
+							constructor = idClass.getConstructor(Namespace.class, XmlId.class);
 						} catch (Exception e) {
 							FilebasedRepository.LOGGER.debug("Internal error at determining id constructor", e);
 							// abort everything, return invalid result
@@ -461,7 +461,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	}
 
 	@Override
-	public <T extends TOSCAElementId> SortedSet<T> getNestedIds(GenericId ref, Class<T> idClass) {
+	public <T extends ToscaElementId> SortedSet<T> getNestedIds(GenericId ref, Class<T> idClass) {
 		Path dir = this.id2AbsolutePath(ref);
 		SortedSet<T> res = new TreeSet<>();
 		if (!Files.exists(dir)) {
@@ -473,7 +473,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		// list all directories contained in this directory
 		try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir, new OnlyNonHiddenDirectories())) {
 			for (Path p : ds) {
-				XMLId xmlId = new XMLId(p.getFileName().toString(), true);
+				XmlId xmlId = new XmlId(p.getFileName().toString(), true);
 				@SuppressWarnings("unchecked")
 				Constructor<T>[] constructors = (Constructor<T>[]) idClass.getConstructors();
 				assert (constructors.length == 1);
@@ -498,12 +498,12 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
 	@Override
 	public Collection<Namespace> getUsedNamespaces() {
-		return getNamespaces(TOSCAComponentId.ALL_TOSCA_COMPONENT_ID_CLASSES);
+		return getNamespaces(DefinitionsChildId.ALL_TOSCA_COMPONENT_ID_CLASSES);
 	}
 
 	@Override
-	public Collection<Namespace> getComponentsNamespaces(Class<? extends TOSCAComponentId> clazz) {
-		Collection<Class<? extends TOSCAComponentId>> list = new ArrayList<>();
+	public Collection<Namespace> getComponentsNamespaces(Class<? extends DefinitionsChildId> clazz) {
+		Collection<Class<? extends DefinitionsChildId>> list = new ArrayList<>();
 		list.add(clazz);
 		return getNamespaces(list);
 	}
@@ -518,11 +518,11 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		return new RepositoryBasedXsdImportManager();
 	}
 
-	private Collection<Namespace> getNamespaces(Collection<Class<? extends TOSCAComponentId>> toscaComponentIds) {
+	private Collection<Namespace> getNamespaces(Collection<Class<? extends DefinitionsChildId>> definitionsChildIds) {
 		// we use a HashSet to avoid reporting duplicate namespaces
 		Collection<Namespace> res = new HashSet<>();
 
-		for (Class<? extends TOSCAComponentId> id : toscaComponentIds) {
+		for (Class<? extends DefinitionsChildId> id : definitionsChildIds) {
 			String rootPathFragment = Util.getRootPathFragment(id);
 			Path dir = this.repositoryRoot.resolve(rootPathFragment);
 			if (!Files.exists(dir)) {

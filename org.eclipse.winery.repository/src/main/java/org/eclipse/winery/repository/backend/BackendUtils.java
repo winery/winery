@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -55,11 +55,12 @@ import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.XMLId;
+import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
@@ -69,11 +70,10 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
-import org.eclipse.winery.common.ids.elements.TOSCAElementId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
@@ -200,21 +200,21 @@ public class BackendUtils {
 		return true;
 	}
 
-	public static <T extends TOSCAComponentId> T getTOSCAcomponentId(Class<T> idClass, String qnameStr) {
+	public static <T extends DefinitionsChildId> T getDefinitionsChildId(Class<T> idClass, String qnameStr) {
 		QName qname = QName.valueOf(qnameStr);
-		return BackendUtils.getTOSCAcomponentId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
+		return BackendUtils.getDefinitionsChildId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
 	}
 
-	public static <T extends TOSCAComponentId> T getTOSCAcomponentId(Class<T> idClass, QName qname) {
+	public static <T extends DefinitionsChildId> T getDefinitionsChildId(Class<T> idClass, QName qname) {
 		// we got two implementation possibilities: one is to directly use the
 		// QName constructor,
 		// the other is to use a namespace, localname, urlencoded constructor
 		// we opt for the latter one, which forces the latter constructor to
 		// exist at all ids
-		return BackendUtils.getTOSCAcomponentId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
+		return BackendUtils.getDefinitionsChildId(idClass, qname.getNamespaceURI(), qname.getLocalPart(), false);
 	}
 
-	public static <T extends TOSCAComponentId> T getTOSCAcomponentId(Class<T> idClass, String namespace, String id, boolean URLencoded) {
+	public static <T extends DefinitionsChildId> T getDefinitionsChildId(Class<T> idClass, String namespace, String id, boolean URLencoded) {
 		Constructor<T> constructor;
 		try {
 			constructor = idClass.getConstructor(String.class, String.class, boolean.class);
@@ -235,14 +235,14 @@ public class BackendUtils {
 
 	/**
 	 * @param id the id to determine the namespace of the parent for
-	 * @return the namespace of the first TOSCAcomponentId found in the ID hierarchy
+	 * @return the namespace of the first DefinitionsChildId found in the ID hierarchy
 	 */
-	public static Namespace getNamespace(TOSCAElementId id) {
+	public static Namespace getNamespace(ToscaElementId id) {
 		GenericId parent = id.getParent();
-		while (!(parent instanceof TOSCAComponentId)) {
+		while (!(parent instanceof DefinitionsChildId)) {
 			parent = parent.getParent();
 		}
-		return ((TOSCAComponentId) parent).getNamespace();
+		return ((DefinitionsChildId) parent).getNamespace();
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class BackendUtils {
 		return w.toString();
 	}
 
-	public static String getName(TOSCAComponentId instanceId) throws RepositoryCorruptException {
+	public static String getName(DefinitionsChildId instanceId) throws RepositoryCorruptException {
 		IRepository repository = RepositoryFactory.getRepository();
 		if (!repository.exists(instanceId)) {
 			throw new RepositoryCorruptException("Definitions does not exist for instance");
@@ -300,7 +300,7 @@ public class BackendUtils {
 	 * @param id the id to lookup
 	 * @return the reference
 	 */
-	public static RepositoryFileReference getRefOfDefinitions(TOSCAComponentId id) {
+	public static RepositoryFileReference getRefOfDefinitions(DefinitionsChildId id) {
 		String name = Util.getTypeForComponentId(id.getClass());
 		name = name + Constants.SUFFIX_TOSCA_DEFINITIONS;
 		return new RepositoryFileReference(id, name);
@@ -322,15 +322,15 @@ public class BackendUtils {
 	public static RepositoryFileReference getRefOfConfiguration(GenericId id) {
 		String name;
 		// Hack to determine file name
-		if (id instanceof TOSCAComponentId) {
-			name = Util.getTypeForComponentId(((TOSCAComponentId) id).getClass());
+		if (id instanceof DefinitionsChildId) {
+			name = Util.getTypeForComponentId(((DefinitionsChildId) id).getClass());
 			name = name + Constants.SUFFIX_PROPERTIES;
 		} else if (id instanceof AdminId) {
 			name = BackendUtils.getTypeForAdminId(((AdminId) id).getClass());
 			name = name + Constants.SUFFIX_PROPERTIES;
 		} else {
-			assert (id instanceof TOSCAElementId);
-			TOSCAElementId tId = (TOSCAElementId) id;
+			assert (id instanceof ToscaElementId);
+			ToscaElementId tId = (ToscaElementId) id;
 			if (tId instanceof PlansId) {
 				name = Filename.FILENAME_PROPERTIES_PLANCONTAINER;
 			} else if (tId instanceof VisualAppearanceId) {
@@ -433,15 +433,15 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Creates a new TDefintions element wrapping a TOSCA Component instance. The namespace of the tosca component is
-	 * used as namespace and {@code winery-defs-for-} concatenated with the (unique) ns prefix and idOfContainedElement
-	 * is used as id
+	 * Creates a new TDefintions element wrapping a definition child. The namespace of the tosca component is used as
+	 * namespace and {@code winery-defs-for-} concatenated with the (unique) ns prefix and idOfContainedElement is used
+	 * as id
 	 *
 	 * @param tcId the id of the element the wrapper is used for
 	 * @param defs the definitions to update
-	 * @return a definitions element prepared for wrapping a TOSCA component instance
+	 * @return a definitions element prepared for wrapping a definition child
 	 */
-	public static Definitions updateWrapperDefinitions(TOSCAComponentId tcId, Definitions defs) {
+	public static Definitions updateWrapperDefinitions(DefinitionsChildId tcId, Definitions defs) {
 		// set target namespace
 		// an internal namespace is not possible
 		//   a) tPolicyTemplate and tArtfactTemplate do NOT support the "targetNamespace" attribute
@@ -523,20 +523,20 @@ public class BackendUtils {
 	}
 
 	/*
-	 * Creates a new TDefintions element wrapping a TOSCA Component instance.
-	 * The namespace of the tosca component is used as namespace and
+	 * Creates a new TDefintions element wrapping a definition child.
+	 * The namespace of the definition child is used as namespace and
 	 * {@code winery-defs-for-} concatenated with the (unique) ns prefix and
 	 * idOfContainedElement is used as id
 	 *
 	 * @param tcId the id of the element the wrapper is used for
-	 * @return a definitions element prepared for wrapping a TOSCA component instance
+	 * @return a definitions element prepared for wrapping a definition child instance
 	 */
-	public static Definitions createWrapperDefinitions(TOSCAComponentId tcId) {
+	public static Definitions createWrapperDefinitions(DefinitionsChildId tcId) {
 		Definitions defs = new Definitions();
 		return updateWrapperDefinitions(tcId, defs);
 	}
 
-	public static Definitions createWrapperDefinitionsAndInitialEmptyElement(TOSCAComponentId id) {
+	public static Definitions createWrapperDefinitionsAndInitialEmptyElement(DefinitionsChildId id) {
 		final Definitions definitions = createWrapperDefinitions(id);
 		HasIdInIdOrNameField element;
 		if (id instanceof RelationshipTypeImplementationId) {
@@ -577,20 +577,20 @@ public class BackendUtils {
 	/**
 	 * Regenerates wrapper definitions; thus all extensions at the wrapper definitions are lost
 	 *
-	 * @param id      the id of the TOSCA component to persist
-	 * @param element the element of the TOSCA component
+	 * @param id      the id of the definition child to persist
+	 * @param element the element of the definition child
 	 */
-	public static void persist(TOSCAComponentId id, TExtensibleElements element) throws IOException {
+	public static void persist(DefinitionsChildId id, TExtensibleElements element) throws IOException {
 		RepositoryFactory.getRepository().setElement(id, element);
 	}
 
 	/**
 	 * Persists the given definitions
 	 *
-	 * @param id          the id of the TOSCA component to persist
+	 * @param id          the id of the definition child to persist
 	 * @param definitions the definitions to persist
 	 */
-	public static void persist(TOSCAComponentId id, Definitions definitions) throws IOException {
+	public static void persist(DefinitionsChildId id, Definitions definitions) throws IOException {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		BackendUtils.persist(definitions, ref, MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
 	}
@@ -832,7 +832,7 @@ public class BackendUtils {
 	/**
 	 * Returns all components available of the given id type
 	 *
-	 * Similar functionality as {@link IGenericRepository#getAllTOSCAComponentIds(java.lang.Class)}, but it crawls
+	 * Similar functionality as {@link IGenericRepository#getAllDefinitionsChildIds(java.lang.Class)}, but it crawls
 	 * through the repository
 	 *
 	 * This method is required as we do not use a database.
@@ -840,7 +840,7 @@ public class BackendUtils {
 	 * @param idClass class of the Ids to search for
 	 * @return empty set if no ids are available
 	 */
-	public <T extends TOSCAElementId> SortedSet<T> getAllTOSCAElementIds(Class<T> idClass) {
+	public <T extends ToscaElementId> SortedSet<T> getAllTOSCAElementIds(Class<T> idClass) {
 		throw new IllegalStateException("Not yet implemented");
 
 		/*
@@ -853,13 +853,14 @@ public class BackendUtils {
 	}
 
 	/**
-	 * Converts the given collection of TOSCA Component Ids to a collection of QNames by using the getQName() method.
+	 * Converts the given collection of definition children Ids to a collection of QNames by using the getQName()
+	 * method.
 	 *
 	 * This is required for QNameChooser.tag
 	 */
-	public static Collection<QName> convertTOSCAComponentIdCollectionToQNameCollection(Collection<? extends TOSCAComponentId> col) {
+	public static Collection<QName> convertDefinitionsChildIdCollectionToQNameCollection(Collection<? extends DefinitionsChildId> col) {
 		Collection<QName> res = new ArrayList<>();
-		for (TOSCAComponentId id : col) {
+		for (DefinitionsChildId id : col) {
 			res.add(id.getQName());
 		}
 		return res;
@@ -909,7 +910,7 @@ public class BackendUtils {
 	 *
 	 * For instance, the id is put in the "name" field for EntityTypes
 	 */
-	public static void copyIdToFields(HasIdInIdOrNameField element, TOSCAComponentId id) {
+	public static void copyIdToFields(HasIdInIdOrNameField element, DefinitionsChildId id) {
 		element.setId(id.getXmlId().getDecoded());
 		if (element instanceof HasTargetNamespace) {
 			((HasTargetNamespace) element).setTargetNamespace(id.getNamespace().getDecoded());
@@ -1088,7 +1089,7 @@ public class BackendUtils {
 						iterator.remove();
 						continue;
 					}
-					PlanId planId = new PlanId(plansContainerId, new XMLId(plan.getId(), false));
+					PlanId planId = new PlanId(plansContainerId, new XmlId(plan.getId(), false));
 					if (nestedPlans.contains(planId)) {
 						// everything allright
 						// we do NOT need to add the plan on the HDD to the XML
@@ -1195,5 +1196,4 @@ public class BackendUtils {
 			}
 		};
 	}
-
 }

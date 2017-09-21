@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -20,7 +20,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.JAXBSupport;
@@ -111,7 +111,7 @@ public abstract class AbstractRepository implements IRepository {
 	}
 
 	@Override
-	public Definitions getDefinitions(TOSCAComponentId id) {
+	public Definitions getDefinitions(DefinitionsChildId id) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		if (!exists(ref)) {
 			return BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(id);

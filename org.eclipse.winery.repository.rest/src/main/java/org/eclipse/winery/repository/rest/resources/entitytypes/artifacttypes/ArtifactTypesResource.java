@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -75,7 +75,7 @@ public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenc
 	 * This is more a DAO method
 	 */
 	public ArtifactTypeResource getArtifactTypeForExtension(String extension) {
-		SortedSet<ArtifactTypeId> allArtifactTypeIds = RepositoryFactory.getRepository().getAllTOSCAComponentIds(ArtifactTypeId.class);
+		SortedSet<ArtifactTypeId> allArtifactTypeIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(ArtifactTypeId.class);
 		ArtifactTypeResource res = null;
 		for (ArtifactTypeId id : allArtifactTypeIds) {
 			ArtifactTypeResource r = new ArtifactTypeResource(id);

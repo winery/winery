@@ -43,7 +43,7 @@ generates the following XML:
   <tosca:Tag name="xaasPackageNode" value="PythonApp_2_7"/>
 </tosca:Tags>
 ```
-## XaaS Packger with Winery
+## XaaS Packager with Winery
 
 The functionality of the XaaS Packager is available in the Winery application and can be used as follows:
 
@@ -63,8 +63,8 @@ After setting all required inputs, a click on the *add* button triggers a search
 Copyright (c) 2017 University of Stuttgart.
 
 All rights reserved. This program and the accompanying materials
-are made available under the terms of the [Eclipse Public License v1.0]
+are made available under the terms of the [Eclipse Public License v2.0]
 and the [Apache License v2.0] which both accompany this distribution.
 
   [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
-  [Eclipse Public License v1.0]: http://www.eclipse.org/legal/epl-v10.html
+  [Eclipse Public License v2.0]: http://www.eclipse.org/legal/epl-v20.html

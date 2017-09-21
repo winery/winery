@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2012-2013,2015 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
@@ -14,9 +14,8 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttem
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -26,6 +25,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -34,17 +34,17 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.Constants;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.FileMeta;
+import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourceApiData;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,20 +88,13 @@ public class FilesResource {
 			return response;
 		}
 
-		// create FileMeta object
-		String URL = RestUtils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
-		String thumbnailURL = uriInfo.getBaseUriBuilder().path(Constants.PATH_MIMETYPEIMAGES).path(FilenameUtils.getExtension(fileName) + Constants.SUFFIX_MIMETYPEIMAGES).build().toString();
-		long size;
 		try {
-			size = RepositoryFactory.getRepository().getSize(ref);
+			BackendUtils.synchronizeReferences((ArtifactTemplateId) fileDir.getParent());
 		} catch (IOException e) {
-			FilesResource.LOGGER.error(e.getMessage(), e);
-			return Response.serverError().entity(e.getMessage()).build();
+			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
 		}
-		FileMeta fileMeta = new FileMeta(fileName, size, URL, thumbnailURL);
 
-		List<FileMeta> metas = new ArrayList<>();
-		metas.add(fileMeta);
+		String URL = RestUtils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
 		return Response.created(RestUtils.createURI(URL)).entity(this.getAllFileMetas()).build();
 	}
 
@@ -110,17 +103,18 @@ public class FilesResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<FileMeta> getJSON() {
-		return this.getAllFileMetas();
+	public String getJSON() {
+		String json = BackendUtils.Object2JSON(this.getAllFileMetas());
+		json = "{\"files\":" + json + "}";
+		return json;
 	}
 
 	private List<FileMeta> getAllFileMetas() {
-		List<FileMeta> res = new ArrayList<>();
-		SortedSet<RepositoryFileReference> fileRefs = RepositoryFactory.getRepository().getContainedFiles(this.fileDir);
-		for (RepositoryFileReference ref : fileRefs) {
-			res.add(new FileMeta(ref));
-		}
-		return res;
+		return RepositoryFactory.getRepository()
+			.getContainedFiles(this.fileDir)
+			.stream()
+			.map(ref -> new FileMeta(ref))
+			.collect(Collectors.toList());
 	}
 
 	private RepositoryFileReference fileName2fileRef(String fileName, boolean encoded) {
@@ -142,5 +136,16 @@ public class FilesResource {
 	public Response deleteFile(@PathParam("fileName") String fileName) {
 		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
 		return RestUtils.delete(ref);
+	}
+
+	@POST
+	@Path("/{fileName}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response postFile(@PathParam("fileName") String fileName, ArtifactResourceApiData data) {
+		if (StringUtils.isEmpty(fileName)) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		RepositoryFileReference ref = this.fileName2fileRef(fileName, false);
+		return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
 	}
 }
