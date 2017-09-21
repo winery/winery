@@ -296,15 +296,13 @@ public class ToscaExportUtil {
 		// Then, handle the super classes, which support inheritance
 		// Currently, it is EntityType and EntityTypeImplementation only
 		// Since the latter does not exist in the TOSCA MetaModel, we just handle EntityType here
-		if (id instanceof EntityTypeId) {
-			Collection<DefinitionsChildId> additionalRefs = repository.getReferencedDefinitionsChildIdOfParentForAnAbstractComponentsWithTypeReferenceResource(((EntityTypeId) id));
+		if (id instanceof EntityTypeId || id instanceof EntityTypeImplementationId) {
+			Collection<DefinitionsChildId> additionalRefs = repository.getReferencedDefinitionsChildIdOfParentForAnAbstractComponentsWithTypeReferenceResource(id);
 			// the original referenceDefinitionsChildIds could be unmodifiable
 			// we just create a new one...
 			referencedDefinitionsChildIds = new ArrayList<>(referencedDefinitionsChildIds);
 			// ...and add the new reference
 			referencedDefinitionsChildIds.addAll(additionalRefs);
-		} else if (id instanceof EntityTypeImplementationId) {
-			LOGGER.error("Inheritance support for EntityTypeImplementations not yet supported");
 		}
 
 		return referencedDefinitionsChildIds;
