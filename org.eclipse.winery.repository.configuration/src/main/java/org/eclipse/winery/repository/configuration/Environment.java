@@ -99,9 +99,9 @@ public class Environment {
 	}
 
 	public static Optional<GitBasedRepositoryConfiguration> getGitBasedRepositoryConfiguration() {
-		final Optional<FileBasedRepositoryConfiguration> filebasedRepositoryConfiguration = getFilebasedRepositoryConfiguration();
-		if (filebasedRepositoryConfiguration.isPresent() && CONFIGURATION.containsKey(KEY_GIT_AUTOCOMMIT)) {
-			return Optional.of(new GitBasedRepositoryConfiguration(CONFIGURATION.getBoolean(KEY_GIT_AUTOCOMMIT), filebasedRepositoryConfiguration.get()));
+		if (CONFIGURATION.containsKey(KEY_GIT_AUTOCOMMIT)) {
+			final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = getFilebasedRepositoryConfiguration().orElse(new FileBasedRepositoryConfiguration());
+			return Optional.of(new GitBasedRepositoryConfiguration(CONFIGURATION.getBoolean(KEY_GIT_AUTOCOMMIT), filebasedRepositoryConfiguration));
 		} else {
 			return Optional.empty();
 		}
