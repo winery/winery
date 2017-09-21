@@ -79,7 +79,7 @@ public class Environment {
 	 * @return the version of Winery
 	 */
 	public static String getVersion() {
-		return Version.VERSION;
+		return org.eclipse.winery.repository.configuration.Version.VERSION;
 	}
 
 	/**

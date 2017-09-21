@@ -44,7 +44,7 @@ export class FilesComponent implements OnInit {
     loadFiles() {
         this.service.getFiles()
             .subscribe(
-                data => this.filesList = data,
+                data => this.filesList = data.files,
                 error => this.handleError(error)
             );
     }
