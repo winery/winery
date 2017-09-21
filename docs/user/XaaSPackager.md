@@ -43,7 +43,7 @@ generates the following XML:
   <tosca:Tag name="xaasPackageNode" value="PythonApp_2_7"/>
 </tosca:Tags>
 ```
-## XaaS Packger with Winery
+## XaaS Packager with Winery
 
 The functionality of the XaaS Packager is available in the Winery application and can be used as follows:
 
