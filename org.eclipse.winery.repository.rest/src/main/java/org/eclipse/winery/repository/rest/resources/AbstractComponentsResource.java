@@ -57,6 +57,8 @@ import org.slf4j.LoggerFactory;
  *
  * TODO: Add generics here! {@link RestUtils#getComponentIdClassForComponentContainer(java.lang.Class)} is then
  * obsolete
+ * 
+ * TODO: Rename to "AbstractDefinitionsChildResource
  */
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
 
