@@ -1,0 +1,68 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ */
+-->
+
+<div *ngIf="!isEditable">
+    <div class="right">
+        <button class="btn fa fa-pencil" aria-hidden="true" name="edit" (click)="isEditable = true;"></button>
+    </div>
+    <winery-markdown [markdownContent]="markdownContent"></winery-markdown>
+
+</div>
+
+<div *ngIf="isEditable">
+    <div class="right">
+        <button class="btn fa fa-floppy-o" aria-hidden="true" name="save" (click)="saveReadmeFile()"> Save</button>
+        <button class="btn fa fa-ban" name="cancel" aria-hidden="true" (click)="isEditable = false;"> Cancel</button>
+    </div>
+
+    <div>
+        <tabset #markdownTabs>
+            <tab heading="Edit File" active="true">
+                <div>
+                    <form>
+                        <textarea name="name" id="textbox" class="form-control"
+                                  [(ngModel)]="markdownContent"></textarea>
+                    </form>
+                </div>
+            </tab>
+
+            <tab heading="Preview Changes">
+                <div class="panel-body">
+                    <winery-markdown [markdownContent]="markdownContent"></winery-markdown>
+                </div>
+            </tab>
+
+            <tab heading="Both">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <div class="panel panel-default">
+                            <textarea name="name" id="textbox" class="form-control"
+                                      [(ngModel)]="markdownContent"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <winery-markdown [markdownContent]="markdownContent"></winery-markdown>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+
+</div>
+
+
+

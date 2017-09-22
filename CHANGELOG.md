@@ -16,6 +16,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 
 ### Changed
 
+- Add Markdown-Parser + Readme.component for ArtifactTemplates
 - Add artifact source editor to create/upload and edit source files 
 - Initial support for BPMN4TOSCA implemented using Angular
 - Added initial CLI. Current funtionality: Consistency check of the repository.
