@@ -46,6 +46,11 @@ The branch `master` differs from eclipse/winery in the following files:
 - [Dockerfile](Dockerfile) - Custom Docker build for the OpenTOSCA organization
 - [pom.xml](pom.xml) - Upload to opentosca/mvn-repo
 
+Further, following PRs have been merged into this repository:
+
+- https://github.com/eclipse/winery/pull/122
+
+
 One can find out the differences between the master branches of these two repositories by executing the following command:
 
     git fetch --all
