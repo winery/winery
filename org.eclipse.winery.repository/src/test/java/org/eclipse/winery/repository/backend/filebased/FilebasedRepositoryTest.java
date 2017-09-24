@@ -12,6 +12,7 @@ package org.eclipse.winery.repository.backend.filebased;
 
 import java.util.SortedSet;
 
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
@@ -37,4 +38,12 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 		Assert.assertTrue(this.repository.exists(id));
 		Assert.assertNotNull(this.repository.getElement(id));
 	}
+
+	@Test
+	public void referenceCountIsOneForBaobab() throws Exception {
+		this.setRevisionTo("5b7f106ab79a9ba137ece9167a79753dfc64ac84");
+		final ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://winery.opentosca.org/test/artifacttemplates/fruits", "baobab_bananaInterface_IA", false);
+		Assert.assertEquals(1, this.repository.getReferenceCount(artifactTemplateId));
+	}
+
 }

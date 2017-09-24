@@ -76,6 +76,7 @@ import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
@@ -263,7 +264,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 
 		// we do not use any database system,
 		// therefore we have to crawl through each node type implementation by ourselves
-		return RepositoryFactory.getRepository().getAllDefinitionsChildIds(clazz)
+		return this.getAllDefinitionsChildIds(clazz)
 			.stream()
 			// The resource may have been freshly initialized due to existence of a directory
 			// then it has no node type assigned leading to ntiRes.getType() being null
@@ -622,4 +623,80 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 		definitions.setElement(element);
 		BackendUtils.persist(id, definitions);
 	}
+
+	default int getReferenceCount(ArtifactTemplateId id) {
+		// We do not use a database, therefore, we have to go through all possibilities pointing to the artifact template
+		// DAs and IAs point to an artifact template
+		// DAs are contained in Node Type Implementations and Node Templates
+		// IAs are contained in Node Type Implementations and Relationship Type Implementations
+
+		int count = 0;
+
+		Collection<TDeploymentArtifact> allDAs = new HashSet<>();
+		Collection<TImplementationArtifact> allIAs = new HashSet<>();
+
+		// handle Node Type Implementation, which contains DAs and IAs
+		SortedSet<NodeTypeImplementationId> nodeTypeImplementations = this.getAllDefinitionsChildIds(NodeTypeImplementationId.class);
+		for (NodeTypeImplementationId ntiId : nodeTypeImplementations) {
+			final TNodeTypeImplementation nodeTypeImplementation = this.getElement(ntiId);
+			TDeploymentArtifacts deploymentArtifacts = nodeTypeImplementation.getDeploymentArtifacts();
+			if (deploymentArtifacts != null) {
+				allDAs.addAll(deploymentArtifacts.getDeploymentArtifact());
+			}
+			TImplementationArtifacts implementationArtifacts = nodeTypeImplementation.getImplementationArtifacts();
+			if (implementationArtifacts != null) {
+				allIAs.addAll(implementationArtifacts.getImplementationArtifact());
+			}
+		}
+
+		// check all Relationshiptype Implementations for IAs
+		SortedSet<RelationshipTypeImplementationId> relationshipTypeImplementations = this.getAllDefinitionsChildIds(RelationshipTypeImplementationId.class);
+		for (RelationshipTypeImplementationId rtiId : relationshipTypeImplementations) {
+			TImplementationArtifacts implementationArtifacts = this.getElement(rtiId).getImplementationArtifacts();
+			if (implementationArtifacts != null) {
+				allIAs.addAll(implementationArtifacts.getImplementationArtifact());
+			}
+		}
+
+		// check all node templates for DAs
+		SortedSet<ServiceTemplateId> serviceTemplates = this.getAllDefinitionsChildIds(ServiceTemplateId.class);
+		for (ServiceTemplateId sid : serviceTemplates) {
+			TTopologyTemplate topologyTemplate = this.getElement(sid).getTopologyTemplate();
+			if (topologyTemplate != null) {
+				List<TEntityTemplate> nodeTemplateOrRelationshipTemplate = topologyTemplate.getNodeTemplateOrRelationshipTemplate();
+				for (TEntityTemplate template : nodeTemplateOrRelationshipTemplate) {
+					if (template instanceof TNodeTemplate) {
+						TNodeTemplate nodeTemplate = (TNodeTemplate) template;
+						TDeploymentArtifacts deploymentArtifacts = nodeTemplate.getDeploymentArtifacts();
+						if (deploymentArtifacts != null) {
+							allDAs.addAll(deploymentArtifacts.getDeploymentArtifact());
+						}
+					}
+				}
+			}
+		}
+
+		// now we have all DAs and IAs
+
+		QName ourQName = id.getQName();
+
+		// check DAs for artifact templates
+		for (TDeploymentArtifact da : allDAs) {
+			QName artifactRef = da.getArtifactRef();
+			if (ourQName.equals(artifactRef)) {
+				count++;
+			}
+		}
+
+		// check IAs for artifact templates
+		for (TImplementationArtifact ia : allIAs) {
+			QName artifactRef = ia.getArtifactRef();
+			if (ourQName.equals(artifactRef)) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
 }
