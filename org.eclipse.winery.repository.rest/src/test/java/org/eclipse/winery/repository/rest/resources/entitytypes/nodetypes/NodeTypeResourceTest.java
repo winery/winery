@@ -117,9 +117,9 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 		this.setRevisionTo("15cd64e30770ca7986660a34e1a4a7e0cf332f19"); // empty repository
 		this.assertNotFound("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/");
 
-		// this is not possible, we have to create it first (post) and then put data
+		// the following line is not possible: We have to create it first (post) and then put data
 		// this.assertPost("nodetypes/", "entitytypes/nodetypes/baobab_initial.xml");
-		this.assertPost("nodetypes/", "http://winery.opentosca.org/test/nodetypes/fruits", "baobab");
+		this.assertPost("nodetypes/", "entitytypes/nodetypes/baobab_create.json");
 		this.assertPut("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/", "entitytypes/nodetypes/baobab_initial_with_definitions_put.xml");
 
 		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/", "entitytypes/nodetypes/baobab_initial_with_definitions_expected.xml");
