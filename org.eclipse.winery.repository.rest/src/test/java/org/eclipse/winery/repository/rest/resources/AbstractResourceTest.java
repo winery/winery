@@ -15,6 +15,7 @@ package org.eclipse.winery.repository.rest.resources;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 import org.eclipse.winery.common.Util;
@@ -213,28 +214,20 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 	 * Because some methods don't respond with a "created" status. TODO: fix all methods which return "noContent" status
 	 * so that this method can be deleted.
 	 */
-	protected void assertNoContentPost(String restURL, String fileName) {
+	protected void assertNoContentPost(String restUrl, String fileName) {
 		String contents = readFromClasspath(fileName);
 		start()
 			.body(contents)
 			.contentType(getAccept(fileName))
-			.post(callURL(restURL))
+			.post(callURL(restUrl))
 			.then()
 			.statusCode(204);
 	}
 
-	/**
-	 * Posts a form having the given namespace and name to the given URL
-	 *
-	 * @param restURL   the suffix appended to the main URL
-	 * @param namespace the namespace
-	 * @param name      the name
-	 */
-	protected void assertPost(String restURL, String namespace, String name) {
+	protected void assertPost(String restUrl, Path file) {
 		start()
-			.formParam("namespace", namespace)
-			.formParam("name", name)
-			.post(callURL(restURL))
+			.multiPart(file.toFile())
+			.post(callURL(restUrl))
 			.then()
 			.statusCode(201);
 	}

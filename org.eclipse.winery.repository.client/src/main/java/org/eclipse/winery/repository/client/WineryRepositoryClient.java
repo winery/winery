@@ -246,9 +246,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
 	/*** methods directly from IWineryRepositoryClient ***/
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void addRepository(String uri) {
 		if (this.knownURIs.add(uri)) {
@@ -262,17 +259,11 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getPrimaryRepository() {
 		return this.primaryRepository;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setPrimaryRepository(String uri) {
 		this.addRepository(uri);
@@ -292,9 +283,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
 	/*** methods directly from IWineryRepository ***/
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public SortedSet<String> getNamespaces() {
 		SortedSet<String> res = new TreeSet<String>();
@@ -340,9 +328,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		return res;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getName(GenericId id) {
 		if (this.nameCache.containsKey(id)) {
@@ -476,9 +461,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		return res;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Collection<QNameWithName> getListOfAllInstances(Class<? extends DefinitionsChildId> clazz) {
 		// inspired by getQNameListOfAllTypes
@@ -498,9 +480,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		return res;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public <T extends TExtensibleElements> Collection<T> getAllTypes(Class<T> c) {
 		String urlPathFragment = Util.getURLpathFragmentForCollection(c);
@@ -606,9 +585,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		return getDefinitions(instanceResource);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public <T extends TEntityType> Collection<TDefinitions> getAllTypesWithAssociatedElements(Class<T> c) {
 		String urlPathFragment = Util.getURLpathFragmentForCollection(c);
@@ -631,9 +607,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		return document;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public TTopologyTemplate getTopologyTemplate(QName serviceTemplate) {
 		// we try all repositories until the first hit
@@ -661,9 +634,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		return null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void setTopologyTemplate(QName serviceTemplate, TTopologyTemplate topologyTemplate) throws Exception {
 		WebResource r = WineryRepositoryClient.getTopologyTemplateWebResource(this.primaryWebResource, serviceTemplate);
@@ -676,9 +646,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public QName getArtifactTypeQNameForExtension(String extension) {
 		// we try all repositories until the first hit
@@ -694,8 +661,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
 	 * Does NOT check for global QName uniqueness, only in the scope of all
 	 * artifact templates
 	 */
@@ -717,9 +682,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 		// no further return is made
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void createComponent(QName qname, Class<? extends DefinitionsChildId> idClass) throws QNameAlreadyExistsException {
 		WebResource resource = this.primaryWebResource.path(Util.getRootPathFragment(idClass));

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -13,8 +13,19 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 public class QNameWithTypeApiData {
 
-    public String namespace;
-    public String localname;
-    public String type;
+	/**
+	 * The namespace of the element
+	 */
+	public String namespace;
+
+	/**
+	 * The local name (id) of the element
+	 */
+	public String localname;
+
+	/**
+	 * QName as string of the referenced type
+	 */
+	public String type;
 
 }

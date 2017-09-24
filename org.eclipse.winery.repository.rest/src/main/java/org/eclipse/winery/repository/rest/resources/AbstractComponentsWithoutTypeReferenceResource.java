@@ -13,9 +13,7 @@
 package org.eclipse.winery.repository.rest.resources;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -23,8 +21,8 @@ import org.eclipse.winery.repository.rest.resources._support.ResourceCreationRes
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
 /**
- * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate>
- * as these templates are directly nested in a TDefinitionsElement
+ * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate> as these templates are directly nested in
+ * a TDefinitionsElement
  */
 public abstract class AbstractComponentsWithoutTypeReferenceResource<T extends AbstractComponentInstanceResource> extends AbstractComponentsResource<T> {
 
@@ -36,21 +34,5 @@ public abstract class AbstractComponentsWithoutTypeReferenceResource<T extends A
 	public Response onJsonPost(QNameApiData jsonData) {
 		ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
 		return creationResult.getResponse();
-	}
-
-	/**
-	 * Creates a new component instance in the given namespace
-	 *
-	 * @param namespace plain namespace
-	 * @param name      plain id
-	 * @param ignored   this parameter is ignored, but necessary for {@link org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource} to be able to
-	 *                  accept the artifact type at a post
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response onPost(@FormParam("namespace") String namespace, @FormParam("name") String name, String ignored) {
-		ResourceCreationResult res = this.onPost(namespace, name);
-		return res.getResponse();
 	}
 }
