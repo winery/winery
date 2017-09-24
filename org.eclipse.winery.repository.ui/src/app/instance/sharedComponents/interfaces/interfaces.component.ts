@@ -221,7 +221,7 @@ export class InterfacesComponent implements OnInit {
 
     // region ########## Generate Lifecycle Interface ##########
     generateLifecycleInterface(): void {
-        const lifecycle = new InterfacesApiData('http://www.example.com/interfaces/lifecycle');
+        const lifecycle = new InterfacesApiData('http://opentosca.org/interfaces/lifecycle');
         lifecycle.operation.push(new InterfaceOperationApiData('install'));
         lifecycle.operation.push(new InterfaceOperationApiData('configure'));
         lifecycle.operation.push(new InterfaceOperationApiData('start'));
