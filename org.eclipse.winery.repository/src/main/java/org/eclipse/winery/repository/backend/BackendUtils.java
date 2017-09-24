@@ -27,8 +27,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,6 +78,7 @@ import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
@@ -119,6 +124,7 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDire
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
+import org.eclipse.winery.repository.importing.CsarImporter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.time.DateUtils;
@@ -146,6 +152,9 @@ import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
 /**
  * Contains generic utility functions for the Backend
@@ -877,7 +886,8 @@ public class BackendUtils {
 		Detector detector = parser.getDetector();
 		Metadata md = new Metadata();
 		md.add(Metadata.RESOURCE_NAME_KEY, fn);
-		return detector.detect(bis, md);
+		final MediaType mediaType = detector.detect(bis, md);
+		return mediaType;
 	}
 
 	/**
@@ -1196,4 +1206,42 @@ public class BackendUtils {
 			}
 		};
 	}
+
+	public static RepositoryFileReference getRepositoryFileReference(Path rootPath, Path path, ArtifactTemplateDirectoryId artifactTemplateDirectoryId) {
+		final Path relativePath = rootPath.relativize(path);
+		Path parent = relativePath.getParent();
+		if (parent == null) {
+			return new RepositoryFileReference(artifactTemplateDirectoryId, path.getFileName().toString());
+		} else {
+			return new RepositoryFileReference(artifactTemplateDirectoryId, parent, path.getFileName().toString());
+		}
+	}
+
+	/**
+	 * Imports all files in the given directory into the given artifact template directory
+	 */
+	public static void importDirectory(Path rootPath, IRepository repository, ArtifactTemplateDirectoryId dir) throws IOException {
+		Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				Path relFile = rootPath.relativize(file);
+				RepositoryFileReference repositoryFileReference;
+				final Path subDirs = relFile.getParent();
+				if (subDirs == null) {
+					repositoryFileReference = new RepositoryFileReference(dir, file.getFileName().toString());
+				} else {
+					repositoryFileReference = new RepositoryFileReference(dir, subDirs, file.getFileName().toString());
+				}
+
+				try (InputStream is = Files.newInputStream(file);
+					 BufferedInputStream bis = new BufferedInputStream(is)) {
+					final MediaType mimeType = BackendUtils.getMimeType(bis, file.getFileName().toString());
+					repository.putContentToFile(repositoryFileReference, bis, mimeType);
+				}
+				return CONTINUE;
+			}
+		});
+	}
+
 }

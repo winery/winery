@@ -25,7 +25,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
@@ -33,14 +32,12 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSrcDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources.IHasName;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
-import org.eclipse.winery.repository.rest.resources.entitytemplates.TEntityTemplateResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.artifacttypes.ArtifactTypeResource;
 
 /**
  * Models an Artifact Template with its artifact references
@@ -55,21 +52,9 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.artifacttypes.Ar
 
 public class ArtifactTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IEntityTemplateResource<TArtifactTemplate>, IHasName {
 
-	private final TEntityTemplateResource<TArtifactTemplate> entityTemplateResource;
-
 
 	public ArtifactTemplateResource(ArtifactTemplateId id) {
 		super(id);
-		// we provide the minimum requirements for the resource
-		this.entityTemplateResource = new TEntityTemplateResource<>(null, this.getTArtifactTemplate(), 0, null, this);
-	}
-
-	/**
-	 * @return null if no artifact type resource is defined
-	 */
-	public ArtifactTypeResource getAritfactTypeResource() {
-		ArtifactTypeId atId = new ArtifactTypeId(this.getTArtifactTemplate().getType());
-		return new ArtifactTypeResource(atId);
 	}
 
 	private TArtifactTemplate getTArtifactTemplate() {
@@ -109,7 +94,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 
 	@Path("source/")
 	public FilesResource getSrcResource() {
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSrcDirectoryId((ArtifactTemplateId) this.id);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
 		return new FilesResource(fileDir);
 	}
 
@@ -117,7 +102,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	@Path("source/zip")
 	@Produces(MimeTypes.MIMETYPE_ZIP)
 	public Response getDefinitionsAsResponse() {
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSrcDirectoryId((ArtifactTemplateId) this.id);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
 		return RestUtils.getZippedContents(fileDir);
 	}
 

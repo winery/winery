@@ -12,12 +12,18 @@
 
 package org.eclipse.winery.repository.backend;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -96,5 +102,26 @@ public class BackendUtilsTest {
 			true);
 	}
 
+	@Test
+	public void repositoryFileReferenceWithoutSubdirectoryCorrectlyCreated() {
+		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://www.example.org", "at", false);
+		ArtifactTemplateSourceDirectoryId artifactTemplateSourceDirectoryId = new ArtifactTemplateSourceDirectoryId(artifactTemplateId);
 
+		final RepositoryFileReference repositoryFileReference = BackendUtils.getRepositoryFileReference(Paths.get("main"), Paths.get("main", "file.txt"), artifactTemplateSourceDirectoryId);
+		Assert.assertEquals(artifactTemplateSourceDirectoryId, repositoryFileReference.getParent());
+		Assert.assertEquals(Optional.empty(), repositoryFileReference.getSubDirectory());
+		Assert.assertEquals("file.txt", repositoryFileReference.getFileName());
+	}
+
+	@Test
+	public void repositoryFileReferenceWithSubdirectoryCorrectlyCreated() {
+		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://www.example.org", "at", false);
+		ArtifactTemplateSourceDirectoryId artifactTemplateSourceDirectoryId = new ArtifactTemplateSourceDirectoryId(artifactTemplateId);
+		final Path subDirectories = Paths.get("d1", "d2");
+
+		final RepositoryFileReference repositoryFileReference = BackendUtils.getRepositoryFileReference(Paths.get("main"), Paths.get("main", "d1", "d2", "file.txt"), artifactTemplateSourceDirectoryId);
+		Assert.assertEquals(artifactTemplateSourceDirectoryId, repositoryFileReference.getParent());
+		Assert.assertEquals(Optional.of(subDirectories), repositoryFileReference.getSubDirectory());
+		Assert.assertEquals("file.txt", repositoryFileReference.getFileName());
+	}
 }

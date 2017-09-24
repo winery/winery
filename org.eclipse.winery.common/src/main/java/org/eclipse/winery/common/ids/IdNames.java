@@ -29,10 +29,9 @@ public class IdNames {
 	public static final String TARGETINTERFACES = "targetinterfaces";
 	public static final String TOPOLOGYTEMPATE = "topologytemplate";
 
-	// the files belonging to one artifact template are nested in the sub
-	// directory "files"
-	public static final String ARTIFACTTEMPLATEFILESDIRECTORY = "files";
-	public static final String ARTIFACTTEMPLATESRCDIRECTORY = "source";
+	// the files belonging to one artifact template are nested in the sub directory "files"
+	public static final String ARTIFACT_TEMPLATE_FILES_DIRECTORY = "files";
+	public static final String ARTIFACT_TEMPLATE_SOURCE_DIRECTORY = "source";
 	
 	public static final String CONSTRAINTTYPES = "constrainttypes";
 	public static final String NAMESPACES = "namespaces";

@@ -1,10 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2013,2015 University of Stuttgart.
+ * Copyright (c) 2013-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * The following block is incomplete as EPLv2.0 does not require to add contributors any more.
  *
  * Contributors:
  *     Tobias Binz - initial API and implementation
@@ -63,7 +65,7 @@ public class Generator {
 	private static final String TEMPLATE_JAVA_ABSTRACT_IA_SERVICE = "AbstractIAService.java.template";
 	private static final String TEMPLATE_JAVA_TEMPLATE_SERVICE = "TemplateService.java.template";
 
-	private final TInterface tinterface;
+	private final TInterface tInterface;
 	private final File workingDir;
 	private final File outDir;
 	private final String name;
@@ -75,23 +77,20 @@ public class Generator {
 	/**
 	 * Creates a new IA Generator instance for the given {@link TInterface}.
 	 *
-	 * @param tinterface TOSCA interface to generate the IA for
-	 * @param packageAndNamespace Package to be used for the generated Java
-	 *            code, e.g. 'org.opentosca.ia'. To generate the respective
-	 *            Namespace for the Web Service the components of the package
-	 *            are reverted, prepended with 'http://' and appended with '/'.
-	 *            This is provided by the user in a textfield in the Winery UI.
-	 * @param iaArtifactTemplateUploadUrl The URL to which the generated IA
-	 *            should be posted.
-	 * @param name unique and valid name to be used for the generated maven
-	 *            project name, java project name, class name, port type name.
-	 * @param workingDir working directory to generate the files. This directory
-	 *            also will contain the ZIP file with the Eclipse project after
-	 *            generating it.
+	 * @param tInterface                  TOSCA interface to generate the IA for
+	 * @param packageAndNamespace         Package to be used for the generated Java code, e.g. 'org.opentosca.ia'. To
+	 *                                    generate the respective Namespace for the Web Service the components of the
+	 *                                    package are reverted, prepended with 'http://' and appended with '/'. This is
+	 *                                    provided by the user in a textfield in the Winery UI.
+	 * @param iaArtifactTemplateUploadUrl The URL to which the generated IA should be posted.
+	 * @param name                        unique and valid name to be used for the generated maven project name, java
+	 *                                    project name, class name, port type name.
+	 * @param workingDir                  working directory to generate the files. This directory also will contain the
+	 *                                    ZIP file with the Eclipse project after generating it.
 	 */
-	public Generator(TInterface tinterface, String packageAndNamespace, URL iaArtifactTemplateUploadUrl, String name, File workingDir) {
+	public Generator(TInterface tInterface, String packageAndNamespace, URL iaArtifactTemplateUploadUrl, String name, File workingDir) {
 		super();
-		this.tinterface = tinterface;
+		this.tInterface = tInterface;
 		this.javaPackage = packageAndNamespace;
 		this.iaArtifactTemplateUploadUrl = iaArtifactTemplateUploadUrl;
 		this.name = name;
@@ -116,100 +115,103 @@ public class Generator {
 	}
 
 	/**
-	 * Generates the IA project.
+	 * Generates the project and puts the files into a subdirectory of working dir
 	 *
-	 * @return The ZIP file containing the maven/eclipse project to be
-	 *         downloaded by the user.
+	 * @return the folder where the generated files are contained in
 	 */
-	public File generateProject() {
+	public Path generateProject() throws Exception {
+		Path workingDirPath = this.workingDir.toPath();
+		Files.createDirectories(workingDirPath);
 
-		try {
-			Path workingDirPath = this.workingDir.toPath();
-			Files.createDirectories(workingDirPath);
+		// directory to store the template files to generate the java files from
+		Path javaTemplateDir = workingDirPath.resolve("../java");
+		Files.createDirectories(javaTemplateDir);
 
-			// directory to store the template files to generate the java files from
-			Path javaTemplateDir = workingDirPath.resolve("../java");
-			Files.createDirectories(javaTemplateDir);
+		// Copy template project and template java files
+		String s = this.getClass().getResource("").getPath();
+		if (s.contains("jar!")) {
+			Generator.LOGGER.trace("we work on a jar file");
+			Generator.LOGGER.trace("Location of the current class: {}", s);
 
-			// Copy template project and template java files
-			String s = this.getClass().getResource("").getPath();
-			if (s.contains("jar!")) {
-				Generator.LOGGER.trace("we work on a jar file");
-				Generator.LOGGER.trace("Location of the current class: {}", s);
+			// we have a jar file
+			// format: file:/location...jar!...path-in-the-jar
+			// we only want to have location :)
+			int excl = s.lastIndexOf("!");
+			s = s.substring(0, excl);
+			s = s.substring("file:".length());
 
-				// we have a jar file
-				// format: file:/location...jar!...path-in-the-jar
-				// we only want to have location :)
-				int excl = s.lastIndexOf("!");
-				s = s.substring(0, excl);
-				s = s.substring("file:".length());
-
-				try (JarFile jf = new JarFile(s);) {
-					Enumeration<JarEntry> entries = jf.entries();
-					while (entries.hasMoreElements()) {
-						JarEntry je = entries.nextElement();
-						String name = je.getName();
-						if (name.startsWith(Generator.TEMPLATE_PROJECT_FOLDER + "/") && (name.length() > (Generator.TEMPLATE_PROJECT_FOLDER.length() + 1))) {
-							// strip "template/" from the beginning to have paths without "template" starting relatively from the working dir
-							name = name.substring(Generator.TEMPLATE_PROJECT_FOLDER.length() + 1);
-							if (je.isDirectory()) {
-								// directory found
-								Path dir = workingDirPath.resolve(name);
-								Files.createDirectory(dir);
-							} else {
-								Path file = workingDirPath.resolve(name);
-								try (InputStream is = jf.getInputStream(je);) {
-									Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
-								}
+			try (JarFile jf = new JarFile(s);) {
+				Enumeration<JarEntry> entries = jf.entries();
+				while (entries.hasMoreElements()) {
+					JarEntry je = entries.nextElement();
+					String name = je.getName();
+					if (name.startsWith(Generator.TEMPLATE_PROJECT_FOLDER + "/") && (name.length() > (Generator.TEMPLATE_PROJECT_FOLDER.length() + 1))) {
+						// strip "template/" from the beginning to have paths without "template" starting relatively from the working dir
+						name = name.substring(Generator.TEMPLATE_PROJECT_FOLDER.length() + 1);
+						if (je.isDirectory()) {
+							// directory found
+							Path dir = workingDirPath.resolve(name);
+							Files.createDirectory(dir);
+						} else {
+							Path file = workingDirPath.resolve(name);
+							try (InputStream is = jf.getInputStream(je);) {
+								Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
 							}
-						} else if (name.startsWith(Generator.TEMPLATE_JAVA_FOLDER + "/") && (name.length() > (Generator.TEMPLATE_JAVA_FOLDER.length() + 1))) {
-							if (!je.isDirectory()) {
-								// we copy the file directly into javaTemplateDir
-								File f = new File(name);
-								Path file = javaTemplateDir.resolve(f.getName());
-								try (InputStream is = jf.getInputStream(je);) {
-									Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
-								}
+						}
+					} else if (name.startsWith(Generator.TEMPLATE_JAVA_FOLDER + "/") && (name.length() > (Generator.TEMPLATE_JAVA_FOLDER.length() + 1))) {
+						if (!je.isDirectory()) {
+							// we copy the file directly into javaTemplateDir
+							File f = new File(name);
+							Path file = javaTemplateDir.resolve(f.getName());
+							try (InputStream is = jf.getInputStream(je);) {
+								Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
 							}
 						}
 					}
 				}
-			} else {
-				// we're running in debug mode, we can work on the plain file system
-				File templateProjectDir = new File(this.getClass().getResource("/" + Generator.TEMPLATE_PROJECT_FOLDER).getFile());
-				FileUtils.copyDirectory(templateProjectDir, this.workingDir);
-
-				File javaTemplatesDir = new File(this.getClass().getResource("/" + Generator.TEMPLATE_JAVA_FOLDER).getFile());
-				FileUtils.copyDirectory(javaTemplatesDir, javaTemplateDir.toFile());
 			}
+		} else {
+			// we're running in debug mode, we can work on the plain file system
+			File templateProjectDir = new File(this.getClass().getResource("/" + Generator.TEMPLATE_PROJECT_FOLDER).getFile());
+			FileUtils.copyDirectory(templateProjectDir, this.workingDir);
 
-			// Create Java Code Folder
-			String[] splitPkg = this.javaPackage.split("\\.");
-			String javaFolderString = this.workingDir.getAbsolutePath() + File.separator + "src" + File.separator + "main" + File.separator + "java";
-			for (int i = 0; i < splitPkg.length; i++) {
-				javaFolderString += File.separator + splitPkg[i];
-			}
-
-			// Copy TEMPLATE_JAVA_ABSTRACT_IA_SERVICE
-			Path templateAbstractIAService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_ABSTRACT_IA_SERVICE);
-			File javaAbstractIAService = new File(javaFolderString + File.separator + "AbstractIAService.java");
-			Files.createDirectories(javaAbstractIAService.toPath().getParent());
-			Files.copy(templateAbstractIAService, javaAbstractIAService.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-			// Copy and rename TEMPLATE_JAVA_TEMPLATE_SERVICE
-			Path templateJavaService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_TEMPLATE_SERVICE);
-			File javaService = new File(javaFolderString + File.separator + this.name + ".java");
-			Files.createDirectories(javaService.toPath().getParent());
-			Files.copy(templateJavaService, javaService.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-			this.generateJavaFile(javaService);
-			this.updateFilesRecursively(this.workingDir);
-			return this.packageProject();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			File javaTemplatesDir = new File(this.getClass().getResource("/" + Generator.TEMPLATE_JAVA_FOLDER).getFile());
+			FileUtils.copyDirectory(javaTemplatesDir, javaTemplateDir.toFile());
 		}
+
+		// Create Java Code Folder
+		String[] splitPkg = this.javaPackage.split("\\.");
+		String javaFolderString = this.workingDir.getAbsolutePath() + File.separator + "src" + File.separator + "main" + File.separator + "java";
+		for (int i = 0; i < splitPkg.length; i++) {
+			javaFolderString += File.separator + splitPkg[i];
+		}
+
+		// Copy TEMPLATE_JAVA_ABSTRACT_IA_SERVICE
+		Path templateAbstractIAService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_ABSTRACT_IA_SERVICE);
+		File javaAbstractIAService = new File(javaFolderString + File.separator + "AbstractIAService.java");
+		Files.createDirectories(javaAbstractIAService.toPath().getParent());
+		Files.copy(templateAbstractIAService, javaAbstractIAService.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+		// Copy and rename TEMPLATE_JAVA_TEMPLATE_SERVICE
+		Path templateJavaService = javaTemplateDir.resolve(Generator.TEMPLATE_JAVA_TEMPLATE_SERVICE);
+		File javaService = new File(javaFolderString + File.separator + this.name + ".java");
+		Files.createDirectories(javaService.toPath().getParent());
+		Files.copy(templateJavaService, javaService.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+		this.generateJavaFile(javaService);
+		this.updateFilesRecursively(this.workingDir);
+
+		return this.workingDir.toPath();
+	}
+
+	/**
+	 * Generates the IA project into the working dir and zipps it
+	 *
+	 * @return The ZIP file containing the maven/eclipse project to be downloaded by the user.
+	 */
+	public File generateAndZipProject() throws Exception {
+		final Path path = this.generateProject();
+		return this.packageProject(path);
 	}
 
 	private void generateJavaFile(File javaService) throws IOException {
@@ -217,7 +219,7 @@ public class Generator {
 		// Generate methods
 		StringBuilder sb = new StringBuilder();
 
-		for (TOperation op : this.tinterface.getOperation()) {
+		for (TOperation op : this.tInterface.getOperation()) {
 			// Annotations
 			sb.append("\t@WebMethod\n");
 			sb.append("\t@SOAPBinding\n");
@@ -293,13 +295,13 @@ public class Generator {
 		}
 
 		// Write file
-		OpenOption[] options = new OpenOption[] {StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING};
+		OpenOption[] options = new OpenOption[]{StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING};
 		Files.write(javaService.toPath(), lines, cs, options);
 	}
 
 	/**
-	 * Iterates recursively through all the files in the project working
-	 * directory and tries to replace the global placeholders.
+	 * Iterates recursively through all the files in the project working directory and tries to replace the global
+	 * placeholders.
 	 *
 	 * @param folderOrFile to start with
 	 */
@@ -325,13 +327,11 @@ public class Generator {
 				}
 
 				// Write file
-				OpenOption[] options = new OpenOption[] {StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING};
+				OpenOption[] options = new OpenOption[]{StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING};
 				Files.write(folderOrFile.toPath(), lines, cs, options);
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		} else {
 			Generator.LOGGER.trace("Updating folder " + folderOrFile);
 			for (File childFile : folderOrFile.listFiles()) {
@@ -341,24 +341,23 @@ public class Generator {
 	}
 
 	/**
-	 * Packages the generated project into a ZIP file which is stored in outDir
-	 * and has the name of the Project.
+	 * Packages the generated project into a ZIP file which is stored in outDir and has the name of the Project.
 	 *
+	 * @param projectDir the dir where the generated files reside in
 	 * @return ZIP file
 	 */
-	private File packageProject() {
+	private File packageProject(Path projectDir) {
 		try {
 			File packagedProject = new File(this.outDir.getAbsoluteFile() + File.separator + this.name + ".zip");
 			FileOutputStream fileOutputStream = new FileOutputStream(packagedProject);
 			final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", fileOutputStream);
 
-			this.addFilesRecursively(this.workingDir.getAbsoluteFile(), this.workingDir.getAbsoluteFile().getAbsolutePath() + File.separator, zos);
+			this.addFilesRecursively(projectDir.toAbsolutePath().toFile(), projectDir.toAbsolutePath() + File.separator, zos);
 
 			zos.finish();
 			zos.close();
 
 			return packagedProject;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -369,8 +368,8 @@ public class Generator {
 	 * Recursive Helper function for packageProject()
 	 *
 	 * @param folderOrFile to add into the archive
-	 * @param baseDir
-	 * @param zos ArchiveOutputStream to add the files to
+	 * @param baseDir      the base directory, which is to be stripped from the file name
+	 * @param zos          ArchiveOutputStream to add the files to
 	 */
 	private void addFilesRecursively(File folderOrFile, String baseDir, ArchiveOutputStream zos) {
 		if (folderOrFile.isFile()) {

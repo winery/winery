@@ -206,6 +206,7 @@ public class CsarExporter {
 			return;
 		}
 
+		// TODO: This is not quite correct. The files should reside checked out at "source/"
 		Path tempDir = Files.createTempDirectory(WINERY_TEMP_DIR_PREFIX);
 		try {
 			Git git = Git

@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
@@ -144,7 +145,12 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	 * Converts the given reference to an absolute path of the underlying FileSystem
 	 */
 	public Path ref2AbsolutePath(RepositoryFileReference ref) {
-		return this.id2AbsolutePath(ref.getParent()).resolve(ref.getFileName());
+		Path resultPath = this.id2AbsolutePath(ref.getParent());
+		final Optional<Path> subDirectory = ref.getSubDirectory();
+		if (subDirectory.isPresent()) {
+			resultPath = resultPath.resolve(subDirectory.get());
+		}
+		return resultPath.resolve(ref.getFileName());
 	}
 
 	protected Path determineAndCreateRepositoryPath() {
@@ -400,15 +406,28 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 			return res;
 		}
 		assert (Files.isDirectory(dir));
-		// list all directories contained in this directory
-		try (DirectoryStream<Path> ds = Files.newDirectoryStream(dir, new OnlyNonHiddenFiles())) {
-			for (Path p : ds) {
-				RepositoryFileReference ref = new RepositoryFileReference(id, p.getFileName().toString());
-				res.add(ref);
-			}
-		} catch (IOException e) {
-			FilebasedRepository.LOGGER.debug("Cannot close ds", e);
+
+		final OnlyNonHiddenFiles onlyNonHiddenFiles = new OnlyNonHiddenFiles();
+		try {
+			Files.walk(dir).filter(f -> {
+				try {
+					return onlyNonHiddenFiles.accept(f);
+				} catch (IOException e) {
+					LOGGER.debug("Error during crawling", e);
+					return false;
+				}
+			}).map(f -> {
+				final Path parent = f.getParent();
+				if (parent == null) {
+					return new RepositoryFileReference(id, f.getFileName().toString());
+				} else {
+					return new RepositoryFileReference(id, dir.relativize(parent), f.getFileName().toString());
+				}
+			}).forEach(ref -> res.add(ref));
+		} catch (IOException e1) {
+			LOGGER.debug("Error during crawling", e1);
 		}
+
 		return res;
 	}
 
@@ -650,7 +669,14 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
 		try (final ArchiveOutputStream zos = new ArchiveStreamFactory().createArchiveOutputStream("zip", out)) {
 			for (RepositoryFileReference ref : containedFiles) {
-				zos.putArchiveEntry(new ZipArchiveEntry(ref.getFileName()));
+				ZipArchiveEntry zipArchiveEntry;
+				final Optional<Path> subDirectory = ref.getSubDirectory();
+				if (subDirectory.isPresent()) {
+					zipArchiveEntry = new ZipArchiveEntry(subDirectory.get().resolve(ref.getFileName()).toString());
+				} else {
+					zipArchiveEntry = new ZipArchiveEntry(ref.getFileName());
+				}
+				zos.putArchiveEntry(zipArchiveEntry);
 				try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
 					IOUtils.copy(is, zos);
 				}
