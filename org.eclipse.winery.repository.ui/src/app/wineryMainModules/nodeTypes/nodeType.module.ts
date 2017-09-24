@@ -26,7 +26,6 @@ import { VisualAppearanceModule } from '../../instance/sharedComponents/visualAp
 import { InstanceStatesModule } from '../../instance/sharedComponents/instanceStates/instanceStates.module';
 import { PropertiesDefinitionModule } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.module';
 import { InheritanceModule } from '../../instance/sharedComponents/inheritance/inheritance.module';
-import { WineryArtifactModule } from '../../instance/sharedComponents/wineryArtifacts/artifact.module';
 
 @NgModule({
     imports: [
