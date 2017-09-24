@@ -236,7 +236,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	 */
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response getRefereneCount(@QueryParam("referenceCount") String referenceCount, @QueryParam("type") String type) {
+	public Response getReferenceCount(@QueryParam("referenceCount") String referenceCount, @QueryParam("type") String type) {
 		if (referenceCount != null) {
 			String res = Integer.toString(this.getReferenceCount());
 			return Response.ok().entity(res).build();
