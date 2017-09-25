@@ -43,15 +43,15 @@ export class WineryGitLogComponent implements OnInit {
         };
 
         this.webSocket.onmessage = event => {
-            if (event.data == 'commit success') {
+            if (event.data === 'commit success') {
                 this.notify.success('Commited: ' + this.commitMsg);
                 this.commitMsg = '';
                 this.selectedFile = null;
-            } else if (event.data == 'commit failed') {
+            } else if (event.data === 'commit failed') {
                 this.notify.error('commit failed');
-            }else if (event.data == 'reset failed') {
+            }else if (event.data === 'reset failed') {
                 this.notify.error('winery-repository reset to last commit failed!');
-            }else if (event.data == 'reset success') {
+            }else if (event.data === 'reset success') {
                 this.notify.success('winery-repository resetted to last commit');
                 this.router.navigate(['/']);
             } else {
@@ -65,10 +65,10 @@ export class WineryGitLogComponent implements OnInit {
     }
 
     commit() {
-        if (this.files == null || this.files.length == 0) {
-            this.notify.error("A commit must contain at least one change!");
-        } else if (this.commitMsg == '') {
-            this.notify.error("Please enter a valid commit message!");
+        if (this.files === null || this.files.length === 0) {
+            this.notify.error('A commit must contain at least one change!');
+        } else if (this.commitMsg === '') {
+            this.notify.error('Please enter a valid commit message!');
         } else {
             this.webSocket.send(this.commitMsg);
         }
@@ -83,7 +83,7 @@ export class WineryGitLogComponent implements OnInit {
     }
 
     select(file: GitLogApiData) {
-        if (this.selectedFile == file) {
+        if (this.selectedFile === file) {
             this.selectedFile = null;
         } else {
             this.selectedFile = file;
