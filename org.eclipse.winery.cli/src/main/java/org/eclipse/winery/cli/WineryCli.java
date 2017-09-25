@@ -214,7 +214,7 @@ public class WineryCli {
 			Source schemaFile = new StreamSource(inputStream);
 			Schema schema = factory.newSchema(schemaFile);
 			Validator validator = schema.newValidator();
-			validator.validate(new DOMSource(element.getOwnerDocument()));
+			validator.validate(new DOMSource(element));
 		} catch (Exception e) {
 			printAndAddError(res, verbosity, id, "error during validating XML schema " + e.getMessage());
 			try {
