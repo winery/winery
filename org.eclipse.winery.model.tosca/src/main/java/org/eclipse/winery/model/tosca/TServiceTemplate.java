@@ -177,21 +177,11 @@ public class TServiceTemplate extends HasId implements HasName, HasTargetNamespa
         this.topologyTemplate = value;
     }
 
-    /**
-     * Gets the value of the plans property.
-     *
-     * @return possible object is {@link TPlans }
-     */
     @Nullable
     public TPlans getPlans() {
         return plans;
     }
 
-    /**
-     * Sets the value of the plans property.
-     *
-     * @param value allowed object is {@link TPlans }
-     */
     public void setPlans(TPlans value) {
         this.plans = value;
     }
