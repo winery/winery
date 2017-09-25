@@ -12,14 +12,23 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
 
+import com.google.common.eventbus.EventBus;
 import org.apache.tika.mime.MediaType;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CleanCommand;
@@ -28,6 +37,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
@@ -46,6 +56,7 @@ public class GitBasedRepository extends FilebasedRepository {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GitBasedRepository.class);
 
 	private final Git git;
+	private final EventBus eventBus;
 	private final GitBasedRepositoryConfiguration gitBasedRepositoryConfiguration;
 
 	/**
@@ -62,10 +73,29 @@ public class GitBasedRepository extends FilebasedRepository {
 		if (!Files.exists(this.repositoryRoot.resolve(".git"))) {
 			gitRepo.create();
 		}
+		this.eventBus = new EventBus();
 		this.git = new Git(gitRepo);
 		if (!this.git.status().call().isClean()) {
 			this.addCommit("Files changed externally.");
 		}
+	}
+
+	/**
+	 * This method registers an Object on the repositories {@link EventBus}
+	 *
+	 * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+	 */
+	public void registerForEvents(Object eventListener) {
+		this.eventBus.register(eventListener);
+	}
+
+	/**
+	 * This method unregisters an Object on the repositories {@link EventBus}
+	 *
+	 * @param eventListener an objects that contains methods annotated with the @{@link com.google.common.eventbus.Subscribe}
+	 */
+	public void unregisterForEvents(Object eventListener) {
+		this.eventBus.register(eventListener);
 	}
 
 	/**
@@ -77,15 +107,46 @@ public class GitBasedRepository extends FilebasedRepository {
 	 * @throws GitAPIException thrown when anything with adding or committing goes wrong.
 	 */
 	public void addCommit(String message) throws GitAPIException {
-		synchronized (COMMIT_LOCK) {
-			AddCommand add = this.git.add();
-			add.addFilepattern(".");
-			add.call();
+		addCommit(new String[]{"."}, message);
+	}
 
-			CommitCommand commit = this.git.commit();
-			commit.setMessage(message);
-			commit.call();
+	public void addCommit(String[] patterns, String message) throws GitAPIException {
+		if (!message.isEmpty()) {
+			synchronized (COMMIT_LOCK) {
+				AddCommand add = this.git.add();
+				for (String pattern : patterns) {
+					add.addFilepattern(pattern);
+				}
+				add.call();
+
+				CommitCommand commit = this.git.commit();
+				commit.setMessage(message);
+				commit.call();
+			}
 		}
+		postEventMap();
+	}
+
+	public void postEventMap() throws GitAPIException {
+		Map<DiffEntry, String> diffMap = new HashMap<>();
+		try (OutputStream stream = new ByteArrayOutputStream()) {
+			List<DiffEntry> list = this.git.diff().setOutputStream(stream).call();
+			BufferedReader reader = new BufferedReader(new StringReader(stream.toString()));
+			String line = reader.readLine();
+			for (DiffEntry entry : list) {
+				line = reader.readLine();
+				StringWriter diff = new StringWriter();
+				while (line != null && !line.startsWith("diff")) {
+					diff.append(line);
+					diff.write('\n');
+					line = reader.readLine();
+				}
+				diffMap.put(entry, diff.toString());
+			}
+		} catch (IOException exc) {
+			LOGGER.trace("Reading of git information failed!", exc);
+		}
+		this.eventBus.post(diffMap);
 	}
 
 	/**
@@ -140,6 +201,8 @@ public class GitBasedRepository extends FilebasedRepository {
 		try {
 			if (gitBasedRepositoryConfiguration.isAutoCommit()) {
 				this.addCommit(ref);
+			} else {
+				postEventMap();
 			}
 		} catch (GitAPIException e) {
 			LOGGER.trace(e.getMessage(), e);

@@ -41,6 +41,7 @@ import { CapabilityTypeModule } from './wineryMainModules/capabilityTypes/capabi
 import { NodeTypeImplementationModule } from './wineryMainModules/nodeTypeImplementations/nodeTypeImplementation.module';
 import { RelationshipTypeImplementationModule } from './wineryMainModules/relationshipTypeImplementations/relationshipTypeImplementation.module';
 import { PolicyTemplateModule } from './wineryMainModules/policyTemplates/policyTemplate.module';
+import { WineryGitLogComponent } from './wineryGitLog/wineryGitLog.component';
 import { TemplatesOfTypeModule } from './instance/sharedComponents/templatesOfTypes/templatesOfType.Module';
 
 @NgModule({
@@ -77,6 +78,7 @@ import { TemplatesOfTypeModule } from './instance/sharedComponents/templatesOfTy
         OtherComponent,
         WineryRepositoryComponent,
         WineryOAuthComponent,
+        WineryGitLogComponent
     ],
     providers: [
         { provide: ToastOptions, useClass: WineryCustomOption },

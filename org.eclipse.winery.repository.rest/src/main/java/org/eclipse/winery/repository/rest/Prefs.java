@@ -23,6 +23,7 @@ import javax.servlet.ServletContextListener;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.configuration.Environment;
 
 import org.slf4j.Logger;
@@ -69,6 +70,10 @@ public class Prefs implements ServletContextListener {
 	 */
 	private void doRepositoryInitialization() throws Exception {
 		RepositoryFactory.reconfigure();
+		if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
+			GitWebSocket socket = new GitWebSocket();
+			((GitBasedRepository) RepositoryFactory.getRepository()).registerForEvents(socket);
+		}
 	}
 
 	/**
