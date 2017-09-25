@@ -203,6 +203,9 @@ public class WineryCli {
 		if ((uriStr.startsWith("http://www.opentosca.org/") && (!uriStr.toLowerCase().equals(uriStr)))) {
 			printAndAddError(res, verbosity, id, "opentosca URI is not lowercase");
 		}
+		if (uriStr.endsWith("/")) {
+			printAndAddError(res, verbosity, id, "URI ends with a slash");
+		}
 	}
 
 	private static void checkCsar(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, Path tempCsar) {

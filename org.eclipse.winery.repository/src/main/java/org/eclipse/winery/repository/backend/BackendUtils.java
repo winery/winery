@@ -1135,6 +1135,10 @@ public class BackendUtils {
 			thePlans.add(plan);
 		}
 
+		if (serviceTemplate.getPlans().getPlan().isEmpty()) {
+			serviceTemplate.setPlans(null);
+		}
+
 		RepositoryFactory.getRepository().setElement(id, serviceTemplate);
 	}
 
