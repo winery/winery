@@ -8,16 +8,17 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - use ng-select for grouping and search
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { InstanceService } from '../../instance.service';
 import { InheritanceService } from './inheritance.service';
 import { InheritanceApiData } from './inheritanceApiData';
-import { NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { ToscaTypes } from '../../../wineryInterfaces/enums';
-
+import { SelectData } from '../../../wineryInterfaces/selectData';
+import { SelectItem } from 'ng2-select';
 
 @Component({
     selector: 'winery-instance-inheritance',
@@ -27,9 +28,12 @@ import { ToscaTypes } from '../../../wineryInterfaces/enums';
 export class InheritanceComponent implements OnInit {
 
     inheritanceApiData: InheritanceApiData;
-    availableSuperClasses: NameAndQNameApiDataList;
+    availableSuperClasses: SelectData[];
     toscaType: ToscaTypes;
     loading = true;
+    openSuperClassLink = '';
+    @ViewChild('derivedFromSelector') aboutModal: any;
+    initialActiveItem: Array<any>;
 
     constructor(private sharedData: InstanceService,
                 private service: InheritanceService,
@@ -50,8 +54,10 @@ export class InheritanceComponent implements OnInit {
         this.toscaType = this.sharedData.toscaComponent.toscaType;
     }
 
-    onSelectedValueChanged(value: string) {
-        this.inheritanceApiData.derivedFrom = value;
+    onSelectedValueChanged(value: SelectItem) {
+        console.log(value);
+        this.inheritanceApiData.derivedFrom = value.id;
+        this.setButtonLink();
     }
 
     public saveToServer(): void {
@@ -65,13 +71,13 @@ export class InheritanceComponent implements OnInit {
 
     private handleInheritanceData(inheritance: InheritanceApiData) {
         this.inheritanceApiData = inheritance;
-
+        this.initialActiveItem = [{'id': this.inheritanceApiData.derivedFrom, 'text': this.inheritanceApiData.derivedFrom.split('}').pop()}];
         if (!isNullOrUndefined(this.availableSuperClasses)) {
             this.loading = false;
         }
     }
 
-    private handleSuperClassData(superClasses: NameAndQNameApiDataList) {
+    private handleSuperClassData(superClasses: SelectData[]) {
         this.availableSuperClasses = superClasses;
 
         if (!isNullOrUndefined(this.inheritanceApiData)) {
@@ -87,6 +93,21 @@ export class InheritanceComponent implements OnInit {
     private handleError(error: any): void {
         this.loading = false;
         this.notify.error(error.toString(), 'Error');
+    }
+
+    private setButtonLink(): void {
+        if (isNullOrUndefined(this.inheritanceApiData.derivedFrom)) {
+            this.inheritanceApiData.derivedFrom = '(none)';
+        }
+
+        const parts = this.inheritanceApiData.derivedFrom.split('}');
+
+        // can be '(none)'
+        if (parts.length > 1) {
+            const namespace = parts[0].slice(1);
+            const name = parts[1];
+            this.openSuperClassLink = '/' + 'nodetypes' + '/' + encodeURIComponent(encodeURIComponent(namespace)) + '/' + name;
+        }
     }
 
 }
