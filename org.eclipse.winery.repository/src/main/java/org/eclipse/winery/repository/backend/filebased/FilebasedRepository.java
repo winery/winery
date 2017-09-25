@@ -103,14 +103,18 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 	 */
 	public FilebasedRepository(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
 		Objects.requireNonNull(fileBasedRepositoryConfiguration);
-		if (fileBasedRepositoryConfiguration.getRepositoryPath().isPresent()) {
-			this.repositoryRoot = this.makeAbsoluteAndCreateRepositoryPath(fileBasedRepositoryConfiguration.getRepositoryPath().get());
-		} else {
-			this.repositoryRoot = this.determineAndCreateRepositoryPath();
-		}
+		this.repositoryRoot = getRepositoryRoot(fileBasedRepositoryConfiguration);
 		this.fileSystem = this.repositoryRoot.getFileSystem();
 		this.provider = this.fileSystem.provider();
 		LOGGER.debug("Repository root: {}", this.repositoryRoot);
+	}
+
+	public static Path getRepositoryRoot(FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
+		if (fileBasedRepositoryConfiguration.getRepositoryPath().isPresent()) {
+			return makeAbsoluteAndCreateRepositoryPath(fileBasedRepositoryConfiguration.getRepositoryPath().get());
+		} else {
+			return determineAndCreateRepositoryPath();
+		}
 	}
 
 	private Path makeAbsolute(Path relativePath) {
@@ -153,21 +157,21 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		return resultPath.resolve(ref.getFileName());
 	}
 
-	protected Path determineAndCreateRepositoryPath() {
+	protected static Path determineAndCreateRepositoryPath() {
 		Path repositoryPath;
 		if (SystemUtils.IS_OS_WINDOWS) {
 			if (Files.exists(Constants.GLOBAL_REPO_PATH_WINDOWS)) {
 				repositoryPath = Constants.GLOBAL_REPO_PATH_WINDOWS;
 			} else {
-				repositoryPath = this.createDefaultRepositoryPath();
+				repositoryPath = createDefaultRepositoryPath();
 			}
 		} else {
-			repositoryPath = this.createDefaultRepositoryPath();
+			repositoryPath = createDefaultRepositoryPath();
 		}
 		return repositoryPath;
 	}
 
-	protected Path makeAbsoluteAndCreateRepositoryPath(final Path configuredRepositoryPath) {
+	protected static Path makeAbsoluteAndCreateRepositoryPath(final Path configuredRepositoryPath) {
 		Objects.requireNonNull(configuredRepositoryPath);
 		Path repositoryPath = configuredRepositoryPath.toAbsolutePath().normalize();
 		try {
@@ -182,7 +186,7 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 		return new File(org.apache.commons.io.FileUtils.getUserDirectory(), Constants.DEFAULT_REPO_NAME);
 	}
 
-	private Path createDefaultRepositoryPath() {
+	private static Path createDefaultRepositoryPath() {
 		File repo = null;
 		boolean operationalFileSystemAccess;
 		try {

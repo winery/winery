@@ -12,6 +12,7 @@
 package org.eclipse.winery.repository.backend;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
@@ -70,11 +71,18 @@ public class RepositoryFactory {
 			reconfigure(jCloudsConfiguration.get());
 		} else {
 			final Optional<GitBasedRepositoryConfiguration> gitBasedRepositoryConfiguration = Environment.getGitBasedRepositoryConfiguration();
-			if (gitBasedRepositoryConfiguration.isPresent()) {
+			final FileBasedRepositoryConfiguration filebasedRepositoryConfiguration = Environment.getFilebasedRepositoryConfiguration().orElse(new FileBasedRepositoryConfiguration());
+
+			// Determine whether the filebased repository could be git repository.
+			// We do not use JGit's capabilities, but do it just by checking for the existance of a ".git" directory.
+			final Path repositoryRoot = FilebasedRepository.getRepositoryRoot(filebasedRepositoryConfiguration);
+			final Path gitDirectory = repositoryRoot.resolve(".git");
+			boolean isGit = (Files.exists(gitDirectory) && Files.isDirectory(gitDirectory));
+
+			if (gitBasedRepositoryConfiguration.isPresent() || isGit) {
 				reconfigure(gitBasedRepositoryConfiguration.get());
 			} else {
-				final Optional<FileBasedRepositoryConfiguration> filebasedRepositoryConfiguration = Environment.getFilebasedRepositoryConfiguration();
-				reconfigure(filebasedRepositoryConfiguration.orElse(new FileBasedRepositoryConfiguration()));
+				reconfigure(filebasedRepositoryConfiguration);
 			}
 		}
 	}

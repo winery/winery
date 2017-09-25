@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
@@ -26,7 +23,7 @@ import org.apache.commons.configuration.Configuration;
  *
  * The properties are managed by org.apache.commons.configuration. In case a new
  * backend is added, the appropriate implementation of
- * org.apache.commons.configuration.AbstrctConfiguration has to be chosen.
+ * {@link org.apache.commons.configuration.AbstractConfiguration} has to be chosen.
  *
  */
 public interface IRepository extends IGenericRepository {
