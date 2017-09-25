@@ -54,7 +54,7 @@ export class InstanceService {
                     'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.ArtifactType:
-                subMenu = ['Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = ['Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.ArtifactTemplate:
                 subMenu = ['Files', 'Source', 'Properties', 'Documentation', 'XML'];
@@ -72,7 +72,7 @@ export class InstanceService {
                 subMenu = ['Implementation Artifacts', 'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.PolicyType:
-                subMenu = ['Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = ['Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.PolicyTemplate:
                 subMenu = ['Properties', 'Documentation', 'XML'];

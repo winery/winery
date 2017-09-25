@@ -69,5 +69,10 @@ public final class PolicyTypeResource extends EntityTypeResource {
 			throw new WebApplicationException(e);
 		}
 	}
+	
+	@Path("templates/")
+	public TemplatesOfOnePolicyTypeResource getImplementations() {
+		return new TemplatesOfOnePolicyTypeResource((PolicyTypeId) this.id);
+	}
 
 }
