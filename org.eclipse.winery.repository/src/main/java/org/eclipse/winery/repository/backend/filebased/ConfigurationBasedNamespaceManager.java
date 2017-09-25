@@ -30,11 +30,16 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
 		this.configuration = configuration;
 
 		// globally set prefixes
+
 		// if that behavior is not desired, the code has to be moved to "generatePrefix" which checks for existence, ...
 		this.configuration.setProperty("http://www.w3.org/2001/XMLSchema", "xsd");
 		this.configuration.setProperty("http://www.w3.org/XML/1998/namespace", "xmlns");
 		this.configuration.setProperty(Namespaces.TOSCA_NAMESPACE, "tosca");
 		this.configuration.setProperty(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery");
+
+		// example namespaces opened for users to create new types
+		this.configuration.setProperty("http://www.example.org", "ex");
+		this.configuration.setProperty("http://www.opentosca.org/nodetypes", "otnt");
 	}
 
 	@Override
@@ -118,7 +123,7 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
 		Set<String> res = new HashSet<>();
 		while (keys.hasNext()) {
 			res.add(keys.next());
-		}		
+		}
 		return res;
 	}
 
