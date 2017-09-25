@@ -30,5 +30,9 @@ export enum ToscaTypes {
     PolicyType = 'policytypes',
     PolicyTemplate = 'policytemplates',
     Imports = 'imports',
-    Admin = 'admin'
+    Admin = 'admin',
+    NodeTemplate = 'nodetemplate',
+    RelationshipTemplate = 'relationshiptemplate',
+    CapabilityTempalte = 'capabilitytemplate',
+    RequirementTemplate = 'requirementtemplate'
 }

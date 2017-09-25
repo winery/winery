@@ -15,8 +15,10 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ## [unreleased]
 
 ### Changed
-
+- Add select boxes to select templates and target properties when adding a property mapping. Radio buttons are used to select the required template type.
+- Add grouping of Nodetypes by namespace at `Nodetype->Inheritance`. The Dropdown provides a search for the wanted Nodetype.
 - Fixed GroupByNamespace issue. Each tosca type has its own namespace state.
+- Add templates tab to policy types and artifact types. It shows the templates of the current artifact or policy type.
 - Add artifact source editor to create/upload and edit source files 
 - Initial support for BPMN4TOSCA implemented using Angular
 - Added initial CLI. Current funtionality: Consistency check of the repository.
@@ -31,7 +33,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 
 ## [v1.0.0] - not yet released
 
-- Remove autocompletion for namespaces
+- Remove autocompletion for namespaces  
 
 ## [v2.0.0-M1] - 2017-07-03
 

@@ -32,6 +32,7 @@ import { EditXMLComponent } from '../../sharedComponents/editXML/editXML.compone
 import { WineryEditXMLModule } from '../../sharedComponents/editXML/editXML.module';
 import { InterfacesComponent } from '../../sharedComponents/interfaces/interfaces.component';
 import { InterfacesModule } from '../../sharedComponents/interfaces/interfaces.module';
+import { WineryQNameSelectorModule } from '../../../wineryQNameSelector/wineryQNameSelector.module';
 
 export const boundaryDefinitionsRoutes: Routes = [
     { path: 'properties', component: EditXMLComponent },
@@ -57,6 +58,7 @@ export const boundaryDefinitionsRoutes: Routes = [
         WineryTableModule,
         WineryDuplicateValidatorModule,
         WineryEditXMLModule,
+        WineryQNameSelectorModule,
         RouterModule
         // RouterModule.forChild(boundaryDefinitionsRoutes),
     ],

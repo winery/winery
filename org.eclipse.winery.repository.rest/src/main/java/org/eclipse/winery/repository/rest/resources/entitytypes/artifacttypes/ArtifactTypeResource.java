@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Oliver Kopp - initial API and implementation
+ *     Niko Stadelmaier - add get templates
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.artifacttypes;
 
@@ -66,5 +67,10 @@ public class ArtifactTypeResource extends EntityTypeResource {
 		} catch (RepositoryCorruptException e) {
 			throw new WebApplicationException(e);
 		}
+	}
+
+	@Path("templates/")
+	public TemplatesOfOneArtifactTypeResource getImplementations() {
+		return new TemplatesOfOneArtifactTypeResource((ArtifactTypeId) this.id);
 	}
 }
