@@ -70,8 +70,7 @@ import org.xml.sax.SAXException;
 public class WineryCli {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WineryCli.class);
-
-	public static final String ARTEFACT_BE = "artefact";
+	private static final String ARTEFACT_BE = "artefact";
 
 	private enum Verbosity {
 		OUTPUT_NUMBER_OF_TOSCA_COMPONENTS,

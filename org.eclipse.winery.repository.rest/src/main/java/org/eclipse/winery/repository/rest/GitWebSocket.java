@@ -88,7 +88,6 @@ public class GitWebSocket {
 		}
 	}
 
-
 	@Subscribe
 	public void setGitDifferences(Map<DiffEntry, String> event) {
 		(new Thread(new GitLogRunnable(event, new ArrayList(connections)))).start();
