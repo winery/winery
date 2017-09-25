@@ -4,7 +4,7 @@ WORKDIR /tmp/winery
 COPY . /tmp/winery
 
 # -am used to build all required other projects
-RUN mvn package -pl org.eclipse.winery.cli -am
+RUN mvn package -pl org.eclipse.winery.cli -am -DskipTests
 
 RUN chmod u+x /tmp/winery/org.eclipse.winery.cli/target/winery.jar
 
