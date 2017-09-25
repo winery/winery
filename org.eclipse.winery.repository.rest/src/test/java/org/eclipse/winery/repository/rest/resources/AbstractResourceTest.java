@@ -137,6 +137,15 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 		}
 	}
 
+	protected void assertGetNoContent(String restURL) {
+		start()
+			.get(callURL(restURL))
+			.then()
+			.log()
+			.ifValidationFails()
+			.statusCode(204);
+	}
+
 	protected void assertGetExpectBadRequestResponse(String restURL, String fileName) {
 		try {
 			String expectedStr = readFromClasspath(fileName);

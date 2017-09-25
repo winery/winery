@@ -1,0 +1,14 @@
+<w3c:shiporder xmlns:w3c="https://www.w3schools.com/xml/schema_example.asp" orderid="123456">
+	<orderperson>Marty McFly Jr.</orderperson>
+	<shipto>
+		<name>name</name>
+		<address>address</address>
+		<city>city</city>
+		<country>country</country>
+	</shipto>
+	<item>
+		<title>Title</title>
+		<quantity>1</quantity>
+		<price>1.47</price>
+	</item>
+</w3c:shiporder>
