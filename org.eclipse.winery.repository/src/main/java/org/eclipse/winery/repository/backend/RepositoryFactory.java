@@ -79,8 +79,10 @@ public class RepositoryFactory {
 			final Path gitDirectory = repositoryRoot.resolve(".git");
 			boolean isGit = (Files.exists(gitDirectory) && Files.isDirectory(gitDirectory));
 
-			if (gitBasedRepositoryConfiguration.isPresent() || isGit) {
+			if (gitBasedRepositoryConfiguration.isPresent()) {
 				reconfigure(gitBasedRepositoryConfiguration.get());
+			} else if (isGit) {
+				reconfigure(new GitBasedRepositoryConfiguration(false, filebasedRepositoryConfiguration));
 			} else {
 				reconfigure(filebasedRepositoryConfiguration);
 			}
