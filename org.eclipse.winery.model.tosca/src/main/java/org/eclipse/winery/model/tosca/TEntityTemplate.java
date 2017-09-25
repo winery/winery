@@ -203,7 +203,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         /**
          * This is a special method for Winery. Winery allows to define a property by specifying name/value values.
          * Instead of parsing the XML contained in TNodeType, this method is a convenience method to access this
-         * information Assumes the properties are key/value pairs (see WinerysPropertiesDefinition), all other cases are
+         * information assumes the properties are key/value pairs (see WinerysPropertiesDefinition), all other cases are
          * not implemented yet.
          *
          * The return type "Properties" is used because of the key/value properties.
