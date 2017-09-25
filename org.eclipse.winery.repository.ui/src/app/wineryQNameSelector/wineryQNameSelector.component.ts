@@ -12,6 +12,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { NameAndQNameApiDataList } from './wineryNameAndQNameApiData';
+import { ToscaTypes } from '../wineryInterfaces/enums';
 
 /**
  * This component provides a selector for QNames in addition with a link to the currently
@@ -54,7 +55,7 @@ export class WineryQNameSelectorComponent implements OnInit {
 
     @Input() title: string;
     @Input() displayList: NameAndQNameApiDataList;
-    @Input() selectedResource: string;
+    @Input() toscaType: ToscaTypes;
     @Input() selectedValue: string;
     @Input() width = 600;
     @Input() showOpenButton = true;
@@ -94,7 +95,7 @@ export class WineryQNameSelectorComponent implements OnInit {
         if (parts.length > 1) {
             const namespace = parts[0].slice(1);
             const name = parts[1];
-            this.openSuperClassLink = '/' + this.selectedResource + '/' + encodeURIComponent(encodeURIComponent(namespace)) + '/' + name;
+            this.openSuperClassLink = '/' + this.toscaType + '/' + encodeURIComponent(encodeURIComponent(namespace)) + '/' + name;
         }
     }
 }
