@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
@@ -31,7 +32,15 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+
 public class PropertiesResource {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesResource.class);
 
 	private AbstractComponentInstanceResource res;
 	private TEntityTemplate template;
@@ -63,18 +72,31 @@ public class PropertiesResource {
 	}
 
 	/**
+	 * Gets the defined properties. If no properties are defined, an empty JSON object is returned. If k/v properties
+	 * are defined, then a JSON is returned. Otherwise an XML is returned.
+	 *
 	 * @return Key/Value map in the case of Winery WPD mode - else instance of XML Element in case of non-key/value
 	 * properties
 	 */
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Object getJson() {
+	@Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+	public @NonNull Response getProperties() {
 		TEntityType tempType = RepositoryFactory.getRepository().getTypeForTemplate(this.template);
-		WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(tempType);
+		WinerysPropertiesDefinition wpd = tempType.getWinerysPropertiesDefinition();
 		TEntityTemplate.Properties props = this.template.getProperties();
 		if (wpd == null) {
 			// no Winery special treatment, just return the XML properties
-			return props;
+			// These can be null resulting in 200 No Content at the caller
+			if (props == null) {
+				return Response.ok().entity("{}").type(MediaType.APPLICATION_JSON).build();
+			} else {
+				@Nullable final Object any = props.getAny();
+				if (any == null) {
+					LOGGER.debug("XML properties expected, but none found. Returning empty JSON.");
+					return Response.ok().entity("{}").type(MediaType.APPLICATION_JSON).build();
+				}
+				return Response.ok().entity(Util.getXMLAsString((Element) any)).type(MediaType.TEXT_XML).build();
+			}
 		} else {
 			Properties properties;
 			if (props == null) {
@@ -94,7 +116,7 @@ public class PropertiesResource {
 					properties.put(key, value);
 				}
 			}
-			return properties;
+			return Response.ok().entity(properties).type(MediaType.APPLICATION_JSON).build();
 		}
 	}
 }
