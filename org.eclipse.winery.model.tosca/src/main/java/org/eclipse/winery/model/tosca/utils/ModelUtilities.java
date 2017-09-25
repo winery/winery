@@ -73,43 +73,11 @@ public class ModelUtilities {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ModelUtilities.class);
 
     /**
-     * This is a special method for Winery. Winery allows to define a property definition by specifying name/type
-     * values. Instead of parsing the extensible elements returned TDefinitions, this method is a convenience method to
-     * access this information
-     *
-     * @param et the entitytype to read the properties definition from
-     * @return a WinerysPropertiesDefinition object, which includes a map of name/type-pairs denoting the associated
-     * property definitions. A default element name and namespace is added if it is not defined in the underlying XML.
-     * null if no Winery specific KV properties are defined for the given entity type
+     * @deprecated Use {@link TEntityType#getWinerysPropertiesDefinition()}
      */
+    @Deprecated
     public static WinerysPropertiesDefinition getWinerysPropertiesDefinition(TEntityType et) {
-        // similar implementation as org.eclipse.winery.repository.resources.entitytypes.properties.PropertiesDefinitionResource.getListFromEntityType(TEntityType)
-        WinerysPropertiesDefinition res = null;
-        for (Object o : et.getAny()) {
-            if (o instanceof WinerysPropertiesDefinition) {
-                res = (WinerysPropertiesDefinition) o;
-            }
-        }
-
-        if (res != null) {
-            // we put defaults if elementname and namespace have not been set
-
-            if (res.getElementName() == null) {
-                res.setElementName("Properties");
-            }
-
-            if (res.getNamespace() == null) {
-                // we use the targetnamespace of the original element
-                String ns = et.getTargetNamespace();
-                if (!ns.endsWith("/")) {
-                    ns += "/";
-                }
-                ns += "propertiesdefinition/winery";
-                res.setNamespace(ns);
-            }
-        }
-
-        return res;
+        return et.getWinerysPropertiesDefinition();
     }
 
     /**
