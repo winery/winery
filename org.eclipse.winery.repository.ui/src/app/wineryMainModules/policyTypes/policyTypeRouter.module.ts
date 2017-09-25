@@ -22,6 +22,7 @@ import { InheritanceComponent } from '../../instance/sharedComponents/inheritanc
 import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.component';
 import { LanguageComponent } from '../../instance/policyTypes/language/language.component';
 import { AppliesToComponent } from '../../instance/policyTypes/appliesTo/appliesTo.component';
+import { TemplatesOfTypeComponent } from '../../instance/sharedComponents/templatesOfTypes/templatesOfTypes.component';
 
 const toscaType = ToscaTypes.PolicyType;
 
@@ -38,7 +39,9 @@ const policyTypeRoutes: Routes = [
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },
-            { path: 'xml', component: EditXMLComponent }
+            { path: 'xml', component: EditXMLComponent },
+            { path: 'templates', component:  TemplatesOfTypeComponent}
+
         ]
     }
 ];

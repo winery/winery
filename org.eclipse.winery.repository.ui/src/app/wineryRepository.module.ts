@@ -41,6 +41,7 @@ import { CapabilityTypeModule } from './wineryMainModules/capabilityTypes/capabi
 import { NodeTypeImplementationModule } from './wineryMainModules/nodeTypeImplementations/nodeTypeImplementation.module';
 import { RelationshipTypeImplementationModule } from './wineryMainModules/relationshipTypeImplementations/relationshipTypeImplementation.module';
 import { PolicyTemplateModule } from './wineryMainModules/policyTemplates/policyTemplate.module';
+import { TemplatesOfTypeModule } from './instance/sharedComponents/templatesOfTypes/templatesOfType.Module';
 
 @NgModule({
     imports: [
@@ -54,7 +55,7 @@ import { PolicyTemplateModule } from './wineryMainModules/policyTemplates/policy
         SectionModule,
         WineryModalModule,
         TooltipModule.forRoot(),
-
+        TemplatesOfTypeModule,
         ServiceTemplateModule,
         NodeTypeModule,
         RelationshipTypeModule,
