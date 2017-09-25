@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation and/or initial documentation
  *******************************************************************************/
 package org.eclipse.winery.cli;
 
@@ -56,6 +53,8 @@ import org.xml.sax.SAXException;
 public class WineryCli {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WineryCli.class);
+
+	public static final String ARTEFACT_BE = "artefact";
 
 	private enum Verbosity {
 		OUTPUT_NUMBER_OF_TOSCA_COMPONENTS,
@@ -179,6 +178,9 @@ public class WineryCli {
 		if (!ncname.trim().equals(ncname)) {
 			printAndAddError(res, verbosity, id, "local name starts or ends with white spaces");
 		}
+		if (ncname.contains(ARTEFACT_BE)) {
+			printAndAddError(res, verbosity, id, "artifact is spelled with i in American English, not artefact as in British English");
+		}
 	}
 
 	private static void checkUri(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String uriStr) {
@@ -205,6 +207,9 @@ public class WineryCli {
 		}
 		if (uriStr.endsWith("/")) {
 			printAndAddError(res, verbosity, id, "URI ends with a slash");
+		}
+		if (uriStr.contains(ARTEFACT_BE)) {
+			printAndAddError(res, verbosity, id, "artifact is spelled with i in American English, not artefact as in British English");
 		}
 	}
 
