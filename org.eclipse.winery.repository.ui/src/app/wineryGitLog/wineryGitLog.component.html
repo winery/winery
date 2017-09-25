@@ -1,0 +1,54 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ */
+ -->
+<div id="wineryGitLogFloat" *ngIf="show">
+    <div id="wineryGitLogContainer">
+        <div id="wineryGitLogExpander">
+            <span  (click)="onExpand()"></span>
+            <h3>{{files?.length}}</h3>
+        </div>
+        <textarea id="wineryGitLogDiffs" wrap="soft" *ngIf="selectedFile != null && isExpanded">{{selectedFile?.diffs}}</textarea>
+        <div id="wineryGitLogGui" *ngIf="isExpanded">
+            <table role="presentation">
+                <tbody class="files">
+                <div id="filesList">
+                    <tr *ngFor="let file of files" [ngClass]="{selected: file.name === selectedFile?.name}"
+                        (click)="select(file)">
+                        <td>{{file.type}}:</td>
+                        <td>{{file.name}}</td>
+                    </tr>
+                </div>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="wineryGitLogCommit" *ngIf="isExpanded">
+            <button class="btn btn-sm btn-toolbar btn-primary" (click)="commit()">Commit</button>
+            <button class="btn btn-sm btn-toolbar" (click)="refreshLog()">Refresh</button>
+            <button class="btn btn-sm btn-toolbar btn-danger" (click)="confirmDiscardModal.show()">discard changes</button>
+        </div>
+
+        <textarea *ngIf="isExpanded" (change)="doCommitMsgValueChange($event)" id="wineryGitLogCommitMsg" [(ngModel)]="commitMsg"></textarea>
+    </div>
+</div>
+
+<winery-modal bsModal #confirmDiscardModal="bs-modal" [modalRef]="confirmDiscardModal">
+    <winery-modal-header [title]="'Discard all Changes'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p>
+            Do you really want to <b><i>discard all changes</i></b> made since the last commit?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="discardChanges();"
+                         [closeButtonLabel]="'No'"
+                         [okButtonLabel]="'Yes'">
+    </winery-modal-footer>
+</winery-modal>
