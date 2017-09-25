@@ -14,24 +14,12 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttem
 
 import java.nio.file.Path;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
 import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ArtifactTemplateResourceTest extends AbstractResourceTest {
-
-	@Test
-	@Ignore
-	public void countMatches() {
-		ArtifactTemplateId id = new ArtifactTemplateId("http%3A%2F%2Fdocs.oasis-open.org%2Ftosca%2Fns%2F2011%2F12%2FToscaSpecificTypes", "at-0cd9ab5d-6c2e-4fc2-9cb0-3fee1e431f9f", true);
-		ArtifactTemplateResource res = (ArtifactTemplateResource) AbstractComponentsResource.getComponentInstaceResource(id);
-		Assert.assertEquals(1, res.getReferenceCount());
-	}
 
 	@Test
 	public void getSourceZip() throws Exception {

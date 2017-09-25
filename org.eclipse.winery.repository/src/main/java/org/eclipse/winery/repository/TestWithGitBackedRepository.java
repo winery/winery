@@ -29,6 +29,9 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class resides in the main package and not in test, because other modules (such as the REST module) also rely on this test class.
+ */
 public abstract class TestWithGitBackedRepository {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestWithGitBackedRepository.class);

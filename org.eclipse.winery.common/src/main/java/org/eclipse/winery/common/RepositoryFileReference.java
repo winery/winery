@@ -11,41 +11,66 @@
  *******************************************************************************/
 package org.eclipse.winery.common;
 
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.eclipse.winery.common.ids.GenericId;
 
 /**
  * Holds a reference to a file "object" stored in the repository
  *
- * Directories are NOT supported as we would have to reflect parent
- * relationships there, too.
- *
- * One has to create TOSCAelementId-objects for directories (e.g., scc-data)
+ * One has to create {@link org.eclipse.winery.common.ids.elements.ToscaElementId} (e.g., scc-data)
  */
 public class RepositoryFileReference implements Comparable<RepositoryFileReference> {
 
-	protected final GenericId parent;
-	protected final String fileName;
+	private final GenericId parent;
+	private final Optional<Path> subDirectory;
+	private final String fileName;
 
 
 	/**
-	 * @param parent the id of the toscaElement the file is nested in
-	 * @param fileName the file name. <em>Must not</em> contain any illegal
-	 *            characters. java.nio.Path cannot be used as Path is tied to a
-	 *            FileSystem
+	 * @param parent   the id of the toscaElement the file is nested in
+	 * @param fileName the file name. <em>Must not</em> contain any illegal characters. java.nio.Path cannot be used as
+	 *                 Path is tied to a FileSystem
 	 */
 	public RepositoryFileReference(GenericId parent, String fileName) {
-		if (parent == null) {
-			throw new IllegalArgumentException("Parent must not be null.");
-		}
-		if (fileName == null) {
-			throw new IllegalArgumentException("Filename must not be null.");
-		}
+		Objects.requireNonNull(parent);
+		Objects.requireNonNull(fileName);
 		this.parent = parent;
+		this.subDirectory = Optional.empty();
 		this.fileName = fileName;
+	}
+
+	/**
+	 * @param parent       the id of the toscaElement the file is nested in
+	 * @param fileName     the file name. <em>Must not</em> contain any illegal characters. java.nio.Path cannot be used
+	 *                     as Path is tied to a FileSystem
+	 * @param subDirectory the subdirectory
+	 */
+	public RepositoryFileReference(GenericId parent, Path subDirectory, String fileName) {
+		Objects.requireNonNull(parent);
+		Objects.requireNonNull(subDirectory);
+		Objects.requireNonNull(fileName);
+		this.parent = parent;
+		this.subDirectory = Optional.of(subDirectory);
+		this.fileName = fileName;
+	}
+
+	public RepositoryFileReference setFileName(String fileName) {
+		if (this.subDirectory.isPresent()) {
+			return new RepositoryFileReference(this.parent, this.subDirectory.get(), fileName);
+		} else {
+			return new RepositoryFileReference(this.parent, fileName);
+		}
 	}
 
 	public GenericId getParent() {
 		return this.parent;
+	}
+
+	public Optional<Path> getSubDirectory() {
+		return this.subDirectory;
 	}
 
 	public String getFileName() {
@@ -53,18 +78,17 @@ public class RepositoryFileReference implements Comparable<RepositoryFileReferen
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof RepositoryFileReference) {
-			RepositoryFileReference otherRef = (RepositoryFileReference) obj;
-			return (otherRef.fileName.equals(this.fileName)) && (otherRef.getParent().equals(this.getParent()));
-		} else {
-			return false;
-		}
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof RepositoryFileReference)) return false;
+		RepositoryFileReference that = (RepositoryFileReference) o;
+		return Objects.equals(parent, that.parent) &&
+			Objects.equals(fileName, that.fileName);
 	}
 
 	@Override
 	public int hashCode() {
-		return this.getParent().hashCode() ^ this.getFileName().hashCode();
+		return Objects.hash(parent, fileName);
 	}
 
 	@Override

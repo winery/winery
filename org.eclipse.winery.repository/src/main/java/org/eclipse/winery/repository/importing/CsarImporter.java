@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -355,7 +356,7 @@ public class CsarImporter {
 								CsarImporter.LOGGER.debug("Could not replace content in data.xml", e);
 							}
 						}
-						CsarImporter.this.importFile(file, ref, tmf, rootPath, errors);
+						importFile(file, ref, tmf, rootPath, errors);
 						return FileVisitResult.CONTINUE;
 					}
 				});
@@ -682,7 +683,7 @@ public class CsarImporter {
 							continue;
 						}
 						RepositoryFileReference fref = new RepositoryFileReference(pid, path.getFileName().toString());
-						this.importFile(path, fref, tmf, rootPath, errors);
+						importFile(path, fref, tmf, rootPath, errors);
 
 						// file is imported
 						// Adjust the reference
@@ -716,7 +717,7 @@ public class CsarImporter {
 		Path file = visPath.resolve(fileName);
 		if (Files.exists(file)) {
 			RepositoryFileReference ref = new RepositoryFileReference(visId, fileName);
-			this.importFile(file, ref, tmf, rootPath, errors);
+			importFile(file, ref, tmf, rootPath, errors);
 		}
 	}
 
@@ -765,7 +766,9 @@ public class CsarImporter {
 				allFiles = new HashSet<>();
 				allFiles.add(path);
 			} else {
-				assert (Files.isDirectory(path));
+				if (!Files.isDirectory(path)) {
+					LOGGER.error("path {} is not a directory", path);
+				}
 				Path localRoot = rootPath.resolve(path);
 				List<Object> includeOrExclude = ref.getIncludeOrExclude();
 
@@ -788,7 +791,8 @@ public class CsarImporter {
 					}
 				}
 			}
-			this.importAllFiles(allFiles, atid, tmf, rootPath, errors);
+			ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(atid);
+			this.importAllFiles(rootPath, allFiles, fileDir, tmf, errors);
 		}
 
 		if (refList.isEmpty()) {
@@ -798,18 +802,22 @@ public class CsarImporter {
 		}
 	}
 
+
 	/**
 	 * Imports a file from the filesystem to the repository
 	 *
 	 * @param p                       the file to read from
 	 * @param repositoryFileReference the "file" to put the content to
 	 * @param tmf                     the TOSCAMetaFile object used to determine the mimetype. Must not be null.
-	 * @param rootPath                used to relativize p to determine the mime type
+	 * @param rootPath                used to make the path p relative in order to determine the mime type
+	 * @param errors                  list where import errors should be stored to
 	 */
-	private void importFile(Path p, RepositoryFileReference repositoryFileReference, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
-		if (tmf == null) {
-			throw new IllegalStateException("tmf must not be null");
-		}
+	private static void importFile(Path p, RepositoryFileReference repositoryFileReference, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
+		Objects.requireNonNull(p);
+		Objects.requireNonNull(repositoryFileReference);
+		Objects.requireNonNull(tmf);
+		Objects.requireNonNull(rootPath);
+		Objects.requireNonNull(errors);
 		try (InputStream is = Files.newInputStream(p);
 			 BufferedInputStream bis = new BufferedInputStream(is)) {
 			MediaType mediaType = MediaType.parse(tmf.getMimeType(p.relativize(rootPath).toString()));
@@ -836,16 +844,30 @@ public class CsarImporter {
 		}
 	}
 
-	private void importAllFiles(Collection<Path> allFiles, ArtifactTemplateId atid, TOSCAMetaFile tmf, Path rootPath, final List<String> errors) {
-		// import all files to repository
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(atid);
-		for (Path p : allFiles) {
+	/**
+	 * Imports all given files from the file system to the repository
+	 *
+	 * @param rootPath                    used to make the path p relative in order to determine the mime type and the
+	 *                                    RepositoryFileReference
+	 * @param files                       list of all files
+	 * @param artifactTemplateDirectoryId the id of the directory of the artifact template the files to attach to
+	 * @param tmf                         the TOSCAMetaFile object used to determine the mimetype. Must not be null.
+	 * @param errors                      list where import errors should be stored to
+	 */
+	private void importAllFiles(Path rootPath, Collection<Path> files, ArtifactTemplateDirectoryId artifactTemplateDirectoryId, TOSCAMetaFile tmf, final List<String> errors) {
+		for (Path p : files) {
 			if (!Files.exists(p)) {
 				errors.add(String.format("File %1$s does not exist", p.toString()));
 				return;
 			}
-			RepositoryFileReference fref = new RepositoryFileReference(fileDir, p.getFileName().toString());
-			this.importFile(p, fref, tmf, rootPath, errors);
+			final Path subDirectories = rootPath.relativize(p).getParent();
+			RepositoryFileReference fref;
+			if (subDirectories == null) {
+				fref = new RepositoryFileReference(artifactTemplateDirectoryId, p.getFileName().toString());
+			} else {
+				fref = new RepositoryFileReference(artifactTemplateDirectoryId, subDirectories, p.getFileName().toString());
+			}
+			importFile(p, fref, tmf, rootPath, errors);
 		}
 	}
 

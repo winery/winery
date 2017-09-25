@@ -37,9 +37,14 @@ public class TOSCAMetaFile implements Serializable {
 	Map<String, String> block0 = new HashMap<String, String>();
 	List<Map<String, String>> fileBlocks = new ArrayList<Map<String, String>>();
 
+	/**
+	 * Creates an empty TOSCA Meta file object
+	 */
+	public TOSCAMetaFile() {
+	}
 
 	/**
-	 * Creates a new TOSCA meta file.
+	 * Creates a new instance based on the data in the given manifest content
 	 *
 	 * @param manifestContent to create from
 	 */

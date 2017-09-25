@@ -185,16 +185,16 @@
 								def post = new HttpPost("${winery.upload.url}")
 								def entity = new MultipartEntity()
 								def fileBody = new FileBody(f)
-								entity.addPart("files[]", fileBody)
+								entity.addPart("file", fileBody)
 								post.setEntity(entity)
 
 								// Process response
 								def response = httpclient.execute(post)
 								def status = response.getStatusLine()
-								if( !(status ==~ /.*Created.*/) )
-									 fail("IA upload to Winery FAILED, please upload manually. (HTTP status code: $status)" )
+								if( !(status ==~ /.*201.*/) )
+									fail("IA upload to Winery FAILED, please upload manually. (HTTP status code: $status)" )
 								else
-									 println "IA upload finished sucessfully (HTTP status code $status)"
+									println "IA upload finished sucessfully (HTTP status code $status)"
 							</source>
 						</configuration>
 					</execution>

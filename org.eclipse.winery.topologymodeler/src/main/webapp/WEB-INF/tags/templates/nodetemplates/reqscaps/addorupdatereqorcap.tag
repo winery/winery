@@ -203,10 +203,8 @@ function showAddOrUpdateDiagFor${shortName}(nodeTemplateId, reqOrCapIdToUpdate) 
 				$("#delete${shortName}btn").hide();
 				$("#headerAddOrUpdate").text("Add");
 
-				// QUICK HACK if dialog has been shown before -> show properties of selected type
-				if ($("#${shortName}NameChooser :selected").val() != []) {
-					<%--update${shortName}PropertiesFromSelectedType();--%>
-				}
+				// the type field has to be filled even if only one req is there
+				update${shortName}PropertiesFromSelectedType();
 			}
 
 			$("#AddOrUpdate${shortName}Diag").modal("show");

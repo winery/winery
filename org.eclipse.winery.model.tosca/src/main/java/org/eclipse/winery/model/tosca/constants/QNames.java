@@ -20,4 +20,7 @@ public class QNames {
 
     // Boolean flag to indicate that the import is generated via the Winery Properties Defintion
     public static final QName QNAME_WINERYS_PROPERTIES_DEFINITION_ATTRIBUTE = new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "wpd");
+
+    // follows the naming conventions by https://github.com/OpenTOSCA/tosca-definitions/
+    public static final QName QNAME_ARTIFACT_TYPE_WAR = new QName("http://www.opentosca.org/artifacttypes", "WAR");
 }
