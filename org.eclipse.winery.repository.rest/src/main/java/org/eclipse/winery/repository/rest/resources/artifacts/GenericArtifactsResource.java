@@ -12,10 +12,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.artifacts;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -41,7 +38,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
@@ -51,25 +47,24 @@ import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.generators.ia.Generator;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TEntityTemplate.Properties;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
+import org.eclipse.winery.model.tosca.constants.QNames;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources.INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.apiData.GenerateArtifactApiData;
-import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.NodeTemplateResource;
 
@@ -111,7 +106,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	public Response generateArtifact(GenerateArtifactApiData apiData, @Context UriInfo uriInfo) {
 		// we assume that the parent ComponentInstance container exists
 
-		// @formatter:on
+		final IRepository repository = RepositoryFactory.getRepository();
 
 		if (StringUtils.isEmpty(apiData.artifactName)) {
 			return Response.status(Status.BAD_REQUEST).entity("Empty artifactName").build();
@@ -176,7 +171,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				if (artifactTemplateId == null) {
 					return Response.status(Status.NOT_ACCEPTABLE).entity("No artifactTemplate and no artifactType provided. Deriving the artifactType is not possible.").build();
 				}
-				@NonNull final QName type = RepositoryFactory.getRepository().getElement(artifactTemplateId).getType();
+				@NonNull final QName type = repository.getElement(artifactTemplateId).getType();
 				artifactTypeId = BackendUtils.getDefinitionsChildId(ArtifactTypeId.class, type);
 			} else {
 				// artifactTypeStr is directly given, use that
@@ -189,8 +184,16 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				return Response.status(Status.BAD_REQUEST).entity("Artifact template auto creation requested, but no artifact type supplied.").build();
 			}
 
-			// we assume that the type points to a valid artifact type
 			artifactTypeId = BackendUtils.getDefinitionsChildId(ArtifactTypeId.class, apiData.artifactType);
+			// ensure that given type exists
+			if (!repository.exists(artifactTypeId)) {
+				final TArtifactType element = repository.getElement(artifactTypeId);
+				try {
+					repository.setElement(artifactTypeId, element);
+				} catch (IOException e) {
+					throw new WebApplicationException(e);
+				}
+			}
 
 			if (StringUtils.isEmpty(apiData.artifactTemplateName) || StringUtils.isEmpty(apiData.artifactTemplateNamespace)) {
 				// no explicit name provided
@@ -206,16 +209,12 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 				QName artifactTemplateQName = new QName(apiData.artifactTemplateNamespace, apiData.artifactTemplateName);
 				artifactTemplateId = new ArtifactTemplateId(artifactTemplateQName);
 			}
-			ResourceCreationResult creationResult = RestUtils.create(artifactTemplateId);
-			if (!creationResult.isSuccess()) {
-				// something went wrong. skip
-				return creationResult.getResponse();
-			}
 
-			final TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(artifactTemplateId);
-			artifactTemplate.setType(apiData.artifactType);
+			// even if artifactTemplate does not exist, it is loaded
+			final TArtifactTemplate artifactTemplate = repository.getElement(artifactTemplateId);
+			artifactTemplate.setType(artifactTypeId.getQName());
 			try {
-				RepositoryFactory.getRepository().setElement(artifactTemplateId, artifactTemplate);
+				repository.setElement(artifactTemplateId, artifactTemplate);
 			} catch (IOException e) {
 				throw new WebApplicationException(e);
 			}
@@ -327,7 +326,8 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 		NodeTypeId typeId;
 		// required for IA Generation
 		typeId = new NodeTypeId(type);
-		TNodeType nodeType = RepositoryFactory.getRepository().getElement(typeId);
+		final IRepository repository = RepositoryFactory.getRepository();
+		TNodeType nodeType = repository.getElement(typeId);
 
 		List<TInterface> interfaces = nodeType.getInterfaces().getInterface();
 		Iterator<TInterface> it = interfaces.iterator();
@@ -338,6 +338,8 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			}
 		} while (it.hasNext());
 		// iface now contains the right interface
+
+		ArtifactTemplateSourceDirectoryId sourceDirectoryId = new ArtifactTemplateSourceDirectoryId(artifactTemplateId);
 
 		Path workingDir;
 		try {
@@ -358,38 +360,31 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 
 		String name = this.generateName(typeId, interfaceNameStr);
 		Generator gen = new Generator(iface, javapackage, artifactTemplateFilesUrl, name, workingDir.toFile());
-		File zipFile = gen.generateProject();
-		if (zipFile == null) {
+		Path targetPath;
+		try {
+			targetPath = gen.generateProject();
+		} catch (Exception e) {
+			LOGGER.debug("IA generator failed", e);
 			return Response.serverError().entity("IA generator failed").build();
 		}
 
-		// store it
-		// TODO: refactor: this is more a RepositoryUtils thing than a special thing here; see also importFile at CSARImporter
-
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(artifactTemplateId);
-		RepositoryFileReference fref = new RepositoryFileReference(fileDir, zipFile.getName());
-		try (InputStream is = Files.newInputStream(zipFile.toPath());
-			 BufferedInputStream bis = new BufferedInputStream(is)) {
-			org.apache.tika.mime.MediaType mediaType = BackendUtils.getMimeType(bis, zipFile.getName());
-			RepositoryFactory.getRepository().putContentToFile(fref, bis, mediaType);
-		} catch (IOException e1) {
-			throw new IllegalStateException("Could not import generated files", e1);
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSourceDirectoryId(artifactTemplateId);
+		try {
+			BackendUtils.importDirectory(targetPath, repository, fileDir);
+		} catch (IOException e) {
+			throw new WebApplicationException(e);
 		}
 
 		// cleanup dir
 		FileUtils.forceDelete(workingDir);
 
-		// store the properties in the artifact template
-		if (artifactTemplateResource == null) {
-			artifactTemplateResource = (ArtifactTemplateResource) AbstractComponentsResource.getComponentInstaceResource(artifactTemplateId);
-		}
-		this.storeProperties(artifactTemplateResource, typeId, name);
+		this.storeProperties(artifactTemplateId, typeId, name);
 
-		URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(fref));
+		URI url = uriInfo.getBaseUri().resolve(Util.getUrlPath(artifactTemplateId));
 		return Response.created(url).build();
 	}
 
-	private void storeProperties(ArtifactTemplateResource artifactTemplateResource, DefinitionsChildId typeId, String name) {
+	private void storeProperties(ArtifactTemplateId artifactTemplateId, DefinitionsChildId typeId, String name) {
 		// We generate the properties by hand instead of using JAX-B as using JAX-B causes issues at org.eclipse.winery.common.ModelUtilities.getPropertiesKV(TEntityTemplate):
 		// getAny() does not always return "w3c.dom.element" anymore
 
@@ -402,28 +397,36 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			return;
 		}
 		Document doc = builder.newDocument();
-		Element root = doc.createElementNS(Namespaces.OPENTOSCA_WAR_TYPE, "WSProperties");
+		String namespace = QNames.QNAME_ARTIFACT_TYPE_WAR.getNamespaceURI();
+		Element root = doc.createElementNS(namespace, "WSProperties");
 		doc.appendChild(root);
 
-		Element element = doc.createElementNS(Namespaces.OPENTOSCA_WAR_TYPE, "ServiceEndpoint");
+		Element element = doc.createElementNS(namespace, "ServiceEndpoint");
 		Text text = doc.createTextNode("/services/" + name + "Port");
 		element.appendChild(text);
 		root.appendChild(element);
 
-		element = doc.createElementNS(Namespaces.OPENTOSCA_WAR_TYPE, "PortType");
+		element = doc.createElementNS(namespace, "PortType");
 		text = doc.createTextNode("{" + typeId.getNamespace().getDecoded() + "}" + name);
 		element.appendChild(text);
 		root.appendChild(element);
 
-		element = doc.createElementNS(Namespaces.OPENTOSCA_WAR_TYPE, "InvocationType");
+		element = doc.createElementNS(namespace, "InvocationType");
 		text = doc.createTextNode("SOAP/HTTP");
 		element.appendChild(text);
 		root.appendChild(element);
 
 		Properties properties = new Properties();
 		properties.setAny(root);
-		PropertiesResource propertiesResource = artifactTemplateResource.getPropertiesResource();
-		propertiesResource.setProperties(properties);
+
+		final IRepository repository = RepositoryFactory.getRepository();
+		final TArtifactTemplate artifactTemplate = repository.getElement(artifactTemplateId);
+		artifactTemplate.setProperties(properties);
+		try {
+			repository.setElement(artifactTemplateId, artifactTemplate);
+		} catch (IOException e) {
+			throw new WebApplicationException(e);
+		}
 	}
 
 	/**

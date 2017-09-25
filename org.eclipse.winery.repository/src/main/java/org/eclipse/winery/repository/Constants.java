@@ -67,9 +67,4 @@ public class Constants {
 
 	public static final String DIRNAME_SELF_SERVICE_METADATA = "SELFSERVICE-Metadata";
 
-	/* used for IA generation */
-	//public static final String NAMESPACE_ARTIFACTTYPE_WAR = "http://www.opentosca.org/types";
-	public static final String NAMESPACE_ARTIFACTTYPE_WAR = "http://www.example.com/ToscaTypes";
-	public static final String LOCALNAME_ARTIFACTTYPE_WAR = "WAR";
-
 }

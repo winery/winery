@@ -45,8 +45,7 @@ public abstract class AbstractRepository implements IRepository {
 	 * @return a reference to the file holding the mime type
 	 */
 	private RepositoryFileReference getMimeFileRef(RepositoryFileReference ref) {
-		String fileName = ref.getFileName() + Constants.SUFFIX_MIMETYPE;
-		return new RepositoryFileReference(ref.getParent(), fileName);
+		return ref.setFileName(ref.getFileName() + Constants.SUFFIX_MIMETYPE);
 	}
 
 	/**

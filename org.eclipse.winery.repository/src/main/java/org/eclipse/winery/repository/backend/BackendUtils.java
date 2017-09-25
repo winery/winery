@@ -27,8 +27,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -146,6 +150,8 @@ import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import static java.nio.file.FileVisitResult.CONTINUE;
 
 /**
  * Contains generic utility functions for the Backend
@@ -877,7 +883,8 @@ public class BackendUtils {
 		Detector detector = parser.getDetector();
 		Metadata md = new Metadata();
 		md.add(Metadata.RESOURCE_NAME_KEY, fn);
-		return detector.detect(bis, md);
+		final MediaType mediaType = detector.detect(bis, md);
+		return mediaType;
 	}
 
 	/**
@@ -1195,5 +1202,42 @@ public class BackendUtils {
 				sb.append("\n");
 			}
 		};
+	}
+
+	public static RepositoryFileReference getRepositoryFileReference(Path rootPath, Path path, ArtifactTemplateDirectoryId artifactTemplateDirectoryId) {
+		final Path relativePath = rootPath.relativize(path);
+		Path parent = relativePath.getParent();
+		if (parent == null) {
+			return new RepositoryFileReference(artifactTemplateDirectoryId, path.getFileName().toString());
+		} else {
+			return new RepositoryFileReference(artifactTemplateDirectoryId, parent, path.getFileName().toString());
+		}
+	}
+
+	/**
+	 * Imports all files in the given directory into the given artifact template directory
+	 */
+	public static void importDirectory(Path rootPath, IRepository repository, ArtifactTemplateDirectoryId dir) throws IOException {
+		Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				Path relFile = rootPath.relativize(file);
+				RepositoryFileReference repositoryFileReference;
+				final Path subDirs = relFile.getParent();
+				if (subDirs == null) {
+					repositoryFileReference = new RepositoryFileReference(dir, file.getFileName().toString());
+				} else {
+					repositoryFileReference = new RepositoryFileReference(dir, subDirs, file.getFileName().toString());
+				}
+
+				try (InputStream is = Files.newInputStream(file);
+					 BufferedInputStream bis = new BufferedInputStream(is)) {
+					final MediaType mimeType = BackendUtils.getMimeType(bis, file.getFileName().toString());
+					repository.putContentToFile(repositoryFileReference, bis, mimeType);
+				}
+				return CONTINUE;
+			}
+		});
 	}
 }

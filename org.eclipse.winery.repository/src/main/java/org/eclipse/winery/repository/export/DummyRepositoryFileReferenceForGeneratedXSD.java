@@ -22,7 +22,6 @@ public class DummyRepositoryFileReferenceForGeneratedXSD extends RepositoryFileR
 
 	private final Document document;
 
-
 	/**
 	 * @param document the W3C DOM Document holding the generated XSD
 	 */
