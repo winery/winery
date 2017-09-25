@@ -49,7 +49,7 @@ public class GitWebSocket {
 		LOGGER.debug(session.getId() + " has opened a connection");
 		if (Stream.of(System.getenv("PATH").split(File.pathSeparator))
 			.map(Paths::get)
-			.anyMatch(path -> Files.exists(path.resolve("git-lfs.exe")))) {
+			.anyMatch(path -> Files.exists(path.resolve("git-lfs.exe")) || Files.exists(path.resolve("git-lfs")))) {
 			writeInSession(session, "git-lfs");
 		}
 	}
