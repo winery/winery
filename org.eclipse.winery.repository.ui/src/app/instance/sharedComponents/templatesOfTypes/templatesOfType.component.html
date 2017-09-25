@@ -1,0 +1,25 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ */
+-->
+<p>This page shows templates available for this type. Go to
+    <a [routerLink]="['/other']">Other Elements</a>
+    to get an overview on all implementations stored in this repository. </p>
+<div class="localLoader" [class.hidden]="!loading">
+    <winery-loader></winery-loader>
+</div>
+<div *ngIf="!loading">
+    <winery-table
+        [data]="templateData"
+        [columns]="columns"
+        (cellSelected)="onCellSelected($event)"
+        [itemsPerPage]="10"
+        [disableButtons]="true">
+    </winery-table>
+</div>

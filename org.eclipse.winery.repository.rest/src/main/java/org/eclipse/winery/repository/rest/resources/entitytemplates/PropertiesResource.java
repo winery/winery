@@ -69,7 +69,7 @@ public class PropertiesResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Object getJson() {
-		TEntityType tempType = RestUtils.getTypeForTemplate(this.template);
+		TEntityType tempType = RepositoryFactory.getRepository().getTypeForTemplate(this.template);
 		WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(tempType);
 		TEntityTemplate.Properties props = this.template.getProperties();
 		if (wpd == null) {

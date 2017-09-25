@@ -23,6 +23,7 @@ import { Utils } from '../wineryUtils/utils';
 export class HeaderComponent implements OnInit {
 
     selectedOtherComponent = '';
+    otherActive = true;
     @ViewChild('aboutModal') aboutModal: ModalDirective;
 
     constructor(public router: Router) {
@@ -39,7 +40,6 @@ export class HeaderComponent implements OnInit {
             if (others.includes('/')) {
                 others = others.split('/')[0];
             }
-
             if (!(others.includes(ToscaTypes.ServiceTemplate) ||
                     others.includes(ToscaTypes.NodeType) ||
                     others.includes(ToscaTypes.RelationshipType) ||
@@ -47,8 +47,10 @@ export class HeaderComponent implements OnInit {
                     others.includes('admin')
                 )
             ) {
+                this.otherActive = true;
                 this.selectedOtherComponent = ': ' + Utils.getToscaTypeNameFromToscaType(Utils.getToscaTypeFromString(others)) + 's';
             } else {
+                this.otherActive = others.includes('other');
                 this.selectedOtherComponent = '';
             }
         });

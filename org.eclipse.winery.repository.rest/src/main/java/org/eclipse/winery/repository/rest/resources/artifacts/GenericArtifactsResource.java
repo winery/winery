@@ -187,6 +187,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			artifactTypeId = BackendUtils.getDefinitionsChildId(ArtifactTypeId.class, apiData.artifactType);
 			// ensure that given type exists
 			if (!repository.exists(artifactTypeId)) {
+				LOGGER.debug("Artifact type {} is created", apiData.artifactType);
 				final TArtifactType element = repository.getElement(artifactTypeId);
 				try {
 					repository.setElement(artifactTypeId, element);
@@ -282,7 +283,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			return Response.created(RestUtils.createURI(Util.URLencode(apiData.artifactName))).entity(resultingArtifact).build();
 		} else {
 			// after everything was created, we fire up the artifact generation
-			return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId, artifactTemplateResource);
+			return this.generateImplementationArtifact(apiData.interfaceName, apiData.javaPackage, uriInfo, artifactTemplateId);
 		}
 	}
 
@@ -317,7 +318,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	 * @param artifactTemplateResource the resource associated with the artifactTemplateId. If null, the object is
 	 *                                 created in this method
 	 */
-	private Response generateImplementationArtifact(String interfaceNameStr, String javapackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId, ArtifactTemplateResource artifactTemplateResource) {
+	private Response generateImplementationArtifact(String interfaceNameStr, String javapackage, UriInfo uriInfo, ArtifactTemplateId artifactTemplateId) {
 		TInterface iface;
 
 		assert (this instanceof ImplementationArtifactsResource);

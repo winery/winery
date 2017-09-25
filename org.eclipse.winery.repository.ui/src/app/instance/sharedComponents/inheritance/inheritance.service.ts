@@ -8,14 +8,15 @@
  *
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
+ *     Niko Stadelmaier - change get inheritance data to get type grouped by namespace
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
-import { NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { InstanceService } from '../../instance.service';
 import { InheritanceApiData } from './inheritanceApiData';
+import { SelectData } from '../../../wineryInterfaces/selectData';
 
 @Injectable()
 export class InheritanceService {
@@ -35,11 +36,11 @@ export class InheritanceService {
             .map(res => res.json());
     }
 
-    getAvailableSuperClasses(): Observable<NameAndQNameApiDataList> {
+    getAvailableSuperClasses(): Observable<SelectData[]> {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
-
-        return this.http.get(backendBaseURL + this.path + '/getAvailableSuperClasses', options)
+        console.log(this.path);
+        return this.http.get(backendBaseURL + '/' + this.path.split('/')[1] + '?grouped=angularSelect/', options)
             .map(res => res.json());
     }
 

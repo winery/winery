@@ -53,7 +53,7 @@ export class InstanceService {
                     'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.ArtifactType:
-                subMenu = ['Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = ['Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.ArtifactTemplate:
                 subMenu = ['README', 'Files', 'Source', 'Properties', 'Documentation', 'XML'];
@@ -71,7 +71,7 @@ export class InstanceService {
                 subMenu = ['Implementation Artifacts', 'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.PolicyType:
-                subMenu = ['Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = ['Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.PolicyTemplate:
                 subMenu = ['Properties', 'Documentation', 'XML'];
@@ -117,7 +117,7 @@ export class InstanceService {
             .map(res => res.json());
     }
 
-    private getTopologyTemplate(): Observable<WineryTopologyTemplate> {
+    public getTopologyTemplate(): Observable<WineryTopologyTemplate> {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
         return this.http.get(backendBaseURL + this.path + '/topologytemplate/', options)

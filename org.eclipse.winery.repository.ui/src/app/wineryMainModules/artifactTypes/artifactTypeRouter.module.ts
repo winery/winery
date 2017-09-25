@@ -20,6 +20,7 @@ import { DocumentationComponent } from '../../instance/sharedComponents/document
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
 import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.component';
+import { TemplatesOfTypeComponent } from '../../instance/sharedComponents/templatesOfTypes/templatesOfTypes.component';
 
 const toscaType = ToscaTypes.ArtifactType;
 
@@ -34,7 +35,8 @@ const artifactTypeRoutes: Routes = [
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },
-            { path: 'xml', component: EditXMLComponent }
+            { path: 'xml', component: EditXMLComponent },
+            { path: 'templates', component:  TemplatesOfTypeComponent}
         ]
     }
 ];

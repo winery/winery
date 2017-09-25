@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12"
+				   xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12"
+				   targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" id="winery-defs-for_wfn-baobab">
+	<tosca:NodeType name="baobab" abstract="no" final="no"
+					targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01">
+		<winery:PropertiesDefinition elementname="BaobabProperties"
+									 namespace="http://winery.opentosca.org/test/nodetypes/fruits">
+			<winery:properties>
+				<winery:key>Antioxidants</winery:key>
+				<winery:type>xsd:string</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>VitaminC</winery:key>
+				<winery:type>xsd:decimal</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>Potassium</winery:key>
+				<winery:type>xsd:float</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>Superfood</winery:key>
+				<winery:type>xsd:boolean</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>HarvestedAt</winery:key>
+				<winery:type>xsd:anyURI</winery:type>
+			</winery:properties>
+		</winery:PropertiesDefinition>
+		<tosca:RequirementDefinitions>
+			<tosca:RequirementDefinition xmlns:fruits9="http://winery.opentosca.org/test/requirementtypes/fruits"
+										 name="ImportConstraintsMaximumWeight" requirementType="fruits9:MaximumWeight"
+										 lowerBound="1" upperBound="1"/>
+		</tosca:RequirementDefinitions>
+		<tosca:CapabilityDefinitions>
+			<tosca:CapabilityDefinition xmlns:fruits2="http://winery.opentosca.org/test/capabilitytypes/fruits"
+										name="ImportConstraintsHealthy" capabilityType="fruits2:Healthy" lowerBound="1"
+										upperBound="1">
+				<tosca:Constraints>
+					<tosca:Constraint constraintType="http://winery.opentosca.org/test/constrainttypes/fruits/healthy">
+						<fruits:constraintContent
+							xmlns:fruits="http://winery.opentosca.org/test/capabilitytypes/fruits">This has to be given,
+							because the TOSCA XSD demands it
+						</fruits:constraintContent>
+					</tosca:Constraint>
+				</tosca:Constraints>
+			</tosca:CapabilityDefinition>
+		</tosca:CapabilityDefinitions>
+		<tosca:Interfaces>
+			<tosca:Interface name="bananaInterface">
+				<tosca:Operation name="peel">
+					<tosca:InputParameters>
+						<tosca:InputParameter name="bananaInShell" type="xsd:string" required="yes"/>
+						<tosca:InputParameter name="peeler" type="xsd:string" required="yes"/>
+					</tosca:InputParameters>
+					<tosca:OutputParameters>
+						<tosca:OutputParameter name="peeledBanana" type="xsd:string" required="no"/>
+					</tosca:OutputParameters>
+				</tosca:Operation>
+				<tosca:Operation name="eat">
+					<tosca:InputParameters>
+						<tosca:InputParameter name="mouth" type="xsd:string" required="yes"/>
+					</tosca:InputParameters>
+				</tosca:Operation>
+			</tosca:Interface>
+		</tosca:Interfaces>
+	</tosca:NodeType>
+</tosca:Definitions>

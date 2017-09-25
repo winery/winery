@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation and/or initial documentation
  *******************************************************************************/
 package org.eclipse.winery.cli;
 
@@ -23,17 +20,31 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
+import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
+import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -49,13 +60,17 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 public class WineryCli {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WineryCli.class);
+	private static final String ARTEFACT_BE = "artefact";
 
 	private enum Verbosity {
 		OUTPUT_NUMBER_OF_TOSCA_COMPONENTS,
@@ -139,6 +154,8 @@ public class WineryCli {
 
 			checkId(res, verbosity, id);
 			checkXmlSchemaValidation(repository, res, verbosity, id);
+			checkQNames(repository, res, verbosity, id);
+			checkPropertiesXmlValidation(repository, res, verbosity, id);
 			checkCsar(res, verbosity, id, tempCsar);
 		}
 
@@ -152,9 +169,23 @@ public class WineryCli {
 		return res;
 	}
 
+	private static void checkQNames(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
+		if (id instanceof EntityTypeId) {
+			final TEntityType entityType = (TEntityType) repository.getDefinitions(id).getElement();
+			final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
+			if (propertiesDefinition != null) {
+				@Nullable final QName element = propertiesDefinition.getElement();
+				if (element != null) {
+					if (StringUtils.isEmpty(element.getNamespaceURI())) {
+						printAndAddError(res, verbosity, id, "Referenced element is not a full QName");
+					}
+				}
+			}
+		}
+	}
+
 	private static void checkXmlSchemaValidation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
 		try (InputStream inputStream = repository.newInputStream(BackendUtils.getRefOfDefinitions(id))) {
-			Definitions definitions = repository.getDefinitions(id);
 			DocumentBuilder documentBuilder = ToscaDocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
 			StringBuilder errorStringBuilder = new StringBuilder();
 			documentBuilder.setErrorHandler(BackendUtils.getErrorHandler(errorStringBuilder));
@@ -170,6 +201,62 @@ public class WineryCli {
 		}
 	}
 
+	private static void validate(RepositoryFileReference xmlSchemaFileReference, @Nullable Object any, IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
+		if (!(any instanceof Element)) {
+			printAndAddError(res, verbosity, id, "any is not instance of Document, but " + any.getClass());
+			return;
+		}
+		Element element = (Element) any;
+		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		InputStream inputStream = null;
+		try {
+			inputStream = repository.newInputStream(xmlSchemaFileReference);
+			Source schemaFile = new StreamSource(inputStream);
+			Schema schema = factory.newSchema(schemaFile);
+			Validator validator = schema.newValidator();
+			validator.validate(new DOMSource(element.getOwnerDocument()));
+		} catch (Exception e) {
+			printAndAddError(res, verbosity, id, "error during validating XML schema " + e.getMessage());
+			try {
+				inputStream.close();
+			} catch (IOException e1) {
+				return;
+			}
+		}
+	}
+
+	public static void checkPropertiesXmlValidation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
+		if (id instanceof EntityTemplateId) {
+			TEntityTemplate entityTemplate = (TEntityTemplate) repository.getDefinitions(id).getElement();
+			final TEntityType entityType = repository.getTypeForTemplate(entityTemplate);
+			final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
+			if (propertiesDefinition != null) {
+				final TEntityTemplate.Properties properties = entityTemplate.getProperties();
+				if (properties == null) {
+					printAndAddError(res, verbosity, id, "Properties required, but no properties defined");
+					return;
+				}
+
+				@Nullable final Object any = properties.getAny();
+				if (any == null) {
+					printAndAddError(res, verbosity, id, "Properties required, but no properties defined (any case)");
+					return;
+				}
+
+				@Nullable final QName element = propertiesDefinition.getElement();
+				if (element != null) {
+					final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = repository.getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
+					final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
+					if (repositoryFileReference == null) {
+						printAndAddError(res, verbosity, id, "No Xml Schema definition found for " + element);
+						return;
+					}
+					validate(repositoryFileReference, any, repository, res, verbosity, id);
+				}
+			}
+		}
+	}
+
 	private static void checkId(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
 		checkUri(res, verbosity, id, id.getNamespace().getDecoded());
 		checkNcname(res, verbosity, id, id.getXmlId().getDecoded());
@@ -178,6 +265,9 @@ public class WineryCli {
 	private static void checkNcname(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String ncname) {
 		if (!ncname.trim().equals(ncname)) {
 			printAndAddError(res, verbosity, id, "local name starts or ends with white spaces");
+		}
+		if (ncname.contains(ARTEFACT_BE)) {
+			printAndAddError(res, verbosity, id, "artifact is spelled with i in American English, not artefact as in British English");
 		}
 	}
 
@@ -205,6 +295,9 @@ public class WineryCli {
 		}
 		if (uriStr.endsWith("/")) {
 			printAndAddError(res, verbosity, id, "URI ends with a slash");
+		}
+		if (uriStr.contains(ARTEFACT_BE)) {
+			printAndAddError(res, verbosity, id, "artifact is spelled with i in American English, not artefact as in British English");
 		}
 	}
 

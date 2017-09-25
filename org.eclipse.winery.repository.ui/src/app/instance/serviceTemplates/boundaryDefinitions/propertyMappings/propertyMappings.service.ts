@@ -15,8 +15,12 @@ import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../../configuration';
 import { ModalDirective } from 'ngx-bootstrap';
+import {
+    PropertiesDefinition,
+    PropertiesDefinitionsResourceApiData
+} from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 
-export interface Property {
+export class Property {
     serviceTemplatePropertyRef: string;
     targetObjectRef: any;
     targetPropertyRef: string;
@@ -46,7 +50,7 @@ export class PropertyMappingService {
         const options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseURL + this.path + '/', options)
-                   .map(res => res.json());
+            .map(res => res.json());
     }
 
     addPropertyMapping(propertyMapping: Property) {
@@ -57,7 +61,33 @@ export class PropertyMappingService {
     }
 
     removePropertyMapping(elementToDelete: string) {
-        return this.http.delete(backendBaseURL + this.path + '/' +  encodeURIComponent(encodeURIComponent(elementToDelete)));
+        return this.http.delete(backendBaseURL + this.path + '/' + encodeURIComponent(encodeURIComponent(elementToDelete)));
+    }
+
+    getPropertiesOfServiceTemplate(): Observable<string> {
+        const headers = new Headers({'Accept': 'application/xml'});
+        const options = new RequestOptions({headers: headers});
+
+        const newPath: string = this.path.replace('propertymappings', 'properties');
+
+        return this.http.get(backendBaseURL + newPath + '/', options)
+            .map(res => res.text());
+    }
+
+    getTemplatesOfType(type: string): Observable <any> {
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
+
+        return this.http.get(backendBaseURL + '/' + type + '/', options)
+            .map(res => res.json());
+    }
+
+    getTargetObjKVProperties(targetPath: string): Observable<PropertiesDefinitionsResourceApiData> {
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
+
+        return this.http.get(backendBaseURL + '/' + targetPath + '/' + 'propertiesdefinition', options)
+            .map(res => res.json());
     }
 
 }

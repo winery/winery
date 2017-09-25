@@ -14,6 +14,10 @@
 package org.eclipse.winery.common.interfaces;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
@@ -33,6 +37,8 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
@@ -41,6 +47,8 @@ import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+
+import org.slf4j.LoggerFactory;
 
 /**
  * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.common.ids}
@@ -130,4 +138,59 @@ public interface IWineryRepositoryCommon {
 	 * @param namespace               the namespace to delete
 	 */
 	void forceDelete(Class<? extends DefinitionsChildId> definitionsChildIdClazz, Namespace namespace) throws IOException;
+
+	/**
+	 * Returns the stored type for the given template
+	 *
+	 * @param template the template to determine the type for
+	 */
+	// we suppress "unchecked" as we use Class.forName
+	@SuppressWarnings("unchecked")
+	default TEntityType getTypeForTemplate(TEntityTemplate template) {
+		QName type = template.getType();
+
+		// Possibilities:
+		// a) try all possibly types whether an appropriate QName exists
+		// b) derive type class from template class. Determine appropriate template element afterwards.
+		// We go for b)
+
+		String instanceResourceClassName = template.getClass().toString();
+		int idx = instanceResourceClassName.lastIndexOf('.');
+		// get everything from ".T", where "." is the last dot
+		instanceResourceClassName = instanceResourceClassName.substring(idx + 2);
+		// strip off "Template"
+		instanceResourceClassName = instanceResourceClassName.substring(0, instanceResourceClassName.length() - "Template".length());
+		// add "Type"
+		instanceResourceClassName += "Type";
+
+		// an id is required to instantiate the resource
+		String idClassName = "org.eclipse.winery.common.ids.definitions." + instanceResourceClassName + "Id";
+
+		org.slf4j.Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+		LOGGER.debug("idClassName: {}", idClassName);
+
+		// Get instance of id class having "type" as id
+		Class<? extends DefinitionsChildId> idClass;
+		try {
+			idClass = (Class<? extends DefinitionsChildId>) Class.forName(idClassName);
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException("Could not determine id class", e);
+		}
+		Constructor<? extends DefinitionsChildId> idConstructor;
+		try {
+			idConstructor = idClass.getConstructor(QName.class);
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new IllegalStateException("Could not get QName id constructor", e);
+		}
+		DefinitionsChildId typeId;
+		try {
+			typeId = idConstructor.newInstance(type);
+		} catch (InstantiationException | IllegalAccessException
+			| IllegalArgumentException | InvocationTargetException e) {
+			throw new IllegalStateException("Could not instantiate type", e);
+		}
+
+		final Definitions definitions = this.getDefinitions(typeId);
+		return (TEntityType) definitions.getElement();
+	}
 }

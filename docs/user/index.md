@@ -33,6 +33,7 @@ This part is currently in development and not part of the opensourced code of Wi
 The repository stores TOSCA models and allows managing their content. For instance, node types, policy types, and artifact templates are managed by the repository.
 The repository is also responsible for importing and  exporting CSARs, the exchange format of TOSCA files and related artifacts.
 
+
 ## Quickstart
 
 On Windows:
@@ -48,7 +49,6 @@ On Windows:
 Now you are at the [test repository](https://github.com/winery/test-repository) containing testing types.
 If you do `git checkout master`, you are seeing the [OpenTOSCA TOSCA Definitions repository](https://github.com/OpenTOSCA/tosca-definitions/).
 
-In case you start from a fresh repository, please ensure that the Artifact Type `WAR` in the namespace `http://opentosca.org/artifacttypes` exists.
 
 ## Features
 

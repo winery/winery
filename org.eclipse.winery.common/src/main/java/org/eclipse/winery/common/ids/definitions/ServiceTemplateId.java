@@ -16,7 +16,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
-public final class ServiceTemplateId extends EntityTemplateId {
+public final class ServiceTemplateId extends DefinitionsChildId {
 
 	public ServiceTemplateId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);

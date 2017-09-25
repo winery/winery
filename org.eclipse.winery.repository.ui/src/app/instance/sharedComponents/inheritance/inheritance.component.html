@@ -32,11 +32,16 @@
             <option [selected]="inheritanceApiData.isFinal === 'no'">no</option>
         </select>
     </div>
-    <winery-qname-selector
-        [title]="'Derived from'"
-        [displayList]="availableSuperClasses"
-        [selectedResource]="toscaType"
-        [selectedValue]="inheritanceApiData.derivedFrom"
-        (selectedValueChanged)="onSelectedValueChanged($event.value)">
-    </winery-qname-selector>
+
+    <p>Derived from</p>
+    <ng-select #derivedFromSelector
+               [items]="availableSuperClasses"
+               (selected)="onSelectedValueChanged($event)"
+               [active]="initialActiveItem"
+    ></ng-select>
+    <br>
+    <button class="btn btn-info btn-sm"
+            [routerLink]="openSuperClassLink">
+            open
+    </button>
 </div>

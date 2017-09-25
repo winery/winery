@@ -1,0 +1,119 @@
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+#wineryGitLogFloat {
+    position: absolute;
+    right: 0px;
+}
+
+#wineryGitLogContainer {
+    display: inline-grid;
+    grid-template-columns: 91px auto auto;
+    grid-template-rows: 500px 30px 300px;
+}
+
+#wineryGitLogExpander {
+    grid-row: 1/ span 3;
+}
+
+#wineryGitLogExpander span {
+    position: absolute;
+    top: 30px;
+    width: 91px;
+    height: 185px;
+    background: url('../../assets/img/gitLogExpander.png');
+    background-repeat: no-repeat;
+}
+
+#wineryGitLogExpander h3 {
+    position: absolute;
+    top: 148px;
+    left: 11px;
+}
+
+#wineryGitLogDiffs {
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow-x: scroll;
+    width: 600px;
+}
+
+#wineryGitLogGui {
+    grid-column: 3/ span 1;
+    width: 300px;
+    background-color: #f3f3f3;
+}
+
+#wineryGitLogCommit {
+    grid-column: 3/ span 1;
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-left: 5px;
+}
+#wineryGitLogCommitMsg {
+    grid-column: 3/ span 1;
+}
+
+table {
+    width: 90%;
+    margin-bottom: 20px;
+    background-color: transparent;
+    border-spacing: 0;
+    border-collapse: collapse;
+    border-color: grey;
+}
+
+tbody {
+    width: 90%;
+    display: table-row-group;
+    vertical-align: middle;
+    border-color: inherit;
+    min-width: 300px;
+}
+
+tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+    width: 100%;
+    height: 20px;
+    min-width: 300px;
+}
+
+tr:hover {
+    background-color: #aaaaaa;
+}
+
+tr.selected {
+    background-color: #8c8c8c;
+}
+
+td {
+    padding: 8px;
+    line-height: 0;
+    vertical-align: center;
+}
+
+#srcNameCell {
+    width: 200px;
+}
+
+#filesList {
+    width: 300px;
+    height: 500px;
+    overflow: auto;
+}
+
+p {
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+}

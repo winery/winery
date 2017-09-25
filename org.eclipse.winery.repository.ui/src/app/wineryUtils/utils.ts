@@ -56,6 +56,14 @@ export class Utils {
                 return ToscaTypes.PolicyTemplate;
             case ToscaTypes.Imports:
                 return ToscaTypes.Imports;
+            case ToscaTypes.RelationshipTemplate:
+                return ToscaTypes.RelationshipTemplate;
+            case ToscaTypes.CapabilityTempalte:
+                return ToscaTypes.CapabilityTempalte;
+            case ToscaTypes.NodeTemplate:
+                return ToscaTypes.NodeTemplate;
+            case ToscaTypes.RequirementTemplate:
+                return ToscaTypes.RequirementTemplate;
             default:
                 return ToscaTypes.Admin;
         }
@@ -87,6 +95,14 @@ export class Utils {
                 return 'Policy Template';
             case ToscaTypes.Imports:
                 return 'XSD Imports';
+            case ToscaTypes.RequirementTemplate:
+                return 'Requirement Template';
+            case ToscaTypes.CapabilityTempalte:
+                return 'Capability Template';
+            case ToscaTypes.NodeTemplate:
+                return 'Node Templates';
+            case ToscaTypes.RelationshipTemplate:
+                return 'Relationship Template';
             default:
                 return 'Admin';
         }
@@ -98,6 +114,14 @@ export class Utils {
                 return ToscaTypes.ArtifactType;
             case ToscaTypes.NodeTypeImplementation:
                 return ToscaTypes.NodeType;
+            case ToscaTypes.NodeTemplate:
+                return ToscaTypes.NodeType;
+            case ToscaTypes.RelationshipTemplate:
+                return ToscaTypes.RelationshipType;
+            case ToscaTypes.CapabilityTempalte:
+                return ToscaTypes.CapabilityType;
+            case ToscaTypes.RequirementTemplate:
+                return ToscaTypes.RequirementType;
             case ToscaTypes.RelationshipTypeImplementation:
                 return ToscaTypes.RelationshipType;
             case ToscaTypes.PolicyTemplate:
@@ -116,5 +140,18 @@ export class Utils {
             case ToscaTypes.ArtifactType:
                 return ToscaTypes.ArtifactTemplate;
         }
+    }
+
+    public static getNameFromQname(qName: string) {
+        return qName.split('}').pop();
+    }
+
+    public static getNamespaceAndLocalNameFromQName(qname: string) {
+        const i = qname.indexOf('}');
+        const res = {
+            namespace: qname.substr(1, i - 1),
+            localname: qname.substr(i + 1)
+        };
+        return res;
     }
 }
