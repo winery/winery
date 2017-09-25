@@ -98,6 +98,8 @@ export class SectionComponent implements OnInit, OnDestroy {
             this.changeViewButtonTitle = showAll;
             this.showNamespace = 'group';
         }
+
+        localStorage.setItem(this.toscaType + '_showNamespace', this.showNamespace);
     }
 
     onAdd() {
@@ -153,7 +155,10 @@ export class SectionComponent implements OnInit, OnDestroy {
         const resolved: SectionResolverData = data.resolveData;
 
         this.toscaType = resolved.section;
-        this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : this.showNamespace;
+
+        const storedNamepsapce = localStorage.getItem(this.toscaType + '_showNamespace') !== null ?
+            localStorage.getItem(this.toscaType + '_showNamespace') : 'all';
+        this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : storedNamepsapce;
         this.types = null;
 
         this.service.setPath(resolved.path);
@@ -167,7 +172,12 @@ export class SectionComponent implements OnInit, OnDestroy {
             this.showNamespace = 'group';
             this.changeViewButtonTitle = showAll;
         } else if (!this.showSpecificNamespaceOnly()) {
-            this.showNamespace = 'all';
+            if (this.showNamespace === 'group') {
+                this.changeViewButtonTitle = showAll;
+            } else {
+                this.changeViewButtonTitle = showGrouped;
+            }
+        } else {
             this.changeViewButtonTitle = showGrouped;
         }
 

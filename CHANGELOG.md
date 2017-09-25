@@ -16,6 +16,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 
 ### Changed
 
+- Fixed GroupByNamespace issue. Each tosca type has its own namespace state.
 - Add artifact source editor to create/upload and edit source files 
 - Initial support for BPMN4TOSCA implemented using Angular
 - Added initial CLI. Current funtionality: Consistency check of the repository.
