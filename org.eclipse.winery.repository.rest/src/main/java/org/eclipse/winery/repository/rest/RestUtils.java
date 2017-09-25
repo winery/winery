@@ -17,8 +17,6 @@ package org.eclipse.winery.repository.rest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.attribute.FileTime;
@@ -63,7 +61,6 @@ import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -426,89 +423,6 @@ public class RestUtils {
 			msg = e.getMessage();
 		}
 		return Response.status(Status.INTERNAL_SERVER_ERROR).entity(msg).build();
-	}
-
-	/**
-	 * Returns the stored type for the given template
-	 *
-	 * Goes to the repository to retrieve stored data
-	 *
-	 * @param template the template to determine the type for
-	 */
-	// we suppress "unchecked" as we use Class.forName
-	@SuppressWarnings("unchecked")
-	public static TEntityType getTypeForTemplate(TEntityTemplate template) {
-		QName type = template.getType();
-
-		// Possibilities:
-		// a) try all possibly types whether an appropriate QName exists
-		// b) derive type class from template class. Determine appropriate resource afterwards.
-		// We go for b)
-
-		String instanceResourceClassName = template.getClass().toString();
-		int idx = instanceResourceClassName.lastIndexOf('.');
-		// get everything from ".T", where "." is the last dot
-		instanceResourceClassName = instanceResourceClassName.substring(idx + 2);
-		// strip off "Template"
-		instanceResourceClassName = instanceResourceClassName.substring(0, instanceResourceClassName.length() - "Template".length());
-		// add "Type"
-		instanceResourceClassName += "Type";
-
-		// an id is required to instantiate the resource
-		String idClassName = "org.eclipse.winery.common.ids.definitions." + instanceResourceClassName + "Id";
-
-		String packageName = "org.eclipse.winery.repository.rest.resources.entitytypes." + instanceResourceClassName.toLowerCase() + "s";
-		// convert from NodeType to NodeTypesResource
-		instanceResourceClassName += "Resource";
-		instanceResourceClassName = packageName + "." + instanceResourceClassName;
-
-		RestUtils.LOGGER.debug("idClassName: {}", idClassName);
-		RestUtils.LOGGER.debug("className: {}", instanceResourceClassName);
-
-		// Get instance of id class having "type" as id
-		Class<? extends DefinitionsChildId> idClass;
-		try {
-			idClass = (Class<? extends DefinitionsChildId>) Class.forName(idClassName);
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException("Could not determine id class", e);
-		}
-		Constructor<? extends DefinitionsChildId> idConstructor;
-		try {
-			idConstructor = idClass.getConstructor(QName.class);
-		} catch (NoSuchMethodException | SecurityException e) {
-			throw new IllegalStateException("Could not get QName id constructor", e);
-		}
-		DefinitionsChildId typeId;
-		try {
-			typeId = idConstructor.newInstance(type);
-		} catch (InstantiationException | IllegalAccessException
-			| IllegalArgumentException | InvocationTargetException e) {
-			throw new IllegalStateException("Could not instantiate type", e);
-		}
-
-		// now instantiate the resource, where the type belongs to
-		Class<? extends AbstractComponentInstanceResource> instanceResourceClass;
-		try {
-			instanceResourceClass = (Class<? extends AbstractComponentInstanceResource>) Class.forName(instanceResourceClassName);
-		} catch (ClassNotFoundException e) {
-			throw new IllegalStateException("Could not determine component instance resource class", e);
-		}
-		Constructor<? extends AbstractComponentInstanceResource> resConstructor;
-		try {
-			resConstructor = instanceResourceClass.getConstructor(typeId.getClass());
-		} catch (NoSuchMethodException | SecurityException e) {
-			throw new IllegalStateException("Could not get contructor", e);
-		}
-		AbstractComponentInstanceResource typeResource;
-		try {
-			typeResource = resConstructor.newInstance(typeId);
-		} catch (InstantiationException | IllegalAccessException
-			| IllegalArgumentException | InvocationTargetException e) {
-			throw new IllegalStateException("Could not instantiate resoruce", e);
-		}
-
-		// read the data from the resource and store it
-		return (TEntityType) typeResource.getElement();
 	}
 
 	public static boolean isSuccessFulResponse(Response res) {
