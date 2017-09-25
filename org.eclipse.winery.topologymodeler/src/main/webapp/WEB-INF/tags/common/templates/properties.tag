@@ -75,7 +75,7 @@ if ((propertiesDefinition != null) || (wpd != null)) {
 					for (PropertyDefinitionKV propdef: list) {
 						String key = propdef.getKey();
 						String value;
-						if (template == null) {
+						if (template == null || props == null) {
 							value = "";
 						} else {
 							// assign value, but change "null" to "" if no property is defined
