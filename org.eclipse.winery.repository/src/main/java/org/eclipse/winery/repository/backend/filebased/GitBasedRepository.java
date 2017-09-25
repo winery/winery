@@ -75,7 +75,7 @@ public class GitBasedRepository extends FilebasedRepository {
 		}
 		this.eventBus = new EventBus();
 		this.git = new Git(gitRepo);
-		if (!this.git.status().call().isClean()) {
+		if (gitBasedRepositoryConfiguration.isAutoCommit() && !this.git.status().call().isClean()) {
 			this.addCommit("Files changed externally.");
 		}
 	}
