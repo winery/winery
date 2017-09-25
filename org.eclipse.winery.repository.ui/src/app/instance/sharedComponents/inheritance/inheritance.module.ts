@@ -17,11 +17,18 @@ import { WineryModalModule } from '../../../wineryModalModule/winery.modal.modul
 import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
 import { FormsModule } from '@angular/forms';
 import { WineryQNameSelectorModule } from '../../../wineryQNameSelector/wineryQNameSelector.module';
+import { SelectModule } from 'ng2-select';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
         CommonModule,
+        BrowserModule,
+        SelectModule,
         FormsModule,
+        CommonModule,
+        RouterModule,
         WineryModalModule,
         WineryLoaderModule,
         WineryQNameSelectorModule,
