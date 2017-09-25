@@ -15,10 +15,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.SortedSet;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
@@ -95,4 +99,14 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 		// TODO: real content (relative paths, ...) not checked
 		Assert.assertEquals(3, containedFiles.size());
 	}
+
+	@Test
+	public void getTypeForTemplateReturnsCorrectTypeForMyTinyTestArtifactTemplate() throws Exception {
+		this.setRevisionTo("1374c8c13ec64899360511dbe0414223b88d3b01");
+		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://opentosca.org/artifacttemplates", "MyTinyTest", false);
+		final TArtifactTemplate artifactTemplate = this.repository.getElement(artifactTemplateId);
+		final TEntityType typeForTemplate = this.repository.getTypeForTemplate(artifactTemplate);
+		Assert.assertEquals(new QName("http://winery.opentosca.org/test/artifacttypes", "MiniArtifactType"), new QName(typeForTemplate.getTargetNamespace(), typeForTemplate.getName()));
+	}
+
 }
