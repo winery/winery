@@ -39,13 +39,11 @@
                                    class="form-control"
                                    type="text"
                                    required
-                                   ngModel
-                                   [value]="currentSelectedItem?.serviceTemplatePropertyRef">
+                                   [(ngModel)]="currentSelectedItem.serviceTemplatePropertyRef">
                         </div>
-                        <div class="col-xs-2">
-                            <button disabled type="button" class="btn btn-default btn-sm" >Browse</button>
-                        </div>
-                        <div style="clear:both" *ngIf="serviceTemplateProp.errors && (serviceTemplateProp.dirty || serviceTemplateProp.touched)"
+
+                        <div style="clear:both"
+                             *ngIf="serviceTemplateProp.errors && (serviceTemplateProp.dirty || serviceTemplateProp.touched)"
                              class="alert alert-danger">
                             <div [hidden]="!serviceTemplateProp.errors.required">
                                 Property name is required!
@@ -55,21 +53,43 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="targetObjectRef">Target: Node Template, Requirement, Capability, or Relationship Template</label>
+                    <label for="targetObjectRef">Target: Node Template, Requirement, Capability, or Relationship
+                        Template</label>
+                    <br>
+                    <input type="radio" name="typeSelect" id="nodeTemplate" value="nodeTemplates"
+                           (change)="radioBtnSelected($event)">
+                    <label for="nodeTemplate">Node Template</label>
+                    <input type="radio" name="typeSelect" id="RequirementTemplate" value="requirementTemplates"
+                           (change)="radioBtnSelected($event)">
+                    <label for="RequirementTemplate">Requirement Template</label>
+                    <input type="radio" name="typeSelect" id="CapabilityTemplate" value="capabilityTemplates"
+                           (change)="radioBtnSelected($event)">
+                    <label for="CapabilityTemplate">Capability Tempalte</label>
+                    <input type="radio" name="typeSelect" id="RelationshipTemplate" value="relationshipTemplates"
+                           (change)="radioBtnSelected($event)">
+                    <label for="RelationshipTemplate">Relationship Template</label>
                     <div class="row">
                         <div class="col-xs-4">
+
+                            <ng-select #tempList
+                                       name="tempList"
+                                       [items]="templateList"
+                                       [(ngModel)]="templateList"
+                                       [active]="initialSelectedTempalte"
+                                       (selected)="targetObjectSelected($event)"
+                                       placeholder="no template selected">
+                            </ng-select>
+
+                            <br>
                             <input #targetObj="ngModel"
                                    name="targetObjectRef"
                                    id="targetObjectRef"
                                    class="form-control"
                                    type="text"
                                    required
-                                   ngModel
-                                   [value]="currentSelectedItem?.targetObjectRef">
+                                   [(ngModel)]="currentSelectedItem.targetObjectRef">
                         </div>
-                        <div class="col-xs-2">
-                            <button disabled type="button" class="btn btn-default btn-sm" >Browse</button>
-                        </div>
+
                         <div style="clear:both" *ngIf="targetObj.errors && (targetObj.dirty || targetObj.touched)"
                              class="alert alert-danger">
                             <div [hidden]="!targetObj.errors.required">
@@ -80,15 +100,24 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="targetPropertyRef">Target Property</label>
+                    <span>Target Property</span>
+                    <ng-select *ngIf="targetProperties !== null && targetProperties.length > 0"
+                               #propertiesSelect
+                               name="propertiesSelect"
+                               [items]="targetProperties"
+                               [active]="initialSelectProp"
+                               [(ngModel)]="targetProperties"
+                               (data)="targetPropertySelected($event)"
+                               placeholder="Please select a property">
+                    </ng-select>
+                    <br>
                     <input #targetProp="ngModel"
                            name="targetPropertyRef"
                            id="targetPropertyRef"
                            class="form-control"
                            type="text"
                            required
-                           ngModel
-                           [value]="currentSelectedItem?.targetPropertyRef"/>
+                           [(ngModel)]="currentSelectedItem.targetPropertyRef">
                 </div>
                 <div style="clear:both" *ngIf="targetProp.errors && (targetProp.dirty || targetProp.touched)"
                      class="alert alert-danger">
@@ -107,24 +136,25 @@
 </winery-modal>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-     <winery-modal-header [title]="'Delete Property'">
-     </winery-modal-header>
-     <winery-modal-body>
-         <p *ngIf="currentSelectedItem != null">
-             Do you want to delete the Element
-                 <span style="font-weight:bold;">
+    <winery-modal-header [title]="'Delete Property'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="currentSelectedItem != null">
+            Do you want to delete the Element
+            <span style="font-weight:bold;">
                   {{ currentSelectedItem.serviceTemplatePropertyRef }}
               </span>
-             ?
-         </p>
-     </winery-modal-body>
+            ?
+        </p>
+    </winery-modal-body>
     <winery-modal-footer
-         (onOk)="removeConfirmed();"
-         [okButtonLabel]="'Yes'">
+        (onOk)="removeConfirmed();"
+        [okButtonLabel]="'Yes'">
     </winery-modal-footer>
 </winery-modal>
 
-<winery-modal bsModal #browseForServiceTemplatePropertyDiag="bs-modal" [modalRef]="browseForServiceTemplatePropertyDiag">
+<winery-modal bsModal #browseForServiceTemplatePropertyDiag="bs-modal"
+              [modalRef]="browseForServiceTemplatePropertyDiag">
     <winery-modal-header [title]="'Choose Property of Service Template'">
     </winery-modal-header>
     <winery-modal-body>
@@ -134,7 +164,7 @@
             <fieldset>
                 <div class="form-group">
                     <label for="newServiceTemplatePropertyRef">Reference to the property of the Service Template</label>
-                    <input type="text" id="newServiceTemplatePropertyRef" class="form-control" />
+                    <input type="text" id="newServiceTemplatePropertyRef" class="form-control"/>
                 </div>
             </fieldset>
         </form>

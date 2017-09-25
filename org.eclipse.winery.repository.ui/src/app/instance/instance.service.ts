@@ -118,7 +118,7 @@ export class InstanceService {
             .map(res => res.json());
     }
 
-    private getTopologyTemplate(): Observable<WineryTopologyTemplate> {
+    public getTopologyTemplate(): Observable<WineryTopologyTemplate> {
         const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseURL + this.path + '/topologytemplate/', options)

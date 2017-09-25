@@ -16,6 +16,12 @@ import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
 import { NgForm } from '@angular/forms';
+import { InstanceService } from '../../../instance.service';
+import { WineryTemplate, WineryTopologyTemplate } from '../../../../wineryInterfaces/wineryComponent';
+import { ToscaTypes } from '../../../../wineryInterfaces/enums';
+import { Utils } from '../../../../wineryUtils/utils';
+import { SelectItem } from 'ng2-select';
+import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 
 @Component({
     selector: 'winery-instance-boundary-property-mappings',
@@ -35,15 +41,126 @@ export class PropertyMappingsComponent implements OnInit {
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('browseForServiceTemplatePropertyDiag') browseForServiceTemplatePropertyDiag: ModalDirective;
     @ViewChild('propertyMappingForm') propertyMappingForm: NgForm;
-    currentSelectedItem: Property;
+    @ViewChild('tempList') templateSelect: any;
+    @ViewChild('propertiesSelect') propertiesSelect: any;
+    currentSelectedItem: Property = new Property();
     addOrUpdateBtnTxt = 'Add';
+    properties: { name: string, property: string } = {name: '', property: ''};
+    xmlData: any;
+    selectedProperty: string;
+    templateList: Array<any> = [];
+    topologyTemplate: WineryTopologyTemplate = null;
+    toscaType: ToscaTypes;
+    targetProperties: Array<any> = [];
+    targetObject: string;
+    targetPropertiesWrapperElement: string = null;
+    initialSelectProp: any = [{id: '', text: ''}];
+    initialSelectedTempalte: [{ id: '', text: '' }];
 
     constructor(private service: PropertyMappingService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                private instanceService: InstanceService) {
     }
 
     ngOnInit() {
         this.getMappings();
+        this.getProperties();
+        this.getTopologyTempalte();
+    }
+
+    getTopologyTempalte() {
+        this.instanceService.getTopologyTemplate().subscribe(
+            data => this.topologyTemplate = data,
+            error => this.notify.error('could not get topology data')
+        );
+    }
+
+    getProperties() {
+        this.service.getPropertiesOfServiceTemplate().subscribe(
+            data => this.handleProperties(data),
+            error => this.handleError(error)
+        )
+    }
+
+    handleProperties(props: string) {
+        const parser = new DOMParser();
+        this.xmlData = parser.parseFromString(props, 'application/xml');
+        this.properties.name = this.xmlData.firstChild.localName;
+        this.properties.property = '/*[local-name()=\'' + this.properties.name + '\']'
+    }
+
+    radioBtnSelected(event: any) {
+        const selectedType = event.target.value;
+        if (!isNullOrUndefined(selectedType)) {
+            this.toscaType = Utils.getToscaTypeFromString(selectedType.toLowerCase().slice(0, -1));
+            this.templateList = this.getListOfTemplates(selectedType);
+            this.templateSelect.selected.emit(this.templateList[0]);
+            // this.initialSelectedTempalte = [this.templateList[0]];
+            // this.targetObject = this.initialSelectedTempalte[0].text;
+        }
+    }
+
+    getListOfTemplates(templateType: string): Array<string> {
+        if (!isNullOrUndefined(this.topologyTemplate[templateType])) {
+            return this.topologyTemplate[templateType].map((template: WineryTemplate) => {
+                const newItem: SelectItem = new SelectItem('');
+                newItem.id = template.type;
+                newItem.text = Utils.getNameFromQname(template.type);
+                return newItem;
+            });
+        } else {
+            this.notify.error('No ' + Utils.getToscaTypeNameFromToscaType(this.toscaType) + ' available.\nTo select a ' +
+                Utils.getToscaTypeNameFromToscaType(this.toscaType) +
+                ' add at least one to the topology');
+        }
+    }
+
+    targetObjectSelected(targetObj: any) {
+        console.log(targetObj);
+        this.targetObject = targetObj.text;
+        this.currentSelectedItem.targetObjectRef = this.targetObject;
+        this.getTargetProperties(targetObj);
+    }
+
+    getTargetProperties(targetObj: any) {
+
+        const targetObjPath: string = Utils.getTypeOrImplementationOf(this.toscaType) + '/' +
+            encodeURIComponent(encodeURIComponent(Utils.getNamespaceAndLocalNameFromQName(targetObj.id).namespace)) +
+            '/' + this.targetObject;
+
+        this.service.getTargetObjKVProperties(targetObjPath).subscribe(
+            data => {
+                this.handleGetProperties(data);
+            },
+            error => {
+                this.notify.error('Could not get Properties for selected Template.\n' + error.toString());
+            }
+        )
+    }
+
+    handleGetProperties(propertiesDefinition: PropertiesDefinitionsResourceApiData) {
+        if (!isNullOrUndefined(propertiesDefinition.winerysPropertiesDefinition)) {
+            this.targetProperties = propertiesDefinition.winerysPropertiesDefinition.propertyDefinitionKVList.map(item => {
+                return {id: item.key, text: item.key}
+            });
+            this.targetPropertiesWrapperElement = propertiesDefinition.winerysPropertiesDefinition.elementName;
+            this.initialSelectProp = [this.targetProperties[0]];
+            this.selectedProperty = this.initialSelectProp[0].text;
+        } else {
+            this.targetProperties = [];
+            this.targetPropertiesWrapperElement = null;
+            this.selectedProperty = '';
+            this.currentSelectedItem.targetPropertyRef = '';
+        }
+    }
+
+    targetPropertySelected(property: any) {
+        console.log(property);
+        if (!isNullOrUndefined(property.text) && !Array.isArray(property)) {
+            this.selectedProperty = property.text;
+        }
+        this.currentSelectedItem.targetPropertyRef = '/*[local-name()=\'' + this.targetPropertiesWrapperElement +
+            '\']/*[local-name()=\'' + this.selectedProperty + '\']';
     }
 
     getMappings() {
@@ -92,7 +209,7 @@ export class PropertyMappingsComponent implements OnInit {
     onAddClick() {
         this.addOrUpdateBtnTxt = 'Add';
         this.propertyMappingForm.reset();
-        this.currentSelectedItem = null;
+        this.currentSelectedItem = new Property();
         this.addPropertyMappingModal.show();
     }
 
