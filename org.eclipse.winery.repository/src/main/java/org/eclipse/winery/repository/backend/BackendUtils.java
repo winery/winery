@@ -78,7 +78,6 @@ import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.HasTargetNamespace;
@@ -124,7 +123,6 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDire
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.importing.CsarImporter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.time.DateUtils;
@@ -154,7 +152,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
 /**
  * Contains generic utility functions for the Backend
@@ -1243,5 +1240,4 @@ public class BackendUtils {
 			}
 		});
 	}
-
 }
