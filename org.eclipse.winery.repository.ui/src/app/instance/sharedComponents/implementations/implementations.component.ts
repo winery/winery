@@ -34,6 +34,7 @@ export class ImplementationsComponent implements OnInit {
     selectedCell: any;
     newImplementation: ImplementationAPIData = new ImplementationAPIData('', '');
     elementToRemove: ImplementationAPIData;
+    nameOfElementToRemove = '';
     selectedNamespace = '';
     validatorObject: WineryValidatorObject;
     columns: Array<any> = [
@@ -85,6 +86,11 @@ export class ImplementationsComponent implements OnInit {
             return;
         } else {
             this.elementToRemove = new ImplementationAPIData(data.namespace, data.localname);
+
+            const regex = /.*>(.*)<+/g;
+            const match = regex.exec(data.localname);
+            this.nameOfElementToRemove = match[1];
+
             this.confirmDeleteModal.show();
         }
     }
