@@ -23,7 +23,7 @@ import { Router } from '@angular/router';
 export class WineryGitLogComponent implements OnInit {
 
     webSocket: WebSocket;
-    isExpanded = true;
+    isExpanded = false;
     files: GitLogApiData[] = [];
     selectedFile: GitLogApiData;
     commitMsg = '';

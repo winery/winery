@@ -106,7 +106,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
             this.loading = false;
 
             if (status >= 200 && status <= 204) {
-                this.notify.success('Successfully saved file ' + item.file.name);
+                this.notify.success('Successfully uploaded file ' + item.file.name);
                 if (!isNullOrUndefined(this.modalRef)) {
                     this.modalRef.hide();
                 }

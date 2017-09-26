@@ -17,7 +17,7 @@ export enum PropertiesDefinitionEnum {
     None = 'None'
 }
 
-export class PropertiesDefinitionKVList {
+export class PropertiesDefinitionKVElement {
     key: string = null;
     type: string = null;
 }
@@ -30,7 +30,7 @@ export class PropertiesDefinition {
 export class WinerysPropertiesDefinition {
     namespace: string = null;
     elementName: string = null;
-    propertyDefinitionKVList: PropertiesDefinitionKVList[] = [];
+    propertyDefinitionKVList: PropertiesDefinitionKVElement[] = [];
     isDerivedFromXSD = false;
 }
 

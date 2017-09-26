@@ -76,7 +76,7 @@ to get an overview on all implementations stored in this repository. </p>
     </winery-modal-header>
     <winery-modal-body>
         <p *ngIf="elementToRemove != null" id="diagyesnomsg">
-            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.localname }}</span>?
+            Do you want to delete the Element <span style="font-weight:bold;">{{ nameOfElementToRemove}}</span>?
         </p>
     </winery-modal-body>
     <winery-modal-footer (onOk)="removeConfirmed();"
