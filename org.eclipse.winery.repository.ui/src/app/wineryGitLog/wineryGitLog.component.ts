@@ -6,11 +6,10 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-import { Component, EventEmitter, NgZone, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GitLogApiData } from './GitLogApiData';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
-import { backendBaseURL } from '../configuration';
 import { Router } from '@angular/router';
 
 @Component({
@@ -23,7 +22,7 @@ import { Router } from '@angular/router';
 export class WineryGitLogComponent implements OnInit {
 
     webSocket: WebSocket;
-    isExpanded = true;
+    isExpanded = false;
     files: GitLogApiData[] = [];
     selectedFile: GitLogApiData;
     commitMsg = '';
@@ -49,13 +48,16 @@ export class WineryGitLogComponent implements OnInit {
                 this.selectedFile = null;
             } else if (event.data === 'commit failed') {
                 this.notify.error('commit failed');
-            }else if (event.data === 'reset failed') {
+            } else if (event.data === 'reset failed') {
                 this.notify.error('winery-repository reset to last commit failed!');
-            }else if (event.data === 'reset success') {
+            } else if (event.data === 'reset success') {
                 this.notify.success('winery-repository resetted to last commit');
                 this.router.navigate(['/']);
             } else {
                 this.files = JSON.parse(event.data);
+                for (let i = 0; i < this.files.length; i++) {
+                    this.files[i].name = decodeURIComponent(decodeURIComponent(this.files[i].name));
+                }
             }
         };
 

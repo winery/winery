@@ -115,8 +115,7 @@ public class GitWebSocket {
 					if (entry.getChangeType().equals(DiffEntry.ChangeType.ADD)) {
 						namePath = entry.getNewPath();
 					}
-					int nameStart = namePath.lastIndexOf('/') + 1;
-					jg.writeStringField("name", namePath.substring(nameStart));
+					jg.writeStringField("name", namePath);
 					jg.writeStringField("type", entry.getChangeType().name());
 					jg.writeStringField("path", namePath);
 					jg.writeStringField("diffs", entryList.get(entry));
