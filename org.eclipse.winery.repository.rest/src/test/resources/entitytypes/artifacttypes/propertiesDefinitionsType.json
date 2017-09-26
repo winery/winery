@@ -1,0 +1,8 @@
+{
+	"propertiesDefinition": {
+		"element": null,
+		"type": "{https://www.w3schools.com/xml/schema_example.asp}shipordertype"
+	},
+	"winerysPropertiesDefinition": null,
+	"selectedValue": "Type"
+}
