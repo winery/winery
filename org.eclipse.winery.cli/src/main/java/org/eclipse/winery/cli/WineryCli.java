@@ -170,6 +170,7 @@ public class WineryCli {
 			if (id instanceof ServiceTemplateId) {
 				checkServiceTemplate(repository, res, verbosity, (ServiceTemplateId) id);
 			}
+			checkPlainConformance(res, verbosity, id, tempCsar);
 			checkCsar(res, verbosity, id, tempCsar);
 		}
 
@@ -181,6 +182,17 @@ public class WineryCli {
 		}
 
 		return res;
+	}
+
+	private static void checkPlainConformance(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
+		// TODO implement according to https://winery.github.io/test-repository/plain
+		if (id.getNamespace().getDecoded().startsWith("http://plain.winery.opentosca.org/")) {
+			if (id instanceof EntityTypeId) {
+				if (id.getXmlId().getDecoded().endsWith("WithoutProperties")) {
+					// TODO
+				}
+			}
+		}
 	}
 
 	private static void checkServiceTemplate(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, ServiceTemplateId id) {
