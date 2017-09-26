@@ -32,12 +32,12 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
   - `org.eclipse.winery.topologymodeler:war exploded` to `/winery-topologymodeler`
   - External artifact `.../org.eclipse.winery.workflowmodeler/target/winery-workflowmodeler.war` to `/winery-workflowmodeler`
 7. Get a JetBrains account and vote up following issues (at the right side, just click the thumbs-up next to "Voters"):
-  - https://youtrack.jetbrains.com/issue/IDEA-147601
-  - https://youtrack.jetbrains.com/issue/IDEA-142591
-  - https://youtrack.jetbrains.com/issue/IDEA-176611
-  - https://youtrack.jetbrains.com/issue/IDEA-68079
-  - https://youtrack.jetbrains.com/issue/IDEA-159739
-  - https://youtrack.jetbrains.com/issue/IDEA-131223
+  - <https://youtrack.jetbrains.com/issue/IDEA-147601>
+  - <https://youtrack.jetbrains.com/issue/IDEA-142591>
+  - <https://youtrack.jetbrains.com/issue/IDEA-176611>
+  - <https://youtrack.jetbrains.com/issue/IDEA-68079>
+  - <https://youtrack.jetbrains.com/issue/IDEA-159739>
+  - <https://youtrack.jetbrains.com/issue/IDEA-131223>
 
 
 ## Further Remarks
