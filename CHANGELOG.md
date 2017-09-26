@@ -16,6 +16,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 
 ### Changed
 - Fix delete dialog message text
+- Fix popup text of upload message
 - Add Git Log View to track/discard changes and create commits
 - Add select boxes to select templates and target properties when adding a property mapping. Radio buttons are used to select the required template type.
 - Add grouping of Nodetypes by namespace at `Nodetype->Inheritance`. The Dropdown provides a search for the wanted Nodetype.
