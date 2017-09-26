@@ -22,6 +22,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.SortedSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -43,8 +44,17 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -61,6 +71,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,6 +167,9 @@ public class WineryCli {
 			checkXmlSchemaValidation(repository, res, verbosity, id);
 			checkQNames(repository, res, verbosity, id);
 			checkPropertiesXmlValidation(repository, res, verbosity, id);
+			if (id instanceof ServiceTemplateId) {
+				checkServiceTemplate(repository, res, verbosity, (ServiceTemplateId) id);
+			}
 			checkCsar(res, verbosity, id, tempCsar);
 		}
 
@@ -167,6 +181,38 @@ public class WineryCli {
 		}
 
 		return res;
+	}
+
+	private static void checkServiceTemplate(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, ServiceTemplateId id) {
+		final TServiceTemplate serviceTemplate = repository.getElement(id);
+		if (serviceTemplate.getTopologyTemplate() == null) {
+			return;
+		}
+		@NonNull final List<TNodeTemplate> nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates();
+		for (TNodeTemplate nodeTemplate: nodeTemplates) {
+			final TNodeType nodeType = repository.getElement(new NodeTypeId(nodeTemplate.getType()));
+			final WinerysPropertiesDefinition winerysPropertiesDefinition = nodeType.getWinerysPropertiesDefinition();
+			if (winerysPropertiesDefinition != null) {
+				PropertyDefinitionKVList list = winerysPropertiesDefinition.getPropertyDefinitionKVList();
+				if (list != null) {
+					// iterate on all defined properties
+					for (PropertyDefinitionKV propdef : list) {
+						String key = propdef.getKey();
+						if (key == null) {
+							printAndAddError(res, verbosity, id, "key is null");
+							continue;
+						}
+						String value;
+						// assign value, but change "null" to "" if no property is defined
+						final Properties propertiesKV = ModelUtilities.getPropertiesKV(nodeTemplate);
+						if (propertiesKV == null) {
+							printAndAddError(res, verbosity, id, "propertiesKV of node template " + nodeTemplate.getId() + " is null");
+							continue;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private static void checkQNames(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {

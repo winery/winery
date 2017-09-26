@@ -151,7 +151,7 @@
 		<%-- Properties --%>
 		<props:properties
 			propertiesDefinition="<%=nodeType.getPropertiesDefinition()%>"
-			wpd="<%=ModelUtilities.getWinerysPropertiesDefinition(nodeType)%>"
+			wpd="<%=nodeType.getWinerysPropertiesDefinition()%>"
 			template="<%=paletteMode ? null : nodeTemplate %>"
 			pathToImages="${topologyModelerURI}images/" />
 

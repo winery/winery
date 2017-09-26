@@ -3,6 +3,7 @@
 <!-- toc -->
 
 - [Overview](#overview)
+- [Recommended reading](#recommended-reading)
 - [Quickstart](#quickstart)
 - [Features](#features)
 - [License](#license)
@@ -32,6 +33,15 @@ This part is currently in development and not part of the opensourced code of Wi
 
 The repository stores TOSCA models and allows managing their content. For instance, node types, policy types, and artifact templates are managed by the repository.
 The repository is also responsible for importing and  exporting CSARs, the exchange format of TOSCA files and related artifacts.
+
+
+## Recommended reading
+
+1. [Portable Cloud Services Using TOSCA by Tobias Binz, Gerd Breiter, Frank Leymann, Thomas Spatzier. IEEE Internet Computing 16(03):80--85 (May 2012)](http://doi.org/10.1109/MIC.2012.43) - short overview
+2. [TOSCA: Portable Automated Deployment and Management of Cloud Applications by Tobias Binz, Uwe Breitenbücher, Oliver Kopp, Frank Leymann, Advanced Web Services2014](http://doi.org/10.1007/978-1-4614-7535-4_22) - longer overview
+3. [Topology and Orchestration Specification for Cloud Applications (TOSCA) Primer Version 1.0](http://docs.oasis-open.org/tosca/tosca-primer/v1.0/tosca-primer-v1.0.html) - offical primer (regard it as tutorial)
+4. [Topology and Orchestration Specification for Cloud Applications Version 1.0](http://docs.oasis-open.org/tosca/TOSCA/v1.0/os/TOSCA-v1.0-os.html) - offical specification
+5. [TOSCA Simple Profile in YAML Version 1.1](http://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.1/TOSCA-Simple-Profile-YAML-v1.1.html) - the simple profile in YAML.
 
 
 ## Quickstart
