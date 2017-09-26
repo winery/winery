@@ -20,7 +20,6 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { ModalDirective } from 'ngx-bootstrap';
-import { BreakException } from '../../../wineryUtils/breakException';
 
 @Component({
     templateUrl: 'propertiesDefinition.component.html',
@@ -250,24 +249,15 @@ export class PropertiesDefinitionComponent implements OnInit {
     private handleSelectData(data: SelectData[], isType: boolean) {
         this.selectItems = data;
 
-        try {
-            this.selectItems.forEach(nsList => {
-                this.activeElement = nsList.children.find(item => {
-                    if (isType) {
-                        return item.id === this.resourceApiData.propertiesDefinition.type;
-                    }
-                    return item.id === this.resourceApiData.propertiesDefinition.element;
-                });
-
-                if (!isNullOrUndefined(this.activeElement)) {
-                    throw new BreakException();
+        this.selectItems.some(nsList => {
+            this.activeElement = nsList.children.find(item => {
+                if (isType) {
+                    return item.id === this.resourceApiData.propertiesDefinition.type;
                 }
+                return item.id === this.resourceApiData.propertiesDefinition.element;
             });
-        } catch (e) {
-            if (e ! instanceof BreakException) {
-                throw e;
-            }
-        }
+            return !isNullOrUndefined(this.activeElement);
+        });
 
         if (isNullOrUndefined(this.activeElement)) {
             this.activeElement = new SelectData();

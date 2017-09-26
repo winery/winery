@@ -63,10 +63,13 @@ Simply use `npm run lint` or `ng lint`.
 ## Generate winery-ui.war
 Execute `mvn package`.
 
-
-
 ## Generate winery-ui.war
 Execute `mvn package`.
+
+
+## Development Hints
+- [Exiting a for-each loop early](https://stackoverflow.com/a/2641374/6592788) 
+
 
 ## License
 
