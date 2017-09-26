@@ -552,6 +552,23 @@ One can import the repository by *Administration*, then *Repository* and finally
 The test repository is availabe at <https://github.com/winery/test-repository>.
 This can be directly cloned into `c:\winery-repository`.
 
+## Editing the gh-pages branch of the test repository
+
+It is beneficial to have the [gh-pages branch](https://github.com/winery/test-repository/tree/gh-pages) of the test repository checked out in a second directory to be able to work in Winery and on the homepage in parallel.
+Git supports that by the [worktree command](https://git-scm.com/docs/git-worktree):
+
+1. Change directory to `C:\winery-repository`
+2. Execute `git worktree add ..\git-repositories\winery-repository-gh-pages gh-pages` to check out the `gh-pages` branch into `C:\git-repositories\winery-repository-gh-pages`.
+
+Full output:
+
+```
+$ C:\winery-repository
+> git worktree add ..\git-repositories\winery-repository-gh-pages gh-pages
+Preparing ../git-repositories/winery/winery-repository-gh-pages (identifier winery-repository-gh-pages)
+HEAD is now at 5017713 Initial documentation
+```
+
 ## Recommended programming literature
 
 * Joshua Bloch. Effective Java, 2nd edition. Addison-Wesley

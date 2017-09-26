@@ -66,6 +66,17 @@ If you do `git checkout master`, you are seeing the [OpenTOSCA TOSCA Definitions
 - [TopologyCompletion](TopologyCompletion) - topology completion with a [Tutorial](TopologyCompletionTutorial)
 - [XaaSPackager](XaaSPackager) - Enables reusing modeled topologies as templates for single applications
 
+## Miscellaneous notes
+
+Properties of a Template can be either full XML or key/value based.
+If key/value based, a wrapper XML element is required.
+Since QNames have to be unique, Winery proposes as namespace the namespace of the template appended by `propertiesdefinition/winery`.
+The name of the wrapper element is `properties`.
+
+<!--
+Implementation hint: This is implemented in `PropertiesDefinitionComponent.onCustomKeyValuePairSelected` (TS) and `org.eclipse.winery.model.tosca.TEntityType.getWinerysPropertiesDefinition` (Java).
+-->
+
 ## License
 
 Copyright (c) 2017 University of Stuttgart.
