@@ -17,10 +17,15 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -36,17 +41,77 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
+import org.eclipse.winery.repository.rest.resources.CreateFromArtifactApiData;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
 
 public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeReferenceResource<ServiceTemplateResource> {
+	
+	@GET
+	@Path("createfromartifact")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CreateFromArtifactApiData getCreateFromArtifactData() {
+		Set<QName> artifactTypes = new HashSet<QName>();
+		Set<QName> infrastructureNodeTypes = new HashSet<QName>();
+		Collection<AbstractComponentInstanceResource> templates = this.getAll();
+
+		for (AbstractComponentInstanceResource resource : templates) {
+			if (resource instanceof ServiceTemplateResource) {
+				ServiceTemplateResource stRes = (ServiceTemplateResource) resource;
+				if (stRes.getServiceTemplate().getTags() != null) {
+					int check = 0;
+					QName artifactType = null;
+					for (TTag tag : stRes.getServiceTemplate().getTags().getTag()) {
+						switch (tag.getName()) {
+							case "xaasPackageNode":
+								check++;
+								break;
+							case "xaasPackageArtifactType":
+								check++;
+								artifactType = QName.valueOf(tag.getValue());
+								break;
+							case "xaasPackageDeploymentArtifact":
+								check++;
+								break;
+							case "xaasPackageInfrastructure":
+								// optional tag, hence no check++
+								infrastructureNodeTypes.add(QName.valueOf(tag.getValue()));
+							default:
+								break;
+						}
+					}
+					if (check == 3) {
+						artifactTypes.add(artifactType);
+					}
+				}
+			}
+		}
+		return new CreateFromArtifactApiData(artifactTypes,infrastructureNodeTypes);
+	}
 
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response createFromArtifact(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @FormDataParam("artifactType") QName artifactType, @FormDataParam("nodeTypes") Set<QName> nodeTypes, @FormDataParam("infrastructureNodeType") QName infrastructureNodeType, @FormDataParam("tags") Set<String> sentTags, @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
+	public Response createFromArtifact(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @FormDataParam("artifactType") QName artifactType, @FormDataParam("nodeTypes") List<FormDataBodyPart> nodeTypesList, @FormDataParam("infrastructureNodeType") QName infrastructureNodeType, @FormDataParam("tags") List<FormDataBodyPart> sentTagsList, @Context UriInfo uriInfo) throws IllegalArgumentException, JAXBException, IOException {
+		
+		Set<String> sentTags = new HashSet<>();
+		
+		if (sentTagsList != null) {
+
+			for (FormDataBodyPart tag: sentTagsList) {
+				sentTags.add(tag.getValue());
+			}
+		}
+		
 		Set<String> tags = RestUtils.clean(sentTags);
+
+		Set<QName> nodeTypes = new HashSet<>();
+
+		for (FormDataBodyPart nodetype : nodeTypesList) {
+			nodeTypes.add(QName.valueOf(nodetype.getValue()));
+		}
+
 		nodeTypes = RestUtils.cleanQNameSet(nodeTypes);
 
 		Collection<ServiceTemplateId> xaasPackages = this.getXaaSPackageTemplates(artifactType);

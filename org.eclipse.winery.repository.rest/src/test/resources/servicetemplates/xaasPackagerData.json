@@ -1,0 +1,6 @@
+{
+	"artifactTypes": [
+		"{http://winery.opentosca.org/test/artifacttypes/xaaspackager}XaasPackagerArtifact"
+	],
+	"infrastructureNodeTypes": []
+}
