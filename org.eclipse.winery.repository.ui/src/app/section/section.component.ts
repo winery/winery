@@ -42,6 +42,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     loading = true;
     toscaType: ToscaTypes;
+    toscaTypes = ToscaTypes;
     routeSub: Subscription;
     filterString = '';
     itemsPerPage = 10;

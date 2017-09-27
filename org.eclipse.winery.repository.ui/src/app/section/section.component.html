@@ -39,6 +39,8 @@
         <button class="btn btn-default sidebar-btn" id="sectionsImportCsarBtn" (click)="addCsarModal.show();">Import
             CSAR
         </button>
+        <winery-xaas-packager *ngIf="toscaType === toscaTypes.ServiceTemplate"
+                              id="sectionCreateFromArtifactBtn"></winery-xaas-packager>
         <button class="btn btn-default sidebar-btn" id="sectionsGroupBtn" (click)="onChangeView()"
                 [disabled]="showSpecificNamespaceOnly()">
             {{ changeViewButtonTitle }}

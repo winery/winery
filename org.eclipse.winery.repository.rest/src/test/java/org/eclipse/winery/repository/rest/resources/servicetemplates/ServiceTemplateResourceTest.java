@@ -91,4 +91,10 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
 		this.setRevisionTo("c25aa724201824fce6eddcc7c35a666c6e015880");
 		this.assertPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest/injector/replace", "servicetemplates/ServiceTemplateResource-injectNodeTemplates-input-DriverInjectionTest.json");
 	}
+
+	@Test
+	public void getXaasPackagerData() throws Exception {
+		this.setRevisionTo("c6484855143943a84ee50cb31d1ee986eb9a1c89");
+		this.assertGet("servicetemplates/createfromartifact", "servicetemplates/xaasPackagerData.json");
+	}
 }

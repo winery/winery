@@ -1,0 +1,71 @@
+<!--
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ */
+-->
+<button class="btn btn-default sidebar-btn" id="sectionCreateFromArtifactBtn" (click)="onCreateFromArtifact()">Create
+    from Artifact
+</button>
+<winery-modal *ngIf="isModalShown" [config]="{ show: true }" (onHidden)="onHidden()" id="createFromArtifactModal"
+              bsModal #createFromArtifactModal="bs-modal"
+              [modalRef]="createFromArtifactModal">
+    <winery-modal-header [title]="'Create ServiceTemplate from Artifact'"></winery-modal-header>
+
+    <winery-modal-body>
+        <form #createFromArtifactForm="ngForm">
+            <fieldset>
+                <div class="form-group">
+                    <label for="artifactType" class="control-label">Type</label>
+                    <ng-select id="artifactType" name="type"
+                               [allowClear]="true"
+                               [items]="artifactTypes"
+                               (data)="refreshSelectedArtifactType($event)">
+                    </ng-select>
+                </div>
+                <div class="form-group">
+                    <label for="createFromArtifactFormUpload">Select Artifact:</label>
+
+                    <input id="createFromArtifactFormUpload"
+                           name="file"
+                           type="file"
+                           (change)="fileChange($event)"
+                           placeholder="Upload file"/>
+                </div>
+                <div class="form-group">
+                    <label for="tagsInput">Tags:</label>
+                    <div id="createArtifactFormTags">
+                        <tag-input id="tagsInput" [(ngModel)]='tagItems' theme='bootstrap' [modelAsStrings]="true"
+                                   name="tags">
+                        </tag-input>
+                    </div>
+                </div>
+                <div class="form-group" id="nodeTypesDiv">
+                    <label for="nodeTypes">Node Types:</label>
+                    <ng-select id="nodeTypes" name="nodeType"
+                               [items]="nodeTypes"
+                               [multiple]="true"
+                               (data)="refreshValue($event)">
+                    </ng-select>
+                    <pre>{{itemsToString(value)}}</pre>
+                </div>
+                <div *ngIf="infrastructureNodetypes?.length != 0" class="form-group" id="infrastructureDiv">
+                    <label for="infrastructureNodeTypes">Infrastructure:</label>
+                    <ng-select id="infrastructureNodeTypes" name="infrastructure"
+                               [allowClear]="true"
+                               [items]="infrastructureNodetypes"
+                               (data)="refreshSelectedInfrastructureNodeType($event)">
+                    </ng-select>
+                </div>
+            </fieldset>
+        </form>
+    </winery-modal-body>
+
+    <winery-modal-footer [showDefaultButtons]="true" [disableOkButton]="!isFormValid" (onOk)="onAddClick()"
+                         (onCancel)="hideCreateFromArtifactModal()">
+    </winery-modal-footer>
+</winery-modal>

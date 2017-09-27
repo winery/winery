@@ -26,6 +26,8 @@ import { SectionPipe } from './section.pipe';
 import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
 import { TooltipModule } from 'ngx-bootstrap';
 import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
+import { XaasPackagerComponent } from './xaasPackager/xaasPackager.component';
+import { TagInputModule } from 'ngx-chips';
 
 @NgModule({
     imports: [
@@ -42,12 +44,14 @@ import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
         WineryUploaderModule,
         TooltipModule,
         WineryPipesModule,
+        TagInputModule
     ],
     exports: [SectionComponent],
     declarations: [
         SectionComponent,
         EntityContainerComponent,
-        SectionPipe
+        SectionPipe,
+        XaasPackagerComponent
     ],
     providers: [],
 })
