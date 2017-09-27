@@ -19,7 +19,7 @@
             <table role="presentation">
                 <tbody class="files">
                 <div id="filesList">
-                    <tr *ngFor="let file of files" [ngClass]="{selected: file.name === selectedFile?.name}"
+                    <tr *ngFor="let file of files" [ngClass]="{selected: file == selectedFile}"
                         (click)="select(file)">
                         <td>{{file.type}}:</td>
                         <td>{{file.name}}</td>
