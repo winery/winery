@@ -5,10 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
- *     Niko Stadelmaier - use ng-select for grouping and search
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { isNullOrUndefined } from 'util';
@@ -55,7 +51,6 @@ export class InheritanceComponent implements OnInit {
     }
 
     onSelectedValueChanged(value: SelectItem) {
-        console.log(value);
         this.inheritanceApiData.derivedFrom = value.id;
         this.setButtonLink();
     }

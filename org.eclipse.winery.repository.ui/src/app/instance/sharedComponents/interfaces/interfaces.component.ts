@@ -202,7 +202,7 @@ export class InterfacesComponent implements OnInit {
 
         this.implementation.name = this.sharedData.toscaComponent.localName + '_impl';
         this.implementation.namespace = this.sharedData.toscaComponent.namespace;
-        this.implementation.toscaType = Utils.getToscaOfTypeOrImplementation(this.toscaType);
+        this.implementation.toscaType = Utils.getImplementationOrTemplateOfType(this.toscaType);
 
         this.generateImplModal.show();
     }
@@ -248,7 +248,7 @@ export class InterfacesComponent implements OnInit {
     checkImplementationExists(): void {
         if (!this.implementationNamespace.endsWith('/')) {
             this.existService.check(backendBaseURL + '/'
-                + Utils.getTypeOrImplementationOf(this.toscaType)
+                + Utils.getTypeOfTemplateOrImplementation(this.toscaType)
                 + encodeURIComponent(encodeURIComponent(this.implementationNamespace)) + '/'
                 + this.implementationName + '/'
             ).subscribe(

@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
  */
 import { ToscaTypes } from '../wineryInterfaces/enums';
 
@@ -56,80 +53,78 @@ export class Utils {
                 return ToscaTypes.PolicyTemplate;
             case ToscaTypes.Imports:
                 return ToscaTypes.Imports;
-            case ToscaTypes.RelationshipTemplate:
-                return ToscaTypes.RelationshipTemplate;
-            case ToscaTypes.CapabilityTempalte:
-                return ToscaTypes.CapabilityTempalte;
-            case ToscaTypes.NodeTemplate:
-                return ToscaTypes.NodeTemplate;
-            case ToscaTypes.RequirementTemplate:
-                return ToscaTypes.RequirementTemplate;
             default:
                 return ToscaTypes.Admin;
         }
     }
 
-    public static getToscaTypeNameFromToscaType(value: ToscaTypes): string {
+    public static getToscaTypeNameFromToscaType(value: ToscaTypes, plural = false): string {
+        let type: string;
+
         switch (value) {
             case ToscaTypes.ServiceTemplate:
-                return 'Service Template';
+                type = 'Service Template';
+                break;
             case ToscaTypes.NodeType:
-                return 'Node Type';
+                type = 'Node Type';
+                break;
             case ToscaTypes.RelationshipType:
-                return 'Relationship Type';
+                type = 'Relationship Type';
+                break;
             case ToscaTypes.ArtifactType:
-                return 'Artifact Type';
+                type = 'Artifact Type';
+                break;
             case ToscaTypes.ArtifactTemplate:
-                return 'Artifact Template';
+                type = 'Artifact Template';
+                break;
             case ToscaTypes.RequirementType:
-                return 'Requirement Type';
+                type = 'Requirement Type';
+                break;
             case ToscaTypes.CapabilityType:
-                return 'Capability Type';
+                type = 'Capability Type';
+                break;
             case ToscaTypes.NodeTypeImplementation:
-                return 'Node Type Implementation';
+                type = 'Node Type Implementation';
+                break;
             case ToscaTypes.RelationshipTypeImplementation:
-                return 'Relationship Type Implementation';
+                type = 'Relationship Type Implementation';
+                break;
             case ToscaTypes.PolicyType:
-                return 'Policy Type';
+                type = 'Policy Type';
+                break;
             case ToscaTypes.PolicyTemplate:
-                return 'Policy Template';
+                type = 'Policy Template';
+                break;
             case ToscaTypes.Imports:
-                return 'XSD Imports';
-            case ToscaTypes.RequirementTemplate:
-                return 'Requirement Template';
-            case ToscaTypes.CapabilityTempalte:
-                return 'Capability Template';
-            case ToscaTypes.NodeTemplate:
-                return 'Node Templates';
-            case ToscaTypes.RelationshipTemplate:
-                return 'Relationship Template';
+                type = 'XSD Imports';
+                break;
             default:
-                return 'Admin';
+                type = 'Admin';
         }
+
+        if (value !== ToscaTypes.Admin && plural) {
+            type += 's';
+        }
+
+        return type;
     }
 
-    public static getTypeOrImplementationOf(value: ToscaTypes): ToscaTypes {
+    public static getTypeOfTemplateOrImplementation(value: ToscaTypes): ToscaTypes {
         switch (value) {
             case ToscaTypes.ArtifactTemplate:
                 return ToscaTypes.ArtifactType;
             case ToscaTypes.NodeTypeImplementation:
                 return ToscaTypes.NodeType;
-            case ToscaTypes.NodeTemplate:
-                return ToscaTypes.NodeType;
-            case ToscaTypes.RelationshipTemplate:
-                return ToscaTypes.RelationshipType;
-            case ToscaTypes.CapabilityTempalte:
-                return ToscaTypes.CapabilityType;
-            case ToscaTypes.RequirementTemplate:
-                return ToscaTypes.RequirementType;
             case ToscaTypes.RelationshipTypeImplementation:
                 return ToscaTypes.RelationshipType;
             case ToscaTypes.PolicyTemplate:
                 return ToscaTypes.PolicyType;
+            default:
+                return null;
         }
     }
 
-    public static getToscaOfTypeOrImplementation(value: ToscaTypes): ToscaTypes {
+    public static getImplementationOrTemplateOfType(value: ToscaTypes): ToscaTypes {
         switch (value) {
             case ToscaTypes.NodeType:
                 return ToscaTypes.NodeTypeImplementation;
@@ -139,6 +134,8 @@ export class Utils {
                 return ToscaTypes.PolicyTemplate;
             case ToscaTypes.ArtifactType:
                 return ToscaTypes.ArtifactTemplate;
+            default:
+                return null;
         }
     }
 

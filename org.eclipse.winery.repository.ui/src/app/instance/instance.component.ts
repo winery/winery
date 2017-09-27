@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter, Niko Stadelmaier - initial API and implementation
  */
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +18,7 @@ import { isNullOrUndefined } from 'util';
 import { WineryInstance } from '../wineryInterfaces/wineryComponent';
 import { ToscaTypes } from '../wineryInterfaces/enums';
 import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
+import { Utils } from '../wineryUtils/utils';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -82,24 +80,10 @@ export class InstanceComponent implements OnDestroy {
     }
 
     private handleComponentData(data: WineryInstance) {
-        switch (this.toscaComponent.toscaType) {
-            case ToscaTypes.NodeTypeImplementation:
-                this.typeUrl = '/nodetypes';
-                break;
-            case ToscaTypes.RelationshipTypeImplementation:
-                this.typeUrl = '/relationshiptypes';
-                break;
-            case ToscaTypes.PolicyTemplate:
-                this.typeUrl = '/policytypes';
-                break;
-            case ToscaTypes.ArtifactTemplate:
-                this.typeUrl = '/artifacttypes';
-                break;
-            default:
-                this.typeUrl = null;
-        }
+        this.typeUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaComponent.toscaType);
 
         if (!isNullOrUndefined(this.typeUrl)) {
+            this.typeUrl = '/' + this.typeUrl;
             const tempOrImpl = data.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0];
             let qName: string[];
 

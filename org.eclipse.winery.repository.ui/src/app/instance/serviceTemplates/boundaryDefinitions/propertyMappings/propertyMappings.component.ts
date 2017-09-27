@@ -123,8 +123,7 @@ export class PropertyMappingsComponent implements OnInit {
     }
 
     getTargetProperties(targetObj: any) {
-
-        const targetObjPath: string = Utils.getTypeOrImplementationOf(this.toscaType) + '/' +
+        const targetObjPath: string = Utils.getTypeOfTemplateOrImplementation(this.toscaType) + '/' +
             encodeURIComponent(encodeURIComponent(Utils.getNamespaceAndLocalNameFromQName(targetObj.id).namespace)) +
             '/' + this.targetObject;
 
