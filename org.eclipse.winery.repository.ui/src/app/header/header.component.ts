@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
@@ -23,7 +20,7 @@ import { Utils } from '../wineryUtils/utils';
 export class HeaderComponent implements OnInit {
 
     selectedOtherComponent = '';
-    otherActive = true;
+    otherActive = false;
     @ViewChild('aboutModal') aboutModal: ModalDirective;
 
     constructor(public router: Router) {
@@ -40,15 +37,13 @@ export class HeaderComponent implements OnInit {
             if (others.includes('/')) {
                 others = others.split('/')[0];
             }
-            if (!(others.includes(ToscaTypes.ServiceTemplate) ||
-                    others.includes(ToscaTypes.NodeType) ||
-                    others.includes(ToscaTypes.RelationshipType) ||
-                    others.includes('other') ||
-                    others.includes('admin')
-                )
+            if (others.length > 0 &&
+                !(others.includes(ToscaTypes.ServiceTemplate) || others.includes(ToscaTypes.NodeType) ||
+                    others.includes(ToscaTypes.RelationshipType) || others.includes('other') ||
+                    others.includes('admin'))
             ) {
                 this.otherActive = true;
-                this.selectedOtherComponent = ': ' + Utils.getToscaTypeNameFromToscaType(Utils.getToscaTypeFromString(others)) + 's';
+                this.selectedOtherComponent = ': ' + Utils.getToscaTypeNameFromToscaType(Utils.getToscaTypeFromString(others), true);
             } else {
                 this.otherActive = others.includes('other');
                 this.selectedOtherComponent = '';

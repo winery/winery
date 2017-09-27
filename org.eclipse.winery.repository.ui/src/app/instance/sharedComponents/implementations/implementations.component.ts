@@ -120,7 +120,7 @@ export class ImplementationsComponent implements OnInit {
     private handleData(impl: ImplementationAPIData[]) {
         this.implementationData = impl;
         this.implementationData = this.implementationData.map(item => {
-            const url = '#/' + Utils.getToscaOfTypeOrImplementation(this.sharedData.toscaComponent.toscaType)
+            const url = '#/' + Utils.getImplementationOrTemplateOfType(this.sharedData.toscaComponent.toscaType)
                 + '/' + encodeURIComponent(encodeURIComponent(item.namespace))
                 + '/' + item.localname;
             item.localname = '<a href="' + url + '">' + item.localname + '</a>';
