@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Nicole Keppler, Lukas Balzer - initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Response } from '@angular/http';
@@ -20,6 +17,7 @@ import { ImplementationService } from './implementations.service';
 import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Utils } from '../../../wineryUtils/utils';
+import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -37,9 +35,9 @@ export class ImplementationsComponent implements OnInit {
     nameOfElementToRemove = '';
     selectedNamespace = '';
     validatorObject: WineryValidatorObject;
-    columns: Array<any> = [
+    columns: Array<WineryTableColumn> = [
         { title: 'Namespace', name: 'namespace', sort: true },
-        { title: 'Name', name: 'localname', sort: true },
+        { title: 'Name', name: 'displayname', sort: true },
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
@@ -55,7 +53,7 @@ export class ImplementationsComponent implements OnInit {
     }
 
     // region ######## table methods ########
-    onCellSelected(data: any) {
+    onCellSelected(data: WineryRowData) {
         if (!isNullOrUndefined(data)) {
             this.selectedCell = data.row;
         }
@@ -69,9 +67,7 @@ export class ImplementationsComponent implements OnInit {
 
     addNewImplementation(localname: string) {
         this.loading = true;
-        const typeNamespace = this.sharedData.toscaComponent.namespace;
-        const typeName = this.sharedData.toscaComponent.localName;
-        const type = '{' + typeNamespace + '}' + typeName;
+        const type = '{' + this.sharedData.toscaComponent.namespace + '}' + this.sharedData.toscaComponent.localName;
         const resource = new ImplementationWithTypeAPIData(this.selectedNamespace,
             localname,
             type);
@@ -120,10 +116,10 @@ export class ImplementationsComponent implements OnInit {
     private handleData(impl: ImplementationAPIData[]) {
         this.implementationData = impl;
         this.implementationData = this.implementationData.map(item => {
-            const url = '#/' + Utils.getImplementationOrTemplateOfType(this.sharedData.toscaComponent.toscaType)
+            const url = '/#/' + Utils.getImplementationOrTemplateOfType(this.sharedData.toscaComponent.toscaType)
                 + '/' + encodeURIComponent(encodeURIComponent(item.namespace))
                 + '/' + item.localname;
-            item.localname = '<a href="' + url + '">' + item.localname + '</a>';
+            item.displayname = '<a href="' + url + '">' + item.localname + '</a>';
             return item;
         });
         this.loading = false;

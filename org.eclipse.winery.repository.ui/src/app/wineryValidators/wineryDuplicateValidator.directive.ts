@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Niko Stadelmaier - initial API and implementation
  */
 import { Directive, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, Validator, ValidatorFn, Validators } from '@angular/forms';

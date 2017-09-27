@@ -65,11 +65,6 @@ export class InstanceComponent implements OnDestroy {
                     }
 
                     this.availableTabs = this.service.getSubMenuByResource();
-
-                    // redirect to first element in the menu
-                    if (!this.router.url.includes('/admin') && this.router.url.split('/').length < 5) {
-                        this.router.navigate([this.service.path + '/' + this.availableTabs[0].toLowerCase().replace(/ /g, '')]);
-                    }
                 },
                 error => this.handleError(error)
             );
@@ -99,7 +94,7 @@ export class InstanceComponent implements OnDestroy {
             }
 
             if (qName.length === 2) {
-                this.typeUrl += '/' + encodeURIComponent(encodeURIComponent(qName[0])) + '/' + qName[1];
+                this.typeUrl += '/' + encodeURIComponent(qName[0]) + '/' + qName[1];
                 this.typeId = qName[1];
             } else {
                 this.typeUrl = null;

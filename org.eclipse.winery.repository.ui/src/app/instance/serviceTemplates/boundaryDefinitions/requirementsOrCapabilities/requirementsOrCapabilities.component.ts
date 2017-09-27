@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Tino Stadelmaier - initial API and implementation
  */
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { RequirementOrCapability } from './requirementsOrCapabilitiesApiData';
@@ -15,6 +12,7 @@ import { RequirementsOrCapabilitiesService } from './requirementsOrCapabilities.
 import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
 import { isNullOrUndefined } from 'util';
 import { ModalDirective } from 'ngx-bootstrap';
+import { WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
 
 @Component({
     selector: 'winery-instance-requirements-or-capabilities',
@@ -32,8 +30,8 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
 
     columns: Array<any> = [
-        {title: 'Name', name: 'name', sort: true},
-        {title: 'Reference', name: 'ref', sort: true},
+        { title: 'Name', name: 'name', sort: true },
+        { title: 'Reference', name: 'ref', sort: true },
     ];
 
     reqOrCapToBeAdded: RequirementOrCapability;

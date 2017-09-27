@@ -23,7 +23,7 @@ import { SelectItem } from 'ng2-select';
         PackagerService
     ]
 })
-export class XaasPackagerComponent implements OnInit, DoCheck {
+export class XaasPackagerComponent implements DoCheck {
 
     isModalShown = false;
     isFormValid = false;

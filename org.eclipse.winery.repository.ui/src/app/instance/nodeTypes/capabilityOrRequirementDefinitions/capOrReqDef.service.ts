@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Philipp Meyer, Tino Stadelmaier - initial API and implementation
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response, RequestOptions } from '@angular/http';
@@ -25,16 +22,7 @@ export class CapabilityOrRequirementDefinitionsService {
 
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
-    }
-
-    /**
-     * Sets the path this service should use as base path.
-     *
-     * @param path string
-     */
-    setPath(path: string): void {
-        this.path = path;
+        this.path = this.route.url;
     }
 
     /**
