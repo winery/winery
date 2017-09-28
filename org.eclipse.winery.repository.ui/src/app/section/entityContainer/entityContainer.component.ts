@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { backendBaseURL } from '../../configuration';
@@ -15,7 +12,7 @@ import { SectionData } from '../sectionData';
 import { ExistService } from '../../wineryUtils/existService';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
-import { EntityContainerService } from './entityContainter.service';
+import { EntityContainerService } from './entityContainer.service';
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 
@@ -31,6 +28,7 @@ export class EntityContainerComponent implements OnInit {
 
     @Input() data: SectionData;
     @Input() toscaType: ToscaTypes;
+    @Input() xsdSchemaType: string;
     @Output() deleted = new EventEmitter<string>();
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
@@ -38,6 +36,7 @@ export class EntityContainerComponent implements OnInit {
     imageUrl: string;
     backendLink: string;
     editButtonToolTip = 'Edit.';
+    showButtons = true;
 
     constructor(private existService: ExistService, private router: Router,
                 private service: EntityContainerService, private notify: WineryNotificationService) {
@@ -64,11 +63,18 @@ export class EntityContainerComponent implements OnInit {
         if (this.toscaType === ToscaTypes.ServiceTemplate) {
             this.editButtonToolTip += ' Hold CTRL to directly edit the topology template.';
         }
+
+        this.showButtons = this.toscaType !== ToscaTypes.Imports;
     }
 
     onClick() {
-        let url = '/' + this.toscaType + '/' +
-            encodeURIComponent(encodeURIComponent(this.data.namespace));
+        let url = '/' + this.toscaType + '/';
+        if (this.toscaType === ToscaTypes.Imports) {
+            url += encodeURIComponent(encodeURIComponent(this.xsdSchemaType))
+                + '/' + encodeURIComponent(encodeURIComponent(this.data.namespace));
+        } else {
+            url += encodeURIComponent(encodeURIComponent(this.data.namespace));
+        }
         if (this.data.id) {
             url += '/' + this.data.id;
         }
@@ -116,6 +122,5 @@ export class EntityContainerComponent implements OnInit {
     private success() {
         this.notify.success('Successfully deleted ' + this.data.id);
         this.deleted.emit(this.data.id);
-
     }
 }

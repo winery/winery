@@ -45,8 +45,9 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
 * Please let `.editorconfig` override the settings of IntelliJ
 * Shortcuts
   - 2x <kbd>Shift</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> / <kbd>Ctrl</kbd>+<kbd>F</kbd>: Differrent forms of search
-  - <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>O</kbd>: Organize imports (fixes checkstyle)
-  - <kbd>Ctrl</kbd>+<kbd>X</kbd>: if nothing is marked: delete line and free space
+  - <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>L</kbd>: Organize imports (fixes checkstyle)
+  - <kbd>Ctrl</kbd>+<kbd>X</kbd>: if nothing is marked: cut line (equal to marking whole line and using <kbd>Ctrl</kbd>+<kbd>X</kbd>)
+  - <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd>: Create/jump to the test class
 
 ## License
 

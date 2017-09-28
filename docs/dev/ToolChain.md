@@ -103,7 +103,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
 * If there is a red cross, click in repective "Details" and fix them
 
 * In case of missing code quality, ... changes are requested by a committer (person controlling the pull request process)
-* FOR WINERY THE FOLLOWING APPLY:
+* FOR WINERY THE FOLLOWING APPLIES:
   - Open Git Gui
   - Make requested changes in your code (don't forget to RESCAN)
   - Commit

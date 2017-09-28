@@ -6,10 +6,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
- *     Lukas Balzer - moved img element in left div to be displayed correctly
  */
 -->
 <div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
@@ -24,7 +20,7 @@
             <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
         </div>
         <div *ngIf="!data.id" class="badge numberOfComponentInstances">{{ data.count }}</div>
-        <div *ngIf="data.id" class="buttonContainer">
+        <div *ngIf="data.id && showButtons" class="buttonContainer">
             <a class="exportButton" (click)="exportComponent($event)"
                tooltip="Export CSAR. Hold CTRL to export XML."></a>
             <a class="editButton" (click)="editComponent($event)"
