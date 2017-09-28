@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -25,6 +28,7 @@ import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.repository.backend.ImportUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
 
@@ -33,9 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Even if we are not a component instance, we use that infrastructure to manage
- * imports. Some hacks will be necessary. However, these are less effort than
- * doing a clean design
+ * Even if we are not a component instance, we use that infrastructure to manage imports. Some hacks will be necessary.
+ * However, these are less effort than doing a clean design
  */
 public class XSDImportResource extends GenericImportResource {
 
@@ -66,4 +69,23 @@ public class XSDImportResource extends GenericImportResource {
 		return RestUtils.returnRepoPath(ref, null);
 	}
 
+	@GET
+	@Path("alldeclaredelementslocalnames")
+	public List<String> getAllDeclaredElementsLocalNames() {
+		return RepositoryFactory.getRepository().getXsdImportManager().getAllDeclaredElementsLocalNames().stream()
+			.filter(namespaceAndDefinedLocalNames -> namespaceAndDefinedLocalNames.getNamespace().equals(id.getNamespace()))
+			.flatMap(namespaceAndDefinedLocalNames -> namespaceAndDefinedLocalNames.getDefinedLocalNames().stream())
+			.sorted()
+			.collect(Collectors.toList());
+	}
+
+	@GET
+	@Path("alldefinedtypeslocalnames")
+	public List<String> getAllDefinedTypesLocalNames() {
+		return RepositoryFactory.getRepository().getXsdImportManager().getAllDefinedTypesLocalNames().stream()
+			.filter(namespaceAndDefinedLocalNames -> namespaceAndDefinedLocalNames.getNamespace().equals(id.getNamespace()))
+			.flatMap(namespaceAndDefinedLocalNames -> namespaceAndDefinedLocalNames.getDefinedLocalNames().stream())
+			.sorted()
+			.collect(Collectors.toList());
+	}
 }
