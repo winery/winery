@@ -6,9 +6,6 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
- * Contributors:
- *     Niko Stadelmaier - initial API and implementation
- *     Oliver Kopp - switch from XsdDefinitionsApiData to SelectData[]
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
@@ -21,11 +18,8 @@ import { SelectData } from '../../../wineryInterfaces/selectData';
 @Injectable()
 export class PropertiesDefinitionService {
 
-    private path: string;
-
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
     }
 
     /**
@@ -37,7 +31,7 @@ export class PropertiesDefinitionService {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
 
-        return this.http.delete(backendBaseURL + this.path + '/', options);
+        return this.http.delete(backendBaseURL + this.route.url + '/', options);
     }
 
     /**
@@ -46,28 +40,28 @@ export class PropertiesDefinitionService {
      * @returns {Observable<PropertiesDefinitionsResourceApiData>}
      */
     getPropertiesDefinitionsData(): Observable<PropertiesDefinitionsResourceApiData> {
-        return this.sendJsonRequest(this.path + '/');
+        return this.sendJsonRequest('/');
     }
 
     /**
      * Gets the items for the select box for the XML Element.
      */
     getXsdElementDefinitions(): Observable<SelectData[]> {
-        return this.sendJsonRequest(this.path + '/element');
+        return this.sendJsonRequest('/element');
     }
 
     /**
      * Gets the items for the select box for the XML Type.
      */
     getXsdTypeDefinitions(): Observable<SelectData[]> {
-        return this.sendJsonRequest(this.path + '/type');
+        return this.sendJsonRequest('/type');
     }
 
     postPropertiesDefinitions(resourceApiData: PropertiesDefinitionsResourceApiData): Observable<Response> {
         const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
 
-        return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(resourceApiData), options);
+        return this.http.post(backendBaseURL + this.route.url + '/', JSON.stringify(resourceApiData), options);
     }
 
     /**
@@ -81,7 +75,7 @@ export class PropertiesDefinitionService {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
 
-        return this.http.get(backendBaseURL + requestPath, options)
+        return this.http.get(backendBaseURL + this.route.url + requestPath, options)
             .map(res => res.json());
     }
 }

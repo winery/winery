@@ -22,13 +22,11 @@ import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 @Injectable()
 export class ImplementationService {
 
-    private path: string;
     private implementationType: string;
 
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
-        if (this.path.includes('/relationshiptypes/')) {
+        if (this.route.url.includes('/relationshiptypes/')) {
             this.implementationType = '/relationshiptypeimplementations/';
         } else {
             this.implementationType = '/nodetypeimplementations/';
@@ -38,7 +36,7 @@ export class ImplementationService {
     getImplementationData(): Observable<ImplementationAPIData[]> {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.path + '/', options)
+        return this.http.get(backendBaseURL + this.route.url + '/', options)
             .map(res => res.json());
     }
 

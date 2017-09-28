@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Niko Stadelmaier, Tino Stadelmaier - initial API and implementation
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
@@ -22,15 +19,12 @@ import { ArtifactApiData } from '../../../wineryInterfaces/wineryComponent';
 @Injectable()
 export class WineryArtifactService {
 
-    private path: string;
-
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
     }
 
     getAllArtifacts(): Observable<ArtifactApiData[]> {
-        return this.sendJsonRequest(this.path);
+        return this.sendJsonRequest(this.route.url);
     }
 
     /**
@@ -42,19 +36,19 @@ export class WineryArtifactService {
         const headers = new Headers({ 'Accept': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 
-        return this.http.delete(backendBaseURL + this.path + '/' + artifactName + '/', options);
+        return this.http.delete(backendBaseURL + this.route.url + '/' + artifactName + '/', options);
     }
 
     createNewArtifact(artifact: GenerateArtifactApiData): Observable<Response> {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 
-        return this.http.post(backendBaseURL + this.path + '/', artifact, options);
+        return this.http.post(backendBaseURL + this.route.url + '/', artifact, options);
 
     }
 
     getInterfacesOfAssociatedType(): Observable<InterfacesApiData[]> {
-        return this.sendJsonRequest(this.path + '/interfaces/');
+        return this.sendJsonRequest(this.route.url + '/interfaces/');
     }
 
     getAllArtifactTypes(): Observable<NameAndQNameApiData[]> {

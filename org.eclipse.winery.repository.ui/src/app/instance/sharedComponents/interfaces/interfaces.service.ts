@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Niko Stadelmaier - initial API and implementation
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
@@ -28,7 +25,7 @@ export class InterfacesService {
 
     constructor(private http: Http,
                 private route: Router, private sharedData: InstanceService) {
-        this.path = decodeURIComponent(this.route.url);
+        this.path = backendBaseURL + this.route.url + '/';
         this.setImplementationsUrl();
     }
 
@@ -48,7 +45,7 @@ export class InterfacesService {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 
-        return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(interfacesData), options);
+        return this.http.post(this.path, JSON.stringify(interfacesData), options);
     }
 
     createImplementation(implementationName: string, implementationNamespace: string): Observable<any> {
@@ -67,7 +64,7 @@ export class InterfacesService {
     }
 
     createArtifactTemplate(implementationName: string, implementationNamespace: string,
-                                 generateArtifactApiData: GenerateArtifactApiData): Observable<Response> {
+                           generateArtifactApiData: GenerateArtifactApiData): Observable<Response> {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 
@@ -82,8 +79,8 @@ export class InterfacesService {
     getRelationshipInterfaces(url: string): Observable<InterfacesApiData[]> {
         return Observable
             .forkJoin(
-                this.get(url + '/targetinterfaces/').map(res => res.json()),
-                this.get(url + '/sourceinterfaces/').map(res => res.json())
+                this.get(backendBaseURL + url + '/targetinterfaces/').map(res => res.json()),
+                this.get(backendBaseURL + url + '/sourceinterfaces/').map(res => res.json())
             ).map(res => {
                 for (const i of res[1]) {
                     res[0].push(i);
@@ -92,16 +89,16 @@ export class InterfacesService {
             });
     }
 
-    private get (url: string): Observable<any> {
+    private get(url: string): Observable<any> {
         const headers = new Headers({ 'Accept': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 
-        return this.http.get(backendBaseURL + url, options);
+        return this.http.get(url, options);
     }
 
     /**
-     * Because <code>this.sharedData.toscaComponent</code> can be null on initialisation, we need to get the URL shortly before
-     * we use it again.
+     * Because <code>this.sharedData.toscaComponent</code> can be null on initialisation, we need to get the URL
+     * shortly before we use it again.
      */
     private setImplementationsUrl() {
         if (isNullOrUndefined(this.implementationsUrl) && !isNullOrUndefined(this.sharedData.toscaComponent)) {

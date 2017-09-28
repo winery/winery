@@ -42,14 +42,14 @@ export class PropertyMappingService {
 
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
+        this.path = backendBaseURL + this.route.url + '/';
     }
 
     getPropertyMappings(): Observable<PropertyMappingsApiData> {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
 
-        return this.http.get(backendBaseURL + this.path + '/', options)
+        return this.http.get(this.path, options)
             .map(res => res.json());
     }
 
@@ -57,11 +57,11 @@ export class PropertyMappingService {
         const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
 
-        return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(propertyMapping), options);
+        return this.http.post(this.path, JSON.stringify(propertyMapping), options);
     }
 
     removePropertyMapping(elementToDelete: string) {
-        return this.http.delete(backendBaseURL + this.path + '/' + encodeURIComponent(encodeURIComponent(elementToDelete)));
+        return this.http.delete(this.path + encodeURIComponent(encodeURIComponent(elementToDelete)));
     }
 
     getPropertiesOfServiceTemplate(): Observable<string> {
@@ -70,7 +70,7 @@ export class PropertyMappingService {
 
         const newPath: string = this.path.replace('propertymappings', 'properties');
 
-        return this.http.get(backendBaseURL + newPath + '/', options)
+        return this.http.get(newPath + '/', options)
             .map(res => res.text());
     }
 

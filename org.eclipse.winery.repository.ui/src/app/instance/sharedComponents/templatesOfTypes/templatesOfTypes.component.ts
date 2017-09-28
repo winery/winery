@@ -12,6 +12,7 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { TemplatesOfTypeService } from './templatesOfTypes.service';
 import { ImplementationAPIData } from '../implementations/implementationAPIData';
+import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 
 @Component({
     selector: 'winery-templates-of-type',
@@ -24,9 +25,9 @@ export class TemplatesOfTypeComponent implements OnInit {
     loading = true;
     selectedCell: any;
     validatorObject: WineryValidatorObject;
-    columns: Array<any> = [
-        {title: 'Namespace', name: 'namespace', sort: true},
-        {title: 'Name', name: 'localname', sort: true},
+    columns: Array<WineryTableColumn> = [
+        { title: 'Namespace', name: 'namespace', sort: true },
+        { title: 'Name', name: 'localname', sort: true },
     ];
 
     constructor(private service: TemplatesOfTypeService,
@@ -60,14 +61,14 @@ export class TemplatesOfTypeComponent implements OnInit {
         this.templateData = impl;
         if (this.service.getPath().includes('artifact')) {
             this.templateData = this.templateData.map(item => {
-                const url = '#/' + 'artifacttemplates' + '/' + encodeURIComponent(encodeURIComponent(item.namespace))
+                const url = '/#/' + 'artifacttemplates' + '/' + encodeURIComponent(encodeURIComponent(item.namespace))
                     + '/' + item.localname;
                 item.localname = '<a href="' + url + '">' + item.localname + '</a>';
                 return item;
             })
         } else if (this.service.getPath().includes('policy')) {
             this.templateData = this.templateData.map(item => {
-                const url = '#/' + 'policytemplates' + '/' + encodeURIComponent(encodeURIComponent(item.namespace))
+                const url = '/#/' + 'policytemplates' + '/' + encodeURIComponent(encodeURIComponent(item.namespace))
                     + '/' + item.localname;
                 item.localname = '<a href="' + url + '">' + item.localname + '</a>';
                 return item;
