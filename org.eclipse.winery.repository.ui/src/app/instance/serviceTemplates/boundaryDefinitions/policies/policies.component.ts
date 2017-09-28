@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PoliciesService, WineryPolicy } from './policies.service';
@@ -18,6 +15,7 @@ import { isNullOrUndefined } from 'util';
 import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplicateValidator.directive';
 import { SelectItem } from 'ng2-select';
 import { EditXMLComponent } from '../../../sharedComponents/editXML/editXML.component';
+import { Response } from '@angular/http';
 
 @Component({
     templateUrl: 'policies.component.html',
@@ -64,7 +62,7 @@ export class PoliciesComponent implements OnInit {
         this.service.getPolicyTypes()
             .subscribe(
                 data => this.policyTypes = data,
-                error => this.handleError(error)
+                error => this.handlePolicyTypesError(error)
             );
     }
 
@@ -176,4 +174,12 @@ export class PoliciesComponent implements OnInit {
         this.notify.error(error);
     }
 
+    private handlePolicyTypesError(error: Response) {
+        if (error.status === 404) {
+            // warns the user if there are nor policy types available -> send warning now
+            this.add();
+        } else {
+            this.handleError(error);
+        }
+    }
 }

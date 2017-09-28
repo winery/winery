@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
@@ -24,7 +21,7 @@ export class PoliciesService {
 
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
+        this.path = backendBaseURL + this.route.url;
     }
 
     getPolicies(): Observable<WineryPolicy[]> {
@@ -44,18 +41,18 @@ export class PoliciesService {
         const headers = new Headers({'Content-Type': 'application/xml'});
         const options = new RequestOptions({headers: headers});
 
-        return this.http.post(backendBaseURL + this.path, xml, options);
+        return this.http.post(this.path, xml, options);
     }
 
     deletePolicy(id: string): Observable<Response> {
-        return this.http.delete(backendBaseURL + this.path + '/' + id);
+        return this.http.delete(this.path + '/' + id);
     }
 
     private get(p: string): Observable<any> {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
 
-        return this.http.get(backendBaseURL + p, options)
+        return this.http.get(p, options)
             .map(res => res.json());
     }
 

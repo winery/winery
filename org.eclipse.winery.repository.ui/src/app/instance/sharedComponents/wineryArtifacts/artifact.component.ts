@@ -58,7 +58,7 @@ export class WineryArtifactComponent implements OnInit {
     noneSelected = true;
     isDeploymentArtifact = false;
 
-    commonColumns = [
+    commonColumns: WineryTableColumn[] = [
         { title: 'Name', name: 'name' },
         { title: 'Artifact Template', name: 'artifactRefLocalName' },
         { title: 'Artifact Type', name: 'artifactTypeLocalName' },

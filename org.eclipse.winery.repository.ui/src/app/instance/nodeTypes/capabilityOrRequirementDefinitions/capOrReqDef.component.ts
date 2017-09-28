@@ -5,19 +5,17 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Philipp Meyer, Tino Stadelmaier - initial API and implementation
  */
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { CapabilityOrRequirementDefinitionsService } from './capOrReqDef.service';
-import { CapabilityOrRequirementDefinition, CapOrRegDefinitionsResourceApiData,
-        CapOrReqDefinition, Constraint } from './capOrReqDefResourceApiData';
+import {
+    CapabilityOrRequirementDefinition, CapOrRegDefinitionsResourceApiData, CapOrReqDefinition, Constraint
+} from './capOrReqDefResourceApiData';
 import { CapOrRegDefinitionsTableData } from './CapOrReqDefTableData';
 import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { Router } from '@angular/router';
-import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
+import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { TypeWithShortName } from '../../admin/typesWithShortName/typeWithShortName.service';
 import { SelectData } from '../../../wineryInterfaces/selectData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
@@ -35,22 +33,22 @@ import { SpinnerWithInfinityComponent } from '../../../winerySpinnerWithInfinity
 export class CapOrReqDefComponent implements OnInit {
 
     columns: Array<WineryTableColumn> = [
-        {title: 'Name', name: 'name'},
-        {title: 'Type', name: 'type'},
-        {title: 'Lower Bound', name: 'lowerBound'},
-        {title: 'Upper Bound', name: 'upperBound'},
-        {title: 'Constraints', name: 'constraints', sort: false},
+        { title: 'Name', name: 'name' },
+        { title: 'Type', name: 'type' },
+        { title: 'Lower Bound', name: 'lowerBound' },
+        { title: 'Upper Bound', name: 'upperBound' },
+        { title: 'Constraints', name: 'constraints', sort: false },
     ];
 
     elementToRemove: CapOrRegDefinitionsTableData = null;
     loading = true;
     resourceApiData: CapOrRegDefinitionsResourceApiData = null;
     tableData: Array<CapOrRegDefinitionsTableData> = [];
-    capabilityTypesList: NameAndQNameApiDataList = {'classes': null};
+    capabilityTypesList: NameAndQNameApiDataList = { classes: null };
     capOrReqDefToBeAdded: CapOrReqDefinition = null;
     noneSelected = true;
 
-    editorHeight = '200';
+    editorHeight = 200;
 
     defaultConstraintDataModel = `<tosca:Constraint xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12">
 ##
@@ -114,11 +112,7 @@ export class CapOrReqDefComponent implements OnInit {
 
     onSelectedValueChanged(value: string) {
         this.capOrReqDefToBeAdded.type = value;
-        if (this.capOrReqDefToBeAdded.type === '(none)') {
-            this.noneSelected = true;
-        } else {
-            this.noneSelected = false;
-        }
+        this.noneSelected = this.capOrReqDefToBeAdded.type === '(none)';
     }
 
     /**
@@ -157,15 +151,15 @@ export class CapOrReqDefComponent implements OnInit {
         const namespaceEncoded: string = encodeURIComponent(encodeURIComponent(
             type.substring(type.lastIndexOf('{') + 1, type.lastIndexOf('}'))
         ));
-        const absoluteURL = '/' + this.types + '/' + namespaceEncoded + '/' + name;
-        return '<a' + ' [routerLink]="[\'' + absoluteURL + '\']">' + name + '</a>';
+        const absoluteURL = '/#/' + this.types + '/' + namespaceEncoded + '/' + name;
+        return '<a href="' + absoluteURL + '">' + name + '</a>';
     }
 
     private getTypeURI(type: string): string {
         const name = type.split('}').pop();
-        const namespaceEncoded: string = encodeURIComponent(encodeURIComponent(
+        const namespaceEncoded: string = encodeURIComponent(
             type.substring(type.lastIndexOf('{') + 1, type.lastIndexOf('}'))
-        ));
+        );
         return '/' + this.types + '/' + namespaceEncoded + '/' + name;
     }
 

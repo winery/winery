@@ -5,10 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Philipp Meyer & Tino Stadelmaier - initial API and implementation
- *     Niko Stadelmaier - get path from url
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
@@ -23,7 +19,7 @@ export class EditXMLService {
 
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
+        this.path = this.route.url;
         if (this.path.endsWith('xml')) {
             this.path = this.path.slice(0, -3);
         }

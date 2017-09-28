@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Balzer - initial API and implementation
  */
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -23,13 +20,13 @@ export class PropertyConstraintsService {
 
     constructor(private http: Http,
                 private route: Router) {
-        this.path = decodeURIComponent(this.route.url);
+        this.path = backendBaseURL + this.route.url + '/';
     }
 
     getConstraints(): Observable<PropertyConstraintApiData[]> {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.path + '/', options)
+        return this.http.get(this.path, options)
             .map(res => res.json());
     }
 
@@ -37,13 +34,13 @@ export class PropertyConstraintsService {
         const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
         data.fragments = null;
-        return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(data), options);
+        return this.http.post(this.path, JSON.stringify(data), options);
     }
 
     deleteConstraints(data: PropertyConstraintApiData) {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
-        return this.http.delete(backendBaseURL + this.path + '/' + data.property, options);
+        return this.http.delete(this.path + data.property, options);
     }
 
     getConstraintTypes(): Observable<any> {

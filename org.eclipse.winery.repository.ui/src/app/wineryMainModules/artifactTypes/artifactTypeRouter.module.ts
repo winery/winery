@@ -36,7 +36,8 @@ const artifactTypeRoutes: Routes = [
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
-            { path: 'templates', component:  TemplatesOfTypeComponent}
+            { path: 'templates', component:  TemplatesOfTypeComponent},
+            { path: '', redirectTo: 'propertiesdefinition', pathMatch: 'full'}
         ]
     }
 ];
