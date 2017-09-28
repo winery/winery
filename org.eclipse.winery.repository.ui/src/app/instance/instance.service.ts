@@ -51,7 +51,7 @@ export class InstanceService {
                 subMenu = ['Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.ArtifactTemplate:
-                subMenu = ['Files', 'Source', 'Properties', 'Documentation', 'XML'];
+                subMenu = ['README', 'Files', 'Source', 'Properties', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.RequirementType:
                 subMenu = ['Required Capability Type', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
