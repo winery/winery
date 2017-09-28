@@ -33,9 +33,9 @@ export class PropertyMappingsComponent implements OnInit {
     loading = true;
     apiData: PropertyMappingsApiData;
     columns: Array<WineryTableColumn> = [
-        {title: 'Service Template Property', name: 'serviceTemplatePropertyRef', sort: true},
-        {title: 'Target', name: 'targetObjectRef', sort: true},
-        {title: 'Target Property', name: 'targetPropertyRef', sort: true}
+        { title: 'Service Template Property', name: 'serviceTemplatePropertyRef', sort: true },
+        { title: 'Target', name: 'targetObjectRef', sort: true },
+        { title: 'Target Property', name: 'targetPropertyRef', sort: true }
     ];
     @ViewChild('addPropertyMappingModal') addPropertyMappingModal: ModalDirective;
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
@@ -45,7 +45,7 @@ export class PropertyMappingsComponent implements OnInit {
     @ViewChild('propertiesSelect') propertiesSelect: any;
     currentSelectedItem: Property = new Property();
     addOrUpdateBtnTxt = 'Add';
-    properties: { name: string, property: string } = {name: '', property: ''};
+    properties: { name: string, property: string } = { name: '', property: '' };
     xmlData: any;
     selectedProperty: string;
     templateList: Array<any> = [];
@@ -54,7 +54,7 @@ export class PropertyMappingsComponent implements OnInit {
     targetProperties: Array<any> = [];
     targetObject: string;
     targetPropertiesWrapperElement: string = null;
-    initialSelectProp: any = [{id: '', text: ''}];
+    initialSelectProp: any = [{ id: '', text: '' }];
     initialSelectedTempalte: [{ id: '', text: '' }];
 
     constructor(private service: PropertyMappingService,
@@ -104,8 +104,8 @@ export class PropertyMappingsComponent implements OnInit {
         if (!isNullOrUndefined(this.topologyTemplate[templateType])) {
             return this.topologyTemplate[templateType].map((template: WineryTemplate) => {
                 const newItem: SelectItem = new SelectItem('');
-                newItem.id = template.type;
-                newItem.text = Utils.getNameFromQname(template.type);
+                newItem.id = template.id;
+                newItem.text = Utils.getNameFromQname(template.id);
                 return newItem;
             });
         } else {
@@ -116,7 +116,6 @@ export class PropertyMappingsComponent implements OnInit {
     }
 
     targetObjectSelected(targetObj: any) {
-        console.log(targetObj);
         this.targetObject = targetObj.text;
         this.currentSelectedItem.targetObjectRef = this.targetObject;
         this.getTargetProperties(targetObj);
@@ -140,7 +139,7 @@ export class PropertyMappingsComponent implements OnInit {
     handleGetProperties(propertiesDefinition: PropertiesDefinitionsResourceApiData) {
         if (!isNullOrUndefined(propertiesDefinition.winerysPropertiesDefinition)) {
             this.targetProperties = propertiesDefinition.winerysPropertiesDefinition.propertyDefinitionKVList.map(item => {
-                return {id: item.key, text: item.key}
+                return { id: item.key, text: item.key }
             });
             this.targetPropertiesWrapperElement = propertiesDefinition.winerysPropertiesDefinition.elementName;
             this.initialSelectProp = [this.targetProperties[0]];
