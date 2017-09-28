@@ -6,7 +6,7 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-import { Component, DoCheck, OnInit, ViewChild } from '@angular/core';
+import { Component, DoCheck, ViewChild } from '@angular/core';
 import { ArtifactTypesAndInfrastructureNodetypes, PackagerService } from './xaasPackagerService';
 import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -23,7 +23,7 @@ import { SelectItem } from 'ng2-select';
         PackagerService
     ]
 })
-export class XaasPackagerComponent implements OnInit, DoCheck {
+export class XaasPackagerComponent implements DoCheck {
 
     isModalShown = false;
     isFormValid = false;
