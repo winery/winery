@@ -1,0 +1,26 @@
+/**
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+.flash{
+    background-color: #dbedff;
+    padding: 16px;
+    display: inline-block;
+    border: 1px solid rgba(27,31,35,0.15);
+    border-radius: 3px;
+    font-size: larger;
+}
+
+.flash-action {
+    background-image: linear-gradient(#79d858, #569e3d);
+    border-color: #569e3d;
+}
+
+.pad-6px {
+    padding: 6px;
+}

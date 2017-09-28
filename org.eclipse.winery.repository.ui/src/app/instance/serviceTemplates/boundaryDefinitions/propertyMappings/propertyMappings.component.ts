@@ -65,10 +65,10 @@ export class PropertyMappingsComponent implements OnInit {
     ngOnInit() {
         this.getMappings();
         this.getProperties();
-        this.getTopologyTempalte();
+        this.getTopologyTemplate();
     }
 
-    getTopologyTempalte() {
+    getTopologyTemplate() {
         this.instanceService.getTopologyTemplate().subscribe(
             data => this.topologyTemplate = data,
             error => this.notify.error('could not get topology data')
