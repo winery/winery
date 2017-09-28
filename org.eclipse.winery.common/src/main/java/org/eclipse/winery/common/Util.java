@@ -204,7 +204,7 @@ public class Util {
 	public static Class<? extends GenericId> getGenericIdClassForType(String typeIdType) {
 		Class<? extends GenericId> res;
 		// quick hack - we only need definitions right now
-		String pkg = "org.eclipse.winery.repository.datatypes.ids.definitions.";
+		String pkg = "org.eclipse.winery.common.ids.definitions.";
 		String className = typeIdType;
 		className = pkg + className;
 		try {

@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
  */
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,6 +21,7 @@ import { NgForm } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Response } from '@angular/http';
 import { ToscaTypes } from '../wineryInterfaces/enums';
+import { Utils } from '../wineryUtils/utils';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -42,6 +40,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     loading = true;
     toscaType: ToscaTypes;
+    toscaTypes = ToscaTypes;
     routeSub: Subscription;
     filterString = '';
     itemsPerPage = 10;
@@ -181,31 +180,16 @@ export class SectionComponent implements OnInit, OnDestroy {
             this.changeViewButtonTitle = showGrouped;
         }
 
-        let typesUrl: string;
-
-        switch (this.toscaType) {
-            case ToscaTypes.NodeTypeImplementation:
-                typesUrl = '/nodetypes';
-                break;
-            case ToscaTypes.RelationshipTypeImplementation:
-                typesUrl = '/relationshiptypes';
-                break;
-            case ToscaTypes.PolicyTemplate:
-                typesUrl = '/policytypes';
-                break;
-            case ToscaTypes.ArtifactTemplate:
-                typesUrl = '/artifacttypes';
-                break;
-            default:
-                this.loading = false;
-        }
+        const typesUrl = Utils.getImplementationOrTemplateOfType(this.toscaType);
 
         if (!isNullOrUndefined(typesUrl)) {
-            this.service.getSectionData(typesUrl + '?grouped=angularSelect')
+            this.service.getSectionData('/' + typesUrl + '?grouped=angularSelect')
                 .subscribe(
                     data => this.handleTypes(data),
                     error => this.handleError(error)
                 );
+        } else {
+            this.loading = false;
         }
     }
 

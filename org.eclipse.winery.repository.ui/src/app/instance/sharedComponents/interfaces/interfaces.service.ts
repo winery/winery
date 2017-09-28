@@ -105,7 +105,7 @@ export class InterfacesService {
      */
     private setImplementationsUrl() {
         if (isNullOrUndefined(this.implementationsUrl) && !isNullOrUndefined(this.sharedData.toscaComponent)) {
-            this.implementationsUrl = Utils.getToscaOfTypeOrImplementation(this.sharedData.toscaComponent.toscaType) + '/';
+            this.implementationsUrl = Utils.getImplementationOrTemplateOfType(this.sharedData.toscaComponent.toscaType) + '/';
         }
     }
 }

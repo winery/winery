@@ -992,9 +992,10 @@ public class BackendUtils {
 		return matcher.matches(path);
 	}
 
-	public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) {
+	public static boolean injectArtifactTemplateIntoDeploymentArtifact(ServiceTemplateId serviceTemplate, String nodeTemplateId, String deploymentArtifactId, ArtifactTemplateId artifactTemplate) throws IOException {
 		TServiceTemplate element = RepositoryFactory.getRepository().getElement(serviceTemplate);
 		element.getTopologyTemplate().getNodeTemplate(nodeTemplateId).getDeploymentArtifacts().getDeploymentArtifact(deploymentArtifactId).setArtifactRef(artifactTemplate.getQName());
+		RepositoryFactory.getRepository().setElement(serviceTemplate, element);
 		return true;
 	}
 

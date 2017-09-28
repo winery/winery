@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
  */
 
 export enum YesNoEnum {
@@ -15,8 +12,13 @@ export enum YesNoEnum {
     NO = 'NO'
 }
 
-// If you add a new TOSCA Type, you also need to adjust the utils.ts file.
-// Default is assumed ToscaTypes.Admin.
+/**
+ * ToscaTypes represent the main types found in TOSCA. All of them are components reachable via
+ * a main route. Additionally, <code>Admin</code> has been added because it is also a main route.
+ *
+ * If you add a new TOSCA Type, you also need to adjust the utils.ts file.
+ * Default is assumed ToscaTypes.Admin.
+ */
 export enum ToscaTypes {
     ServiceTemplate = 'servicetemplates',
     NodeType = 'nodetypes',
@@ -30,9 +32,5 @@ export enum ToscaTypes {
     PolicyType = 'policytypes',
     PolicyTemplate = 'policytemplates',
     Imports = 'imports',
-    Admin = 'admin',
-    NodeTemplate = 'nodetemplate',
-    RelationshipTemplate = 'relationshiptemplate',
-    CapabilityTempalte = 'capabilitytemplate',
-    RequirementTemplate = 'requirementtemplate'
+    Admin = 'admin'
 }
