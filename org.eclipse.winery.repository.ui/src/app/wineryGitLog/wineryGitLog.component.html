@@ -11,10 +11,11 @@
 <div id="wineryGitLogFloat" *ngIf="show">
     <div id="wineryGitLogContainer">
         <div id="wineryGitLogExpander">
-            <span  (click)="onExpand()"></span>
+            <span (click)="onExpand()"></span>
             <h3>{{files?.length}}</h3>
         </div>
-        <textarea id="wineryGitLogDiffs" wrap="soft" *ngIf="selectedFile != null && isExpanded">{{selectedFile?.diffs}}</textarea>
+        <textarea id="wineryGitLogDiffs" wrap="soft"
+                  *ngIf="selectedFile != null && isExpanded">{{selectedFile?.diffs}}</textarea>
         <div id="wineryGitLogGui" *ngIf="isExpanded">
             <table role="presentation">
                 <tbody class="files">
@@ -32,10 +33,12 @@
         <div id="wineryGitLogCommit" *ngIf="isExpanded">
             <button class="btn btn-sm btn-toolbar btn-primary" (click)="commit()">Commit</button>
             <button class="btn btn-sm btn-toolbar" (click)="refreshLog()">Refresh</button>
-            <button class="btn btn-sm btn-toolbar btn-danger" (click)="confirmDiscardModal.show()">discard changes</button>
+            <button class="btn btn-sm btn-toolbar btn-danger" (click)="confirmDiscardModal.show()">discard changes
+            </button>
         </div>
 
-        <textarea *ngIf="isExpanded" (change)="doCommitMsgValueChange($event)" id="wineryGitLogCommitMsg" [(ngModel)]="commitMsg"></textarea>
+        <textarea *ngIf="isExpanded" (change)="doCommitMsgValueChange($event)" id="wineryGitLogCommitMsg"
+                  [(ngModel)]="commitMsg"></textarea>
     </div>
 </div>
 

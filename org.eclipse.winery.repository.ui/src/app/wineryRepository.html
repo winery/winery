@@ -9,10 +9,10 @@
  */
 -->
 
-<div id="mainContainer" class="notoverflown">
+<div id="mainContainer" class="notoverflown" (click)="onClick()">
     <winery-header></winery-header>
     <div id="mainContent">
         <router-outlet></router-outlet>
     </div>
 </div>
-<winery-gitlog></winery-gitlog>
+<winery-gitlog #gitLog></winery-gitlog>
