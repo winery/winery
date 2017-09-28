@@ -40,6 +40,7 @@ import javax.xml.validation.Validator;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
@@ -86,7 +87,7 @@ public class WineryCli {
 	private enum Verbosity {
 		OUTPUT_NUMBER_OF_TOSCA_COMPONENTS,
 		OUTPUT_CURRENT_TOSCA_COMPONENT_ID,
-		OUTPUT_ERROS
+		OUTPUT_ERRORS
 	}
 
 	public static void main(String[] args) throws ParseException {
@@ -117,7 +118,7 @@ public class WineryCli {
 
 		EnumSet<Verbosity> verbosity;
 		if (line.hasOption("v")) {
-			verbosity = EnumSet.of(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS, Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID, Verbosity.OUTPUT_ERROS);
+			verbosity = EnumSet.of(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS, Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID, Verbosity.OUTPUT_ERRORS);
 		} else {
 			verbosity = EnumSet.of(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS);
 		}
@@ -165,8 +166,8 @@ public class WineryCli {
 
 			checkId(res, verbosity, id);
 			checkXmlSchemaValidation(repository, res, verbosity, id);
-			checkQNames(repository, res, verbosity, id);
-			checkPropertiesXmlValidation(repository, res, verbosity, id);
+			checkReferencedQNames(repository, res, verbosity, id);
+			checkPropertiesValidation(repository, res, verbosity, id);
 			if (id instanceof ServiceTemplateId) {
 				checkServiceTemplate(repository, res, verbosity, (ServiceTemplateId) id);
 			}
@@ -175,7 +176,7 @@ public class WineryCli {
 		}
 
 		// some console output cleanup
-		if (verbosity.contains(Verbosity.OUTPUT_ERROS)) {
+		if (verbosity.contains(Verbosity.OUTPUT_ERRORS)) {
 			if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
 				System.out.println();
 			}
@@ -201,7 +202,7 @@ public class WineryCli {
 			return;
 		}
 		@NonNull final List<TNodeTemplate> nodeTemplates = serviceTemplate.getTopologyTemplate().getNodeTemplates();
-		for (TNodeTemplate nodeTemplate: nodeTemplates) {
+		for (TNodeTemplate nodeTemplate : nodeTemplates) {
 			final TNodeType nodeType = repository.getElement(new NodeTypeId(nodeTemplate.getType()));
 			final WinerysPropertiesDefinition winerysPropertiesDefinition = nodeType.getWinerysPropertiesDefinition();
 			if (winerysPropertiesDefinition != null) {
@@ -227,7 +228,7 @@ public class WineryCli {
 		}
 	}
 
-	private static void checkQNames(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
+	private static void checkReferencedQNames(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
 		if (id instanceof EntityTypeId) {
 			final TEntityType entityType = (TEntityType) repository.getDefinitions(id).getElement();
 			final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
@@ -283,40 +284,62 @@ public class WineryCli {
 		}
 	}
 
-	public static void checkPropertiesXmlValidation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
+	public static void checkPropertiesValidation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
 		if (id instanceof EntityTemplateId) {
 			TEntityTemplate entityTemplate = (TEntityTemplate) repository.getDefinitions(id).getElement();
 			final TEntityType entityType = repository.getTypeForTemplate(entityTemplate);
+			final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
 			final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
-			if (propertiesDefinition != null) {
+			if ((winerysPropertiesDefinition != null) || (propertiesDefinition != null)) {
 				final TEntityTemplate.Properties properties = entityTemplate.getProperties();
 				if (properties == null) {
 					printAndAddError(res, verbosity, id, "Properties required, but no properties defined");
 					return;
 				}
-
-				@Nullable final Object any = properties.getAny();
-				if (any == null) {
-					printAndAddError(res, verbosity, id, "Properties required, but no properties defined (any case)");
-					return;
-				}
-
-				@Nullable final QName element = propertiesDefinition.getElement();
-				if (element != null) {
-					final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = repository.getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
-					final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
-					if (repositoryFileReference == null) {
-						printAndAddError(res, verbosity, id, "No Xml Schema definition found for " + element);
+				if (winerysPropertiesDefinition != null) {
+					Properties kvProperties = entityTemplate.getProperties().getKVProperties();
+					if (kvProperties.isEmpty()) {
+						printAndAddError(res, verbosity, id, "Properties required, but no properties set (any case)");
 						return;
 					}
-					validate(repositoryFileReference, any, repository, res, verbosity, id);
+					for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList().getPropertyDefinitionKVs()) {
+						String key = propertyDefinitionKV.getKey();
+						if (kvProperties.get(key) == null) {
+							printAndAddError(res, verbosity, id, "Property " + key + " required, but not set.");
+						} else {
+							// remove the key from the map to enable checking below whether a property is defined which not requried by the property definition 
+							kvProperties.remove(key);
+						}
+					}
+					// All winery-property-definition-keys have been removed from kvProperties.
+					// If any key is left, this is a key not defined at the schema
+					for (Object o : kvProperties.keySet()) {
+						printAndAddError(res, verbosity, id, "Property " + o + " set, but not defined at schema.");
+					}
+				} else if (propertiesDefinition != null) {
+					@Nullable final Object any = properties.getAny();
+					if (any == null) {
+						printAndAddError(res, verbosity, id, "Properties required, but no properties defined (any case)");
+						return;
+					}
+
+					@Nullable final QName element = propertiesDefinition.getElement();
+					if (element != null) {
+						final Map<String, RepositoryFileReference> mapFromLocalNameToXSD = repository.getXsdImportManager().getMapFromLocalNameToXSD(new Namespace(element.getNamespaceURI(), false), false);
+						final RepositoryFileReference repositoryFileReference = mapFromLocalNameToXSD.get(element.getLocalPart());
+						if (repositoryFileReference == null) {
+							printAndAddError(res, verbosity, id, "No Xml Schema definition found for " + element);
+							return;
+						}
+						validate(repositoryFileReference, any, repository, res, verbosity, id);
+					}
 				}
 			}
 		}
 	}
 
 	private static void checkId(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
-		checkUri(res, verbosity, id, id.getNamespace().getDecoded());
+		checkNamespaceUri(res, verbosity, id, id.getNamespace().getDecoded());
 		checkNcname(res, verbosity, id, id.getXmlId().getDecoded());
 	}
 
@@ -329,7 +352,7 @@ public class WineryCli {
 		}
 	}
 
-	private static void checkUri(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String uriStr) {
+	private static void checkNamespaceUri(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String uriStr) {
 		Objects.requireNonNull(res);
 		Objects.requireNonNull(verbosity);
 		Objects.requireNonNull(id);
@@ -356,6 +379,13 @@ public class WineryCli {
 		}
 		if (uriStr.contains(ARTEFACT_BE)) {
 			printAndAddError(res, verbosity, id, "artifact is spelled with i in American English, not artefact as in British English");
+		}
+		boolean namespaceUriContainsDifferentType = DefinitionsChildId.ALL_TOSCA_COMPONENT_ID_CLASSES.stream()
+			.filter(definitionsChildIdClass -> !definitionsChildIdClass.isAssignableFrom(id.getClass()))
+			.map(definitionsChildIdClass -> Util.getTypeForComponentId(definitionsChildIdClass).toLowerCase())
+			.anyMatch(definitionsChildName -> uriStr.contains(definitionsChildName));
+		if (namespaceUriContainsDifferentType) {
+			printAndAddError(res, verbosity, id, "Namespace URI contains tosca definitions name from other type. E.g., Namespace is ...servicetemplates..., but the type is an artifact template");
 		}
 	}
 
@@ -391,7 +421,7 @@ public class WineryCli {
 	}
 
 	public static void printAndAddError(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String error) {
-		if (verbosity.contains(Verbosity.OUTPUT_ERROS)) {
+		if (verbosity.contains(Verbosity.OUTPUT_ERRORS)) {
 			if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
 				System.out.println();
 			}
