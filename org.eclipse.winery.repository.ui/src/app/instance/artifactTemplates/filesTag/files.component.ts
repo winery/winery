@@ -12,7 +12,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FilesApiData, FilesService } from './files.service.';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { hostURL } from '../../../configuration';
+import { backendBaseURL, hostURL } from '../../../configuration';
+import { InstanceService } from '../../instance.service';
 
 @Component({
     templateUrl: 'files.component.html',
@@ -29,11 +30,13 @@ export class FilesComponent implements OnInit {
     uploadUrl: string;
     filesList: FilesApiData[];
     baseUrl = hostURL;
+    filesPath: string;
 
     @ViewChild('removeElementModal') removeElementModal: any;
     fileToRemove: FilesApiData;
 
-    constructor(private service: FilesService, private notify: WineryNotificationService) {
+    constructor(private service: FilesService, private sharedData: InstanceService, private notify: WineryNotificationService) {
+        this.filesPath = backendBaseURL + this.sharedData.path + '/files/zip';
     }
 
     ngOnInit() {
