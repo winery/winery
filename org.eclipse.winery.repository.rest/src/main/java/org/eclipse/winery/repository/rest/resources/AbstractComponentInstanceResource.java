@@ -45,6 +45,7 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
@@ -516,4 +517,37 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 		return new TagsResource(this, tags.getTag());
 	}
+
+	@GET
+	@Path("LICENSE")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response getLicense() {
+		RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("LICENSE"));
+		return RestUtils.returnRepoPath(ref, null);
+	}
+
+	@PUT
+	@Path("LICENSE")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response putLicense(String data) {
+		RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("LICENSE"));
+		return RestUtils.putContentToFile(ref, data, MediaType.TEXT_PLAIN_TYPE);
+	}
+
+	@GET
+	@Path("README.md")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response getReadme() {
+		RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("README.md"));
+		return RestUtils.returnRepoPath(ref, null);
+	}
+
+	@PUT
+	@Path("README.md")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response putFile(String data) {
+		RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("README.md"));
+		return RestUtils.putContentToFile(ref, data, MediaType.TEXT_PLAIN_TYPE);
+	}
 }
+

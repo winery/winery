@@ -15,6 +15,8 @@ import { RequiredCapabilityTypeComponent } from '../../instance/requirementTypes
 import { CommonModule } from '@angular/common';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { WineryQNameSelectorModule } from '../../wineryQNameSelector/wineryQNameSelector.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [
@@ -22,6 +24,8 @@ import { WineryQNameSelectorModule } from '../../wineryQNameSelector/wineryQName
         WineryLoaderModule,
         WineryQNameSelectorModule,
         RequirementTypeRouterModule,
+        WineryReadmeModule,
+        WineryLicenseModule
     ],
     declarations: [
         RequiredCapabilityTypeComponent

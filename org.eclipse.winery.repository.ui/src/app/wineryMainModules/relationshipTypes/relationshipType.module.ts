@@ -15,13 +15,17 @@ import { CommonModule } from '@angular/common';
 import { ValidSourcesAndTargetsComponent } from '../../instance/relationshipTypes/validSourcesAndTargets/validSourcesAndTargets.component';
 import { SelectModule } from 'ng2-select';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [
         CommonModule,
         SelectModule,
         WineryLoaderModule,
-        RelationshipTypeRouterModule
+        RelationshipTypeRouterModule,
+        WineryReadmeModule,
+        WineryLicenseModule
     ],
     declarations: [
         ValidSourcesAndTargetsComponent,

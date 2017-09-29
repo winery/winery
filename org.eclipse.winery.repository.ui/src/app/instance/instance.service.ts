@@ -35,42 +35,42 @@ export class InstanceService {
 
         switch (this.toscaComponent.toscaType) {
             case ToscaTypes.NodeType:
-                subMenu = ['Visual Appearance', 'Instance States', 'Interfaces', 'Implementations',
+                subMenu = ['README', 'LICENSE', 'Visual Appearance', 'Instance States', 'Interfaces', 'Implementations',
                     'Requirement Definitions', 'Capability Definitions', 'Properties Definition',
                     'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.ServiceTemplate:
-                subMenu = ['Topology Template', 'Plans', 'Selfservice Portal',
+                subMenu = ['README', 'LICENSE', 'Topology Template', 'Plans', 'Selfservice Portal',
                     'Boundary Definitions', 'Tags', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.RelationshipType:
-                subMenu = ['Visual Appearance', 'Instance States', 'Source Interfaces', 'Target Interfaces',
+                subMenu = ['README', 'LICENSE', 'Visual Appearance', 'Instance States', 'Source Interfaces', 'Target Interfaces',
                     'Valid Sources and Targets', 'Implementations', 'Properties Definition',
                     'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.ArtifactType:
-                subMenu = ['Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
+                subMenu = ['README', 'LICENSE', 'Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.ArtifactTemplate:
-                subMenu = ['Files', 'Source', 'Properties', 'Documentation', 'XML'];
+                subMenu = ['README', 'LICENSE', 'Files', 'Source', 'Properties', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.RequirementType:
-                subMenu = ['Required Capability Type', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = ['README', 'LICENSE', 'Required Capability Type', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.CapabilityType:
-                subMenu = ['Properties Definition', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = ['README', 'LICENSE', 'Properties Definition', 'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.NodeTypeImplementation:
-                subMenu = ['Implementation Artifacts', 'Deployment Artifacts', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = ['README', 'LICENSE', 'Implementation Artifacts', 'Deployment Artifacts', 'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.RelationshipTypeImplementation:
-                subMenu = ['Implementation Artifacts', 'Inheritance', 'Documentation', 'XML'];
+                subMenu = ['README', 'LICENSE', 'Implementation Artifacts', 'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.PolicyType:
-                subMenu = ['Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
+                subMenu = ['README', 'LICENSE', 'Language', 'Applies To', 'Properties Definition', 'Inheritance', 'Templates', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.PolicyTemplate:
-                subMenu = ['Properties', 'Documentation', 'XML'];
+                subMenu = ['README', 'LICENSE', 'Properties', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.Imports:
                 subMenu = ['All Declared Elements Local Names', 'All Defined Types Local Names'];
