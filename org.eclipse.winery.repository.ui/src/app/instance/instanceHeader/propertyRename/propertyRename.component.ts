@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Balzer - initial API and implementation
  */
 
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
@@ -15,7 +12,7 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 import { PropertyRenameService } from './propertyRename.service';
 import { ToscaComponent } from '../../../wineryInterfaces/toscaComponent';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
 
 /**
  * This adds a an editable field to the html that manipulates either the namespace or the id/name of a ToscaComponent
@@ -32,22 +29,23 @@ import { Router } from '@angular/router';
     ]
 })
 export class PropertyRenameComponent implements OnInit, OnChanges {
+
     @Input() propertyName: string;
     @Input() toscaComponent: ToscaComponent;
     @ViewChild('renameComponentForm') renameComponentForm: NgForm;
     editMode = false;
-    canEdit = true;
+    disableEditing = true;
     propertyValue = '';
 
     constructor(private service: PropertyRenameService,
-                private notify: WineryNotificationService,
-                private router: Router) {
+                private notify: WineryNotificationService) {
     }
 
     ngOnInit(): void {
         this.service.setToscaComponent(this.toscaComponent);
         this.service.setPropertyName(this.propertyName);
-        this.canEdit = this.router.url.includes('admin');
+        this.disableEditing = this.toscaComponent.toscaType === ToscaTypes.Imports
+            || this.toscaComponent.toscaType === ToscaTypes.Admin;
     }
 
     ngOnChanges() {

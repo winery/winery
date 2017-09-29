@@ -96,7 +96,7 @@ export class Utils {
                 type = 'Policy Template';
                 break;
             case ToscaTypes.Imports:
-                type = 'XSD Imports';
+                type = 'XSD Import';
                 break;
             default:
                 type = 'Admin';

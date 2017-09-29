@@ -5,13 +5,8 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Balzer, Nicole Keppler, Huixin Liu - initial API and implementation
  */
 export class InstanceStateApiData {
-    state: string;
-    constructor(state: string) {
-        this.state = state;
+    constructor(public state: string) {
     }
 }

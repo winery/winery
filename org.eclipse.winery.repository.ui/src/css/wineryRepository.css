@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012-2016 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
@@ -11,7 +11,7 @@
  *    Oliver Kopp - improvements
  *    Nicole Keppler - add class for only showing namespaces
  *    Philipp Meyer - add styles for pagination and tooltips
- *******************************************************************************/
+ */
 
 /* override jquery redmond theme */
 
@@ -329,6 +329,18 @@ div.mainContentContainer.admin div.bottom {
     background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
+div.mainContentContainer.xSDImport div.top {
+    background: url('../assets/img/containers/admin/FrameTop.jpg');
+}
+
+div.mainContentContainer.xSDImport div.middle {
+    background: url('../assets/img/containers/admin/FrameMiddle.jpg');
+}
+
+div.mainContentContainer.xSDImport div.bottom {
+    background: url('../assets/img/containers/admin/FrameBottom.jpg');
+}
+
 div.componentHeaderImg {
     position: absolute;
     margin-top: 32px;
@@ -442,15 +454,15 @@ div.mainContentContainer.policyType div.bottom {
     background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 
-div.mainContentContainer.xsdimport div.top {
+div.mainContentContainer.xSDImport div.top {
     background: url('../assets/img/containers/admin/FrameTop.jpg');
 }
 
-div.mainContentContainer.xsdimport div.middle {
+div.mainContentContainer.xSDImport div.middle {
     background: url('../assets/img/containers/admin/FrameMiddle.jpg');
 }
 
-div.mainContentContainer.xsdimport div.bottom {
+div.mainContentContainer.xSDImport div.bottom {
     background: url('../assets/img/containers/admin/FrameBottom.jpg');
 }
 

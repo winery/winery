@@ -5,15 +5,9 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
- *     Niko Stadelmaier - add admin component
  */
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { isNullOrUndefined } from 'util';
-import { InstanceResolverData } from '../wineryInterfaces/resolverData';
 import { Utils } from '../wineryUtils/utils';
 import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
 
@@ -26,7 +20,8 @@ export class InstanceResolver implements Resolve<ToscaComponent> {
         const section = Utils.getToscaTypeFromString(route.url[0].path);
         const namespace = route.params['namespace'];
         const localName = route.params['localName'];
+        const xsdSchemaType = route.params['xsdSchemaType'] ? route.params['xsdSchemaType'] : null;
 
-        return new ToscaComponent(section, decodeURIComponent(decodeURIComponent(namespace)), localName);
+        return new ToscaComponent(section, decodeURIComponent(decodeURIComponent(namespace)), localName, xsdSchemaType);
     }
 }

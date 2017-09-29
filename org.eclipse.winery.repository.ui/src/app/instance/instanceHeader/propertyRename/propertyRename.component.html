@@ -6,9 +6,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Balzer - initial API and implementation
  */
 -->
 <div id="propertyRenameContainer">
@@ -30,6 +27,6 @@
     <div *ngIf="!editMode">
         <span (click)="onClickEdit()" *ngIf="propertyName === 'localName'">{{toscaComponent.localName}}</span>
         <span (click)="onClickEdit()" *ngIf="propertyName === 'namespace'">{{toscaComponent.namespace}}</span>
-        <i *ngIf="!canEdit" class="fa fa-pencil-square-o" (click)="onClickEdit()"></i>
+        <i *ngIf="!disableEditing" class="fa fa-pencil-square-o" (click)="onClickEdit()"></i>
     </div>
 </div>

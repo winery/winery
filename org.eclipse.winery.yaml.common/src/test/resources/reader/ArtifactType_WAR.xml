@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tosca:Definitions
+    xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12"
+    id="winery-defs-for_extt2-WAR" targetNamespace="http://www.example.com/ToscaTypes">
+    <tosca:ArtifactType name="WAR" targetNamespace="http://www.example.com/ToscaTypes"/>
+</tosca:Definitions>

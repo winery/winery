@@ -27,6 +27,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -55,6 +56,7 @@ import org.eclipse.winery.common.ids.definitions.EntityTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.common.ids.definitions.imports.WsdlImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -291,7 +293,9 @@ public class Util {
 			// special treatment for imports
 			res = "imports/";
 			if (XSDImportId.class.isAssignableFrom(idClass)) {
-				res = res + "http%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema/";
+				res = res + Util.URLencode(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			} else if (WsdlImportId.class.isAssignableFrom(idClass)) {
+				res = res + Util.URLencode(WsdlImportId.WSDL_URI);
 			} else {
 				throw new IllegalStateException("Not possible to determine local storage for generic imports class");
 			}

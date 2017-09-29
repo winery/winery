@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { RemoveWhiteSpacesPipe } from '../../wineryPipes/removeWhiteSpaces.pipe';
 import { ModalDirective } from 'ngx-bootstrap';
 import { ToscaComponent } from '../../wineryInterfaces/toscaComponent';
+import { ToscaTypes } from '../../wineryInterfaces/enums';
 
 @Component({
     selector: 'winery-instance-header',
@@ -37,6 +38,7 @@ export class InstanceHeaderComponent implements OnInit {
 
     needTwoLines = false;
     selectedTab: string;
+    showManagementButtons = true;
 
     constructor(private router: Router) {
     }
@@ -44,6 +46,10 @@ export class InstanceHeaderComponent implements OnInit {
     ngOnInit(): void {
         if (this.subMenu.length > 7) {
             this.needTwoLines = true;
+        }
+
+        if (this.toscaComponent.toscaType === ToscaTypes.Imports) {
+            this.showManagementButtons = false;
         }
     }
 
