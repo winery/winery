@@ -23,6 +23,7 @@ export class WineryGitLogComponent implements OnInit {
 
     webSocket: WebSocket;
     isExpanded = false;
+    lfsAvailable = false;
     files: GitLogApiData[] = [];
     selectedFile: GitLogApiData;
     commitMsg = '';
@@ -42,23 +43,39 @@ export class WineryGitLogComponent implements OnInit {
         };
 
         this.webSocket.onmessage = event => {
-            if (event.data === 'commit success') {
-                this.notify.success('Commited: ' + this.commitMsg);
-                this.commitMsg = '';
-                this.selectedFile = null;
-            } else if (event.data === 'commit failed') {
-                this.notify.error('commit failed');
-            } else if (event.data === 'reset failed') {
-                this.notify.error('winery-repository reset to last commit failed!');
-            } else if (event.data === 'reset success') {
-                this.notify.success('winery-repository resetted to last commit');
-                this.router.navigate(['/']);
-            } else {
-                this.files = JSON.parse(event.data);
-                for (let i = 0; i < this.files.length; i++) {
-                    this.files[i].name = decodeURIComponent(decodeURIComponent(this.files[i].name));
+            switch (event.data) {
+                case 'commit success': {
+                    this.notify.success('Commited: ' + this.commitMsg);
+                    this.commitMsg = '';
+                    this.selectedFile = null;
+                    break;
+                }
+                case 'commit failed': {
+                    this.notify.error('commit failed');
+                    break;
+                }
+                case 'reset failed': {
+                    this.notify.error('winery-repository reset to last commit failed!');
+                    break;
+                }
+                case 'reset success': {
+                    this.notify.success('winery-repository resetted to last commit');
+                    this.router.navigate(['/']);
+                    break;
+                }
+                case 'git-lfs': {
+                    this.lfsAvailable = true;
+                    console.log('true');
+                    break;
+                }
+                default: {
+                    this.files = JSON.parse(event.data);
+                    for (let i = 0; i < this.files.length; i++) {
+                        this.files[i].name = decodeURIComponent(decodeURIComponent(this.files[i].name));
+                    }
                 }
             }
+
         };
 
         this.webSocket.onclose = event => {
