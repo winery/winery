@@ -16,6 +16,9 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 @Component({
     selector: 'winery-properties',
     templateUrl: 'properties.component.html',
+    styleUrls: [
+        'properties.component.css'
+    ],
     providers: [
         PropertiesService
     ]
