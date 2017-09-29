@@ -22,6 +22,8 @@ import { selfServiceRoutes } from '../../instance/serviceTemplates/selfServicePo
 import { TagComponent } from '../../instance/serviceTemplates/tag/tag.component';
 import { DocumentationComponent } from '../../instance/sharedComponents/documentation/documentation.component';
 import { ToscaTypes } from '../../wineryInterfaces/enums';
+import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
+import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 
 const toscaType = ToscaTypes.ServiceTemplate;
 
@@ -33,6 +35,8 @@ const serviceTemplateRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
+            { path: 'readme', component: WineryReadmeComponent },
+            { path: 'license', component: WineryLicenseComponent},
             { path: 'topologytemplate', component: TopologyTemplateComponent },
             { path: 'plans', component: PlansComponent },
             {

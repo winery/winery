@@ -27,6 +27,8 @@ import { SelfServicePortalModule } from '../../instance/serviceTemplates/selfSer
 import { BoundaryDefinitionsModule } from '../../instance/serviceTemplates/boundaryDefinitions/boundaryDefinitions.module';
 import { TagModule } from '../../instance/serviceTemplates/tag/tag.module';
 import { DocumentationModule } from '../../instance/sharedComponents/documentation/documentation.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [
@@ -44,6 +46,8 @@ import { DocumentationModule } from '../../instance/sharedComponents/documentati
         WineryUploaderModule,
         WineryTableModule,
         ServiceTemplateRouterModule,
+        WineryReadmeModule,
+        WineryLicenseModule
     ],
     declarations: [
         TopologyTemplateComponent,

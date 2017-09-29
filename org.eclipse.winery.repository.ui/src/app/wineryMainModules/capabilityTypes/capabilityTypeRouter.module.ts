@@ -31,7 +31,8 @@ import { DocumentationComponent } from '../../instance/sharedComponents/document
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
 import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.component';
-import { RequiredCapabilityTypeComponent } from '../../instance/requirementTypes/requiredCapabilityType/requiredCapabilityType.component';
+import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
+import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 
 const toscaType = ToscaTypes.CapabilityType;
 
@@ -43,11 +44,13 @@ const capabilityTypeRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
+            { path: 'readme', component: WineryReadmeComponent },
+            { path: 'license', component: WineryLicenseComponent},
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
-            { path: '', redirectTo: 'propertiesdefinition', pathMatch: 'full'}
+            { path: '', redirectTo: 'propertiesdefinition', pathMatch: 'full' }
         ]
     }
 ];

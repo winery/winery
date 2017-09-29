@@ -21,8 +21,9 @@ import { InterfacesComponent } from '../../instance/sharedComponents/interfaces/
 import { ImplementationsComponent } from '../../instance/sharedComponents/implementations/implementations.component';
 import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
 import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.component';
-import { CapOrReqDefComponent } from '../../instance/nodeTypes/capabilityOrRequirementDefinitions/capOrReqDef.component';
 import { ValidSourcesAndTargetsComponent } from '../../instance/relationshipTypes/validSourcesAndTargets/validSourcesAndTargets.component';
+import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
+import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 
 const toscaType = ToscaTypes.RelationshipType;
 
@@ -34,6 +35,8 @@ const relationshipTypeRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
+            { path: 'readme', component: WineryReadmeComponent },
+            { path: 'license', component: WineryLicenseComponent},
             { path: 'visualappearance', component: VisualAppearanceComponent },
             { path: 'instancestates', component: InstanceStatesComponent },
             { path: 'sourceinterfaces', component: InterfacesComponent },

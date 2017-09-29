@@ -16,9 +16,9 @@ import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXM
 import { DocumentationComponent } from '../../instance/sharedComponents/documentation/documentation.component';
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
-import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.component';
-import { RequiredCapabilityTypeComponent } from '../../instance/requirementTypes/requiredCapabilityType/requiredCapabilityType.component';
 import { WineryArtifactComponent } from '../../instance/sharedComponents/wineryArtifacts/artifact.component';
+import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
+import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 
 const toscaType = ToscaTypes.RelationshipTypeImplementation;
 
@@ -30,6 +30,8 @@ const relationshipTypeImplementationRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
+            { path: 'readme', component: WineryReadmeComponent },
+            { path: 'license', component: WineryLicenseComponent},
             { path: 'implementationartifacts', component: WineryArtifactComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },

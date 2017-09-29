@@ -15,6 +15,8 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ## [unreleased]
 
 ### Changed
+- Add ZIP-button for artifacttemplate-files
+- Add license and readme support for all components
 - Fix delete dialog message text
 - Fix popup text of upload message
 - Add Git Log View to track/discard changes and create commits

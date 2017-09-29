@@ -17,6 +17,8 @@ import { DocumentationComponent } from '../../instance/sharedComponents/document
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
 import { WineryArtifactComponent } from '../../instance/sharedComponents/wineryArtifacts/artifact.component';
+import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
+import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 
 const toscaType = ToscaTypes.NodeTypeImplementation;
 
@@ -28,6 +30,8 @@ const nodeTypeImplementationRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
+            { path: 'readme', component: WineryReadmeComponent },
+            { path: 'license', component: WineryLicenseComponent},
             { path: 'implementationartifacts', component: WineryArtifactComponent },
             { path: 'deploymentartifacts', component: WineryArtifactComponent },
             { path: 'inheritance', component: InheritanceComponent },
