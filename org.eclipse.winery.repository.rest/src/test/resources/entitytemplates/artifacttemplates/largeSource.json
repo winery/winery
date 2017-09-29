@@ -1,0 +1,10 @@
+{"files":
+	[{
+		"name":"large.iso",
+		"size":2,
+		"url":"http://localhost:8080/winery/artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source/large.iso",
+		"deleteUrl":"http://localhost:8080/winery/artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source/large.iso",
+		"thumbnailUrl":"http://localhost:8080/winery/images/mime-types/iso.png",
+		"deleteType":"DELETE"
+	}]
+}
