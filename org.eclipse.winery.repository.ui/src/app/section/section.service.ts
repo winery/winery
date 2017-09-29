@@ -16,8 +16,6 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../configuration';
-import { SelectData } from '../wineryInterfaces/selectData';
-import { SectionData } from './sectionData';
 
 @Injectable()
 export class SectionService {
@@ -26,7 +24,7 @@ export class SectionService {
     private fileUploader: FileUploader;
 
     constructor(private http: Http) {
-        this.fileUploader = new FileUploader({url: backendBaseURL + '/'});
+        this.fileUploader = new FileUploader({ url: backendBaseURL + '/' });
     }
 
     get uploader(): FileUploader {
@@ -34,8 +32,8 @@ export class SectionService {
     }
 
     getSectionData(resourceType?: string): Observable<any> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         if (isNullOrUndefined(resourceType)) {
             resourceType = this.path;
@@ -46,8 +44,8 @@ export class SectionService {
     }
 
     createComponent(newComponentName: string, newComponentNamespace: string, newComponentSelectedType?: string) {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         let saveObject: any;
         if (!isNullOrUndefined(newComponentSelectedType)) {

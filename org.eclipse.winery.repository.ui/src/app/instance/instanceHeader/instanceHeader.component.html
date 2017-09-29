@@ -14,7 +14,7 @@
         <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"></winery-property-rename>
         <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'namespace'"></winery-property-rename>
     </div>
-    <div class="managementButtons">
+    <div class="managementButtons" *ngIf="showManagementButtons">
         <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
         <a class="btn btn-info" target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
         <a class="btn btn-info" target="_blank" href="{{ toscaComponent.csarPath }}">CSAR</a>

@@ -49,7 +49,7 @@ export class InstanceComponent implements OnDestroy {
 
                     this.service.setSharedData(this.toscaComponent);
 
-                    if (!isNullOrUndefined(this.toscaComponent)) {
+                    if (!isNullOrUndefined(this.toscaComponent) && this.toscaComponent.toscaType !== ToscaTypes.Imports) {
                         if (this.toscaComponent.toscaType === ToscaTypes.NodeType) {
                             const img = backendBaseURL + this.service.path + '/visualappearance/50x50';
                             this.existService.check(img)

@@ -51,6 +51,8 @@ export class SectionComponent implements OnInit, OnDestroy {
     elementToRemove: SectionData;
     types: SelectData[];
 
+    importXsdSchemaType: string;
+
     newComponentName: string;
     newComponentNamespace: string;
     newComponentSelectedType: SelectData = new SelectData();
@@ -132,7 +134,11 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     getSectionsData() {
-        this.service.getSectionData()
+        let url = '/' + this.toscaType;
+        if (this.toscaType === ToscaTypes.Imports) {
+            url += '/' + encodeURIComponent(encodeURIComponent(this.importXsdSchemaType));
+        }
+        this.service.getSectionData(url)
             .subscribe(
                 res => this.handleData(res),
                 error => this.handleError(error)
@@ -148,16 +154,17 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     /**
      * Handle the resolved data.
-     * @param data needs to be of type any because there is no specifc type specified by angular
+     * @param data needs to be of type any because there is no specific type specified by angular
      */
     private handleResolverData(data: any) {
         const resolved: SectionResolverData = data.resolveData;
 
         this.toscaType = resolved.section;
+        this.importXsdSchemaType = resolved.xsdSchemaType;
 
-        const storedNamepsapce = localStorage.getItem(this.toscaType + '_showNamespace') !== null ?
+        const storedNamespace = localStorage.getItem(this.toscaType + '_showNamespace') !== null ?
             localStorage.getItem(this.toscaType + '_showNamespace') : 'all';
-        this.showNamespace = resolved.namespace !== 'undefined' ? resolved.namespace : storedNamepsapce;
+        this.showNamespace = resolved.namespace ? resolved.namespace : storedNamespace;
         this.types = null;
 
         this.service.setPath(resolved.path);

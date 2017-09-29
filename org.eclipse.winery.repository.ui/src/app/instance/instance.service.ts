@@ -26,6 +26,7 @@ export class InstanceService {
 
     /**
      * Get the submenu for the given resource type for displaying a component instance.
+     * TODO: instead of string[], use objects which contain displayName and url fragment
      *
      * @returns string[] containing all menus for each resource type.
      */
@@ -72,7 +73,7 @@ export class InstanceService {
                 subMenu = ['Properties', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.Imports:
-                subMenu = [''];
+                subMenu = ['All Declared Elements Local Names', 'All Defined Types Local Names'];
                 break;
             default: // assume Admin
                 subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Log'];
