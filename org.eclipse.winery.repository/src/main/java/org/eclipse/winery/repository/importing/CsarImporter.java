@@ -1133,7 +1133,7 @@ public class CsarImporter {
 		}
 	}
 
-	private static void storeDefinitions(DefinitionsChildId id, TDefinitions defs) {
+	public static void storeDefinitions(DefinitionsChildId id, TDefinitions defs) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		String s = BackendUtils.getXMLAsString(defs, true);
 		try {
