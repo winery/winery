@@ -92,6 +92,14 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 		return new FilesResource(fileDir);
 	}
 
+	@GET
+	@Path("files/zip")
+	@Produces(MimeTypes.MIMETYPE_ZIP)
+	public Response getFilesDefinitionsAsResponse() {
+		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId((ArtifactTemplateId) this.id);
+		return RestUtils.getZippedContents(fileDir);
+	}
+
 	@Path("source/")
 	public FilesResource getSrcResource() {
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
@@ -101,9 +109,9 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	@GET
 	@Path("source/zip")
 	@Produces(MimeTypes.MIMETYPE_ZIP)
-	public Response getDefinitionsAsResponse() {
+	public Response getSourceDefinitionsAsResponse() {
 		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
-		return RestUtils.getZippedContents(fileDir);
+		return RestUtils.getZippedContents(fileDir, fileDir.getParent().getXmlId().getEncoded() + "-source.zip");
 	}
 
 	@Override

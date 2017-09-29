@@ -11,6 +11,12 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 -->
+<div class="right">
+    <a href="{{filesPath}}">
+        <button class="btn btn-primary" name="zip">ZIP</button>
+    </a>
+</div>
+
 <div>
     <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true">
     </winery-uploader>

@@ -231,9 +231,22 @@ public class RestUtils {
 	}
 
 	/**
-	 * Zipps the folder reference given by the id. As filename the parent id is used.
+	 * Zips the folder reference given by the id. As filename the parent id is used.
+	 *
+	 * @param id the id of the folder
 	 */
 	public static Response getZippedContents(final GenericId id) {
+		final String name = id.getParent().getXmlId().getEncoded();
+		return getZippedContents(id, name + Constants.SUFFIX_ZIP);
+	}
+
+	/**
+	 * Zips the folder reference given by the id. As filename the parent id is used.
+	 *
+	 * @param id   the id of the folder
+	 * @param name the name of the result zip (including.zip)
+	 */
+	public static Response getZippedContents(final GenericId id, String name) {
 		StreamingOutput so = output -> {
 			try {
 				RepositoryFactory.getRepository().getZippedContents(id, output);
@@ -243,8 +256,7 @@ public class RestUtils {
 		};
 		StringBuilder sb = new StringBuilder();
 		sb.append("attachment;filename=\"");
-		sb.append(id.getParent().getXmlId().getEncoded());
-		sb.append(Constants.SUFFIX_ZIP);
+		sb.append(name);
 		sb.append("\"");
 		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
 	}
