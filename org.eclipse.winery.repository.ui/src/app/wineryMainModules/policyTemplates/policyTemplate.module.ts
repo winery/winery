@@ -11,10 +11,14 @@
  */
 import { NgModule } from '@angular/core';
 import { PolicyTemplateRouterModule } from './policyTemplateRouter.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [
-        PolicyTemplateRouterModule
+        PolicyTemplateRouterModule,
+        WineryReadmeModule,
+        WineryLicenseModule
     ],
 })
 export class PolicyTemplateModule {

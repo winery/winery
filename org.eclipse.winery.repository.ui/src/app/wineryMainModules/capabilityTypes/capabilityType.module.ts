@@ -12,11 +12,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CapabilityTypeRouterModule } from './capabilityTypeRouter.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [
         CommonModule,
-        CapabilityTypeRouterModule
+        CapabilityTypeRouterModule,
+        WineryReadmeModule,
+        WineryLicenseModule
     ],
 })
 export class CapabilityTypeModule {

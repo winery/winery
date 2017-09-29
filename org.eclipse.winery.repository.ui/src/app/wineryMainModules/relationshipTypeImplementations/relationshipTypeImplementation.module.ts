@@ -12,11 +12,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RelationshipTypeImplementationRouterModule } from './relationshipTypeImplementationRouter.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [
         CommonModule,
         RelationshipTypeImplementationRouterModule,
+        WineryReadmeModule,
+        WineryLicenseModule
     ]
 })
 export class RelationshipTypeImplementationModule {

@@ -13,10 +13,14 @@ import { NgModule } from '@angular/core';
 import { LanguageComponent } from '../../instance/policyTypes/language/language.component';
 import { AppliesToComponent } from '../../instance/policyTypes/appliesTo/appliesTo.component';
 import { PolicyTypeRouterModule } from './policyTypeRouter.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [
         PolicyTypeRouterModule,
+        WineryReadmeModule,
+        WineryLicenseModule
     ],
     declarations: [
         LanguageComponent,

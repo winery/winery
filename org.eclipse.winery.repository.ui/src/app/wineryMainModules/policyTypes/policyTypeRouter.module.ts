@@ -20,6 +20,8 @@ import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/p
 import { LanguageComponent } from '../../instance/policyTypes/language/language.component';
 import { AppliesToComponent } from '../../instance/policyTypes/appliesTo/appliesTo.component';
 import { TemplatesOfTypeComponent } from '../../instance/sharedComponents/templatesOfTypes/templatesOfTypes.component';
+import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
+import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
 
 const toscaType = ToscaTypes.PolicyType;
 
@@ -31,13 +33,15 @@ const policyTypeRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
+            { path: 'readme', component: WineryReadmeComponent },
+            { path: 'license', component: WineryLicenseComponent},
             { path: 'language', component: LanguageComponent },
             { path: 'appliesto', component: AppliesToComponent },
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
-            { path: 'templates', component:  TemplatesOfTypeComponent},
+            { path: 'templates', component: TemplatesOfTypeComponent },
             { path: '', redirectTo: 'language', pathMatch: 'full' }
 
         ]

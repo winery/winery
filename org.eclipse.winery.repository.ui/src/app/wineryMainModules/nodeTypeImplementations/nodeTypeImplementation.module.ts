@@ -13,12 +13,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NodeTypeImplementationRouterModule } from './nodeTypeImplementationRouter.module';
 import { WineryArtifactModule } from '../../instance/sharedComponents/wineryArtifacts/artifact.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [
         CommonModule,
         WineryArtifactModule,
         NodeTypeImplementationRouterModule,
+        WineryReadmeModule,
+        WineryLicenseModule
     ]
 })
 export class NodeTypeImplementationModule {

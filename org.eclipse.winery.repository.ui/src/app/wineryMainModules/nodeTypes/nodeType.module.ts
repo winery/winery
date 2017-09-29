@@ -26,6 +26,8 @@ import { VisualAppearanceModule } from '../../instance/sharedComponents/visualAp
 import { InstanceStatesModule } from '../../instance/sharedComponents/instanceStates/instanceStates.module';
 import { PropertiesDefinitionModule } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.module';
 import { InheritanceModule } from '../../instance/sharedComponents/inheritance/inheritance.module';
+import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [
@@ -43,7 +45,9 @@ import { InheritanceModule } from '../../instance/sharedComponents/inheritance/i
         WineryTableModule,
         WineryModalModule,
         WineryEditorModule,
-        NodeTypeRouterModule
+        NodeTypeRouterModule,
+        WineryReadmeModule,
+        WineryLicenseModule
     ],
     exports: [],
     declarations: [CapOrReqDefComponent],
