@@ -18,7 +18,6 @@ import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { PropertiesComponent } from '../../instance/sharedComponents/properties/properties.component';
 import { FilesComponent } from '../../instance/artifactTemplates/filesTag/files.component';
 import { ArtifactSourceComponent } from '../../instance/artifactTemplates/artifactSource/artifactSource.component';
-import { ReadmeComponent } from '../../instance/artifactTemplates/readme/readme.component';
 
 const toscaType = ToscaTypes.ArtifactTemplate;
 
@@ -30,7 +29,6 @@ const artifactTemplateRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
-            { path: 'readme', component: ReadmeComponent},
             { path: 'files', component: FilesComponent },
             { path: 'source', component: ArtifactSourceComponent },
             { path: 'properties', component: PropertiesComponent },
