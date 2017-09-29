@@ -60,7 +60,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
 ## GitHub - Preparation First Pull Request to offical Eclipse Winery repository
 
 * Check [CONTRIBUTING.md](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md) and carefully read the instructions
-* http://wiki.eclipse.org/Development_Resources/Contributing_via_Git 🡒 Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
+* <http://wiki.eclipse.org/Development_Resources/Contributing_via_Git> 🡒 Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
 * Sign the Contributor Agreement electronically
 
 ## GitHub - Prepare Pull Request
