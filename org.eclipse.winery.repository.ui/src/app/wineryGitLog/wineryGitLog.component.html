@@ -13,6 +13,10 @@
         <div id="wineryGitLogExpander">
             <span (click)="onExpand()"></span>
             <h3>{{files?.length}}</h3>
+            <div id="wineryGitLogLfsIndicator">LFS:
+                <div id="lfsAvailable" *ngIf="lfsAvailable">available</div>
+                <div id="lfsNA" *ngIf="!lfsAvailable">not available</div>
+            </div>
         </div>
         <textarea id="wineryGitLogDiffs" wrap="soft"
                   *ngIf="selectedFile != null && isExpanded">{{selectedFile?.diffs}}</textarea>

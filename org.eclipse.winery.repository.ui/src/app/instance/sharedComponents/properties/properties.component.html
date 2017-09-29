@@ -9,7 +9,7 @@
  */
 -->
 <div *ngIf="!loading; else loadingIcon">
-    <div *ngIf="propertyKeys.length > 0; else elseBlock">
+    <div *ngIf="propertyKeys?.length > 0; else elseBlock">
         <div class="right">
             <button class="btn btn-primary" (click)="save()">Save</button>
         </div>

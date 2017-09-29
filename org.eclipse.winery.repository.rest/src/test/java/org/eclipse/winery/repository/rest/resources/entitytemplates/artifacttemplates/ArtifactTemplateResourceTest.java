@@ -30,6 +30,13 @@ public class ArtifactTemplateResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
+	public void lfsTest() throws Exception {
+		this.setRevisionTo("6ca5993d6a9abd255fb28f70c4ea73b189a47a57");
+		//incase git-lsf is not available this test fails because the .iso file contained in source is not 2 bytes as expected but contains the git-lsf information 
+		this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source/", "entitytemplates/artifacttemplates/largeSource.json");
+	}
+
+	@Test
 	public void artifactTemplateContainsFileReferenceInJson() throws Exception {
 		this.setRevisionTo("6aabc1c52ad74ab2692e7d59dbe22a263667e2c9");
 		this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest", "entitytemplates/artifacttemplates/MyTinyTest.json");

@@ -6,13 +6,17 @@
  */
 package org.eclipse.winery.repository.rest;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Stream;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -43,6 +47,11 @@ public class GitWebSocket {
 		this.session = session;
 		connections.add(this);
 		LOGGER.debug(session.getId() + " has opened a connection");
+		if (Stream.of(System.getenv("PATH").split(File.pathSeparator))
+			.map(Paths::get)
+			.anyMatch(path -> Files.exists(path.resolve("git-lfs.exe")))) {
+			writeInSession(session, "git-lfs");
+		}
 	}
 
 	@OnClose
