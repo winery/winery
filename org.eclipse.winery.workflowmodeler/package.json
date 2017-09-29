@@ -6,7 +6,8 @@
         "start": "ng serve --port 9527",
         "dev-aot": "ng serve --aot --port 9527",
         "test": "ng test",
-        "build": "ng build --target=production --environment=prod",
+        "build": "ng build",
+        "build:prod": "ng build --target=production --environment=prod",
         "lint": "ng lint"
     },
     "licenses": [
