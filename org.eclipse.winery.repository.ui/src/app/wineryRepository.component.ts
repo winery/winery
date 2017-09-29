@@ -6,8 +6,9 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-import { Component, ViewContainerRef } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { WineryNotificationService } from './wineryNotificationModule/wineryNotification.service';
+import { WineryGitLogComponent } from './wineryGitLog/wineryGitLog.component';
 
 @Component({
     selector: 'winery-repository',
@@ -19,6 +20,9 @@ import { WineryNotificationService } from './wineryNotificationModule/wineryNoti
 export class WineryRepositoryComponent {
     // region variables
     name = 'Winery Repository';
+
+    @ViewChild('gitLog') gitLog: WineryGitLogComponent;
+
     // endregion
     options = {
         position: ['top', 'right'],
@@ -28,5 +32,9 @@ export class WineryRepositoryComponent {
 
     constructor(vcr: ViewContainerRef, private notify: WineryNotificationService) {
         this.notify.init(vcr);
+    }
+
+    onClick() {
+        this.gitLog.hide();
     }
 }

@@ -99,5 +99,10 @@ export class WineryGitLogComponent implements OnInit {
 
     discardChanges() {
         this.webSocket.send('reset');
+        this.selectedFile = null;
+    }
+
+    hide() {
+        this.isExpanded = false;
     }
 }
