@@ -1,0 +1,27 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+node_types:
+  test.webapp:
+    derived_from: WebApplication
+    properties:
+      test.port:
+        type: integer
+        
+  test.database:
+    derived_from: Database
+    capabilities:
+      test.transactSQL:
+    description: test database
+    properties:
+      test.password:
+        type: string
+        description: test password
+    attributes:
+      test.port:
+        type: integer
+        description: test port number
+    requirements:
+      - test_database:
+          capability: Endpoint.Database
+          node: Database
+          relationship: ConnectsTo  

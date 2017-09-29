@@ -1,0 +1,19 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+interface_types:
+  signal:
+    signal_begin_receive:
+      description: Operation to signal start of msg processing
+    signal_end_receive:
+      description: Operation to signal end of msg processing
+  DFConfigure:
+    derived_from: tosca.interfaces.Root
+    description: DF configure Interface type
+    inputs:
+      mode:
+        type: string
+    pre_configure_service:
+      description: pre-configure operation for service
+    post_configure_service:
+      description: post-configure operation for service
+      

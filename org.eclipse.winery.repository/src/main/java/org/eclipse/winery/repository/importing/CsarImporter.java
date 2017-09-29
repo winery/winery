@@ -942,7 +942,7 @@ public class CsarImporter {
 	 * @param ci        the component instance to set the namespace
 	 * @param namespace the namespace to set
 	 */
-	private void setNamespace(TExtensibleElements ci, String namespace) {
+	public void setNamespace(TExtensibleElements ci, String namespace) {
 		Method method;
 		try {
 			method = ci.getClass().getMethod("setTargetNamespace", String.class);
@@ -960,7 +960,7 @@ public class CsarImporter {
 	 * @param ci               the component instance to get the namespace from
 	 * @param defaultNamespace the namespace to use if the TExtensibleElements has no targetNamespace
 	 */
-	private String getNamespace(TExtensibleElements ci, String defaultNamespace) {
+	public String getNamespace(TExtensibleElements ci, String defaultNamespace) {
 		Method method;
 		Object res;
 		try {
