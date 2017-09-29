@@ -39,7 +39,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.TOSCAComponentId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -51,7 +51,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
-import org.eclipse.winery.repository.importing.CSARImporter;
+import org.eclipse.winery.repository.importing.CsarImporter;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.reader.xml.Reader;
 import org.eclipse.winery.yaml.common.writer.xml.Writer;
@@ -75,7 +75,7 @@ public class WriterUtils {
         saveDefinitions(definitions, path, definitions.getTargetNamespace(), definitions.getId());
         Definitions cleanDefinitions = loadDefinitions(path, definitions.getTargetNamespace(), definitions.getId());
 
-        CSARImporter csarImporter = new CSARImporter();
+        CsarImporter csarImporter = new CsarImporter();
         List<Exception> exceptions = new ArrayList<>();
         cleanDefinitions.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().forEach(entry -> {
             String namespace = csarImporter.getNamespace(entry, definitions.getTargetNamespace());
@@ -83,8 +83,8 @@ public class WriterUtils {
 
             String id = ModelUtilities.getId(entry);
 
-            Class<? extends TOSCAComponentId> widClazz = Util.getComponentIdClassForTExtensibleElements(entry.getClass());
-            final TOSCAComponentId wid = BackendUtils.getTOSCAcomponentId(widClazz, namespace, id, false);
+            Class<? extends DefinitionsChildId> widClazz = Util.getComponentIdClassForTExtensibleElements(entry.getClass());
+            final DefinitionsChildId wid = BackendUtils.getDefinitionsChildId(widClazz, namespace, id, false);
 
             if (RepositoryFactory.getRepository().exists(wid)) {
                 if (overwrite) {
@@ -164,7 +164,7 @@ public class WriterUtils {
             GenericImportId rid = new XSDImportId(namespace, id, false);
             TDefinitions definitions = BackendUtils.createWrapperDefinitions(rid);
             definitions.getImport().add(builder.build());
-            CSARImporter.storeDefinitions(rid, definitions);
+            CsarImporter.storeDefinitions(rid, definitions);
 
             RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(rid);
 
