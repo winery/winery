@@ -48,8 +48,8 @@ The branch `master` differs from eclipse/winery in the following files:
 
 Further, following PRs have been merged into this repository:
 
-- https://github.com/eclipse/winery/pull/122
-
+- https://github.com/eclipse/winery/pull/147
+- https://github.com/OpenTOSCA/winery/pull/44 - not startet a PR on eclipse/winery, because Eclipse Orion offers an own markdown component
 
 One can find out the differences between the master branches of these two repositories by executing the following command:
 
