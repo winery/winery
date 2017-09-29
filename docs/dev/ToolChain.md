@@ -5,11 +5,13 @@
 - [GitHub - Start](#github---start)
   * [First steps](#first-steps)
   * [Steps for working on a topic](#steps-for-working-on-a-topic)
-- [GitHub - Preparation First Pull Request](#github---preparation-first-pull-request)
+- [GitHub - Preparation First Pull Request to offical Eclipse Winery repository](#github---preparation-first-pull-request-to-offical-eclipse-winery-repository)
 - [GitHub - Prepare Pull Request](#github---prepare-pull-request)
 - [GitHub - Create Pull Request](#github---create-pull-request)
 - [GitHub - Change Pull Request](#github---change-pull-request)
+- [GitHub - After Pull Request Got Merged](#github---after-pull-request-got-merged)
 - [Excursus: Git](#excursus-git)
+- [License](#license)
 
 <!-- tocstop -->
 
