@@ -8,4 +8,5 @@ This lists the architectural decisions for Eclipse Winery
 - [0003 - Double Encoded URLs](0003-double-encoded-urls.md)
 - [0004 - OAuth with GitHub](0004-oauth.md)
 - [0005 - XML editor does not enforce validation](0005-XML-editor-does-not-enfore-validation.md.md)
+- [0008 - No support for local git source clones](0008-no-support-for-local-git-source-clones.md)
 - [template.md](template) - the template
