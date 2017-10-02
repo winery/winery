@@ -5,6 +5,7 @@
 - [Overview](#overview)
 - [Quickstart](#quickstart)
 - [Features](#features)
+- [Miscellaneous notes](#miscellaneous-notes)
 - [License](#license)
 
 <!-- tocstop -->

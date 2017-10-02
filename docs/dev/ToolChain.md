@@ -5,11 +5,13 @@
 - [GitHub - Start](#github---start)
   * [First steps](#first-steps)
   * [Steps for working on a topic](#steps-for-working-on-a-topic)
-- [GitHub - Preparation First Pull Request](#github---preparation-first-pull-request)
+- [GitHub - Preparation First Pull Request to offical Eclipse Winery repository](#github---preparation-first-pull-request-to-offical-eclipse-winery-repository)
 - [GitHub - Prepare Pull Request](#github---prepare-pull-request)
 - [GitHub - Create Pull Request](#github---create-pull-request)
 - [GitHub - Change Pull Request](#github---change-pull-request)
+- [GitHub - After Pull Request Got Merged](#github---after-pull-request-got-merged)
 - [Excursus: Git](#excursus-git)
+- [License](#license)
 
 <!-- tocstop -->
 
@@ -58,7 +60,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
 ## GitHub - Preparation First Pull Request to offical Eclipse Winery repository
 
 * Check [CONTRIBUTING.md](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md) and carefully read the instructions
-* http://wiki.eclipse.org/Development_Resources/Contributing_via_Git 🡒 Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
+* <http://wiki.eclipse.org/Development_Resources/Contributing_via_Git> 🡒 Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
 * Sign the Contributor Agreement electronically
 
 ## GitHub - Prepare Pull Request
