@@ -524,7 +524,7 @@ Q: At `org.eclipse.winery.backend.ui`: Some strange errors
 A: Execute in THAT directory
 - `git clean -xdf` to remove all ignored and additional elements
 - <s>`npm i -g npm` to update npm to the latest version</s>
-- set npm verison to 5.3 `npm install -g npm@5.3` to work-around https://github.com/npm/npm/issues/18380
+- set npm version to 5.3 `npm install -g npm@5.3` to work around <https://github.com/npm/npm/issues/18380>
 - `npm install` to install everything
 - <s>`npm i webpack --save-dev`</s>
 
