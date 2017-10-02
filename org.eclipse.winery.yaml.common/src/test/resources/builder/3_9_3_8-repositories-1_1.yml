@@ -6,7 +6,7 @@ repositories:
     url: http://mycompany.com/repository/myproject/
     credential:
       token_type: password
-      token: 12345äö
+      token: 12345xx
       keys:
         key1: fkey
         key2: skey
