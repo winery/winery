@@ -22,13 +22,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class YamlWriterTest {
-    public final static String PATH = "src/test/resources/writer/tmp";
-    public final static String FILE_TYPE = ".yml";
-    public final static Writer writer = new Writer();
-    public final static Reader reader = new Reader();
-    public BuilderTests builderTests = new BuilderTests();
 
-    public static String getName(String name) {
+    private static final String PATH = "src/test/resources/writer/tmp";
+    private static final String FILE_TYPE = ".yml";
+
+    private Writer writer = new Writer();
+    private Reader reader = new Reader();
+    private BuilderTests builderTests = new BuilderTests();
+
+    private String getName(String name) {
         return PATH + File.separator + name;
     }
 
