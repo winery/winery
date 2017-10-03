@@ -11,7 +11,12 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.yaml.common.reader.BuilderTests;
@@ -20,158 +25,69 @@ import org.eclipse.winery.yaml.common.writer.yaml.Writer;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+@RunWith(Parameterized.class)
 public class YamlWriterTest {
 
-    private static final String PATH = "src/test/resources/writer/tmp";
+    private final Path yamlPath;
+    private final TServiceTemplate serviceTemplate;
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() throws Exception {
+        return Arrays.asList(new Object[][]{
+            getParameter(builderTests.toscaDefinitionsVersion()),
+            getParameter(builderTests.metadata()),
+            getParameter(builderTests.description()),
+            getParameter(builderTests.dslDefinitions()),
+            getParameter(builderTests.repositories()),
+            getParameter(builderTests.artifactTypes()),
+            getParameter(builderTests.dataTypes()),
+            getParameter(builderTests.capabilityTypes()),
+            getParameter(builderTests.interfaceTypes()),
+            getParameter(builderTests.relationshipTypes()),
+            getParameter(builderTests.nodeTypes()),
+            getParameter(builderTests.groupTypes()),
+            getParameter(builderTests.policyTypes()),
+            getParameter(builderTests.example16())
+        });
+    }
+
+    public static Object[] getParameter(Map.Entry<String, TServiceTemplate> entry) throws Exception {
+        return new Object[]{getYamlPath(entry.getKey()), entry.getValue()};
+    }
+
     private static final String FILE_TYPE = ".yml";
+
+    private static final BuilderTests builderTests = new BuilderTests();
+
+    private static Path temporaryFolder;
+
+    static {
+        try {
+            temporaryFolder = Files.createTempDirectory("winery-yaml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private Writer writer = new Writer();
     private Reader reader = new Reader();
-    private BuilderTests builderTests = new BuilderTests();
 
-    private String getName(String name) {
-        return PATH + File.separator + name;
+    private static Path getYamlPath(String name) throws Exception {
+        return temporaryFolder.resolve(name + FILE_TYPE);
+    }
+
+    public YamlWriterTest(Path yamlPath, TServiceTemplate serviceTemplate) {
+        this.yamlPath = yamlPath;
+        this.serviceTemplate = serviceTemplate;
     }
 
     @Test
-    public void toscaDefinitionsVersion() throws Exception {
-        String name = builderTests.toscaDefinitionsVersion().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.toscaDefinitionsVersion().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void metadata() throws Exception {
-        String name = builderTests.metadata().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.metadata().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void description() throws Exception {
-        String name = builderTests.description().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.description().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void dslDefinitions() throws Exception {
-        String name = builderTests.dslDefinitions().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.dslDefinitions().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void repositories() throws Exception {
-        String name = builderTests.repositories().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.repositories().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void artifactTypes() throws Exception {
-        String name = builderTests.artifactTypes().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.artifactTypes().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void dataTypes() throws Exception {
-        String name = builderTests.dataTypes().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.dataTypes().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void capabilityTypes() throws Exception {
-        String name = builderTests.capabilityTypes().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.capabilityTypes().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void interfaceTypes() throws Exception {
-        String name = builderTests.interfaceTypes().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.interfaceTypes().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void relationshipTypes() throws Exception {
-        String name = builderTests.relationshipTypes().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.relationshipTypes().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void nodeTypes() throws Exception {
-        String name = builderTests.nodeTypes().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.nodeTypes().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void groupTypes() throws Exception {
-        String name = builderTests.groupTypes().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.groupTypes().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void policyTypes() throws Exception {
-        String name = builderTests.policyTypes().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.policyTypes().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
-        Assert.assertEquals(serviceTemplate, out);
-    }
-
-    @Test
-    public void example16() throws Exception {
-
-        String name = builderTests.example16().getKey() + FILE_TYPE;
-        TServiceTemplate serviceTemplate = builderTests.example16().getValue();
-        writer.write(serviceTemplate, getName(name));
-        TServiceTemplate out = reader.parse(PATH, name);
-
+    public void roundtrip() throws Exception {
+        writer.write(serviceTemplate, yamlPath);
+        TServiceTemplate out = reader.parse(yamlPath);
         Assert.assertEquals(serviceTemplate, out);
     }
 }
