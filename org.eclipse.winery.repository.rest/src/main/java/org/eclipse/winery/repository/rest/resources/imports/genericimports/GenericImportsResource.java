@@ -5,11 +5,11 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.genericimports;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
@@ -20,7 +20,6 @@ import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTyp
 public class GenericImportsResource extends AbstractComponentsWithoutTypeReferenceResource<GenericImportResource> {
 
 	private String type;
-
 
 	/**
 	 * @param id the (decoded) id, e.g., http://schemas.xmlsoap.org/wsdl/
@@ -35,4 +34,8 @@ public class GenericImportsResource extends AbstractComponentsWithoutTypeReferen
 		return new GenericImportResource(iId);
 	}
 
+	@Path("{namespace}/{id}/")
+	public GenericImportResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return this.getComponentInstaceResource(namespace, id, true);
+	}
 }

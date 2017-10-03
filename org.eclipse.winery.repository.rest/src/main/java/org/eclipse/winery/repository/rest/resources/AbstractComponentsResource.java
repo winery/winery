@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  *
  * TODO: Add generics here! {@link RestUtils#getComponentIdClassForComponentContainer(java.lang.Class)} is then
  * obsolete
- * 
+ *
  * TODO: Rename to "AbstractDefinitionsChildResource
  */
 public abstract class AbstractComponentsResource<R extends AbstractComponentInstanceResource> {
@@ -140,14 +140,13 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	}
 
 	/**
+	 * Returns the requested resource. It has to be abstract to enable the SWAGGER tooling finding all resources.
+	 *
 	 * @param namespace encoded namespace
 	 * @param id        encoded id
 	 * @return an instance of the requested resource
 	 */
-	@Path("{namespace}/{id}/")
-	public R getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return this.getComponentInstaceResource(namespace, id, true);
-	}
+	public abstract R getComponentInstaceResource(String namespace, String id);
 
 	/**
 	 * @param encoded specifies whether namespace and id are encoded

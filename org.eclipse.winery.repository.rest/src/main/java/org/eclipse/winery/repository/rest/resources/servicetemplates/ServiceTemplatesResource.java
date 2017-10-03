@@ -25,6 +25,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -216,6 +217,11 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
 			}
 		}
 		return xaasPackages;
+	}
+
+	@Path("{namespace}/{id}/")
+	public ServiceTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return this.getComponentInstaceResource(namespace, id, true);
 	}
 
 }
