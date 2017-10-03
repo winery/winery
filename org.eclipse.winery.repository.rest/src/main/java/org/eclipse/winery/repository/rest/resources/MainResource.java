@@ -50,6 +50,7 @@ import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemp
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -60,6 +61,7 @@ import org.apache.commons.io.FileUtils;
 /**
  * All paths listed here have to be listed in Jersey's filter configuration
  */
+@Api()
 @Path("/")
 public class MainResource {
 
@@ -139,7 +141,7 @@ public class MainResource {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response onGet() {
-		return Response.temporaryRedirect(RestUtils.createURI("servicetemplates/")).build();
+		return Response.ok("This is Winery's API. Please open the Angular UI. In development mode, it is available on <a href=\"http://localhost:4200\">http://localhost:4200</a>").build();
 	}
 
 	@POST

@@ -27,7 +27,6 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 
-import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 
 public class OperationsResource extends EntityWithIdCollectionResource<OperationResource, TOperation> {
@@ -44,7 +43,10 @@ public class OperationsResource extends EntityWithIdCollectionResource<Operation
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response createOperation(@FormParam("name") @ApiParam(value = "used as name and id") String operationName) {
+	public Response createOperation(
+		//@ApiParam(value = "used as name and id")
+		@FormParam("name")
+			String operationName) {
 		if (StringUtils.isEmpty(operationName)) {
 			return Response.status(Status.BAD_REQUEST).entity("operationName not provided").build();
 		}

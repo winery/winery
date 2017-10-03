@@ -5,15 +5,14 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.artifacttypes;
 
 import java.util.SortedSet;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -87,4 +86,8 @@ public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenc
 		return res;
 	}
 
+	@Path("{namespace}/{id}/")
+	public ArtifactTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return this.getComponentInstaceResource(namespace, id, true);
+	}
 }

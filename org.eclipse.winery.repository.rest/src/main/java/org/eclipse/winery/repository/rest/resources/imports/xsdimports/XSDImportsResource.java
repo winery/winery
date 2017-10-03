@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.xsdimports;
 
@@ -45,6 +42,11 @@ public class XSDImportsResource extends AbstractComponentsWithoutTypeReferenceRe
 		// returnElements is not read as either types or elements may be read
 		return RepositoryFactory.getRepository().getXsdImportManager()
 				.getAllDefinedLocalNames(new Namespace(nsString, true), (returnTypes != null));
+	}
+
+	@Path("{namespace}/{id}/")
+	public XSDImportResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return this.getComponentInstaceResource(namespace, id, true);
 	}
 
 }

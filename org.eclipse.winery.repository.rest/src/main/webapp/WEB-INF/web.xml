@@ -12,8 +12,24 @@
  *    Oliver Kopp - initial API and implementation and bug fixes
  *******************************************************************************/
 -->
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="winery" version="3.0">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+		 id="winery" version="3.0">
 	<display-name>Winery Repository</display-name>
+
+	<servlet>
+		<servlet-name>SwaggerJerseyConfig</servlet-name>
+		<servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
+		<init-param>
+			<param-name>api.version</param-name>
+			<param-value>1.0.0</param-value>
+		</init-param>
+		<init-param>
+			<param-name>swagger.api.basepath</param-name>
+			<param-value>http://localhost:8080/winery</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
 
 	<filter>
 		<filter-name>CorsFilter</filter-name>
@@ -36,16 +52,16 @@
 		</init-param>
 	</filter>
 
-	<filter>
-		<filter-name>WineryResources</filter-name>
-		<filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
+	<servlet>
+		<servlet-name>WineryResources</servlet-name>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>org.eclipse.winery.repository.rest.resources</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.feature.FilterForwardOn404</param-name>
-			<param-value>false</param-value>
+			<param-value>
+				io.swagger.jaxrs.json,
+				io.swagger.jaxrs.listing,
+				org.eclipse.winery.repository.rest.resources
+			</param-value>
 		</init-param>
 		<init-param>
 			<param-name>com.sun.jersey.config.feature.CanonicalizeURIPath</param-name>
@@ -69,48 +85,17 @@
 			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
 			<param-value>true</param-value>
 		</init-param>
-	</filter>
+	</servlet>
 
 	<filter-mapping>
 		<filter-name>CorsFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<filter-mapping>
-		<filter-name>WineryResources</filter-name>
-
-		<!--
-			Each resource handled by JAX-RS has to be written separately.
-			Reason:
-			 * /components, /css, /images, /js are not provided by JAX-RS
-			 * FilterForwardOn404 is a Jersey feature, not standardized
-			 * It also forwards if a resource itself returns 404 (without an entity)
-			 * The JAX-RS code should not be cluttered with Jersey specifics
-		-->
-
-		<!--  ordering as in TOSCA-v1.0.xsd of TOSCA CSD08 -->
-
-		<url-pattern>/imports/*</url-pattern>
-		<url-pattern>/servicetemplates/*</url-pattern>
-		<url-pattern>/nodetypes/*</url-pattern>
-		<url-pattern>/nodetypeimplementations/*</url-pattern>
-		<url-pattern>/relationshiptypes/*</url-pattern>
-		<url-pattern>/relationshiptypeimplementations/*</url-pattern>
-		<url-pattern>/requirementtypes/*</url-pattern>
-		<url-pattern>/capabilitytypes/*</url-pattern>
-		<url-pattern>/artifacttypes/*</url-pattern>
-		<url-pattern>/artifacttemplates/*</url-pattern>
-		<url-pattern>/policytypes/*</url-pattern>
-		<url-pattern>/policytemplates/*</url-pattern>
-
-		<!--  additional resources -->
-		<url-pattern>/</url-pattern>
-		<url-pattern>/admin/*</url-pattern>
-		<url-pattern>/API/*</url-pattern>
-		<url-pattern>/other/*</url-pattern>
-		<url-pattern>/test/*</url-pattern>
-
-	</filter-mapping>
+	<servlet-mapping>
+		<servlet-name>WineryResources</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
 
 	<listener>
 		<listener-class>org.eclipse.winery.repository.rest.Prefs</listener-class>
