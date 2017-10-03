@@ -15,6 +15,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ## [unreleased]
 
 ### Changed
+- Add edit properties as XML
 - Add available/not available indicator for LFS in git log component
 - Add ZIP-button for artifactemplate-files
 - Add license and readme support for all components

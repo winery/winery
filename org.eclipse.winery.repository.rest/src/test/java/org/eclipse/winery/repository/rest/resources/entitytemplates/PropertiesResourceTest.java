@@ -52,4 +52,11 @@ public class PropertiesResourceTest extends AbstractResourceTest {
 		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/",
 			"entitytemplates/updatedProperties.json");
 	}
+	
+	@Test
+	public void postXMLPropertiesToArtifact() throws Exception {
+		this.setRevisionTo("2025ac44d12f5814cc441ba2f8425cdc78c47bb4");
+		this.assertPut("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates/ShipOrderTemplate/properties/", "entitytemplates/artifacttemplates/updatedProperties.xml");
+		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates/ShipOrderTemplate/properties/", "entitytemplates/artifacttemplates/updatedPropertiesAfterPut.xml");
+	}
 }

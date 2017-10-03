@@ -266,7 +266,11 @@
 			<artifactId>eclipse-collections</artifactId>
 			<version>8.2.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>io.github.adr</groupId>
+			<artifactId>e-adr</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<!-- no review, but approval is required for test-only dependencies: http://wiki.eclipse.org/Development_Resources/IP/Test_and_Build_Dependencies -->
 		<dependency>

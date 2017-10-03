@@ -9,9 +9,11 @@
  * Contributors:
  *     Lukas Harzenetter - initial API and implementation
  */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PropertiesService } from './properties.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { isNullOrUndefined } from 'util';
+import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
 
 @Component({
     selector: 'winery-properties',
@@ -29,8 +31,10 @@ export class PropertiesComponent implements OnInit {
      * Why `any`? => see {@link PropertiesService.getProperties()}
      */
     properties: any = null;
-    propertyKeys: string[];
+    propertyKeys: string[] = [];
+    isXMLData: boolean;
     loading = true;
+    @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
 
     constructor(private service: PropertiesService, private notify: WineryNotificationService) {
     }
@@ -41,7 +45,10 @@ export class PropertiesComponent implements OnInit {
 
     save() {
         this.loading = true;
-        this.service.saveProperties(this.properties)
+        if (this.isXMLData) {
+            this.properties = this.propertiesEditor.getData();
+        }
+        this.service.saveProperties(this.properties, this.isXMLData)
             .subscribe(
                 data => this.handleSave(),
                 error => this.handleError(error)
@@ -63,9 +70,17 @@ export class PropertiesComponent implements OnInit {
 
     private handleProperties(data: any) {
         this.loading = false;
-        this.propertyKeys = Object.keys(data);
-        if (this.properties != null && this.propertyKeys.length > 0) {
-            this.properties = data;
+        if (data.isXML) {
+            this.isXMLData = true;
+            this.properties = data.properties;
+        } else {
+            this.isXMLData = false;
+            if (!isNullOrUndefined(data.properies)) {
+                this.propertyKeys = Object.keys(data.properties);
+            }
+            if (this.properties != null && this.propertyKeys.length > 0) {
+                this.properties = data.properties;
+            }
         }
     }
 
