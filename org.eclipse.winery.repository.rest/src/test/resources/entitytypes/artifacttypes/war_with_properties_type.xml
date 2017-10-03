@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<tosca:Definitions targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits" id="winery-defs-for_wfa-WAR" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
-	<tosca:ArtifactType name="WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12">
-		<tosca:PropertiesDefinition xmlns:schemaexampleasp="https://www.w3schools.com/xml/schema_example.asp" type="schemaexampleasp:shipordertype"/>
-	</tosca:ArtifactType>
-</tosca:Definitions>
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" id="winery-defs-for_wfa-WAR"
+			 targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+	<ArtifactType name="WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+		<PropertiesDefinition xmlns:schemaexampleasp="https://www.w3schools.com/xml/schema_example.asp"
+							  type="schemaexampleasp:shipordertype"/>
+	</ArtifactType>
+</Definitions>

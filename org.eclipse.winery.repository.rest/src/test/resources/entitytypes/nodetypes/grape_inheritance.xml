@@ -1,8 +1,16 @@
-<tosca:Definitions xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="winery-defs-for_wfn-grape" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits">
-	<tosca:Import namespace="http://winery.opentosca.org/test/nodetypes/fruits" location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/?definitions" importType="http://docs.oasis-open.org/tosca/ns/2011/12"/>
-	<tosca:Import namespace="http://winery.opentosca.org/test/nodetypes/fruits" location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/grape/propertiesdefinition/xsd" importType="http://www.w3.org/2001/XMLSchema" winery:wpd="true"/>
-	<tosca:NodeType name="grape" abstract="no" final="yes" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01">
-		<winery:PropertiesDefinition elementname="GrapeProperties" namespace="http://winery.opentosca.org/test/nodetypes/fruits">
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+			 xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_wfn-grape"
+			 targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits">
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12"
+			location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/?definitions"
+			namespace="http://winery.opentosca.org/test/nodetypes/fruits"/>
+	<Import importType="http://www.w3.org/2001/XMLSchema"
+			location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/grape/propertiesdefinition/xsd"
+			namespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:wpd="true"/>
+	<NodeType abstract="no" final="yes" name="grape" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits"
+			  winery:bordercolor="#89ee01">
+		<winery:PropertiesDefinition elementname="GrapeProperties"
+									 namespace="http://winery.opentosca.org/test/nodetypes/fruits">
 			<winery:properties>
 				<winery:key>Antioxidants</winery:key>
 				<winery:type>xsd:string</winery:type>
@@ -24,7 +32,7 @@
 				<winery:type>xsd:anyURI</winery:type>
 			</winery:properties>
 		</winery:PropertiesDefinition>
-		<tosca:DerivedFrom xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" typeRef="wfn:baobab"/>
-		<tosca:PropertiesDefinition xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" type="wfn:GrapeProperties"/>
-	</tosca:NodeType>
-</tosca:Definitions>
+		<DerivedFrom xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" typeRef="wfn:baobab"/>
+		<PropertiesDefinition xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" type="wfn:GrapeProperties"/>
+	</NodeType>
+</Definitions>

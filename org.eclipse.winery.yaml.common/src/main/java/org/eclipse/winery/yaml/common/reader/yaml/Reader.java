@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
@@ -42,6 +43,17 @@ public class Reader {
         this.yaml = new Yaml();
     }
 
+    /**
+     * @param fileName the file to parse
+     */
+    public TServiceTemplate parse(Path fileName) throws MultiException {
+        return this.readServiceTemplate(fileName.getParent().toString(), fileName.getFileName().toString(), Namespaces.DEFAULT_NS);
+    }
+
+    /**
+     * @deprecated Use {@link Reader#parse(java.nio.file.Path)}
+     */
+    @Deprecated
     public TServiceTemplate parse(String path, String file) throws MultiException {
         return this.readServiceTemplate(path, file, Namespaces.DEFAULT_NS);
     }

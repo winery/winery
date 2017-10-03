@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<tosca:Definitions targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits" id="winery-defs-for_wfa-WAR" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
-	<tosca:ArtifactType name="WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
-		<winery:PropertiesDefinition elementname="CloudProviderProperties" winery:derivedFromXSD="true" namespace="http://opentosca.org/nodetypes">
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+			 xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_wfa-WAR"
+			 targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+	<ArtifactType name="WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+		<winery:PropertiesDefinition elementname="CloudProviderProperties" namespace="http://opentosca.org/nodetypes"
+									 winery:derivedFromXSD="true">
 			<winery:properties>
 				<winery:key>APIEndpoint</winery:key>
 				<winery:type>xsd:string</winery:type>
@@ -15,6 +18,7 @@
 				<winery:type>xsd:string</winery:type>
 			</winery:properties>
 		</winery:PropertiesDefinition>
-		<tosca:PropertiesDefinition element="nodetypes1:CloudProviderProperties" xmlns:nodetypes1="http://opentosca.org/nodetypes"/>
-	</tosca:ArtifactType>
-</tosca:Definitions>
+		<PropertiesDefinition xmlns:nodetypes1="http://opentosca.org/nodetypes"
+							  element="nodetypes1:CloudProviderProperties"/>
+	</ArtifactType>
+</Definitions>

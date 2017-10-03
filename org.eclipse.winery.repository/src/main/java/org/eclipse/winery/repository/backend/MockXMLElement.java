@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
@@ -22,9 +19,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * Included in {@link org.eclipse.winery.repository.JAXBSupport.initContext()}
  */
-@XmlRootElement
+@XmlRootElement(namespace = "http://test.winery.opentosca.org", name = "MockXmlElement")
 public class MockXMLElement {
 
-	@XmlElement
+	@XmlElement(namespace = "http://test.winery.opentosca.org", name = "mock")
 	public String mock = "mock";
 }

@@ -108,7 +108,7 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 		this.assertPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/", "entitytypes/nodetypes/baobab_tag_step1_add.json");
 		this.assertPost("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/", "entitytypes/nodetypes/baobab_tag_step2_add.json");
 		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/", "entitytypes/nodetypes/baobab_tag_step3_values.json");
-		this.assertDelete("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/931516286/");
+		this.assertDelete("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/-883039691/");
 		this.assertGet("nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/baobab/tags/", "entitytypes/nodetypes/baobab_tag_step5_values.json");
 	}
 

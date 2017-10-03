@@ -19,6 +19,7 @@
 	<logger name="org.eclipse.winery.repository.export.CsarExporter" level="TRACE"/>
 	<logger name="org.eclipse.winery.repository.backend.filebased.GitBasedRepository" level="TRACE"/>
 	<logger name="org.eclipse.winery.repository.importing.CsarImporter" level="TRACE"/>
+	<logger name="org.eclipse.winery.repository.JAXBSupport" level="DEBUG"/>
 	<logger name="org.eclipse.winery.repository.Utils" level="TRACE"/>
 
 	<logger name="org.apache.http" level="WARN"/>
