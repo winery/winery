@@ -1,4 +1,4 @@
-<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12"
-				   targetNamespace="http://opentosca.org/artifacttypes" id="winery-defs-for_artifacttypes-WAR">
-	<tosca:ArtifactType name="WAR" targetNamespace="http://opentosca.org/artifacttypes"/>
-</tosca:Definitions>
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" id="winery-defs-for_artifacttypes-WAR"
+			 targetNamespace="http://opentosca.org/artifacttypes">
+	<ArtifactType name="WAR" targetNamespace="http://opentosca.org/artifacttypes"/>
+</Definitions>

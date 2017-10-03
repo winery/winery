@@ -62,7 +62,7 @@ public class JAXBSupport {
 		public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
 			LOGGER.trace("Mapping params: {}, {}, {}", namespaceUri, suggestion, requirePrefix);
 			if (StringUtils.isEmpty(namespaceUri)) {
-				LOGGER.debug("Empty or null namespaceUri: null returned");
+				LOGGER.trace("Empty or null namespaceUri: null returned");
 				return null;
 			}
 

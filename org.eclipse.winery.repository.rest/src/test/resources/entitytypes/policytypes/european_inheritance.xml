@@ -1,6 +1,10 @@
-<tosca:Definitions xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="winery-defs-for_wfp-european" targetNamespace="http://winery.opentosca.org/test/policytypes/fruits">
-	<tosca:Import namespace="http://winery.opentosca.org/test/policytypes/fruits" location="http://localhost:9080/winery/policytypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fpolicytypes%252Ffruits/organic/?definitions" importType="http://docs.oasis-open.org/tosca/ns/2011/12"/>
-	<tosca:PolicyType name="european" abstract="no" final="yes" targetNamespace="http://winery.opentosca.org/test/policytypes/fruits">
-		<tosca:DerivedFrom xmlns:wfp="http://winery.opentosca.org/test/policytypes/fruits" typeRef="wfp:organic"/>
-	</tosca:PolicyType>
-</tosca:Definitions>
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" id="winery-defs-for_wfp-european"
+			 targetNamespace="http://winery.opentosca.org/test/policytypes/fruits">
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12"
+			location="http://localhost:9080/winery/policytypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fpolicytypes%252Ffruits/organic/?definitions"
+			namespace="http://winery.opentosca.org/test/policytypes/fruits"/>
+	<PolicyType abstract="no" final="yes" name="european"
+				targetNamespace="http://winery.opentosca.org/test/policytypes/fruits">
+		<DerivedFrom xmlns:wfp="http://winery.opentosca.org/test/policytypes/fruits" typeRef="wfp:organic"/>
+	</PolicyType>
+</Definitions>

@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<tosca:Definitions xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_wfa-WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
-	<tosca:Import importType="http://www.w3.org/2001/XMLSchema" location="http://localhost:9080/winery/artifacttypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttypes%252Ffruits/WAR/propertiesdefinition/xsd" namespace="http://winery.opentosca.org/test/artifacttypes/fruits/propertiesdefinition/winery" winery:wpd="true"/>
-	<tosca:ArtifactType name="WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
-		<winery:PropertiesDefinition elementname="properties" namespace="http://winery.opentosca.org/test/artifacttypes/fruits/propertiesdefinition/winery">
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+			 xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_wfa-WAR"
+			 targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+	<Import importType="http://www.w3.org/2001/XMLSchema"
+			location="http://localhost:9080/winery/artifacttypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttypes%252Ffruits/WAR/propertiesdefinition/xsd"
+			namespace="http://winery.opentosca.org/test/artifacttypes/fruits/propertiesdefinition/winery"
+			winery:wpd="true"/>
+	<ArtifactType name="WAR" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+		<winery:PropertiesDefinition elementname="properties"
+									 namespace="http://winery.opentosca.org/test/artifacttypes/fruits/propertiesdefinition/winery">
 			<winery:properties>
 				<winery:key>contextPath</winery:key>
 				<winery:type>xsd:string</winery:type>
 			</winery:properties>
 		</winery:PropertiesDefinition>
-		<tosca:PropertiesDefinition xmlns:winery2="http://winery.opentosca.org/test/artifacttypes/fruits/propertiesdefinition/winery" type="winery2:properties"/>
-	</tosca:ArtifactType>
-</tosca:Definitions>
+		<PropertiesDefinition
+			xmlns:winery2="http://winery.opentosca.org/test/artifacttypes/fruits/propertiesdefinition/winery"
+			type="winery2:properties"/>
+	</ArtifactType>
+</Definitions>

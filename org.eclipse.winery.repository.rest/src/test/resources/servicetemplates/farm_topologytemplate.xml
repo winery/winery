@@ -1,88 +1,102 @@
-<tosca:TopologyTemplate xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
-	<tosca:NodeTemplate name="plantage" id="plantage" type="wfn:plantage" winery:location="undefined" winery:x="958" winery:y="894" xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits"/>
-	<tosca:NodeTemplate name="tree" id="tree" type="wfn:tree" winery:location="undefined" winery:x="606" winery:y="671" xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits"/>
-	<tosca:NodeTemplate name="tree_3" id="tree_2" type="wfn:tree" winery:location="undefined" winery:x="1441" winery:y="645" xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits"/>
-	<tosca:NodeTemplate name="baobab" id="baobab" type="wfn:baobab" winery:location="undefined" winery:x="324" winery:y="333" xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits">
-		<tosca:Properties>
-			<wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits" xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
+<TopologyTemplate xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+				  xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
+	<NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="plantage" name="plantage"
+				  type="wfn:plantage" winery:location="undefined" winery:x="958" winery:y="894"/>
+	<NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="tree" name="tree" type="wfn:tree"
+				  winery:location="undefined" winery:x="606" winery:y="671"/>
+	<NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="tree_2" name="tree_3"
+				  type="wfn:tree" winery:location="undefined" winery:x="1441" winery:y="645"/>
+	<NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab" name="baobab"
+				  type="wfn:baobab" winery:location="undefined" winery:x="324" winery:y="333">
+		<Properties>
+			<wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
+								  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
 				<ty:Antioxidants/>
 				<ty:VitaminC/>
 				<ty:Potassium/>
 				<ty:Superfood/>
 				<ty:HarvestedAt/>
 			</wfn:BaobabProperties>
-		</tosca:Properties>
-	</tosca:NodeTemplate>
-	<tosca:NodeTemplate name="orange" id="orange" type="wfn:orange" winery:location="undefined" winery:x="1284" winery:y="331" xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits">
-		<tosca:Properties>
-			<wfn:OrangeProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits" xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
+		</Properties>
+	</NodeTemplate>
+	<NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="orange" name="orange"
+				  type="wfn:orange" winery:location="undefined" winery:x="1284" winery:y="331">
+		<Properties>
+			<wfn:OrangeProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
+								  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
 				<ty:Antioxidants/>
 				<ty:VitaminC/>
 				<ty:Potassium/>
 				<ty:Superfood/>
 				<ty:HarvestedAt/>
 			</wfn:OrangeProperties>
-		</tosca:Properties>
-	</tosca:NodeTemplate>
-	<tosca:NodeTemplate name="orange_3" id="orange_2" type="wfn:orange" winery:location="undefined" winery:x="1599" winery:y="329" xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits">
-		<tosca:Properties>
-			<wfn:OrangeProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits" xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
+		</Properties>
+	</NodeTemplate>
+	<NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="orange_2" name="orange_3"
+				  type="wfn:orange" winery:location="undefined" winery:x="1599" winery:y="329">
+		<Properties>
+			<wfn:OrangeProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
+								  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
 				<ty:Antioxidants/>
 				<ty:VitaminC/>
 				<ty:Potassium/>
 				<ty:Superfood/>
 				<ty:HarvestedAt/>
 			</wfn:OrangeProperties>
-		</tosca:Properties>
-	</tosca:NodeTemplate>
-	<tosca:NodeTemplate name="baobab_3" id="baobab_2" type="wfn:baobab" winery:location="undefined" winery:x="606" winery:y="219" xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits">
-		<tosca:Properties>
-			<wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits" xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
+		</Properties>
+	</NodeTemplate>
+	<NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab_2" name="baobab_3"
+				  type="wfn:baobab" winery:location="undefined" winery:x="606" winery:y="219">
+		<Properties>
+			<wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
+								  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
 				<ty:Antioxidants/>
 				<ty:VitaminC/>
 				<ty:Potassium/>
 				<ty:Superfood/>
 				<ty:HarvestedAt/>
 			</wfn:BaobabProperties>
-		</tosca:Properties>
-	</tosca:NodeTemplate>
-	<tosca:NodeTemplate name="baobab_4" id="baobab_3" type="wfn:baobab" winery:location="undefined" winery:x="900" winery:y="325" xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits">
-		<tosca:Properties>
-			<wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits" xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
+		</Properties>
+	</NodeTemplate>
+	<NodeTemplate xmlns:wfn="http://winery.opentosca.org/test/nodetypes/fruits" id="baobab_3" name="baobab_4"
+				  type="wfn:baobab" winery:location="undefined" winery:x="900" winery:y="325">
+		<Properties>
+			<wfn:BaobabProperties xmlns="http://winery.opentosca.org/test/nodetypes/fruits"
+								  xmlns:ty="http://winery.opentosca.org/test/nodetypes/fruits">
 				<ty:Antioxidants/>
 				<ty:VitaminC/>
 				<ty:Potassium/>
 				<ty:Superfood/>
 				<ty:HarvestedAt/>
 			</wfn:BaobabProperties>
-		</tosca:Properties>
-	</tosca:NodeTemplate>
-	<tosca:RelationshipTemplate name="con_23" id="con_23" type="wfr:hostedOn" xmlns:wfr="http://winery.opentosca.org/test/relationshiptypes/fruits">
-		<tosca:SourceElement ref="baobab"/>
-		<tosca:TargetElement ref="tree"/>
-	</tosca:RelationshipTemplate>
-	<tosca:RelationshipTemplate name="con_35" id="con_35" type="wfr:hostedOn" xmlns:wfr="http://winery.opentosca.org/test/relationshiptypes/fruits">
-		<tosca:SourceElement ref="baobab_2"/>
-		<tosca:TargetElement ref="tree"/>
-	</tosca:RelationshipTemplate>
-	<tosca:RelationshipTemplate name="con_47" id="con_47" type="wfr:hostedOn" xmlns:wfr="http://winery.opentosca.org/test/relationshiptypes/fruits">
-		<tosca:SourceElement ref="baobab_3"/>
-		<tosca:TargetElement ref="tree"/>
-	</tosca:RelationshipTemplate>
-	<tosca:RelationshipTemplate name="con_59" id="con_59" type="wfr:hostedOn" xmlns:wfr="http://winery.opentosca.org/test/relationshiptypes/fruits">
-		<tosca:SourceElement ref="orange"/>
-		<tosca:TargetElement ref="tree_2"/>
-	</tosca:RelationshipTemplate>
-	<tosca:RelationshipTemplate name="con_71" id="con_71" type="wfr:hostedOn" xmlns:wfr="http://winery.opentosca.org/test/relationshiptypes/fruits">
-		<tosca:SourceElement ref="orange_2"/>
-		<tosca:TargetElement ref="tree_2"/>
-	</tosca:RelationshipTemplate>
-	<tosca:RelationshipTemplate name="con_85" id="con_85" type="wfr:hostedOn" xmlns:wfr="http://winery.opentosca.org/test/relationshiptypes/fruits">
-		<tosca:SourceElement ref="tree_2"/>
-		<tosca:TargetElement ref="plantage"/>
-	</tosca:RelationshipTemplate>
-	<tosca:RelationshipTemplate name="con_97" id="con_97" type="wfr:hostedOn" xmlns:wfr="http://winery.opentosca.org/test/relationshiptypes/fruits">
-		<tosca:SourceElement ref="tree"/>
-		<tosca:TargetElement ref="plantage"/>
-	</tosca:RelationshipTemplate>
-</tosca:TopologyTemplate>
+		</Properties>
+	</NodeTemplate>
+	<RelationshipTemplate id="con_23" name="con_23" type="wfr:hostedOn">
+		<SourceElement ref="baobab"/>
+		<TargetElement ref="tree"/>
+	</RelationshipTemplate>
+	<RelationshipTemplate id="con_35" name="con_35" type="wfr:hostedOn">
+		<SourceElement ref="baobab_2"/>
+		<TargetElement ref="tree"/>
+	</RelationshipTemplate>
+	<RelationshipTemplate id="con_47" name="con_47" type="wfr:hostedOn">
+		<SourceElement ref="baobab_3"/>
+		<TargetElement ref="tree"/>
+	</RelationshipTemplate>
+	<RelationshipTemplate id="con_59" name="con_59" type="wfr:hostedOn">
+		<SourceElement ref="orange"/>
+		<TargetElement ref="tree_2"/>
+	</RelationshipTemplate>
+	<RelationshipTemplate id="con_71" name="con_71" type="wfr:hostedOn">
+		<SourceElement ref="orange_2"/>
+		<TargetElement ref="tree_2"/>
+	</RelationshipTemplate>
+	<RelationshipTemplate id="con_85" name="con_85" type="wfr:hostedOn">
+		<SourceElement ref="tree_2"/>
+		<TargetElement ref="plantage"/>
+	</RelationshipTemplate>
+	<RelationshipTemplate id="con_97" name="con_97" type="wfr:hostedOn">
+		<SourceElement ref="tree"/>
+		<TargetElement ref="plantage"/>
+	</RelationshipTemplate>
+</TopologyTemplate>

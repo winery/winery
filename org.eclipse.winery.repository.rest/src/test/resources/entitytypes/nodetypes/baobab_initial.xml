@@ -1,6 +1,9 @@
 <?xml version="1.0" standalone="no"?>
-<tosca:NodeType name="baobab" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
-	<winery:PropertiesDefinition elementname="BaobabProperties" namespace="http://winery.opentosca.org/test/nodetypes/fruits">
+<NodeType xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+		  xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" name="baobab"
+		  targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01">
+	<winery:PropertiesDefinition elementname="BaobabProperties"
+								 namespace="http://winery.opentosca.org/test/nodetypes/fruits">
 		<winery:properties>
 			<winery:key>Antioxidants</winery:key>
 			<winery:type>xsd:string</winery:type>
@@ -22,4 +25,4 @@
 			<winery:type>xsd:anyURI</winery:type>
 		</winery:properties>
 	</winery:PropertiesDefinition>
-</tosca:NodeType>
+</NodeType>
