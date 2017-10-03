@@ -23,6 +23,9 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
+import io.swagger.annotations.Api;
+
+@Api(tags = "Artifact Types")
 public class ArtifactTypesResource extends AbstractComponentsWithoutTypeReferenceResource<ArtifactTypeResource> {
 
 	// This cannot be used as the INSTANCE is per startup of the whole

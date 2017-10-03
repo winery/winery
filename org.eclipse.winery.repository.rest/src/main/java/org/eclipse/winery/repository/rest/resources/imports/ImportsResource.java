@@ -22,10 +22,13 @@ import org.eclipse.winery.repository.rest.resources.imports.genericimports.Gener
 import org.eclipse.winery.repository.rest.resources.imports.wsdlimports.WsdlImportsResource;
 import org.eclipse.winery.repository.rest.resources.imports.xsdimports.XSDImportsResource;
 
+import io.swagger.annotations.Api;
+
 /**
  * The specification does not nest the sequence of import elements in an imports container. We introduce such a
  * container to be consistent with the other resource naming
  */
+@Api(tags = "Imports")
 public class ImportsResource {
 
 	@Path("{id}/")

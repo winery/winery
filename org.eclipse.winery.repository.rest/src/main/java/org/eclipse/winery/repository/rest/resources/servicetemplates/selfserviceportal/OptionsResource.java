@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal;
 
@@ -16,6 +13,8 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -110,5 +109,11 @@ public class OptionsResource extends EntityWithIdCollectionResource<OptionResour
 
 		this.list.add(option);
 		return RestUtils.persist(this.res);
+	}
+
+	@Override
+	@Path("{id}/")
+	public OptionResource getEntityResource(@PathParam("id") String id) {
+		return this.getEntityResourceFromEncodedId(id);
 	}
 }

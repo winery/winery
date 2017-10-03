@@ -32,8 +32,10 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataWithOptGroups;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
+import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 
+@Api(tags = "API")
 public class APIResource {
 
 	@GET

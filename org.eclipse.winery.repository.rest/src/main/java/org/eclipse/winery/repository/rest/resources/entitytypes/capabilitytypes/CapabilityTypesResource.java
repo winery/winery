@@ -13,10 +13,13 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
+import io.swagger.annotations.Api;
+
 /**
  * Manages all capability types in all available namespaces <br />
  * The actual implementation is done in the AbstractComponentsResource
  */
+@Api(tags = "Capability Types")
 public class CapabilityTypesResource extends AbstractComponentsWithoutTypeReferenceResource<CapabilityTypeResource> {
 	@Path("{namespace}/{id}/")
 	public CapabilityTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {

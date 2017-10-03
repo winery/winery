@@ -13,10 +13,13 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
+import io.swagger.annotations.Api;
+
 /**
  * Manages all nodetypes in all available namespaces <br />
  * The actual implementation is done in the AbstractComponentsResource
  */
+@Api(tags = "Node Types")
 public class NodeTypesResource extends AbstractComponentsWithoutTypeReferenceResource<NodeTypeResource> {
 	@Path("{namespace}/{id}/")
 	public NodeTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {

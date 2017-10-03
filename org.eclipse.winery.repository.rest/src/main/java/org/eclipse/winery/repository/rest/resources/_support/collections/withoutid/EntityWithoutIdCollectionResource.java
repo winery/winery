@@ -1,23 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections.withoutid;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Objects;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
@@ -51,9 +45,8 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 	 * Method searching the list for an id with the hashcode instead of getId(EntityT)
 	 */
 	@Override
-	@Path("{id}/")
-	public EntityResourceT getEntityResource(@PathParam("id") String id) {
-		id = Util.URLdecode(id);
+	protected EntityResourceT getEntityResourceFromDecodedId(String id) {
+		Objects.requireNonNull(id);
 		int idInt;
 		try {
 			idInt = Integer.parseInt(id);
@@ -83,9 +76,6 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 		return IdDeterminationWithHashCode.INSTANCE.getId(entity);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected EntityResourceT getEntityResourceInstance(EntityT entity, int idx) {
 		Constructor<EntityResourceT> constructor;

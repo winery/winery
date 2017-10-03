@@ -47,7 +47,9 @@ import org.eclipse.winery.repository.rest.resources.CreateFromArtifactApiData;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.annotations.Api;
 
+@Api(tags = "Service Templates")
 public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeReferenceResource<ServiceTemplateResource> {
 	
 	@GET

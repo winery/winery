@@ -13,6 +13,9 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithTypeReferenceResource;
 
+import io.swagger.annotations.Api;
+
+@Api(tags = "Node Type Implementations")
 public class NodeTypeImplementationsResource extends AbstractComponentsWithTypeReferenceResource<NodeTypeImplementationResource> {
 	@Path("{namespace}/{id}/")
 	public NodeTypeImplementationResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {

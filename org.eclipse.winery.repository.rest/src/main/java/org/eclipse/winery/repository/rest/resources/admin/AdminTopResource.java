@@ -28,6 +28,7 @@ import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesMan
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
 import org.eclipse.winery.repository.rest.resources.apiData.OAuthStateAndCodeApiData;
 
+import io.swagger.annotations.Api;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -36,6 +37,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 
+@Api(tags = "Admin")
 public class AdminTopResource {
 
 	@Path("namespaces/")

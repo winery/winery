@@ -13,6 +13,9 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithTypeReferenceResource;
 
+import io.swagger.annotations.Api;
+
+@Api(tags = "Relationship Type Implementations")
 public class RelationshipTypeImplementationsResource extends AbstractComponentsWithTypeReferenceResource<RelationshipTypeImplementationResource> {
 	@Path("{namespace}/{id}/")
 	public RelationshipTypeImplementationResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {

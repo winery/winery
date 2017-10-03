@@ -13,10 +13,13 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithTypeReferenceResource;
 
+import io.swagger.annotations.Api;
+
 /**
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate>
  * as these templates are directly nested in a TDefinitionsElement
  */
+@Api(tags = "Artifact Templates")
 public class ArtifactTemplatesResource extends AbstractComponentsWithTypeReferenceResource<ArtifactTemplateResource> {
 	@Path("{namespace}/{id}/")
 	public ArtifactTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {

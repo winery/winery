@@ -13,10 +13,13 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
+import io.swagger.annotations.Api;
+
 /**
  * Manages all capability types in all available namespaces <br />
  * The actual implementation is done in the AbstractComponentsResource
  */
+@Api(tags = "Requirement Types")
 public class RequirementTypesResource extends AbstractComponentsWithoutTypeReferenceResource<RequirementTypeResource> {
 	@Path("{namespace}/{id}/")
 	public RequirementTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
