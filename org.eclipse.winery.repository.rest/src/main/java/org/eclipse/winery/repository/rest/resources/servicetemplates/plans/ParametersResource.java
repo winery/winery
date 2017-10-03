@@ -9,7 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources.interfaces;
+package org.eclipse.winery.repository.rest.resources.servicetemplates.plans;
 
 import java.util.List;
 
