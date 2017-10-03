@@ -13,11 +13,14 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithTypeReferenceResource;
 
+import io.swagger.annotations.Api;
+
 /**
  * Manages all policy types in all available namespaces <br />
  * The actual implementation is done in the
  * AbstractComponentsWithTypeReferenceResource
  */
+@Api(tags = "Policy Templates")
 public class PolicyTemplatesResource extends AbstractComponentsWithTypeReferenceResource<PolicyTemplateResource> {
 	@Path("{namespace}/{id}/")
 	public PolicyTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {

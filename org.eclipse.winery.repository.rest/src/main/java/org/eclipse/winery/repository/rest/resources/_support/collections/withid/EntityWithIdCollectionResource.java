@@ -13,11 +13,13 @@ package org.eclipse.winery.repository.rest.resources._support.collections.withid
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 
+import com.sun.jersey.api.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,4 +66,23 @@ public abstract class EntityWithIdCollectionResource<EntityResourceT extends Ent
 		return newInstance;
 	}
 
+	@Override
+	protected EntityResourceT getEntityResourceFromDecodedId(String id) {
+		Objects.requireNonNull(id);
+		EntityT entity = null;
+		int idx = -1;
+		for (EntityT c : this.list) {
+			idx++;
+			String cId = this.getId(c);
+			if (cId.equals(id)) {
+				entity = c;
+				break;
+			}
+		}
+		if (entity == null) {
+			throw new NotFoundException();
+		} else {
+			return this.getEntityResourceInstance(entity, idx);
+		}
+	}
 }

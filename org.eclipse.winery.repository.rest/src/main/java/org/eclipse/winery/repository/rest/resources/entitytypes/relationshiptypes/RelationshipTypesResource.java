@@ -16,6 +16,9 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 
+import io.swagger.annotations.Api;
+
+@Api(tags = "Relationship Types")
 public class RelationshipTypesResource extends AbstractComponentsWithoutTypeReferenceResource<RelationshipTypeResource> {
 	@Path("{namespace}/{id}/")
 	public RelationshipTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
