@@ -58,17 +58,21 @@ public class JAXBSupport {
 
 		@Override
 		public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
-			if (namespaceUri.equals("")) {
-				return "";
+			LOGGER.trace("Mapping params: {}, {}, {}", namespaceUri, suggestion, requirePrefix);
+			if (!requirePrefix) {
+				// in case no prefix is required, there should be no prefix added at all to increase human-readability of the XML
+				LOGGER.trace("No prefix required: returning null.");
+				return null;
 			}
 
-			// this does not work to get TOSCA elements without prefix
-			// possibly because the attribute "name" is present without prefix
-			//	if (namespaceUri.equals(Namespaces.TOSCA_NAMESPACE)) {
-			//		return "";
-			//	}
+			if (namespaceUri.equals("")) {
+				LOGGER.debug("Empty namespaceUri: null returned");
+				return null;
+			}
 
-			return RepositoryFactory.getRepository().getNamespaceManager().getPrefix(namespaceUri);
+			final String prefix = RepositoryFactory.getRepository().getNamespaceManager().getPrefix(namespaceUri);
+			LOGGER.trace("returned: {}", prefix);
+			return prefix;
 		}
 	}
 
