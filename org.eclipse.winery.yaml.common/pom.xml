@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+ * Copyright (c) 2017 University of Stuttgart.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * and the Apache License 2.0 which both accompany this distribution,
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
+ * and http://www.apache.org/licenses/LICENSE-2.0
+ *******************************************************************************/
+-->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.eclipse.winery</groupId>
     <artifactId>org.eclipse.winery.yaml.common</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
+    <parent>
+        <groupId>org.eclipse.winery</groupId>
+        <artifactId>winery</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
     <dependencies>
         <dependency>
             <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
@@ -27,7 +42,7 @@
         <dependency>
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.model.tosca.yaml</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
@@ -53,22 +68,11 @@
         <name>Eclipse.org - Winery Project</name>
         <url>http://www.eclipse.org/winery</url>
     </organization>
-    <issueManagement>
-        <system>bugzilla</system>
-        <url>https://bugs.eclipse.org/bugs</url>
-    </issueManagement>
     <inceptionYear>2017</inceptionYear>
-    <mailingLists>
-        <mailingList>
-            <name>Winery Developer List</name>
-            <post>winery-dev@eclipse.org</post>
-            <archive>http://dev.eclipse.org/mhonarc/lists/winery-dev</archive>
-        </mailingList>
-    </mailingLists>
     <licenses>
         <license>
-            <name>Eclipse Public License v1.0</name>
-            <url>http://www.eclipse.org/legal/epl-v10.html</url>
+            <name>Eclipse Public License v2.0</name>
+            <url>http://www.eclipse.org/legal/epl-v20.html</url>
             <distribution>repo</distribution>
             <comments>Standard Eclipse Licence</comments>
         </license>
@@ -83,7 +87,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.5.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
