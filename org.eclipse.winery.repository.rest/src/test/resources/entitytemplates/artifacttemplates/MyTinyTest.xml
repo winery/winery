@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12"
-				   id="winery-defs-for_artifacttemplates-MyTinyTest"
-				   targetNamespace="http://opentosca.org/artifacttemplates">
-	<tosca:Import
-		importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/artifacttypes/http%253A%252F%252Fopentosca.org%252Fartifacttypes/MiniArtifactType/?definitions" namespace="http://opentosca.org/artifacttypes"/>
-	<tosca:ArtifactTemplate xmlns:artifacttypes="http://opentosca.org/artifacttypes" name="MyTinyTest"
-							type="artifacttypes:MiniArtifactType" id="MyTinyTest">
-		<tosca:ArtifactReferences>
-			<tosca:ArtifactReference
-				reference="artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/blub.zip"/>
-		</tosca:ArtifactReferences>
-	</tosca:ArtifactTemplate>
-</tosca:Definitions>
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns3="http://www.eclipse.org/winery/model/selfservice" xmlns:ns4="http://test.winery.opentosca.org" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_artifacttemplates-MyTinyTest" targetNamespace="http://opentosca.org/artifacttemplates">
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/artifacttypes/http%253A%252F%252Fopentosca.org%252Fartifacttypes/MiniArtifactType/?definitions" namespace="http://opentosca.org/artifacttypes"/>
+	<ArtifactTemplate xmlns:ns5="http://opentosca.org/artifacttypes" id="MyTinyTest" name="MyTinyTest" type="ns5:MiniArtifactType">
+		<ArtifactReferences>
+			<ArtifactReference reference="artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/blub.zip"/>
+		</ArtifactReferences>
+	</ArtifactTemplate>
+</Definitions>

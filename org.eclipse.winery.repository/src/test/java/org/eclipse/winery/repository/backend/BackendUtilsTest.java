@@ -67,14 +67,14 @@ public class BackendUtilsTest {
 		rt.setSourceNodeTemplate(nt1);
 		rt.setTargetNodeTemplate(nt2);
 
-		String minimalTopologyTemplateAsXmlString = "<tosca:TopologyTemplate xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\" xmlns:ns1=\"http://www.eclipse.org/winery/model/selfservice\">\n" +
-			"    <tosca:NodeTemplate id=\"nt1\"/>\n" +
-			"    <tosca:NodeTemplate id=\"nt2\"/>\n" +
-			"    <tosca:RelationshipTemplate id=\"rt\">\n" +
-			"        <tosca:SourceElement ref=\"nt1\"/>\n" +
-			"        <tosca:TargetElement ref=\"nt2\"/>\n" +
-			"    </tosca:RelationshipTemplate>\n" +
-			"</tosca:TopologyTemplate>";
+		String minimalTopologyTemplateAsXmlString = "<TopologyTemplate xmlns=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ns3=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:ns4=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\">\n" +
+			"  <NodeTemplate id=\"nt1\"/>\n" +
+			"  <NodeTemplate id=\"nt2\"/>\n" +
+			"  <RelationshipTemplate id=\"rt\">\n" +
+			"    <SourceElement ref=\"nt1\"/>\n" +
+			"    <TargetElement ref=\"nt2\"/>\n" +
+			"  </RelationshipTemplate>\n" +
+			"</TopologyTemplate>";
 
 		org.hamcrest.MatcherAssert.assertThat(BackendUtils.getXMLAsString(minimalTopologyTemplate), CompareMatcher.isIdenticalTo(minimalTopologyTemplateAsXmlString).ignoreWhitespace());
 	}

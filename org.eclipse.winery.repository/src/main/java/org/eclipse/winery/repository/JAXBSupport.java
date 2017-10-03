@@ -19,11 +19,13 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,14 +61,14 @@ public class JAXBSupport {
 		@Override
 		public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
 			LOGGER.trace("Mapping params: {}, {}, {}", namespaceUri, suggestion, requirePrefix);
-			if (!requirePrefix) {
-				// in case no prefix is required, there should be no prefix added at all to increase human-readability of the XML
-				LOGGER.trace("No prefix required: returning null.");
+			if (StringUtils.isEmpty(namespaceUri)) {
+				LOGGER.debug("Empty or null namespaceUri: null returned");
 				return null;
 			}
 
-			if (namespaceUri.equals("")) {
-				LOGGER.debug("Empty namespaceUri: null returned");
+			if (!requirePrefix && namespaceUri.equals(Namespaces.TOSCA_NAMESPACE)) {
+				// in case no prefix is required and the namespace is the TOCSA namespace, there should be no prefix added at all to increase human-readability of the XML
+				LOGGER.trace("No prefix required: returning null.");
 				return null;
 			}
 
