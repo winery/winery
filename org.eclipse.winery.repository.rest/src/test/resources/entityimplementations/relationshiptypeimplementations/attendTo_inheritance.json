@@ -1,0 +1,5 @@
+{
+	"derivedFrom": "{http://winery.opentosca.org/test/relationshiptypeimplementations/fruits}kiwi_implementation",
+	"isAbstract": "yes",
+	"isFinal": "no"
+}

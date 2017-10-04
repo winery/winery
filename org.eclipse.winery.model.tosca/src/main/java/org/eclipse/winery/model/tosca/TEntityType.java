@@ -176,8 +176,8 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
      *
      * @param value allowed object is {@link TEntityType.DerivedFrom }
      */
-    public void setDerivedFrom(TEntityType.DerivedFrom value) {
-        this.derivedFrom = value;
+    public void setDerivedFrom(HasType value) {
+        this.derivedFrom = (TEntityType.DerivedFrom) value;
     }
 
     /**

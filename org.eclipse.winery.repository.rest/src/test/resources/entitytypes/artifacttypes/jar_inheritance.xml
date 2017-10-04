@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Definitions targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits" id="winery-defs-for_wfa-JAR" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org">
+	<ArtifactType name="JAR" abstract="no" final="no" targetNamespace="http://winery.opentosca.org/test/artifacttypes/fruits">
+		<winery:PropertiesDefinition elementname="properties" namespace="http://winery.opentosca.org/test/artifacttypes/fruits/properties">
+			<winery:properties>
+				<winery:key>Input</winery:key>
+				<winery:type>xsd:string</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>Configuration</winery:key>
+				<winery:type>xsd:string</winery:type>
+			</winery:properties>
+		</winery:PropertiesDefinition>
+		<DerivedFrom typeRef="fruits1:WAR" xmlns:fruits1="http://winery.opentosca.org/test/artifacttypes/fruits"/>
+	</ArtifactType>
+</Definitions>
