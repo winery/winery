@@ -9,10 +9,10 @@
  */
 -->
 <div *ngIf="!loading; else loadingIcon">
+    <div class="right">
+        <button [disabled]="properties === null" class="btn btn-primary" (click)="save()">Save</button>
+    </div>
     <div *ngIf="propertyKeys?.length > 0; else elseBlock">
-        <div class="right">
-            <button class="btn btn-primary" (click)="save()">Save</button>
-        </div>
         <table>
             <tr *ngFor="let prop of propertyKeys">
                 <td>
@@ -25,9 +25,10 @@
         </table>
     </div>
     <ng-template #elseBlock>
-        <div>
+        <div *ngIf="properties === null">
             The type does not have a “Properties Definition”.
         </div>
+        <winery-editor #propertiesEditor *ngIf="isXMLData" [ngModel]="properties"></winery-editor>
     </ng-template>
 </div>
 <ng-template #loadingIcon>
