@@ -20,23 +20,25 @@
         <button class="btn btn-primary" name="save" (click)="save()">Save</button>
     </div>
     <div style="display: inline-flex;">
-        <winery-selectable-list [title]="'Interfaces'"
-                               [rows]="interfacesData"
-                               (addButtonClicked)="addInterface()"
-                               (selectionChanged)="onInterfaceSelect($event)"
-                               (removeButtonClicked)="removeInterface($event)">
+        <winery-selectable-list #itemList
+                                [title]="'Interfaces'"
+                                [rows]="interfacesData"
+                                (addButtonClicked)="addInterface()"
+                                (selectionChanged)="onInterfaceSelect($event)"
+                                (removeButtonClicked)="removeInterface($event)">
         </winery-selectable-list>
         <winery-selectable-list *ngIf="operations"
-                               [title]="'Operations'"
-                               [rows]="operations"
-                               (addButtonClicked)="addOperation()"
-                               (selectionChanged)="onOperationSelected($event)"
-                               (removeButtonClicked)="removeOperation()">
+                                [title]="'Operations'"
+                                [rows]="operations"
+                                (addButtonClicked)="addOperation()"
+                                (selectionChanged)="onOperationSelected($event)"
+                                (removeButtonClicked)="removeOperation()">
         </winery-selectable-list>
     </div>
 
     <div *ngIf="isServiceTemplate; else inOutParameters">
-        <winery-service-templates-target-interface [operation]="selectedOperation"></winery-service-templates-target-interface>
+        <winery-service-templates-target-interface
+            [operation]="selectedOperation"></winery-service-templates-target-interface>
     </div>
     <ng-template #inOutParameters>
         <div class="generateButtons">
@@ -97,7 +99,7 @@
         </p>
     </winery-modal-body>
     <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Delete'"
-                        (onOk)="onRemoveElement()"></winery-modal-footer>
+                         (onOk)="onRemoveElement()"></winery-modal-footer>
 </winery-modal>
 
 <winery-modal bsModal #generateImplModal="bs-modal" [modalRef]="generateImplModal">

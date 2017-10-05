@@ -26,7 +26,7 @@
         </button>
     </div>
     <div class="list-content">
-        <select #select [ngModel]="currentSelected" (ngModelChange)="onChange($event)" name="Interfaces" size="8" id="interfaces" class="listcontent">
+        <select #select [(ngModel)]="currentSelected" (ngModelChange)="onChange($event)" name="Interfaces" size="8" id="interfaces" class="listcontent">
             <option *ngFor="let item of rows" [ngValue]="item">{{ item.name }}</option>
         </select>
     </div>
