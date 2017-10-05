@@ -27,6 +27,7 @@ import { NgForm } from '@angular/forms';
 import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
 import { ToscaTypes } from '../../../wineryInterfaces/enums';
 import { Utils } from '../../../wineryUtils/utils';
+import { SelectableListComponent } from './selectableList/selectableList.component';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -59,6 +60,7 @@ export class InterfacesComponent implements OnInit {
     @ViewChild('addElementForm') addElementForm: NgForm;
 
     @ViewChild('generateImplModal') generateImplModal: ModalDirective;
+    @ViewChild('itemList') interfaceComponent: SelectableListComponent;
     generateArtifactApiData = new GenerateArtifactApiData();
     toscaType: ToscaTypes;
     createImplementation = true;
@@ -228,6 +230,7 @@ export class InterfacesComponent implements OnInit {
         lifecycle.operation.push(new InterfaceOperationApiData('stop'));
         lifecycle.operation.push(new InterfaceOperationApiData('uninstall'));
         this.interfacesData.push(lifecycle);
+        this.interfaceComponent.selectItem(lifecycle);
     }
 
     containsDefaultLifecycle(): boolean {

@@ -12,6 +12,7 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { isNullOrUndefined } from 'util';
+import { InterfacesApiData } from '../interfacesApiData';
 
 @Component({
     selector: 'winery-selectable-list',
@@ -52,5 +53,10 @@ export class SelectableListComponent implements OnInit {
     onChange(value: any) {
         this.currentSelected = value;
         this.selectionChanged.emit(value);
+    }
+
+    selectItem(item: InterfacesApiData) {
+        this.currentSelected = item;
+        this.onChange(item);
     }
 }
