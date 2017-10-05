@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/*******************************************************************************
+/**
  * Copyright (c) 2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *	Lukas Harzenetter - initial API and implementation and/or initial documentation
- *******************************************************************************/
+ */
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -54,10 +51,10 @@
                             (1) https://www.eclipse.org/downloads/download.php?file=/orion/drops/R-8.0-201502161823/built-editor.zip&amp;mirror_id=96 leads to an HTML page
                             (2) downloads.eclipse.org suffers from DDoS attacks from time to time - see https://bugs.eclipse.org/bugs/show_bug.cgi?id=515596#c73
                             -->
-                            <url>http://ftp.gnome.org/mirror/eclipse.org/orion/drops/R-8.0-201502161823/built-editor.zip</url>
+                            <url>http://ftp-stud.fht-esslingen.de/pub/Mirrors/eclipse/orion/drops/R-16.0-201710030941/built-editor.zip</url>
                             <outputFileName>built-editor.zip</outputFileName>
                             <unpack>true</unpack>
-                            <outputDirectory>${project.basedir}/build/orion</outputDirectory>
+                            <outputDirectory>orion/editor</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

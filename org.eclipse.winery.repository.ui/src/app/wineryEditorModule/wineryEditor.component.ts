@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Philipp Meyer - initial API and implementation
  */
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -22,7 +19,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     multi: true
 };
 
-declare var requirejs: any;
+declare var System: any;
 
 /**
  * This component provides an editor for editing and showing code with syntax highlight for different
@@ -73,10 +70,15 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
     }
 
     ngOnInit() {
-        requirejs(['orion/editor/edit'], function (edit: any) {
-            this.orionEditor = edit({ className: 'editor', parent: 'xml', contentType: this.dataEditorLang })[0];
-            this.orionEditor.setText(this.innerValue);
-        }.bind(this));
+        System.import('../../../orion/editor/stylers/lib/syntax.js');
+        System.import('../../../orion/editor/stylers/application_xml/syntax.js');
+        System.import('../../../orion/editor/built-editor.js')
+            .then((o: any) => {
+                this.orionEditor = o({
+                    document: document, className: 'editor', parent: 'xml'
+                })[0];
+                this.orionEditor.setText(this.innerValue);
+            });
     }
 
     // get accessor

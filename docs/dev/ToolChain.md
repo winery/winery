@@ -65,6 +65,9 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
 
 ## GitHub - Prepare Pull Request
 
+The aim of these steps to have a **single commit**.
+This is required by the Eclipse process for checking for intellectual property (IP process for short).
+
 * Check [CONTRIBUTING.md](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md).
 * Steps to prepare Pull Request:
   1. `git fetch upstream` - fetches all updates from https://github.com/eclipse/winery ("upstream") to the local git storage
@@ -77,7 +80,7 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
   6. Check changes in Git Gui:
      - Each change you wanted: Is it recognized?
      - At each file: Is the copyright information in the header OK?
-     - Are there too much changed lines? 🡒 Do not stage spurious lines to the commit (e.g., tab 2 spaces, ...)
+     - Are there too much changed lines? 🡒 Do not stage spurious lines to the commit (e.g., tab to spaces, ...)
      - Are there too much changed files? 🡒 Do not stage files you did not intend to change (e.g., `build.gradle` if you did not touch `build.gradle` at all)
      - Check again the style (!)
      - (Don't forget RESCAN to see the current changes)
@@ -115,16 +118,18 @@ For that, create a pull request to https://github.com/opentosca/winery to enable
     See [GitHub - Prepare Pull Request](#github---prepare-pull-request).
     Then, do a force push (`git push -f`).
 
+
 ## GitHub - After Pull Request Got Merged
 
 * Delete the branch locally.
   The branch on origin (<https://github.com/OpenTOSCA/winery>) is deleted by the maintainer having done the merge.
 
+
 ## Excursus: Git
 
 ![ExcursusGit](graphics/ExcursusGit.png)
 
-  [gitk]: https://lostechies.com/joshuaflanagan/2010/09/03/use-gitk-to-understand-git/
+Please see also [use gitk to understand git](https://lostechies.com/joshuaflanagan/2010/09/03/use-gitk-to-understand-git/) to understand the settings in git.
 
 ## License
 
@@ -136,3 +141,4 @@ and the [Apache License v2.0] which both accompany this distribution.
 
   [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
   [Eclipse Public License v2.0]: http://www.eclipse.org/legal/epl-v20.html
+  [gitk]: https://lostechies.com/joshuaflanagan/2010/09/03/use-gitk-to-understand-git/
