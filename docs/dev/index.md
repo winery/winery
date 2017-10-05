@@ -396,15 +396,16 @@ object out of a QName.
 
 "IWineryRepositoryClient" offers methods to add repository URLs.
 
-"WineryRepositoryClient" is a real client to the repository. It implements "IWineryRepositoryClient" using the
-Jersey 1.1. web client. it uses a subset of the REST API to communicate with the repository. Currently, the client
-has features required by the topology modeler.
+"WineryRepositoryClient" is a real client to the repository.
+It implements "IWineryRepositoryClient" using the Jersey 1.1. web client.
+It uses a subset of the REST API to communicate with the repository.
+Currently, the client has features required by the topology modeler.
 
 ## Topology Modeler
 
 The main file of the topology modeler is the "index.jsp". It uses embedded Java code to connect to the repository.
 Thereby, the interface IWineryRepositoryClient (see Section 6) is used. Afterwards, the whole UI is rendered in
-*div id="winery"*.
+`div id="winery"`.
 
 Figure 13 shows a screenshot of the topology modeler. the buttons in the first row are directly contained in
 index.jsp. The palette on the left side is rendered by "palette.tag". The topology in the middle is rendered by a
