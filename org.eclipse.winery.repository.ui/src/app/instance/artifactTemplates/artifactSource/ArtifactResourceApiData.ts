@@ -10,8 +10,17 @@
 export class ArtifactResourceApiData {
     private fileName = '';
     private content = '';
+    private subDirectory = '';
 
     constructor() {
+    }
+
+    public getSubDirectory(): string {
+        return this.subDirectory;
+    }
+
+    public setSubDirectory(value: string) {
+        this.subDirectory = value;
     }
 
     public getFileName(): string {

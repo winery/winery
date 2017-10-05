@@ -13,10 +13,15 @@ import { isNullOrUndefined } from 'util';
 export class WineryValidatorObject {
     list: Array<any>;
     property?: string;
+    regEx?: RegExp;
 
     constructor(list: Array<any>, property?: string) {
         this.list = list;
         this.property = property;
+    }
+
+    public setRegExp(regExp: RegExp) {
+        this.regEx = regExp;
     }
 
     validate(compareObject: WineryValidatorObject): ValidatorFn {
@@ -31,14 +36,17 @@ export class WineryValidatorObject {
             } else {
                 no = compareObject.list.find(item => item[compareObject.property] === name);
             }
-            return no ? {'wineryDuplicateValidator': {name}} : null;
+            if (!isNullOrUndefined(compareObject.regEx)) {
+                no = !compareObject.regEx.test(name);
+            }
+            return no ? { 'wineryDuplicateValidator': { name } } : null;
         };
     }
 }
 
 @Directive({
     selector: '[wineryDuplicateValidator]',
-    providers: [{provide: NG_VALIDATORS, useExisting: WineryDuplicateValidatorDirective, multi: true}]
+    providers: [{ provide: NG_VALIDATORS, useExisting: WineryDuplicateValidatorDirective, multi: true }]
 })
 export class WineryDuplicateValidatorDirective implements Validator, OnChanges {
 

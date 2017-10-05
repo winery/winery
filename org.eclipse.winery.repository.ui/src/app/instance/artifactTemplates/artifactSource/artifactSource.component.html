@@ -41,29 +41,26 @@
         </button>
     </div>
     <div id="fileGridBody">
-        <div id="leftEditContent">
-            <table role="presentation">
-                <tbody class="files">
-                <div id="filesList">
-                    <tr *ngFor="let file of filesList" [ngClass]="{selected: file.name === selectedFile?.name}"
-                        (click)="editFile(file)">
-                        <td>
-                                <span class="preview"><a href="{{baseUrl + file.url}}" download="{{file.name}}"
-                                                         title="{{file.name}}"><img
-                                    src="{{file.thumbnailUrl}}"></a></span>
-                        </td>
-                        <td id="srcNameCell">
-                            <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}"
-                                               title="{{file.name}}">{{file.name}}</a>
-                            </p>
-                        </td>
-                        <td>
+        <div>
+            <div id="leftEditContent">
+                <div *ngFor="let path of paths" class="fileList">
+                    <div *ngIf="path != ''" (click)="selectPath(path)"
+                         [ngClass]="{selected: path === selectedPath, fileListFolder: true}">
+                        <span></span>
+                        <span>{{path}}</span>
+                    </div>
+                    <div class="fileListSubFiles" *ngIf="selectedPath == path || path == ''"
+                         [ngClass]="{indented: path != ''}">
+                        <div *ngFor="let file of fileMap.get(path)"
+                             [ngClass]="{selected: file.name === selectedFile?.name, fileListFile: true}"
+                             (click)="editFile(file)">
+                            <span class="preview"><img src="{{file.thumbnailUrl}}"></span>
+                            <span class="name">{{file.name}}</span>
                             <span class="size">{{file.size / 1024 | number: '1.2-2'}} KB</span>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                 </div>
-                </tbody>
-            </table>
+            </div>
         </div>
         <div id="rightEditHeader">
             <span *ngIf="fileContent != null && (fileContent !== editor?.getData())">*</span>
@@ -105,10 +102,10 @@
 <winery-modal bsModal #createNewFileModal="bs-modal" [modalRef]="createNewFileModel">
     <winery-modal-header [title]="'Create New File'"></winery-modal-header>
     <winery-modal-body>
-        <form #addImplForm="ngForm" id="createFile">
+        <form #addNewArtifactFileForm="ngForm" id="createFile">
             <div class="form-group">
                 <label class="control-label" for="fileName">Name</label>
-                <input #localNameInput="ngModel"
+                <input #fileNameInput="ngModel"
                        id="fileName"
                        class="form-control"
                        name="fileName"
@@ -116,20 +113,35 @@
                        [(ngModel)]="newFileName"
                        [wineryDuplicateValidator]="validatorObject"
                 />
-                <div *ngIf="localNameInput.errors && (localNameInput.dirty || localNameInput.touched)"
+                <div *ngIf="fileNameInput.errors && (fileNameInput.dirty || fileNameInput.touched)"
                      class="alert alert-danger">
-                    <div [hidden]="!localNameInput.errors.wineryDuplicateValidator">
+                    <div [hidden]="!fileNameInput.errors.wineryDuplicateValidator">
                         No duplicates allowed!
                     </div>
-                    <div [hidden]="!localNameInput.errors.required">
+                    <div [hidden]="!fileNameInput.errors.required">
                         Name is required!
+                    </div>
+                </div>
+                <label class="control-label" for="filePath">Path</label>
+                <input #filePathInput="ngModel"
+                       id="filePath"
+                       class="form-control"
+                       name="filePath"
+                       [(ngModel)]="newFileDir"
+                       [wineryDuplicateValidator]="pathValidatorObject"
+                />
+                <div *ngIf="(filePathInput.dirty || filePathInput.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="addNewArtifactFileForm?.form.valid">
+                        The path must either or be of the form <b>path\to</b>
                     </div>
                 </div>
             </div>
         </form>
     </winery-modal-body>
     <winery-modal-footer [closeButtonLabel]="'Cancel'" [okButtonLabel]="'Create'"
-                         (onOk)="createNewFile()">
+                         (onOk)="createNewFile()"
+                         [disableOkButton]="!(addNewArtifactFileForm?.form.valid && newFileName?.length > 0)">
     </winery-modal-footer>
 </winery-modal>
 

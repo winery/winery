@@ -32,9 +32,12 @@ export class ArtifactSourceComponent implements OnInit {
     uploadUrl: string;
     filesList: FilesApiData[];
     baseUrl = hostURL;
-
+    fileMap = new Map<string, FilesApiData[]>();
+    paths: string[];
     @ViewChild('removeElementModal') removeElementModal: any;
     srcPath: string;
+    downloadPath: string;
+    selectedPath: string;
 
     @ViewChild('saveCurrentFileModal') saveCurrentFileModal: any;
     @ViewChild('createNewFileModal') createNewFileModel: any;
@@ -42,30 +45,44 @@ export class ArtifactSourceComponent implements OnInit {
     @ViewChild('artifactsEditor') editor: WineryEditorComponent;
 
     validatorObject: WineryValidatorObject;
+    pathValidatorObject: WineryValidatorObject;
     renameFileName: string;
     fileContent: string;
     newFileName: string;
+    newFileDir: string;
     selectedFile: FilesApiData = null;
 
     constructor(private service: ArtifactSourceService,
                 private notify: WineryNotificationService,
                 private sharedData: InstanceService) {
-        this.srcPath = backendBaseURL + this.sharedData.path + '/source/zip';
+        this.downloadPath = backendBaseURL + this.sharedData.path + '/source/';
+        this.srcPath = this.downloadPath + 'zip';
     }
 
     ngOnInit() {
         this.loadFiles();
         this.uploadUrl = this.service.uploadUrl;
         this.validatorObject = new WineryValidatorObject(this.filesList, 'name');
+        this.pathValidatorObject = new WineryValidatorObject([]);
+        const regExp = /^(|[\w-_]+([\\][\w-_]+)*)$/;
+        this.pathValidatorObject.setRegExp(new RegExp(regExp));
     }
 
     loadFiles() {
         this.loading = true;
         this.service.getFiles()
             .subscribe(
-                data => this.handleLoadFiles(data.files),
+                data => this.handleLoadFiles(data.files, data.paths),
                 error => this.handleError(error)
             );
+    }
+
+    selectPath(path: string) {
+        if (this.selectedPath != null && this.selectedPath === path) {
+            this.selectedPath = null;
+        } else {
+            this.selectedPath = path;
+        }
     }
 
     editFile(file: FilesApiData) {
@@ -84,6 +101,7 @@ export class ArtifactSourceComponent implements OnInit {
             const fileAPI = new ArtifactResourceApiData();
             fileAPI.setContent(this.fileContent);
             fileAPI.setFileName(this.selectedFile.name);
+            fileAPI.setSubDirectory(this.selectedFile.subDirectory);
             this.service.postToSources(fileAPI)
                 .subscribe(
                     data => this.handleSave(),
@@ -95,6 +113,7 @@ export class ArtifactSourceComponent implements OnInit {
     copyAllSrc() {
         for (let i = 0; i < this.filesList.length; i++) {
             const name = this.filesList[i].name;
+            const path = this.filesList[i].subDirectory;
             this.service.getFile(this.filesList[i])
                 .subscribe(
                     data => this.pushToFiles(name, data),
@@ -112,6 +131,7 @@ export class ArtifactSourceComponent implements OnInit {
         const apiData = new ArtifactResourceApiData();
         apiData.setFileName(this.renameFileName);
         apiData.setContent(this.fileContent);
+        apiData.setSubDirectory(this.selectedFile.subDirectory);
         this.service.postToSources(apiData)
             .subscribe(
                 data => this.onRename(),
@@ -126,6 +146,10 @@ export class ArtifactSourceComponent implements OnInit {
 
     onCreateNewFile() {
         this.newFileName = '';
+        this.newFileDir = '';
+        if (this.selectedPath != null) {
+            this.newFileDir = this.selectedPath;
+        }
         this.createNewFileModel.show();
     }
 
@@ -133,6 +157,7 @@ export class ArtifactSourceComponent implements OnInit {
         this.loading = true;
         const newFile = new ArtifactResourceApiData();
         newFile.setFileName(this.newFileName);
+        newFile.setSubDirectory(this.newFileDir);
         this.service.postToSources(newFile)
             .subscribe(
                 data => this.handleCreate(),
@@ -208,7 +233,27 @@ export class ArtifactSourceComponent implements OnInit {
         this.notify.success('Successfully Saved ' + this.selectedFile.name);
     }
 
-    private handleLoadFiles(files: FilesApiData[]) {
+    private handleLoadFiles(files: FilesApiData[], paths: string[]) {
+        this.fileMap.clear();
+        this.paths = [];
+        for (let i = 0; i < paths.length; i++) {
+            files[i].subDirectory = paths[i];
+            if (this.fileMap.has(paths[i])) {
+                this.fileMap.get(paths[i]).push(files[i]);
+            } else {
+                this.fileMap.set(paths[i], [files[i]]);
+                this.paths.push(paths[i]);
+            }
+        }
+        this.paths.sort((a: string, b: string) => {
+            if (a > b) {
+                return -1;
+            }
+            if (a < b) {
+                return 1;
+            }
+            return 0;
+        });
         this.filesList = files;
         this.loading = false;
     }
