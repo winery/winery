@@ -192,7 +192,7 @@
                             (1) https://www.eclipse.org/downloads/download.php?file=/orion/drops/R-8.0-201502161823/built-editor.zip&amp;mirror_id=96 leads to an HTML page
                             (2) downloads.eclipse.org suffers from DDoS attacks from time to time - see https://bugs.eclipse.org/bugs/show_bug.cgi?id=515596#c73
                             -->
-							<url>http://ftp.gnome.org/mirror/eclipse.org/orion/drops/R-8.0-201502161823/built-editor.zip</url>
+							<url>http://ftp-stud.fht-esslingen.de/pub/Mirrors/eclipse/orion/drops/R-16.0-201710030941/built-editor.zip</url>
 							<outputFileName>built-editor.zip</outputFileName>
 							<unpack>true</unpack>
 							<outputDirectory>${project.basedir}/target/winery-topologymodeler/orion</outputDirectory>
