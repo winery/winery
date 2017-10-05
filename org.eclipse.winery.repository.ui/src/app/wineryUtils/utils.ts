@@ -139,6 +139,30 @@ export class Utils {
         }
     }
 
+    public static hasImplementationsOrTemplates(value: ToscaTypes, uppercase = false, plural = false): string {
+        let type: string;
+        switch (value) {
+            case ToscaTypes.NodeType || ToscaTypes.RelationshipType:
+                type = 'Implementation';
+                break;
+            case ToscaTypes.ArtifactType || ToscaTypes.PolicyType:
+                type = 'Template';
+                break;
+            default:
+                type = '';
+        }
+
+        if (plural) {
+            type += 's';
+        }
+
+        if (uppercase) {
+            return type;
+        } else {
+            return type.toLowerCase();
+        }
+    }
+
     public static getNameFromQname(qName: string) {
         return qName.split('}').pop();
     }

@@ -20,9 +20,9 @@ import { DocumentationComponent } from '../../instance/sharedComponents/document
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { InheritanceComponent } from '../../instance/sharedComponents/inheritance/inheritance.component';
 import { PropertiesDefinitionComponent } from '../../instance/sharedComponents/propertiesDefinition/propertiesDefinition.component';
-import { TemplatesOfTypeComponent } from '../../instance/sharedComponents/templatesOfTypes/templatesOfTypes.component';
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
+import { ImplementationsComponent } from '../../instance/sharedComponents/implementations/implementations.component';
 
 const toscaType = ToscaTypes.ArtifactType;
 
@@ -34,14 +34,14 @@ const artifactTypeRoutes: Routes = [
         component: InstanceComponent,
         resolve: { resolveData: InstanceResolver },
         children: [
-            { path: 'readme', component: WineryReadmeComponent},
-            { path: 'license', component: WineryLicenseComponent},
+            { path: 'readme', component: WineryReadmeComponent },
+            { path: 'license', component: WineryLicenseComponent },
             { path: 'propertiesdefinition', component: PropertiesDefinitionComponent },
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
-            { path: 'templates', component:  TemplatesOfTypeComponent},
-            { path: '', redirectTo: 'propertiesdefinition', pathMatch: 'full'}
+            { path: 'templates', component: ImplementationsComponent },
+            { path: '', redirectTo: 'propertiesdefinition', pathMatch: 'full' }
         ]
     }
 ];
