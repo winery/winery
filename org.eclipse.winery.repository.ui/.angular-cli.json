@@ -21,12 +21,14 @@
                 "css/bootstrap.min.css",
                 "css/wineryCommon.css",
                 "css/wineryRepository.css",
-                "../build/orion/built-editor.css",
+                "../orion/editor/built-editor.css",
                 "../node_modules/ng2-toastr/ng2-toastr.css",
                 "../node_modules/font-awesome/css/font-awesome.css"
             ],
             "scripts": [
-                "../build/orion/built-editor.min.js"
+                "../orion/editor/stylers/lib/syntax.js",
+                "../orion/editor/stylers/application_xml/syntax.js",
+                "../orion/editor/built-editor.min.js"
             ],
             "environmentSource": "environments/environment.ts",
             "environments": {
