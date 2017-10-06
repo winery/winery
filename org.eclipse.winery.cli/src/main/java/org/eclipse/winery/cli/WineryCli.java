@@ -246,7 +246,12 @@ public class WineryCli {
 	}
 
 	private static void checkXmlSchemaValidation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
-		try (InputStream inputStream = repository.newInputStream(BackendUtils.getRefOfDefinitions(id))) {
+		RepositoryFileReference refOfDefinitions = BackendUtils.getRefOfDefinitions(id);
+		if (!repository.exists(refOfDefinitions)) {
+			printAndAddError(res, verbosity, id, "Id exists, but corresponding XML file does not.");
+			return;
+		}
+		try (InputStream inputStream = repository.newInputStream(refOfDefinitions)) {
 			DocumentBuilder documentBuilder = ToscaDocumentBuilderFactory.INSTANCE.getSchemaAwareToscaDocumentBuilder();
 			StringBuilder errorStringBuilder = new StringBuilder();
 			documentBuilder.setErrorHandler(BackendUtils.getErrorHandler(errorStringBuilder));
@@ -256,8 +261,10 @@ public class WineryCli {
 				printAndAddError(res, verbosity, id, errors);
 			}
 		} catch (IOException e) {
+			LOGGER.debug("I/O error", e);
 			printAndAddError(res, verbosity, id, "I/O error during XML validation " + e.getMessage());
 		} catch (SAXException e) {
+			LOGGER.debug("SAX exception", e);
 			printAndAddError(res, verbosity, id, "SAX error during XML validation: " + e.getMessage());
 		}
 	}
@@ -289,6 +296,10 @@ public class WineryCli {
 	public static void checkPropertiesValidation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
 		if (id instanceof EntityTemplateId) {
 			TEntityTemplate entityTemplate = (TEntityTemplate) repository.getDefinitions(id).getElement();
+			if (Objects.isNull(entityTemplate.getType())) {
+				// no printing necessary; type consistency is checked at other places
+				return;
+			}
 			final TEntityType entityType = repository.getTypeForTemplate(entityTemplate);
 			final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
 			final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();

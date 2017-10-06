@@ -16,6 +16,7 @@ package org.eclipse.winery.common.interfaces;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
@@ -143,11 +144,13 @@ public interface IWineryRepositoryCommon {
 	 * Returns the stored type for the given template
 	 *
 	 * @param template the template to determine the type for
+	 * @throws NullPointerException if template.getType() returns null
 	 */
 	// we suppress "unchecked" as we use Class.forName
 	@SuppressWarnings("unchecked")
 	default TEntityType getTypeForTemplate(TEntityTemplate template) {
 		QName type = template.getType();
+		Objects.requireNonNull(type);
 
 		// Possibilities:
 		// a) try all possibly types whether an appropriate QName exists
