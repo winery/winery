@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Philipp Meyer - initial API and implementation
  */
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -68,7 +65,7 @@ export class SpinnerWithInfinityComponent implements ControlValueAccessor {
     // get accessor
     get value(): any {
         return this.innerValue;
-    };
+    }
 
     // set accessor including call the onchange callback
     set value(v: any) {

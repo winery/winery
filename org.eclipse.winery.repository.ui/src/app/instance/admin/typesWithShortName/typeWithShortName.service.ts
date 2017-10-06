@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Niko Stadelmaier - initial API and implementation
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
@@ -41,7 +38,7 @@ export class TypeWithShortNameService {
 
         return this.http.get(backendBaseURL + this.path + '/', options)
             .map(res => res.json());
-    };
+    }
 
     postTypes(types: TypeWithShortName[]): Observable<Response> {
         const headers = new Headers({'Content-Type': 'application/json'});

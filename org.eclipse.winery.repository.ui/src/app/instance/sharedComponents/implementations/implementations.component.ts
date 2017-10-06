@@ -34,7 +34,6 @@ export class ImplementationsComponent implements OnInit {
     newImplementation: ImplementationAPIData = new ImplementationAPIData('', '');
     elementToRemove: ImplementationAPIData;
     implementationOrTemplate: ToscaTypes;
-    templateOrImplementationsLink: string;
     selectedNamespace: string;
     validatorObject: WineryValidatorObject;
     columns: Array<WineryTableColumn> = [

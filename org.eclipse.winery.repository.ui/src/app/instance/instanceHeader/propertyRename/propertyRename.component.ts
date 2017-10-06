@@ -56,7 +56,7 @@ export class PropertyRenameComponent implements OnInit, OnChanges {
         this.service.setPropertyValue(this.propertyValue).subscribe(
             data => this.handleUpdateValue(),
             error => this.handleError(error)
-        )
+        );
     }
 
     onClickEdit() {

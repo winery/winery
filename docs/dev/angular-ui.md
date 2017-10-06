@@ -45,7 +45,8 @@ Therefore,  an example request to the backend, if it runs locally, looks like th
 Usually IntelliJ finds the `tslint.json` automatically, otherwise configure it in the same window yourself.  
 
 ### Automatically fix issues
-Use the <kbd>Alt</kbd> + <kbd>Enter</kbd> shortcut to quickly fix TSLint errors by selecting `TSLint: Fix current ...`
+- Use the <kbd>Alt</kbd> + <kbd>Enter</kbd> shortcut to quickly fix TSLint errors by selecting `TSLint: Fix current ...`
+- Or you can use the auto fix functionality provided by TSLint. You can do this by running `ng lint --fix`.
 
 ## Production Build
 After step 3 at setting up local development server do

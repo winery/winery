@@ -313,7 +313,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         }
 
         this.handleSuccess(data);
-    };
+    }
 
     private handleSave(data: Response) {
         this.handleSuccess(data, 'change');

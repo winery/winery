@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
 import { Injectable } from '@angular/core';
-import { Headers, Http, Response, RequestOptions } from '@angular/http';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { CapabilityOrRequirementDefinition, CapOrReqDefinition, Constraint } from './capOrReqDefResourceApiData';
 import { Router } from '@angular/router';
@@ -48,7 +48,7 @@ export class CapabilityOrRequirementDefinitionsService {
      */
     getConstraintTypes(): Observable<TypeWithShortName[]> {
         return this.sendJsonRequest('/admin/constrainttypes/');
-    };
+    }
 
     /**
      * Sends a GET request to get a list of all constraints from one capability definition
@@ -67,8 +67,8 @@ export class CapabilityOrRequirementDefinitionsService {
      * @returns {Observable<string>} new id of the modified constraint
      */
     updateConstraint(capabilityDefinition: string, id: string, data: string): Observable<string> {
-        const headers = new Headers({'Content-Type': 'text/xml'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Content-Type': 'text/xml' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.put(backendBaseURL + this.path + '/' + capabilityDefinition
             + '/constraints/' + id + '/', data, options).map(res => res.text());
@@ -81,8 +81,8 @@ export class CapabilityOrRequirementDefinitionsService {
      * @returns {Observable<string>} provides id of the newly created constraint
      */
     createConstraint(capabilityDefinition: string, constraintData: string): Observable<string> {
-        const headers = new Headers({'Accept': 'text/plain', 'Content-Type': 'text/xml'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Accept': 'text/plain', 'Content-Type': 'text/xml' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.post(backendBaseURL + this.path + '/' + capabilityDefinition
             + '/constraints/', constraintData, options).map(res => res.text());
@@ -95,8 +95,8 @@ export class CapabilityOrRequirementDefinitionsService {
      * @returns {Observable<Response>}
      */
     deleteConstraint(capabilityDefinition: string, id: string): Observable<Response> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
         return this.http.delete(backendBaseURL + this.path + '/' + capabilityDefinition + '/constraints/' + id + '/', options);
     }
 
@@ -106,8 +106,8 @@ export class CapabilityOrRequirementDefinitionsService {
      * @returns {Observable<Response>}
      */
     sendPostRequest(capDef: CapOrReqDefinition): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.post(backendBaseURL + this.path + '/', capDef, options);
     }
@@ -118,8 +118,8 @@ export class CapabilityOrRequirementDefinitionsService {
      * @returns {Observable<Response>}
      */
     deleteCapOrReqDef(id: any): Observable<Response> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
         return this.http.delete(backendBaseURL + this.path + '/' + id + '/', options);
     }
 
@@ -131,8 +131,8 @@ export class CapabilityOrRequirementDefinitionsService {
      * @returns {Observable<any>}
      */
     private sendJsonRequest(requestPath: string): Observable<any> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.get(backendBaseURL + requestPath, options)
             .map(res => res.json());

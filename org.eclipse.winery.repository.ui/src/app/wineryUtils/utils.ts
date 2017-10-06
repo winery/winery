@@ -6,7 +6,7 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-import { ToscaTypes } from '../wineryInterfaces/enums';
+import { ServiceTemplateTemplateTypes, ToscaTypes } from '../wineryInterfaces/enums';
 
 export class Utils {
 
@@ -139,40 +139,65 @@ export class Utils {
         }
     }
 
-    public static hasImplementationsOrTemplates(value: ToscaTypes, uppercase = false, plural = false): string {
-        let type: string;
+    public static getTypeOfServiceTemplateTemplate(value: ServiceTemplateTemplateTypes): ToscaTypes {
         switch (value) {
-            case ToscaTypes.NodeType || ToscaTypes.RelationshipType:
-                type = 'Implementation';
-                break;
-            case ToscaTypes.ArtifactType || ToscaTypes.PolicyType:
-                type = 'Template';
-                break;
+            case ServiceTemplateTemplateTypes.CapabilityTemplate:
+                return ToscaTypes.CapabilityType;
+            case ServiceTemplateTemplateTypes.NodeTemplate:
+                return ToscaTypes.NodeType;
+            case ServiceTemplateTemplateTypes.RelationshipTemplate:
+                return ToscaTypes.RelationshipType;
+            case ServiceTemplateTemplateTypes.RequirementTemplate:
+                return ToscaTypes.RequirementType;
             default:
-                type = '';
-        }
-
-        if (plural) {
-            type += 's';
-        }
-
-        if (uppercase) {
-            return type;
-        } else {
-            return type.toLowerCase();
+                return null;
         }
     }
 
-    public static getNameFromQname(qName: string) {
+    public static getServiceTemplateTemplateType(value: ToscaTypes): ServiceTemplateTemplateTypes {
+        switch (value) {
+            case ToscaTypes.CapabilityType:
+                return ServiceTemplateTemplateTypes.CapabilityTemplate;
+            case ToscaTypes.NodeType:
+                return ServiceTemplateTemplateTypes.NodeTemplate;
+            case ToscaTypes.RelationshipType:
+                return ServiceTemplateTemplateTypes.RelationshipTemplate;
+            case ToscaTypes.RequirementType:
+                return ServiceTemplateTemplateTypes.RequirementTemplate;
+            default:
+                return null;
+        }
+    }
+
+    public static getServiceTemplateTemplateFromString(value: string): ServiceTemplateTemplateTypes {
+        switch (value) {
+            case ServiceTemplateTemplateTypes.CapabilityTemplate:
+                return ServiceTemplateTemplateTypes.CapabilityTemplate;
+            case ServiceTemplateTemplateTypes.NodeTemplate:
+                return ServiceTemplateTemplateTypes.NodeTemplate;
+            case ServiceTemplateTemplateTypes.RelationshipTemplate:
+                return ServiceTemplateTemplateTypes.RelationshipTemplate;
+            case ServiceTemplateTemplateTypes.RequirementTemplate:
+                return ServiceTemplateTemplateTypes.RequirementTemplate;
+            default:
+                return null;
+        }
+    }
+
+    public static getNameFromQName(qName: string) {
         return qName.split('}').pop();
     }
 
-    public static getNamespaceAndLocalNameFromQName(qname: string) {
+    public static getNamespaceAndLocalNameFromQName(qname: string): WineryComponentNameAndNamespace {
         const i = qname.indexOf('}');
-        const res = {
+        return {
             namespace: qname.substr(1, i - 1),
-            localname: qname.substr(i + 1)
+            localName: qname.substr(i + 1)
         };
-        return res;
     }
+}
+
+export interface WineryComponentNameAndNamespace {
+    namespace: string;
+    localName: string;
 }
