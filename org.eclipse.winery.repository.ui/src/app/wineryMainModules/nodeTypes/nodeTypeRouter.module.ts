@@ -50,7 +50,7 @@ const nodeTypeRoutes: Routes = [
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
-            { path: '', redirectTo: 'visualappearance', pathMatch: 'full'}
+            { path: '', redirectTo: 'readme', pathMatch: 'full'}
         ]
     }
 ];
