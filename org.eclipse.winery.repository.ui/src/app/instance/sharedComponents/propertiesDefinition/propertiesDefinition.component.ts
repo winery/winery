@@ -6,7 +6,7 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { InstanceService } from '../../instance.service';
 import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
@@ -49,6 +49,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     validatorObject: WineryValidatorObject;
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('nameInputForm') nameInputForm: ElementRef;
 
     constructor(private sharedData: InstanceService, private service: PropertiesDefinitionService,
                 private notify: WineryNotificationService) {
@@ -232,6 +233,10 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.confirmDeleteModal.hide();
         this.deleteItemFromPropertyDefinitionKvList(this.elementToRemove);
         this.elementToRemove = null;
+    }
+
+    onAddModalShown() {
+        this.nameInputForm.nativeElement.focus();
     }
 
     // endregion
