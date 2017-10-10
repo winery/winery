@@ -60,13 +60,13 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 		return new Scanner(inputStream, "UTF-8").useDelimiter("\\A").next();
 	}
 
-	private RequestSpecification start() {
+	protected RequestSpecification start() {
 		return given()
 			.log()
 			.ifValidationFails();
 	}
 
-	private String callURL(String restURL) {
+	protected String callURL(String restURL) {
 		return PREFIX + Util.URLdecode(restURL);
 	}
 
