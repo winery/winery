@@ -10,6 +10,7 @@ public class ArtifactResourceApiData {
 
 	public String fileName;
 	public String content;
+	public String subDirectory;
 
 	public void setContent(String content) {
 		this.content = content;
@@ -17,5 +18,9 @@ public class ArtifactResourceApiData {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+	
+	public void setSubDirectory(String subDirectory) {
+		this.subDirectory = subDirectory;
 	}
 }
