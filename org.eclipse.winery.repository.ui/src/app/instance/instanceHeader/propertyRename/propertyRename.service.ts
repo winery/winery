@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Balzer - initial API and implementation
  */
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, Response } from '@angular/http';
@@ -41,11 +38,11 @@ export class PropertyRenameService {
         if (this.propertyName === 'localName') {
             payload = {
                 localname: value
-            }
+            };
         } else {
             payload = {
                 namespace: value
-            }
+            };
         }
         return this.http.post(backendBaseURL + this.toscaComponent.path + '/' + this.propertyName, payload, options);
     }

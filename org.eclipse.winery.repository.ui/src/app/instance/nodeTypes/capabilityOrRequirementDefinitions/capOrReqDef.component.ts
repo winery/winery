@@ -15,7 +15,7 @@ import {
 import { CapOrRegDefinitionsTableData } from './CapOrReqDefTableData';
 import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 import { Router } from '@angular/router';
-import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
+import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { TypeWithShortName } from '../../admin/typesWithShortName/typeWithShortName.service';
 import { SelectData } from '../../../wineryInterfaces/selectData';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
@@ -431,7 +431,7 @@ export class CapOrReqDefComponent implements OnInit {
         this.resourceApiData.capOrRegDefinitionsList = data;
         this.prepareTableData(this.resourceApiData);
 
-    };
+    }
 
     private getAllCapOrReqTypes(types: string): void {
         this.service.getAllCapOrReqTypes(types).subscribe(

@@ -1,0 +1,5 @@
+{
+	"derivedFrom": "{http://winery.opentosca.org/test/artifacttypes/fruits}WAR",
+	"isAbstract": "no",
+	"isFinal": "no"
+}
