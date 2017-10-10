@@ -1,0 +1,15 @@
+{
+	"files": [
+		{
+			"name": "firstFile.txt",
+			"size": 0,
+			"url": "http://localhost:8080/winery/artifacttemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fartifacttemplates/ArtifactTemplateWithFilesAndSources/files/firstFile.txt",
+			"deleteUrl": "http://localhost:8080/winery/artifacttemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fartifacttemplates/ArtifactTemplateWithFilesAndSources/files/firstFile.txt",
+			"thumbnailUrl": "http://localhost:8080/winery/images/mime-types/txt.png",
+			"deleteType": "DELETE"
+		}
+	],
+	"paths": [
+		""
+	]
+}
