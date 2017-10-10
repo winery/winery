@@ -6,9 +6,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Niko Stadelmaier - initial API and implementation
  */
 -->
 <div *ngIf="!loading">
@@ -24,63 +21,74 @@
 </div>
 
 <winery-modal bsModal #addPropertyMappingModal="bs-modal" [modalRef]="addPropertyMappingModal">
-    <winery-modal-header [title]="'Add Property Mapping'">
+    <winery-modal-header [title]="addOrUpdate + ' Property Mapping'">
     </winery-modal-header>
     <winery-modal-body>
         <form #propertyMappingForm="ngForm" id="propertyMappingForm" enctype="multipart/form-data">
             <fieldset>
                 <div class="form-group">
-                    <label for="serviceTemplatePropertyRef">Service Template Property</label>
-                    <div class="row">
-                        <div class="col-xs-10">
-                            <input #serviceTemplateProp="ngModel"
-                                   name="serviceTemplatePropertyRef"
-                                   id="serviceTemplatePropertyRef"
-                                   class="form-control"
-                                   type="text"
-                                   required
-                                   [(ngModel)]="currentSelectedItem.serviceTemplatePropertyRef">
-                        </div>
+                    <span>Service Template Property</span>
+                    <br>
+                    <div>
+                        <label for="serviceTemplatePropertyRef">Property Name</label>
+                        <input #serviceTemplateProp="ngModel"
+                               name="serviceTemplatePropertyRef"
+                               id="serviceTemplatePropertyRef"
+                               class="form-control"
+                               type="text"
+                               required
+                               [(ngModel)]="currentSelectedItem.serviceTemplatePropertyRef"/>
+                    </div>
 
-                        <div style="clear:both"
-                             *ngIf="serviceTemplateProp.errors && (serviceTemplateProp.dirty || serviceTemplateProp.touched)"
-                             class="alert alert-danger">
-                            <div [hidden]="!serviceTemplateProp.errors.required">
-                                Property name is required!
-                            </div>
+                    <div style="clear:both"
+                         *ngIf="serviceTemplateProp.errors && (serviceTemplateProp.dirty || serviceTemplateProp.touched)"
+                         class="alert alert-danger">
+                        <div [hidden]="!serviceTemplateProp.errors.required">
+                            Property name is required!
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="targetObjectRef">Target: Node Template, Requirement, Capability, or Relationship
-                        Template</label>
+                    <span>Target Type</span>
                     <br>
-                    <input type="radio" name="typeSelect" id="nodeTemplate" value="nodeTemplates"
+                    <input type="radio" name="typeSelect" id="NodeTemplate" value="nodeTemplates"
+                           [checked]="serviceTemplateTemplate === templatesEnum.NodeTemplate"
                            (change)="radioBtnSelected($event)">
-                    <label for="nodeTemplate">Node Template</label>
-                    <input type="radio" name="typeSelect" id="RequirementTemplate" value="requirementTemplates"
-                           (change)="radioBtnSelected($event)">
-                    <label for="RequirementTemplate">Requirement Template</label>
-                    <input type="radio" name="typeSelect" id="CapabilityTemplate" value="capabilityTemplates"
-                           (change)="radioBtnSelected($event)">
-                    <label for="CapabilityTemplate">Capability Tempalte</label>
-                    <input type="radio" name="typeSelect" id="RelationshipTemplate" value="relationshipTemplates"
+                    <label for="NodeTemplate">Node Template</label>
+                    <input type="radio" name="typeSelect" id="RelationshipTemplate"
+                           value="relationshipTemplates"
+                           [checked]="serviceTemplateTemplate === templatesEnum.RelationshipTemplate"
                            (change)="radioBtnSelected($event)">
                     <label for="RelationshipTemplate">Relationship Template</label>
-                    <div class="row">
-                        <div class="col-xs-4">
+                    <input type="radio" name="typeSelect" id="RequirementTemplate"
+                           value="requirementTemplates"
+                           [checked]="serviceTemplateTemplate === templatesEnum.RequirementTemplate"
+                           (change)="radioBtnSelected($event)">
+                    <label for="RequirementTemplate">Requirement Template</label>
+                    <input type="radio" name="typeSelect" id="CapabilityTemplate"
+                           value="capabilityTemplates"
+                           [checked]="serviceTemplateTemplate === templatesEnum.CapabilityTemplate"
+                           (change)="radioBtnSelected($event)">
+                    <label for="CapabilityTemplate">Capability Template</label>
+                </div>
 
-                            <ng-select #tempList
-                                       name="tempList"
-                                       [items]="templateList"
-                                       [(ngModel)]="templateList"
-                                       [active]="initialSelectedTempalte"
-                                       (selected)="targetObjectSelected($event)"
-                                       placeholder="no template selected">
-                            </ng-select>
-
-                            <br>
+                <div class="form-group" *ngIf="targetTypeSelected">
+                    <span>Target Element</span>
+                    <br>
+                    <div *ngIf="serviceTemplateTemplate === templatesEnum.NodeTemplate || serviceTemplateTemplate === templatesEnum.RelationshipTemplate;
+                         else editTargetObject">
+                        <ng-select #tempList
+                                   name="tempList"
+                                   [items]="templateList"
+                                   [active]="[currentSelectedItem.targetObjectRef]"
+                                   (selected)="targetObjectSelected($event)"
+                                   required
+                                   placeholder="no template selected">
+                        </ng-select>
+                    </div>
+                    <ng-template #editTargetObject>
+                        <div>
                             <input #targetObj="ngModel"
                                    name="targetObjectRef"
                                    id="targetObjectRef"
@@ -89,49 +97,53 @@
                                    required
                                    [(ngModel)]="currentSelectedItem.targetObjectRef">
                         </div>
-
                         <div style="clear:both" *ngIf="targetObj.errors && (targetObj.dirty || targetObj.touched)"
                              class="alert alert-danger">
                             <div [hidden]="!targetObj.errors.required">
                                 Name of target is required!
                             </div>
                         </div>
-                    </div>
+                    </ng-template>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" *ngIf="targetObject">
                     <span>Target Property</span>
-                    <ng-select *ngIf="targetProperties !== null && targetProperties.length > 0"
-                               #propertiesSelect
-                               name="propertiesSelect"
-                               [items]="targetProperties"
-                               [active]="initialSelectProp"
-                               [(ngModel)]="targetProperties"
-                               (data)="targetPropertySelected($event)"
-                               placeholder="Please select a property">
-                    </ng-select>
-                    <br>
-                    <input #targetProp="ngModel"
-                           name="targetPropertyRef"
-                           id="targetPropertyRef"
-                           class="form-control"
-                           type="text"
-                           required
-                           [(ngModel)]="currentSelectedItem.targetPropertyRef">
-                </div>
-                <div style="clear:both" *ngIf="targetProp.errors && (targetProp.dirty || targetProp.touched)"
-                     class="alert alert-danger">
-                    <div [hidden]="!targetProp.errors.required">
-                        Name of target property is required!
+                    <div *ngIf="serviceTemplateTemplate === templatesEnum.NodeTemplate || serviceTemplateTemplate === templatesEnum.RelationshipTemplate;
+                     else editTargetProps">
+                        <ng-select *ngIf="targetProperties !== null"
+                                   #propertiesSelect
+                                   name="propertiesSelect"
+                                   [items]="targetProperties"
+                                   [active]="[selectedProperty]"
+                                   (data)="targetPropertySelected($event)"
+                                   required
+                                   placeholder="Please select a property">
+                        </ng-select>
                     </div>
+                    <ng-template #editTargetProps>
+                        <input #targetProp="ngModel"
+                               name="targetPropertyRef"
+                               id="targetPropertyRef"
+                               class="form-control"
+                               type="text"
+                               required
+                               [(ngModel)]="currentSelectedItem.targetPropertyRef">
+                        <div style="clear:both" *ngIf="targetProp.errors && (targetProp.dirty || targetProp.touched)"
+                             class="alert alert-danger">
+                            <div [hidden]="!targetProp.errors.required">
+                                Name of target property is required!
+                            </div>
+                        </div>
+                    </ng-template>
                 </div>
             </fieldset>
         </form>
     </winery-modal-body>
     <winery-modal-footer
-        (onOk)="addPropertyMapping(serviceTemplateProp.value, targetObj.value, targetProp.value);"
-        [okButtonLabel]="addOrUpdateBtnTxt"
-        [disableOkButton]="!propertyMappingForm?.form.valid">
+        (onOk)="addPropertyMapping()"
+        [okButtonLabel]="addOrUpdate"
+        [disableOkButton]="!(propertyMappingForm?.form.valid && currentSelectedItem.targetObjectRef && currentSelectedItem.targetObjectRef.length > 0
+                           && currentSelectedItem.targetPropertyRef && currentSelectedItem.targetPropertyRef.length > 0)">
     </winery-modal-footer>
 </winery-modal>
 

@@ -282,7 +282,7 @@ div.mainContentContainer > div.bottom {
 }
 
 div.serviceTemplate div.top {
-    background: url('../assets/img/containers/st/FrameTop.jpg');
+    background: url('../assets/img/containers/st/FrameTopLarge.jpg');
 }
 
 div.serviceTemplate div.middle {
@@ -443,7 +443,7 @@ div.mainContentContainer.policyTemplate div.bottom {
 }
 
 div.mainContentContainer.policyType div.top {
-    background: url('../assets/img/containers/admin/FrameTop.jpg');
+    background: url('../assets/img/containers/admin/FrameTopLarge.jpg');
 }
 
 div.mainContentContainer.policyType div.middle {
