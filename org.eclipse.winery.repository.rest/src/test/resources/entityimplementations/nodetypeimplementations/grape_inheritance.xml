@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Definitions targetNamespace="http://winery.opentosca.org/test/nodetypeimplementations/fruits" id="winery-defs-for_fruits3-grape_impl" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org">
+	<NodeTypeImplementation targetNamespace="http://winery.opentosca.org/test/nodetypeimplementations/fruits" name="grape_impl" abstract="no" final="yes" nodeType="fruits4:grape" xmlns:fruits4="http://winery.opentosca.org/test/nodetypes/fruits">
+		<DerivedFrom nodeTypeImplementationRef="fruits3:baobab_impl" xmlns:fruits3="http://winery.opentosca.org/test/nodetypeimplementations/fruits"/>
+	</NodeTypeImplementation>
+</Definitions>

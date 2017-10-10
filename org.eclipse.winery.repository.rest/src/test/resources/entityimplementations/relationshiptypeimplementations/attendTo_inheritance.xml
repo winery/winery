@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Definitions targetNamespace="http://winery.opentosca.org/test/relationshiptypeimplementations/fruits" id="winery-defs-for_fruits7-attendTo_implementation" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org">
+	<RelationshipTypeImplementation targetNamespace="http://winery.opentosca.org/test/relationshiptypeimplementations/fruits" name="attendTo_implementation" abstract="yes" final="no" relationshipType="ponyuniverse:attendTo" xmlns:ponyuniverse="http://winery.opentosca.org/test/ponyuniverse">
+		<DerivedFrom relationshipTypeImplementationRef="fruits7:kiwi_implementation" xmlns:fruits7="http://winery.opentosca.org/test/relationshiptypeimplementations/fruits"/>
+	</RelationshipTypeImplementation>
+</Definitions>

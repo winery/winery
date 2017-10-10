@@ -7,9 +7,6 @@ GOTO EndOfLicense
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Philipp Meyer - initial API and implementation
  */
 :EndOfLicense
 

@@ -127,8 +127,8 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
         return derivedFrom;
     }
 
-    public void setDerivedFrom(TNodeTypeImplementation.DerivedFrom value) {
-        this.derivedFrom = value;
+    public void setDerivedFrom(HasType value) {
+        this.derivedFrom = (TNodeTypeImplementation.DerivedFrom) value;
     }
 
     /**

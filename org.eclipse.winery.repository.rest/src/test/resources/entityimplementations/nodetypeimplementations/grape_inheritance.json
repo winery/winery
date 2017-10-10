@@ -1,0 +1,5 @@
+{
+	"derivedFrom": "{http://winery.opentosca.org/test/nodetypeimplementations/fruits}baobab_impl",
+	"isAbstract": "no",
+	"isFinal": "yes"
+}

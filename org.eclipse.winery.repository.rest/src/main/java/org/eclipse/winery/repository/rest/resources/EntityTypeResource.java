@@ -1,15 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+/**
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
- *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
- *******************************************************************************/
+ */
 package org.eclipse.winery.repository.rest.resources;
 
 import java.util.Collection;
@@ -39,8 +35,7 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 	}
 
 	/**
-	 * Convenience method to avoid casting. Required by
-	 * PropertiesDefinitionResource's jsp
+	 * Convenience method to avoid casting.
 	 */
 	public TEntityType getEntityType() {
 		return (TEntityType) this.element;
@@ -72,8 +67,7 @@ public abstract class EntityTypeResource extends AbstractComponentInstanceResour
 	}
 
 	/**
-	 * Returns an array suitable for processing in a {@code select2} field See
-	 * <a href="http://ivaynberg.github.io/select2">http://ivaynberg.github.io/select2</a>
+	 * Returns an array suitable for processing in a {@code select2} field See <a href="http://ivaynberg.github.io/select2">http://ivaynberg.github.io/select2</a>
 	 *
 	 * Each element: {id: "{ns}localname", text: "name/id"}
 	 */
