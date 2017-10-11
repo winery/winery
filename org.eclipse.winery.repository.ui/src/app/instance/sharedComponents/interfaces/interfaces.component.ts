@@ -189,11 +189,31 @@ export class InterfacesComponent implements OnInit {
     showGenerateImplementationModal(): void {
         this.artifactTemplate.name =
             this.sharedData.toscaComponent.localName + '_' + this.selectedInterface.name.replace(/\W/g, '_') + '_IA';
-        this.artifactTemplate.namespace = this.sharedData.toscaComponent.namespace;
+
+        let artifactTemplateNamespace = '';
+        if (this.sharedData.toscaComponent.namespace.includes('nodetypes')) {
+            artifactTemplateNamespace = this.sharedData.toscaComponent.namespace.replace('nodetypes', 'artifacttemplates');
+        } else if (this.sharedData.toscaComponent.namespace.includes('relationshiptypes')) {
+            artifactTemplateNamespace = this.sharedData.toscaComponent.namespace.replace('relationshiptypes', 'artifacttemplates');
+        } else {
+            artifactTemplateNamespace = this.sharedData.toscaComponent.namespace;
+        }
+
+        this.artifactTemplate.namespace = artifactTemplateNamespace;
         this.artifactTemplate.toscaType = ToscaTypes.ArtifactTemplate;
 
         this.generateArtifactApiData = new GenerateArtifactApiData();
-        this.generateArtifactApiData.javaPackage = this.getPackageNameFromNamespace();
+        const packageName = this.getPackageNameFromNamespace();
+
+        let javaPackageName = '';
+        if (packageName.includes('nodetypes')) {
+            javaPackageName = packageName.replace('nodetypes', 'nodetypeimplementations');
+        } else if (packageName.includes('relationshiptypes')) {
+            javaPackageName = packageName.replace('relationshiptypes', 'relationshiptypeimplementations');
+        } else {
+            javaPackageName = packageName;
+        }
+        this.generateArtifactApiData.javaPackage = javaPackageName;
 
         this.generateArtifactApiData.autoCreateArtifactTemplate = 'yes';
         this.generateArtifactApiData.interfaceName = this.selectedInterface.name;
@@ -203,7 +223,16 @@ export class InterfacesComponent implements OnInit {
         this.generateArtifactApiData.autoGenerateIA = 'yes';
 
         this.implementation.name = this.sharedData.toscaComponent.localName + '_impl';
-        this.implementation.namespace = this.sharedData.toscaComponent.namespace;
+
+        let implementationNamespace = '';
+        if (this.sharedData.toscaComponent.namespace.includes('nodetypes')) {
+            implementationNamespace = this.sharedData.toscaComponent.namespace.replace('nodetypes', 'nodetypeimplementations');
+        } else if (this.sharedData.toscaComponent.namespace.includes('relationshiptypes')) {
+            implementationNamespace = this.sharedData.toscaComponent.namespace.replace('relationshiptypes', 'relationshiptypeimplementations');
+        } else {
+            implementationNamespace = this.sharedData.toscaComponent.namespace;
+        }
+        this.implementation.namespace = implementationNamespace;
         this.implementation.toscaType = Utils.getImplementationOrTemplateOfType(this.toscaType);
 
         this.generateImplModal.show();
