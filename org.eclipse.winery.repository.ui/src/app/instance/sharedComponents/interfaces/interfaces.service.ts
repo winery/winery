@@ -36,7 +36,7 @@ export class InterfacesService {
         } else if (relationshipInterfaces) {
             return this.getRelationshipInterfaces(url);
         } else {
-            return this.get(url + '/interfaces/')
+            return this.get(backendBaseURL + url + '/interfaces/')
                 .map(res => res.json());
         }
     }

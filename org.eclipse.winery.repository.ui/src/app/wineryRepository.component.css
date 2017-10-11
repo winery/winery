@@ -6,8 +6,8 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-.sidebar-btn {
-    width: 100%;
-    margin-top: 5px;
+#error-message{
+    font-size: 2.5em;
+    padding: 16px;
+    text-align: center;
 }
-

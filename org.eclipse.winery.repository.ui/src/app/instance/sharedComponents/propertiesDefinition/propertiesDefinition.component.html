@@ -37,7 +37,8 @@
     <div>
         <div *ngIf="(resourceApiData.selectedValue === propertiesEnum.Element
             || resourceApiData.selectedValue === propertiesEnum.Type)">
-            <ng-select [items]="selectItems" (selected)="xmlValueSelected($event)" [active]="[activeElement]"></ng-select>
+            <ng-select [items]="selectItems" (selected)="xmlValueSelected($event)"
+                       [active]="[activeElement]"></ng-select>
         </div>
 
         <div *ngIf="resourceApiData.selectedValue === propertiesEnum.Custom">
@@ -60,7 +61,8 @@
                                [(ngModel)]="resourceApiData.winerysPropertiesDefinition.elementName">
                     </div>
                     <div class="wrapperTabButtom">
-                        <winery-namespace-selector [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"></winery-namespace-selector>
+                        <winery-namespace-selector
+                            [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace"></winery-namespace-selector>
                     </div>
                 </tab>
             </tabset>
@@ -68,14 +70,16 @@
     </div>
 </div>
 
-<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal"
+              (onShown)="onAddModalShown();" (onHide)="addPropertyFrom.reset();">
     <winery-modal-header [title]="'Add Property'">
     </winery-modal-header>
     <winery-modal-body>
         <form #addPropertyFrom="ngForm" id="addPropertyForm">
             <div class="form-group">
                 <label class="control-label" for="key">Name</label>
-                <input #propName="ngModel"
+                <input #nameInputForm
+                       #propName="ngModel"
                        id="key"
                        class="form-control"
                        type="text"

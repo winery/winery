@@ -65,7 +65,6 @@ export class WineryGitLogComponent implements OnInit {
                 }
                 case 'git-lfs': {
                     this.lfsAvailable = true;
-                    console.log('true');
                     break;
                 }
                 default: {
@@ -116,10 +115,11 @@ export class WineryGitLogComponent implements OnInit {
 
     discardChanges() {
         this.webSocket.send('reset');
-        this.selectedFile = null;
+        this.hide();
     }
 
     hide() {
+        this.selectedFile = null;
         this.isExpanded = false;
     }
 }
