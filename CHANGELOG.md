@@ -15,8 +15,10 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ## [unreleased]
 
 ### Changed
+- Add possibility to work with sub directories in artifact templates
 - Add edit properties as XML
 - Fix href from IA generation so that it points to the artifact template in the frontend
+- Fix serviceTemplate headers and set readme-component as entryPoint
 - Fix lifecycle interface is now selected after click on "generate lifecycle interface"
 - Add available/not available indicator for LFS in git log component
 - Add ZIP-button for artifactemplate-files

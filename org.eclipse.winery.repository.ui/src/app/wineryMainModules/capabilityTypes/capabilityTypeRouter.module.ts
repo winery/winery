@@ -50,7 +50,7 @@ const capabilityTypeRoutes: Routes = [
             { path: 'inheritance', component: InheritanceComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
-            { path: '', redirectTo: 'propertiesdefinition', pathMatch: 'full' }
+            { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]
     }
 ];

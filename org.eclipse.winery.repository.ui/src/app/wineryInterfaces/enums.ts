@@ -34,3 +34,14 @@ export enum ToscaTypes {
     Imports = 'imports',
     Admin = 'admin'
 }
+
+/**
+ * ServiceTemplateTemplateTypes represent the instance types which are available in a Service Template.
+ * The types of these templates can be retrieved by using the {@link Utils.getTypeOfServiceTemplateTemplate} method.
+ */
+export enum ServiceTemplateTemplateTypes {
+    CapabilityTemplate = 'capabilityTemplates',
+    NodeTemplate = 'nodeTemplates',
+    RelationshipTemplate = 'relationshipTemplates',
+    RequirementTemplate = 'requirementTemplates'
+}

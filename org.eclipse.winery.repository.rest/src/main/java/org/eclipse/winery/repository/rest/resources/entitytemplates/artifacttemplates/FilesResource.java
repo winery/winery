@@ -14,6 +14,8 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttem
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +28,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -106,7 +109,9 @@ public class FilesResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getJSON() {
 		String json = BackendUtils.Object2JSON(this.getAllFileMetas());
-		json = "{\"files\":" + json + "}";
+		String pathsJson = BackendUtils.Object2JSON(this.getAllFilePaths());
+		json = "{\"files\":" + json + "," +
+			"\"paths\":" + pathsJson + "}";
 		return json;
 	}
 
@@ -118,24 +123,40 @@ public class FilesResource {
 			.collect(Collectors.toList());
 	}
 
-	private RepositoryFileReference fileName2fileRef(String fileName, boolean encoded) {
-		if (encoded) {
-			fileName = Util.URLdecode(fileName);
+	private List<String> getAllFilePaths() {
+		List<String> paths = new ArrayList<>();
+		for (RepositoryFileReference ref : RepositoryFactory.getRepository()
+			.getContainedFiles(this.fileDir)) {
+			if (!ref.getSubDirectory().isPresent()) {
+				paths.add(ref.getSubDirectory().get().toString());
+			} else {
+				paths.add("");
+			}
 		}
-		return new RepositoryFileReference(this.fileDir, fileName);
+		return paths;
+	}
+
+	private RepositoryFileReference fileName2fileRef(String fileName, boolean fileNameEncoded) {
+		String name = fileNameEncoded ? Util.URLdecode(fileName) : fileName;
+		return new RepositoryFileReference(this.fileDir, name);
+	}
+
+	private RepositoryFileReference fileName2fileRef(String fileName, String path, boolean fileNameEncoded) {
+		String name = fileNameEncoded ? Util.URLdecode(fileName) : fileName;
+		return new RepositoryFileReference(this.fileDir, Paths.get(path), name);
 	}
 
 	@GET
 	@Path("/{fileName}")
-	public Response getFile(@PathParam("fileName") String fileName, @HeaderParam("If-Modified-Since") String modified) {
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
+	public Response getFile(@PathParam("fileName") String fileName, @HeaderParam("If-Modified-Since") String modified, @QueryParam("path") String path) {
+		RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
 		return RestUtils.returnRepoPath(ref, modified);
 	}
 
 	@DELETE
 	@Path("/{fileName}")
-	public Response deleteFile(@PathParam("fileName") String fileName) {
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, true);
+	public Response deleteFile(@PathParam("fileName") String fileName, @QueryParam("path") String path) {
+		RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
 		return RestUtils.delete(ref);
 	}
 
@@ -146,7 +167,7 @@ public class FilesResource {
 		if (StringUtils.isEmpty(fileName)) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, false);
+		RepositoryFileReference ref = this.fileName2fileRef(fileName, data.subDirectory, false);
 		return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
 	}
 
@@ -157,7 +178,7 @@ public class FilesResource {
 		if (StringUtils.isEmpty(fileName)) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, false);
+		RepositoryFileReference ref = this.fileName2fileRef(fileName, data.subDirectory, false);
 		return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
 	}
 }

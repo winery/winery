@@ -36,6 +36,58 @@
     grid-column: 1 / span 1;
     grid-row: 1 / span 2;
     border-top: 1px solid #ddd;
+    display: grid;
+    grid-template-columns: 300px;
+    grid-auto-rows: auto;
+}
+
+span {
+    cursor: hand;
+}
+
+.fileList {
+    display: grid;
+    grid-template-columns: 300px;
+    grid-template-rows: auto auto;
+}
+
+.fileListFolder {
+    background-color: #E4E4E4;
+    box-shadow: #1b6d85;
+    margin-bottom: 2px;
+    cursor: hand;
+    padding-left: 16px;
+    background-image: url("../../../../assets/img/entitytemplates/folderCollapsed.png");
+    background-repeat: no-repeat;
+}
+
+.fileListFolder.selected {
+    background-image: url("../../../../assets/img/entitytemplates/folderExpanded.png");
+}
+
+.fileListSubFiles {
+    display: grid;
+    grid-template-columns: 300px;
+    grid-template-rows: auto;
+}
+
+.fileListFile {
+    display: grid;
+    grid-template-columns: auto 1fr 60px;
+    grid-template-rows: auto;
+    margin-bottom: 3px;
+}
+
+.fileListFile:hover {
+    background-color: #aaaaaa;
+}
+
+.fileListFile.selected {
+    background-color: #8c8c8c;
+}
+
+.fileListSubFiles.indented {
+    padding-left: 5px;
 }
 
 #rightEditHeader {
@@ -52,60 +104,8 @@
     grid-row: 2 / span 1;
 }
 
-table {
-    width: 90%;
-    margin-bottom: 20px;
-    background-color: transparent;
-    border-spacing: 0;
-    border-collapse: collapse;
-    border-color: grey;
-}
-
-tbody {
-    width: 90%;
-    display: table-row-group;
-    vertical-align: middle;
-    border-color: inherit;
-    min-width: 300px;
-}
-
-tr {
-    display: table-row;
-    vertical-align: inherit;
-    border-color: inherit;
-    width: 100%;
-    height: 20px;
-    min-width: 300px;
-}
-
-tr:hover {
-    background-color: #aaaaaa;
-}
-
-tr.selected {
-    background-color: #8c8c8c;
-}
-
-td {
-    padding: 8px;
-    line-height: 0;
-    vertical-align: center;
-}
-
-#srcNameCell {
-    width: 200px;
-}
-
-#filesList {
-    width: 300px;
-    height: 500px;
-    overflow: auto;
-}
-
-p {
+.name {
     display: block;
-    -webkit-margin-before: 1em;
-    -webkit-margin-after: 1em;
-    -webkit-margin-start: 0px;
-    -webkit-margin-end: 0px;
+    overflow: hidden;
+    overflow-wrap: break-word;
 }

@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
+import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
 import { InstanceService } from '../../instance.service';
 import { Observable } from 'rxjs/Observable';
 import { backendBaseURL, hostURL } from '../../../configuration';
@@ -25,7 +25,11 @@ export class ArtifactSourceService {
         this.pathToFiles = backendBaseURL + this.sharedData.path + '/files/';
     }
 
-    getFiles(): Observable<{ files: FilesApiData[] }> {
+    get uploadUrl() {
+        return this.path;
+    }
+
+    getFiles(): Observable<{ files: FilesApiData[], paths: string[] }> {
         const headers = new Headers({ 'Accept': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 
@@ -35,18 +39,18 @@ export class ArtifactSourceService {
 
     getFile(file: FilesApiData): Observable<string> {
         const headers = new Headers({ 'Accept': 'text/plain' });
-        const options = new RequestOptions({ headers: headers });
-
+        const params = new URLSearchParams();
+        params.set('path', file.subDirectory);
+        const options = new RequestOptions({ headers: headers, params: params });
         return this.http.get(this.path + file.name, options)
             .map(res => res.text());
     }
 
-    get uploadUrl() {
-        return this.path;
-    }
-
     deleteFile(fileToRemove: FilesApiData) {
-        return this.http.delete(hostURL + fileToRemove.deleteUrl);
+        const params = new URLSearchParams();
+        params.set('path', fileToRemove.subDirectory);
+        const options = new RequestOptions({ params: params });
+        return this.http.delete(hostURL + fileToRemove.deleteUrl, options);
     }
 
     postToSources(data: ArtifactResourceApiData) {
@@ -73,4 +77,5 @@ export class FilesApiData {
     size: number;
     thumbnailUrl: string;
     url: string;
+    subDirectory: string;
 }

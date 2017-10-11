@@ -1,15 +1,11 @@
-/*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
+/**
+ * Copyright (c) 2012-2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
- *     Tino Stadelmaier, Philipp Meyer - rename for id/namespace
- *******************************************************************************/
+ */
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations;
 
 import javax.ws.rs.Path;
@@ -39,9 +35,8 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 	}
 
 	/**
-	 * Even if both node type implementations and relationship type
-	 * implementations have implementation artifacts, there is no common
-	 * supertype. To avoid endless casts, we just implement the method here
+	 * Even if both node type implementations and relationship type implementations have implementation artifacts, there
+	 * is no common supertype. To avoid endless casts, we just implement the method here
 	 */
 	@Path("implementationartifacts/")
 	public ImplementationArtifactsResource getImplementationArtifacts() {
@@ -55,10 +50,8 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 	}
 
 	/**
-	 * Only NodeTypes have deployment artifacts, not RelationshipType.
-	 * Therefore, this method is declared in
-	 * {@link NodeTypeImplementationResource} and not in
-	 * {@link EntityTypeImplementationResource}
+	 * Only NodeTypes have deployment artifacts, not RelationshipType. Therefore, this method is declared in {@link
+	 * NodeTypeImplementationResource} and not in {@link EntityTypeImplementationResource}
 	 */
 	@Path("deploymentartifacts/")
 	public DeploymentArtifactsResource getDeploymentArtifacts() {
@@ -75,5 +68,4 @@ public class NodeTypeImplementationResource extends EntityTypeImplementationReso
 	protected TExtensibleElements createNewElement() {
 		return new TNodeTypeImplementation();
 	}
-
 }

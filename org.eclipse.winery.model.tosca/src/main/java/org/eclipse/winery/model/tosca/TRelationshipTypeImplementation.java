@@ -104,8 +104,8 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
         return derivedFrom;
     }
 
-    public void setDerivedFrom(TRelationshipTypeImplementation.DerivedFrom value) {
-        this.derivedFrom = value;
+    public void setDerivedFrom(HasType value) {
+        this.derivedFrom = (TRelationshipTypeImplementation.DerivedFrom) value;
     }
 
     @NonNull
