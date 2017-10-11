@@ -127,7 +127,7 @@ public class FilesResource {
 		List<String> paths = new ArrayList<>();
 		for (RepositoryFileReference ref : RepositoryFactory.getRepository()
 			.getContainedFiles(this.fileDir)) {
-			if (!ref.getSubDirectory().isPresent()) {
+			if (ref.getSubDirectory().isPresent()) {
 				paths.add(ref.getSubDirectory().get().toString());
 			} else {
 				paths.add("");
@@ -180,5 +180,13 @@ public class FilesResource {
 		}
 		RepositoryFileReference ref = this.fileName2fileRef(fileName, data.subDirectory, false);
 		return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
+	}
+
+	public Response putFile(String fileName, String subDirectory, InputStream content) {
+		if (StringUtils.isEmpty(fileName)) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		RepositoryFileReference ref = this.fileName2fileRef(fileName, subDirectory, false);
+		return RestUtils.putContentToFile(ref, content, MediaType.TEXT_PLAIN_TYPE);
 	}
 }

@@ -111,15 +111,11 @@ export class ArtifactSourceComponent implements OnInit {
     }
 
     copyAllSrc() {
-        for (let i = 0; i < this.filesList.length; i++) {
-            const name = this.filesList[i].name;
-            const path = this.filesList[i].subDirectory;
-            this.service.getFile(this.filesList[i])
-                .subscribe(
-                    data => this.pushToFiles(name, data),
-                    error => this.handleError(error)
-                );
-        }
+        this.service.copySourcesToFiles()
+            .subscribe(
+                data => this.handleCopySuccess(),
+                error => this.handleError(error)
+            );
     }
 
     openRenameDialog() {
@@ -267,5 +263,9 @@ export class ArtifactSourceComponent implements OnInit {
         this.editor.setData('');
         this.selectedFile = null;
         this.fileContent = null;
+    }
+
+    private handleCopySuccess() {
+        this.notify.success('Copied source files to the files directory');
     }
 }

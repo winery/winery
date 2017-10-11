@@ -41,6 +41,20 @@ public class ArtifactTemplateResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
+	public void copySourcesToFilesWithoutSelection() throws Exception {
+		this.setRevisionTo("62c0749a622b11474f865e3aa06ccff4c380efd8");
+		this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/", "entitytemplates/artifacttemplates/copySourcesToFiles_without_selection.json");
+		this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/", "entitytemplates/artifacttemplates/copySourcesToFiles_without_selection_response.json");
+	}
+
+	@Test
+	public void copySourcesToFilesWithSelection() throws Exception {
+		this.setRevisionTo("62c0749a622b11474f865e3aa06ccff4c380efd8");
+		this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection.json");
+		this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection_response.json");
+	}
+
+	@Test
 	public void artifactTemplateContainsFileReferenceInJson() throws Exception {
 		this.setRevisionTo("6aabc1c52ad74ab2692e7d59dbe22a263667e2c9");
 		this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest", "entitytemplates/artifacttemplates/MyTinyTest.json");
