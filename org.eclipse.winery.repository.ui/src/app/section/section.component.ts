@@ -55,6 +55,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     overwriteValue = false;
 
     importXsdSchemaType: string;
+    formValid: boolean;
 
     newComponentName: string;
     newComponentNamespace: string;
@@ -62,6 +63,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     validatorObject: WineryValidatorObject;
 
     fileUploadUrl = backendBaseURL + '/';
+    namespaceValid: boolean;
 
     @ViewChild('addModal') addModal: ModalDirective;
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
@@ -231,5 +233,10 @@ export class SectionComponent implements OnInit, OnDestroy {
     private handleError(error: Response): void {
         this.loading = false;
         this.notify.error(error.toString());
+    }
+
+    namespaceChanged(event: any) {
+        this.namespaceValid = event;
+        this.formValid = this.namespaceValid && this.addComponentForm.valid;
     }
 }

@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
@@ -60,7 +62,7 @@ public class TDocumentation {
     @XmlAttribute(name = "source")
     @XmlSchemaType(name = "anyURI")
     protected String source;
-    @XmlAttribute(name = "lang", namespace = "http://www.w3.org/XML/1998/namespace")
+    @XmlAttribute(name = "lang", namespace = Namespaces.W3C_NAMESPACE_URI)
     protected String lang;
 
     @Override
