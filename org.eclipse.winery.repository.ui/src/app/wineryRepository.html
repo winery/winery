@@ -11,8 +11,15 @@
 
 <div id="mainContainer" class="notoverflown" (click)="onClick()">
     <winery-header></winery-header>
-    <div id="mainContent">
+    <div *ngIf="isBackendAvailable; else displayErrorMessage" id="mainContent">
         <router-outlet></router-outlet>
     </div>
+    <ng-template #displayErrorMessage>
+        <br>
+        <div id="error-message">
+            <h2>Backend is not available!</h2>
+            <button class="btn btn-primary" (click)="refresh();">Retry</button>
+        </div>
+    </ng-template>
 </div>
-<winery-gitlog #gitLog></winery-gitlog>
+<winery-gitlog *ngIf="isBackendAvailable" #gitLog></winery-gitlog>
