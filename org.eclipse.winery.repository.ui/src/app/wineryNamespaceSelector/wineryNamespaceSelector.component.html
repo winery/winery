@@ -6,10 +6,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
- *     Niko Stadelmaier - add namespace filed option
  */
 -->
 <div [class.hidden]="!loading">
@@ -26,11 +22,15 @@
            [typeaheadOptionsLimit]="typeAheadListLimit"
            [(ngModel)]="selectedNamespace"
            #namespace="ngModel"
-           [required]="isRequired">
-    <div *ngIf="isRequired && namespace.errors && (namespace.dirty || namespace.touched)"
+           [required]="isRequired"
+           pattern="^\S*$">
+    <div *ngIf="namespace.errors && (namespace.dirty || namespace.touched)"
          class="alert alert-danger">
         <div [hidden]="!namespace.errors.required">
             Namespace is required!
+        </div>
+        <div [hidden]="!namespace.errors.pattern">
+            Namespace must not contain spaces!
         </div>
     </div>
 </div>

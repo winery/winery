@@ -78,11 +78,14 @@
                     </div>
                 </div>
             </div>
-            <winery-namespace-selector
-                name="namespace"
-                required
-                [(ngModel)]="newComponentNamespace"
-                [isRequired]="true">
+            <!-- pattern parameter is required to enable form validation -->
+            <winery-namespace-selector #ns
+                                       name="namespace"
+                                       required
+                                       pattern="^\S*$"
+                                       [(ngModel)]="newComponentNamespace"
+                                       (onChange)="namespaceChanged($event)"
+                                       [isRequired]="true">
             </winery-namespace-selector>
             <div class="form-group" *ngIf="types">
                 <label for="typeSelect" class="control-label">Type</label>
@@ -95,7 +98,7 @@
         (onOk)="addComponent()"
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Add'"
-        [disableOkButton]="!(addComponentForm?.form.valid && newComponentNamespace?.length > 0)">
+        [disableOkButton]="!formValid">
     </winery-modal-footer>
 </winery-modal>
 

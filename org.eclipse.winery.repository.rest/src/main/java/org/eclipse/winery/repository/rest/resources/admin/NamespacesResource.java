@@ -29,6 +29,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -36,11 +37,13 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.ConfigurationBasedNamespaceManager;
 import org.eclipse.winery.repository.rest.resources.apiData.NamespaceWithPrefix;
 
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,15 +153,23 @@ public class NamespacesResource extends AbstractAdminResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<NamespaceWithPrefix> getNamespacesAsJSONlist() {
+	public List<NamespaceWithPrefix> getNamespacesAsJSONlist(
+		@ApiParam(value = "if set all namespaces are returned otherwise the list will be filtered by disallowed namespaces", required = false) @QueryParam("all") String allNamespaces) {
 		Collection<Namespace> namespaces = this.getNamespaces();
 
 		// We now have all namespaces
+		// We need to check if the "all" parameter has been set and filter accordingly
 		// We need to convert from Namespace to String
 
 		List<NamespaceWithPrefix> namespacesList = new ArrayList<>();
 		for (Namespace ns : namespaces) {
-			namespacesList.add(new NamespaceWithPrefix(ns, this.namespaceManager.getPrefix(ns.getDecoded())));
+			if (allNamespaces == null) {
+				if (!Namespaces.getDisallowedNamespaces().contains(ns.getDecoded())) {
+					namespacesList.add(new NamespaceWithPrefix(ns, this.namespaceManager.getPrefix(ns.getDecoded())));
+				}
+			} else {
+				namespacesList.add(new NamespaceWithPrefix(ns, this.namespaceManager.getPrefix(ns.getDecoded())));
+			}
 		}
 		Collections.sort(namespacesList);
 		return namespacesList;
