@@ -108,7 +108,7 @@
    <xs:element name="Properties" minOccurs="0">
     <xs:complexType>
      <xs:sequence>
-      <xs:any namespace="##other"/>
+      <xs:any namespace="##other" processContents="lax"/>
       <xs:element name="PropertyMappings" minOccurs="0">
        <xs:complexType>
         <xs:sequence>
