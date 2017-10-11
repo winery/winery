@@ -400,10 +400,11 @@ export class InterfacesComponent implements OnInit {
     private handleGeneratedArtifact(response: Response) {
         let message = '';
         if (this.toscaType === ToscaTypes.NodeType) {
+            // backend return a path to the created artifacttemplate in the form: http://localhost:8080/winery/
+            // therefore truncate backendBaseUrl to receive path
+            const artifacttemplateUrl = response.url.replace(backendBaseURL, '');
             message = 'It\'s available for download at ' +
-                '<a style="color: black;" href="' + response.headers.get('Location') + '">'
-                + this.implementation.name
-                + ' source</a>.';
+                '<a style="color: black;" href="/#/' + artifacttemplateUrl + '">' + ' source</a>.';
         }
         this.generating = false;
         this.generateImplModal.hide();

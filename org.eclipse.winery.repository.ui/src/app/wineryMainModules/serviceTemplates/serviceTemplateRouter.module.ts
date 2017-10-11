@@ -56,7 +56,7 @@ const serviceTemplateRoutes: Routes = [
             { path: 'tags', component: TagComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
-            { path: '', redirectTo: 'topologytemplate', pathMatch: 'full' }
+            { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]
     }
 ];
