@@ -16,6 +16,9 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../configuration';
+import { SelectData } from '../wineryInterfaces/selectData';
+import { SectionData } from './sectionData';
+import {isSuccess} from "@angular/http/src/http_utils";
 
 @Injectable()
 export class SectionService {
@@ -55,6 +58,14 @@ export class SectionService {
         }
 
         return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(saveObject), options);
+    }
+
+    convertBpel2Bpmn4Tosca(bpel: string) {
+        const headers = new Headers({'Content-Type': 'application/xml'});
+        const options = new RequestOptions({headers: headers});
+        if(!isNullOrUndefined(bpel)) {
+            return this.http.post(backendBaseURL + '/servicetemplates/convertBpel2Bpmn4Tosca', bpel, options)
+        }
     }
 
     setPath(path: string) {

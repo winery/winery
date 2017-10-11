@@ -34,6 +34,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.bpel2bpmn.exception.ParseException;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TTag;
@@ -43,7 +44,7 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
 import org.eclipse.winery.repository.rest.resources.CreateFromArtifactApiData;
-
+import org.eclipse.winery.bpel2bpmn.parser.BpelParser;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
@@ -176,6 +177,20 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
 		return Response.created(absUri).build();
 	}
 
+	@POST
+	@Path("/convertBpel2Bpmn4Tosca")
+	@Consumes(MediaType.APPLICATION_XML)
+	public Response convertBpel2Bpmn4Tosca(String bpel) {
+		BpelParser parser = new BpelParser();
+		String bpmn4tosca;
+		try {
+			bpmn4tosca = parser.parse(bpel);
+		} catch (ParseException e) {
+			return Response.serverError().build();
+		}
+		return Response.ok(bpmn4tosca, MediaType.APPLICATION_JSON_TYPE).build();
+	}
+
 	private Collection<ServiceTemplateId> getXaaSPackageTemplates(QName artifactType) {
 		Collection<ServiceTemplateId> xaasPackages = new ArrayList<ServiceTemplateId>();
 		for (ServiceTemplateId serviceTemplate : this.getXaaSPackageTemplates()) {
@@ -204,13 +219,13 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
 				int check = 0;
 				for (TTag tag : tags.getTag()) {
 					switch (tag.getName()) {
-					case "xaasPackageNode":
-					case "xaasPackageArtifactType":
-					case "xaasPackageDeploymentArtifact":
-						check++;
-						break;
-					default:
-						break;
+						case "xaasPackageNode":
+						case "xaasPackageArtifactType":
+						case "xaasPackageDeploymentArtifact":
+							check++;
+							break;
+						default:
+							break;
 					}
 				}
 				if (check == 3) {

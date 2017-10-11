@@ -6,22 +6,23 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { SectionResolverData } from '../wineryInterfaces/resolverData';
-import { SelectData } from '../wineryInterfaces/selectData';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
-import { SectionService } from './section.service';
-import { SectionData } from './sectionData';
-import { backendBaseURL } from '../configuration';
-import { isNullOrUndefined } from 'util';
-import { NgForm } from '@angular/forms';
-import { ModalDirective } from 'ngx-bootstrap';
-import { Response } from '@angular/http';
-import { ToscaTypes } from '../wineryInterfaces/enums';
-import { Utils } from '../wineryUtils/utils';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {SectionResolverData} from '../wineryInterfaces/resolverData';
+import {SelectData} from '../wineryInterfaces/selectData';
+import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
+import {WineryValidatorObject} from '../wineryValidators/wineryDuplicateValidator.directive';
+import {SectionService} from './section.service';
+import {SectionData} from './sectionData';
+import {backendBaseURL} from '../configuration';
+import {isNullOrUndefined} from 'util';
+import {NgForm} from '@angular/forms';
+import {ModalDirective} from 'ngx-bootstrap';
+import {Http, Response} from '@angular/http';
+import 'rxjs/Rx';
+import {ToscaTypes} from '../wineryInterfaces/enums';
+import {Utils} from '../wineryUtils/utils';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -59,17 +60,21 @@ export class SectionComponent implements OnInit, OnDestroy {
     validatorObject: WineryValidatorObject;
 
     fileUploadUrl = backendBaseURL + '/';
+    bpel: string;
+    bpmn4tosca: string;
 
     @ViewChild('addModal') addModal: ModalDirective;
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addComponentForm') addComponentForm: NgForm;
     @ViewChild('addCsarModal') addCsarModal: ModalDirective;
+    @ViewChild('convertBpelModal') convertBpelModal: ModalDirective;
 
     constructor(private route: ActivatedRoute,
                 private change: ChangeDetectorRef,
                 private router: Router,
                 private service: SectionService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                private http: Http) {
     }
 
     /**
@@ -114,6 +119,19 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.newComponentNamespace = (this.showNamespace !== 'all' && this.showNamespace !== 'group') ? this.showNamespace : '';
         this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
         this.addModal.show();
+    }
+
+    convertBpel2Bpmn4Tosca() {
+        this.service.convertBpel2Bpmn4Tosca(this.bpel).subscribe(
+            (data: Response) => {
+                const file = new File([data.text()], "bpmn4tosca.json", {
+                    type: "application/text"
+                });
+
+                const url = window.URL.createObjectURL(file);
+                window.open(url);
+
+            }, this.handleError);
     }
 
     typeSelected(event: SelectData) {

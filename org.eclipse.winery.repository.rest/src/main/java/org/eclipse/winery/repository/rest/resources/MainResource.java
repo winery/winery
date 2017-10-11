@@ -134,7 +134,7 @@ public class MainResource {
 	public ServiceTemplatesResource servicetemplates() {
 		return new ServiceTemplatesResource();
 	}
-
+	
 	/**
 	 * Returns the main page of winery.
 	 */

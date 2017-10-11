@@ -13,12 +13,25 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Node {
 
 	private String id;
 	private String name;
 	private String type;
-	
+	private List<String> connections = new ArrayList<>();
+
+	public List<String> getConnections() {
+		
+		return connections;
+	}
+
+	public void setConnections(List<String> connections) {
+		this.connections = connections;
+	}
+
 	public String getId() {
 		return id;
 	}

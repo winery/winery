@@ -25,6 +25,22 @@
             *ngFor="let item of componentData
                 | filterSections: { showNamespaces: showNamespace, filterString: filterString }
                 | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }"
+                [resourceType]="selectedResource"
+                [data]="item"
+                (deleted)="getSectionsData()">
+            </winery-entity-container>
+        </div>
+        <div class="sidebar">
+            <button class="btn btn-default sidebar-btn" (click)="onAdd();">Add new</button>
+            <button class="btn btn-default sidebar-btn" (click)="addCsarModal.show();">Import CSAR</button>
+            <button class="btn btn-default sidebar-btn" (click)="onChangeView()"
+                    [disabled]="showSpecificNamespaceOnly()">
+                {{ changeViewButtonTitle }}
+            </button>
+            ALKSFJALKJALKFJLKAJSFLKAJLKSF
+            <button class="btn btn-default sidebar-btn" (click)="convertBpelModal.show()">Convert BPEL 2 BPMN4Tosca
+            </button>
+        </div>
             [toscaType]="toscaType"
             [xsdSchemaType]="importXsdSchemaType"
             [data]="item"
@@ -41,6 +57,8 @@
         <button class="btn btn-default sidebar-btn" id="sectionsGroupBtn" (click)="onChangeView()"
                 [disabled]="showSpecificNamespaceOnly()">
             {{ changeViewButtonTitle }}
+        </button>
+        <button class="btn btn-default sidebar-btn" (click)="convertBpelModal.show()">Convert BPEL 2 BPMN4Tosca
         </button>
     </div>
     <div id="sectionsFooterContainer">
@@ -102,8 +120,7 @@
 <winery-modal bsModal #addCsarModal="bs-modal" [modalRef]="addCsarModal">
     <winery-modal-header [title]="'Add CSAR'"></winery-modal-header>
     <winery-modal-body>
-        <winery-uploader [modalRef]="addCsarModal" [uploadUrl]="fileUploadUrl"
-                         (onSuccess)="getSectionsData()"></winery-uploader>
+        <winery-uploader [modalRef]="addCsarModal" [uploadUrl]="fileUploadUrl" (onSuccess)="getSectionsData()"></winery-uploader>
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="addCsarModal.hide()">Cancel</button>
@@ -119,4 +136,17 @@
     </winery-modal-body>
     <winery-modal-footer [closeButtonLabel]="'No'" [okButtonLabel]="'Yes'"
                          (onOk)="onRemoveElement()"></winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #convertBpelModal="bs-modal" [modalRef]="convertBpelModal">
+    <winery-modal-header [title]="'Convert BPEL 2 BPMN4Tosca'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <label for="bpel">BPEL</label>
+        <textarea id="bpel" style="width: 100%; height: 500px" [(ngModel)]="bpel"></textarea>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="convertBpel2Bpmn4Tosca()"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Convert'">
+    </winery-modal-footer>
 </winery-modal>
