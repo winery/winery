@@ -34,7 +34,7 @@ const policyTemplateRoutes: Routes = [
             { path: 'properties', component: PropertiesComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
-            { path: '', redirectTo: 'properties', pathMatch: 'full' }
+            { path: '', redirectTo: 'readme', pathMatch: 'full' }
         ]
     }
 ];
