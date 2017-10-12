@@ -31,14 +31,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests client methods with a pre-configured client stored in a local static
- * field.
+ * Tests client methods with a pre-configured client stored in a local static field.
  *
- * Client creation and multiple repositories are not tested. This should be
- * subject to other test classes.
+ * Client creation and multiple repositories are not tested. This should be subject to other test classes.
  *
- * TODO: This class expects things to be existent in the namespace "test". This
- * should be enforced in a preload.
+ * TODO: This class expects things to be existent in the namespace "test". This should be enforced in a preload.
  */
 @Ignore("Winery does not run on travis yet")
 public class TestWineryRepositoryClient {
@@ -49,16 +46,15 @@ public class TestWineryRepositoryClient {
 	private static final boolean USE_PROXY = false;
 
 	private static final IWineryRepositoryClient client = new WineryRepositoryClient(TestWineryRepositoryClient.USE_PROXY);
+
 	static {
 		TestWineryRepositoryClient.client.addRepository(TestWineryRepositoryClient.repositoryURI);
 	}
 
 	/**
-	 * The namespace to put new things in. <br />
-	 * TODO: Is deleted completely after testing
+	 * The namespace to put new things in. <br /> TODO: Is deleted completely after testing
 	 */
 	private static final String namespaceForNewArtifacts = "http://www.example.org/test/wineryclient/";
-
 
 	@Test
 	public void getAllNodeTypes() {

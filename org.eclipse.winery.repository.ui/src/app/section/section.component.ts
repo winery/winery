@@ -22,6 +22,7 @@ import { ModalDirective } from 'ngx-bootstrap';
 import { Response } from '@angular/http';
 import { ToscaTypes } from '../wineryInterfaces/enums';
 import { Utils } from '../wineryUtils/utils';
+import { WineryUploaderComponent } from '../wineryUploader/wineryUploader.component';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -51,6 +52,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     componentData: SectionData[];
     elementToRemove: SectionData;
     types: SelectData[];
+    overwriteValue = false;
 
     importXsdSchemaType: string;
 
@@ -65,6 +67,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addComponentForm') addComponentForm: NgForm;
     @ViewChild('addCsarModal') addCsarModal: ModalDirective;
+    @ViewChild('fileUploader') fileUploader: WineryUploaderComponent;
 
     constructor(private route: ActivatedRoute,
                 private change: ChangeDetectorRef,
@@ -151,6 +154,14 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     onRemoveElement() {
+    }
+
+    overwriteValueChanged() {
+
+        this.fileUploader.getUploader().setOptions({
+            url: this.fileUploadUrl,
+            additionalParameter: {'overwrite': this.overwriteValue}
+        });
     }
 
     /**

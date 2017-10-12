@@ -11,22 +11,20 @@
  *******************************************************************************/
 package org.eclipse.winery.generators.ia;
 
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import org.eclipse.winery.model.tosca.TInterface;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TOperation;
 import org.eclipse.winery.model.tosca.TParameter;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class GeneratorTest {
 
 	private static Path WORKING_DIR;
-
 
 	@BeforeClass
 	public static void initializeWorkingDir() throws Exception {

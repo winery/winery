@@ -9,16 +9,15 @@
 
 package org.eclipse.winery.repository.rest.resources.entitytypes.policytypes;
 
-
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 
 import org.junit.Test;
 
 public class TemplatesOfOnePolicyTypeResourceTest extends AbstractResourceTest {
-	
+
 	@Test
-	public void getTemplatesOfPolicyType() throws Exception{
+	public void getTemplatesOfPolicyType() throws Exception {
 		this.setRevisionTo("88e5ccd6c35aeffdebc19c8dda9cd76f432538f8");
-		this.assertGet("policytypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fpolicytypes%252Ffruits/european/templates/","entitytypes/policytypes/templates_of_european_policytype.json");
+		this.assertGet("policytypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fpolicytypes%252Ffruits/european/templates/", "entitytypes/policytypes/templates_of_european_policytype.json");
 	}
 }
