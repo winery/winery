@@ -22,8 +22,8 @@ import java.util.zip.ZipInputStream;
 
 import org.eclipse.winery.Logger;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -41,15 +41,15 @@ import org.junit.runners.Parameterized;
 public class CsarExporterTest extends TestWithGitBackedRepository {
 
 	/**
-	 * Test multiple branches with different commits and all instances of all TOSCAComponents 
+	 * Test multiple branches with different commits and all instances of all TOSCAComponents
 	 */
 	@Parameterized.Parameters
 	public Collection<Object[]> data() throws Exception {
 		Set<Object[]> res = new UnifiedSet<>();
-		for (String commitId: Arrays.asList("black")) {
+		for (String commitId : Arrays.asList("black")) {
 			setRevisionTo(commitId);
 			for (Class<? extends DefinitionsChildId> idClass : new Class[]{
-					ArtifactTypeId.class, ServiceTemplateId.class}) {
+				ArtifactTypeId.class, ServiceTemplateId.class}) {
 				repository.getAllDefinitionsChildIds(idClass).stream().sorted().forEach(id -> res.add(new Object[]{commitId, id}));
 			}
 		}
@@ -62,13 +62,13 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
 	private ByteArrayOutputStream os;
 	private InputStream is;
 	private final IRepository repository = RepositoryFactory.getRepository();
-	
+
 	public CsarExporterTest(String commitId, DefinitionsChildId id) {
 		Logger.debug(this, "Debugging %s and %s", commitId, id);
 		this.commitId = commitId;
 		this.id = id;
 	}
-	
+
 	@Before
 	public void createOutputAndInputStream() throws Exception {
 		setRevisionTo(commitId);
@@ -77,7 +77,7 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
 		exporter.writeCsar(repository, id, os);
 		is = new ByteArrayInputStream(os.toByteArray());
 	}
-	
+
 	@Test
 	public void csarIsNotZeroBytes() throws Exception {
 		Assert.assertNotEquals(0, os.size());
@@ -92,5 +92,4 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
 			}
 		}
 	}
-
 }

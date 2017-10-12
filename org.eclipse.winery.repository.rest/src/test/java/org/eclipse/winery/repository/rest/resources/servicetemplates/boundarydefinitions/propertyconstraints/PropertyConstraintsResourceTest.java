@@ -11,22 +11,17 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.propertyconstraints;
 
-import org.eclipse.winery.model.tosca.TPropertyConstraint;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
-import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.PropertyConstraintsApiData;
-
-import io.restassured.http.ContentType;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.junit.Test;
 
-public class PropertyConstraintsResourceTest extends AbstractResourceTest{
+public class PropertyConstraintsResourceTest extends AbstractResourceTest {
 
 	@Test
 	public void addPropertyMapping() throws Exception {
 		this.setRevisionTo("86d472dca0340c02f67321f77a71d88f1eef93ce");
 		this.assertNoContentPost("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/propertyconstraints/",
-				"entitytypes/servicetemplates/boundarydefinitions/propertyConstraints/initial_property_constraint.json");
+			"entitytypes/servicetemplates/boundarydefinitions/propertyConstraints/initial_property_constraint.json");
 		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/boundarydefinitions/propertyconstraints/",
-				"entitytypes/servicetemplates/boundarydefinitions/propertyConstraints/initial_property_constraint_get.json");
+			"entitytypes/servicetemplates/boundarydefinitions/propertyConstraints/initial_property_constraint_get.json");
 	}
 }

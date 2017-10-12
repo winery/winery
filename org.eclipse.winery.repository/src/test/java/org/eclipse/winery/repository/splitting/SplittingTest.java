@@ -63,10 +63,10 @@ public class SplittingTest extends TestWithGitBackedRepository {
 	public void st1HasTwoNodeTemplatesWithoutIncomingHostedOnRelationshipTemplate() throws Exception {
 		List<String> expectedIds = Arrays.asList("NT1", "NT1_2");
 		List<TNodeTemplate> expectedNodeTemplates = topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> expectedIds.contains(nt.getId()))
-				.collect(Collectors.toList());
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> expectedIds.contains(nt.getId()))
+			.collect(Collectors.toList());
 
 		List<TNodeTemplate> nodeTemplatesWithoutIncomingEdges = splitting.getNodeTemplatesWithoutIncomingHostedOnRelationships(topologyTemplate);
 		assertEquals(expectedNodeTemplates, nodeTemplatesWithoutIncomingEdges);
@@ -75,12 +75,12 @@ public class SplittingTest extends TestWithGitBackedRepository {
 	@Test
 	public void st1nt1HasCorrectLocationAttribute() throws Exception {
 		TNodeTemplate nt1 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1"))
+			.findAny()
+			.get();
 
 		Optional<String> location = ModelUtilities.getTargetLabel(nt1);
 		assertEquals(Optional.of("l1"), location);
@@ -126,20 +126,20 @@ public class SplittingTest extends TestWithGitBackedRepository {
 	@Test
 	public void testgetSuccessor() throws Exception {
 		TNodeTemplate nt1 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1"))
+			.findAny()
+			.get();
 
 		TNodeTemplate nt2 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1_3"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1_3"))
+			.findAny()
+			.get();
 
 		List<TNodeTemplate> expectedNodes = new ArrayList<>();
 		expectedNodes.add(nt2);
@@ -150,31 +150,31 @@ public class SplittingTest extends TestWithGitBackedRepository {
 	@Test
 	public void testcheckValidationTopologyForAValidTopology() throws Exception {
 		TNodeTemplate nt1 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1"))
+			.findAny()
+			.get();
 
 		ModelUtilities.setTargetLabel(nt1, "1");
 
 		TNodeTemplate nt2 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1_3"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1_3"))
+			.findAny()
+			.get();
 		ModelUtilities.setTargetLabel(nt2, "1");
 
 		TNodeTemplate nt3 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1_2"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1_2"))
+			.findAny()
+			.get();
 		ModelUtilities.setTargetLabel(nt3, "1");
 
 		assertEquals(true, splitting.checkValidTopology(topologyTemplate));
@@ -183,32 +183,31 @@ public class SplittingTest extends TestWithGitBackedRepository {
 	@Test
 	public void testcheckValidationTopologyForAInValidTopology() throws Exception {
 		TNodeTemplate nt1 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1"))
+			.findAny()
+			.get();
 
 		ModelUtilities.setTargetLabel(nt1, "1");
 
 		TNodeTemplate nt2 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1_4"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1_4"))
+			.findAny()
+			.get();
 		ModelUtilities.setTargetLabel(nt2, "2");
 
-
 		TNodeTemplate nt3 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1_2"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1_2"))
+			.findAny()
+			.get();
 		ModelUtilities.setTargetLabel(nt3, "1");
 
 		assertEquals(false, splitting.checkValidTopology(topologyTemplate));
@@ -217,22 +216,22 @@ public class SplittingTest extends TestWithGitBackedRepository {
 	@Test
 	public void testcheckValidationTopologyForAValidTopologyWithSuccessorHasEmptyTargetLabel() throws Exception {
 		TNodeTemplate nt1 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1"))
+			.findAny()
+			.get();
 
 		ModelUtilities.setTargetLabel(nt1, "1");
 
 		TNodeTemplate nt3 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1_2"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1_2"))
+			.findAny()
+			.get();
 		ModelUtilities.setTargetLabel(nt3, "2");
 
 		assertEquals(true, splitting.checkValidTopology(topologyTemplate));
@@ -242,12 +241,12 @@ public class SplittingTest extends TestWithGitBackedRepository {
 	public void testcheckValidationTopologyForAInValidTopologyWithFirstNodesHasEmptyTargetLabel() throws Exception {
 
 		TNodeTemplate nt3 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1_2"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1_2"))
+			.findAny()
+			.get();
 		ModelUtilities.setTargetLabel(nt3, "2");
 
 		assertEquals(false, splitting.checkValidTopology(topologyTemplate));
@@ -256,12 +255,12 @@ public class SplittingTest extends TestWithGitBackedRepository {
 	@Test
 	public void testgetPredecessorsWhichPredecessorsHasNoPredecessors() {
 		TNodeTemplate nt1 = topologyTemplate.getNodeTemplateOrRelationshipTemplate()
-				.stream()
-				.filter(x -> x instanceof TNodeTemplate)
-				.map(TNodeTemplate.class::cast)
-				.filter(nt -> nt.getId().equals("NT1_3"))
-				.findAny()
-				.get();
+			.stream()
+			.filter(x -> x instanceof TNodeTemplate)
+			.map(TNodeTemplate.class::cast)
+			.filter(nt -> nt.getId().equals("NT1_3"))
+			.findAny()
+			.get();
 
 		assertEquals(nt1.getId(), splitting.getNodeTemplatesWhichPredecessorsHasNoPredecessors(topologyTemplate).get(0).getId());
 	}
