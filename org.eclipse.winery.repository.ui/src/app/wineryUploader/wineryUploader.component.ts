@@ -14,6 +14,7 @@ import { Component, EventEmitter, Input, OnInit, Output, OnChanges } from '@angu
 import { isNullOrUndefined } from 'util';
 import { WineryUploaderService } from './wineryUploader.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { FileUploader } from 'ng2-file-upload';
 
 /**
  * This component provides a modal popup with a <code>title</code> and optional progress bar <code>showProgress</code> for file uploads.
@@ -82,6 +83,9 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
 
     ngOnChanges() {
         this.service.uploadUrl = this.uploadUrl;
+    }
+    getUploader(): FileUploader {
+        return this.service.uploader;
     }
 
     dropFile(event?: any) {
