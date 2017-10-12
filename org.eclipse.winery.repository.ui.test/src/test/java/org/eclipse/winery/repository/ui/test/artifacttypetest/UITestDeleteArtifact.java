@@ -39,11 +39,12 @@ public class UITestDeleteArtifact extends TestSettings {
 	public void testDeleteArtifact() throws Exception {
 	
 		driver.get("http://localhost:4200/#/other");
-		driver.findElement(By.xpath("//a[@class='btn btn-default'][contains(text(), 'Artifact Types')]")).click();
+		WebElement element = driver.findElement(By.xpath("//a[@class='btn btn-default'][contains(text(), 'Artifact Types')]"));
+		element.click();
 		driver.findElement(By.xpath("//a[@class='deleteButton']")).click();
 		
-		WebElement element = driver.findElement(By.xpath("//button[@class='btn btn-primary']"));
-		element.click();
+		WebElement element2 = driver.findElement(By.xpath("//button[@class='btn btn-primary']"));
+		element2.click();
 		Assert.assertTrue("Delete Artifact Type successful", element.isEnabled());
 	
 	}
