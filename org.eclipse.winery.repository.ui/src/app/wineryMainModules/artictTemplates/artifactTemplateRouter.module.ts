@@ -38,7 +38,7 @@ const artifactTemplateRoutes: Routes = [
             { path: 'properties', component: PropertiesComponent },
             { path: 'documentation', component: DocumentationComponent },
             { path: 'xml', component: EditXMLComponent },
-            { path: '', redirectTo: 'files', pathMatch: 'full'}
+            { path: '', redirectTo: 'readme', pathMatch: 'full'}
         ]
     }
 ];

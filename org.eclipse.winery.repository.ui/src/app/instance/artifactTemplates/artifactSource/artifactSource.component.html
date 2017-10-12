@@ -122,6 +122,7 @@
                         Name is required!
                     </div>
                 </div>
+                <br>
                 <label class="control-label" for="filePath">Path</label>
                 <input #filePathInput="ngModel"
                        id="filePath"
@@ -130,10 +131,10 @@
                        [(ngModel)]="newFileDir"
                        [wineryDuplicateValidator]="pathValidatorObject"
                 />
-                <div *ngIf="(filePathInput.dirty || filePathInput.touched)"
+                <div *ngIf="filePathInput.errors && (filePathInput.dirty || filePathInput.touched)"
                      class="alert alert-danger">
                     <div [hidden]="addNewArtifactFileForm?.form.valid">
-                        The path must either or be of the form <b>path\to</b>
+                        The path must either be empty or of the form <b>path\to</b>
                     </div>
                 </div>
             </div>

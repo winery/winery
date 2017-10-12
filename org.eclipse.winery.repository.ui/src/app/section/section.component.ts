@@ -42,6 +42,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     loading = true;
     toscaType: ToscaTypes;
     toscaTypes = ToscaTypes;
+    addModalType: string;
     routeSub: Subscription;
     filterString = '';
     itemsPerPage = 10;
@@ -172,6 +173,8 @@ export class SectionComponent implements OnInit, OnDestroy {
 
         this.toscaType = resolved.section;
         this.importXsdSchemaType = resolved.xsdSchemaType;
+
+        this.addModalType = Utils.getToscaTypeNameFromToscaType(this.toscaType);
 
         const storedNamespace = localStorage.getItem(this.toscaType + '_showNamespace') !== null ?
             localStorage.getItem(this.toscaType + '_showNamespace') : 'all';

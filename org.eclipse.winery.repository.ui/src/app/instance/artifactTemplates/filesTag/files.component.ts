@@ -47,7 +47,7 @@ export class FilesComponent implements OnInit {
     loadFiles() {
         this.service.getFiles()
             .subscribe(
-                data => this.filesList = data.files,
+                data => this.handleLoadFiles(data.files, data.paths),
                 error => this.handleError(error)
             );
     }
@@ -64,6 +64,14 @@ export class FilesComponent implements OnInit {
                 data => this.handleDelete(),
                 error => this.handleError(error)
             );
+    }
+
+    private handleLoadFiles(files: FilesApiData[], paths: string[]) {
+        for (let i = 0; i < paths.length; i++) {
+            files[i].subDirectory = paths[i];
+        }
+        this.filesList = files;
+        this.loading = false;
     }
 
     private handleDelete() {

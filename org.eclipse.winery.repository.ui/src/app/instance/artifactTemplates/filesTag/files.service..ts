@@ -10,7 +10,7 @@
  *     Lukas Harzenetter - initial API and implementation
  */
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
+import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
 import { InstanceService } from '../../instance.service';
 import { Observable } from 'rxjs/Observable';
 import { backendBaseURL, hostURL } from '../../../configuration';
@@ -25,9 +25,9 @@ export class FilesService {
         this.path = backendBaseURL + this.sharedData.path + '/files/';
     }
 
-    getFiles(): Observable<{ files: FilesApiData[] }> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+    getFiles(): Observable<{ files: FilesApiData[], paths: string[] }> {
+        const headers = new Headers({ 'Accept': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
 
         return this.http.get(this.path, options)
             .map(res => res.json());
@@ -38,7 +38,10 @@ export class FilesService {
     }
 
     delete(fileToRemove: FilesApiData) {
-        return this.http.delete(hostURL + fileToRemove.deleteUrl);
+        const params = new URLSearchParams();
+        params.set('path', fileToRemove.subDirectory);
+        const options = new RequestOptions({ params: params });
+        return this.http.delete(hostURL + fileToRemove.deleteUrl, options);
     }
 }
 
@@ -49,4 +52,5 @@ export interface FilesApiData {
     size: number;
     thumbnailUrl: string;
     url: string;
+    subDirectory: string;
 }

@@ -55,7 +55,7 @@
 </div>
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <winery-modal-header [title]="'Add component'"></winery-modal-header>
+    <winery-modal-header [title]="'Add new ' + addModalType" ></winery-modal-header>
     <winery-modal-body>
         <form #addComponentForm="ngForm">
             <div class="form-group">

@@ -17,7 +17,11 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ### Changed
 - Add possibility to work with sub directories in artifact templates
 - Add overwrite option in dialog for importing CSARs
+- Add error notification in case of backend is not available
 - Add edit properties as XML
+- Support intelligent naming for IA-generation of nodetypes
+- Fix href from IA generation so that it points to the artifact template in the frontend
+- Fix serviceTemplate headers and set readme-component as entryPoint
 - Fix lifecycle interface is now selected after click on "generate lifecycle interface"
 - Add available/not available indicator for LFS in git log component
 - Add ZIP-button for artifactemplate-files
