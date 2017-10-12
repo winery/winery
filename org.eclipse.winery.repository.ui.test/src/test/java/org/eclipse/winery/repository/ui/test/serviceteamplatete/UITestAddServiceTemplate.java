@@ -1,5 +1,7 @@
 package org.eclipse.winery.repository.ui.test.serviceteamplatete;
+
 import org.eclipse.winery.repository.ui.test.TestSettings;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -8,7 +10,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.util.concurrent.TimeUnit;
-
 
 public class UITestAddServiceTemplate extends TestSettings {
 	

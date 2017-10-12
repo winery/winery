@@ -1,5 +1,7 @@
 package org.eclipse.winery.repository.ui.test.nodetypetest;
+
 import org.eclipse.winery.repository.ui.test.TestSettings;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

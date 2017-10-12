@@ -76,8 +76,8 @@ public class UITestArtifactTemplate extends TestSettings {
 		
 		thread.sleep(2000);
 		
-		for(String handle : driver.getWindowHandles()) {
-			if(!handle.equals(originalHandle)) {
+		for (String handle : driver.getWindowHandles()) {
+			if (!handle.equals(originalHandle)) {
 				driver.switchTo().window(handle);
 				driver.close();
 			}

@@ -70,7 +70,6 @@ public class UITestNodeTypes extends TestSettings {
 		addProperty();
 		addInheritance();
 		
-		
 		//Add Documentation
 		driver.findElement(By.xpath("//a[@class='styledTabMenuButton styledTabMenuButton2ndlevel']//div[contains(.,'Documentation')]")).click();
 		driver.findElement(By.xpath("//textarea[@class='texDoc ng-untouched ng-pristine ng-valid']")).sendKeys("Documentation");
@@ -128,7 +127,7 @@ public class UITestNodeTypes extends TestSettings {
 
 	}
 
-	private void addRequirement() throws InterruptedException{
+	private void addRequirement() throws InterruptedException {
 		//Add Requirement Definition RequirementTypeWithOneKvProperty
 		driver.findElement(By.xpath("//a[@class='styledTabMenuButton styledTabMenuButton2ndlevel']//div[contains(.,'Requirement Definition')]")).click();
 		driver.findElement(By.xpath("//button[@class='rightbutton btn btn-primary btn-xs'][contains(.,'Add')]")).click();
