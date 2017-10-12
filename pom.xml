@@ -84,6 +84,7 @@
 		<module>org.eclipse.winery.repository.configuration</module>
 		<module>org.eclipse.winery.repository.rest</module>
 		<module>org.eclipse.winery.repository.ui</module>
+		<module>org.eclipse.winery.repository.ui.test</module>
 		<module>org.eclipse.winery.topologymodeler</module>
 		<module>org.eclipse.winery.workflowmodeler</module>
 		<module>org.eclipse.winery.model.tosca.yaml</module>
