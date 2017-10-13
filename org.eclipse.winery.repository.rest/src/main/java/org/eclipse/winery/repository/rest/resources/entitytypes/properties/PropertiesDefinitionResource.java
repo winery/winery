@@ -37,9 +37,9 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
-import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionEnum;
 import org.eclipse.winery.repository.rest.resources.apiData.PropertiesDefinitionResourceApiData;
+import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

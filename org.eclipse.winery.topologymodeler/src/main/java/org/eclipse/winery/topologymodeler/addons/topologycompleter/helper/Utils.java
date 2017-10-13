@@ -19,7 +19,6 @@ import java.util.UUID;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;

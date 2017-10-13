@@ -17,9 +17,6 @@ import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.repository.rest.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ConstraintsResource extends EntityWithoutIdCollectionResource<ConstraintResource, TConstraint> {
 
 	public ConstraintsResource(List<TConstraint> constraints, NodeTypeResource res) {

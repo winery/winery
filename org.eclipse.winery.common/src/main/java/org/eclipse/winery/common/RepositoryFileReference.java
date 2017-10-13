@@ -101,7 +101,6 @@ public class RepositoryFileReference implements Comparable<RepositoryFileReferen
 		return res;
 	}
 
-
 	@Override
 	public String toString() {
 		return "RepositoryFileReference{" +

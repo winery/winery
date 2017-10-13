@@ -39,8 +39,6 @@ import org.eclipse.winery.repository.rest.resources.admin.AbstractAdminResource;
 import org.eclipse.winery.repository.rest.resources.apiData.TypeWithShortNameApiData;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Handles longname/shortname by using properties
