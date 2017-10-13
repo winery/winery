@@ -29,4 +29,9 @@ public final class RequirementTypeId extends EntityTypeId {
 	public RequirementTypeId(QName qname) {
 		super(qname);
 	}
+
+	@Override
+	public String getGroup() {
+		return "RequirementType";
+	}
 }

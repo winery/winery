@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;

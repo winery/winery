@@ -1,0 +1,15 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+data_types:
+  example.com.Number:
+    properties:
+      prefix:
+        type: integer
+      suffix:
+        type: integer
+  example.com.Compose:
+    properties:
+      compose:
+        type: example.com.Number
+      addition:
+        type: string

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -65,18 +64,27 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArtifactReference", propOrder = {
-        "includeOrExclude"
+    "includeOrExclude"
 })
 public class TArtifactReference {
 
     @XmlElements({
-            @XmlElement(name = "Exclude", type = TArtifactReference.Exclude.class),
-            @XmlElement(name = "Include", type = TArtifactReference.Include.class)
+        @XmlElement(name = "Exclude", type = TArtifactReference.Exclude.class),
+        @XmlElement(name = "Include", type = TArtifactReference.Include.class)
     })
     protected List<Object> includeOrExclude;
     @XmlAttribute(name = "reference", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String reference;
+
+    public TArtifactReference() {
+
+    }
+
+    public TArtifactReference(Builder builder) {
+        this.includeOrExclude = builder.includeOrExclude;
+        this.reference = builder.reference;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -84,7 +92,7 @@ public class TArtifactReference {
         if (!(o instanceof TArtifactReference)) return false;
         TArtifactReference that = (TArtifactReference) o;
         return Objects.equals(includeOrExclude, that.includeOrExclude) &&
-                Objects.equals(reference, that.reference);
+            Objects.equals(reference, that.reference);
     }
 
     @Override
@@ -223,6 +231,24 @@ public class TArtifactReference {
          */
         public void setPattern(String value) {
             this.pattern = value;
+        }
+    }
+
+    public static class Builder {
+        private final String reference;
+        private List<Object> includeOrExclude;
+
+        public Builder(String reference) {
+            this.reference = reference;
+        }
+
+        public Builder setIncludeOrExclude(List<Object> includeOrExclude) {
+            this.includeOrExclude = includeOrExclude;
+            return this;
+        }
+
+        public TArtifactReference build() {
+            return new TArtifactReference(this);
         }
     }
 }

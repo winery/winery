@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -21,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -52,12 +52,20 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImplementationArtifacts", propOrder = {
-        "implementationArtifact"
+    "implementationArtifact"
 })
 public class TImplementationArtifacts {
 
     @XmlElement(name = "ImplementationArtifact", required = true)
     protected List<TImplementationArtifacts.ImplementationArtifact> implementationArtifact;
+
+    public TImplementationArtifacts() {
+
+    }
+
+    public TImplementationArtifacts(Builder builder) {
+        this.implementationArtifact = builder.implementationArtifact;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -118,9 +126,39 @@ public class TImplementationArtifacts {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class ImplementationArtifact
-            extends TImplementationArtifact {
+    public static class ImplementationArtifact extends TImplementationArtifact {
+        public ImplementationArtifact() {
 
+        }
 
+        public ImplementationArtifact(Builder builder) {
+            super(builder);
+        }
+
+        public static class Builder extends TImplementationArtifact.Builder<Builder> {
+            public Builder(QName artifactType) {
+                super(artifactType);
+            }
+
+            public Builder self() {
+                return this;
+            }
+
+            public ImplementationArtifact build() {
+                return new ImplementationArtifact(this);
+            }
+        }
+    }
+
+    public static class Builder {
+        public final List<ImplementationArtifact> implementationArtifact;
+
+        public Builder(List<ImplementationArtifact> implementationArtifact) {
+            this.implementationArtifact = implementationArtifact;
+        }
+
+        public TImplementationArtifacts build() {
+            return new TImplementationArtifacts(this);
+        }
     }
 }

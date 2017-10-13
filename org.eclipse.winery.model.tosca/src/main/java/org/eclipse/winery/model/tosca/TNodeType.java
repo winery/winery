@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -82,10 +81,10 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tNodeType", propOrder = {
-        "requirementDefinitions",
-        "capabilityDefinitions",
-        "instanceStates",
-        "interfaces"
+    "requirementDefinitions",
+    "capabilityDefinitions",
+    "instanceStates",
+    "interfaces"
 })
 public class TNodeType extends TEntityType {
     @XmlElement(name = "RequirementDefinitions")
@@ -115,9 +114,9 @@ public class TNodeType extends TEntityType {
         if (!super.equals(o)) return false;
         TNodeType tNodeType = (TNodeType) o;
         return Objects.equals(requirementDefinitions, tNodeType.requirementDefinitions) &&
-                Objects.equals(capabilityDefinitions, tNodeType.capabilityDefinitions) &&
-                Objects.equals(instanceStates, tNodeType.instanceStates) &&
-                Objects.equals(interfaces, tNodeType.interfaces);
+            Objects.equals(capabilityDefinitions, tNodeType.capabilityDefinitions) &&
+            Objects.equals(instanceStates, tNodeType.instanceStates) &&
+            Objects.equals(interfaces, tNodeType.interfaces);
     }
 
     @Override
@@ -222,7 +221,7 @@ public class TNodeType extends TEntityType {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "capabilityDefinition"
+        "capabilityDefinition"
     })
     public static class CapabilityDefinitions {
 
@@ -279,7 +278,7 @@ public class TNodeType extends TEntityType {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "_interface"
+        "_interface"
     })
     public static class Interfaces {
 
@@ -336,7 +335,7 @@ public class TNodeType extends TEntityType {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "requirementDefinition"
+        "requirementDefinition"
     })
     public static class RequirementDefinitions {
 
@@ -372,7 +371,7 @@ public class TNodeType extends TEntityType {
         }
     }
 
-    public static class Builder extends TEntityType.Builder {
+    public static class Builder extends TEntityType.Builder<Builder> {
         private RequirementDefinitions requirementDefinitions;
         private CapabilityDefinitions capabilityDefinitions;
         private TTopologyElementInstanceStates instanceStates;
@@ -503,6 +502,11 @@ public class TNodeType extends TEntityType {
             TNodeType.Interfaces tmp = new TNodeType.Interfaces();
             tmp.getInterface().add(interfaces);
             return addInterfaces(tmp);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
         }
 
         public TNodeType build() {

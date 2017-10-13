@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -223,7 +222,7 @@ public class TBoundaryDefinitions {
      *
      * @return possible object is {@link TBoundaryDefinitions.Requirements }
      */
-	/*@Nullable*/
+    /*@Nullable*/
     public TBoundaryDefinitions.Requirements getRequirements() {
         return requirements;
     }
@@ -242,7 +241,7 @@ public class TBoundaryDefinitions {
      *
      * @return possible object is {@link TBoundaryDefinitions.Capabilities }
      */
-	/*@Nullable*/
+    /*@Nullable*/
     public TBoundaryDefinitions.Capabilities getCapabilities() {
         return capabilities;
     }
@@ -261,7 +260,7 @@ public class TBoundaryDefinitions {
      *
      * @return possible object is {@link TBoundaryDefinitions.Policies }
      */
-	/*@Nullable*/
+    /*@Nullable*/
     public TBoundaryDefinitions.Policies getPolicies() {
         return policies;
     }
@@ -280,7 +279,7 @@ public class TBoundaryDefinitions {
      *
      * @return possible object is {@link TBoundaryDefinitions.Interfaces }
      */
-	/*@Nullable*/
+    /*@Nullable*/
     public TBoundaryDefinitions.Interfaces getInterfaces() {
         return interfaces;
     }
@@ -531,7 +530,7 @@ public class TBoundaryDefinitions {
          *
          * @return possible object is {@link TBoundaryDefinitions.Properties.PropertyMappings }
          */
-		/*@Nullable*/
+        /*@Nullable*/
         public TBoundaryDefinitions.Properties.PropertyMappings getPropertyMappings() {
             return propertyMappings;
         }
@@ -593,7 +592,7 @@ public class TBoundaryDefinitions {
              * Objects of the following type(s) are allowed in the list
              * {@link TPropertyMapping }
              */
-			/*@Nullable*/
+            /*@Nullable*/
             public List<TPropertyMapping> getPropertyMapping() {
                 if (propertyMapping == null) {
                     propertyMapping = new ArrayList<TPropertyMapping>();

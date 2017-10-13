@@ -245,11 +245,16 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@Produces({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
 	public Response getDefinitionsAsResponse(
 		@QueryParam(value = "csar") String csar,
+		@QueryParam(value = "yaml") String yaml,
 		@Context UriInfo uriInfo
 	) {
 		final IRepository repository = RepositoryFactory.getRepository();
 		if (!repository.exists(this.id)) {
 			return Response.status(Status.NOT_FOUND).build();
+		}
+
+		if (yaml != null) {
+			return RestUtils.getYamlCSARofSelectedResource(this);
 		}
 
 		if (csar != null) {

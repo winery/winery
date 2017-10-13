@@ -29,4 +29,9 @@ public final class PolicyTemplateId extends EntityTemplateId {
 	public PolicyTemplateId(QName qname) {
 		super(qname);
 	}
+
+	@Override
+	public String getGroup() {
+		return "PolicyTemplate";
+	}
 }

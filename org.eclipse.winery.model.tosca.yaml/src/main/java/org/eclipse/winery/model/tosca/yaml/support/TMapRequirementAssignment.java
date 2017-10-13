@@ -1,13 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Christoph Kleine - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml.support;
 
@@ -34,25 +31,26 @@ public class TMapRequirementAssignment implements Map<String, TRequirementAssign
         this.map = new LinkedHashMap<>();
     }
 
+    public Map<String, TRequirementAssignment> getMap() {
+        return map;
+    }
+
+    public TMapRequirementAssignment setMap(Map<String, TRequirementAssignment> map) {
+        this.map = new LinkedHashMap<>(map);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TMapRequirementAssignment)) return false;
         TMapRequirementAssignment that = (TMapRequirementAssignment) o;
-        return Objects.equals(getMap(), that.getMap());
+        return Objects.equals(map, that.map);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getMap());
-    }
-
-    public Map<String, TRequirementAssignment> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<String, TRequirementAssignment> map) {
-        this.map = map;
+        return Objects.hash(map);
     }
 
     @Override

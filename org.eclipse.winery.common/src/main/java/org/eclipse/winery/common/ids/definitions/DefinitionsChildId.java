@@ -85,6 +85,11 @@ public abstract class DefinitionsChildId extends GenericId {
 		return this.namespace;
 	}
 
+	/**
+	 * @return the group name for the Id (e.g. "ArtifactType", "ServiceTemplate")
+	 */
+	public abstract String getGroup();
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

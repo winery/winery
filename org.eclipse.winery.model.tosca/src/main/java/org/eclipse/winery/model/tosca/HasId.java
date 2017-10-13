@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code contribution
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
@@ -20,6 +19,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 
 public abstract class HasId extends TExtensibleElements implements HasIdInIdOrNameField {
@@ -64,7 +64,8 @@ public abstract class HasId extends TExtensibleElements implements HasIdInIdOrNa
         this.id = value;
     }
 
-    public static class Builder extends TExtensibleElements.Builder {
+    @ADR(11)
+    public abstract static class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
         private final String id;
 
         public Builder(String id) {
