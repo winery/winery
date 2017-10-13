@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.SortedSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -94,11 +95,13 @@ public class WineryCli {
 
 	public static void main(String[] args) throws ParseException {
 		Option repositoryPathOption = new Option("p", "path", true, "use given path as repository path");
+		Option serviceTemplatesOnlyOption = new Option("so", "servicetemplatesonly", false, "checks service templates instead of the whole repository");
 		Option verboseOption = new Option("v", "verbose", false, "be verbose: Output the checked elements");
 		Option helpOption = new Option("h", "help", false, "prints this help");
 
 		Options options = new Options();
 		options.addOption(repositoryPathOption);
+		options.addOption(serviceTemplatesOnlyOption);
 		options.addOption(verboseOption);
 		options.addOption(helpOption);
 		CommandLineParser parser = new DefaultParser();
@@ -125,7 +128,8 @@ public class WineryCli {
 			verbosity = EnumSet.of(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS);
 		}
 
-		List<String> errors = checkCorruptionUsingCsarExport(repository, verbosity);
+		boolean serviceTemplatesOnly = line.hasOption("so");
+		List<String> errors = checkCorruptionUsingCsarExport(repository, verbosity, serviceTemplatesOnly);
 
 		System.out.println();
 		if (errors.isEmpty()) {
@@ -140,11 +144,15 @@ public class WineryCli {
 		}
 	}
 
-	private static List<String> checkCorruptionUsingCsarExport(IRepository repository, EnumSet<Verbosity> verbosity) {
+	private static List<String> checkCorruptionUsingCsarExport(IRepository repository, EnumSet<Verbosity> verbosity, boolean serviceTemplatesOnly) {
 		List<String> res = new ArrayList<>();
-		SortedSet<DefinitionsChildId> allDefintionsChildIds = repository.getAllDefinitionsChildIds();
+
+		Set<DefinitionsChildId> allDefinitionsChildIds = repository.getAllDefinitionsChildIds();
+		if (serviceTemplatesOnly) {
+			allDefinitionsChildIds = allDefinitionsChildIds.stream().filter(id -> id instanceof ServiceTemplateId).collect(Collectors.toSet());
+		}
 		if (verbosity.contains(Verbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS)) {
-			System.out.format("Number of TOSCA definitions to check: %d\n", allDefintionsChildIds.size());
+			System.out.format("Number of TOSCA definitions to check: %d\n", allDefinitionsChildIds.size());
 		}
 		if (!verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
 			System.out.print("Checking ");
@@ -159,7 +167,7 @@ public class WineryCli {
 			return res;
 		}
 
-		for (DefinitionsChildId id : allDefintionsChildIds) {
+		for (DefinitionsChildId id : allDefinitionsChildIds) {
 			if (verbosity.contains(Verbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
 				System.out.format("Checking %s...\n", id.toReadableString());
 			} else {
