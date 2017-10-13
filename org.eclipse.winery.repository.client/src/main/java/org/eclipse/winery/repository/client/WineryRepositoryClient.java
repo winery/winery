@@ -34,7 +34,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -206,26 +205,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
 			throw new IllegalStateException(e);
 		}
 		return context;
-	}
-
-	/**
-	 * Creates a marshaller
-	 *
-	 * @throws IllegalStateException if marshaller could not be instantiated
-	 */
-	private static Marshaller createMarshaller() {
-		// code copied+adapted from JAXBSupport
-		Marshaller m;
-		try {
-			m = WineryRepositoryClient.context.createMarshaller();
-			// pretty printed output is required as the XML is sent 1:1 to the browser for editing
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			// not possible here: m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
-		} catch (JAXBException e) {
-			LOGGER.error("Could not instantiate marshaller", e);
-			throw new IllegalStateException(e);
-		}
-		return m;
 	}
 
 	/**
