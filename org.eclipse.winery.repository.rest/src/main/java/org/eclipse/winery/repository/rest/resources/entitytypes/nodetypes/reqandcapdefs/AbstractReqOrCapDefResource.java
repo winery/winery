@@ -168,11 +168,4 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 	 */
 	public abstract QName getType();
 
-	/**
-	 * Required by reqandcapdefs.jsp
-	 */
-	public Object getDef() {
-		return this.reqOrCapDef;
-	}
-
 }

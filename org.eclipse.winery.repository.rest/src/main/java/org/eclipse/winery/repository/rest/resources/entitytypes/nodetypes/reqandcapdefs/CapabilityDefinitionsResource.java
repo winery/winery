@@ -22,13 +22,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class CapabilityDefinitionsResource extends RequirementOrCapabilityDefinitionsResource<CapabilityDefinitionResource, TCapabilityDefinition> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(CapabilityDefinitionsResource.class);
-
 
 	public CapabilityDefinitionsResource(NodeTypeResource res, List<TCapabilityDefinition> defs) {
 		super(CapabilityDefinitionResource.class, TCapabilityDefinition.class, defs, res);

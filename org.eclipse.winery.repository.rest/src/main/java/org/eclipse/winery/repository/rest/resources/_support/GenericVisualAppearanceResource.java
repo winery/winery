@@ -68,18 +68,6 @@ public abstract class GenericVisualAppearanceResource {
 		return RestUtils.delete(this.id);
 	}
 
-	/**
-	 * Used for GUI when accessing the resource as data E.g., for topology
-	 * template
-	 */
-	//@JsonIgnore
-	public URI getAbsoluteURL() {
-		String URI = Environment.getUrlConfiguration().getRepositoryApiUrl();
-		URI = URI + "/" + Util.getUrlPath(this.id);
-		return RestUtils.createURI(URI);
-	}
-
-	//@JsonIgnore
 	public ToscaElementId getId() {
 		return this.id;
 	}

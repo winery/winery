@@ -38,8 +38,6 @@ import org.slf4j.LoggerFactory;
 
 public class InterfacesResource {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(InterfacesResource.class);
-
 	private TopologyGraphElementEntityTypeResource res;
 	private List<TInterface> interfaces;
 	private String interfaceType;

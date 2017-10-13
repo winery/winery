@@ -42,20 +42,6 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
 		this.implementationArtifacts = implementationArtifact;
 	}
 
-	/**
-	 * @return a cast to TNodeTypeImplementationResource of the parent of this resource.
-	 */
-	private NodeTypeImplementationResource getNTI() {
-		return (NodeTypeImplementationResource) this.res;
-	}
-
-	/**
-	 * @return a cast to TNodeTypeImplementationResource of the parent of this resource.
-	 */
-	private RelationshipTypeImplementationResource getRTI() {
-		return (RelationshipTypeImplementationResource) this.res;
-	}
-
 	@Override
 	public Collection<ImplementationArtifactResource> getAllArtifactResources() {
 		Collection<ImplementationArtifactResource> res = new ArrayList<>(this.implementationArtifacts.size());

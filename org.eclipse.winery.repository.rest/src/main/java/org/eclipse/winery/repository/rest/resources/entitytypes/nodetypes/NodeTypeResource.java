@@ -30,9 +30,6 @@ import org.slf4j.LoggerFactory;
 
 public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(NodeTypeResource.class);
-
-
 	public NodeTypeResource(NodeTypeId id) {
 		super(id);
 	}

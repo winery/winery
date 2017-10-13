@@ -22,8 +22,6 @@ import org.slf4j.LoggerFactory;
 
 public class ConstraintsResource extends EntityWithoutIdCollectionResource<ConstraintResource, TConstraint> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ConstraintsResource.class);
-
 	public ConstraintsResource(List<TConstraint> constraints, NodeTypeResource res) {
 		super(ConstraintResource.class, TConstraint.class, constraints, res);
 	}

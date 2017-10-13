@@ -20,12 +20,7 @@ import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class DeploymentArtifactsResource extends GenericArtifactsResource<DeploymentArtifactResource, TDeploymentArtifact> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentArtifactsResource.class);
 
 	private List<TDeploymentArtifact> deploymentArtifacts;
 

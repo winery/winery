@@ -16,11 +16,9 @@ package org.eclipse.winery.repository.rest.resources._support;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -36,11 +34,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.winery.common.RepositoryFileReference;
@@ -54,7 +50,6 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -147,16 +142,6 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 */
 	public final XmlId getXmlId() {
 		return this.id.getXmlId();
-	}
-
-	/**
-	 * Convenience method for getId().getQName();
-	 *
-	 * @return the QName associated with this resource
-	 */
-	@SuppressWarnings("WeakerAccess")
-	public final QName getQName() {
-		return this.getId().getQName();
 	}
 
 	/**
@@ -358,18 +343,6 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	 */
 	public TExtensibleElements getElement() {
 		return this.element;
-	}
-
-	/**
-	 * @return the reference to the internal list of imports. Can be changed if some imports are required or should be
-	 * removed
-	 * @throws IllegalStateException if definitions was not loaded or not initialized
-	 */
-	protected List<TImport> getImport() {
-		if (this.definitions == null) {
-			throw new IllegalStateException("Trying to access uninitalized definitions object");
-		}
-		return this.definitions.getImport();
 	}
 
 	/**
