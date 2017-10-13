@@ -252,28 +252,12 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
-		if (csar != null) {
+		if (csar == null) {
+			// we cannot use this.definitions as that definitions is Winery's internal representation of the data and not the full blown definitions (including imports to referenced elements)
+			return RestUtils.getDefinitionsOfSelectedResource(this, uriInfo.getBaseUri());
+		} else {
 			return RestUtils.getCSARofSelectedResource(this);
 		}
-
-		// we cannot use this.definitions as that definitions is Winery's interal representation of the data and not the full blown definitions (including imports to referenced elements)
-
-		StreamingOutput so = new StreamingOutput() {
-
-			@Override
-			public void write(OutputStream output) throws IOException, WebApplicationException {
-				ToscaExportUtil exporter = new ToscaExportUtil();
-				// we include everything related
-				Map<String, Object> conf = new HashMap<>();
-				conf.put(ToscaExportUtil.ExportProperties.REPOSITORY_URI.toString(), uriInfo.getBaseUri());
-				try {
-					exporter.exportTOSCA(repository, AbstractComponentInstanceResource.this.id, output, conf);
-				} catch (Exception e) {
-					throw new WebApplicationException(e);
-				}
-			}
-		};
-		return Response.ok().entity(so).build();
 	}
 
 	@GET
