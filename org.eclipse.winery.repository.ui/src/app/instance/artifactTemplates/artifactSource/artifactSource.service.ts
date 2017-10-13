@@ -18,9 +18,11 @@ export class ArtifactSourceService {
 
     private path: string;
     private pathToFiles: string;
+    private parentPath: string;
 
     constructor(private http: Http,
                 private sharedData: InstanceService) {
+        this.parentPath = backendBaseURL + this.sharedData.path + '/';
         this.path = backendBaseURL + this.sharedData.path + '/source/';
         this.pathToFiles = backendBaseURL + this.sharedData.path + '/files/';
     }
@@ -53,8 +55,17 @@ export class ArtifactSourceService {
         return this.http.delete(hostURL + fileToRemove.deleteUrl, options);
     }
 
-    postToSources(data: ArtifactResourceApiData) {
+    copySourcesToFiles() {
         const headers = new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
+        const data = {
+        };
+        return this.http.post(this.parentPath, data, options)
+            .map(res => res.ok);
+    }
+
+    postToSources(data: ArtifactResourceApiData) {
+        const headers = new Headers({ 'Accept': 'application/json' });
         const options = new RequestOptions({ headers: headers });
         return this.http.post(this.path + data.getFileName(), data, options)
             .map(res => res.json());
