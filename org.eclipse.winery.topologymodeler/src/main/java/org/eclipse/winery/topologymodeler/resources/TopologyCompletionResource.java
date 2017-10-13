@@ -39,9 +39,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class contains resources used for the topology completion.
- *
  */
-@Path("/")
+// Enabling the @Path statement leads to
+// SEVERE: Conflicting URI templates. The URI template / for root resource class org.eclipse.winery.repository.rest.resources.MainResource and the URI template / transform to the same regular expression (/.*)?
+// TODO: Solution integrate the topology completion in the backend
+// until this is done, we have to disable the @Path statement.
+// See also https://stackoverflow.com/q/29024568/873282
+//@Path("/")
 public class TopologyCompletionResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TopologyCompletionResource.class);
