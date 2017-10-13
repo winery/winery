@@ -125,8 +125,7 @@ public class FilesResource {
 
 	private List<String> getAllFilePaths() {
 		List<String> paths = new ArrayList<>();
-		for (RepositoryFileReference ref : RepositoryFactory.getRepository()
-			.getContainedFiles(this.fileDir)) {
+		for (RepositoryFileReference ref : RepositoryFactory.getRepository().getContainedFiles(this.fileDir)) {
 			if (ref.getSubDirectory().isPresent()) {
 				paths.add(ref.getSubDirectory().get().toString());
 			} else {

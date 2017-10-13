@@ -101,8 +101,13 @@ public class RepositoryFileReference implements Comparable<RepositoryFileReferen
 		return res;
 	}
 
+
 	@Override
 	public String toString() {
-		return this.getParent().toString() + " / " + this.getFileName();
+		return "RepositoryFileReference{" +
+			"parent=" + parent +
+			", subDirectory=" + subDirectory +
+			", fileName='" + fileName + '\'' +
+			'}';
 	}
 }

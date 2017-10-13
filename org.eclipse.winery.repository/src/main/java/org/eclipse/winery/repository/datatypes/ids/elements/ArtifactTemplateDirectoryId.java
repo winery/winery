@@ -18,7 +18,6 @@ import org.eclipse.winery.common.ids.elements.ToscaElementId;
 
 public class ArtifactTemplateDirectoryId extends ToscaElementId {
 
-
 	public ArtifactTemplateDirectoryId(ArtifactTemplateId parent, String directoryId) {
 		super(parent, new XmlId(directoryId, false));
 	}

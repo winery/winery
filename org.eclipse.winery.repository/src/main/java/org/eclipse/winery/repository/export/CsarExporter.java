@@ -171,6 +171,7 @@ public class CsarExporter {
 					addDummyRepositoryFileReferenceForGeneratedXSD(zos, transformer, (DummyRepositoryFileReferenceForGeneratedXSD) ref, archivePath);
 				} else {
 					if (ref.getParent() instanceof ArtifactTemplateDirectoryId) {
+						// special handling for artifact template directories "source" and "files"
 						addArtifactTemplateToZipFile(zos, repository, ref, archivePath);
 					} else {
 						addFileToZipArchive(zos, repository, ref, archivePath);
@@ -184,6 +185,8 @@ public class CsarExporter {
 	}
 
 	/**
+	 * Special handling for artifact template directories source and files
+	 *
 	 * @param zos         Output stream for the archive that should contain the file
 	 * @param ref         Reference to the file that should be added to the archive
 	 * @param archivePath Path to the file inside the archive
