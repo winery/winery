@@ -9,7 +9,7 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;

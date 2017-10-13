@@ -9,11 +9,11 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 /**
- * Implementors can have DAs attached
+ * Implementors can have IAs attached
  */
-public interface INodeTemplateResourceOrNodeTypeImplementationResource extends INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
+public interface INodeTypeImplementationResourceOrRelationshipTypeImplementationResource extends INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 
 }

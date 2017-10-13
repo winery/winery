@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
 import io.swagger.annotations.Api;
 

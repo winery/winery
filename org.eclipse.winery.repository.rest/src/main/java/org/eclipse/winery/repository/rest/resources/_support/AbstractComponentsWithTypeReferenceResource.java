@@ -10,7 +10,7 @@
  *     Oliver Kopp - initial API and implementation
  *     Nicole Keppler, Lukas Balzer - changes for angular frontend
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import java.io.IOException;
 
@@ -26,7 +26,6 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 
 import org.apache.commons.lang3.StringUtils;

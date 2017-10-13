@@ -14,7 +14,7 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.capabilitytypes
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TCapabilityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

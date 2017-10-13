@@ -29,7 +29,7 @@ import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2OptGroup;
-import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 
 public class ArtifactTypeResource extends EntityTypeResource {
 

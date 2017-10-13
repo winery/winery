@@ -11,7 +11,7 @@
  *     Tino Stadelmaier, Philipp Meyer - rename for id and namespace
  *     Nicole Keppler - support for JSON response
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -66,11 +66,11 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.documentation.DocumentationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.rest.resources.tags.TagsResource;

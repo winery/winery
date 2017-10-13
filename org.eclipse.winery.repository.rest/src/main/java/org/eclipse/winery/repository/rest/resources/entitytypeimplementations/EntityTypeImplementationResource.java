@@ -9,7 +9,7 @@
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -40,9 +40,9 @@ import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
-import org.eclipse.winery.repository.rest.resources.CreateFromArtifactApiData;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
+import org.eclipse.winery.repository.rest.resources._support.CreateFromArtifactApiData;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;

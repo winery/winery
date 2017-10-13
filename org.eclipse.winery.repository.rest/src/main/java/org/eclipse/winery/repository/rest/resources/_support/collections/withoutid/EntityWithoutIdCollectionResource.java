@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityCollectionResource;
 

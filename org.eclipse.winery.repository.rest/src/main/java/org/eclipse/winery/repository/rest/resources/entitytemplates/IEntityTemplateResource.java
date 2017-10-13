@@ -16,7 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 
 /**
  * Interface ensuring that no methods are forgotten when implementing an

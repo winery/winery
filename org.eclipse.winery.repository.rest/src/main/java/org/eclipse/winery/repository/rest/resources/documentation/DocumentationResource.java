@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TDocumentation;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 
 public class DocumentationResource {
 

@@ -31,7 +31,7 @@ import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.GenericVisualAppearanceResource;
+import org.eclipse.winery.repository.rest.resources._support.GenericVisualAppearanceResource;
 import org.eclipse.winery.repository.rest.resources.apiData.RelationshipTypesVisualsApiData;
 
 import com.fasterxml.jackson.core.JsonFactory;

@@ -40,8 +40,8 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDire
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceWithReferencesResource;
-import org.eclipse.winery.repository.rest.resources.IHasName;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceWithReferencesResource;
+import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourcesApiData;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;

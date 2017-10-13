@@ -12,7 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
 /**
  * Manages a certain kind of imports without special treatments

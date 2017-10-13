@@ -11,7 +11,7 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.capabilitytypes
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
 import io.swagger.annotations.Api;
 
