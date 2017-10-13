@@ -61,7 +61,6 @@ import io.swagger.annotations.ApiParam;
 
 public class ArtifactTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IEntityTemplateResource<TArtifactTemplate>, IHasName {
 
-
 	public ArtifactTemplateResource(ArtifactTemplateId id) {
 		super(id);
 	}
@@ -99,18 +98,17 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response copySourceToFilesResource(@ApiParam(value = "if data contains a non-empty array than only the files" +
 		" whose names are included are copied ", required = true) ArtifactResourcesApiData data) {
-		List<String> artifactList = data.getArtifactList();
+		List<String> artifactList = data.getArtifactNames();
 		ArtifactTemplateDirectoryId sourceDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
 		FilesResource filesResource = getFilesResource();
 		for (RepositoryFileReference ref : RepositoryFactory.getRepository().getContainedFiles(sourceDir)) {
 			if (artifactList == null || artifactList.contains(ref.getFileName())) {
-				try {
-					InputStream inputStream = RepositoryFactory.getRepository().newInputStream(ref);
+				try (InputStream inputStream = RepositoryFactory.getRepository().newInputStream(ref)) {
 					String fileName = ref.getFileName();
 					String subDirectory = ref.getSubDirectory().map(s -> s.toString()).orElse("");
 					filesResource.putFile(fileName, subDirectory, inputStream);
 				} catch (IOException e) {
-					Logger.debug(this, e, "the artifact source " + ref.getFileName() + " could not be copied to the files directory!");
+					Logger.debug(this, e, "The artifact source " + ref.getFileName() + " could not be copied to the files directory.");
 					return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 				}
 			}

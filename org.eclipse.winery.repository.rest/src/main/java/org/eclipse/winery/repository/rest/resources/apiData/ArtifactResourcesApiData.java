@@ -6,19 +6,18 @@
  */
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ArtifactResourcesApiData {
-	public String[] artifactNames;
 
-	public List<String> getArtifactList() {
-		if (this.artifactNames == null) {
-			return null;
-		}
-		List<String> data = new ArrayList<>();
-		Collections.addAll(data, this.artifactNames);
-		return data;
+	private List<String> artifactNames;
+
+	public List<String> getArtifactNames() {
+		return artifactNames;
 	}
+
+	public void setArtifactNames(List<String> artifactNames) {
+		this.artifactNames = artifactNames;
+	}
+
 }
