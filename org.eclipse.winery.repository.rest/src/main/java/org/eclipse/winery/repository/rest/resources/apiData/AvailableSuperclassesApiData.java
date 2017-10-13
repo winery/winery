@@ -18,7 +18,7 @@ import java.util.SortedSet;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 
 public class AvailableSuperclassesApiData {
 

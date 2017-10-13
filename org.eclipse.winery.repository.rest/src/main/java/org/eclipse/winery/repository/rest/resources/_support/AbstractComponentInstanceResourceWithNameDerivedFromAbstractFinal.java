@@ -6,7 +6,7 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import java.lang.reflect.Method;
 
@@ -31,6 +31,7 @@ import org.eclipse.winery.repository.rest.resources.apiData.AvailableSuperclasse
 import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceApiData;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

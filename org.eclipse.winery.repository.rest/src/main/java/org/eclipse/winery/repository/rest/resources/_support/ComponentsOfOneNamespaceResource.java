@@ -10,7 +10,7 @@
  *     Lukas Harzenetter - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.core.Response;

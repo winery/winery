@@ -6,7 +6,7 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources.entitytypes;
 
 import java.util.Collection;
 import java.util.SortedSet;
@@ -26,6 +26,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataWithOptGroups;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2OptGroup;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 import org.eclipse.winery.repository.rest.resources.entitytypes.properties.PropertiesDefinitionResource;
 
 public abstract class EntityTypeResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {

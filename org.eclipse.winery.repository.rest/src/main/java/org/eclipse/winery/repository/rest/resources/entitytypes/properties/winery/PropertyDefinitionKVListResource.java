@@ -13,8 +13,8 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
-import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 
 /**
  * Supports Winery's k/v properties introducing sub resources

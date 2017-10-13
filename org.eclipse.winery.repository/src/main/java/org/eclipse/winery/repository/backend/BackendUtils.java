@@ -17,7 +17,6 @@ package org.eclipse.winery.repository.backend;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -300,8 +299,8 @@ public class BackendUtils {
 	public static String getPathInsideRepo(RepositoryFileReference ref) {
 		if (ref.getSubDirectory().isPresent()) {
 			return BackendUtils.getPathInsideRepo(ref.getParent())
-				+ File.separator + ref.getSubDirectory().get().toString()
-				+ File.separator + ref.getFileName();
+				+ '/' + ref.getSubDirectory().get().toString().replace('\\', '/')
+				+ '/' + ref.getFileName();
 		}
 		return BackendUtils.getPathInsideRepo(ref.getParent()) + ref.getFileName();
 	}

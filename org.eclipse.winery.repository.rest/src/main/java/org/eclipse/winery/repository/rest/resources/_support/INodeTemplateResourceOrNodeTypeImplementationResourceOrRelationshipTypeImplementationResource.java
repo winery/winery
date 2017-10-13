@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 University of Stuttgart.
+ * Copyright (c) 2012-2013 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
@@ -7,28 +7,17 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  *
  * Contributors:
- *     Nicole Keppler - initial API and implementation
+ *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.datatypes;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import org.eclipse.winery.common.ids.Namespace;
 
-public class NamespaceAndCountOfComponentInstances {
+/**
+ * Implementors can have IAs or DAs attached
+ */
+public interface INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 
-	private final Namespace namespace;
-	private final Integer count;
-
-	public NamespaceAndCountOfComponentInstances(Namespace namespace, Integer count) {
-		this.namespace = namespace;
-		this.count = count;
-	}
-
-	public Namespace getNamespace() {
-		return namespace;
-	}
-
-	public Integer getCount() {
-		return count;
-	}
+	Namespace getNamespace();
 
 }

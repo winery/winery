@@ -31,7 +31,7 @@ import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.GetType;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;

@@ -431,11 +431,6 @@ function getURLForDeploymanetArtifactGeneration() {
 }
 </script>
 
-<%
-// we want to display the name of the artifact template, not the id
-Collection<QNameWithName> artifactTemplateList = client.getListOfAllInstances(ArtifactTemplateId.class);
-%>
-
 <div id="winery">
 	<ncnt:propertiesOfOneNodeTemplate uiURL="<%=uiURL%>" repositoryURL="<%=repositoryURL%>"/>
 	<ncrt:propertiesOfOneRelationshipTemplate relationshipTypes="<%=relationshipTypes%>" repositoryURL="<%=repositoryURL%>"/>

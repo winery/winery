@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsWithoutTypeReferenceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
 import io.swagger.annotations.ApiOperation;
 

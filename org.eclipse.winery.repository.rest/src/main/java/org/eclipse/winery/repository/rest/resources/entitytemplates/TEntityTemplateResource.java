@@ -14,7 +14,7 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates;
 import java.util.List;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;

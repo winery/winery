@@ -11,7 +11,7 @@
  *     Lukas Harzenetter - added show all items query argument
  *     Nicole Keppler - Bugfixes
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -42,7 +42,6 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;

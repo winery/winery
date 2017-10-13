@@ -21,9 +21,8 @@ import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources._support.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
-import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
@@ -40,20 +39,6 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
 	public ImplementationArtifactsResource(List<ImplementationArtifact> implementationArtifact, INodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
 		super(ImplementationArtifactResource.class, ImplementationArtifact.class, implementationArtifact, res);
 		this.implementationArtifacts = implementationArtifact;
-	}
-
-	/**
-	 * @return a cast to TNodeTypeImplementationResource of the parent of this resource.
-	 */
-	private NodeTypeImplementationResource getNTI() {
-		return (NodeTypeImplementationResource) this.res;
-	}
-
-	/**
-	 * @return a cast to TNodeTypeImplementationResource of the parent of this resource.
-	 */
-	private RelationshipTypeImplementationResource getRTI() {
-		return (RelationshipTypeImplementationResource) this.res;
 	}
 
 	@Override

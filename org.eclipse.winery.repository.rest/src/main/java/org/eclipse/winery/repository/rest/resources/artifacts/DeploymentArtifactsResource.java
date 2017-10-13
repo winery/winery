@@ -18,14 +18,9 @@ import javax.ws.rs.PathParam;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.repository.rest.resources.INodeTemplateResourceOrNodeTypeImplementationResource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResource;
 
 public class DeploymentArtifactsResource extends GenericArtifactsResource<DeploymentArtifactResource, TDeploymentArtifact> {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentArtifactsResource.class);
 
 	private List<TDeploymentArtifact> deploymentArtifacts;
 

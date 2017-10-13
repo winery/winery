@@ -14,7 +14,7 @@ import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationI
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
-import org.eclipse.winery.repository.rest.resources.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
+import org.eclipse.winery.repository.rest.resources._support.INodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.artifacts.ImplementationArtifactsResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.EntityTypeImplementationResource;
 

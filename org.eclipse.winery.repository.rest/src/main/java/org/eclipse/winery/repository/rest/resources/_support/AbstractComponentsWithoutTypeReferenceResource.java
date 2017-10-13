@@ -10,14 +10,13 @@
  *     Oliver Kopp - initial API and implementation
  *     Nicole Keppler, Lukas Balzer - changes for angular frontend
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
 /**

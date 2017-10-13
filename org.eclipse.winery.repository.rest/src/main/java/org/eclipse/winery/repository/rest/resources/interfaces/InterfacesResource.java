@@ -33,12 +33,7 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphEle
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class InterfacesResource {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(InterfacesResource.class);
 
 	private TopologyGraphElementEntityTypeResource res;
 	private List<TInterface> interfaces;

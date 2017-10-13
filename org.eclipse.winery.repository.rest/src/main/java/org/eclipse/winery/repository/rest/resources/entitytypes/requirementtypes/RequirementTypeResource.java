@@ -16,7 +16,7 @@ import javax.ws.rs.Path;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TRequirementType;
-import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 
 public class RequirementTypeResource extends EntityTypeResource {
 

@@ -19,7 +19,6 @@ import java.util.UUID;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TRequirement;
 import org.eclipse.winery.model.tosca.TRequirementType;
@@ -79,36 +78,11 @@ public class Utils {
 	}
 
 	/**
-	 * Returns a {@link TNodeTemplate} for a given Id.
-	 *
-	 * @param nodeTemplates
-	 *            all the {@link TNodeTemplate} in the {@link TTopologyTemplate}
-	 * @param id
-	 *            the id of the {@link TNodeTemplate} to be found
-	 *
-	 * @return the found {@link TNodeTemplate} or null if not found
-	 */
-	public static TNodeTemplate getNodeTemplateForId(List<TNodeTemplate> nodeTemplates, String id) {
-
-		for (TNodeTemplate nt : nodeTemplates) {
-
-			if (nt.getId().equals(id)) {
-				return nt;
-			}
-		}
-
-		LOGGER.error("No NodeTemplate with " + id + " exists");
-
-		return null;
-
-	}
-
-	/**
 	 * Returns a {@link TNodeType} for a given Id.
 	 *
 	 * @param nodeTypes
 	 *            All the {@link TNodeType} in the {@link TTopologyTemplate}
-	 * @param Id
+	 * @param id
 	 *            The id of the {@link TNodeType} to be searched
 	 * @return the {@link TNodeType} or null if not found
 	 */

@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import java.util.HashSet;
 import java.util.Set;

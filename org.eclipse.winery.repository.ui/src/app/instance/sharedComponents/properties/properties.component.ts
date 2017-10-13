@@ -75,7 +75,7 @@ export class PropertiesComponent implements OnInit {
             this.properties = data.properties;
         } else {
             this.isXMLData = false;
-            if (!isNullOrUndefined(data.properies)) {
+            if (!isNullOrUndefined(data.properties)) {
                 this.propertyKeys = Object.keys(data.properties);
             }
             if (this.properties != null && this.propertyKeys.length > 0) {

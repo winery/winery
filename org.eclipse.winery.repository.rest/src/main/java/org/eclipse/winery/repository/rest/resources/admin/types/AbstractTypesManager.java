@@ -39,8 +39,6 @@ import org.eclipse.winery.repository.rest.resources.admin.AbstractAdminResource;
 import org.eclipse.winery.repository.rest.resources.apiData.TypeWithShortNameApiData;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Handles longname/shortname by using properties
@@ -50,8 +48,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public abstract class AbstractTypesManager extends AbstractAdminResource {
-
-	protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractTypesManager.class);
 
 	@Context
 	private UriInfo uriInfo;
@@ -185,13 +181,6 @@ public abstract class AbstractTypesManager extends AbstractAdminResource {
 		TypeWithShortName tws = new TypeWithShortName(type, shortName);
 		this.addTypeWithShortName(tws);
 		return Response.noContent().build();
-	}
-
-	/**
-	 * Required by types.jsp
-	 */
-	public String getURL() {
-		return this.uriInfo.getAbsolutePath().toString();
 	}
 
 }

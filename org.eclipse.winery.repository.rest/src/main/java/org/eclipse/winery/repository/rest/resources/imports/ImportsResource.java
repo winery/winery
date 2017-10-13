@@ -17,7 +17,7 @@ import javax.ws.rs.PathParam;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.imports.WsdlImportId;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources.imports.genericimports.GenericImportsResource;
 import org.eclipse.winery.repository.rest.resources.imports.wsdlimports.WsdlImportsResource;
 import org.eclipse.winery.repository.rest.resources.imports.xsdimports.XSDImportsResource;

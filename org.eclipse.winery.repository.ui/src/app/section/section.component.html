@@ -11,16 +11,16 @@
 <div [class.hidden]="!loading">
     <winery-loader></winery-loader>
 </div>
-<div *ngIf="!loading" id="sectionsContentContainer">
-    <div id="searchBoxContainer">
+<div *ngIf="!loading" id="sectionsContentContainer" class="sectionsContentContainer">
+    <div id="searchBoxContainer" class="searchBoxContainer">
         <input type="text" id="searchBox" [(ngModel)]="filterString">
     </div>
-    <div id="sectionsOverviewShadow">
+    <div id="sectionsOverviewShadow" class="sectionsOverviewShadow">
         <div id="gcprightcolumn"></div>
         <div id="overviewtopshadow"></div>
         <div id="overviewbottomshadow"></div>
     </div>
-    <div class="floatSection" id="sectionsComponentContainer">
+    <div class="sectionsComponentContainer" id="sectionsComponentContainer">
         <winery-entity-container
             *ngFor="let item of componentData
                 | filterSections: { showNamespaces: showNamespace, filterString: filterString }
@@ -28,34 +28,39 @@
             [toscaType]="toscaType"
             [xsdSchemaType]="importXsdSchemaType"
             [data]="item"
-            (deleted)="getSectionsData()">
+            (deleted)="getSectionsData()"
+            class="winery-entity-container">
         </winery-entity-container>
     </div>
-    <div class="floatSection" id="sectionSidebar">
-        <button class="btn btn-default sidebar-btn" id="sectionsAddNewBtn" (click)="onAdd();">Add new</button>
-        <button class="btn btn-default sidebar-btn" id="sectionsImportCsarBtn" (click)="addCsarModal.show();">Import
-            CSAR
+    <div class="sectionSidebar" id="sectionSidebar">
+        <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsAddNewBtn" (click)="onAdd();">Add new
+        </button>
+        <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsImportCsarBtn"
+                (click)="addCsarModal.show();">Import CSAR
         </button>
         <winery-xaas-packager *ngIf="toscaType === toscaTypes.ServiceTemplate"
+                              class="sectionBtn"
                               id="sectionCreateFromArtifactBtn"></winery-xaas-packager>
-        <button class="btn btn-default sidebar-btn" id="sectionsGroupBtn" (click)="onChangeView()"
+        <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsGroupBtn" (click)="onChangeView()"
                 [disabled]="showSpecificNamespaceOnly()">
             {{ changeViewButtonTitle }}
         </button>
     </div>
-    <div id="sectionsFooterContainer">
-        <label id="sectionPaginationLabel" for="selectItemsPerPage">Items per Page:</label>
-        <select id="selectItemsPerPage" [(ngModel)]="itemsPerPage">
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-        </select>
+    <div id="sectionsFooterContainer" class="sectionsFooterContainer">
+        <div class="form-inline selectItemsPerPage">
+            <label id="sectionPaginationLabel" for="selectItemsPerPage">Items per Page:</label>
+            <select id="selectItemsPerPage" class="form-control" [(ngModel)]="itemsPerPage">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+            </select>
+        </div>
         <pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>
     </div>
 </div>
 
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <winery-modal-header [title]="'Add new ' + addModalType" ></winery-modal-header>
+    <winery-modal-header [title]="'Add new ' + addModalType"></winery-modal-header>
     <winery-modal-body>
         <form #addComponentForm="ngForm">
             <div class="form-group">
@@ -105,7 +110,8 @@
         <winery-uploader [modalRef]="addCsarModal" [uploadUrl]="fileUploadUrl" #fileUploader
                          (onSuccess)="getSectionsData()"></winery-uploader>
         <div class="checkbox">
-            <label><input [(ngModel)]="overwriteValue" (change)="overwriteValueChanged()" type="checkbox" value="">Overwrite existing content</label>
+            <label><input [(ngModel)]="overwriteValue" (change)="overwriteValueChanged()" type="checkbox" value="">Overwrite
+                existing content</label>
         </div>
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">

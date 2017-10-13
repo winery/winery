@@ -9,29 +9,11 @@
  * Contributors:
  *     Oliver Kopp - initial API and implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 /**
- * Data used to render a submenu item
+ * Implementors can have DAs attached
  */
-public class SubMenuData {
+public interface INodeTemplateResourceOrNodeTypeImplementationResource extends INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 
-	public static final SubMenuData SUBMENU_DOCUMENTATION = new SubMenuData("#documentation", "Documentation");
-	public static final SubMenuData SUBMENU_XML = new SubMenuData("#xml", "XML");
-
-	private final String href;
-	private final String text;
-
-	public SubMenuData(String href, String text) {
-		this.href = href;
-		this.text = text;
-	}
-
-	public String getHref() {
-		return this.href;
-	}
-
-	public String getText() {
-		return this.text;
-	}
 }

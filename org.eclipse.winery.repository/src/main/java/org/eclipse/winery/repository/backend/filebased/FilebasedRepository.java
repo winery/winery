@@ -421,11 +421,11 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 					return false;
 				}
 			}).map(f -> {
-				final Path parent = f.getParent();
-				if (parent == null) {
+				final Path relativePath = dir.relativize(f.getParent());
+				if (relativePath.toString().isEmpty()) {
 					return new RepositoryFileReference(id, f.getFileName().toString());
 				} else {
-					return new RepositoryFileReference(id, dir.relativize(parent), f.getFileName().toString());
+					return new RepositoryFileReference(id, relativePath, f.getFileName().toString());
 				}
 			}).forEach(ref -> res.add(ref));
 		} catch (IOException e1) {

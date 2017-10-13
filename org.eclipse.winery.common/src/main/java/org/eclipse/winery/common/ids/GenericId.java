@@ -49,8 +49,10 @@ public abstract class GenericId implements Comparable<GenericId> {
 
 	@Override
 	public String toString() {
-		String idName = Util.getEverythingBetweenTheLastDotAndBeforeId(this.getClass());
-		return idName + " / " + this.getXmlId().toString();
+		return "GenericId{" +
+			"id=" + Util.getEverythingBetweenTheLastDotAndBeforeId(this.getClass()) +
+			"xmlId=" + xmlId +
+			'}';
 	}
 
 	@Override

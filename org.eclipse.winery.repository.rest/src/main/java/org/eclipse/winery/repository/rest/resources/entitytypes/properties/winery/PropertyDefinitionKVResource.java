@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;

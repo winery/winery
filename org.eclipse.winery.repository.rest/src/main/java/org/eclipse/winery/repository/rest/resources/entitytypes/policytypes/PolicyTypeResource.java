@@ -22,7 +22,7 @@ import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2OptGroup;
-import org.eclipse.winery.repository.rest.resources.EntityTypeResource;
+import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

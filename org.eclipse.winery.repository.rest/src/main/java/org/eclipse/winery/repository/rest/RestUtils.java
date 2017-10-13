@@ -58,14 +58,10 @@ import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
@@ -78,18 +74,14 @@ import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentsResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypesResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypeResource;
-import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes.RelationshipTypesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import com.sun.jersey.api.client.Client;
@@ -98,9 +90,6 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.header.ContentDisposition;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.taglibs.standard.functions.Functions;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
@@ -262,17 +251,6 @@ public class RestUtils {
 	}
 
 	/**
-	 * @return Singular type name for the given resource. E.g., "ServiceTemplateResource" gets "ServiceTemplate"
-	 */
-	public static String getTypeForInstance(Class<? extends AbstractComponentInstanceResource> resClass) {
-		String res = resClass.getName();
-		// Everything between the last "." and before "Resource" is the Type
-		int dotIndex = res.lastIndexOf('.');
-		assert (dotIndex >= 0);
-		return res.substring(dotIndex + 1, res.length() - "Resource".length());
-	}
-
-	/**
 	 * @return Singular type name for given AbstractComponentsResource. E.g, "ServiceTemplatesResource" gets
 	 * "ServiceTemplate"
 	 */
@@ -302,16 +280,6 @@ public class RestUtils {
 	}
 
 	/**
-	 * @param baseURI the URI from which the path should start
-	 * @param id      the generic id to resolve
-	 * @return the relative path for the given id
-	 */
-	public static String getRelativeURL(URI baseURI, GenericId id) {
-		String absolutePath = Environment.getUrlConfiguration().getRepositoryApiUrl() + "/" + Util.getUrlPath(id);
-		return baseURI.relativize(URI.create(absolutePath)).toString();
-	}
-
-	/**
 	 * @return the absolute path for the given id
 	 */
 	public static String getAbsoluteURL(RepositoryFileReference ref) {
@@ -320,40 +288,6 @@ public class RestUtils {
 
 	public static URI getAbsoluteURI(GenericId id) {
 		return RestUtils.createURI(RestUtils.getAbsoluteURL(id));
-	}
-
-	public static String doubleEscapeHTMLAndThenConvertNL2BR(String txt) {
-		String res = Functions.escapeXml(txt);
-		res = Functions.escapeXml(res);
-		res = res.replaceAll("\\n", "<br/>");
-		return res;
-	}
-
-	/**
-	 * This method is similar to {@link Util#qname2href(java.lang.String, java.lang.Class, javax.xml.namespace.QName,
-	 * java.lang.String)}, but treats winery's internal ID model instead of the global TOSCA model
-	 *
-	 * @param id the id to create an <code>a href</code> element for
-	 * @return an <code>a</code> HTML element pointing to the given id
-	 */
-	public static String getHREF(DefinitionsChildId id) {
-		return "<a href=\"" + Environment.getUrlConfiguration().getRepositoryUiUrl() + "/" + Util.getUrlPath(id) + "\">" + Functions.escapeXml(id.getXmlId().getDecoded()) + "</a>";
-	}
-
-	public static String artifactTypeQName2href(QName qname) {
-		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryUiUrl(), TArtifactType.class, qname);
-	}
-
-	public static String nodeTypeQName2href(QName qname) {
-		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryUiUrl(), TNodeType.class, qname);
-	}
-
-	public static String relationshipTypeQName2href(QName qname) {
-		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryUiUrl(), TRelationshipType.class, qname);
-	}
-
-	public static String policyTypeQName2href(QName qname) {
-		return Util.qname2href(Environment.getUrlConfiguration().getRepositoryUiUrl(), TPolicyType.class, qname);
 	}
 
 	/**
@@ -382,28 +316,6 @@ public class RestUtils {
 			location = location + separator + type.toLowerCase() + "s";
 		}
 		return location;
-	}
-
-	/**
-	 * Required by topologyedit.jsp
-	 *
-	 * @return all known nodetype resources
-	 */
-	public static Collection<NodeTypeResource> getAllNodeTypeResources() {
-		@SuppressWarnings("unchecked")
-		Collection<NodeTypeResource> res = (Collection<NodeTypeResource>) (Collection<?>) new NodeTypesResource().getAll();
-		return res;
-	}
-
-	/**
-	 * Required by topologyedit.jsp
-	 *
-	 * @return all known relation ship type resources
-	 */
-	public static Collection<RelationshipTypeResource> getAllRelationshipTypeResources() {
-		@SuppressWarnings("unchecked")
-		Collection<RelationshipTypeResource> res = (Collection<RelationshipTypeResource>) (Collection<?>) new RelationshipTypesResource().getAll();
-		return res;
 	}
 
 	/**
@@ -439,26 +351,6 @@ public class RestUtils {
 
 	public static boolean isSuccessFulResponse(Response res) {
 		return Status.fromStatusCode(res.getStatus()).getFamily().equals(Family.SUCCESSFUL);
-	}
-
-	/**
-	 * Converts the given String to an integer. Fallback if String is a float. If String is an invalid number, "0" is
-	 * returned
-	 */
-	public static int convertStringToInt(String number) {
-		int intTop = 0;
-		try {
-			intTop = Integer.parseInt(number);
-		} catch (NumberFormatException e) {
-			try {
-				float floatTop = Float.parseFloat(number);
-				intTop = Math.round(floatTop);
-			} catch (NumberFormatException e2) {
-				// do nothing
-			}
-		}
-
-		return intTop;
 	}
 
 	/**
@@ -638,7 +530,6 @@ public class RestUtils {
 	 * Persists the given object
 	 */
 	public static Response persist(Application application, RepositoryFileReference data_xml_ref, String mimeType) {
-		Response r;
 		try {
 			BackendUtils.persist(application, data_xml_ref, org.apache.tika.mime.MediaType.parse(mimeType));
 		} catch (IOException e) {
@@ -649,7 +540,6 @@ public class RestUtils {
 	}
 
 	public static Response.ResponseBuilder persistWithResponseBuilder(IPersistable res) {
-		Response r;
 		try {
 			BackendUtils.persist(res.getDefinitions(), res.getRepositoryFileReference(), MediaTypes.MEDIATYPE_TOSCA_DEFINITIONS);
 		} catch (IOException e) {
@@ -833,23 +723,6 @@ public class RestUtils {
 		ContentDisposition contentDisposition = ContentDisposition.type("attachment").fileName(ref.getFileName()).modificationDate(new Date(lastModified.toMillis())).build();
 		res.header("Content-Disposition", contentDisposition);
 		return res;
-	}
-
-	/**
-	 * Updates the given property in the given configuration. Currently always returns "no content", because the
-	 * underlying class does not report any errors during updating. <br />
-	 *
-	 * If null or "" is passed as value, the property is cleared
-	 *
-	 * @return Status.NO_CONTENT
-	 */
-	public static Response updateProperty(Configuration configuration, String property, String val) {
-		if (StringUtils.isBlank(val)) {
-			configuration.clearProperty(property);
-		} else {
-			configuration.setProperty(property, val);
-		}
-		return Response.noContent().build();
 	}
 
 	/**

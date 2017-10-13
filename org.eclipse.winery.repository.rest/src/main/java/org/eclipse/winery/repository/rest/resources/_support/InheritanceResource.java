@@ -10,7 +10,7 @@
  *     Oliver Kopp - initial API and implementation
  *     Lukas Harzenetter - add JSON implementation
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.resources._support;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceApiData;
 
 /**
- * Class for managing inheritance properties: abstract, final, derivedFromn
+ * Class for managing inheritance properties: abstract, final, derivedFrom
  *
  * The linking in the resources tree is different than the others. Here, there
  * is no additional Id generated.

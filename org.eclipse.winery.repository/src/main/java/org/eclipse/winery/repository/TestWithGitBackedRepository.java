@@ -43,7 +43,7 @@ public abstract class TestWithGitBackedRepository {
 	/**
 	 * Initializes the git repository from https://github.com/winery/test-repository into %TEMP%/test-repository
 	 *
-	 * @throws RuntimeException wraps an Exeption
+	 * @throws RuntimeException wraps an Exception
 	 */
 	public TestWithGitBackedRepository() {
 		try {
@@ -83,8 +83,7 @@ public abstract class TestWithGitBackedRepository {
 	}
 
 	protected void setRevisionTo(String ref) throws GitAPIException {
-		// TODO: newer JGit version: setForce(true)
-		git.clean().setCleanDirectories(true).call();
+		git.clean().setForce(true).setCleanDirectories(true).call();
 
 		git.reset()
 				.setMode(ResetCommand.ResetType.HARD)

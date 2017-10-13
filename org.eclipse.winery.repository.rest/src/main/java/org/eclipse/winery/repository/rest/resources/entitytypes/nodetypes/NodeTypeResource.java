@@ -25,13 +25,7 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqand
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs.RequirementDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.interfaces.InterfacesResource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class NodeTypeResource extends TopologyGraphElementEntityTypeResource {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(NodeTypeResource.class);
-
 
 	public NodeTypeResource(NodeTypeId id) {
 		super(id);

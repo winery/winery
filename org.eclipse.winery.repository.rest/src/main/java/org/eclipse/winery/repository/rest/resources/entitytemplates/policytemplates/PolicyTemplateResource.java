@@ -18,8 +18,8 @@ import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResource;
-import org.eclipse.winery.repository.rest.resources.IHasName;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
+import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
 

@@ -31,7 +31,7 @@ import org.eclipse.winery.model.tosca.TPlan.InputParameters;
 import org.eclipse.winery.model.tosca.TPlan.OutputParameters;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.IHasName;
+import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;

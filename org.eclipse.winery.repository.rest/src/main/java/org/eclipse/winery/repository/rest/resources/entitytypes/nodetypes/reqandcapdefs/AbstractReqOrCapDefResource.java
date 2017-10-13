@@ -27,7 +27,7 @@ import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.ConstraintsResource;
+import org.eclipse.winery.repository.rest.resources._support.ConstraintsResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
@@ -167,12 +167,5 @@ public abstract class AbstractReqOrCapDefResource<ReqOrCapDef> extends EntityWit
 	 * for REST clients
 	 */
 	public abstract QName getType();
-
-	/**
-	 * Required by reqandcapdefs.jsp
-	 */
-	public Object getDef() {
-		return this.reqOrCapDef;
-	}
 
 }

@@ -9,7 +9,7 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import org.eclipse.winery.repository.rest.resources.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
 
 public class InheritanceResourceApiData {
 

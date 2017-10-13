@@ -50,7 +50,6 @@
 
 		// instantiate  variables
 		Map<String, String> idMap = new HashMap<String, String>();
-		List<TRelationshipTemplate> possibleConnections = new ArrayList<TRelationshipTemplate>();
 		String sourceId = "";
 		String randomId = "";
 		String id = "";

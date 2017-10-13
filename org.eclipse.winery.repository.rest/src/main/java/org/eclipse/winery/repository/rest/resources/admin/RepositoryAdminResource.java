@@ -30,12 +30,8 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RepositoryAdminResource {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryAdminResource.class);
 
 	/**
 	 * Imports the given ZIP
