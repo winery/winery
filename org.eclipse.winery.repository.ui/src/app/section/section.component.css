@@ -11,124 +11,63 @@
  *     Lukas Balzer - enhanced stylesheet with css grid
  */
 
-#sectionsContentContainer {
+.sectionsContentContainer {
     min-height: 300px;
     overflow: auto;
-    display: -ms-grid;
     display: grid;
-    -ms-grid-columns: 700px 30px auto;
     grid-template-columns: 700px 30px auto;
-    -ms-grid-rows: 50px 219px auto 100px;
-    grid-template-rows: 50px 219px auto 100px;
+    grid-template-rows: 50px 219px auto auto;
     grid-column-gap: 5px;
 }
 
-#searchBoxContainer {
-    -ms-grid-column-span: 2;
-    -ms-grid-column: 1;
+.searchBoxContainer {
     grid-column: 1 / span 1;
-    -ms-grid-row-span: 1;
-    -ms-grid-row: 1;
     grid-row: 1 / span 1;
 }
 
-#sectionsComponentContainer {
-    -ms-grid-column-span: 2;
-    -ms-grid-column: 1;
-    grid-column: 1 / span 2;
-    -ms-grid-row-span: 2;
-    -ms-grid-row: 2;
+.sectionsComponentContainer {
+    grid-column: 1 / span 1;
     grid-row: 2 / span 2;
-}
-
-#sectionsOverviewShadow {
-    -ms-grid-column-span: 1;
-    -ms-grid-column: 2;
-    grid-column: 2 / span 1;
-    -ms-grid-row-span: 2;
-    -ms-grid-row: 1;
-    grid-row: 1 / span 2;
-}
-
-#sectionSidebar {
-    -ms-grid-column-span: 1;
-    -ms-grid-column: 3;
-    grid-column: 3 / span 1;
-    -ms-grid-row-span: 3;
-    -ms-grid-row: 1;
-    grid-row: 1 / span 3;
-    display: inline-grid;
-    grid-template-columns: auto 200px auto;
-    -ms-grid-rows: auto;
-    grid-auto-rows: max-content;
-    grid-row-gap: 5px;
-
-}
-
-#sectionsAddNewBtn {
-    -ms-grid-column-span: 1;
-    -ms-grid-column: 2;
-    grid-column: 2 / span 1;
-    -ms-grid-row-span: 1;
-    -ms-grid-row: 1;
-    grid-row: 1 / span 1;
-    margin-bottom: -5px;
-}
-
-#sectionsImportCsarBtn {
-    -ms-grid-column-span: 1;
-    -ms-grid-column: 2;
-    grid-column: 2 / span 1;
-    -ms-grid-row-span: 1;
-    -ms-grid-row: 2;
-    grid-row: 3 / span 1;
-}
-
-#sectionCreateFromArtifactBtn {
-    -ms-grid-column-span: 1;
-    -ms-grid-column: 2;
-    grid-column: 2 / span 1;
-    -ms-grid-row-span: 1;
-    -ms-grid-row: 1;
-    grid-row: 2 / span 1;
-}
-
-#sectionsGroupBtn {
-    -ms-grid-column-span: 1;
-    -ms-grid-column: 2;
-    grid-column: 2 / span 1;
-    -ms-grid-row-span: 1;
-    -ms-grid-row: 3;
-    grid-row: 4 / span 1;
-}
-
-#sectionsFooterContainer {
-    -ms-grid-column-span: 3;
-    -ms-grid-column: 1;
-    grid-column: 1 / span 3;
-    -ms-grid-row-span: 1;
-    -ms-grid-row: 4;
-    grid-row: 4 / span 1;
-    display: -ms-grid;
     display: grid;
-    grid-template-columns: 200px 50px 250px;
-    grid-auto-rows: 30px;
-    grid-row-gap: 5px;
-    justify-self: center;
-    -ms-grid-column-align: center;
+    grid-template-columns: 10px auto 20px;
 }
 
-#sectionPaginationLabel {
-    justify-self: right;
-    -ms-grid-column-align: end;
+.sectionsOverviewShadow {
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 3;
+}
+
+.sectionSidebar {
+    display: grid;
+    grid-template-columns: auto 200px auto;
+    grid-column: 3 / span 1;
+    grid-row: 1 / span 3;
+    align-self: start;
+}
+
+.sectionBtn {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    margin-bottom: 7px;
+}
+
+.winery-entity-container {
+    grid-column: 2 / span 1;
+    grid-row: auto;
+}
+
+.sectionsFooterContainer {
+    grid-column: 1 / span 1;
+    grid-row: 4 / span 1;
+    display: grid;
+    grid-template-columns: 1fr auto auto 1fr;
+}
+
+.selectItemsPerPage {
+    grid-column: 2 / span 1;
 }
 
 pagination-controls {
-    justify-self: left;
-    -ms-grid-column-align: start;
-}
-
-#selectItemsPerPage {
-    justify-self: center;
-    -ms-grid-column-align: center;
+    padding-top: 0.5rem;
+    grid-column: 3 / span 1;
 }
