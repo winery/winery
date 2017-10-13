@@ -10,14 +10,17 @@ GOTO EndOfLicense
  */
 :EndOfLicense
 
-echo Statistics generator for Winery EnPro 2016/2017
-echo ================================================
+echo Statistics generator for Pratical Course Winery:  SS 2017
+echo ==================================================================
 echo .
-echo Python 3.6 needs to be installed
-echo This script needs to be run in the current git checkout of Winery.
-echo The checkout has to be complete, i.e., no checkout with --depth 10
-echo gitinspector has to reside in ..\..\gitinspector
-echo You can clone it from https://github.com/ejwa/gitinspector
+echo Python needs to be installed.
+echo This script needs to be run in the current git checkout of Winery -
+echo the checkout has to be complete, i.e., no checkout with --depth 10.
+echo .
+echo gitinspector in the version 0.4.4 has to reside in C:\git-repos\gitinspector\gitinspector\gitinspector
+echo .
+echo You can clone get it from https://github.com/ejwa/gitinspector/archive/v0.4.4.zip
+echo and run the build command on the setup.py file.
 echo .
 pause
-py -3.6 ../../gitinspector/gitinspector.py -f java,html,ts,css --grading -x "author:^(?!((Lukas Harzenetter)|(Lukas Balzer)|(Nicole Keppler)|(Niko Stadelmaier)|(Tino Stadelmaier)|(Philipp Meyer)|(Huixin Liu)))" --format=htmlembedded> statistics/output.html
+py C:\git-repos\gitinspector\gitinspector.py -f java,html,ts,css,json,xml,md --since=2017-07-30 --grading -x "author:^(?!((Lukas Harzenetter)|(Lukas Balzer)|(Niko Stadelmaier)|(Tino Stadelmaier)|(Philipp Meyer)))" --format=htmlembedded ./ > ./statistics/output.html
