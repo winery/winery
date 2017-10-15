@@ -29,6 +29,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.namespace.QName;
@@ -40,12 +41,14 @@ import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.sun.jersey.api.NotFoundException;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -196,7 +199,9 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	/**
 	 * Returns resources for all known component instances
 	 *
-	 * Required by topologytemplateedit.jsp
+	 * Required by XaaSPackager logic
+	 *
+	 * TODO: remove that method and refactor callers
 	 */
 	public Collection<AbstractComponentInstanceResource> getAll() {
 		Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
@@ -221,11 +226,15 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getListOfAllIds(@QueryParam("grouped") String grouped) {
+	public String getListOfAllIds(
+		@QueryParam("grouped") String grouped,
+		@QueryParam("full") @ApiParam("If set, the full information of the definition's child is returned. E.g., in the case of node types, the same result as a GET on {ns}/{id] is returned. Works only in the case of grouped.") String full) {
 		Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.getClass());
 		boolean supportsNameAttribute = Util.instanceSupportsNameAttribute(idClass);
-		SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(idClass);
+		final IRepository repository = RepositoryFactory.getRepository();
+		SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = repository.getAllDefinitionsChildIds(idClass);
 		JsonFactory jsonFactory = new JsonFactory();
+		jsonFactory.setCodec(BackendUtils.mapper);
 		StringWriter sw = new StringWriter();
 		try {
 			JsonGenerator jg = jsonFactory.createGenerator(sw);
@@ -271,6 +280,13 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 								}
 								jg.writeStringField("id", id.getQName().toString());
 								jg.writeStringField("text", text);
+
+								try {
+									jg.writeFieldName("full");
+									jg.writeObject(BackendUtils.getDefinitionsHavingCorrectImports(repository, id));
+								} catch (Exception e) {
+									throw new WebApplicationException(e);
+								}
 								jg.writeEndObject();
 							} catch (IOException e) {
 								AbstractComponentsResource.LOGGER.error("Could not create JSON", e);
