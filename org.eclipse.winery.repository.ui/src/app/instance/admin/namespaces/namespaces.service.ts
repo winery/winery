@@ -26,7 +26,7 @@ export class NamespacesService {
     }
 
     getAllNamespaces(): Observable<NamespaceWithPrefix[]> {
-        return this.namespaceService.getAllNamespaces();
+        return this.namespaceService.getNamespaces(true);
     }
 
     postNamespaces(namespaces: NamespaceWithPrefix[]): Observable<Response> {

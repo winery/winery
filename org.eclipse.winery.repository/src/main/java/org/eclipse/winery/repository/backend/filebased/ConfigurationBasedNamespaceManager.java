@@ -32,14 +32,14 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
 		// globally set prefixes
 
 		// if that behavior is not desired, the code has to be moved to "generatePrefix" which checks for existence, ...
-		this.configuration.setProperty("http://www.w3.org/2001/XMLSchema", "xsd");
-		this.configuration.setProperty("http://www.w3.org/XML/1998/namespace", "xmlns");
 		this.configuration.setProperty(Namespaces.TOSCA_NAMESPACE, "tosca");
 		this.configuration.setProperty(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "winery");
+		this.configuration.setProperty(Namespaces.W3C_XML_SCHEMA_NS_URI, "xsd");
+		this.configuration.setProperty(Namespaces.W3C_NAMESPACE_URI, "xmlns");
 
 		// example namespaces opened for users to create new types
-		this.configuration.setProperty("http://www.example.org", "ex");
-		this.configuration.setProperty("http://www.opentosca.org/nodetypes", "otnt");
+		this.configuration.setProperty(Namespaces.EXAMPLE_NAMESPACE_URI, "ex");
+		this.configuration.setProperty(Namespaces.URI_OPENTOSCA_NODETYPE, "otnt");
 	}
 
 	@Override

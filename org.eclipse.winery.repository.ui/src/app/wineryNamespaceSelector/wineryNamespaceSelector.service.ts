@@ -18,11 +18,16 @@ export class WineryNamespaceSelectorService {
     constructor(private http: Http) {
     }
 
-    getAllNamespaces(): Observable<NamespaceWithPrefix[]> {
+    getNamespaces(all: boolean = false): Observable<NamespaceWithPrefix[]> {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
-
-        return this.http.get(backendBaseURL + '/admin/namespaces/', options)
+        let URL: string;
+        if (all) {
+            URL = backendBaseURL + '/admin/namespaces/?all';
+        } else {
+            URL = backendBaseURL + '/admin/namespaces/';
+        }
+        return this.http.get(URL, options)
             .map(res => res.json());
     }
 }
