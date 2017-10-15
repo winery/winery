@@ -255,6 +255,14 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 						jg.writeStringField("name", id.getXmlId().getDecoded());
 					}
 					jg.writeStringField("qName", id.getQName().toString());
+					if (full != null) {
+						try {
+							jg.writeFieldName("full");
+							jg.writeObject(BackendUtils.getDefinitionsHavingCorrectImports(repository, id));
+						} catch (Exception e) {
+							throw new WebApplicationException(e);
+						}
+					}
 					jg.writeEndObject();
 				}
 				jg.writeEndArray();
@@ -280,12 +288,13 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 								}
 								jg.writeStringField("id", id.getQName().toString());
 								jg.writeStringField("text", text);
-
-								try {
-									jg.writeFieldName("full");
-									jg.writeObject(BackendUtils.getDefinitionsHavingCorrectImports(repository, id));
-								} catch (Exception e) {
-									throw new WebApplicationException(e);
+								if (full != null) {
+									try {
+										jg.writeFieldName("full");
+										jg.writeObject(BackendUtils.getDefinitionsHavingCorrectImports(repository, id));
+									} catch (Exception e) {
+										throw new WebApplicationException(e);
+									}
 								}
 								jg.writeEndObject();
 							} catch (IOException e) {
