@@ -15,6 +15,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ## [unreleased]
 
 ### Changed
+- Fix properties are now displayed in the same order as in the xml
 - Add possibility to work with sub directories in artifact templates
 - Add overwrite option in dialog for importing CSARs
 - Add error notification in case of backend is not available
