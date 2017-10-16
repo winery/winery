@@ -1,0 +1,13 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+imports:
+  - data_types_with_import:
+      file: /data_types-with_import.yml
+      namespace_uri: http://www.example.com/DataTypesWithImport
+      namespace_prefix: imp1
+
+data_types:
+  test.example.Person.Seven:
+    properties:
+      Person:
+        type: imp1:test.example.Person

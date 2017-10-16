@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -25,6 +24,7 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
+import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -52,7 +52,7 @@ import org.eclipse.jdt.annotation.Nullable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImplementationArtifact")
 @XmlSeeAlso({
-        org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact.class
+    org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact.class
 })
 public class TImplementationArtifact extends TExtensibleElements {
     @XmlAttribute(name = "name")
@@ -89,10 +89,10 @@ public class TImplementationArtifact extends TExtensibleElements {
         if (!super.equals(o)) return false;
         TImplementationArtifact that = (TImplementationArtifact) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(interfaceName, that.interfaceName) &&
-                Objects.equals(operationName, that.operationName) &&
-                Objects.equals(artifactType, that.artifactType) &&
-                Objects.equals(artifactRef, that.artifactRef);
+            Objects.equals(interfaceName, that.interfaceName) &&
+            Objects.equals(operationName, that.operationName) &&
+            Objects.equals(artifactType, that.artifactType) &&
+            Objects.equals(artifactRef, that.artifactRef);
     }
 
     @Override
@@ -195,7 +195,7 @@ public class TImplementationArtifact extends TExtensibleElements {
         this.artifactRef = value;
     }
 
-    public static class Builder extends TExtensibleElements.Builder {
+    public static class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<Builder<T>> {
         private final QName artifactType;
 
         private String name;
@@ -207,24 +207,30 @@ public class TImplementationArtifact extends TExtensibleElements {
             this.artifactType = artifactType;
         }
 
-        public Builder setName(String name) {
+        public T setName(String name) {
             this.name = name;
-            return this;
+            return self();
         }
 
-        public Builder setInterfaceName(String interfaceName) {
+        public T setInterfaceName(String interfaceName) {
             this.interfaceName = interfaceName;
-            return this;
+            return self();
         }
 
-        public Builder setOperationName(String operationName) {
+        public T setOperationName(String operationName) {
             this.operationName = operationName;
-            return this;
+            return self();
         }
 
-        public Builder setArtifactRef(QName artifactRef) {
+        public T setArtifactRef(QName artifactRef) {
             this.artifactRef = artifactRef;
-            return this;
+            return self();
+        }
+
+        @ADR(11)
+        @Override
+        public T self() {
+            return (T) this;
         }
 
         public TImplementationArtifact build() {

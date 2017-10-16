@@ -29,4 +29,8 @@ public final class RelationshipTypeId extends TopologyGraphElementEntityTypeId {
 		super(qname);
 	}
 
+	@Override
+	public String getGroup() {
+		return "RelationshipType";
+	}
 }

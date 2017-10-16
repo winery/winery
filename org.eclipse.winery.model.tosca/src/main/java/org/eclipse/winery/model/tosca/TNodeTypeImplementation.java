@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -192,17 +191,17 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
         }
 
         @Override
-        public QName getTypeAsQName() {
-            return this.getType();
-        }
-
-        @Override
         public void setType(QName type) {
             this.setNodeTypeImplementationRef(type);
         }
+
+        @Override
+        public QName getTypeAsQName() {
+            return this.getType();
+        }
     }
 
-    public static class Builder extends TEntityTypeImplementation.Builder {
+    public static class Builder extends TEntityTypeImplementation.Builder<Builder> {
         private TTags tags;
         private DerivedFrom derivedFrom;
         private TRequiredContainerFeatures requiredContainerFeatures;
@@ -351,6 +350,11 @@ public class TNodeTypeImplementation extends TEntityTypeImplementation {
             TDeploymentArtifacts tmp = new TDeploymentArtifacts();
             tmp.getDeploymentArtifact().add(deploymentArtifacts);
             return addDeploymentArtifacts(tmp);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
         }
 
         public TNodeTypeImplementation build() {

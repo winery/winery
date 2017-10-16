@@ -29,4 +29,9 @@ public class ArtifactTemplateId extends EntityTemplateId {
 	public ArtifactTemplateId(QName qname) {
 		super(qname);
 	}
+
+	@Override
+	public String getGroup() {
+		return "ArtifactTemplate";
+	}
 }

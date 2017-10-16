@@ -1,13 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Christoph Kleine - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer;
 
@@ -36,8 +33,7 @@ public class YamlWriterTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws Exception {
-        return Arrays.asList(new Object[][]{
-            getParameter(builderTests.toscaDefinitionsVersion()),
+        return Arrays.asList(getParameter(builderTests.toscaDefinitionsVersion()),
             getParameter(builderTests.metadata()),
             getParameter(builderTests.description()),
             getParameter(builderTests.dslDefinitions()),
@@ -50,8 +46,7 @@ public class YamlWriterTest {
             getParameter(builderTests.nodeTypes()),
             getParameter(builderTests.groupTypes()),
             getParameter(builderTests.policyTypes()),
-            getParameter(builderTests.example16())
-        });
+            getParameter(builderTests.example16()));
     }
 
     public static Object[] getParameter(Map.Entry<String, TServiceTemplate> entry) throws Exception {
@@ -87,7 +82,7 @@ public class YamlWriterTest {
     @Test
     public void roundtrip() throws Exception {
         writer.write(serviceTemplate, yamlPath);
-        TServiceTemplate out = reader.parse(yamlPath);
+        TServiceTemplate out = reader.parse(yamlPath.getParent().toString(), yamlPath.getFileName().toString());
         Assert.assertEquals(serviceTemplate, out);
     }
 }

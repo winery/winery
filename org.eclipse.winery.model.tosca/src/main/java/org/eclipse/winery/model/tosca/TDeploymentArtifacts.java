@@ -45,12 +45,20 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDeploymentArtifacts", propOrder = {
-        "deploymentArtifact"
+    "deploymentArtifact"
 })
 public class TDeploymentArtifacts {
 
     @XmlElement(name = "DeploymentArtifact", required = true)
     protected List<TDeploymentArtifact> deploymentArtifact;
+
+    public TDeploymentArtifacts() {
+
+    }
+
+    public TDeploymentArtifacts(Builder builder) {
+        this.deploymentArtifact = builder.deploymentArtifact;
+    }
 
     /**
      * Gets the value of the deploymentArtifact property.
@@ -87,9 +95,20 @@ public class TDeploymentArtifacts {
     public TDeploymentArtifact getDeploymentArtifact(String id) {
         Objects.requireNonNull(id);
         return this.getDeploymentArtifact().stream()
-                .filter(x -> id.equals(x.getName()))
-                .findAny()
-                .orElse(null);
+            .filter(x -> id.equals(x.getName()))
+            .findAny()
+            .orElse(null);
     }
 
+    public static class Builder {
+        private final List<TDeploymentArtifact> deploymentArtifact;
+
+        public Builder(List<TDeploymentArtifact> deploymentArtifact) {
+            this.deploymentArtifact = deploymentArtifact;
+        }
+
+        public TDeploymentArtifacts build() {
+            return new TDeploymentArtifacts(this);
+        }
+    }
 }

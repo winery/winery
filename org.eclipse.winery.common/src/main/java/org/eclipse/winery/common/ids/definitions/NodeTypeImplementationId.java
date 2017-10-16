@@ -23,4 +23,8 @@ public final class NodeTypeImplementationId extends EntityTypeImplementationId {
 	public NodeTypeImplementationId(String ns, String id, boolean URLencoded) {
 		super(ns, id, URLencoded);
 	}
+
+	public String getGroup() {
+		return "NodeTypeImplementation";
+	}
 }

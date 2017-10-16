@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -60,10 +59,10 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArtifactTemplate", propOrder = {
-        "artifactReferences"
+    "artifactReferences"
 })
 public class TArtifactTemplate
-        extends TEntityTemplate {
+    extends TEntityTemplate {
 
     @XmlElement(name = "ArtifactReferences")
     protected TArtifactTemplate.ArtifactReferences artifactReferences;
@@ -86,7 +85,7 @@ public class TArtifactTemplate
         if (!super.equals(o)) return false;
         TArtifactTemplate that = (TArtifactTemplate) o;
         return Objects.equals(artifactReferences, that.artifactReferences) &&
-                Objects.equals(name, that.name);
+            Objects.equals(name, that.name);
     }
 
     @Override
@@ -154,7 +153,7 @@ public class TArtifactTemplate
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "artifactReference"
+        "artifactReference"
     })
     public static class ArtifactReferences {
 
@@ -190,7 +189,7 @@ public class TArtifactTemplate
         }
     }
 
-    public static class Builder extends TEntityTemplate.Builder {
+    public static class Builder extends TEntityTemplate.Builder<Builder> {
         private String name;
         private TArtifactTemplate.ArtifactReferences artifactReferences;
 
@@ -243,6 +242,11 @@ public class TArtifactTemplate
             TArtifactTemplate.ArtifactReferences tmp = new TArtifactTemplate.ArtifactReferences();
             tmp.getArtifactReference().add(artifactReferences);
             return addArtifactReferences(tmp);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
         }
 
         public TArtifactTemplate build() {

@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.rest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -83,6 +84,7 @@ import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemp
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.yaml.converter.Converter;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -209,6 +211,32 @@ public class RestUtils {
 				exporter.writeCsar(RepositoryFactory.getRepository(), resource.getId(), output);
 			} catch (Exception e) {
 				throw new WebApplicationException(e);
+			}
+		};
+		StringBuilder sb = new StringBuilder();
+		sb.append("attachment;filename=\"");
+		sb.append(resource.getXmlId().getEncoded());
+		sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
+		sb.append("\"");
+		return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+	}
+
+	public static Response getYamlCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
+		final Converter converter = new Converter();
+		StreamingOutput so = new StreamingOutput() {
+			@Override
+			public void write(OutputStream output) throws IOException, WebApplicationException {
+				InputStream is = converter.convertX2Y(resource.getId());
+				byte[] buffer = new byte[1024];
+				int bytesRead;
+				//read from is to buffer
+				while ((bytesRead = is.read(buffer)) != -1) {
+					output.write(buffer, 0, bytesRead);
+				}
+				is.close();
+				//flush OutputStream to write any buffered data to file
+				output.flush();
+				output.close();
 			}
 		};
 		StringBuilder sb = new StringBuilder();

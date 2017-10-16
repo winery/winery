@@ -10,7 +10,6 @@
  * Contributors:
  *    Tobias Binz - initial API and implementation and/or initial documentation
  *    Oliver Kopp - dependency updates
- *    Christoph Kleine - added annotation dependency
  *******************************************************************************/
 -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
@@ -41,6 +40,11 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.2</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.github.adr</groupId>
+			<artifactId>e-adr</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 	<properties>

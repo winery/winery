@@ -1,13 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Christoph Kleine - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
@@ -17,6 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -197,6 +196,11 @@ public class TCapabilityDefinition implements VisitorNode {
             return this;
         }
 
+        public Builder setOccurrences(int lowerBound, String upperBound) {
+            return setOccurrences(Stream.of(String.valueOf(lowerBound), upperBound)
+                .collect(Collectors.toList()));
+        }
+
         public Builder setValidSourceTypes(List<QName> validSourceTypes) {
             this.validSourceTypes = validSourceTypes;
             return this;
@@ -210,28 +214,6 @@ public class TCapabilityDefinition implements VisitorNode {
         public Builder setAttributes(Map<String, TAttributeDefinition> attributes) {
             this.attributes = attributes;
             return this;
-        }
-
-        public Builder addOccurrences(List<String> occurrences) {
-            if (occurrences == null || occurrences.isEmpty()) {
-                return this;
-            }
-
-            if (this.occurrences == null) {
-                this.occurrences = new ArrayList<>(occurrences);
-            } else {
-                this.occurrences.addAll(occurrences);
-            }
-
-            return this;
-        }
-
-        public Builder addOccurrences(String occurrence) {
-            if (occurrence == null || occurrence.isEmpty()) {
-                return this;
-            }
-
-            return addOccurrences(Collections.singletonList(occurrence));
         }
 
         public Builder addValidSourceTypes(List<QName> validSourceTypes) {

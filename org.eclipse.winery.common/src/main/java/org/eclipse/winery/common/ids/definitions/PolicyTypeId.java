@@ -30,4 +30,8 @@ public final class PolicyTypeId extends EntityTypeId {
 		super(qname);
 	}
 
+	@Override
+	public String getGroup() {
+		return "PolicyType";
+	}
 }

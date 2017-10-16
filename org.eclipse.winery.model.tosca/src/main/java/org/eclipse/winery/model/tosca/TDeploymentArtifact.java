@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -135,7 +134,7 @@ public class TDeploymentArtifact extends TExtensibleElements {
         this.artifactRef = value;
     }
 
-    public static class Builder extends TExtensibleElements.Builder {
+    public static class Builder extends TExtensibleElements.Builder<Builder> {
         private final String name;
         private final QName artifactType;
         private QName artifactRef;
@@ -147,6 +146,11 @@ public class TDeploymentArtifact extends TExtensibleElements {
 
         public Builder setArtifactRef(QName artifactRef) {
             this.artifactRef = artifactRef;
+            return this;
+        }
+
+        @Override
+        public Builder self() {
             return this;
         }
 

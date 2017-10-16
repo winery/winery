@@ -61,4 +61,9 @@ public class GenericImportId extends DefinitionsChildId {
 	public String getType() {
 		return this.type;
 	}
+
+	@Override
+	public String getGroup() {
+		return "GenericImport";
+	}
 }

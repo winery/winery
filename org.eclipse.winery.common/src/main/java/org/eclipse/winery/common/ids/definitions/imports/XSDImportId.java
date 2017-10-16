@@ -31,4 +31,8 @@ public class XSDImportId extends GenericImportId {
 		super(ns, id, XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	}
 
+	@Override
+	public String getGroup() {
+		return "XSDImports";
+	}
 }

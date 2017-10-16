@@ -18,6 +18,7 @@
         <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
         <a class="btn btn-info" target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
         <a class="btn btn-info" target="_blank" href="{{ toscaComponent.csarPath }}">CSAR</a>
+        <a class="btn btn-info" target="_blank" href="{{ toscaComponent.yamlPath }}">YAML</a>
         <div *ngIf="typeUrl">
             {{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a>
         </div>

@@ -1,0 +1,17 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+imports:
+  - data_types:
+      file: /data_types.yml
+      namespace_uri: http://www.example.com/DataTypesTest
+      namespace_prefix: imp1
+
+data_types:
+  test.example.Person:
+    properties:
+      Name:
+        type: string
+      Number:
+        type: imp1:example.com.Compose
+      Number2:
+        type: string
