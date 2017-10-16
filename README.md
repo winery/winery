@@ -42,9 +42,12 @@ usage: winery
 The branch `master` differs from eclipse/winery in the following files:
 
 - [README.md](README.md) - This text file
+- [.travis.settings.yml](.travis.settings.yml) - Different Travis settings
 - [.travis.yml](.travis.yml) - Different AWS S3 upload directory
 - [Dockerfile](Dockerfile) - Custom Docker build for the OpenTOSCA organization
+- [Dockerfile.consistencycheck](Dockerfile.consistencycheck) - Custom Docker build for the OpenTOSCA organization
 - [pom.xml](pom.xml) - Upload to opentosca/mvn-repo
+- [winery](winery) - Executable required to launch Winery CLI
 
 Further, following PRs have been merged into this repository:
 
