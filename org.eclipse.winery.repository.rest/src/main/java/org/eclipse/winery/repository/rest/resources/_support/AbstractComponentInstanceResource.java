@@ -13,13 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -59,7 +54,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
-import org.eclipse.winery.repository.export.ToscaExportUtil;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.documentation.DocumentationResource;
@@ -252,22 +246,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 		if (!repository.exists(this.id)) {
 			throw new NotFoundException();
 		}
-
-		// idea: get the XML, parse it, return it
-		// the conversion to JSON is made by Jersey automatically
-		// TODO: future work: force TOSCAExportUtil to return TDefinitions directly
-
-		// Have to use TOScAExportUtil to have the imports correctly set
-
-		ToscaExportUtil exporter = new ToscaExportUtil();
-		// we include everything related
-		Map<String, Object> conf = new HashMap<>();
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
-			exporter.exportTOSCA(repository, this.id, bos, conf);
-			String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
-			Unmarshaller u = JAXBSupport.createUnmarshaller();
-			return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
+			return BackendUtils.getDefinitionsHavingCorrectImports(repository, this.id);
 		} catch (Exception e) {
 			throw new WebApplicationException(e);
 		}

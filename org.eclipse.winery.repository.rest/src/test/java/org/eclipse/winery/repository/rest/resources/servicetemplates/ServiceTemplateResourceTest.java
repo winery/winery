@@ -97,4 +97,10 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
 		this.setRevisionTo("c6484855143943a84ee50cb31d1ee986eb9a1c89");
 		this.assertGet("servicetemplates/createfromartifact", "servicetemplates/xaasPackagerData.json");
 	}
+
+	@Test
+	public void checkJsonOfServiceTemplateMinimalExampleWithAllPropertyVariants() throws Exception {
+		this.setRevisionTo("origin/plain");
+		this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants", "servicetemplates/plain-ServiceTemplateMinimalExampleWithAllPropertyVariants.json");
+	}
 }

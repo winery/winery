@@ -15,6 +15,8 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ## [unreleased]
 
 ### Changed
+- Add error message if entered namespace contains a whitespace
+- Add filtering to namespaces to filter non allowed namespaces 
 - Add possibility to work with sub directories in artifact templates
 - Add overwrite option in dialog for importing CSARs
 - Add error notification in case of backend is not available

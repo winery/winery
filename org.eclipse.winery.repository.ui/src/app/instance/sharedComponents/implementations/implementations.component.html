@@ -51,9 +51,11 @@
                 </div>
             </div>
             <div class="form-group">
+                <!-- pattern parameter is required to enable form validation -->
                 <winery-namespace-selector
                     name="namespaceSelector"
                     required
+                    pattern="^\S*$"
                     [isRequired]="true"
                     [typeAheadListLimit]="20"
                     [(ngModel)]="selectedNamespace">

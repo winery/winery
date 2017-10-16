@@ -6,7 +6,7 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { WineryNamespaceSelectorService } from './wineryNamespaceSelector.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -70,6 +70,9 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
     @Input() isRequired = false;
     @Input() typeAheadListLimit = 50;
     @Output() onChange = new EventEmitter<any>();
+    isValid: boolean;
+
+    @ViewChild('namespace') input: any;
 
     loading = true;
     allNamespaces: NamespaceWithPrefix[] = [];
@@ -82,7 +85,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
     }
 
     ngOnInit() {
-        this.service.getAllNamespaces()
+        this.service.getNamespaces()
             .subscribe(
                 data => {
                     this.allNamespaces = data;
@@ -100,7 +103,8 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
         if (v !== this.innerValue) {
             this.innerValue = v;
             this.onChangeCallback(v);
-            this.onChange.emit();
+            this.isValid = this.input.valid;
+            this.onChange.emit(this.isValid);
         }
     }
 

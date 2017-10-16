@@ -37,7 +37,7 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
 
 	@Test
 	public void csarIsValidZipForArtifactTemplateWithFilesAndSources() throws Exception {
-		try (InputStream inputStream = this.createOutputAndInputStream("origin/plain", new ArtifactTemplateId("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithFilesAndSources", false)); ZipInputStream zis = new ZipInputStream(inputStream)) {
+		try (InputStream inputStream = this.createOutputAndInputStream("origin/plain", new ArtifactTemplateId("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties", false)); ZipInputStream zis = new ZipInputStream(inputStream)) {
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				String name = entry.getName();

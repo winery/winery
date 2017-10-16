@@ -21,11 +21,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -123,6 +126,7 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDire
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
+import org.eclipse.winery.repository.export.ToscaExportUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.time.DateUtils;
@@ -1249,5 +1253,22 @@ public class BackendUtils {
 				return CONTINUE;
 			}
 		});
+	}
+
+	public static Definitions getDefinitionsHavingCorrectImports(IRepository repository, DefinitionsChildId id) throws Exception {
+		// idea: get the XML, parse it, return it
+		// the conversion to JSON is made by Jersey automatically
+		// TODO: future work: force TOSCAExportUtil to return TDefinitions directly
+
+		// Have to use TOScAExportUtil to have the imports correctly set
+
+		ToscaExportUtil exporter = new ToscaExportUtil();
+		// we include everything related
+		Map<String, Object> conf = new HashMap<>();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		exporter.exportTOSCA(repository, id, bos, conf);
+		String xmlRepresentation = bos.toString(StandardCharsets.UTF_8.toString());
+		Unmarshaller u = JAXBSupport.createUnmarshaller();
+		return ((Definitions) u.unmarshal(new StringReader(xmlRepresentation)));
 	}
 }
