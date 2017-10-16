@@ -42,7 +42,7 @@ export class WineryRepositoryComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.existService.check(backendBaseURL).subscribe(
+        this.existService.check(backendBaseURL + '/').subscribe(
             data => {
                 this.isBackendAvailable = true;
                 this.loading = false;

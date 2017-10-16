@@ -12,3 +12,4 @@ release.properties
 **/rebel.xml
 target/
 node_modules/
+winery-debug.log
