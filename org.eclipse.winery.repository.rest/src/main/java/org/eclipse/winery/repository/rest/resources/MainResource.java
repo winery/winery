@@ -135,6 +135,11 @@ public class MainResource {
 		return new ServiceTemplatesResource();
 	}
 
+	@Path("yaml/")
+	public YAMLParserResource yamlParser() {
+		return new YAMLParserResource();
+	}
+
 	/**
 	 * Returns the main page of winery.
 	 */

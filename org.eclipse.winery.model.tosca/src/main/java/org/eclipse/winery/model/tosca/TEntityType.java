@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -31,6 +30,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -78,17 +78,17 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityType", propOrder = {
-        "tags",
-        "derivedFrom",
-        "propertiesDefinition"
+    "tags",
+    "derivedFrom",
+    "propertiesDefinition"
 })
 @XmlSeeAlso({
-        TNodeType.class,
-        TRelationshipType.class,
-        TRequirementType.class,
-        TCapabilityType.class,
-        TArtifactType.class,
-        TPolicyType.class
+    TNodeType.class,
+    TRelationshipType.class,
+    TRequirementType.class,
+    TCapabilityType.class,
+    TArtifactType.class,
+    TPolicyType.class
 })
 public class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace {
     @XmlElement(name = "Tags")
@@ -118,8 +118,8 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         this.derivedFrom = builder.derivedFrom;
         this.propertiesDefinition = builder.propertiesDefinition;
         this.name = builder.name;
-        this._abstract = builder._abstract;
-        this._final = builder._final;
+        this._abstract = builder.abstractValue;
+        this._final = builder.finalValue;
         this.targetNamespace = builder.targetNamespace;
     }
 
@@ -129,12 +129,12 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         if (!(o instanceof TEntityType)) return false;
         TEntityType that = (TEntityType) o;
         return Objects.equals(tags, that.tags) &&
-                Objects.equals(derivedFrom, that.derivedFrom) &&
-                Objects.equals(propertiesDefinition, that.propertiesDefinition) &&
-                Objects.equals(name, that.name) &&
-                _abstract == that._abstract &&
-                _final == that._final &&
-                Objects.equals(targetNamespace, that.targetNamespace);
+            Objects.equals(derivedFrom, that.derivedFrom) &&
+            Objects.equals(propertiesDefinition, that.propertiesDefinition) &&
+            Objects.equals(name, that.name) &&
+            _abstract == that._abstract &&
+            _final == that._final &&
+            Objects.equals(targetNamespace, that.targetNamespace);
     }
 
     @Override
@@ -357,13 +357,13 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         }
 
         @Override
-        public QName getTypeAsQName() {
-            return this.getType();
+        public void setType(QName type) {
+            this.setTypeRef(type);
         }
 
         @Override
-        public void setType(QName type) {
-            this.setTypeRef(type);
+        public QName getTypeAsQName() {
+            return this.getType();
         }
     }
 
@@ -431,15 +431,15 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
             this.type = value;
         }
     }
-
-    public static class Builder extends TExtensibleElements.Builder {
+    @ADR(11)
+    public abstract static class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
         private final String name;
 
         private TTags tags;
         private TEntityType.DerivedFrom derivedFrom;
         private TEntityType.PropertiesDefinition propertiesDefinition;
-        private TBoolean _abstract;
-        private TBoolean _final;
+        private TBoolean abstractValue;
+        private TBoolean finalValue;
         private String targetNamespace;
 
         public Builder(String name) {
@@ -451,81 +451,81 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
             this.name = entityType.getName();
             this.derivedFrom = entityType.getDerivedFrom();
             this.addTags(entityType.getTags());
-            this._abstract = entityType.getAbstract();
-            this._final = entityType.getFinal();
+            this.abstractValue = entityType.getAbstract();
+            this.finalValue = entityType.getFinal();
             this.targetNamespace = entityType.getTargetNamespace();
             this.propertiesDefinition = entityType.getPropertiesDefinition();
         }
 
-        public Builder setTags(TTags tags) {
+        public T setTags(TTags tags) {
             this.tags = tags;
-            return this;
+            return self();
         }
 
-        public Builder setDerivedFrom(TEntityType.DerivedFrom derivedFrom) {
+        public T setDerivedFrom(TEntityType.DerivedFrom derivedFrom) {
             this.derivedFrom = derivedFrom;
-            return this;
+            return self();
         }
 
-        public Builder setDerivedFrom(QName derivedFrom) {
+        public T setDerivedFrom(QName derivedFrom) {
             if (derivedFrom == null) {
-                return this;
+                return self();
             }
 
             if (this.derivedFrom == null) {
                 this.derivedFrom = new TEntityType.DerivedFrom();
             }
             this.derivedFrom.setTypeRef(derivedFrom);
-            return this;
+            return self();
         }
 
-        public Builder setDerivedFrom(String derivedFrom) {
+        public T setDerivedFrom(String derivedFrom) {
             if (derivedFrom == null || derivedFrom.length() == 0) {
-                return this;
+                return self();
             }
 
             return setDerivedFrom(new QName(derivedFrom));
         }
 
-        public Builder setPropertiesDefinition(PropertiesDefinition propertiesDefinition) {
+        public T setPropertiesDefinition(PropertiesDefinition propertiesDefinition) {
             this.propertiesDefinition = propertiesDefinition;
-            return this;
+            return self();
         }
 
-        public Builder setAbstract(TBoolean _abstract) {
-            this._abstract = _abstract;
-            return this;
+        public T setAbstract(TBoolean abstractValue) {
+            this.abstractValue = abstractValue;
+            return self();
         }
 
-        public Builder setAbstract(Boolean _abstract) {
-            if (this._abstract == null) {
-                return this;
+        public T setAbstract(Boolean abstractValue) {
+            if (this.abstractValue == null) {
+                return self();
             }
 
-            return setAbstract(_abstract ? TBoolean.YES : TBoolean.NO);
+            return setAbstract(abstractValue ? TBoolean.YES : TBoolean.NO);
         }
 
-        public Builder setFinal(TBoolean _final) {
-            this._final = _final;
-            return this;
+        public T setFinal(TBoolean finalValue) {
+            this.finalValue = finalValue;
+            return self();
         }
 
-        public Builder setFinal(Boolean _final) {
-            if (this._final == null) {
-                return this;
+        public T setFinal(Boolean finalValue) {
+            if (this.finalValue == null) {
+                return self();
             }
 
-            return setFinal(_final ? TBoolean.YES : TBoolean.NO);
+            return setFinal(finalValue ? TBoolean.YES : TBoolean.NO);
         }
 
-        public Builder setTargetNamespace(String targetNamespace) {
+        public T setTargetNamespace(String targetNamespace) {
             this.targetNamespace = targetNamespace;
-            return this;
+            return self();
         }
 
-        public Builder addTags(TTags tags) {
+        public T addTags(TTags tags) {
             if (tags == null || tags.getTag().isEmpty()) {
-                return this;
+                return self();
             }
 
             if (this.tags == null) {
@@ -533,12 +533,12 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
             } else {
                 this.tags.getTag().addAll(tags.getTag());
             }
-            return this;
+            return self();
         }
 
-        public Builder addTags(List<TTag> tags) {
+        public T addTags(List<TTag> tags) {
             if (tags == null) {
-                return this;
+                return self();
             }
 
             TTags tmp = new TTags();
@@ -546,9 +546,9 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
             return addTags(tmp);
         }
 
-        public Builder addTags(TTag tags) {
+        public T addTags(TTag tags) {
             if (tags == null) {
-                return this;
+                return self();
             }
 
             TTags tmp = new TTags();
@@ -556,15 +556,15 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
             return addTags(tmp);
         }
 
-        public Builder addTags(String key, String value) {
+        public T addTags(String key, String value) {
             if (value == null) {
-                return this;
+                return self();
             }
 
             TTag tag = new TTag();
             tag.setName(key);
             tag.setValue(value);
-            return this.addTags(tag);
+            return addTags(tag);
         }
 
         public TEntityType build() {

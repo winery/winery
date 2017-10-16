@@ -224,6 +224,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	@Produces({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
 	public Response getDefinitionsAsResponse(
 		@QueryParam(value = "csar") String csar,
+		@QueryParam(value = "yaml") String yaml,
 		@Context UriInfo uriInfo
 	) {
 		final IRepository repository = RepositoryFactory.getRepository();
@@ -231,7 +232,10 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			return Response.status(Status.NOT_FOUND).build();
 		}
 
-		if (csar == null) {
+		// TODO: It should be possible to specify ?yaml&csar to retrieve a CSAR and ?yaml to retrieve the .yaml representation
+		if (yaml != null) {
+			return RestUtils.getYamlCSARofSelectedResource(this);
+		} else if (csar == null) {
 			// we cannot use this.definitions as that definitions is Winery's internal representation of the data and not the full blown definitions (including imports to referenced elements)
 			return RestUtils.getDefinitionsOfSelectedResource(this, uriInfo.getBaseUri());
 		} else {

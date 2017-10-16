@@ -1,13 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2017 University of Stuttgart.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License v2.0
  * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v10.html
+ * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Christoph Kleine - initial API and implementation
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
@@ -147,6 +144,21 @@ public class TRelationshipType extends TEntityType {
             }
 
             return addValidTargetTypes(Collections.singletonList(validTargetType));
+        }
+
+        public Builder addInterfaces(Map<String, TInterfaceDefinition> interfaces) {
+            if (Objects.isNull(interfaces) || interfaces.isEmpty()) return this;
+            if (Objects.isNull(this.interfaces)) {
+                this.interfaces = new LinkedHashMap<>(interfaces);
+            } else {
+                this.interfaces.putAll(interfaces);
+            }
+            return this;
+        }
+
+        public Builder addInterfaces(String key, TInterfaceDefinition value) {
+            if (Objects.isNull(key) || Objects.isNull(value)) return this;
+            return addInterfaces(Collections.singletonMap(key, value));
         }
 
         public TRelationshipType build() {

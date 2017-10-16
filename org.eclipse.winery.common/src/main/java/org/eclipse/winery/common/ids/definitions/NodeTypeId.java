@@ -30,4 +30,8 @@ public final class NodeTypeId extends TopologyGraphElementEntityTypeId {
 		super(type);
 	}
 
+	@Override
+	public String getGroup() {
+		return "NodeType";
+	}
 }

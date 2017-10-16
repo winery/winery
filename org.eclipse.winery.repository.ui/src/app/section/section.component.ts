@@ -69,6 +69,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addComponentForm') addComponentForm: NgForm;
     @ViewChild('addCsarModal') addCsarModal: ModalDirective;
+    @ViewChild('addYamlModal') addYamlModal: ModalDirective;
     @ViewChild('fileUploader') fileUploader: WineryUploaderComponent;
 
     constructor(private route: ActivatedRoute,

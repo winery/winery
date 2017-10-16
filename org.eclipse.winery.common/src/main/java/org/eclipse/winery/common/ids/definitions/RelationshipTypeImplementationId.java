@@ -23,4 +23,9 @@ public final class RelationshipTypeImplementationId extends EntityTypeImplementa
 	public RelationshipTypeImplementationId(String ns, String id, boolean URLencoded) {
 		super(ns, id, URLencoded);
 	}
+
+	@Override
+	public String getGroup() {
+		return "RelationshipTypeImplementation";
+	}
 }

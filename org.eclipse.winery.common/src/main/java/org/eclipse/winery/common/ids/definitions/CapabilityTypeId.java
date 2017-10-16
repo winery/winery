@@ -30,4 +30,8 @@ public final class CapabilityTypeId extends EntityTypeId {
 		super(qname);
 	}
 
+	@Override
+	public String getGroup() {
+		return "CapabilityType";
+	}
 }

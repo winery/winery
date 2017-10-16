@@ -32,4 +32,8 @@ public class ArtifactTypeId extends EntityTypeId {
 		this(new Namespace(Objects.requireNonNull(qname).getNamespaceURI(), false), new XmlId(Objects.requireNonNull(qname).getLocalPart(), false));
 	}
 
+	@Override
+	public String getGroup() {
+		return "ArtifactType";
+	}
 }

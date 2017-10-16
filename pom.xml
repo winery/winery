@@ -14,7 +14,6 @@
  *    Oliver Kopp - refinements
  *    Tobias Binz - Adds support for building fatJars (including all dependencies) and profile for fatJars
  *    Lv Bo - add workflow-modeler module
- *    Christoph Kleine - Add model.yaml module
  *******************************************************************************/
 -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
@@ -88,6 +87,7 @@
 		<module>org.eclipse.winery.workflowmodeler</module>
 		<module>org.eclipse.winery.model.tosca.yaml</module>
 		<module>org.eclipse.winery.yaml.common</module>
+		<module>org.eclipse.winery.yaml.converter</module>
 	</modules>
 	<build>
 		<plugins>

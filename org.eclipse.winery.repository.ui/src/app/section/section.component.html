@@ -38,6 +38,10 @@
         <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsImportCsarBtn"
                 (click)="addCsarModal.show();">Import CSAR
         </button>
+        <button class="btn btn-default sidebar-btn sectionBtn" id="sectionsImportYamlBtn"
+                (click)="addYamlModal.show();">Import
+            YAML
+        </button>
         <winery-xaas-packager *ngIf="toscaType === toscaTypes.ServiceTemplate"
                               class="sectionBtn"
                               id="sectionCreateFromArtifactBtn"></winery-xaas-packager>
@@ -119,6 +123,17 @@
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="addCsarModal.hide()">Cancel</button>
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #addYamlModal="bs-modal" [modalRef]="addYamlModal">
+    <winery-modal-header [title]="'Add YAML'"></winery-modal-header>
+    <winery-modal-body>
+        <winery-uploader [modalRef]="addYamlModal" [uploadUrl]="fileUploadUrl + 'yaml/'"
+                         (onSuccess)="getSectionsData()"></winery-uploader>
+    </winery-modal-body>
+    <winery-modal-footer [showDefaultButtons]="false">
+        <button type="button" class="btn btn-default" (click)="addYamlModal.hide()">Cancel</button>
     </winery-modal-footer>
 </winery-modal>
 

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -88,7 +87,7 @@ public class TPolicyTemplate extends TEntityTemplate {
         this.name = value;
     }
 
-    public static class Builder extends TEntityTemplate.Builder {
+    public static class Builder extends TEntityTemplate.Builder<Builder> {
         private String name;
 
         public Builder(String id, QName type) {
@@ -97,6 +96,11 @@ public class TPolicyTemplate extends TEntityTemplate {
 
         public Builder setName(String name) {
             this.name = name;
+            return this;
+        }
+
+        @Override
+        public Builder self() {
             return this;
         }
 

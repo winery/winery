@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -87,7 +86,7 @@ public class TRequirementType extends TEntityType {
         this.requiredCapabilityType = value;
     }
 
-    public static class Builder extends TEntityType.Builder {
+    public static class Builder extends TEntityType.Builder<Builder> {
         private QName requiredCapabilityType;
 
         public Builder(String name) {
@@ -100,6 +99,11 @@ public class TRequirementType extends TEntityType {
 
         public Builder setRequiredCapabilityType(QName requiredCapabilityType) {
             this.requiredCapabilityType = requiredCapabilityType;
+            return this;
+        }
+
+        @Override
+        public Builder self() {
             return this;
         }
 

@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - hashcode, equals, builder pattern, Nullable and NonNull annotations
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -321,6 +320,12 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
         this.maxInstances = value;
     }
 
+    @XmlTransient
+    public String getX() {
+        Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
+        return otherNodeTemplateAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"));
+    }
+    
     /**
      * Sets the left coordinate of a {@link TNodeTemplate}.
      *
@@ -330,11 +335,11 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
         Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
         otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"), x);
     }
-    
+
     @XmlTransient
-    public String getX() {
+    public String getY() {
         Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
-        return otherNodeTemplateAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"));
+        return otherNodeTemplateAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"));
     }
 
     /**
@@ -346,13 +351,6 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
         Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
         otherNodeTemplateAttributes.put(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"), y);
     }
-    
-    @XmlTransient
-    public String getY() {
-        Map<QName, String> otherNodeTemplateAttributes = this.getOtherAttributes();
-        return otherNodeTemplateAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "y"));
-    }
-
 
     /**
      * <p>Java class for anonymous complex type.
@@ -524,7 +522,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
         }
     }
 
-    public static class Builder extends RelationshipSourceOrTarget.Builder {
+    public static class Builder extends RelationshipSourceOrTarget.Builder<Builder> {
         private Requirements requirements;
         private Capabilities capabilities;
         private Policies policies;
@@ -673,6 +671,11 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
             TNodeTemplate.Policies tmp = new TNodeTemplate.Policies();
             tmp.getPolicy().add(policies);
             return addPolicies(tmp);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
         }
 
         public TNodeTemplate build() {

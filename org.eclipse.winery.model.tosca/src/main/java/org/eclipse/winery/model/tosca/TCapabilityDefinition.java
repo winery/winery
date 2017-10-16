@@ -8,7 +8,6 @@
  *
  * Contributors:
  *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
- *    Christoph Kleine - Builder implementation
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -78,7 +77,7 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tCapabilityDefinition", propOrder = {
-        "constraints"
+    "constraints"
 })
 public class TCapabilityDefinition extends TExtensibleElements {
     @XmlElement(name = "Constraints")
@@ -110,10 +109,10 @@ public class TCapabilityDefinition extends TExtensibleElements {
         if (!(o instanceof TCapabilityDefinition)) return false;
         TCapabilityDefinition that = (TCapabilityDefinition) o;
         return Objects.equals(constraints, that.constraints) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(capabilityType, that.capabilityType) &&
-                Objects.equals(lowerBound, that.lowerBound) &&
-                Objects.equals(upperBound, that.upperBound);
+            Objects.equals(name, that.name) &&
+            Objects.equals(capabilityType, that.capabilityType) &&
+            Objects.equals(lowerBound, that.lowerBound) &&
+            Objects.equals(upperBound, that.upperBound);
     }
 
     @Override
@@ -245,7 +244,7 @@ public class TCapabilityDefinition extends TExtensibleElements {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "constraint"
+        "constraint"
     })
     public static class Constraints {
 
@@ -281,7 +280,7 @@ public class TCapabilityDefinition extends TExtensibleElements {
         }
     }
 
-    public static class Builder extends TExtensibleElements.Builder {
+    public static class Builder extends TExtensibleElements.Builder<Builder> {
         private final String name;
         private final QName capabilityType;
 
@@ -340,6 +339,11 @@ public class TCapabilityDefinition extends TExtensibleElements {
             TCapabilityDefinition.Constraints tmp = new TCapabilityDefinition.Constraints();
             tmp.getConstraint().add(constraints);
             return addConstraints(tmp);
+        }
+
+        @Override
+        public Builder self() {
+            return this;
         }
 
         public TCapabilityDefinition build() {

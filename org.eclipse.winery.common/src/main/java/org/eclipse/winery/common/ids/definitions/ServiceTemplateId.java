@@ -30,4 +30,8 @@ public final class ServiceTemplateId extends DefinitionsChildId {
 		super(qname);
 	}
 
+	@Override
+	public String getGroup() {
+		return "ServiceTemplate";
+	}
 }
