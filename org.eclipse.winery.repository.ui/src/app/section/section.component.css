@@ -35,6 +35,8 @@
 .sectionsOverviewShadow {
     grid-column: 2 / span 1;
     grid-row: 1 / span 3;
+    display: grid;
+    grid-template-rows: repeat(3, minmax(0, auto));
 }
 
 .sectionSidebar {
