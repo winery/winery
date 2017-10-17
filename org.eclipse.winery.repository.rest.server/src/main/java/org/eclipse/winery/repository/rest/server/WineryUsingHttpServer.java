@@ -38,9 +38,9 @@ import org.slf4j.LoggerFactory;
 
 public class WineryUsingHttpServer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(WineryUsingHttpServer.class);
-
 	public static final int REPOSITORY_UI_PORT = 4200;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(WineryUsingHttpServer.class);
 
 	public static Server createHttpServer(int port) throws IOException {
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);

@@ -431,6 +431,7 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
             this.type = value;
         }
     }
+
     @ADR(11)
     public abstract static class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
         private final String name;
