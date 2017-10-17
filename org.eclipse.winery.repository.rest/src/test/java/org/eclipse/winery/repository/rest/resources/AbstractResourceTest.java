@@ -20,6 +20,7 @@ import java.util.Scanner;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;

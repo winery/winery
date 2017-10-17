@@ -6,7 +6,7 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  *******************************************************************************/
-package org.eclipse.winery.repository.rest.resources;
+package org.eclipse.winery.repository.rest.server;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,10 +42,6 @@ public class WineryUsingHttpServer {
 
 	public static final int REPOSITORY_UI_PORT = 4200;
 
-
-	/**
-	 * Creates  a
-	 */
 	public static Server createHttpServer(int port) throws IOException {
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.setContextPath("/winery");
