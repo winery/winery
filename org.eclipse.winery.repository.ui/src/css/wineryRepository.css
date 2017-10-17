@@ -822,25 +822,21 @@ input.qnameinput {
 
 #gcprightcolumn {
     background: url('../assets/img/overviewShadowMiddle.jpg');
-    width: 35px;
-    position: absolute;
-    top: 356px;
-    bottom: 384px;
-    padding: 0;
+    background-size: 100% 100%;
+    grid-row: 2;
 }
 
 #overviewtopshadow {
-    top: 20px;
-    background-image: url("../assets/img/overviewShadowTop.jpg");
-    height: 269px;
+    background-image: url("../assets/img/overviewShadowBottom.jpg");
+    transform: rotateX(180deg);
+    background-size: 100% 100%;
+    grid-row: 1;
 }
 
 #overviewbottomshadow {
-    bottom: 115px;
     background-image: url("../assets/img/overviewShadowBottom.jpg");
-    height: 269px;
-    position: absolute;
-    width: 35px;
+    background-size: 100% 100%;
+    grid-row: 3;
 }
 
 span.cursorpointer {

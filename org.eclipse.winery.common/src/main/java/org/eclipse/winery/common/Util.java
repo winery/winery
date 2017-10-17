@@ -218,7 +218,6 @@ public class Util {
 		return res;
 	}
 
-
 	/**
 	 * @param id the GenericId to determine the path for
 	 * @return the path correctly URL encoded
@@ -602,7 +601,6 @@ public class Util {
 			.replace("-", Util.FORBIDDEN_CHARACTER_REPLACEMENT);
 		// @formatter:on
 	}
-
 
 	/**
 	 * Removes all non-NCName characters from the given string and returns the result
