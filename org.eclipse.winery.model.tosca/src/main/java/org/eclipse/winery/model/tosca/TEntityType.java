@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
@@ -431,6 +431,7 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
             this.type = value;
         }
     }
+
     @ADR(11)
     public abstract static class Builder<T extends Builder<T>> extends TExtensibleElements.Builder<T> {
         private final String name;

@@ -1,24 +1,18 @@
 {
 	"documentation": [
-
 	],
 	"any": [
-
 	],
 	"otherAttributes": {
-
 	},
 	"relationshipTemplates": [
 		{
 			"id": "con_25",
 			"documentation": [
-
 			],
 			"any": [
-
 			],
 			"otherAttributes": {
-
 			},
 			"type": "{http://winery.opentosca.org/test/ponyuniverse}standsOn",
 			"sourceElement": {
@@ -32,16 +26,15 @@
 		{
 			"id": "con_47",
 			"documentation": [
-
 			],
 			"any": [
-
 			],
 			"otherAttributes": {
-
 			},
 			"properties": {
-				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<ns3:Properties xmlns=\"http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery\" xmlns:ns0=\"http://winery.opentosca.org/test/ponyuniverse\" xmlns:ns1=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:ns2=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:ns3=\"http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/ponyuniverse\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><Driver/>\n\t\t\t</ns3:Properties>"
+				"kvproperties": {
+					"Driver": ""
+				}
 			},
 			"type": "{http://winery.opentosca.org/test/ponyuniverse}attendTo",
 			"sourceElement": {
@@ -57,10 +50,8 @@
 		{
 			"id": "shetland_pony",
 			"documentation": [
-
 			],
 			"any": [
-
 			],
 			"otherAttributes": {
 				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
@@ -134,13 +125,10 @@
 					{
 						"id": "ReqEquipment",
 						"documentation": [
-
 						],
 						"any": [
-
 						],
 						"otherAttributes": {
-
 						},
 						"type": "{http://winery.opentosca.org/test/ponyuniverse}ReqEquipment",
 						"name": "ReqEquipment"

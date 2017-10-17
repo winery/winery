@@ -5,9 +5,6 @@
  * and the Apache License 2.0 which both accompany this distribution,
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
  */
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PropertiesService } from './properties.service';
@@ -77,9 +74,12 @@ export class PropertiesComponent implements OnInit {
             this.isXMLData = false;
             if (!isNullOrUndefined(data.properties)) {
                 this.propertyKeys = Object.keys(data.properties);
+                // this.propertyKeys.sort();
             }
-            if (this.properties != null && this.propertyKeys.length > 0) {
+            if (this.propertyKeys.length > 0) {
                 this.properties = data.properties;
+                console.log('this.properties: ', this.properties);
+                console.log('this.propertykeys: ', this.propertyKeys);
             }
         }
     }

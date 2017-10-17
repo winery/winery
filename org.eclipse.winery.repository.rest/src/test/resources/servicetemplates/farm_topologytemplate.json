@@ -72,7 +72,13 @@
 				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "333"
 			},
 			"properties": {
-				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:BaobabProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:BaobabProperties>"
+				"kvproperties": {
+					"Antioxidants": "",
+					"VitaminC": "",
+					"Potassium": "",
+					"Superfood": "",
+					"HarvestedAt": ""
+				}
 			},
 			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
 			"name": "baobab",
@@ -93,7 +99,13 @@
 				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "331"
 			},
 			"properties": {
-				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:OrangeProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:OrangeProperties>"
+				"kvproperties": {
+					"Antioxidants": "",
+					"VitaminC": "",
+					"Potassium": "",
+					"Superfood": "",
+					"HarvestedAt": ""
+				}
 			},
 			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}orange",
 			"name": "orange",
@@ -114,7 +126,13 @@
 				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "329"
 			},
 			"properties": {
-				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:OrangeProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:OrangeProperties>"
+				"kvproperties": {
+					"Antioxidants": "",
+					"VitaminC": "",
+					"Potassium": "",
+					"Superfood": "",
+					"HarvestedAt": ""
+				}
 			},
 			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}orange",
 			"name": "orange_3",
@@ -135,7 +153,13 @@
 				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "219"
 			},
 			"properties": {
-				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:BaobabProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:BaobabProperties>"
+				"kvproperties": {
+					"Antioxidants": "",
+					"VitaminC": "",
+					"Potassium": "",
+					"Superfood": "",
+					"HarvestedAt": ""
+				}
 			},
 			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
 			"name": "baobab_3",
@@ -156,7 +180,13 @@
 				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "325"
 			},
 			"properties": {
-				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:BaobabProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:BaobabProperties>"
+				"kvproperties": {
+					"Antioxidants": "",
+					"VitaminC": "",
+					"Potassium": "",
+					"Superfood": "",
+					"HarvestedAt": ""
+				}
 			},
 			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
 			"name": "baobab_4",

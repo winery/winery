@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
-import java.util.Properties;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -24,11 +24,8 @@ import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.GetType;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
@@ -64,10 +61,8 @@ public class PropertiesResource {
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setProperties(Properties properties) {
-		TEntityType type = GetType.getType(RepositoryFactory.getRepository(), this.template);
-		WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(type);
-		ModelUtilities.setPropertiesKV(wpd, this.template, properties);
+	public Response setProperties(Map<String, String> properties) {
+		this.template.getProperties().setKVProperties(properties);
 		return RestUtils.persist(this.res);
 	}
 
@@ -108,25 +103,8 @@ public class PropertiesResource {
 				}
 			}
 		} else {
-			Properties properties;
-			if (props == null) {
-				// ensure that always empty data is returned
-				properties = new Properties();
-			} else {
-				properties = props.getKVProperties();
-			}
-			// iterate on all defined properties and add them if necessary
-			for (PropertyDefinitionKV propdef : wpd.getPropertyDefinitionKVList()) {
-				String key = propdef.getKey();
-				String value = properties.getProperty(key);
-				if (value == null) {
-					// render null as ""
-					properties.put(key, "");
-				} else {
-					properties.put(key, value);
-				}
-			}
-			return Response.ok().entity(properties).type(MediaType.APPLICATION_JSON).build();
+			Map<String, String> kvProperties = this.template.getProperties().getKVProperties();
+			return Response.ok().entity(kvProperties).type(MediaType.APPLICATION_JSON).build();
 		}
 	}
 }

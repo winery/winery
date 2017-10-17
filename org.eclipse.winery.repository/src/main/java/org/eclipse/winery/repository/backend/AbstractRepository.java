@@ -113,7 +113,7 @@ public abstract class AbstractRepository implements IRepository {
 	public Definitions getDefinitions(DefinitionsChildId id) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(id);
 		if (!exists(ref)) {
-			return BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(id);
+			return BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(this, id);
 		}
 		try {
 			InputStream is = RepositoryFactory.getRepository().newInputStream(ref);

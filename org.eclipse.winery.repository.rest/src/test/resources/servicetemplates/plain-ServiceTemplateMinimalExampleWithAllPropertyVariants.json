@@ -49,7 +49,10 @@
 						"otherAttributes": {
 						},
 						"properties": {
-							"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<properties:properties xmlns=\"http://plain.winery.opentosca.org/relationshiptype/properties\" xmlns:properties=\"http://plain.winery.opentosca.org/relationshiptype/properties\" xmlns:relationshiptypes=\"http://plain.winery.opentosca.org/relationshiptypes\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:ty=\"http://plain.winery.opentosca.org/relationshiptypes\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><key1/><key2/>\n\t\t\t</properties:properties>"
+							"kvproperties": {
+								"key1": "",
+								"key2": ""
+							}
 						},
 						"type": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithTwoKvPropertie",
 						"sourceElement": {
@@ -95,8 +98,8 @@
 						"name": "NodeTypeWithoutProperties",
 						"minInstances": 1,
 						"maxInstances": "1",
-						"y": "44",
-						"x": "617"
+						"x": "617",
+						"y": "44"
 					},
 					{
 						"id": "NodeTypeWithXmlElementProperty",
@@ -116,8 +119,8 @@
 						"name": "NodeTypeWithXmlElementProperty",
 						"minInstances": 1,
 						"maxInstances": "1",
-						"y": "462",
-						"x": "874"
+						"x": "874",
+						"y": "462"
 					},
 					{
 						"id": "NodeTypeWithTwoKVProperties",
@@ -131,14 +134,17 @@
 							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "461"
 						},
 						"properties": {
-							"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<winery1:properties xmlns=\"http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery\" xmlns:nodetypes=\"http://plain.winery.opentosca.org/nodetypes\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:ty=\"http://plain.winery.opentosca.org/nodetypes\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\" xmlns:winery1=\"http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery\"><key1>value</key1><key2/>\n\t\t\t</winery1:properties>"
+							"kvproperties": {
+								"key1": "value",
+								"key2": ""
+							}
 						},
 						"type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithTwoKVProperties",
 						"name": "NodeTypeWithTwoKVProperties",
 						"minInstances": 1,
 						"maxInstances": "1",
-						"y": "461",
-						"x": "387"
+						"x": "387",
+						"y": "461"
 					}
 				]
 			},

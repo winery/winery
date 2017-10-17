@@ -20,7 +20,7 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.repository.backend.MockXMLElement;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 
@@ -93,7 +93,9 @@ public class JAXBSupport {
 				MockXMLElement.class);
 			// @formatter:on
 		} catch (JAXBException e) {
-			JAXBSupport.LOGGER.error("Could not initialize JAXBContext", e);
+			System.out.println("HALLO");
+			System.out.println(e);
+			LOGGER.error("Could not initialize JAXBContext", e);
 			throw new IllegalStateException(e);
 		}
 		return context;

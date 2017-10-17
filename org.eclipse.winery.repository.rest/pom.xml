@@ -139,15 +139,15 @@
 			<scope>compile</scope>
 			<exclusions>
 				<exclusion>
-				<groupId>org.jvnet</groupId>
-				<artifactId>mimepull</artifactId>
+					<groupId>org.jvnet</groupId>
+					<artifactId>mimepull</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
-			 <groupId>org.jvnet.mimepull</groupId>
-			 <artifactId>mimepull</artifactId>
-			 <version>1.9.4</version>
+			<groupId>org.jvnet.mimepull</groupId>
+			<artifactId>mimepull</artifactId>
+			<version>1.9.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -381,8 +381,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.2.0</version>
 				<configuration>
+					<attachClasses>true</attachClasses>
+					<classesClassifier>classes</classesClassifier>
 					<webResources>
 						<resource>
 							<directory>${basedir}/src/main/webapp/WEB-INF</directory>
@@ -442,7 +444,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<ignore/>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -503,15 +505,21 @@
 							<id>default-cli</id>
 							<configuration>
 								<target>
-									<copy todir="${project.basedir}/src/main/webapp/WEB-INF/tags/common" overwrite="true">
-										<fileset dir="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/WEB-INF/tags/common" />
+									<copy todir="${project.basedir}/src/main/webapp/WEB-INF/tags/common"
+										  overwrite="true">
+										<fileset
+											dir="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/WEB-INF/tags/common"/>
 									</copy>
 									<copy todir="${project.basedir}/src/main/webapp/jsp/shared" overwrite="true">
-										<fileset dir="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/jsp/shared" />
+										<fileset
+											dir="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/jsp/shared"/>
 									</copy>
-									<copy todir="${project.basedir}/src/main/webapp/WEB-INF" overwrite="true" file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/WEB-INF/common-functions.tld" />
-									<copy todir="${project.basedir}/src/main/webapp/js" overwrite="true" file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/js/winery-common-topologyrendering.js" />
-									<copy todir="${project.basedir}/src/main/webapp/js" overwrite="true" file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/js/winery-support-common.js" />
+									<copy todir="${project.basedir}/src/main/webapp/WEB-INF" overwrite="true"
+										  file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/WEB-INF/common-functions.tld"/>
+									<copy todir="${project.basedir}/src/main/webapp/js" overwrite="true"
+										  file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/js/winery-common-topologyrendering.js"/>
+									<copy todir="${project.basedir}/src/main/webapp/js" overwrite="true"
+										  file="${project.basedir}/../org.eclipse.winery.topologymodeler/src/main/webapp/js/winery-support-common.js"/>
 								</target>
 							</configuration>
 							<goals>

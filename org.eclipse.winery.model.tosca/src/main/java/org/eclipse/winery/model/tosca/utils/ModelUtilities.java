@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,10 +55,11 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 
+import io.github.adr.embedded.ADR;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -88,51 +90,12 @@ public class ModelUtilities {
      *
      * @param template the node template to get the associated properties
      */
-    public static Properties getPropertiesKV(TEntityTemplate template) {
+    public static Map<String, String> getPropertiesKV(TEntityTemplate template) {
         if (template.getProperties() != null) {
             return template.getProperties().getKVProperties();
         } else {
             return null;
         }
-    }
-
-    /**
-     * This is a special method for Winery. Winery allows to define a property by specifying name/value values. We
-     * convert the given Properties to XML.
-     *
-     * @param wpd      the Winery's properties definition of the type of the given template (i.e., wpd =
-     *                 getWinerysPropertiesDefinition(template.getType()))
-     * @param template the node template to set the associated properties
-     */
-    public static void setPropertiesKV(WinerysPropertiesDefinition wpd, TEntityTemplate template, Properties properties) {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder db;
-        try {
-            db = dbf.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            ModelUtilities.LOGGER.debug(e.getMessage(), e);
-            throw new IllegalStateException("Could not instantiate document builder", e);
-        }
-        Document doc = db.newDocument();
-
-        Element root = doc.createElementNS(wpd.getNamespace(), wpd.getElementName());
-        doc.appendChild(root);
-
-        // we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
-        for (PropertyDefinitionKV prop : wpd.getPropertyDefinitionKVList()) {
-            // we always write the element tag as the XSD forces that
-            Element element = doc.createElementNS(wpd.getNamespace(), prop.getKey());
-            root.appendChild(element);
-            String value = properties.getProperty(prop.getKey());
-            if (value != null) {
-                Text text = doc.createTextNode(value);
-                element.appendChild(text);
-            }
-        }
-
-        org.eclipse.winery.model.tosca.TEntityTemplate.Properties tprops = new org.eclipse.winery.model.tosca.TEntityTemplate.Properties();
-        tprops.setAny(doc.getDocumentElement());
-        template.setProperties(tprops);
     }
 
     /**
@@ -143,9 +106,9 @@ public class ModelUtilities {
      *
      * @return empty Document, if Winery's Properties Definition is not fully filled (e.g., no wrapping element defined)
      */
-    public static Document getWinerysPropertiesDefinitionXSDAsDocument(WinerysPropertiesDefinition wpd) {
+    public static Document getWinerysPropertiesDefinitionXsdAsDocument(WinerysPropertiesDefinition wpd) {
         /*
-		 * This is a quick hack: an XML schema container is created for each
+         * This is a quick hack: an XML schema container is created for each
 		 * element. Smarter solution: create a hash from namespace to XML schema
 		 * element and re-use that for each new element
 		* Drawback of "smarter" solution: not a single XSD file any more
