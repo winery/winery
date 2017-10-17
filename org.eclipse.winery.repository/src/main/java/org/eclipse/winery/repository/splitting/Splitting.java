@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
@@ -797,8 +796,8 @@ public class Splitting {
 			relationshipTypes.add(RepositoryFactory.getRepository().getElement(id));
 		}
 
-		Properties requirementProperties = ModelUtilities.getPropertiesKV(requirement);
-		Properties capabilityProperties = ModelUtilities.getPropertiesKV(capability);
+		Map<String, String> requirementProperties = ModelUtilities.getPropertiesKV(requirement);
+		Map<String, String> capabilityProperties = ModelUtilities.getPropertiesKV(capability);
 
 		/* If the property "requiredRelationshipType" is defined for the requirement and the capability this relationship type
 		   has to be taken - if the specified relationship type is not available, no relationship type is chosen */
@@ -806,7 +805,7 @@ public class Splitting {
 			requirementProperties.containsKey("requiredRelationshipType") && capabilityProperties.containsKey("requiredRelationshipType")
 			&& requirementProperties.get("requiredRelationshipType").equals(capabilityProperties.get("requiredRelationshipType"))
 			&& requirementProperties.get("requiredRelationshipType") != null) {
-			QName referencedRelationshipType = (QName) requirementProperties.get("requiredRelationshipType");
+			QName referencedRelationshipType = QName.valueOf(requirementProperties.get("requiredRelationshipType"));
 			RelationshipTypeId relTypeId = new RelationshipTypeId(referencedRelationshipType);
 			if (relTypeIds.stream().anyMatch(rti -> rti.equals(relTypeId))) {
 				return RepositoryFactory.getRepository().getElement(relTypeId);

@@ -14,13 +14,19 @@ package org.eclipse.winery.repository.backend;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
@@ -28,6 +34,7 @@ import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSour
 import org.junit.Assert;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.w3c.dom.Element;
 import org.xmlunit.matchers.CompareMatcher;
 
 public class BackendUtilsTest {
@@ -124,4 +131,5 @@ public class BackendUtilsTest {
 		Assert.assertEquals(Optional.of(subDirectories), repositoryFileReference.getSubDirectory());
 		Assert.assertEquals("file.txt", repositoryFileReference.getFileName());
 	}
+
 }

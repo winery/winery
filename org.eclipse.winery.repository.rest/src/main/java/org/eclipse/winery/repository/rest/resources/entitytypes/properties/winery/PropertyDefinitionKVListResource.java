@@ -11,8 +11,8 @@ package org.eclipse.winery.repository.rest.resources.entitytypes.properties.wine
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
 

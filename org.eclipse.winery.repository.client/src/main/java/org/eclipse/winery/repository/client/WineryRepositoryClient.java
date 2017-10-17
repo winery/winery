@@ -56,7 +56,7 @@ import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

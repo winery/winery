@@ -22,9 +22,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 
@@ -49,9 +53,19 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
 		}
 		if (creationResult.getStatus().equals(Status.CREATED)) {
 			final DefinitionsChildId id = (DefinitionsChildId) creationResult.getId();
-			final Definitions definitions = RepositoryFactory.getRepository().getDefinitions(id);
-			final HasType element = (HasType) definitions.getElement();
-			element.setType(jsonData.type);
+			final IRepository repository = RepositoryFactory.getRepository();
+			final Definitions definitions = repository.getDefinitions(id);
+			final TExtensibleElements element = definitions.getElement();
+			((HasType) element).setType(jsonData.type);
+
+			// This would be better implemented using inheritance,
+			// but this would lead to a huge overhead in the implementation (checking for the creation result etc),
+			// thus, we do the quick hack here
+
+			if (id instanceof EntityTemplateId) {
+				BackendUtils.initializeProperties(repository, (TEntityTemplate) element);
+			}
+
 			try {
 				BackendUtils.persist(id, definitions);
 			} catch (IOException e) {

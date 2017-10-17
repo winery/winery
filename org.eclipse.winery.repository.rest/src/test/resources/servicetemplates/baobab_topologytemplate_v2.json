@@ -5,6 +5,8 @@
 	],
 	"otherAttributes": {
 	},
+	"relationshipTemplates": [
+	],
 	"nodeTemplates": [
 		{
 			"id": "mango",
@@ -20,16 +22,20 @@
 				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "287"
 			},
 			"properties": {
-				"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<wfn:MangoProperties xmlns=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:wfn=\"http://winery.opentosca.org/test/nodetypes/fruits\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ty:Antioxidants/><ty:VitaminC/><ty:Potassium/><ty:Superfood/><ty:HarvestedAt/>\n\t\t\t</wfn:MangoProperties>"
+				"kvproperties": {
+					"Antioxidants": "",
+					"VitaminC": "",
+					"Potassium": "",
+					"Superfood": "",
+					"HarvestedAt": ""
+				}
 			},
 			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}mango",
 			"name": "Mango",
 			"minInstances": 1,
 			"maxInstances": "1",
-			"x": "678",
-			"y": "287"
+			"y": "287",
+			"x": "678"
 		}
-	],
-	"relationshipTemplates": [
 	]
 }

@@ -48,7 +48,7 @@ public class DriverInjectionTest extends TestWithGitBackedRepository {
 		assertEquals(2, deploymentArtifacts.size());
 		assertTrue(deploymentArtifactNames.contains("WesternEquipment_Pony"));
 		assertTrue(deploymentArtifactNames.contains("DressageEquipment_Pony"));
-		assertEquals("org.test.dressagedriver", ModelUtilities.getPropertiesKV(relationshipTemplate).getProperty("Driver"));
+		assertEquals("org.test.dressagedriver", ModelUtilities.getPropertiesKV(relationshipTemplate).get("Driver"));
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ public class DriverInjectionTest extends TestWithGitBackedRepository {
 		
 		DriverInjection.setDriverProperty(relationshipTemplate, deploymentArtifact);
 		
-		assertEquals("org.test.dressagedriver", ModelUtilities.getPropertiesKV(relationshipTemplate).getProperty("Driver"));
+		assertEquals("org.test.dressagedriver", ModelUtilities.getPropertiesKV(relationshipTemplate).get("Driver"));
 		
 	}
 

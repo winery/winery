@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.NamespaceManager;
@@ -109,10 +109,6 @@ public class PropertiesDefinitionResource {
 		this.getEntityType().setPropertiesDefinition(null);
 		ModelUtilities.removeWinerysPropertiesDefinition(this.getEntityType());
 		return RestUtils.persist(this.parentRes);
-	}
-
-	public boolean getIsWineryKeyValueProperties() {
-		return (this.wpd != null);
 	}
 
 	@POST

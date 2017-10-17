@@ -46,7 +46,7 @@ import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
 import org.eclipse.winery.model.tosca.TImport;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -207,7 +207,7 @@ public class ToscaExportUtil {
 			TEntityType entityType = (TEntityType) entryDefinitions.getElement();
 
 			// we have an entity type with a possible properties definition
-			WinerysPropertiesDefinition wpd = ModelUtilities.getWinerysPropertiesDefinition(entityType);
+			WinerysPropertiesDefinition wpd = entityType.getWinerysPropertiesDefinition();
 			if (wpd != null) {
 				if (wpd.getIsDerivedFromXSD() == null) {
 					// Write WPD only to file if it exists and is NOT derived from an XSD (which may happen during import)
@@ -233,7 +233,7 @@ public class ToscaExportUtil {
 						ToscaExportUtil.LOGGER.trace("CSAR Export mode. Putting XSD into CSAR");
 						// CSAR Export mode
 						// XSD has to be put into the CSAR
-						Document document = ModelUtilities.getWinerysPropertiesDefinitionXSDAsDocument(wpd);
+						Document document = ModelUtilities.getWinerysPropertiesDefinitionXsdAsDocument(wpd);
 
 						// loc in import is URLencoded, loc on filesystem isn't
 						String locInCSAR = Util.URLdecode(loc);

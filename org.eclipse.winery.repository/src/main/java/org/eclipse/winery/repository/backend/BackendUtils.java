@@ -57,6 +57,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
@@ -112,9 +114,9 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.GitInfo;
@@ -149,6 +151,7 @@ import org.apache.xerces.xs.XSTypeDefinition;
 import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
@@ -551,7 +554,7 @@ public class BackendUtils {
 		return updateWrapperDefinitions(tcId, defs);
 	}
 
-	public static Definitions createWrapperDefinitionsAndInitialEmptyElement(DefinitionsChildId id) {
+	public static Definitions createWrapperDefinitionsAndInitialEmptyElement(IRepository repository, DefinitionsChildId id) {
 		final Definitions definitions = createWrapperDefinitions(id);
 		HasIdInIdOrNameField element;
 		if (id instanceof RelationshipTypeImplementationId) {
@@ -587,6 +590,47 @@ public class BackendUtils {
 		copyIdToFields(element, id);
 		definitions.setElement((TExtensibleElements) element);
 		return definitions;
+	}
+
+	/**
+	 * Properties need to be initialized in the case of K/V Properties
+	 *
+	 * @param repository     The repository to work on
+	 * @param entityTemplate the entity template to update
+	 */
+	public static void initializeProperties(IRepository repository, TEntityTemplate entityTemplate) {
+		Objects.requireNonNull(repository);
+		Objects.requireNonNull(entityTemplate);
+
+		Objects.requireNonNull(entityTemplate.getType());
+
+		final TEntityType entityType = repository.getTypeForTemplate(entityTemplate);
+		final WinerysPropertiesDefinition winerysPropertiesDefinition = entityType.getWinerysPropertiesDefinition();
+		if (winerysPropertiesDefinition == null) {
+			return;
+		}
+		Document document;
+		try {
+			document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		} catch (ParserConfigurationException e) {
+			LOGGER.error("Could not create document", e);
+			return;
+		}
+
+		final String namespace = winerysPropertiesDefinition.getNamespace();
+		final Element wrapperElement = document.createElementNS(namespace, winerysPropertiesDefinition.getElementName());
+		document.appendChild(wrapperElement);
+
+		// we produce the serialization in the same order the XSD would be generated (because of the usage of xsd:sequence)
+		for (PropertyDefinitionKV propertyDefinitionKV : winerysPropertiesDefinition.getPropertyDefinitionKVList()) {
+			// we always write the element tag as the XSD forces that
+			final Element valueElement = document.createElementNS(namespace, propertyDefinitionKV.getKey());
+			wrapperElement.appendChild(valueElement);
+		}
+
+		TEntityTemplate.Properties properties = new TEntityTemplate.Properties();
+		properties.setAny(document.getDocumentElement());
+		entityTemplate.setProperties(properties);
 	}
 
 	/**

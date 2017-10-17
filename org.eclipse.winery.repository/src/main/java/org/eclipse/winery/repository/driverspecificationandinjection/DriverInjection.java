@@ -14,19 +14,16 @@ package org.eclipse.winery.repository.driverspecificationandinjection;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TBoolean;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -66,14 +63,12 @@ public class DriverInjection {
 		ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId(DAArtifactTemplateQName);
 		TArtifactTemplate artifactTemplate = RepositoryFactory.getRepository().getElement(artifactTemplateId);
 
-		Properties artifactProperties = ModelUtilities.getPropertiesKV(artifactTemplate);
-		Properties relationshipProperties = ModelUtilities.getPropertiesKV(relationshipTemplate);
+		Map<String, String> artifactProperties = ModelUtilities.getPropertiesKV(artifactTemplate);
+		Map<String, String> relationshipProperties = ModelUtilities.getPropertiesKV(relationshipTemplate);
 
 		if ((artifactProperties != null) && (relationshipProperties != null) && artifactProperties.containsKey("Driver") && relationshipProperties.containsKey("Driver")) {
-			relationshipProperties.setProperty("Driver", artifactProperties.getProperty("Driver"));
-			RelationshipTypeId relationshipTypeId = new RelationshipTypeId(relationshipTemplate.getType());
-			TRelationshipType relationshipType = RepositoryFactory.getRepository().getElement(relationshipTypeId);
-			ModelUtilities.setPropertiesKV(ModelUtilities.getWinerysPropertiesDefinition(relationshipType), relationshipTemplate, relationshipProperties);
+			relationshipProperties.put("Driver", artifactProperties.get("Driver"));
+			relationshipTemplate.getProperties().setKVProperties(relationshipProperties);
 		} else {
 			throw new WineryRepositoryException("No Property found to set to the driver classname");
 		}

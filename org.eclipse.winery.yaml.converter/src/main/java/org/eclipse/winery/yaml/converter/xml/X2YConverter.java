@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -62,8 +61,8 @@ import org.eclipse.winery.model.tosca.TRequirementType;
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.TTags;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.TArtifactType;
@@ -179,7 +178,7 @@ public class X2YConverter {
 
 	public Map<String, TPropertyAssignment> convert(TEntityTemplate tEntityTemplate, TEntityTemplate.Properties node) {
 		if (Objects.isNull(node)) return null;
-		Properties propertiesKV = ModelUtilities.getPropertiesKV(tEntityTemplate);
+		Map<String,String> propertiesKV = ModelUtilities.getPropertiesKV(tEntityTemplate);
 		if (Objects.isNull(propertiesKV)) return null;
 		return propertiesKV.entrySet().stream()
 			.map(entry ->

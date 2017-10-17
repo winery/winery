@@ -16,13 +16,13 @@
 <%@taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core"%>
 
 <%@attribute name="propertiesDefinition" required="true" type="org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition" description="The TOSCA-conforming properties definition. May be null."%>
-<%@attribute name="wpd" required="true" type="org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition" description="Winery's K/V properties definition. May be null"%>
+<%@attribute name="wpd" required="true" type="org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition" description="Winery's K/V properties definition. May be null"%>
 <%@attribute name="template" required="true" type="org.eclipse.winery.model.tosca.TEntityTemplate" description="The template to display properties. Has to be null in case of the palette mode of the topology modeler"%>
 <%@attribute name="pathToImages" required="true" description="The path (URI path) to the image/ url, where xml.png is available. Has to end with '/'"%>
 
 <%@tag import="org.eclipse.winery.model.tosca.utils.ModelUtilities"%>
-<%@tag import="org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV"%>
-<%@tag import="org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList"%>
+<%@tag import="org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV"%>
+<%@tag import="org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList"%>
 
 <%
 if ((propertiesDefinition != null) || (wpd != null)) {

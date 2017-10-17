@@ -22,7 +22,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,9 +53,9 @@ import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
@@ -227,7 +226,7 @@ public class WineryCli {
 						}
 						String value;
 						// assign value, but change "null" to "" if no property is defined
-						final Properties propertiesKV = ModelUtilities.getPropertiesKV(nodeTemplate);
+						final Map<String,String> propertiesKV = ModelUtilities.getPropertiesKV(nodeTemplate);
 						if (propertiesKV == null) {
 							printAndAddError(res, verbosity, id, "propertiesKV of node template " + nodeTemplate.getId() + " is null");
 							continue;
@@ -318,7 +317,7 @@ public class WineryCli {
 					return;
 				}
 				if (winerysPropertiesDefinition != null) {
-					Properties kvProperties = entityTemplate.getProperties().getKVProperties();
+					Map<String,String> kvProperties = entityTemplate.getProperties().getKVProperties();
 					if (kvProperties.isEmpty()) {
 						printAndAddError(res, verbosity, id, "Properties required, but no properties set (any case)");
 						return;

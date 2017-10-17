@@ -1,31 +1,43 @@
 {
-	"documentation": [],
-	"any": [],
-	"otherAttributes": {},
+	"documentation": [
+	],
+	"any": [
+	],
+	"otherAttributes": {
+	},
 	"id": "winery-defs-for_servicetemplates1-ImportCsarWithOverwriteTest",
 	"serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
 		{
-			"documentation": [],
-			"any": [],
-			"otherAttributes": {},
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
 			"id": "ImportCsarWithOverwriteTest",
 			"topologyTemplate": {
-				"documentation": [],
-				"any": [],
-				"otherAttributes": {},
-				"relationshipTemplates": [],
+				"documentation": [
+				],
+				"any": [
+				],
+				"otherAttributes": {
+				},
 				"nodeTemplates": [
 					{
 						"id": "NodeTypeWithoutProperties",
-						"documentation": [],
-						"any": [],
+						"documentation": [
+						],
+						"any": [
+						],
 						"otherAttributes": {
 							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
 							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "641",
 							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "275"
 						},
 						"properties": {
-							"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<winery2:properties xmlns=\"http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery\" xmlns:nodetypes=\"http://plain.winery.opentosca.org/nodetypes\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:ty=\"http://plain.winery.opentosca.org/nodetypes\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\" xmlns:winery2=\"http://plain.winery.opentosca.org/nodetypes/propertiesdefinition/winery\"><overwriteTestProp/>\n\t\t\t</winery2:properties>"
+							"kvproperties": {
+								"overwriteTestProp": ""
+							}
 						},
 						"type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithoutProperties",
 						"name": "NodeTypeWithoutProperties",
@@ -34,6 +46,8 @@
 						"x": "641",
 						"y": "275"
 					}
+				],
+				"relationshipTemplates": [
 				]
 			},
 			"name": "ImportCsarWithOverwriteTest",
@@ -43,9 +57,12 @@
 	"targetNamespace": "http://plain.winery.opentosca.org/servicetemplates",
 	"import": [
 		{
-			"documentation": [],
-			"any": [],
-			"otherAttributes": {},
+			"documentation": [
+			],
+			"any": [
+			],
+			"otherAttributes": {
+			},
 			"namespace": "http://plain.winery.opentosca.org/nodetypes",
 			"location": "nodetypes__NodeTypeWithoutProperties.tosca",
 			"importType": "http://docs.oasis-open.org/tosca/ns/2011/12"

@@ -23,7 +23,7 @@ public class PropertiesResourceTest extends AbstractResourceTest {
 
 	@Test
 	public void getPropertiesJsonList() throws Exception {
-		this.setRevisionTo("2fb90960edfb32e337a440c115976ff4bd7a5634");
+		this.setRevisionTo("origin/fruits");
 		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/",
 			"entitytemplates/initialProperties.json");
 	}
@@ -37,7 +37,7 @@ public class PropertiesResourceTest extends AbstractResourceTest {
 
 	@Test
 	public void postJsonProperties() throws Exception {
-		this.setRevisionTo("2fb90960edfb32e337a440c115976ff4bd7a5634");
+		this.setRevisionTo("origin/fruits");
 		this.assertPut("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/",
 			"entitytemplates/updatedProperties.json");
 		this.assertGet("artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab-ArtifactTemplate-Peel/properties/",

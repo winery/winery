@@ -1,28 +1,24 @@
 {
 	"topologyTemplate": {
 		"documentation": [
-
 		],
 		"any": [
-
 		],
 		"otherAttributes": {
-
 		},
 		"relationshipTemplates": [
 			{
 				"id": "con_47",
 				"documentation": [
-
 				],
 				"any": [
-
 				],
 				"otherAttributes": {
-
 				},
 				"properties": {
-					"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<ns3:Properties xmlns=\"http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery\" xmlns:ns0=\"http://winery.opentosca.org/test/ponyuniverse\" xmlns:ns2=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:ns3=\"http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery\" xmlns:tosca=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ty=\"http://winery.opentosca.org/test/ponyuniverse\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><Driver/>\n\t\t\t</ns3:Properties>"
+					"kvproperties": {
+						"Driver": ""
+					}
 				},
 				"type": "{http://winery.opentosca.org/test/ponyuniverse}attendTo",
 				"sourceElement": {
@@ -38,10 +34,8 @@
 			{
 				"id": "shetland_pony",
 				"documentation": [
-
 				],
 				"any": [
-
 				],
 				"otherAttributes": {
 					"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "*",
@@ -56,13 +50,10 @@
 					"deploymentArtifact": [
 						{
 							"documentation": [
-
 							],
 							"any": [
-
 							],
 							"otherAttributes": {
-
 							},
 							"name": "PonyEquipment_abstract",
 							"artifactType": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}PonyEquipment",
@@ -79,10 +70,8 @@
 			{
 				"id": "ponycompetition",
 				"documentation": [
-
 				],
 				"any": [
-
 				],
 				"otherAttributes": {
 					"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "*",
@@ -95,13 +84,10 @@
 						{
 							"id": "ReqEquipment",
 							"documentation": [
-
 							],
 							"any": [
-
 							],
 							"otherAttributes": {
-
 							},
 							"type": "{http://winery.opentosca.org/test/ponyuniverse}ReqEquipment",
 							"name": "ReqEquipment"
@@ -113,13 +99,10 @@
 						{
 							"id": "CapCompetition",
 							"documentation": [
-
 							],
 							"any": [
-
 							],
 							"otherAttributes": {
-
 							},
 							"type": "{http://winery.opentosca.org/test/ponyuniverse}CapCompetition",
 							"name": "CapCompetition"
@@ -147,22 +130,15 @@
 					}
 				],
 				"any": [
-
 				],
 				"otherAttributes": {
-
 				},
-				"relationshipTemplates": [
-
-				],
 				"nodeTemplates": [
 					{
 						"id": "dressageequipment",
 						"documentation": [
-
 						],
 						"any": [
-
 						],
 						"otherAttributes": {
 							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "EquipmentProvider",
@@ -175,13 +151,10 @@
 								{
 									"id": "CapEquipment",
 									"documentation": [
-
 									],
 									"any": [
-
 									],
 									"otherAttributes": {
-
 									},
 									"type": "{http://winery.opentosca.org/test/ponyuniverse}CapEquipment",
 									"name": "CapEquipment"
@@ -192,13 +165,10 @@
 							"deploymentArtifact": [
 								{
 									"documentation": [
-
 									],
 									"any": [
-
 									],
 									"otherAttributes": {
-
 									},
 									"name": "DressageEquipment_Pony",
 									"artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Pony",
@@ -206,13 +176,10 @@
 								},
 								{
 									"documentation": [
-
 									],
 									"any": [
-
 									],
 									"otherAttributes": {
-
 									},
 									"name": "DressageEquipment_Unicorn",
 									"artifactType": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Unicorn",
@@ -226,6 +193,8 @@
 						"x": "804",
 						"y": "270"
 					}
+				],
+				"relationshipTemplates": [
 				]
 			}
 		]
