@@ -20,7 +20,7 @@ import java.util.Scanner;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.eclipse.winery.repository.rest.WineryUsingHttpServerForTesting;
+import org.eclipse.winery.repository.rest.server.WineryUsingHttpServer;
 
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -44,7 +44,7 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 
 	@BeforeClass
 	public static void init() throws Exception {
-		server = WineryUsingHttpServerForTesting.createHttpServer(9080);
+		server = WineryUsingHttpServer.createHttpServer(9080);
 		server.start();
 	}
 
