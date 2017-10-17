@@ -11,6 +11,7 @@ package org.eclipse.winery.yaml.common.reader.yaml;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
@@ -83,16 +84,17 @@ public class Reader {
      * @throws MissingFile if the file could not be found.
      */
     private Object readObject(String fileName) throws MissingFile {
-        InputStream inputStream;
-        try {
-            File file = new File(fileName);
-            inputStream = new FileInputStream(file);
+        File file = new File(fileName);
+        try (InputStream inputStream = new FileInputStream(file)) {
+            return this.yaml.load(inputStream);
         } catch (FileNotFoundException e) {
             MissingFile ex = new MissingFile("The file \"" + fileName + "\" could not be found!");
             ex.setFileContext(fileName);
             throw ex;
+        } catch (IOException e) {
+            LOGGER.error("Could not read from inputstream", e);
+            return null;
         }
-        return this.yaml.load(inputStream);
     }
 
     /**
