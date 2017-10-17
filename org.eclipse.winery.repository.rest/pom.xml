@@ -381,8 +381,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.2.0</version>
 				<configuration>
+					<attachClasses>true</attachClasses>
+					<classesClassifier>classes</classesClassifier>
 					<webResources>
 						<resource>
 							<directory>${basedir}/src/main/webapp/WEB-INF</directory>
