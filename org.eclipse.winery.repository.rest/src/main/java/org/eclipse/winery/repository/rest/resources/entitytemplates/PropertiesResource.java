@@ -22,12 +22,12 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.propertydefinitionkv.WinerysPropertiesDefinition;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.GetType;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -45,7 +45,6 @@ public class PropertiesResource {
 
 	private AbstractComponentInstanceResource res;
 	private TEntityTemplate template;
-
 
 	/**
 	 * @param template the template to store the definitions at
@@ -98,8 +97,12 @@ public class PropertiesResource {
 				}
 				try {
 					@ADR(6)
-					Response response = Response.ok().entity(Util.getXMLAsString(TEntityTemplate.Properties.class, props)).type(MediaType.TEXT_XML).build();
-					return response;
+					String xmlAsString = BackendUtils.getXMLAsString(TEntityTemplate.Properties.class, props, true);
+					return Response
+						.ok()
+						.entity(xmlAsString)
+						.type(MediaType.TEXT_XML)
+						.build();
 				} catch (Exception e) {
 					throw new WebApplicationException(e);
 				}
