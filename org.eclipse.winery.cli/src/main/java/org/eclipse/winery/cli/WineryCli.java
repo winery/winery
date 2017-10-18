@@ -95,12 +95,14 @@ public class WineryCli {
 	public static void main(String[] args) throws ParseException {
 		Option repositoryPathOption = new Option("p", "path", true, "use given path as repository path");
 		Option serviceTemplatesOnlyOption = new Option("so", "servicetemplatesonly", false, "checks service templates instead of the whole repository");
+		Option checkDocumentationOption = new Option("cd", "checkdocumentation", false, "check existence of README.md and LICENSE. Default: No check");
 		Option verboseOption = new Option("v", "verbose", false, "be verbose: Output the checked elements");
 		Option helpOption = new Option("h", "help", false, "prints this help");
 
 		Options options = new Options();
 		options.addOption(repositoryPathOption);
 		options.addOption(serviceTemplatesOnlyOption);
+		options.addOption(checkDocumentationOption);
 		options.addOption(verboseOption);
 		options.addOption(helpOption);
 		CommandLineParser parser = new DefaultParser();
@@ -128,7 +130,8 @@ public class WineryCli {
 		}
 
 		boolean serviceTemplatesOnly = line.hasOption("so");
-		List<String> errors = checkCorruptionUsingCsarExport(repository, verbosity, serviceTemplatesOnly);
+		boolean checkDocumentation = line.hasOption("cd");
+		List<String> errors = checkCorruptionUsingCsarExport(repository, verbosity, serviceTemplatesOnly, checkDocumentation);
 
 		System.out.println();
 		if (errors.isEmpty()) {
@@ -143,7 +146,10 @@ public class WineryCli {
 		}
 	}
 
-	private static List<String> checkCorruptionUsingCsarExport(IRepository repository, EnumSet<Verbosity> verbosity, boolean serviceTemplatesOnly) {
+	/**
+	 * TODO: Refactor: Pass configuration object instead of Boolean parameters
+	 */
+	private static List<String> checkCorruptionUsingCsarExport(IRepository repository, EnumSet<Verbosity> verbosity, boolean serviceTemplatesOnly, boolean checkDocumentation) {
 		List<String> res = new ArrayList<>();
 
 		Set<DefinitionsChildId> allDefinitionsChildIds = repository.getAllDefinitionsChildIds();
@@ -180,6 +186,9 @@ public class WineryCli {
 			if (id instanceof ServiceTemplateId) {
 				checkServiceTemplate(repository, res, verbosity, (ServiceTemplateId) id);
 			}
+			if (checkDocumentation) {
+				checkDocumentation(repository, res, verbosity, id);
+			}
 			checkPlainConformance(res, verbosity, id, tempCsar);
 			checkCsar(res, verbosity, id, tempCsar);
 		}
@@ -192,6 +201,18 @@ public class WineryCli {
 		}
 
 		return res;
+	}
+
+	private static void checkDocumentation(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id) {
+		checkFileExistance(repository, res, verbosity, id, "README.md");
+		checkFileExistance(repository, res, verbosity, id, "LICENSE");
+	}
+
+	private static void checkFileExistance(IRepository repository, List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, String filename) {
+		RepositoryFileReference repositoryFileReference = new RepositoryFileReference(id, filename);
+		if (!repository.exists(repositoryFileReference)) {
+			printAndAddError(res, verbosity, id, filename + " does not exist.");
+		}
 	}
 
 	private static void checkPlainConformance(List<String> res, EnumSet<Verbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
