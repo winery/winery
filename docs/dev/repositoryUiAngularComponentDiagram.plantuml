@@ -35,6 +35,7 @@ Title  <size:33> Repository UI: Angular Component Tree
 
 class WineryRepositoryComponent
 class InstanceComponent
+class SectionComponent
 
 package admin {
 	class TypesWithShortNameComponent
@@ -45,6 +46,7 @@ package admin {
 
 package artifactTemplates {
 	class FilesComponent
+	class ArtifactSourceComponent
 }
 
 package nodeTypes {
@@ -64,6 +66,10 @@ package requirementTypes {
 	class RequiredCapabilityType
 }
 
+package imports {
+	class ListDefinedTypesAndElementsComponent
+}
+
 package serviceTemplates {
 	package boundaryDefinitions {
 		class CapabilitiesComponent
@@ -75,6 +81,9 @@ package serviceTemplates {
 	}
 	
 	package selfServicePortal {
+		class SelfServiceDesciptionComponent
+		class SelfServiceProtalImagesComponent
+		class SelfServiceProtalOptionsComponent
 	}
 	
 	class PlansComponent
@@ -95,53 +104,41 @@ package sharedComponents {
 	class PropertiesDefinition
 	class VisualAppearanceComponent
 	class WineryArtifactComponent
+	class WineryReadmeComponent
+	class WineryLicenseComponent
 }
 
-WineryRepositoryComponent *-left- WineryHeaderComponent
-WineryRepositoryComponent -> SectionComponent : /:section
+WineryRepositoryComponent *-right-- WineryHeaderComponent
+WineryRepositoryComponent --> SectionComponent : /:section | /:section/:namespace \n /imports/:xsdSchemaType/ | /imports/:xsdSchemaType/:namespace
 WineryRepositoryComponent --> OtherComponent : /other
 WineryRepositoryComponent ----> InstanceComponent
 
-BoundaryDefinitionsComponent --> boundaryDefinitions
-SelfServicePortalComponent --> selfServicePortal
+SectionComponent *- XaasPackagerComponent
 
-InstanceComponent ---> requirementTypes : /requirementtypes/:namespce/:id
+BoundaryDefinitionsComponent *--- boundaryDefinitions
+SelfServicePortalComponent *----- selfServicePortal
+
+InstanceComponent ---> requirementTypes : /requirementtypes/:namespce/:localName
 InstanceComponent *-up- InstanceHeaderComponent
-InstanceComponent ---> admin : /admin
-InstanceComponent ---> artifactTemplates : /artifacttemplates/:namespce/:id
-InstanceComponent -----> nodeTypes : /nodetypes/:namespce/:id
-InstanceComponent ----> policyTypes : /policytypes/:namespce/:id
-InstanceComponent ------> relationshipTypes : /relationshiptypes/:namespce/:id
-InstanceComponent -----> serviceTemplates : /servicetemplates/:namespce/:id
-InstanceComponent ---------> sharedComponents
-
-admin -> LoggerComponent
-admin -> RepositoryComponent
-admin -> NamespacesComponent
-admin -> TypesWithShortNameComponent
-
-serviceTemplates -> SelfServicePortalComponent
-serviceTemplates -> BoundaryDefinitionsComponent
-serviceTemplates -> PlansComponent
-serviceTemplates -> TopologyTemplateComponent
-serviceTemplates -> TagComponent
+InstanceComponent -----> admin : /admin
+InstanceComponent ---> artifactTemplates : /artifacttemplates/:namespce/:localName
+InstanceComponent ---> nodeTypes : /nodetypes/:namespce/:localName
+InstanceComponent ---> imports : /imports/:xsdSchemaType/:namespace/:localName
+InstanceComponent ----> policyTypes : /policytypes/:namespce/:localName
+InstanceComponent ---> relationshipTypes : /relationshiptypes/:namespce/:localName
+InstanceComponent ----> serviceTemplates : /servicetemplates/:namespce/:localName
 
 nodeTypes -> CapOrReqDefComponent
-
-policyTypes -> LanguageComponent
-policyTypes -> AppliesToComponent
-
-artifactTemplates -> FilesComponent
 
 relationshipTypes -> ValidSourcesAndTargetsComponent
 
 requirementTypes -> RequiredCapabilityType
 
-relationshipTypes ------> sharedComponents
-requirementTypes ----> sharedComponents
-serviceTemplates ---> sharedComponents
-artifactTemplates ---> sharedComponents
-nodeTypes -----> sharedComponents
+relationshipTypes --> sharedComponents
+requirementTypes --> sharedComponents
+serviceTemplates --> sharedComponents
+artifactTemplates --> sharedComponents
+nodeTypes ---> sharedComponents
 policyTypes --> sharedComponents
 
 
