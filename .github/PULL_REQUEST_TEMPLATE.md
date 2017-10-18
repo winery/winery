@@ -11,6 +11,7 @@ Replace this placeholder by a short description of the current state. What is do
 Please update this description regularly.
 -->
 
+- [ ] Ensure that you followed http://eclipse.github.io/winery/dev/ToolChain#github---prepare-pull-request. Especially, we require **a single commit**
 - [ ] Ensure that the commit message is [a good commit message](https://github.com/erlang/otp/wiki/Writing-good-commit-messages)
 - [ ] Ensure to use auto format in **all** files
 - [ ] Change in CHANGELOG.md described
