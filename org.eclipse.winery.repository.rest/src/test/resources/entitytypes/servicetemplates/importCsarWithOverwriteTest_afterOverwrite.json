@@ -5,7 +5,7 @@
 	],
 	"otherAttributes": {
 	},
-	"id": "winery-defs-for_servicetemplates1-ImportCsarWithOverwriteTest",
+	"id": "winery-defs-for_servicetemplates-ImportCsarWithOverwriteTest",
 	"serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
 		{
 			"documentation": [
