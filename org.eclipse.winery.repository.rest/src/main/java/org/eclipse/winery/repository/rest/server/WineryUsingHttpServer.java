@@ -75,7 +75,13 @@ public class WineryUsingHttpServer {
 		if (Files.exists(indexHtmlPath)) {
 			LOGGER.debug("Serving UI from " + indexHtmlPath.toString());
 		} else {
-			LOGGER.error("Path does not exist " + indexHtmlPath);
+			// not sure, why we sometimes have to use `getParent()`.
+			indexHtmlPath = MavenTestingUtils.getBasePath().getParent().resolve("org.eclipse.winery.repository.ui").resolve("dist");
+			if (Files.exists(indexHtmlPath)) {
+				LOGGER.debug("Serving UI from " + indexHtmlPath.toString());
+			} else {
+				LOGGER.error("Path does not exist " + indexHtmlPath);
+			}
 		}
 		context0.setBaseResource(Resource.newResource(indexHtmlPath.toFile()));
 		context0.setHandler(rh0);
