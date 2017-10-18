@@ -27,10 +27,10 @@
 	<description>Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these
 		topologies.
 	</description>
-	<url>http://www.eclipse.org/winery</url>
+	<url>https://eclipse.github.io/winery</url>
 	<organization>
 		<name>Eclipse.org - Winery Project</name>
-		<url>http://www.eclipse.org/winery</url>
+		<url>https://www.eclipse.org/winery</url>
 	</organization>
 	<inceptionYear>2012</inceptionYear>
 	<mailingLists>
@@ -69,15 +69,16 @@
 		<main.basedir>${project.basedir}</main.basedir>
 	</properties>
 	<modules>
-		<module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
-		<module>org.eclipse.winery.common</module>
-		<module>org.eclipse.winery.cli</module>
-		<module>org.eclipse.winery.generators.ia</module>
-		<module>org.eclipse.winery.highlevelrestapi</module>
 		<module>org.eclipse.winery.model.bpmn4tosca</module>
 		<module>org.eclipse.winery.model.csar.toscametafile</module>
 		<module>org.eclipse.winery.model.selfservice</module>
 		<module>org.eclipse.winery.model.tosca</module>
+		<module>org.eclipse.winery.model.tosca.yaml</module>
+		<module>org.eclipse.winery.common</module>
+		<module>org.eclipse.winery.yaml.common</module>
+		<module>org.eclipse.winery.yaml.converter</module>
+		<module>org.eclipse.winery.cli</module>
+		<module>org.eclipse.winery.bpmn4tosca.converter.tobpel</module>
 		<module>org.eclipse.winery.repository</module>
 		<module>org.eclipse.winery.repository.client</module>
 		<module>org.eclipse.winery.repository.configuration</module>
@@ -85,9 +86,8 @@
 		<module>org.eclipse.winery.repository.ui</module>
 		<module>org.eclipse.winery.topologymodeler</module>
 		<module>org.eclipse.winery.workflowmodeler</module>
-		<module>org.eclipse.winery.model.tosca.yaml</module>
-		<module>org.eclipse.winery.yaml.common</module>
-		<module>org.eclipse.winery.yaml.converter</module>
+		<module>org.eclipse.winery.generators.ia</module>
+		<module>org.eclipse.winery.highlevelrestapi</module>
 	</modules>
 	<build>
 		<plugins>
