@@ -73,6 +73,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
     isValid: boolean;
 
     @ViewChild('namespace') input: any;
+    @ViewChild('namespaceInput') namespaceInput: ElementRef;
 
     loading = true;
     allNamespaces: NamespaceWithPrefix[] = [];
@@ -105,6 +106,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
             this.onChangeCallback(v);
             this.isValid = this.input.valid;
             this.onChange.emit(this.isValid);
+            this.namespaceInput.nativeElement.focus();
         }
     }
 
