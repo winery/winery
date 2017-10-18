@@ -27,6 +27,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -70,7 +71,7 @@ public class WineryUsingHttpServer {
 		ContextHandler context0 = new ContextHandler();
 		context0.setContextPath("/");
 		// Path indexHtmlPath = MavenTestingUtils.getProjectFilePath("../org.eclipse.winery.repository.ui/dist/index.html").getParent();
-		Path indexHtmlPath = MavenTestingUtils.getProjectFilePath("pom.xml").getParent().resolve("org.eclipse.winery.repository.ui").resolve("dist");
+		Path indexHtmlPath = MavenTestingUtils.getBasePath().resolve("org.eclipse.winery.repository.ui").resolve("dist");
 		if (Files.exists(indexHtmlPath)) {
 			LOGGER.debug("Serving UI from " + indexHtmlPath.toString());
 		} else {
@@ -102,6 +103,9 @@ public class WineryUsingHttpServer {
 		h.setInitParameter("com.sun.jersey.config.feature.Redirect", "true");
 		h.setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true");
 		h.setInitParameter("com.sun.jersey.config.property.resourceConfigClass", "com.sun.jersey.api.core.PackagesResourceConfig");
+
+		//context.addFilter(RequestLoggingFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+		context.addServlet(DefaultServlet.class, "/");
 
 		h.setInitOrder(1);
 	}

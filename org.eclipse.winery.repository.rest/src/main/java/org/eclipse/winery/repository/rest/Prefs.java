@@ -14,6 +14,7 @@
 package org.eclipse.winery.repository.rest;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Objects;
 
 import javax.servlet.ServletContext;
@@ -53,7 +54,9 @@ public class Prefs implements ServletContextListener {
 		this();
 
 		// emulate behavior of doInitialization(Context)
-		Environment.copyConfiguration(new File(this.getClass().getClassLoader().getResource("winery.properties").toURI()).toPath());
+		URL resource = this.getClass().getClassLoader().getResource("winery.properties");
+		LOGGER.debug("URL: {}", resource.toString());
+		Environment.copyConfiguration(resource);
 
 		if (initializeRepository) {
 			this.doRepositoryInitialization();

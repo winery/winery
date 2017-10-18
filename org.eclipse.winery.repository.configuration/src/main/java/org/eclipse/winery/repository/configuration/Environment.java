@@ -93,6 +93,17 @@ public class Environment {
 		copyConfiguration(configuration);
 	}
 
+	/**
+	 * Overwrite configuration parameters by using the given URL
+	 *
+	 * @param url a URL pointing to a file where the configuration should be read from
+	 */
+	public static void copyConfiguration(URL url) throws Exception {
+		Configurations configs = new Configurations();
+		Configuration configuration = configs.properties(url);
+		copyConfiguration(configuration);
+	}
+
 	public static void copyConfiguration(Configuration configuration) {
 		ConfigurationUtils.copy(configuration, CONFIGURATION);
 		URL_CONFIGURATION.update(configuration);

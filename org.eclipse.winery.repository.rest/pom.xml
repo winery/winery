@@ -268,6 +268,12 @@
 		</dependency>
 		<!-- jetty is required for WineryUsingHttpServer only -->
 		<dependency>
+			<!-- required for Jetty to start -->
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
 			<version>9.4.2.v20170220</version>
@@ -394,8 +400,12 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>org.eclipse.winery.repository.rest.server.WineryUsingHttpServer</mainClass>
+									<mainClass>org.eclipse.winery.repository.rest.server.WineryUsingHttpServer
+									</mainClass>
 								</transformer>
+								<!-- hint by https://stackoverflow.com/a/33226176/873282 --> 
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
 							</transformers>
 							<filters>
 								<filter>
