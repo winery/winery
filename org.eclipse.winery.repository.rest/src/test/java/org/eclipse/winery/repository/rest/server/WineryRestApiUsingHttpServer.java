@@ -26,7 +26,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
 /**
- * Stripped-down version of WineryUsingHttpServer
+ * Stripped-down version of WineryUsingHttpServer serving solely the REST API.
  */
 public class WineryRestApiUsingHttpServer {
 
