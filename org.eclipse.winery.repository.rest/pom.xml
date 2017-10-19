@@ -22,7 +22,8 @@
 		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>org.eclipse.winery.repository.rest</artifactId>
-	<packaging>war</packaging>
+	<!-- jar to enable use by org.eclipse.winery.repository.rest.server -->
+	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
@@ -394,6 +395,15 @@
 						</resource>
 					</webResources>
 				</configuration>
+				<executions>
+					<!-- required to build the war -->
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>war</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
