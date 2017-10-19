@@ -11,6 +11,7 @@ import { WineryNotificationService } from './wineryNotificationModule/wineryNoti
 import { WineryGitLogComponent } from './wineryGitLog/wineryGitLog.component';
 import { ExistService } from './wineryUtils/existService';
 import { backendBaseURL } from './configuration';
+import { BackendAvailabilityStates } from './wineryInterfaces/enums';
 
 @Component({
     selector: 'winery-repository',
@@ -26,7 +27,8 @@ import { backendBaseURL } from './configuration';
 export class WineryRepositoryComponent implements OnInit {
     // region variables
     name = 'Winery Repository';
-    isBackendAvailable = false;
+    backendState = BackendAvailabilityStates.Undefined;
+    backendAvailabilityStates = BackendAvailabilityStates;
     loading = true;
     @ViewChild('gitLog') gitLog: WineryGitLogComponent;
 
@@ -44,10 +46,13 @@ export class WineryRepositoryComponent implements OnInit {
     ngOnInit() {
         this.existService.check(backendBaseURL + '/').subscribe(
             data => {
-                this.isBackendAvailable = true;
+                this.backendState = BackendAvailabilityStates.Available;
                 this.loading = false;
             },
-            error => this.loading = false
+            error => {
+                this.loading = false;
+                this.backendState = BackendAvailabilityStates.Unavailable;
+            }
         );
     }
 

@@ -45,3 +45,12 @@ export enum ServiceTemplateTemplateTypes {
     RelationshipTemplate = 'relationshipTemplates',
     RequirementTemplate = 'requirementTemplates'
 }
+
+/**
+ * BackendAvailabilityStates defines the states for the availability of the backend.
+ */
+export enum BackendAvailabilityStates {
+    Available = 1,
+    Unavailable = 0,
+    Undefined = -1
+}
