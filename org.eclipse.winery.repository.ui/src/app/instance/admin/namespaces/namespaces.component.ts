@@ -27,8 +27,8 @@ import { ModalDirective } from 'ngx-bootstrap';
 export class NamespacesComponent implements OnInit {
 
     loading = true;
-    adminNamespaces: Array<any> = [];
-    newNamespace: any = { namespace: '', prefix: '' };
+    adminNamespaces: Array<NamespaceWithPrefix> = [];
+    newNamespace: NamespaceWithPrefix = { prefix: '', namespace: '' };
     validatorObjectPrefix: WineryValidatorObject;
     validatorObjectNamespace: WineryValidatorObject;
 
@@ -61,11 +61,8 @@ export class NamespacesComponent implements OnInit {
         this.getNamespaces();
     }
 
-    addNamespace(namespace: string, prefix: string) {
-        this.adminNamespaces.push({
-            namespace: namespace,
-            prefix: prefix
-        });
+    addNamespace() {
+        this.adminNamespaces.push(this.newNamespace);
         this.save();
     }
 
