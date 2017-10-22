@@ -4,6 +4,7 @@ capability_types:
   DFEndpoint:
     derived_from: tosca.capabilities.Endpoint
     properties:
+    valid_source_types: [ Compute ]
     
   DFFeatures:
     derived_from: tosca.capabilities.Attachment
