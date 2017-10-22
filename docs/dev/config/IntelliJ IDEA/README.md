@@ -38,6 +38,7 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
   - <https://youtrack.jetbrains.com/issue/IDEA-68079>
   - <https://youtrack.jetbrains.com/issue/IDEA-159739>
   - <https://youtrack.jetbrains.com/issue/IDEA-131223>
+8. Pros: Install the [Key Promoter X plugin](https://plugins.jetbrains.com/plugin/9792-key-promoter-x).
 
 
 ## Further Remarks
