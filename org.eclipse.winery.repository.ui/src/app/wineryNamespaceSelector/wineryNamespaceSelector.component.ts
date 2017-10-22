@@ -78,7 +78,8 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
     allNamespaces: NamespaceWithPrefix[] = [];
 
     @ViewChild('namespaceInput') namespaceInput: ElementRef;
-    private initNamespaceString = '';
+    public initNamespaceString = '';
+
     private innerNamespaceValue = '';
 
     private onTouchedCallback: () => void = noop;
