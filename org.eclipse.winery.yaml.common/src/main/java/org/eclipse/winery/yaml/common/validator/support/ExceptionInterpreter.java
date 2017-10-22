@@ -38,7 +38,7 @@ public class ExceptionInterpreter {
 
     public YAMLParserException interpret(ScannerException e) {
         String scalarScanning = "while scanning a plain scalar";
-        if (e.getContext().matches(scalarScanning)) {
+        if (e.getContext() != null && e.getContext().matches(scalarScanning)) {
             String unexpected = "found unexpected ':'";
             if (e.getProblem().matches(unexpected)) {
                 String msg = "Using \":\" in values in flow context is invalid \n" +

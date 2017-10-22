@@ -90,6 +90,12 @@ public class BuilderTests {
     }
 
     @Test
+    public void capabilityTypesWithValidSourceTypesTest() throws Exception {
+        TServiceTemplate serviceTemplate = capabilityTypesWithValidSourceTypes().getValue();
+        Assert.assertNotNull(serviceTemplate);
+    }
+
+    @Test
     public void interfaceTypesTest() throws Exception {
         TServiceTemplate serviceTemplate = interfaceTypes().getValue();
         Assert.assertNotNull(serviceTemplate);
@@ -167,6 +173,11 @@ public class BuilderTests {
 
     public Map.Entry<String, TServiceTemplate> capabilityTypes() throws Exception {
         String name = "3_9_3_12-capability_types-1_1";
+        return new LinkedHashMap.SimpleEntry<>(name, reader.parse(PATH, getName(name)));
+    }
+
+    public Map.Entry<String, TServiceTemplate> capabilityTypesWithValidSourceTypes() throws Exception {
+        String name = "3_9_3_12-capability_types-1_1-added-valid-source-types";
         return new LinkedHashMap.SimpleEntry<>(name, reader.parse(PATH, getName(name)));
     }
 
