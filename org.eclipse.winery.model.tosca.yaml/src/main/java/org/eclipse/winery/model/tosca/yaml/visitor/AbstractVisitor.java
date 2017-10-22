@@ -486,9 +486,11 @@ public abstract class AbstractVisitor<R extends AbstractResult<R>, P extends Abs
     private R visitRequirementDefinition(@NonNull List<TMapRequirementDefinition> requirements, P parameter) {
         R result = null;
         for (TMapRequirementDefinition map : requirements) {
-            for (Map.Entry<String, TRequirementDefinition> entry : map.entrySet()) {
-                if (entry.getValue() != null) {
-                    result = addR(result, entry.getValue().accept(this, parameter.copy().addContext("requirements", entry.getKey())));
+            if (map != null) {
+                for (Map.Entry<String, TRequirementDefinition> entry : map.entrySet()) {
+                    if (entry.getValue() != null) {
+                        result = addR(result, entry.getValue().accept(this, parameter.copy().addContext("requirements", entry.getKey())));
+                    }
                 }
             }
         }
