@@ -146,7 +146,7 @@ public class MainResource {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response onGet() {
-		return Response.ok("This is Winery's API. Please open the Angular UI. In development mode, it is available on <a href=\"http://localhost:4200\">http://localhost:4200</a>").build();
+		return Response.ok("This is Winery's API. Please open the Angular UI. In <strong>development mode</strong>, it is available on <a href=\"http://localhost:4200/\">http://localhost:4200/</a> (ng serve) or <a href=\"http://localhost:8080/\">http://localhost:8080/</a> (configured in IntelliJ). Configuration of IntelliJ is described <a href=\"http://eclipse.github.io/winery/dev/config/IntelliJ%20IDEA/\">here</a>.").build();
 	}
 
 	@POST
