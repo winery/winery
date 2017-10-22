@@ -63,7 +63,9 @@
                     <div class="wrapperTabButtom">
                         <!-- pattern parameter is required to enable form validation -->
                         <winery-namespace-selector
-                            [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace" pattern="^\S*$"></winery-namespace-selector>
+                            [(ngModel)]="resourceApiData.winerysPropertiesDefinition.namespace" pattern="^\S*$"
+                            [useStartNamespace]="false">
+                        </winery-namespace-selector>
                     </div>
                 </tab>
             </tabset>

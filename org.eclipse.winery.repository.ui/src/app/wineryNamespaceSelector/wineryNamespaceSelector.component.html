@@ -14,14 +14,14 @@
 <div *ngIf="!loading" class="form-group">
     <label for="namespace">Namespace</label>
     <input #namespaceInput
-        id="namespace"
+           id="namespace"
            class="form-control"
            name="namespace"
            autocomplete=off
            [typeahead]="allNamespaces"
            typeaheadOptionField="namespace"
            [typeaheadOptionsLimit]="typeAheadListLimit"
-           [(ngModel)]="selectedNamespace"
+           [(ngModel)]="namespaceValue"
            #namespace="ngModel"
            [required]="isRequired"
            pattern="^\S*$">
@@ -32,6 +32,30 @@
         </div>
         <div [hidden]="!namespace.errors.pattern">
             Namespace must not contain spaces!
+        </div>
+    </div>
+    <div *ngIf="useStartNamespace" style="margin-top: 20px">
+        <label for="initNamespace" class="control-label">Template: Start of namespace URI - used for automatic
+            namespace URI generation</label>
+        <div style="display: flex;">
+            <input #initNamespace
+                   type="text"
+                   class="form-control"
+                   id="initNamespace"
+                   name="initNamespace"
+                   #namespaceStart="ngModel"
+                   [(ngModel)]="initNamespaceString">
+            <button style="margin-left: 10px; width: 15%;" class="bnt btn-primary" (click)="applyNamespace()">Apply
+            </button>
+        </div>
+        <div *ngIf="namespaceStart.errors && (namespaceStart.dirty || namespaceStart.touched)"
+             class="alert alert-danger">
+            <div [hidden]="!namespaceStart.errors.required">
+                Namespace is required!
+            </div>
+            <div [hidden]="!namespaceStart.errors.pattern">
+                Namespace must not contain spaces!
+            </div>
         </div>
     </div>
 </div>
