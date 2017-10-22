@@ -30,7 +30,7 @@ import org.eclipse.jdt.annotation.NonNull;
     "validSourceTypes"
 })
 public class TCapabilityType extends TEntityType {
-    @XmlAttribute(name = "valid_source_type")
+    @XmlAttribute(name = "valid_source_types")
     private List<QName> validSourceTypes;
 
     public TCapabilityType() {
