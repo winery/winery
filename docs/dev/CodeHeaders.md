@@ -20,7 +20,7 @@ This file explains how to create and maintain copyright headers in source files.
  ********************************************************************************/
 ```
 
-See also https://www.eclipse.org/projects/handbook/#ip-copyright-headers
+See also <https://www.eclipse.org/projects/handbook/#ip-copyright-headers>.
 
 ## Templates
 * Company: John Smith (University of Stuttgart)

@@ -24,7 +24,7 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsW
 import io.swagger.annotations.ApiOperation;
 
 /**
- * Manages all imports of type XML Schema Definition <br />
+ * Manages all imports of type XML Schema Definition.
  * The actual implementation is done in the AbstractComponentsResource
  *
  * FIXME: This class should be generalized to handle ImportId

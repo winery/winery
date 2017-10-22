@@ -72,7 +72,7 @@ public class StringEncodedAndDecoded implements Comparable<StringEncodedAndDecod
 	}
 
 	/**
-	 * Compares with the given object <br />
+	 * Compares with the given object.
 	 * Equality checking is made based on the decoded String
 	 */
 	@Override

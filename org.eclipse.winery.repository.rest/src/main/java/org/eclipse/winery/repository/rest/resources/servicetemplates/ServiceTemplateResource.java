@@ -57,6 +57,8 @@ import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.splitting.SplittingException;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -124,13 +126,13 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		return RestUtils.persist(this);
 	}
 
-	// @formatter:off
 	@GET
-	@ApiOperation(value = "Returns the associated node type, which can be substituted by this service template.<br />" +
-	"@return a QName of the form {namespace}localName is returned.")
+	@ApiOperation(value = "Returns the associated node type, which can be substituted by this service template.")
+	@ApiResponses(value = {
+		@ApiResponse(code = 200, response = QName.class, message = "QName of the form {namespace}localName")	
+	})
 	@Path("substitutableNodeType")
 	@Produces(MediaType.TEXT_PLAIN)
-	// @formatter:on
 	public Response getSubstitutableNodeTypeAsResponse() {
 		QName qname = this.getServiceTemplate().getSubstitutableNodeType();
 		if (qname == null) {

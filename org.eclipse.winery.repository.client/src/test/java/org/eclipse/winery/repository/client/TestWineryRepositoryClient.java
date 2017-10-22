@@ -52,7 +52,9 @@ public class TestWineryRepositoryClient {
 	}
 
 	/**
-	 * The namespace to put new things in. <br /> TODO: Is deleted completely after testing
+	 * The namespace to put new things in. 
+	 * 
+	 * TODO: Is deleted completely after testing
 	 */
 	private static final String namespaceForNewArtifacts = "http://www.example.org/test/wineryclient/";
 

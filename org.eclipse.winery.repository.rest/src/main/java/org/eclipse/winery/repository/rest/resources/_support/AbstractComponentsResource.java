@@ -219,9 +219,11 @@ public abstract class AbstractComponentsResource<R extends AbstractComponentInst
 	 * "name" field is used there at the UI
 	 *
 	 * @param grouped if given, the JSON output is grouped by namespace
-	 * @return A list of all ids of all instances of this component type. <br /> Format: <code>[({"namespace":
-	 * "[namespace]", "id": "[id]"},)* ]</code>. <br /><br /> If grouped is set, the list will be grouped by namespace.
-	 * <br /> <code>[{"id": "[namsepace encoded]", "test": "[namespace decoded]", "children":[{"id": "[qName]", "text":
+	 * @return A list of all ids of all instances of this component type. Format: <code>[({"namespace":
+	 * "[namespace]", "id": "[id]"},)* ]</code>.
+	 * 
+	 * If grouped is set, the list will be grouped by namespace.
+	 * <code>[{"id": "[namsepace encoded]", "test": "[namespace decoded]", "children":[{"id": "[qName]", "text":
 	 * "[id]"}]}]</code>
 	 */
 	@GET

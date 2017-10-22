@@ -49,8 +49,9 @@ public class NodeTemplateResource extends TEntityTemplateResource<TNodeTemplate>
 		return new DeploymentArtifactsResource(this.o, this);
 	}
 
+	// The following methods are currently *not* used by the topology modeler. The modeler is using the repository client to interact with the repository
+
 	@GET
-	@ApiOperation(value = "* The following methods are currently *not* used by the topology modeler.<br />" + "The modeler is using the repository client to interact with the repository")
 	@Path("minInstances")
 	public String getMinInstances() {
 		return Integer.toString(this.o.getMinInstances());

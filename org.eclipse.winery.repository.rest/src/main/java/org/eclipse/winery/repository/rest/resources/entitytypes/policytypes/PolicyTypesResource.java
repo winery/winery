@@ -16,7 +16,7 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsW
 import io.swagger.annotations.Api;
 
 /**
- * Manages all policy types in all available namespaces <br />
+ * Manages all policy types in all available namespaces.
  * The actual implementation is done in the AbstractComponentsResource
  */
 @Api(tags = "Policy Types")

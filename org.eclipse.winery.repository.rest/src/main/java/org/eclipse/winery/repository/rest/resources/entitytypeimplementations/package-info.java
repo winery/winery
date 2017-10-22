@@ -11,7 +11,7 @@
  *******************************************************************************/
 /**
  * The sub packages of this package contains all resources, which are
- * implementations of a type. <br />
+ * implementations of a type.
  * The specification does NOT introduce tEntityTypeImplementation, but we
  * implement as if that had been happened.
  */

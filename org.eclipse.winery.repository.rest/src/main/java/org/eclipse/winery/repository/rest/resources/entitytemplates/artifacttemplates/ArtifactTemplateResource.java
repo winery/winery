@@ -150,17 +150,15 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	}
 
 	/**
-	 * Query parameter {@code type}:<br /> Returns the type of the artifact template
-	 *
-	 * Query parameter {@code referenceCount}:<br /> Determines the number of elements known by the repository which
-	 * point to this resource. This method probably can be moved up the type hierarchy. Currently, it is only required
-	 * here by the topology modeler.
+	 * TODO: This method should be moved to the probably can be moved up the type hierarchy and somehow be meregd with the functionality to get referenced templates. Currently, it is only required here by the topology modeler.
 	 *
 	 * @return the type of the artifact template OR the number of references pointing to this resource
 	 */
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response getReferenceCount(@QueryParam("referenceCount") String referenceCount, @QueryParam("type") String type) {
+	public Response getReferenceCount(
+		@QueryParam("referenceCount") @ApiParam("Determines the number of elements known by the repository which point to this resource.") String referenceCount,
+		@QueryParam("type") @ApiParam("Type of the artifact template") String type) {
 		if (referenceCount != null) {
 			String res = Integer.toString(RepositoryFactory.getRepository().getReferenceCount((ArtifactTemplateId) this.id));
 			return Response.ok().entity(res).build();
