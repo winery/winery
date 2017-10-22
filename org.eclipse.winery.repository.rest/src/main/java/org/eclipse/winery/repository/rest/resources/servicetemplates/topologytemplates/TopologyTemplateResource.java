@@ -222,9 +222,9 @@ public class TopologyTemplateResource {
 
 	// @formatter:off
 	@GET
-	@ApiOperation(value = "Returns a JSON representation of the topology template. <br />" +
-			"X and Y coordinates are embedded as attributes. QName string with Namespace: <br />" +
-			"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE} <br />" +
+	@ApiOperation(value = "Returns a JSON representation of the topology template." +
+			"X and Y coordinates are embedded as attributes. QName string with Namespace: " +
+			"{@link org.eclipse.winery.repository.common.constants.Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE}" +
 			"@return The JSON representation of the topology template <em>without</em> associated artifacts and without the parent service template")
 	@Produces(MediaType.APPLICATION_JSON)
 	// @formatter:on

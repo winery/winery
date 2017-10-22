@@ -35,7 +35,7 @@ import org.eclipse.winery.repository.rest.resources.apiData.InstanceStateApiData
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Resource for instance states <br />
+ * Resource for instance states.
  * Used by relationship types and node types
  */
 public class InstanceStatesResource {

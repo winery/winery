@@ -695,7 +695,7 @@ public class RestUtils {
 	 *
 	 * additionally "Vary: Accept" header is added (enables caching of the response)
 	 *
-	 * method header for calling method public <br /> <code>Response getXY(@HeaderParam("If-Modified-Since") String
+	 * method header for calling method public <code>Response getXY(@HeaderParam("If-Modified-Since") String
 	 * modified) {...}</code>
 	 *
 	 * @param ref      references the file to be send

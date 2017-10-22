@@ -23,7 +23,9 @@ import org.eclipse.winery.bpmn2bpel.planwriter.PlanWriterException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 
 public class BPMN4Tosca2BpelTest {
@@ -55,6 +57,43 @@ public class BPMN4Tosca2BpelTest {
 		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.exclusivegateway.json").toUri();
 		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.exclusivegateway.zip").toUri();
 		BPMN4Tosca2BpelTest.class.getResource(".");
+		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+		transformer.transform(srcUri, targetUri);
+	}
+
+
+	@Test
+	public void testNoEndpointGateway()
+			throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.noEndpoint.json").toUri();
+		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.noEndpoint.zip").toUri();
+		BPMN4Tosca2BpelTest.class.getResource(".");
+		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+		transformer.transform(srcUri, targetUri);
+	}
+
+
+	@Test
+	public void testUndefinedEndpointGateway()
+			throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.undefinedEndpoint.json").toUri();
+		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.undefinedEndpoint.zip").toUri();
+		BPMN4Tosca2BpelTest.class.getResource(".");
+		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
+		transformer.transform(srcUri, targetUri);
+	}
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
+	@Test
+	public void testNonExistingEndpointGateway()
+			throws ParseException, PlanWriterException, MalformedURLException, URISyntaxException {
+		URI srcUri = Paths.get(RESOURCES_DIR, "bpmn4tosca.nonExistingEndpoint.json").toUri();
+		URI targetUri = Paths.get(RESOURCES_DIR, "managementplan.nonExistingEndpoint.zip").toUri();
+
+		BPMN4Tosca2BpelTest.class.getResource(".");
+		thrown.expect(ParseException.class);
 		Bpmn4Tosca2Bpel transformer = new Bpmn4Tosca2Bpel();
 		transformer.transform(srcUri, targetUri);
 	}

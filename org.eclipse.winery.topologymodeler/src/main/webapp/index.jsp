@@ -1,21 +1,17 @@
 <%--
-/*******************************************************************************
- * Copyright (c) 2012-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *    Uwe Breitenbücher - initial API and implementation and/or initial documentation
- *    Oliver Kopp - integration with the repository, adapted to TOSCA v1.0
- *    Yves Schubert - switch to bootstrap 3
- *    Niko Stadelmaier - removal of select2 library
- *    Philipp Meyer - removal of select2 library
- *    Lukas Balzer, Nicole Keppler - switch to bootstrap-touchspin
- *    Karoline Saatkamp - add matching and maintenance
- *******************************************************************************/
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
 --%>
 
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>

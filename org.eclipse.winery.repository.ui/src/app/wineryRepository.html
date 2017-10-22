@@ -11,15 +11,13 @@
 
 <div id="mainContainer" class="notoverflown" (click)="onClick()">
     <winery-header></winery-header>
-    <div *ngIf="isBackendAvailable; else displayErrorMessage" id="mainContent">
-        <router-outlet></router-outlet>
+    <div *ngIf="backendState === backendAvailabilityStates.Available" id="mainContent">
+        <router-outlet *ngIf="!loading"></router-outlet>
     </div>
-    <ng-template #displayErrorMessage>
         <br>
-        <div id="error-message">
-            <h3>Backend is not available</h3>
+        <div *ngIf="backendState === backendAvailabilityStates.Unavailable" id="error-message">
+            <h2>Backend is not available!</h2>
             <button class="btn btn-primary" (click)="refresh();">Retry</button>
         </div>
-    </ng-template>
 </div>
-<winery-gitlog *ngIf="isBackendAvailable" #gitLog></winery-gitlog>
+<winery-gitlog *ngIf="backendState" #gitLog></winery-gitlog>

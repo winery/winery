@@ -19,13 +19,13 @@ import java.util.Queue;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 
 /**
- * Holds the state of ids regarding the export <br />
+ * Holds the state of ids regarding the export.
  *
  * Required as we do not know at the entry point (usually a service template),
- * which other components are linked <br />
+ * which other components are linked.
  *
  * Users can call flagAsExportRequired more than once for the same id. If an id
- * is already exported, it is not flagged as exported again
+ * is already exported, it is not flagged as exported again.
  */
 public class ExportedState {
 

@@ -1,16 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2013 Rene Trefft.
- * Copyright (c) 2017 University of Stuttgart
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *    Rene Trefft - initial API and implementation and/or initial documentation
- *    Oliver Kopp - unified LOGGER name
- *******************************************************************************/
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
 package org.eclipse.winery.model.csar.toscametafile;
 
 import java.io.FileNotFoundException;
@@ -28,13 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Parses and validates a TOSCA meta file.<br />
- * <br />
- * Copyright 2013 IAAS University of Stuttgart <br />
- * <br />
- *
- * @author Rene Trefft - rene.trefft@developers.opentosca.org
- *
+ * Parses and validates a TOSCA meta file.
  */
 public class TOSCAMetaFileParser {
 
@@ -42,8 +36,7 @@ public class TOSCAMetaFileParser {
 
 
 	/**
-	 * Parses and validates the <code>toscaMetaFile</code>.<br />
-	 * <br />
+	 * Parses and validates the <code>toscaMetaFile</code>.
 	 *
 	 * @param toscaMetaFile to process
 	 * @return <code>TOSCAMetaFile</code> that gives access to the content of
@@ -51,7 +44,6 @@ public class TOSCAMetaFileParser {
 	 *         invalid <code>null</code>.
 	 */
 	public TOSCAMetaFile parse(Path toscaMetaFile) {
-
 		// counts the errors during parsing
 		int numErrors = 0;
 
@@ -61,7 +53,6 @@ public class TOSCAMetaFileParser {
 		TOSCAMetaFile toscaMetaFileContent = null;
 
 		try {
-
 			parser = new RecoveringManifestParser();
 			reader = new FileReader(toscaMetaFile.toFile());
 			TOSCAMetaFileParser.LOGGER.debug("Parsing TOSCA meta file \"{}\"...", toscaMetaFile.getFileName().toString());
@@ -82,7 +73,6 @@ public class TOSCAMetaFileParser {
 			} else {
 				TOSCAMetaFileParser.LOGGER.error("Parsing TOSCA meta file \"{}\" failed - {} error(s) occured. TOSCA meta file is invalid.", toscaMetaFile.getFileName().toString(), numErrors);
 			}
-
 		} catch (FileNotFoundException exc) {
 			TOSCAMetaFileParser.LOGGER.error("\"{}\" doesn't exist or is not a file.", toscaMetaFile, exc);
 		} catch (IOException exc) {
@@ -98,12 +88,11 @@ public class TOSCAMetaFileParser {
 		}
 
 		return toscaMetaFileContent;
-
 	}
 
 	/**
-	 * Validates block 0 of the TOSCA meta file.<br />
-	 * <br />
+	 * Validates block 0 of the TOSCA meta file.
+	 * 
 	 * Required attributes in block 0:
 	 * <ul>
 	 * <li><code>TOSCA-Meta-Version</code> (value must be <code>1.0</code>)</li>
@@ -117,14 +106,12 @@ public class TOSCAMetaFileParser {
 	 * <li><code>Topology</code></li>
 	 * </ul>
 	 *
-	 * Further, arbitrary attributes are also allowed.<br />
-	 * <br />
+	 * Further, arbitrary attributes are also allowed.
 	 *
 	 * @param mf to validate
 	 * @return Number of errors occurred during validation.
 	 */
 	private int validateBlock0(ManifestContents mf) {
-
 		int numErrors = 0;
 
 		String metaFileVersion = null;
@@ -188,26 +175,23 @@ public class TOSCAMetaFileParser {
 		}
 
 		return numErrors;
-
 	}
 
 	/**
-	 * Validates the file blocks (block 1 to last block) of the TOSCA meta file.<br />
-	 * <br />
+	 * Validates the file blocks (block 1 to last block) of the TOSCA meta file.
+	 *
 	 * Each file block has the following required attributes:
 	 * <ul>
 	 * <li><code>Name</code></li>
 	 * <li><code>Content-Type</code> (will be checked for correct syntax)</li>
 	 * </ul>
 	 *
-	 * Further, arbitrary attributes are also allowed in a file block.<br />
-	 * <br />
+	 * Further, arbitrary attributes are also allowed in a file block.
 	 *
 	 * @param mf to validate.
 	 * @return Number of errors occurred during validation.
 	 */
 	private int validateFileBlocks(ManifestContents mf) {
-
 		int blockNr = 0;
 		int numErrors = 0;
 

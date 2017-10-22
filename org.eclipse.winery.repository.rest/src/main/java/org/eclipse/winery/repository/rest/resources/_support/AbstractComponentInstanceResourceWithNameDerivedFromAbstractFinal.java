@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Models a component instance with name, derived from, abstract, and final <br /> Tags are provided by
+ * Models a component instance with name, derived from, abstract, and final Tags are provided by
  * AbstractComponentInstanceResource <p> This class mirrors AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinalConfigurationBacked.
  * We did not include interfaces as the getters are currently only called at the jsp.
  */

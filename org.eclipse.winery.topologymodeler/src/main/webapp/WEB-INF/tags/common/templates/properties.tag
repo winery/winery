@@ -1,16 +1,17 @@
 <%--
-/*******************************************************************************
- * Copyright (c) 2012-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *    Oliver Kopp - initial API and implementation and/or initial documentation
- *    Karoline Saatkamp - maintenance
- *******************************************************************************/
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
 --%>
 <%@tag description="Rendering for properties. A separate CSS has to be provided to style the content. Thus, this tag is reusable both in the topology modeler and in the management UI. Requires global javaScript function editPropertiesXML(visualElementId)" pageEncoding="UTF-8"%>
 <%@taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core"%>
@@ -23,6 +24,7 @@
 <%@tag import="org.eclipse.winery.model.tosca.utils.ModelUtilities"%>
 <%@tag import="org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV"%>
 <%@tag import="org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList"%>
+<%@ tag import="java.util.Map" %>
 
 <%
 if ((propertiesDefinition != null) || (wpd != null)) {
@@ -55,7 +57,7 @@ if ((propertiesDefinition != null) || (wpd != null)) {
 			<%
 			} else {
 				// Winery special mode
-				java.util.Properties props;
+				Map<String, String> props;
 				if (template == null) {
 					// setting null only because of dump compiler.
 					// We never read props if in paletteMode
@@ -79,7 +81,7 @@ if ((propertiesDefinition != null) || (wpd != null)) {
 							value = "";
 						} else {
 							// assign value, but change "null" to "" if no property is defined
-							if ((value = props.getProperty(key)) == null) {
+							if ((value = props.get(key)) == null) {
 								value = "";
 							}
 						}

@@ -40,6 +40,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 - Added initial CLI. Current funtionality: Consistency check of the repository.
 - Rewrote the Backend UI using Angular
 - org.eclipse.winery.model.tosca was extended with builders and some helper classes
+- Add template start of namespace for the creation of tosca components
 - Fixed wrong output of "CSAR Export mode. Putting XSD into CSAR" if in CSAR export mode
 - New project `org.eclipse.winery.repository.rest` for separating REST resources from the backend
 - Add support of [Splitting](http://eclipse.github.io/winery/user/Splitting)

@@ -3,7 +3,8 @@
 <!-- toc -->
 
 - [GitHub - Start](#github---start)
-  * [First steps](#first-steps)
+  * [Steps to get write access to the repositories](#steps-to-get-write-access-to-the-repositories)
+  * [Steps to initialize the repository](#steps-to-initialize-the-repository)
   * [Steps for working on a topic](#steps-for-working-on-a-topic)
 - [GitHub - Preparation First Pull Request to offical Eclipse Winery repository](#github---preparation-first-pull-request-to-offical-eclipse-winery-repository)
 - [GitHub - Prepare Pull Request](#github---prepare-pull-request)
@@ -32,7 +33,15 @@ Email your supervisor your GitHub username.
   In case you want to create a longer-lasting one, please use the GitHub username.
   Example: `flastname@gmail.com`.
 
-### First steps
+### Steps to get write access to the repositories
+
+1. Email your supervisor your GitHub username
+2. Your supervisor adds you to the team "developers" at <github.com/opentosca> and <github.com/winery>
+3. You will receive two emails from GitHub asking for your confirmation.
+4. Open the link <https://github.com/orgs/winery/invitation>.
+5. Open the link <https://github.com/orgs/OpenTOSCA/invitation>.
+
+### Steps to initialize the repository
 
   1. Clone <https://github.com/opentosca/winery> (automatically it becomes the `origin`).
      - We recommend that git repositories reside in `c:\git-repositories`.

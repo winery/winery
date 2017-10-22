@@ -29,8 +29,8 @@
             </p>
         </winery-modal-body>
         <winery-modal-footer (onOk)="deleteNamespace();"
-                            [closeButtonLabel]="'No'"
-                            [okButtonLabel]="'Yes'">
+                             [closeButtonLabel]="'No'"
+                             [okButtonLabel]="'Yes'">
         </winery-modal-footer>
     </winery-modal>
 
@@ -70,15 +70,17 @@
                     [isRequired]="true"
                     [typeAheadListLimit]="20"
                     required
-                    pattern="^\S*$">
+                    pattern="^\S*$"
+                    [useStartNamespace]="false">
                 </winery-namespace-selector>
-
             </form>
+
         </winery-modal-body>
-        <winery-modal-footer (onOk)="addNamespace(namespace.selectedNamespace, prefixName.value); addNamespaceForm.reset();"
-                            [closeButtonLabel]="'Cancel'"
-                            [okButtonLabel]="'Add'"
-                            [disableOkButton]="!addNamespaceForm?.form.valid">
+        <winery-modal-footer
+            (onOk)="addNamespace(); addNamespaceForm.reset();"
+            [closeButtonLabel]="'Cancel'"
+            [okButtonLabel]="'Add'"
+            [disableOkButton]="!addNamespaceForm?.form.valid">
         </winery-modal-footer>
     </winery-modal>
 </div>

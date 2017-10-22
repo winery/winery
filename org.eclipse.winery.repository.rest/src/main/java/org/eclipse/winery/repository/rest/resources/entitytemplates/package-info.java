@@ -14,8 +14,7 @@
  * from tEntityTemplate
  *
  * EntityTemplates get their namespaces from the surrounding
- * Definitions-element. <br />
- * Nevertheless, they are stored using the same filesystem structure as
+ * Definitions-element. Nevertheless, they are stored using the same filesystem structure as
  * EntityTypes
  *
  * {@link org.eclipse.winery.repository.resources.servicetemplates.topologytemplates.RelationshipTemplateResource}

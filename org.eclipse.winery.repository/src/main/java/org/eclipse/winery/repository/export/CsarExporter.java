@@ -77,8 +77,8 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 /**
- * This class exports a CSAR crawling from the the given GenericId<br/> Currently, only ServiceTemplates are
- * supported<br /> commons-compress is used as an output stream should be provided. An alternative implementation is to
+ * This class exports a CSAR crawling from the the given GenericId. Currently, only ServiceTemplates are
+ * supported. commons-compress is used as an output stream should be provided. An alternative implementation is to
  * use Java7's Zip File System Provider
  */
 public class CsarExporter {

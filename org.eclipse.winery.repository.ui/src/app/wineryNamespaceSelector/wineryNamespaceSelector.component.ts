@@ -6,11 +6,13 @@
  * and are available at http://www.eclipse.org/legal/epl-v20.html
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
-import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
 import { WineryNamespaceSelectorService } from './wineryNamespaceSelector.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NamespaceWithPrefix } from '../wineryInterfaces/namespaceWithPrefix';
+import { StartNamespaces, ToscaTypes } from '../wineryInterfaces/enums';
+import { isNullOrUndefined } from 'util';
 
 const noop = () => {
 };
@@ -69,23 +71,25 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
 
     @Input() isRequired = false;
     @Input() typeAheadListLimit = 50;
-    @Output() onChange = new EventEmitter<any>();
-    isValid: boolean;
-
-    @ViewChild('namespace') input: any;
-    @ViewChild('namespaceInput') namespaceInput: ElementRef;
+    @Input() toscaType: ToscaTypes;
+    @Input() useStartNamespace = true;
 
     loading = true;
     allNamespaces: NamespaceWithPrefix[] = [];
 
-    private innerValue = '';
+    @ViewChild('namespaceInput') namespaceInput: ElementRef;
+    public initNamespaceString = '';
+
+    private innerNamespaceValue = '';
+
     private onTouchedCallback: () => void = noop;
-    private onChangeCallback: (_: any) => void = noop;
+    private propagateChange: (_: any) => void = noop;
 
     constructor(private service: WineryNamespaceSelectorService, private notify: WineryNotificationService) {
     }
 
     ngOnInit() {
+        this.getDefaultNamespace();
         this.service.getNamespaces()
             .subscribe(
                 data => {
@@ -96,31 +100,59 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
             );
     }
 
-    get selectedNamespace(): string {
-        return this.innerValue;
+    get namespaceValue(): string {
+        return this.innerNamespaceValue;
     }
 
-    set selectedNamespace(v: string) {
-        if (v !== this.innerValue) {
-            this.innerValue = v;
-            this.onChangeCallback(v);
-            this.isValid = this.input.valid;
-            this.onChange.emit(this.isValid);
+    set namespaceValue(value: string) {
+        this.innerNamespaceValue = value;
+        this.propagateChange(this.innerNamespaceValue);
+        if (this.namespaceInput) {
             this.namespaceInput.nativeElement.focus();
         }
     }
 
+    applyNamespace() {
+        localStorage.setItem(StartNamespaces.LocalStorageEntry.toString(), this.initNamespaceString);
+        this.namespaceValue = this.initNamespaceString !== '' ? this.applyToscaTypeToNamespace(this.initNamespaceString) : '';
+    }
+
+    // region ########## ControlValueAccessor Interface ##########
     writeValue(value: string) {
-        if (value !== this.innerValue) {
-            this.innerValue = value;
+        if (value !== this.innerNamespaceValue) {
+            if ((isNullOrUndefined(value) || value.length === 0) && this.useStartNamespace) {
+                // In the case that the namespace is set from outside this component via ngModel, don't overwrite the value set by the parent component.
+                // Otherwise, use the default namespace.
+                if (this.innerNamespaceValue.length === 0) {
+                    this.getDefaultNamespace();
+                    this.namespaceValue = this.applyToscaTypeToNamespace(this.initNamespaceString);
+                } else {
+                    this.namespaceValue = this.innerNamespaceValue;
+                }
+            } else {
+                this.namespaceValue = value;
+            }
         }
     }
 
     registerOnChange(fn: any) {
-        this.onChangeCallback = fn;
+        this.propagateChange = fn;
     }
 
     registerOnTouched(fn: any) {
         this.onTouchedCallback = fn;
+    }
+
+    // endregion
+
+    private applyToscaTypeToNamespace(namespaceStart: string) {
+        return namespaceStart.endsWith('/') ? namespaceStart + this.toscaType :
+            namespaceStart + '/' + this.toscaType;
+    }
+
+    private getDefaultNamespace() {
+        const storageValue = localStorage.getItem(StartNamespaces.LocalStorageEntry.toString());
+        this.initNamespaceString = isNullOrUndefined(storageValue) || storageValue.length === 0 ?
+            StartNamespaces.DefaultStartNamespace.toString() : storageValue;
     }
 }

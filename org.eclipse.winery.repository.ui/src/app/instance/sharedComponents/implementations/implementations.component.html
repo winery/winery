@@ -58,7 +58,8 @@
                     pattern="^\S*$"
                     [isRequired]="true"
                     [typeAheadListLimit]="20"
-                    [(ngModel)]="selectedNamespace">
+                    [(ngModel)]="selectedNamespace"
+                    [toscaType]="implementationOrTemplate">
                 </winery-namespace-selector>
             </div>
         </form>
@@ -68,7 +69,6 @@
                          [okButtonLabel]="'Add'"
                          [disableOkButton]="!addImplForm?.form.valid">
     </winery-modal-footer>
-
 </winery-modal>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">

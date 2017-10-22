@@ -1,17 +1,26 @@
-(This is based on the [Jetty Contributing Patches] documentation)
-
-# Contributing Patches
+# Contributing to Eclipse Winery
 
 <!-- toc -->
 
-- [Sign a Eclipse Contributor Agreement (ECA)](#sign-a-eclipse-contributor-agreement-eca)
-- [Configuring Git](#configuring-git)
-- [Configuring GitHub](#configuring-github)
-- [Making the Commit](#making-the-commit)
-- [Contributing via GitHub PullRequests](#contributing-via-github-pullrequests)
-- [Background Information](#background-information)
+- [Contributing Issues](#contributing-issues)
+- [Contributing Patches](#contributing-patches)
+  * [Sign a Eclipse Contributor Agreement (ECA)](#sign-a-eclipse-contributor-agreement-eca)
+    + [Signing an ECA](#signing-an-eca)
+  * [Configuring Git](#configuring-git)
+  * [Configuring GitHub](#configuring-github)
+  * [Making the Commit](#making-the-commit)
+  * [Contributing via GitHub PullRequests](#contributing-via-github-pullrequests)
+  * [Background Information](#background-information)
 
 <!-- tocstop -->
+
+## Contributing Issues
+
+Please check <https://github.com/eclipse/winery/issues> and <https://github.com/opentosca/winery/issues/> whether the issue is already open.
+If not, just open an issue at <https://github.com/eclipse/winery/issues>.
+In case you are affiliated with the OpenTOSCA ecosystem (e.g., a student of the Universtiy of Stuttgart), we ask you to open an issue at <https://github.com/opentosca/winery/issues/>.
+
+## Contributing Patches
 
 We love seeing people contribute patches to the Winery project and the process is relatively simple.
 In general, we follow [GitHub's fork & pull request model](https://help.github.com/articles/fork-a-repo/).
@@ -32,7 +41,7 @@ The following is the general process by which we operate:
 Not everything is specifically relevant since we are at GitHub but the crux of things are detailed there.
 The CLA is critically important to the process.
 
-## Sign a Eclipse Contributor Agreement (ECA)
+### Sign a Eclipse Contributor Agreement (ECA)
 
 The Eclipse Foundation has a strong Intellectual Property policy which tracks contributions in detail to ensure that:
 
@@ -45,24 +54,24 @@ For more explanation see the [Eclipse ECA FAQ].
 You can familiarize yourself with the Eclipse wiki page on [contributing via Git].
 In order to have a pull request accepted by any Eclipse project you must complete this agreement.
 
-### Signing an ECA
+#### Signing an ECA
 
 Log into the [Eclipse projects forge] and complete the form.
 Be sure to use the same email address when you create any Git commit records.
 You will need to create an account with the Eclipse Foundation if you have not already done so); click on "Eclipse Contributor Agreement".
 
-## Configuring Git
+### Configuring Git
 
 GitHub has copious amounts of quality documentation on how to interact with the system and you will minimally need to configure the `user.email` property.
 Check out the [guide on GitHub](https://help.github.com/articles/setting-your-email-in-git) for more information.
 
 Please follow <http://eclipse.github.io/winery/> to setup a git hook, which ensures that each commit contains a `Signed-off-by:` line.
 
-## Configuring GitHub
+### Configuring GitHub
 
 Please ensure that the email address you use at Eclipse is the same as the "Public email" configured at https://github.com/settings/profile.
 
-## Making the Commit
+### Making the Commit
 
 When making the commit for the pull request it is vital that you "sign-off" on the commit using `git commit -s` option.
 Without this sign-off, your patch cannot be applied to the Winery repository because it will be rejected.
@@ -75,15 +84,19 @@ Using the commit signing mechanism indicates that your commit is under the auspi
 In the case of multiple authors, plese add `Also-by: Some Bodyelse <somebodyelse@nowhere.com>` for each additional author.
 For more information, see <https://www.eclipse.org/projects/handbook/#resources-commit>.
 
-## Contributing via GitHub PullRequests
+### Contributing via GitHub PullRequests
 
 Pull requests are very much a GitHub process so best [explained by GitHub](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
 See also <https://help.github.com/articles/configuring-a-remote-for-a-fork/>.
 
-## Background Information
+A step-by-step guide is available at <http://eclipse.github.io/winery/dev/ToolChain>.
+
+### Background Information
 
 See the [Eclipse Legal Process Poster](http://eclipse.org/legal/EclipseLegalProcessPoster.pdf) and
 [Project Code Contributions](https://www.eclipse.org/projects/handbook/#ip-project-code) in the [Eclipse Project Handbook](https://www.eclipse.org/projects/handbook/).
+
+This is howto is based on the [Jetty Contributing Patches] documentation.
 
  [Eclipse ECA FAQ]: http://www.eclipse.org/legal/ecafaq.php
  [Contributor Agreement]: http://www.eclipse.org/legal/ECA.php
