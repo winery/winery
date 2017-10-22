@@ -23,6 +23,7 @@ import { Response } from '@angular/http';
 import { ToscaTypes } from '../wineryInterfaces/enums';
 import { Utils } from '../wineryUtils/utils';
 import { WineryUploaderComponent } from '../wineryUploader/wineryUploader.component';
+import { WineryNamespaceSelectorComponent } from '../wineryNamespaceSelector/wineryNamespaceSelector.component';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -72,6 +73,8 @@ export class SectionComponent implements OnInit, OnDestroy {
     @ViewChild('addYamlModal') addYamlModal: ModalDirective;
     @ViewChild('fileUploader') fileUploader: WineryUploaderComponent;
 
+    @ViewChild('namespaceInput') namespaceInput: WineryNamespaceSelectorComponent;
+
     constructor(private route: ActivatedRoute,
                 private change: ChangeDetectorRef,
                 private router: Router,
@@ -118,8 +121,10 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.change.detectChanges();
         this.addComponentForm.reset();
 
-        this.newComponentNamespace = (this.showNamespace !== 'all' && this.showNamespace !== 'group') ? this.showNamespace : '';
         this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
+        this.newComponentNamespace = (this.showNamespace !== 'all' && this.showNamespace !== 'group') ? this.showNamespace : '';
+        this.namespaceInput.writeValue(this.newComponentNamespace);
+
         this.addModal.show();
     }
 
@@ -163,7 +168,7 @@ export class SectionComponent implements OnInit, OnDestroy {
 
         this.fileUploader.getUploader().setOptions({
             url: this.fileUploadUrl,
-            additionalParameter: {'overwrite': this.overwriteValue}
+            additionalParameter: { 'overwrite': this.overwriteValue }
         });
     }
 
@@ -235,8 +240,4 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.notify.error(error.toString());
     }
 
-    namespaceChanged(event: any) {
-        this.namespaceValid = event;
-        this.formValid = this.namespaceValid && this.addComponentForm.valid;
-    }
 }

@@ -27,6 +27,7 @@
             name="artifactNamespace"
             [(ngModel)]="generateData.namespace"
             (onChange)="checkImplementationExists();"
+            [useStartNamespace]="false"
             pattern="^\S*$">
         </winery-namespace-selector>
     </div>

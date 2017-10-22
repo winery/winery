@@ -9,7 +9,7 @@
 
 export enum YesNoEnum {
     YES = 'YES',
-    NO = 'NO'
+    NO  = 'NO'
 }
 
 /**
@@ -20,19 +20,19 @@ export enum YesNoEnum {
  * Default is assumed ToscaTypes.Admin.
  */
 export enum ToscaTypes {
-    ServiceTemplate = 'servicetemplates',
-    NodeType = 'nodetypes',
-    RelationshipType = 'relationshiptypes',
-    ArtifactType = 'artifacttypes',
-    ArtifactTemplate = 'artifacttemplates',
-    RequirementType = 'requirementtypes',
-    CapabilityType = 'capabilitytypes',
-    NodeTypeImplementation = 'nodetypeimplementations',
+    ServiceTemplate                = 'servicetemplates',
+    NodeType                       = 'nodetypes',
+    RelationshipType               = 'relationshiptypes',
+    ArtifactType                   = 'artifacttypes',
+    ArtifactTemplate               = 'artifacttemplates',
+    RequirementType                = 'requirementtypes',
+    CapabilityType                 = 'capabilitytypes',
+    NodeTypeImplementation         = 'nodetypeimplementations',
     RelationshipTypeImplementation = 'relationshiptypeimplementations',
-    PolicyType = 'policytypes',
-    PolicyTemplate = 'policytemplates',
-    Imports = 'imports',
-    Admin = 'admin'
+    PolicyType                     = 'policytypes',
+    PolicyTemplate                 = 'policytemplates',
+    Imports                        = 'imports',
+    Admin                          = 'admin'
 }
 
 /**
@@ -40,17 +40,22 @@ export enum ToscaTypes {
  * The types of these templates can be retrieved by using the {@link Utils.getTypeOfServiceTemplateTemplate} method.
  */
 export enum ServiceTemplateTemplateTypes {
-    CapabilityTemplate = 'capabilityTemplates',
-    NodeTemplate = 'nodeTemplates',
+    CapabilityTemplate   = 'capabilityTemplates',
+    NodeTemplate         = 'nodeTemplates',
     RelationshipTemplate = 'relationshipTemplates',
-    RequirementTemplate = 'requirementTemplates'
+    RequirementTemplate  = 'requirementTemplates'
+}
+
+export enum StartNamespaces {
+    LocalStorageEntry     = 'defaultNamespace',
+    DefaultStartNamespace = 'http://www.example.org/tosca'
 }
 
 /**
  * BackendAvailabilityStates defines the states for the availability of the backend.
  */
 export enum BackendAvailabilityStates {
-    Available = 1,
+    Available   = 1,
     Unavailable = 0,
-    Undefined = -1
+    Undefined   = -1
 }
