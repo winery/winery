@@ -1,4 +1,4 @@
-# Use builder pattern for model classes
+# Use Builder Pattern for Model Classes
 
 Model classes should be instantiable simple without using large constructors.
 
