@@ -521,13 +521,11 @@ Project -> right click -> Properties -> Project Facets -> Dynamic Web Module -> 
 When doing a copy-libs-to-tomcat hack, possibly "W3C_XML_SCHEMA_NS_URI cannot be resolved or is not a field" appears.
 Remove `stax-api-1.0.1.jar` out of `tomcat8/lib`: Java's `rt.jar` should be used instead for `javax.xml.XMLConstants`.
 
-Q: At `org.eclipse.winery.backend.ui`: Some strange errors
+Q: At `org.eclipse.winery.backend.ui`: Some strange errors<br/>
 A: Execute in THAT directory
 - `git clean -xdf` to remove all ignored and additional elements
-- <s>`npm i -g npm` to update npm to the latest version</s>
-- set npm version to 5.3 `npm install -g npm@5.3` to work around <https://github.com/npm/npm/issues/18380>
-- `npm install` to install everything
-- <s>`npm i webpack --save-dev`</s>
+- Rebuild whole Winery using `mvn package -DskipTests` in the root of the checkout
+
 
 ### "name" vs. "id" at entities
 
