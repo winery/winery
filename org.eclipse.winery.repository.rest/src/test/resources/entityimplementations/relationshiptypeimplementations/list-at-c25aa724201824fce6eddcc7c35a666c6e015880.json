@@ -1,0 +1,8 @@
+[
+  {
+	"namespace": "http://winery.opentosca.org/test/relationshiptypeimplementations/fruits",
+	"id": "kiwi_implementation",
+	"name": "kiwi_implementation",
+	"qName": "{http://winery.opentosca.org/test/relationshiptypeimplementations/fruits}kiwi_implementation"
+  }
+]

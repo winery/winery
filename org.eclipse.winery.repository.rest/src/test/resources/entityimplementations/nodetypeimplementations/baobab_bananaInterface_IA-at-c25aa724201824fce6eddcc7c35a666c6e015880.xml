@@ -1,0 +1,9 @@
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns1="http://www.eclipse.org/winery/model/selfservice" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_wfni-baobab_impl" targetNamespace="http://winery.opentosca.org/test/nodetypeimplementations/fruits">
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttemplates%252Ffruits/baobab_bananaInterface_IA/?definitions" namespace="http://winery.opentosca.org/test/artifacttemplates/fruits"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/artifacttypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fartifacttypes%252Ffruits/WAR/?definitions" namespace="http://winery.opentosca.org/test/artifacttypes/fruits"/>
+	<NodeTypeImplementation xmlns:ns6="http://winery.opentosca.org/test/nodetypes/fruits" name="baobab_impl" nodeType="ns6:baobab" targetNamespace="http://winery.opentosca.org/test/nodetypeimplementations/fruits">
+		<ImplementationArtifacts>
+			<ImplementationArtifact xmlns:fruits="http://winery.opentosca.org/test/artifacttypes/fruits" xmlns:fruits1="http://winery.opentosca.org/test/artifacttemplates/fruits" artifactRef="fruits1:baobab_bananaInterface_IA" artifactType="fruits:WAR" interfaceName="bananaInterface" name="baobab_bananaInterface_IA"/>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+</Definitions>
