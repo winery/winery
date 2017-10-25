@@ -16,4 +16,5 @@ This lists the architectural decisions for Eclipse Winery
 - [0011 - Use Builder Pattern for Model Classes](0011-use-builder-pattern-for-model-classes.md)
 - [0012 - Provide Support for Custom Key-Value Properties](0012-provide-support-for-custom-kv-properties.md)
 - [0013 - Routes in the Repository Angular App](0013-routes-in-Angular.md)
+- [0015 - Copying files from the source to the files folder](0015-copy-source-to-files.md)
 - [template.md](template) - the template
