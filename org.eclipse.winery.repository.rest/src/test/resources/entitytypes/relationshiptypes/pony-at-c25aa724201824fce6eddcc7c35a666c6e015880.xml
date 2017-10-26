@@ -1,0 +1,30 @@
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns1="http://www.eclipse.org/winery/model/selfservice" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_ns2-eat" targetNamespace="http://winery.opentosca.org/test/ponyuniverse">
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/requirementtypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/ReqFood/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/capabilitytypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/CapFood/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/connectsTo/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<RelationshipType abstract="no" final="no" name="eat" targetNamespace="http://winery.opentosca.org/test/ponyuniverse" winery:color="#018758">
+		<DerivedFrom xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" typeRef="ns0:connectsTo"/>
+		<SourceInterfaces>
+			<Interface name="consistency">
+				<Operation name="isHard">
+					<InputParameters>
+						<InputParameter name="fruitToEat" required="yes" type="Fruit"/>
+					</InputParameters>
+					<OutputParameters>
+						<OutputParameter name="consistency" required="yes" type="boolean"/>
+					</OutputParameters>
+				</Operation>
+				<Operation name="isSoft">
+					<InputParameters>
+						<InputParameter name="fruitToEat" required="yes" type="Fruit"/>
+					</InputParameters>
+					<OutputParameters>
+						<OutputParameter name="consistency" required="yes" type="boolean"/>
+					</OutputParameters>
+				</Operation>
+			</Interface>
+		</SourceInterfaces>
+		<ValidSource xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" typeRef="ns0:ReqFood"/>
+		<ValidTarget xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" typeRef="ns0:CapFood"/>
+	</RelationshipType>
+</Definitions>

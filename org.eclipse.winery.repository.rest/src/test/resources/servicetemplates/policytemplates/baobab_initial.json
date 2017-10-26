@@ -1,0 +1,14 @@
+[
+  {
+	"namespace": "http://winery.opentosca.org/test/policytemplates/fruits",
+	"id": "german",
+	"name": "german",
+	"qName": "{http://winery.opentosca.org/test/policytemplates/fruits}german"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/policytemplates/fruits",
+	"id": "italian",
+	"name": "italian",
+	"qName": "{http://winery.opentosca.org/test/policytemplates/fruits}italian"
+  }
+]

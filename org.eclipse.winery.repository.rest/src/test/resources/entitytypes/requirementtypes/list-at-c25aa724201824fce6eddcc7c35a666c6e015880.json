@@ -1,0 +1,56 @@
+[
+  {
+	"namespace": "http://winery.opentosca.org/test/requirementtypes/fruits",
+	"id": "MaximumWeight",
+	"name": "MaximumWeight",
+	"qName": "{http://winery.opentosca.org/test/requirementtypes/fruits}MaximumWeight"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/requirementtypes/fruits",
+	"id": "MinimumWeight",
+	"name": "MinimumWeight",
+	"qName": "{http://winery.opentosca.org/test/requirementtypes/fruits}MinimumWeight"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "ReqCanHostOat",
+	"name": "ReqCanHostOat",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostOat"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "ReqCanHostStraw",
+	"name": "ReqCanHostStraw",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}ReqCanHostStraw"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "ReqCompetition",
+	"name": "ReqCompetition",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}ReqCompetition"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "ReqDryFood",
+	"name": "ReqDryFood",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}ReqDryFood"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "ReqEquipment",
+	"name": "ReqEquipment",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}ReqEquipment"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "ReqFood",
+	"name": "ReqFood",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}ReqFood"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "ReqWarmFloor",
+	"name": "ReqWarmFloor",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}ReqWarmFloor"
+  }
+]

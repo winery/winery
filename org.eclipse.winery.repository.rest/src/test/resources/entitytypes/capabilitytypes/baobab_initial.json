@@ -1,0 +1,68 @@
+[
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "CapCanHostOat",
+	"name": "CapCanHostOat",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}CapCanHostOat"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "CapCanHostStraw",
+	"name": "CapCanHostStraw",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}CapCanHostStraw"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "CapCompetition",
+	"name": "CapCompetition",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}CapCompetition"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "CapDryFood",
+	"name": "CapDryFood",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}CapDryFood"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "CapEquipment",
+	"name": "CapEquipment",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}CapEquipment"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "CapFood",
+	"name": "CapFood",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}CapFood"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "CapWarmFloor",
+	"name": "CapWarmFloor",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}CapWarmFloor"
+  },
+  {
+	"namespace": "http://docs.oasis-open.org/tosca/ns/2011/12",
+	"id": "Container",
+	"name": "Container",
+	"qName": "{http://docs.oasis-open.org/tosca/ns/2011/12}Container"
+  },
+  {
+	"namespace": "http://docs.oasis-open.org/tosca/ns/2011/12",
+	"id": "Endpoint",
+	"name": "Endpoint",
+	"qName": "{http://docs.oasis-open.org/tosca/ns/2011/12}Endpoint"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/capabilitytypes/fruits",
+	"id": "Healthy",
+	"name": "Healthy",
+	"qName": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Healthy"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/capabilitytypes/fruits",
+	"id": "Saturating",
+	"name": "Saturating",
+	"qName": "{http://winery.opentosca.org/test/capabilitytypes/fruits}Saturating"
+  }
+]

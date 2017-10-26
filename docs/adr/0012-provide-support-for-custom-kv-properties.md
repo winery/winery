@@ -1,4 +1,4 @@
-# Provide support for custom key-value properties
+# Provide Support for Custom Key-Value Properties
 
 Most properties are key/value
 

@@ -1,0 +1,28 @@
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns1="http://www.eclipse.org/winery/model/selfservice" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_wfn-lemon" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits">
+	<Import importType="http://www.w3.org/2001/XMLSchema" location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fnodetypes%252Ffruits/lemon/propertiesdefinition/xsd" namespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:wpd="true"/>
+	<NodeType name="lemon" targetNamespace="http://winery.opentosca.org/test/nodetypes/fruits" winery:bordercolor="#89ee01">
+		<winery:PropertiesDefinition elementname="LemonProperties" namespace="http://winery.opentosca.org/test/nodetypes/fruits">
+			<winery:properties>
+				<winery:key>Antioxidants</winery:key>
+				<winery:type>xsd:string</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>VitaminC</winery:key>
+				<winery:type>xsd:decimal</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>Potassium</winery:key>
+				<winery:type>xsd:float</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>Superfood</winery:key>
+				<winery:type>xsd:boolean</winery:type>
+			</winery:properties>
+			<winery:properties>
+				<winery:key>HarvestedAt</winery:key>
+				<winery:type>xsd:anyURI</winery:type>
+			</winery:properties>
+		</winery:PropertiesDefinition>
+		<PropertiesDefinition xmlns:ns6="http://winery.opentosca.org/test/nodetypes/fruits" type="ns6:LemonProperties"/>
+	</NodeType>
+</Definitions>

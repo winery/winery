@@ -1,4 +1,4 @@
-# TOSCA YAML deserialization using SnakeYAML
+# TOSCA YAML Deserialization Using SnakeYAML
 
 The TOSCA YAML files have to be read into a Java model (deserialized) and written from the Java model into files (serialized).
 
