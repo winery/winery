@@ -1,8 +1,8 @@
+# Eclipse Winery – OpenTOSCA fork
+
 [![Build Status](https://travis-ci.org/OpenTOSCA/winery.svg?branch=master)](https://travis-ci.org/OpenTOSCA/winery)
 [![License](https://img.shields.io/badge/License-EPL%202.0-red.svg)](https://opensource.org/licenses/EPL-2.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-# Eclipse Winery – OpenTOSCA fork
 
 This is a fork of [Eclipse Winery](https://github.com/eclipse/winery) and might include current research results not yet approved by Eclipse legal.
 Find out more about the OpenTOSCA eco system at [www.opentosca.org](http://www.opentosca.org/).
