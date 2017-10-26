@@ -21,6 +21,23 @@ import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.junit.Test;
 
 public class TopologyTemplateResourceTest extends AbstractResourceTest {
+	private static final String FOLDERPATH = "http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/topologytemplate/";
+	private static final String ENTITY_TYPE = "topologytemplates/";
+	private static final String INSTANCE_XML_PATH = "servicetemplates/" + ENTITY_TYPE + "fruits-at-3fe0df76e98d46ead68295920e5d1cf1354bdea1.xml";
+	private static final String BAOBAB_JSON_PATH = "servicetemplates/" + ENTITY_TYPE + "list-at-3fe0df76e98d46ead68295920e5d1cf1354bdea1.json";
+	private static final String INSTANCE_URL = "servicetemplates/" + FOLDERPATH;
+
+	@Test
+	public void getInstanceXml() throws Exception {
+		this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
+		this.assertGet(replacePathStringEncoding(INSTANCE_URL), INSTANCE_XML_PATH);
+	}
+
+	@Test
+	public void getServicetemplate() throws Exception {
+		this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
+		this.assertGet("servicetemplates/", BAOBAB_JSON_PATH);
+	}
 
 	@Test
 	public void getComponentInstanceJSON() throws Exception {

@@ -36,6 +36,12 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
+	public void getInstanceXml() throws Exception {
+		this.setRevisionTo("c25aa724201824fce6eddcc7c35a666c6e015880");
+		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdriverinjection/DriverInjectionTest", "entitytypes/servicetemplates/instance.xml");
+	}
+
+	@Test
 	public void getServicetemplate() throws Exception {
 		this.setRevisionTo("a5fd2da6845e9599138b7c20c1fd9d727c1df66f");
 		this.assertGet("servicetemplates/", "entitytypes/servicetemplates/baobab_inital.json");

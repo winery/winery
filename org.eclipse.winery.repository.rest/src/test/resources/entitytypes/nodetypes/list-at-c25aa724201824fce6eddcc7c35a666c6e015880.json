@@ -1,0 +1,104 @@
+[
+  {
+	"namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+	"id": "baobab",
+	"name": "baobab",
+	"qName": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "dressageequipment",
+	"name": "dressageequipment",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}dressageequipment"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+	"id": "grape",
+	"name": "grape",
+	"qName": "{http://winery.opentosca.org/test/nodetypes/fruits}grape"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+	"id": "lemon",
+	"name": "lemon",
+	"qName": "{http://winery.opentosca.org/test/nodetypes/fruits}lemon"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+	"id": "mango",
+	"name": "mango",
+	"qName": "{http://winery.opentosca.org/test/nodetypes/fruits}mango"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "oat",
+	"name": "oat",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}oat"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+	"id": "orange",
+	"name": "orange",
+	"qName": "{http://winery.opentosca.org/test/nodetypes/fruits}orange"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "pasture",
+	"name": "pasture",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}pasture"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+	"id": "plantage",
+	"name": "plantage",
+	"qName": "{http://winery.opentosca.org/test/nodetypes/fruits}plantage"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "ponycompetition",
+	"name": "ponycompetition",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}ponycompetition"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "shetland_pony",
+	"name": "shetland_pony",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}shetland_pony"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "stall",
+	"name": "stall",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}stall"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "straw",
+	"name": "straw",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}straw"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+	"id": "tree",
+	"name": "tree",
+	"qName": "{http://winery.opentosca.org/test/nodetypes/fruits}tree"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "trough",
+	"name": "trough",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}trough"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "unicorn",
+	"name": "unicorn",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}unicorn"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "westernequipment",
+	"name": "westernequipment",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}westernequipment"
+  }
+]

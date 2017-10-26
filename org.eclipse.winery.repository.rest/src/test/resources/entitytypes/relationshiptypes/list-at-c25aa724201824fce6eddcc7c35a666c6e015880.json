@@ -1,0 +1,50 @@
+[
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "attendTo",
+	"name": "attendTo",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}attendTo"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "connectsTo",
+	"name": "connectsTo",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}connectsTo"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "eat",
+	"name": "eat",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}eat"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "hostedOn",
+	"name": "hostedOn",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}hostedOn"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
+	"id": "hostedOn",
+	"name": "hostedOn",
+	"qName": "{http://winery.opentosca.org/test/relationshiptypes/fruits}hostedOn"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/relationshiptypes/fruits",
+	"id": "kiwi",
+	"name": "kiwi",
+	"qName": "{http://winery.opentosca.org/test/relationshiptypes/fruits}kiwi"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "requires",
+	"name": "requires",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}requires"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "standsOn",
+	"name": "standsOn",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}standsOn"
+  }
+]

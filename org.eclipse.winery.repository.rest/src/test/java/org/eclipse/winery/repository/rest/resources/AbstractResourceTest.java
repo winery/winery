@@ -259,4 +259,9 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
 			.then()
 			.statusCode(204);
 	}
+
+	public static String replacePathStringEncoding(String toConvert) {
+		return toConvert.replace("%3A", "%253A").replace("%2F","%252F");
+	}
+	
 }
