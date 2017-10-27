@@ -48,7 +48,7 @@ export class InstanceHeaderComponent implements OnInit {
             this.needTwoLines = true;
         }
 
-        if (this.toscaComponent.toscaType === ToscaTypes.Imports) {
+        if (this.toscaComponent.toscaType === ToscaTypes.Imports || this.toscaComponent.toscaType === ToscaTypes.Admin) {
             this.showManagementButtons = false;
         }
     }
