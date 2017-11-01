@@ -92,4 +92,12 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
 		final String jsonStr = AbstractResourceTest.readFromClasspath("entitytypes/servicetemplates/straw-stall.json");
 		final TTopologyTemplate topologyTemplate = BackendUtils.mapper.readValue(jsonStr, TTopologyTemplate.class);
 	}
+
+	@Test
+	public void checkJsonOfTopologyTemplateMinimalExampleWithAllPropertyVariants() throws Exception {
+		this.setRevisionTo("origin/plain");
+		this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
+		this.assertPut("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
+		this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants/topologytemplate/", "servicetemplates/topologytemplates/plain-TopologyTemplateMinimalExampleWithAllPropertyVariants.json");
+	}
 }

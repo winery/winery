@@ -30,7 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class resides in the main package and not in test, because other modules (such as the REST module) also rely on this test class.
+ * This class resides in the main package and not in test, because other modules (such as the REST module) also rely on
+ * this test class.
  */
 public abstract class TestWithGitBackedRepository {
 
@@ -48,6 +49,8 @@ public abstract class TestWithGitBackedRepository {
 	public TestWithGitBackedRepository() {
 		try {
 			Path repositoryPath = Paths.get(System.getProperty("java.io.tmpdir")).resolve("test-repository");
+			LOGGER.debug("Testing with repository directory {}", repositoryPath);
+
 			if (!Files.exists(repositoryPath)) {
 				Files.createDirectory(repositoryPath);
 			}
@@ -55,11 +58,11 @@ public abstract class TestWithGitBackedRepository {
 			FileRepositoryBuilder builder = new FileRepositoryBuilder();
 			if (!Files.exists(repositoryPath.resolve(".git"))) {
 				this.git = Git.cloneRepository()
-						.setURI("https://github.com/winery/test-repository.git")
-						.setBare(false)
-						.setCloneAllBranches(true)
-						.setDirectory(repositoryPath.toFile())
-						.call();
+					.setURI("https://github.com/winery/test-repository.git")
+					.setBare(false)
+					.setCloneAllBranches(true)
+					.setDirectory(repositoryPath.toFile())
+					.call();
 			} else {
 				Repository gitRepo = builder.setWorkTree(repositoryPath.toFile()).setMustExist(false).build();
 				this.git = new Git(gitRepo);
@@ -86,8 +89,8 @@ public abstract class TestWithGitBackedRepository {
 		git.clean().setForce(true).setCleanDirectories(true).call();
 
 		git.reset()
-				.setMode(ResetCommand.ResetType.HARD)
-				.setRef(ref)
-				.call();
+			.setMode(ResetCommand.ResetType.HARD)
+			.setRef(ref)
+			.call();
 	}
 }
