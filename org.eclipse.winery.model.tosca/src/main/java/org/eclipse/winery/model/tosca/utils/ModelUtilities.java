@@ -668,7 +668,15 @@ public class ModelUtilities {
 
             //Convert the wrong QName created by the JSON serialization back to a right QName
             for (Map.Entry<QName, String> otherAttribute : template.getOtherAttributes().entrySet()) {
-                QName qName = QName.valueOf(otherAttribute.getKey().getLocalPart());
+                QName qName;
+                String localPart = otherAttribute.getKey().getLocalPart();
+                if (localPart.startsWith("{")) {
+                    // QName is stored as plain string - this is the case when nested in "any"
+                    qName = QName.valueOf(localPart);
+                } else {
+                    // sometimes, the QName is retrieved properly. So, we just keep it. This is the case when directly nested in nodetemplate's JSON
+                    qName = new QName(otherAttribute.getKey().getNamespaceURI(), localPart);
+                }
                 tempConvertedOtherAttributes.put(qName, otherAttribute.getValue());
             }
             template.getOtherAttributes().clear();
