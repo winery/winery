@@ -648,11 +648,11 @@ public class ModelUtilities {
      * When sending JSON to the server, the content of "any" is a String and not some JSON data structure. To be able to
      * save it as XML, we have to "objectize" the content of Any
      *
-     * @param nodeTemplates The node templates to update. The content of the given collection is modified.
+     * @param templates The templates (node, relationship) to update. The content of the given collection is modified.
      * @throws IllegalStateException if DocumentBuilder could not iniitialized
      * @throws IOException           if something goes wrong during parsing
      */
-    public static void patchAnyAttributes(Collection<TNodeTemplate> nodeTemplates) throws IOException {
+    public static void patchAnyAttributes(Collection<? extends TEntityTemplate> templates) throws IOException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = null;
         try {
@@ -664,21 +664,21 @@ public class ModelUtilities {
 
         Map<QName, String> tempConvertedOtherAttributes = new HashMap<>();
 
-        for (TNodeTemplate nodeTemplate : nodeTemplates) {
+        for (TEntityTemplate template : templates) {
 
             //Convert the wrong QName created by the JSON serialization back to a right QName
-            for (Map.Entry<QName, String> otherAttribute : nodeTemplate.getOtherAttributes().entrySet()) {
+            for (Map.Entry<QName, String> otherAttribute : template.getOtherAttributes().entrySet()) {
                 QName qName = QName.valueOf(otherAttribute.getKey().getLocalPart());
                 tempConvertedOtherAttributes.put(qName, otherAttribute.getValue());
             }
-            nodeTemplate.getOtherAttributes().clear();
-            nodeTemplate.getOtherAttributes().putAll(tempConvertedOtherAttributes);
+            template.getOtherAttributes().clear();
+            template.getOtherAttributes().putAll(tempConvertedOtherAttributes);
             tempConvertedOtherAttributes.clear();
 
             // Convert the String created by the JSON serialization back to a XML dom document
-            TEntityTemplate.Properties properties = nodeTemplate.getProperties();
+            TEntityTemplate.Properties properties = template.getProperties();
             if (properties != null) {
-                Object any = properties.getAny();
+                Object any = properties.getInternalAny();
                 if (any instanceof String) {
                     Document doc = null;
                     try {
@@ -690,7 +690,7 @@ public class ModelUtilities {
                         LOGGER.error("Could not parse", e);
                         throw e;
                     }
-                    nodeTemplate.getProperties().setAny(doc.getDocumentElement());
+                    template.getProperties().setAny(doc.getDocumentElement());
                 }
             }
         }

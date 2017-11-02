@@ -332,6 +332,7 @@ public class TopologyTemplateResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response setModelJson(TTopologyTemplate topologyTemplate) throws Exception {
 		ModelUtilities.patchAnyAttributes(topologyTemplate.getNodeTemplates());
+		ModelUtilities.patchAnyAttributes(topologyTemplate.getRelationshipTemplates());
 		this.serviceTemplateRes.getServiceTemplate().setTopologyTemplate(topologyTemplate);
 		return RestUtils.persist(this.serviceTemplateRes);
 	}

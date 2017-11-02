@@ -29,6 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
@@ -207,10 +208,14 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
 
         /**
-         * Sets the value of the any property.
-         *
-         * @param value allowed object is {@link Element } {@link Object }
+         * Returns the internal any object without any K/V treatment. Required to patch JSON data received by clients
          */
+        @Nullable
+        @JsonIgnore
+        public Object getInternalAny() {
+            return any;
+        }
+
         public void setAny(Object value) {
             this.any = value;
         }
@@ -235,6 +240,15 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         @ADR(12)
         public LinkedHashMap<String, String> getKVProperties() {
             // we use the internal variable "any", because getAny() returns null, if we have KVProperties
+            if (any == null) {
+                return null;
+            }
+
+            if (!(any instanceof Element)) {
+                LOGGER.error("Corrupt storage - any should be null or instanceof Element");
+                return null;
+            }
+
             Element el = (Element) any;
             if (el == null) {
                 return null;
@@ -307,7 +321,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
                 // We cannot access the wrapper definitions, because we don't have access to the type
                 // Element root = doc.createElementNS(wpd.getNamespace(), wpd.getElementName());
-                LOGGER.warn("Creating XML properties element without correct wrapper element. The resulting XML needs to be patched. This is currently not implemented.");
+                LOGGER.warn("Creating XML properties element with incorrect wrapper element. The resulting XML needs to be patched. This is currently not implemented.");
                 // Therefore, we create a dummy wrapper element:
 
                 Element root = doc.createElementNS(Namespaces.EXAMPLE_NAMESPACE_URI, "Properties");

@@ -12,7 +12,7 @@ Please update this description regularly.
 -->
 
 - [ ] Ensure that you followed http://eclipse.github.io/winery/dev/ToolChain#github---prepare-pull-request. Especially, we require **a single commit**
-- [ ] Ensure that the commit message is [a good commit message](https://github.com/erlang/otp/wiki/Writing-good-commit-messages)
+- [ ] Ensure that the commit message is [a good commit message](https://chris.beams.io/posts/git-commit/)
 - [ ] Ensure to use auto format in **all** files
 - [ ] Change in CHANGELOG.md described
 - [ ] Tests created for changes
