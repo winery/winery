@@ -6,26 +6,22 @@
 * and the Apache License 2.0 which both accompany this distribution,
 * and are available at http://www.eclipse.org/legal/epl-v20.html
 * and http://www.apache.org/licenses/LICENSE-2.0
-*
-* Contributors:
-*     Niko Stadelmaier - initial API and implementation
-*     Lukas Balzer - corrected image upload of SelfServicePortal
 */
 -->
 <div [class.hidden]="!loading">
     <winery-loader></winery-loader>
 </div>
 <div class="content" *ngIf="!loading">
-    <b>Icon</b><br>
-    <div class="typeIcon"><img [src]="iconPath" height="16" width="16"></div>
+    <b>Icon</b><br><br>
+    <div class="typeIcon form-group"><img [src]="iconPath" height="100" width="100"></div>
     <winery-uploader #uploaderIcon id="selfServiceIconUploader"
                      [uploadUrl]="iconPath"
                      [uploadMethod]="'PUT'"
                      (onSuccess)="onUploadSuccess('Icon')">
     </winery-uploader>
     <br/>
-    <b>Preview</b><br>
-    <div class="typeIcon"><img src="{{imagePath}}" height="16" width="16"></div>
+    <b>Preview</b><br><br>
+    <div class="typeIcon form-group"><img src="{{imagePath}}" height="100" width="100"></div>
     <winery-uploader #uploaderImage id="selfServiceImageUploader"
                      [uploadUrl]="imagePath"
                      [uploadMethod]="'PUT'"
