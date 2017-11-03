@@ -14,10 +14,10 @@ package org.eclipse.winery.repository.datatypes.ids.elements;
 import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 
-public class ArtifactTemplateSourceDirectoryId extends ArtifactTemplateDirectoryId {
+public class ArtifactTemplateSourceDirectoryId extends DirectoryId {
 
 	public ArtifactTemplateSourceDirectoryId(ArtifactTemplateId id) {
-		super(id, IdNames.ARTIFACT_TEMPLATE_SOURCE_DIRECTORY);
+		super(id, IdNames.SOURCE_DIRECTORY);
 	}
 }
 

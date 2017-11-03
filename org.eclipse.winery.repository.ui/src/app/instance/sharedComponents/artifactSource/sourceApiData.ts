@@ -7,7 +7,7 @@
  * and http://www.apache.org/licenses/LICENSE-2.0
  */
 
-export class ArtifactResourceApiData {
+export class SourceApiData {
     private fileName = '';
     private content = '';
     private subDirectory = '';

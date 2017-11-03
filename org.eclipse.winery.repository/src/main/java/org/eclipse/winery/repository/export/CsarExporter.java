@@ -40,6 +40,8 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.IdNames;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
@@ -57,8 +59,9 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.configuration.Environment;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -77,9 +80,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 /**
- * This class exports a CSAR crawling from the the given GenericId. Currently, only ServiceTemplates are
- * supported. commons-compress is used as an output stream should be provided. An alternative implementation is to
- * use Java7's Zip File System Provider
+ * This class exports a CSAR crawling from the the given GenericId. Currently, only ServiceTemplates are supported.
+ * commons-compress is used as an output stream should be provided. An alternative implementation is to use Java7's Zip
+ * File System Provider
  */
 public class CsarExporter {
 
@@ -89,7 +92,6 @@ public class CsarExporter {
 
 	private static final String DEFINITONS_PATH_PREFIX = "Definitions/";
 	private static final String WINERY_TEMP_DIR_PREFIX = "winerytmp";
-
 
 	/**
 	 * Returns a unique name for the given definitions to be used as filename
@@ -145,7 +147,8 @@ public class CsarExporter {
 			// if we export a ServiceTemplate, data for the self-service portal might exist
 			if (entryId instanceof ServiceTemplateId) {
 				ServiceTemplateId serviceTemplateId = (ServiceTemplateId) entryId;
-				this.addSelfServiceMetaData(repository, serviceTemplateId, refMap, zos);
+				this.addSelfServiceMetaData(repository, serviceTemplateId, refMap);
+				this.addSelfServiceFiles(repository, serviceTemplateId, refMap, zos);
 			}
 
 			// now, refMap contains all files to be added to the CSAR
@@ -170,7 +173,7 @@ public class CsarExporter {
 				if (ref instanceof DummyRepositoryFileReferenceForGeneratedXSD) {
 					addDummyRepositoryFileReferenceForGeneratedXSD(zos, transformer, (DummyRepositoryFileReferenceForGeneratedXSD) ref, archivePath);
 				} else {
-					if (ref.getParent() instanceof ArtifactTemplateDirectoryId) {
+					if (ref.getParent() instanceof DirectoryId) {
 						// special handling for artifact template directories "source" and "files"
 						addArtifactTemplateToZipFile(zos, repository, ref, archivePath);
 					} else {
@@ -193,7 +196,7 @@ public class CsarExporter {
 	 * @throws IOException thrown when the temporary directory can not be created
 	 */
 	private void addArtifactTemplateToZipFile(ArchiveOutputStream zos, IGenericRepository repository, RepositoryFileReference ref, String archivePath) throws IOException {
-		GitInfo gitInfo = BackendUtils.getGitInformation((ArtifactTemplateDirectoryId) ref.getParent());
+		GitInfo gitInfo = BackendUtils.getGitInformation((DirectoryId) ref.getParent());
 
 		if (gitInfo == null) {
 			try (InputStream is = repository.newInputStream(ref)) {
@@ -223,7 +226,7 @@ public class CsarExporter {
 				+ "/"
 				+ ((ArtifactTemplateId) ref.getParent().getParent()).getQName().getLocalPart()
 				+ "/files/";
-			TArtifactTemplate template = BackendUtils.getTArtifactTemplate((ArtifactTemplateDirectoryId) ref.getParent());
+			TArtifactTemplate template = BackendUtils.getTArtifactTemplate((DirectoryId) ref.getParent());
 			addWorkingTreeToArchive(zos, template, tempDir, path);
 		} catch (GitAPIException e) {
 			CsarExporter.LOGGER.error(String.format("Error while cloning repo: %s / %s", gitInfo.URL, gitInfo.BRANCH), e);
@@ -460,22 +463,31 @@ public class CsarExporter {
 		}
 	}
 
-	private void putRefIntoRefMap(String targetDir, Map<RepositoryFileReference, String> refMap, IRepository repository, SelfServiceMetaDataId id, String url) {
-		RepositoryFileReference ref = new RepositoryFileReference(id, url);
+	private void putRefIntoRefMap(String targetDir, Map<RepositoryFileReference, String> refMap, IRepository repository, GenericId id, String fileName) {
+		RepositoryFileReference ref = new RepositoryFileReference(id, fileName);
 		if (repository.exists(ref)) {
-			refMap.put(ref, targetDir + url);
+			refMap.put(ref, targetDir + fileName);
 		} else {
 			CsarExporter.LOGGER.error("Data corrupt: pointing to non-existent file " + ref);
 		}
 	}
 
-	private void addSelfServiceMetaData(IRepository repository, ServiceTemplateId serviceTemplateId, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream zos) throws IOException {
+	private void addSelfServiceMetaData(IRepository repository, ServiceTemplateId serviceTemplateId, Map<RepositoryFileReference, String> refMap) throws IOException {
 		SelfServiceMetaDataId id = new SelfServiceMetaDataId(serviceTemplateId);
 		// We add the selfservice information regardless of the existance. - i.e., no "if (repository.exists(id)) {"
 		// This ensures that the name of the application is
 		// add everything in the root of the CSAR
 		String targetDir = Constants.DIRNAME_SELF_SERVICE_METADATA + "/";
 		addSelfServiceMetaData(repository, serviceTemplateId, targetDir, refMap);
+	}
+
+	private void addSelfServiceFiles(IRepository repository, ServiceTemplateId serviceTemplateId, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream zos) throws IOException {
+		ServiceTemplateSelfServiceFilesDirectoryId selfServiceFilesDirectoryId = new ServiceTemplateSelfServiceFilesDirectoryId(serviceTemplateId);
+		repository.getContainedFiles(selfServiceFilesDirectoryId)
+			.forEach(repositoryFileReference -> {
+				String file = IdNames.SELF_SERVICE_PORTAL_FILES + "/" + BackendUtils.getFilenameAndSubDirectory(repositoryFileReference);
+				refMap.put(repositoryFileReference, file);
+			});
 	}
 
 	private void addManifest(IRepository repository, DefinitionsChildId id, Collection<String> definitionNames, Map<RepositoryFileReference, String> refMap, ArchiveOutputStream out) throws IOException {

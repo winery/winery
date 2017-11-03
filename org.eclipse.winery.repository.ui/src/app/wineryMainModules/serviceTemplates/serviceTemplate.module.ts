@@ -29,6 +29,7 @@ import { TagModule } from '../../instance/serviceTemplates/tag/tag.module';
 import { DocumentationModule } from '../../instance/sharedComponents/documentation/documentation.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
+import { WinerySourceModule } from '../../instance/sharedComponents/artifactSource/source.module';
 
 @NgModule({
     imports: [
@@ -40,6 +41,7 @@ import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.mod
         BoundaryDefinitionsModule,
         TagModule,
         DocumentationModule,
+        WinerySourceModule,
         WineryLoaderModule,
         WineryModalModule,
         WineryIoParameterModule,
