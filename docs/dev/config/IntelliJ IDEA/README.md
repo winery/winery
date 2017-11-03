@@ -15,14 +15,16 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
   - Open Settings > Other Settings > CheckStyle.
   - Click on the green plus and add `checkstyle.xml` from the root of the Winery code repository.
 3. Open `pom.xml` in the main directory
-4. Configure the code style
+4. Configure the code style (Source: https://youtrack.jetbrains.com/issue/IDEA-61520#comment=27-1292600)
     1. Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>
-    2. Go to "Editor > Code Style"
+    2. Please install CheckStyle-IDEA plugin (http://plugins.jetbrains.com/plugin/1065?pr=idea), it can be found via plug-in repository (Settings|Plugins|Browse repositories).
+    3. Go to "Editor > Code Style"
     3. Click "Manage..." (right of "Scheme:")
     4. Click "Import..."
-    4. IntelliJ Code Style XML
-    5. Navigate to  `IntelliJ Code Style.xml`. It is located inside the winery git repository under `docs/config/IntelliJ IDEA`.
+    4. Choose "CheckStyle Configuration"
+    5. Navigate to  `checkstyle.xml`. It is located inside the winery git repository under the root folder.
     6. Press "OK"
+    6. You will see a message "CheckStyle configuration settings were imported to ... scheme".
     7. Press "OK"
     8. Press "Close"
     9. Press "OK"
