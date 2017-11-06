@@ -17,12 +17,11 @@ import { CommonModule } from '@angular/common';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { ArtifactSourceComponent } from '../../instance/artifactTemplates/artifactSource/artifactSource.component';
 import { TabsModule } from 'ngx-bootstrap';
 import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
-import { WineryDuplicateValidatorModule } from '../../wineryValidators/wineryDuplicateValidator.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
+import { WinerySourceModule } from '../../instance/sharedComponents/artifactSource/source.module';
 
 @NgModule({
     imports: [
@@ -33,16 +32,15 @@ import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.mod
         WineryModalModule,
         WineryTableModule,
         WineryUploaderModule,
+        WinerySourceModule,
         TabsModule,
         WineryEditorModule,
-        WineryDuplicateValidatorModule,
         ArtifactTemplateRouterModule,
         WineryReadmeModule,
         WineryLicenseModule
     ],
     declarations: [
         FilesComponent,
-        ArtifactSourceComponent,
         PropertiesComponent,
     ]
 })

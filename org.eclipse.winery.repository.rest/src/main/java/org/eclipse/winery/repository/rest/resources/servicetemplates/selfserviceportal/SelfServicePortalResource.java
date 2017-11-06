@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.selfservice.Application;
 import org.eclipse.winery.model.selfservice.Application.Options;
@@ -33,7 +34,9 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.SelfServiceMetaDataUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
+import org.eclipse.winery.repository.datatypes.ids.elements.ServiceTemplateSelfServiceFilesDirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.FilesResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import com.sun.jersey.multipart.FormDataBodyPart;
@@ -55,7 +58,7 @@ public class SelfServicePortalResource {
 	private final Application application;
 
 	private final SelfServiceMetaDataId id;
-
+	private final ServiceTemplateSelfServiceFilesDirectoryId filesDirectoryId;
 
 	public SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource) {
 		this(serviceTemplateResource, (ServiceTemplateId) serviceTemplateResource.getId());
@@ -68,6 +71,7 @@ public class SelfServicePortalResource {
 	private SelfServicePortalResource(ServiceTemplateResource serviceTemplateResource, ServiceTemplateId serviceTemplateId) {
 		this.serviceTemplateResource = serviceTemplateResource;
 		this.id = new SelfServiceMetaDataId(serviceTemplateId);
+		this.filesDirectoryId = new ServiceTemplateSelfServiceFilesDirectoryId(serviceTemplateId);
 		this.data_xml_ref = SelfServiceMetaDataUtils.getDataXmlRef(this.id);
 		this.icon_jpg_ref = SelfServiceMetaDataUtils.getIconJpgRef(this.id);
 		this.image_jpg_ref = SelfServiceMetaDataUtils.getImageJpgRef(this.id);
@@ -91,15 +95,15 @@ public class SelfServicePortalResource {
 		return RestUtils.putContentToFile(this.data_xml_ref, content, MediaType.TEXT_XML_TYPE);
 	}
 
-	@Path("icon.jpg")
 	@GET
+	@Path("icon.jpg")
 	public Response getIcon(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "icon.jpg");
 		return RestUtils.returnRepoPath(ref, modified);
 	}
 
-	@Path("icon.jpg")
 	@PUT
+	@Path("icon.jpg")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response putIcon(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
 		try {
@@ -111,15 +115,15 @@ public class SelfServicePortalResource {
 		return RestUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
 
-	@Path("image.jpg")
 	@GET
+	@Path("image.jpg")
 	public Response getImage(@HeaderParam("If-Modified-Since") String modified) {
 		RepositoryFileReference ref = new RepositoryFileReference(this.id, "image.jpg");
 		return RestUtils.returnRepoPath(ref, modified);
 	}
 
-	@Path("image.jpg")
 	@PUT
+	@Path("image.jpg")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response putImage(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataBodyPart body) {
 		try {
@@ -131,16 +135,28 @@ public class SelfServicePortalResource {
 		return RestUtils.putContentToFile(ref, uploadedInputStream, body.getMediaType());
 	}
 
-	@Path("displayname")
+	@Path("files/")
+	public FilesResource files() {
+		return new FilesResource(this.filesDirectoryId);
+	}
+
+	@GET
+	@Path("files/zip")
+	@Produces(MimeTypes.MIMETYPE_ZIP)
+	public Response getFilesZip() {
+		return RestUtils.getZippedContents(this.filesDirectoryId);
+	}
+
 	@PUT
+	@Path("displayname")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onPutOnDisplayName(Application value) {
 		this.application.setDisplayName(value.getDisplayName());
 		return persist();
 	}
 
-	@Path("description")
 	@PUT
+	@Path("description")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response onPutOnDescription(Application value) {
 		this.application.setDescription(value.getDescription());
@@ -164,12 +180,9 @@ public class SelfServicePortalResource {
 		return this.application;
 	}
 
-	/**
-	 * Used in JSP only
-	 */
-	@Path("xml")
 	@GET
-	@Produces({MediaType.TEXT_XML,  MediaType.APPLICATION_XML})
+	@Path("xml")
+	@Produces({MediaType.TEXT_XML, MediaType.APPLICATION_XML})
 	public String getApplicationAsXMLStringEncoded() {
 		String res;
 		if (RepositoryFactory.getRepository().exists(this.data_xml_ref)) {

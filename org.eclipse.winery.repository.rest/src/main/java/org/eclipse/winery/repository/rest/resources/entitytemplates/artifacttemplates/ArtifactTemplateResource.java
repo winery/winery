@@ -36,9 +36,9 @@ import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
@@ -61,8 +61,13 @@ import io.swagger.annotations.ApiParam;
 
 public class ArtifactTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IEntityTemplateResource<TArtifactTemplate>, IHasName {
 
+	private final ArtifactTemplateFilesDirectoryId filesDirectoryId;
+	private final ArtifactTemplateSourceDirectoryId sourceDirectoryId;
+
 	public ArtifactTemplateResource(ArtifactTemplateId id) {
 		super(id);
+		this.filesDirectoryId = new ArtifactTemplateFilesDirectoryId(id);
+		this.sourceDirectoryId = new ArtifactTemplateSourceDirectoryId(id);
 	}
 
 	private TArtifactTemplate getTArtifactTemplate() {
@@ -99,7 +104,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	public Response copySourceToFilesResource(@ApiParam(value = "if data contains a non-empty array than only the files" +
 		" whose names are included are copied ", required = true) ArtifactResourcesApiData data) {
 		List<String> artifactList = data.getArtifactNames();
-		ArtifactTemplateDirectoryId sourceDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
+		DirectoryId sourceDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
 		FilesResource filesResource = getFilesResource();
 		for (RepositoryFileReference ref : RepositoryFactory.getRepository().getContainedFiles(sourceDir)) {
 			if (artifactList == null || artifactList.contains(ref.getFileName())) {
@@ -118,30 +123,26 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 
 	@Path("files/")
 	public FilesResource getFilesResource() {
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId((ArtifactTemplateId) this.id);
-		return new FilesResource(fileDir);
+		return new FilesResource(this.filesDirectoryId);
 	}
 
 	@GET
 	@Path("files/zip")
 	@Produces(MimeTypes.MIMETYPE_ZIP)
 	public Response getFilesDefinitionsAsResponse() {
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId((ArtifactTemplateId) this.id);
-		return RestUtils.getZippedContents(fileDir);
+		return RestUtils.getZippedContents(this.filesDirectoryId);
 	}
 
 	@Path("source/")
 	public FilesResource getSrcResource() {
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
-		return new FilesResource(fileDir);
+		return new FilesResource(this.sourceDirectoryId);
 	}
 
 	@GET
 	@Path("source/zip")
 	@Produces(MimeTypes.MIMETYPE_ZIP)
 	public Response getSourceDefinitionsAsResponse() {
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
-		return RestUtils.getZippedContents(fileDir, fileDir.getParent().getXmlId().getEncoded() + "-source.zip");
+		return RestUtils.getZippedContents(this.sourceDirectoryId, this.sourceDirectoryId.getParent().getXmlId().getEncoded() + "-source.zip");
 	}
 
 	@Override
@@ -150,7 +151,8 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 	}
 
 	/**
-	 * TODO: This method should be moved to the probably can be moved up the type hierarchy and somehow be meregd with the functionality to get referenced templates. Currently, it is only required here by the topology modeler.
+	 * TODO: This method should be moved to the probably can be moved up the type hierarchy and somehow be meregd with
+	 * the functionality to get referenced templates. Currently, it is only required here by the topology modeler.
 	 *
 	 * @return the type of the artifact template OR the number of references pointing to this resource
 	 */

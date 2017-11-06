@@ -30,14 +30,17 @@
         <button class="btn btn-sm btn-danger" [disabled]="selectedFile == null" (click)="removeElementModal.show();">
             Delete
         </button>
-        <button class="btn btn-sm btn-toolbar" [disabled]="selectedFile == null" (click)="openRenameDialog()">Rename
+        <button class="btn btn-sm btn-toolbar" [disabled]="selectedFile == null" (click)="openRenameDialog()">
+            Rename
         </button>
         <span></span>
-        <button id="gridHeaderPostToFiles" class="btn btn-sm btn-toolbar" (click)="copyAllSrc()">Copy all to Files
+        <button *ngIf="enableCopyToFiles" id="gridHeaderPostToFiles" class="btn btn-sm btn-toolbar" (click)="copyAllSrc()">
+            Copy all to Files
         </button>
         <button class="btn btn-sm btn-primary"
                 [disabled]="selectedFile == null"
-                (click)="saveEditorContent()">Save
+                (click)="saveEditorContent()">
+            Save
         </button>
     </div>
     <div id="fileGridBody">

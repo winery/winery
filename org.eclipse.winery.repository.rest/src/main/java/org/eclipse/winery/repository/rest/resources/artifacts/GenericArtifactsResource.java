@@ -58,8 +58,8 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource;
@@ -86,7 +86,6 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 	private static final Logger LOGGER = LoggerFactory.getLogger(GenericArtifactsResource.class);
 
 	protected final INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource resWithNamespace;
-
 
 	public GenericArtifactsResource(Class<ArtifactResource> entityResourceTClazz, Class<ArtifactT> entityTClazz, List<ArtifactT> list, INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource res) {
 		super(entityResourceTClazz, entityTClazz, list, GenericArtifactsResource.getAbstractComponentInstanceResource(res));
@@ -369,7 +368,7 @@ public abstract class GenericArtifactsResource<ArtifactResource extends GenericA
 			return Response.serverError().entity("IA generator failed").build();
 		}
 
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateSourceDirectoryId(artifactTemplateId);
+		DirectoryId fileDir = new ArtifactTemplateSourceDirectoryId(artifactTemplateId);
 		try {
 			BackendUtils.importDirectory(targetPath, repository, fileDir);
 		} catch (IOException e) {

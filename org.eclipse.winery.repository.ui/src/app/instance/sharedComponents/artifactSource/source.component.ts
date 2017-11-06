@@ -8,27 +8,29 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ArtifactSourceService, FilesApiData } from './artifactSource.service';
+import { FilesApiData, SourceService } from './source.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
-import { ArtifactResourceApiData } from './ArtifactResourceApiData';
+import { SourceApiData } from './sourceApiData';
 import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import { backendBaseURL, hostURL } from '../../../configuration';
+import { hostURL } from '../../../configuration';
 import { InstanceService } from '../../instance.service';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
 
 @Component({
-    templateUrl: 'artifactSource.component.html',
+    templateUrl: 'source.component.html',
     styleUrls: [
-        'artifactSource.component.css'
+        'source.component.css'
     ],
     providers: [
-        ArtifactSourceService
+        SourceService
     ]
 })
 
-export class ArtifactSourceComponent implements OnInit {
+export class SourceComponent implements OnInit {
 
     loading = true;
+    enableCopyToFiles = true;
     uploadUrl: string;
     filesList: FilesApiData[];
     baseUrl = hostURL;
@@ -36,7 +38,6 @@ export class ArtifactSourceComponent implements OnInit {
     paths: string[];
     @ViewChild('removeElementModal') removeElementModal: any;
     srcPath: string;
-    downloadPath: string;
     selectedPath: string;
 
     @ViewChild('saveCurrentFileModal') saveCurrentFileModal: any;
@@ -52,16 +53,16 @@ export class ArtifactSourceComponent implements OnInit {
     newFileDir: string;
     selectedFile: FilesApiData = null;
 
-    constructor(private service: ArtifactSourceService,
+    constructor(private service: SourceService,
                 private notify: WineryNotificationService,
                 private sharedData: InstanceService) {
-        this.downloadPath = backendBaseURL + this.sharedData.path + '/source/';
-        this.srcPath = this.downloadPath + 'zip';
+        this.srcPath = this.service.getSourcePath + 'zip';
+        this.enableCopyToFiles = this.sharedData.toscaComponent.toscaType !== ToscaTypes.ServiceTemplate;
     }
 
     ngOnInit() {
         this.loadFiles();
-        this.uploadUrl = this.service.uploadUrl;
+        this.uploadUrl = this.service.getSourcePath;
         this.validatorObject = new WineryValidatorObject(this.filesList, 'name');
         this.pathValidatorObject = new WineryValidatorObject([]);
         const regExp = /^(|[\w-_]+([\\][\w-_]+)*)$/;
@@ -98,7 +99,7 @@ export class ArtifactSourceComponent implements OnInit {
     saveEditorContent() {
         if (this.fileContent != null && this.fileContent !== this.editor.getData()) {
             this.fileContent = this.editor.getData();
-            const fileAPI = new ArtifactResourceApiData();
+            const fileAPI = new SourceApiData();
             fileAPI.setContent(this.fileContent);
             fileAPI.setFileName(this.selectedFile.name);
             fileAPI.setSubDirectory(this.selectedFile.subDirectory);
@@ -124,7 +125,7 @@ export class ArtifactSourceComponent implements OnInit {
     }
 
     renameSelection() {
-        const apiData = new ArtifactResourceApiData();
+        const apiData = new SourceApiData();
         apiData.setFileName(this.renameFileName);
         apiData.setContent(this.fileContent);
         apiData.setSubDirectory(this.selectedFile.subDirectory);
@@ -151,7 +152,7 @@ export class ArtifactSourceComponent implements OnInit {
 
     createNewFile() {
         this.loading = true;
-        const newFile = new ArtifactResourceApiData();
+        const newFile = new SourceApiData();
         newFile.setFileName(this.newFileName);
         newFile.setSubDirectory(this.newFileDir);
         this.service.postToSources(newFile)
@@ -186,7 +187,7 @@ export class ArtifactSourceComponent implements OnInit {
     }
 
     private pushToFiles(fileName: string, content: string) {
-        const apiData = new ArtifactResourceApiData();
+        const apiData = new SourceApiData();
         apiData.setContent(content);
         apiData.setFileName(fileName);
         this.service.postToFiles(apiData)
