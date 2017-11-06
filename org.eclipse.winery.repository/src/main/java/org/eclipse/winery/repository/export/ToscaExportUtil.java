@@ -52,8 +52,8 @@ import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.constants.Filename;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 
@@ -83,7 +83,6 @@ public class ToscaExportUtil {
 	public enum ExportProperties {
 		INCLUDEXYCOORDINATES, REPOSITORY_URI
 	}
-
 
 	/**
 	 * Writes the <em>complete</em> tosca xml into the given outputstream
@@ -375,7 +374,7 @@ public class ToscaExportUtil {
 		// Therefore, we adapt the content of the attached files to the really existing files
 		BackendUtils.synchronizeReferences(id);
 
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
+		DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
 		SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
 		for (RepositoryFileReference ref : files) {
 			// Even if writing a TOSCA only (!this.writingCSAR),

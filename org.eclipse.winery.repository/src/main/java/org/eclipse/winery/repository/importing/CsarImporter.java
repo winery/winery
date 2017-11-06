@@ -90,8 +90,8 @@ import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.SelfServiceMetaDataId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.export.CsarExporter;
@@ -791,7 +791,7 @@ public class CsarImporter {
 					}
 				}
 			}
-			ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(atid);
+			DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(atid);
 			this.importAllFiles(rootPath, allFiles, fileDir, tmf, errors);
 		}
 
@@ -801,7 +801,6 @@ public class CsarImporter {
 			ci.setArtifactReferences(null);
 		}
 	}
-
 
 	/**
 	 * Imports a file from the filesystem to the repository
@@ -847,14 +846,14 @@ public class CsarImporter {
 	/**
 	 * Imports all given files from the file system to the repository
 	 *
-	 * @param rootPath                    used to make the path p relative in order to determine the mime type and the
-	 *                                    RepositoryFileReference
-	 * @param files                       list of all files
-	 * @param artifactTemplateDirectoryId the id of the directory of the artifact template the files to attach to
-	 * @param tmf                         the TOSCAMetaFile object used to determine the mimetype. Must not be null.
-	 * @param errors                      list where import errors should be stored to
+	 * @param rootPath    used to make the path p relative in order to determine the mime type and the
+	 *                    RepositoryFileReference
+	 * @param files       list of all files
+	 * @param directoryId the id of the directory of the artifact template the files to attach to
+	 * @param tmf         the TOSCAMetaFile object used to determine the mimetype. Must not be null.
+	 * @param errors      list where import errors should be stored to
 	 */
-	private void importAllFiles(Path rootPath, Collection<Path> files, ArtifactTemplateDirectoryId artifactTemplateDirectoryId, TOSCAMetaFile tmf, final List<String> errors) {
+	private void importAllFiles(Path rootPath, Collection<Path> files, DirectoryId directoryId, TOSCAMetaFile tmf, final List<String> errors) {
 		for (Path p : files) {
 			if (!Files.exists(p)) {
 				errors.add(String.format("File %1$s does not exist", p.toString()));
@@ -863,9 +862,9 @@ public class CsarImporter {
 			final Path subDirectories = rootPath.relativize(p).getParent();
 			RepositoryFileReference fref;
 			if (subDirectories == null) {
-				fref = new RepositoryFileReference(artifactTemplateDirectoryId, p.getFileName().toString());
+				fref = new RepositoryFileReference(directoryId, p.getFileName().toString());
 			} else {
-				fref = new RepositoryFileReference(artifactTemplateDirectoryId, subDirectories, p.getFileName().toString());
+				fref = new RepositoryFileReference(directoryId, subDirectories, p.getFileName().toString());
 			}
 			importFile(p, fref, tmf, rootPath, errors);
 		}

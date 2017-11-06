@@ -41,7 +41,7 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.FileMeta;
 import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourceApiData;
@@ -56,10 +56,9 @@ import org.slf4j.LoggerFactory;
 public class FilesResource {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FilesResource.class);
-	private final ArtifactTemplateDirectoryId fileDir;
+	private final DirectoryId fileDir;
 
-
-	public FilesResource(ArtifactTemplateDirectoryId fileDir) {
+	public FilesResource(DirectoryId fileDir) {
 		this.fileDir = fileDir;
 	}
 
