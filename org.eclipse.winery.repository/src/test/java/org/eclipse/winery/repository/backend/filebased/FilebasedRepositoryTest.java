@@ -21,7 +21,7 @@ import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
 
@@ -109,7 +109,7 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 	@Test
 	public void getContainedFilesProducedCorrectPath() throws Exception {
 		ArtifactTemplateId artifactTemplateWithFilesAndSourcesId = new ArtifactTemplateId("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithFilesAndSources", false);
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(artifactTemplateWithFilesAndSourcesId);
+		DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(artifactTemplateWithFilesAndSourcesId);
 		SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
 		for (RepositoryFileReference ref : files) {
 			Assert.assertFalse("File " + ref.toString() + " contains empty sub directory", ref.getSubDirectory().isPresent() && ref.getSubDirectory().get().toString().equals(""));

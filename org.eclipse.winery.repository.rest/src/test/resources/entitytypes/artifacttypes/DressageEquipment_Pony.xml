@@ -1,0 +1,14 @@
+<tosca:Definitions xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns1="http://www.eclipse.org/winery/model/selfservice" id="winery-defs-for_ns0-DressageEquipment_Pony" targetNamespace="http://winery.opentosca.org/test/ponyuniverse">
+	<tosca:Import namespace="http://winery.opentosca.org/test/ponyuniverse" location="ns0__PonyEquipment.tosca" importType="http://docs.oasis-open.org/tosca/ns/2011/12"/>
+	<tosca:Import namespace="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery" location="../artifacttypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/DressageEquipment_Pony/propertiesdefinition/Properties.xsd" importType="http://www.w3.org/2001/XMLSchema" winery:wpd="true"/>
+	<tosca:ArtifactType name="DressageEquipment_Pony" targetNamespace="http://winery.opentosca.org/test/ponyuniverse">
+		<winery:PropertiesDefinition elementname="Properties" namespace="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery">
+			<winery:properties>
+				<winery:key>Driver</winery:key>
+				<winery:type>xsd:string</winery:type>
+			</winery:properties>
+		</winery:PropertiesDefinition>
+		<tosca:DerivedFrom xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" typeRef="ns0:PonyEquipment"/>
+		<tosca:PropertiesDefinition xmlns:ns7="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery" type="ns7:Properties"/>
+	</tosca:ArtifactType>
+</tosca:Definitions>

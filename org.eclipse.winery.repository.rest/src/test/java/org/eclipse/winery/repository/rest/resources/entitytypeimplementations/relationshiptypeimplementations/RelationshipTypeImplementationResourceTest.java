@@ -14,7 +14,24 @@ import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
 import org.junit.Test;
 
 public class RelationshipTypeImplementationResourceTest extends AbstractResourceTest {
+	private static final String FOLDERPATH = "http%3A%2F%2Fwinery.opentosca.org%2Ftest%2Frelationshiptypeimplementations%2Ffruits/kiwi_implementation";
+	private static final String ENTITY_TYPE = "relationshiptypeimplementations/";
+	private static final String INSTANCE_XML_PATH = "entityimplementations/" + ENTITY_TYPE + "kiwi-at-c25aa724201824fce6eddcc7c35a666c6e015880.xml";
+	private static final String BAOBAB_JSON_PATH = "entityimplementations/" + ENTITY_TYPE + "list-at-c25aa724201824fce6eddcc7c35a666c6e015880.json";
+	private static final String INSTANCE_URL = ENTITY_TYPE + FOLDERPATH;
 
+	@Test
+	public void getInstanceXml() throws Exception {
+		this.setRevisionTo("c25aa724201824fce6eddcc7c35a666c6e015880");
+		this.assertGet(replacePathStringEncoding(INSTANCE_URL), INSTANCE_XML_PATH);
+	}
+
+	@Test
+	public void getServicetemplate() throws Exception {
+		this.setRevisionTo("c25aa724201824fce6eddcc7c35a666c6e015880");
+		this.assertGet(ENTITY_TYPE, BAOBAB_JSON_PATH);
+	}
+	
 	@Test
 	public void getComponentAsJson() throws Exception {
 		this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");

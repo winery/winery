@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /********************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,8 +23,8 @@
 		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>org.eclipse.winery.repository.rest</artifactId>
-	<!-- jar because of WineryUsingHttpServer -->
-	<packaging>jar</packaging>
+	<!-- jar cannot be used even though offering WineryUsingHttpServer needs it. war has to be used to get IntelliJ recognizing that this is a WAR project -->
+	<packaging>war</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>

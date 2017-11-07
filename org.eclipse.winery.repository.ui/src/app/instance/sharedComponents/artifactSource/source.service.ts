@@ -11,23 +11,31 @@ import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
 import { InstanceService } from '../../instance.service';
 import { Observable } from 'rxjs/Observable';
 import { backendBaseURL, hostURL } from '../../../configuration';
-import { ArtifactResourceApiData } from './ArtifactResourceApiData';
+import { SourceApiData } from './sourceApiData';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { Router } from '@angular/router';
 
 @Injectable()
-export class ArtifactSourceService {
+export class SourceService {
 
-    private path: string;
+    private readonly path: string;
     private pathToFiles: string;
     private parentPath: string;
 
     constructor(private http: Http,
+                private route: Router,
                 private sharedData: InstanceService) {
         this.parentPath = backendBaseURL + this.sharedData.path + '/';
-        this.path = backendBaseURL + this.sharedData.path + '/source/';
-        this.pathToFiles = backendBaseURL + this.sharedData.path + '/files/';
+
+        if (this.sharedData.toscaComponent.toscaType === ToscaTypes.ServiceTemplate) {
+            this.path = this.pathToFiles = backendBaseURL + this.route.url + '/';
+        } else {
+            this.path = this.parentPath + 'source/';
+            this.pathToFiles = this.parentPath + 'files/';
+        }
     }
 
-    get uploadUrl() {
+    get getSourcePath() {
         return this.path;
     }
 
@@ -58,20 +66,19 @@ export class ArtifactSourceService {
     copySourcesToFiles() {
         const headers = new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
-        const data = {
-        };
+        const data = {};
         return this.http.post(this.parentPath, data, options)
             .map(res => res.ok);
     }
 
-    postToSources(data: ArtifactResourceApiData) {
+    postToSources(data: SourceApiData) {
         const headers = new Headers({ 'Accept': 'application/json' });
         const options = new RequestOptions({ headers: headers });
         return this.http.post(this.path + data.getFileName(), data, options)
             .map(res => res.json());
     }
 
-    postToFiles(data: ArtifactResourceApiData) {
+    postToFiles(data: SourceApiData) {
         const headers = new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 

@@ -1,0 +1,10 @@
+<tosca:Definitions xmlns:ns1="http://www.eclipse.org/winery/model/selfservice" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_ns8-DressageEquipment_Pony" targetNamespace="http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier">
+	<tosca:Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="ns0__DressageEquipment_Pony.tosca" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<tosca:ArtifactTemplate xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" id="DressageEquipment_Pony" type="ns0:DressageEquipment_Pony">
+		<tosca:Properties>
+			<ns7:Properties xmlns="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery" xmlns:ns2="http://www.eclipse.org/winery/model/selfservice" xmlns:ns7="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery">
+				<Driver>org.test.dressagedriver</Driver>
+			</ns7:Properties>
+		</tosca:Properties>
+	</tosca:ArtifactTemplate>
+</tosca:Definitions>

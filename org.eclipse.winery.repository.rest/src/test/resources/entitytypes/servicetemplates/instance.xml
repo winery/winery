@@ -1,0 +1,45 @@
+<Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns1="http://www.eclipse.org/winery/model/selfservice" xmlns:testwineryopentoscaorg="http://test.winery.opentosca.org" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" id="winery-defs-for_ns9-DriverInjectionTest" targetNamespace="http://winery.opentosca.org/test/servicetemplates/ponyuniverse/driverinjection">
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/ponycompetition/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/capabilitytypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/CapCompetition/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/shetland_pony/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/nodetypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/straw/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/standsOn/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/artifacttypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/PonyEquipment/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/artifacttemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Fponyuniverse%252Fdaspecifier/PonyEquipment_abstract/?definitions" namespace="http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/attendTo/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<Import importType="http://docs.oasis-open.org/tosca/ns/2011/12" location="http://localhost:9080/winery/requirementtypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fponyuniverse/ReqEquipment/?definitions" namespace="http://winery.opentosca.org/test/ponyuniverse"/>
+	<ServiceTemplate id="DriverInjectionTest" name="DriverInjectionTest" targetNamespace="http://winery.opentosca.org/test/servicetemplates/ponyuniverse/driverinjection">
+		<TopologyTemplate>
+			<NodeTemplate xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" id="shetland_pony" maxInstances="1" minInstances="1" name="shetland_pony" type="ns0:shetland_pony" winery:location="undefined" winery:x="677" winery:y="161">
+				<Properties>
+					<ns3:Properties xmlns="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery" xmlns:ns2="http://www.eclipse.org/winery/model/selfservice" xmlns:ns3="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ty="http://winery.opentosca.org/test/ponyuniverse"/>
+				</Properties>
+				<DeploymentArtifacts>
+					<DeploymentArtifact xmlns:ns8="http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier" artifactRef="ns8:PonyEquipment_abstract" artifactType="ns0:PonyEquipment" name="PonyEquipment_abstract"/>
+				</DeploymentArtifacts>
+			</NodeTemplate>
+			<NodeTemplate xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" id="straw" maxInstances="1" minInstances="1" name="straw" type="ns0:straw" winery:location="undefined" winery:x="677" winery:y="545"/>
+			<NodeTemplate xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" id="ponycompetition" maxInstances="1" minInstances="1" name="ponycompetition" type="ns0:ponycompetition" winery:location="undefined" winery:x="1237" winery:y="137">
+				<Requirements>
+					<Requirement id="ReqEquipment" name="ReqEquipment" type="ns0:ReqEquipment"/>
+				</Requirements>
+				<Capabilities>
+					<Capability id="CapCompetition" name="CapCompetition" type="ns0:CapCompetition"/>
+				</Capabilities>
+			</NodeTemplate>
+			<RelationshipTemplate xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" id="con_25" name="con_25" type="ns0:standsOn">
+				<SourceElement ref="shetland_pony"/>
+				<TargetElement ref="straw"/>
+			</RelationshipTemplate>
+			<RelationshipTemplate xmlns:ns0="http://winery.opentosca.org/test/ponyuniverse" id="con_47" name="con_47" type="ns0:attendTo">
+				<Properties>
+					<ns3:Properties xmlns="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery" xmlns:ns2="http://www.eclipse.org/winery/model/selfservice" xmlns:ns3="http://winery.opentosca.org/test/ponyuniverse/propertiesdefinition/winery" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ty="http://winery.opentosca.org/test/ponyuniverse">
+						<Driver/>
+					</ns3:Properties>
+				</Properties>
+				<SourceElement ref="shetland_pony"/>
+				<TargetElement ref="ponycompetition"/>
+			</RelationshipTemplate>
+		</TopologyTemplate>
+	</ServiceTemplate>
+</Definitions>

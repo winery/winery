@@ -1,0 +1,50 @@
+[
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "DressageEquipment_Pony",
+	"name": "DressageEquipment_Pony",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Pony"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "DressageEquipment_Unicorn",
+	"name": "DressageEquipment_Unicorn",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}DressageEquipment_Unicorn"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/artifacttypes/fruits",
+	"id": "JAR",
+	"name": "JAR",
+	"qName": "{http://winery.opentosca.org/test/artifacttypes/fruits}JAR"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "PonyEquipment",
+	"name": "PonyEquipment",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}PonyEquipment"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "UnicornEquipment",
+	"name": "UnicornEquipment",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}UnicornEquipment"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/artifacttypes/fruits",
+	"id": "WAR",
+	"name": "WAR",
+	"qName": "{http://winery.opentosca.org/test/artifacttypes/fruits}WAR"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "WesternEquipment_Pony",
+	"name": "WesternEquipment_Pony",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}WesternEquipment_Pony"
+  },
+  {
+	"namespace": "http://winery.opentosca.org/test/ponyuniverse",
+	"id": "WesternEquipment_Unicorn",
+	"name": "WesternEquipment_Unicorn",
+	"qName": "{http://winery.opentosca.org/test/ponyuniverse}WesternEquipment_Unicorn"
+  }
+]

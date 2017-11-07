@@ -146,7 +146,24 @@ public class MainResource {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public Response onGet() {
-		return Response.ok("This is Winery's API. Please open the Angular UI. In <strong>development mode</strong>, it is available on <a href=\"http://localhost:4200/\">http://localhost:4200/</a> (ng serve) or <a href=\"http://localhost:8080/\">http://localhost:8080/</a> (configured in IntelliJ). Configuration of IntelliJ is described <a href=\"http://eclipse.github.io/winery/dev/config/IntelliJ%20IDEA/\">here</a>.").build();
+		return Response.ok("<html>\n"
+			+ "<body>\n"
+			+ "<p>\n"
+			+ "This is Winery's API.\n"
+			+ "Please open the Angular UI.\n"
+			+ "In <strong>development mode</strong>, it is available on <a href=\"http://localhost:4200/\">http://localhost:4200/</a> (ng serve) or <a href=\"http://localhost:8080/\">http://localhost:8080/</a> (configured in IntelliJ).\n"
+			+ "</p>\n"
+			+ "\n"
+			+ "<p>\n"
+			+ "Configuration of IntelliJ is described <a href=\"http://eclipse.github.io/winery/dev/config/IntelliJ%20IDEA/\">here</a>.\n"
+			+ "</p>\n"
+			+ "\n"
+			+ "<p>Swagger API description is available at <a href=\"http://localhost:8080/winery/swagger\">http://localhost:8080/winery/swagger</a>.\n"
+			+ "Open <a href=\"http://petstore.swagger.io/\">the Swagger Petsore</a>.\n"
+			+ "Key in <code>http://localhost:8080/winery/swagger</code> as URL at the top of the page.\n"
+			+ "</p>\n"
+			+ "</body>\n"
+			+ "\n").build();
 	}
 
 	@POST

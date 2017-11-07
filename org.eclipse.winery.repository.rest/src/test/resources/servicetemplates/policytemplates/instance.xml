@@ -1,0 +1,4 @@
+<tosca:Definitions xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns1="http://www.eclipse.org/winery/model/selfservice" id="winery-defs-for_wfptmp-german" targetNamespace="http://winery.opentosca.org/test/policytemplates/fruits">
+	<tosca:Import namespace="http://winery.opentosca.org/test/policytypes/fruits" location="ns9__european.tosca" importType="http://docs.oasis-open.org/tosca/ns/2011/12"/>
+	<tosca:PolicyTemplate xmlns:ns9="http://winery.opentosca.org/test/policytypes/fruits" name="german" type="ns9:european" id="german"/>
+</tosca:Definitions>

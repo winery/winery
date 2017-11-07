@@ -1,0 +1,8 @@
+[
+  {
+	"namespace": "http://winery.opentosca.org/test/artifacttemplates/fruits",
+	"id": "baobab_bananaInterface_IA",
+	"name": "baobab_bananaInterface_IA",
+	"qName": "{http://winery.opentosca.org/test/artifacttemplates/fruits}baobab_bananaInterface_IA"
+  }
+]

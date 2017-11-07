@@ -124,8 +124,8 @@ import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
-import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
+import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
@@ -304,12 +304,22 @@ public class BackendUtils {
 	 * Without trailing slash.
 	 */
 	public static String getPathInsideRepo(RepositoryFileReference ref) {
+		return BackendUtils.getPathInsideRepo(ref.getParent()) + getFilenameAndSubDirectory(ref);
+	}
+
+	/**
+	 * Returns the filename with its containing subdirectory. If the file doesn't lie in a sub directory, it only
+	 * returns the filename.
+	 *
+	 * @return the filename and the file's potential subdirectory.
+	 */
+	public static String getFilenameAndSubDirectory(RepositoryFileReference ref) {
 		if (ref.getSubDirectory().isPresent()) {
-			return BackendUtils.getPathInsideRepo(ref.getParent())
-				+ '/' + ref.getSubDirectory().get().toString().replace('\\', '/')
+			return ref.getSubDirectory().get().toString().replace('\\', '/')
 				+ '/' + ref.getFileName();
+		} else {
+			return ref.getFileName();
 		}
-		return BackendUtils.getPathInsideRepo(ref.getParent()) + ref.getFileName();
 	}
 
 	/**
@@ -978,12 +988,11 @@ public class BackendUtils {
 	}
 
 	/**
-	 * @param directoryId ArtifactTemplateDirectoryId of the ArtifactTemplate that should contain a reference to a git
-	 *                    repository.
+	 * @param directoryId DirectoryId of the ArtifactTemplate that should contain a reference to a git repository.
 	 * @return The URL and the branch/tag that contains the files for the ArtifactTemplate. null if no git information
 	 * is given.
 	 */
-	public static GitInfo getGitInformation(ArtifactTemplateDirectoryId directoryId) {
+	public static GitInfo getGitInformation(DirectoryId directoryId) {
 		if (!(directoryId.getParent() instanceof ArtifactTemplateId)) {
 			return null;
 		}
@@ -1010,12 +1019,11 @@ public class BackendUtils {
 		return null;
 	}
 
-
 	/**
 	 * @param directoryId DirectoryID of the TArtifactTemplate that should be returned.
 	 * @return The TArtifactTemplate corresponding to the directoryId.
 	 */
-	public static TArtifactTemplate getTArtifactTemplate(ArtifactTemplateDirectoryId directoryId) {
+	public static TArtifactTemplate getTArtifactTemplate(DirectoryId directoryId) {
 		RepositoryFileReference ref = BackendUtils.getRefOfDefinitions((ArtifactTemplateId) directoryId.getParent());
 		try (InputStream is = RepositoryFactory.getRepository().newInputStream(ref)) {
 			Unmarshaller u = JAXBSupport.createUnmarshaller();
@@ -1074,7 +1082,7 @@ public class BackendUtils {
 	public static void synchronizeReferences(ArtifactTemplateId id) throws IOException {
 		TArtifactTemplate template = RepositoryFactory.getRepository().getElement(id);
 
-		ArtifactTemplateDirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
+		DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(id);
 		SortedSet<RepositoryFileReference> files = RepositoryFactory.getRepository().getContainedFiles(fileDir);
 		if (files.isEmpty()) {
 			// clear artifact references
@@ -1262,20 +1270,20 @@ public class BackendUtils {
 		};
 	}
 
-	public static RepositoryFileReference getRepositoryFileReference(Path rootPath, Path path, ArtifactTemplateDirectoryId artifactTemplateDirectoryId) {
+	public static RepositoryFileReference getRepositoryFileReference(Path rootPath, Path path, DirectoryId directoryId) {
 		final Path relativePath = rootPath.relativize(path);
 		Path parent = relativePath.getParent();
 		if (parent == null) {
-			return new RepositoryFileReference(artifactTemplateDirectoryId, path.getFileName().toString());
+			return new RepositoryFileReference(directoryId, path.getFileName().toString());
 		} else {
-			return new RepositoryFileReference(artifactTemplateDirectoryId, parent, path.getFileName().toString());
+			return new RepositoryFileReference(directoryId, parent, path.getFileName().toString());
 		}
 	}
 
 	/**
 	 * Imports all files in the given directory into the given artifact template directory
 	 */
-	public static void importDirectory(Path rootPath, IRepository repository, ArtifactTemplateDirectoryId dir) throws IOException {
+	public static void importDirectory(Path rootPath, IRepository repository, DirectoryId dir) throws IOException {
 		Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
 
 			@Override
