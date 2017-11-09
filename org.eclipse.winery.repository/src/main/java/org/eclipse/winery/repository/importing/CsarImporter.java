@@ -854,17 +854,23 @@ public class CsarImporter {
 	 * @param errors      list where import errors should be stored to
 	 */
 	private void importAllFiles(Path rootPath, Collection<Path> files, DirectoryId directoryId, TOSCAMetaFile tmf, final List<String> errors) {
+		// remove the filePathInsideRepo to correctly store the files in the files folder inside an artifact template
+		// otherwise, the files are saved in the sub directory of the artifact template
+		// this is required, to enable the cycle CSAR export, clean , import CSAR
+		String pathInsideRepo = Util.getPathInsideRepo(directoryId);
+
 		for (Path p : files) {
 			if (!Files.exists(p)) {
 				errors.add(String.format("File %1$s does not exist", p.toString()));
 				return;
 			}
-			final Path subDirectories = rootPath.relativize(p).getParent();
+			Path subDirectory = rootPath.relativize(p).getParent();
 			RepositoryFileReference fref;
-			if (subDirectories == null) {
+			// files are stored in "files/" or in "sources/"
+			if ((subDirectory == null) || (subDirectory.getParent().toString().endsWith(pathInsideRepo))) {
 				fref = new RepositoryFileReference(directoryId, p.getFileName().toString());
 			} else {
-				fref = new RepositoryFileReference(directoryId, subDirectories, p.getFileName().toString());
+				fref = new RepositoryFileReference(directoryId, subDirectory, p.getFileName().toString());
 			}
 			importFile(p, fref, tmf, rootPath, errors);
 		}
