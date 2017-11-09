@@ -19,6 +19,7 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0012](0012-provide-support-for-custom-kv-properties.md) - Provide Support for Custom Key-Value Properties
 - [ADR-0013](0013-routes-in-Angular.md) - *Routes in the Repository Angular App*
 - [ADR-0014](0014-use-eclipse-orion-as-editor.md) - Use Eclipse Orion as Editor
+- [ADR-0015](0015-copy-source-to-files.md) - Offer copying files from the source to the files folder
 
 <!-- adrlogstop -->
 
