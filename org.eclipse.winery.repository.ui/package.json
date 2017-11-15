@@ -17,7 +17,7 @@
     },
     "keywords": [],
     "author": "",
-    "license": "EPL-1.0, Apache License 2.0",
+    "license": "EPL-2.0 OR Apache-2.0",
     "dependencies": {
         "@angular/animations": "4.3.5",
         "@angular/common": "4.3.5",
