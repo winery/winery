@@ -6,7 +6,7 @@ This file explains how to create and maintain copyright headers in source files.
 
 ```
 /********************************************************************************
- * Copyright (c) {date} Contributors to the Eclipse Foundation
+ * Copyright (c) ${year} Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,11 +21,6 @@ This file explains how to create and maintain copyright headers in source files.
 ```
 
 See also <https://www.eclipse.org/projects/handbook/#ip-copyright-headers>.
-
-## Templates
-* Company: John Smith (University of Stuttgart)
-* Student: John Smith
-* Copyright (c) 2013 John Smith (University of Stuttgart).
 
 ## Full information
 
