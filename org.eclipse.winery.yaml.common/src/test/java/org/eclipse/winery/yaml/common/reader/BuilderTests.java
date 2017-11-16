@@ -8,9 +8,12 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.reader;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.eclipse.winery.model.tosca.yaml.TAttributeAssignment;
+import org.eclipse.winery.model.tosca.yaml.TPropertyAssignment;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 
@@ -51,6 +54,45 @@ public class BuilderTests {
     public void descriptionTest() throws Exception {
         TServiceTemplate serviceTemplate = description().getValue();
         Assert.assertNotNull(serviceTemplate);
+    }
+
+    @Test
+    public void attributeAssignmentTest() throws Exception {
+        TServiceTemplate serviceTemplate = attributeAssignment().getValue();
+
+        Assert.assertNotNull(serviceTemplate);
+        Assert.assertNotNull(serviceTemplate.getTopologyTemplate());
+        Assert.assertNotNull(serviceTemplate.getTopologyTemplate().getNodeTemplates().get("node_template_1"));
+
+        Map<String, TAttributeAssignment> attributes = serviceTemplate.getTopologyTemplate()
+            .getNodeTemplates().get("node_template_1").getAttributes();
+
+        Map<String, String> value3 = Collections.singletonMap("get_input", "attribute_3");
+        Map<String, String> value5 = Collections.singletonMap("get_input", "attribute_5");
+
+        Assert.assertEquals(attributes.get("attribute_1").getValue(), "attribute_value_1");
+        Assert.assertEquals(attributes.get("attribute_2").getValue(), 1);
+        Assert.assertEquals(attributes.get("attribute_3").getValue(), value3);
+        Assert.assertEquals(attributes.get("attribute_4").getValue(), 42);
+        Assert.assertEquals(attributes.get("attribute_5").getValue(), value5);
+    }
+
+    @Test
+    public void propertyAssignmentTest() throws Exception {
+        TServiceTemplate serviceTemplate = propertyAssignment().getValue();
+
+        Assert.assertNotNull(serviceTemplate);
+        Assert.assertNotNull(serviceTemplate.getTopologyTemplate());
+        Assert.assertNotNull(serviceTemplate.getTopologyTemplate().getNodeTemplates().get("node_template_1"));
+
+        Map<String, TPropertyAssignment> properties = serviceTemplate.getTopologyTemplate()
+            .getNodeTemplates().get("node_template_1").getProperties();
+
+        Map<String, String> value3 = Collections.singletonMap("get_input", "property_3");
+
+        Assert.assertEquals(properties.get("property_1").getValue(), "property_value_1");
+        Assert.assertEquals(properties.get("property_2").getValue(), 1);
+        Assert.assertEquals(properties.get("property_3").getValue(), value3);
     }
 
     @Test
@@ -146,6 +188,16 @@ public class BuilderTests {
         return new LinkedHashMap.SimpleEntry<>(name, reader.parse(PATH, getName(name)));
     }
 
+    public Map.Entry<String, TServiceTemplate> propertyAssignment() throws Exception {
+        String name = "3_5_9_2_1-property_assignment-1_1";
+        return new LinkedHashMap.SimpleEntry<>(name, reader.parse(PATH, getName(name)));
+    }
+
+    public Map.Entry<String, TServiceTemplate> attributeAssignment() throws Exception {
+        String name = "3_5_11_2_1-attribute_assignment-1_1";
+        return new LinkedHashMap.SimpleEntry<>(name, reader.parse(PATH, getName(name)));
+    }
+
     public Map.Entry<String, TServiceTemplate> dslDefinitions() throws Exception {
         String name = "3_9_3_7-dsl_definitions-1_1";
         return new LinkedHashMap.SimpleEntry<>(name, reader.parse(PATH, getName(name)));
@@ -205,7 +257,7 @@ public class BuilderTests {
         String name = "3_9_3_17-policy_types-1_1";
         return new LinkedHashMap.SimpleEntry<>(name, reader.parse(PATH, getName(name)));
     }
-
+    
     public Map.Entry<String, TServiceTemplate> example16() throws Exception {
         String name = "example_16-topology_templates-1_1";
         return new LinkedHashMap.SimpleEntry<>(name, reader.parse(PATH, getName(name)));

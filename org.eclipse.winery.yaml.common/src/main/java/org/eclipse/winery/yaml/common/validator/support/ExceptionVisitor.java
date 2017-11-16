@@ -23,7 +23,7 @@ public abstract class ExceptionVisitor<R extends AbstractResult<R>, P extends Ab
     }
 
     public void setException(Exception exception) {
-        if (!Objects.nonNull(this.exception)) {
+        if (Objects.isNull(this.exception)) {
             this.exception = new MultiException();
         }
         this.exception.add(exception);
