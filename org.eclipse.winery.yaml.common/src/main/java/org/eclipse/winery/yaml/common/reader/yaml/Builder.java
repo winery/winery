@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -76,6 +79,8 @@ import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.exception.UnrecognizedFieldException;
 import org.eclipse.winery.yaml.common.validator.FieldValidator;
 
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.slf4j.Logger;
@@ -99,7 +104,7 @@ public class Builder {
         this.prefix2Namespace = new LinkedHashMap<>();
         this.prefix2Namespace.put("tosca", Namespaces.TOSCA_NS);
 
-        if (!Objects.nonNull(object)) return;
+        if (Objects.isNull(object)) return;
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> list = (List<Map<String, Object>>) object;
@@ -128,6 +133,14 @@ public class Builder {
                 this.exceptionMessages.addAll(validator.validate(clazz, fields));
             }
             return true;
+        } else if (object instanceof String) {
+            switch (clazz.getSimpleName()) {
+                case "TAttributeAssignment":
+                case "TRequirementAssignment":
+                    return true;
+                default:
+                    return false;
+            }
         } else {
             // TODO exception msg: Because instance (=object) is nonNull and not a map
             return false;
@@ -136,7 +149,7 @@ public class Builder {
 
     @Nullable
     public TServiceTemplate buildServiceTemplate(Object object) throws UnrecognizedFieldException {
-        if (!Objects.nonNull(object) || !validate(TServiceTemplate.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TServiceTemplate.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         // build map between prefix and namespaces
@@ -146,17 +159,17 @@ public class Builder {
             map.get("tosca_definitions_version").toString()
         ).setMetadata(buildMetadata(map.get("metadata")))
             .setDescription(buildDescription(map.get("description")))
-            .setDslDefinitions(buildDslDefinitions(map.get("dsl_definitions")))
-            .setRepositories(buildRepositories(map.get("repositories")))
-            .setImports(buildImports(map.get("imports")))
-            .setArtifactTypes(buildArtifactTypes(map.get("artifact_types")))
-            .setDataTypes(buildDataTypes(map.get("data_types")))
-            .setCapabilityTypes(buildCapabilityTypes(map.get("capability_types")))
-            .setInterfaceTypes(buildInterfaceTypes(map.get("interface_types")))
-            .setRelationshipTypes(buildRelationshipTypes(map.get("relationship_types")))
-            .setNodeTypes(buildNodeTypes(map.get("node_types")))
-            .setGroupTypes(buildGroupTypes(map.get("group_types")))
-            .setPolicyTypes(buildPolicyTypes(map.get("policy_types")))
+            .setDslDefinitions(buildMap(map.get("dsl_definitions"), obj -> obj))
+            .setRepositories(buildMap(map.get("repositories"), this::buildRepositoryDefinition))
+            .setImports(buildList(map.get("imports"), this::buildMapImportDefinition))
+            .setArtifactTypes(buildMap(map.get("artifact_types"), this::buildArtifactType))
+            .setDataTypes(buildMap(map.get("data_types"), this::buildDataType))
+            .setCapabilityTypes(buildMap(map.get("capability_types"), this::buildCapabilityType))
+            .setInterfaceTypes(buildMap(map.get("interface_types"), this::buildInterfaceType))
+            .setRelationshipTypes(buildMap(map.get("relationship_types"), this::buildRelationshipType))
+            .setNodeTypes(buildMap(map.get("node_types"), this::buildNodeType))
+            .setGroupTypes(buildMap(map.get("group_types"), this::buildGroupType))
+            .setPolicyTypes(buildMap(map.get("policy_types"), this::buildPolicyType))
             .setTopologyTemplate(buildTopologyTemplate(map.get("topology_template")));
         if (!this.exceptionMessages.isEmpty()) throw new UnrecognizedFieldException(this.exceptionMessages);
         return builder.build();
@@ -164,24 +177,24 @@ public class Builder {
 
     @Nullable
     public TTopologyTemplateDefinition buildTopologyTemplate(Object object) {
-        if (!Objects.nonNull(object) || !validate(TTopologyTemplateDefinition.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TTopologyTemplateDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TTopologyTemplateDefinition.Builder()
             .setDescription(buildDescription(map.get("description")))
-            .setInputs(buildMapParameterDefinition(map.get("inputs")))
-            .setNodeTemplates((buildNodeTemplates(map.get("node_templates"))))
-            .setRelationshipTemplates(buildRelationshipTemplates(map.get("relationship_templates")))
-            .setGroups(buildGroupDefinitions(map.get("groups")))
-            .setPolicies(buildMapPolicyDefinition(map.get("policies")))
-            .setOutputs(buildMapParameterDefinition(map.get("outputs")))
+            .setInputs(buildMap(map.get("inputs"), this::buildParameterDefinition))
+            .setNodeTemplates(buildMap(map.get("node_templates"), this::buildNodeTemplate))
+            .setRelationshipTemplates(buildMap(map.get("relationship_templates"), this::buildRelationshipTemplate))
+            .setGroups(buildMap(map.get("groups"), this::buildGroupDefinition))
+            .setPolicies(buildMap(map.get("policies"), this::buildPolicyDefinition))
+            .setOutputs(buildMap(map.get("outputs"), this::buildParameterDefinition))
             .setSubstitutionMappings(buildSubstitutionMappings(map.get("substitution_mappings")))
             .build();
     }
 
     @Nullable
     public Metadata buildMetadata(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> tmp = (Map<String, Object>) object;
         Metadata metadata = new Metadata();
@@ -197,33 +210,13 @@ public class Builder {
 
     @Nullable
     public String buildDescription(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         return object.toString();
     }
 
     @Nullable
-    public Map<String, Object> buildDslDefinitions(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    @Nullable
-    public Map<String, TRepositoryDefinition> buildRepositories(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildRepositoryDefinition(entry.getValue())));
-    }
-
-    @Nullable
     public TRepositoryDefinition buildRepositoryDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) return new TRepositoryDefinition.Builder((String) object).build();
         if (!validate(TRepositoryDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
@@ -236,7 +229,7 @@ public class Builder {
 
     @Nullable
     public Credential buildCredential(Object object) {
-        if (!Objects.nonNull(object) || !validate(Credential.class, object)) return null;
+        if (Objects.isNull(object) || !validate(Credential.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         @SuppressWarnings("unchecked")
@@ -249,22 +242,8 @@ public class Builder {
     }
 
     @Nullable
-    public List<TMapImportDefinition> buildImports(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> list = (List<Map<String, Object>>) object;
-        return list.stream()
-            .filter(Objects::nonNull)
-            .flatMap(map -> map.entrySet().stream())
-            .filter(Objects::nonNull)
-            .map(entry -> buildMapImportDefinition(entry.getKey(), entry.getValue()))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    }
-
-    @Nullable
     public TMapImportDefinition buildMapImportDefinition(String key, Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         TMapImportDefinition mapImportDefinition = new TMapImportDefinition();
         mapImportDefinition.put(key, buildImportDefinition(object));
         return mapImportDefinition;
@@ -272,7 +251,7 @@ public class Builder {
 
     @Nullable
     public TImportDefinition buildImportDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) return new TImportDefinition.Builder((String) object).build();
         if (!validate(TImportDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
@@ -309,18 +288,8 @@ public class Builder {
     }
 
     @Nullable
-    public Map<String, TArtifactType> buildArtifactTypes(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildArtifactType(entry.getValue())));
-    }
-
-    @Nullable
     public TArtifactType buildArtifactType(Object object) {
-        if (!Objects.nonNull(object) || !validate(TArtifactType.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TArtifactType.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return buildEntityType(object, TArtifactType.class, new TArtifactType.Builder())
@@ -331,39 +300,26 @@ public class Builder {
 
     @NonNull
     public <T extends TEntityType.Builder<T>> T buildEntityType(Object object, Class<?> child, T builder) {
-        if (!Objects.nonNull(object) || !validate(child, object)) return builder;
+        if (Objects.isNull(object) || !validate(child, object)) return builder;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return builder
             .setDescription(buildDescription(map.get("description")))
             .setVersion(buildVersion(map.get("version")))
             .setDerivedFrom(buildQName((String) map.get("derived_from")))
-            .setProperties(buildProperties(map.get("properties")))
-            .setAttributes(buildAttributes(map.get("attributes")))
+            .setProperties(buildMap(map.get("properties"), TPropertyDefinition.class, this::buildPropertyDefinition))
+            .setAttributes(buildMap(map.get("attributes"), this::buildAttributeDefinition))
             .setMetadata(buildMetadata(map.get("metadata")));
     }
 
     @Nullable
     public TVersion buildVersion(Object object) {
-        return !Objects.nonNull(object) ? null : new TVersion((String) object);
-    }
-
-    @Nullable
-    public Map<String, TPropertyDefinition> buildProperties(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> buildPropertyDefinition(entry.getValue(), TPropertyDefinition.class)
-            ));
+        return Objects.isNull(object) ? null : new TVersion((String) object);
     }
 
     @Nullable
     public TPropertyDefinition buildPropertyDefinition(Object object, Class<?> child) {
-        if (!Objects.nonNull(object) || !validate(child, object)) return null;
+        if (Objects.isNull(object) || !validate(child, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TPropertyDefinition.Builder(buildQName((String) map.get("type")))
@@ -371,21 +327,21 @@ public class Builder {
             .setRequired(buildRequired(map.get("required")))
             .setDefault(map.get("default"))
             .setStatus(buildStatus(map.get("status")))
-            .setConstraints(buildConstraints(map.get("constraints")))
+            .setConstraints(buildList(map.get("constraints"), this::buildConstraintClause))
             .setEntrySchema(buildEntrySchema(map.get("entry_schema")))
             .build();
     }
 
     @Nullable
     public Boolean buildRequired(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) return "true".equals(object) ? Boolean.TRUE : Boolean.FALSE;
         return object instanceof Boolean ? (Boolean) object : Boolean.FALSE;
     }
 
     @Nullable
     public TStatusValue buildStatus(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         String status = (String) object;
         switch (status) {
             case "supported":
@@ -406,21 +362,8 @@ public class Builder {
     }
 
     @Nullable
-    public List<TConstraintClause> buildConstraints(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> list = (List<Map<String, Object>>) object;
-        return list.stream()
-            .filter(Objects::nonNull)
-            .flatMap(map -> map.entrySet().stream())
-            .map(entry -> buildConstraintClause(entry.getKey(), entry.getValue()))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    }
-
-    @Nullable
     public TConstraintClause buildConstraintClause(String key, Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         TConstraintClause constraintClause = new TConstraintClause();
         switch (key) {
             case "equal":
@@ -463,7 +406,7 @@ public class Builder {
 
     @Nullable
     public List<Object> buildListObject(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         @SuppressWarnings("unchecked")
         List<Object> result = (List<Object>) object;
         return result;
@@ -471,29 +414,19 @@ public class Builder {
 
     @Nullable
     public TEntrySchema buildEntrySchema(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TEntrySchema.Builder()
             .setType(buildQName((String) map.get("type")))
             .setDescription(buildDescription(map.get("description")))
-            .setConstraints(buildConstraints(map.get("constraints")))
+            .setConstraints(buildList(map.get("constraints"), this::buildConstraintClause))
             .build();
     }
 
     @Nullable
-    public Map<String, TAttributeDefinition> buildAttributes(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildAttributeDefinition(entry.getValue())));
-    }
-
-    @Nullable
     public TAttributeDefinition buildAttributeDefinition(Object object) {
-        if (!Objects.nonNull(object) || !validate(TAttributeDefinition.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TAttributeDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TAttributeDefinition.Builder(buildQName((String) map.get("type")))
@@ -506,7 +439,7 @@ public class Builder {
 
     @Nullable
     public List<String> buildListString(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         @SuppressWarnings("unchecked")
         List<String> tmp = ((List<Object>) object).stream()
             .filter(Objects::nonNull)
@@ -517,38 +450,18 @@ public class Builder {
     }
 
     @Nullable
-    public Map<String, TDataType> buildDataTypes(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildDataType(entry.getValue())));
-    }
-
-    @Nullable
     public TDataType buildDataType(Object object) {
-        if (!Objects.nonNull(object) || !validate(TDataType.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TDataType.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return buildEntityType(object, TDataType.class, new TDataType.Builder())
-            .setConstraints(buildConstraints(map.get("constraints")))
+            .setConstraints(buildList(map.get("constraints"), this::buildConstraintClause))
             .build();
     }
 
     @Nullable
-    public Map<String, TCapabilityType> buildCapabilityTypes(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildCapabilityType(entry.getValue())));
-    }
-
-    @Nullable
     public TCapabilityType buildCapabilityType(Object object) {
-        if (!Objects.nonNull(object) || !validate(TCapabilityType.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TCapabilityType.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return buildEntityType(object, TCapabilityType.class, new TCapabilityType.Builder())
@@ -558,44 +471,35 @@ public class Builder {
 
     @Nullable
     public List<QName> buildListQName(List<String> list) {
-        if (list == null || list.isEmpty()) return null;
+        if (Objects.isNull(list) || list.isEmpty()) return null;
         return list.stream().map(this::buildQName)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 
     @Nullable
-    public Map<String, TInterfaceType> buildInterfaceTypes(Object object) {
-        if (!Objects.nonNull(object)) return null;
+    public TInterfaceType buildInterfaceType(Object object) {
+        if (Objects.isNull(object) || !validate(TInterfaceType.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildInterfaceType(entry.getValue())));
+        return buildEntityType(object, TInterfaceType.class, new TInterfaceType.Builder())
+            .setInputs(buildMap(map.get("inputs"), TPropertyDefinition.class, this::buildPropertyDefinition))
+            .setOperations(
+                buildMap(object, "TInterfaceType", this::buildOperationDefinition, this::filterInterfaceTypeOperation)
+            )
+            .build();
     }
 
-    @Nullable
-    public TInterfaceType buildInterfaceType(Object object) {
-        if (!Objects.nonNull(object) || !validate(TInterfaceType.class, object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
+    private Boolean filterInterfaceTypeOperation(Map.Entry<String, Object> entry) {
+        if (Objects.isNull(entry.getKey())) return false;
         Set<String> keys = Stream.of("inputs", "description", "version", "derived_from",
             "properties", "attributes", "metadata").collect(Collectors.toSet());
-        return buildEntityType(object, TInterfaceType.class, new TInterfaceType.Builder())
-            .setInputs(buildProperties(map.get("inputs")))
-            .setOperations(map.entrySet().stream()
-                .filter(Objects::nonNull)
-                .filter(entry -> !keys.contains(entry.getKey()))
-                .collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry -> buildOperationDefinition(entry.getValue(), "TInterfaceType"))
-                ))
-            .build();
+        return !keys.contains(entry.getKey());
     }
 
     @Nullable
     public TOperationDefinition buildOperationDefinition(Object object, String context) {
-        if (!Objects.nonNull(object) || !validate(TOperationDefinition.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TOperationDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TOperationDefinition.Builder()
@@ -608,34 +512,20 @@ public class Builder {
 
     @Nullable
     public Map<String, TPropertyAssignmentOrDefinition> buildPropertyAssignmentOrDefinition(Object object, String context) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if ("TNodeType".equals(context) ||
             "TRelationshipType".equals(context) ||
             "TGroupType".equals(context) ||
             "TInterfaceType".equals(context)) {
-            return buildProperties(object).entrySet().stream()
-                .filter(this::nonNull)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            return buildMap(object, TPropertyDefinition.class, this::buildPropertyDefinition);
         } else {
-            return buildMapPropertyAssignment(object).entrySet().stream()
-                .filter(this::nonNull)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            return buildMap(object, this::buildPropertyAssignment);
         }
     }
 
     @Nullable
-    public Map<String, TPropertyAssignment> buildMapPropertyAssignment(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildPropertyAssignment(entry.getValue())));
-    }
-
-    @Nullable
     public TPropertyAssignment buildPropertyAssignment(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         return new TPropertyAssignment.Builder()
             .setValue(object)
             .build();
@@ -643,7 +533,7 @@ public class Builder {
 
     @Nullable
     public TImplementation buildImplementation(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) return new TImplementation(buildQName((String) object));
         if (!validate(TImplementation.class, object)) return null;
         @SuppressWarnings("unchecked")
@@ -654,96 +544,46 @@ public class Builder {
     }
 
     @Nullable
-    public Map<String, TRelationshipType> buildRelationshipTypes(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildRelationshipType(entry.getValue())));
-    }
-
-    @Nullable
     public TRelationshipType buildRelationshipType(Object object) {
-        if (!Objects.nonNull(object) || !validate(TRelationshipType.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TRelationshipType.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return buildEntityType(object, TRelationshipType.class, new TRelationshipType.Builder())
             .setValidTargetTypes(buildListQName(buildListString(map.get("valid_target_types"))))
-            .setInterfaces(buildMapInterfaceDefinition(map.get("interfaces"), "TRelationshipType"))
+            .setInterfaces(buildMap(map.get("interfaces"), "TRelationshipType", this::buildInterfaceDefinition))
             .build();
     }
 
     @Nullable
-    public Map<String, TInterfaceDefinition> buildMapInterfaceDefinition(Object object, String context) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildInterfaceDefinition(entry.getValue(), context)));
-    }
-
-    @Nullable
     public TInterfaceDefinition buildInterfaceDefinition(Object object, String context) {
-        if (!Objects.nonNull(object) || !validate(TInterfaceType.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TInterfaceType.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
-        Set<String> keys = Stream.of("inputs", "type").collect(Collectors.toSet());
         return new TInterfaceDefinition.Builder()
             .setType(buildQName((String) map.get("type")))
             .setInputs(buildPropertyAssignmentOrDefinition(map.get("inputs"), context))
             .setOperations(
-                map.entrySet().stream()
-                    .filter(Objects::nonNull)
-                    .filter(entry -> !keys.contains(entry.getKey()))
-                    .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> buildOperationDefinition(entry.getValue(), context))
-                    )
+                buildMap(object, context, this::buildOperationDefinition, this::filterInterfaceAssignmentOperation)
             )
             .build();
     }
 
     @Nullable
-    public Map<String, TNodeType> buildNodeTypes(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildNodeType(entry.getValue())));
-    }
-
-    @Nullable
     public TNodeType buildNodeType(Object object) {
-        if (!Objects.nonNull(object) || !validate(TNodeType.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TNodeType.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return buildEntityType(object, TNodeType.class, new TNodeType.Builder())
-            .setRequirements(buildListMapRequirementDefinition(map.get("requirements")))
-            .setCapabilities(buildMapCapabilityDefinition(map.get("capabilities")))
-            .setInterfaces(buildMapInterfaceDefinition(map.get("interfaces"), "TNodeType"))
-            .setArtifacts(buildMapArtifactDefinition(map.get("artifacts")))
+            .setRequirements(buildList(map.get("requirements"), this::buildMapRequirementDefinition))
+            .setCapabilities(buildMap(map.get("capabilities"), this::buildCapabilityDefinition))
+            .setInterfaces(buildMap(map.get("interfaces"), "TNodeType", this::buildInterfaceDefinition))
+            .setArtifacts(buildMap(map.get("artifacts"), this::buildArtifactDefinition))
             .build();
     }
 
     @Nullable
-    public List<TMapRequirementDefinition> buildListMapRequirementDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> list = (List<Map<String, Object>>) object;
-        return list.stream()
-            .filter(Objects::nonNull)
-            .flatMap(entry -> entry.entrySet().stream())
-            .filter(Objects::nonNull)
-            .map(entry -> buildMapRequirementDefinition(entry.getKey(), entry.getValue()))
-            .collect(Collectors.toList());
-    }
-
-    @Nullable
     public TMapRequirementDefinition buildMapRequirementDefinition(String key, Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         TMapRequirementDefinition result = new TMapRequirementDefinition();
         put(result, key, buildRequirementDefinition(object));
         return result;
@@ -751,7 +591,7 @@ public class Builder {
 
     @Nullable
     public TRequirementDefinition buildRequirementDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) return new TRequirementDefinition.Builder(buildQName((String) object)).build();
         if (!validate(TRequirementDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
@@ -765,37 +605,19 @@ public class Builder {
 
     @Nullable
     public TRelationshipDefinition buildRelationshipDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) return new TRelationshipDefinition.Builder(buildQName((String) object)).build();
         if (!validate(TRelationshipDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TRelationshipDefinition.Builder(buildQName((String) map.get("type")))
-            .setInterfaces(buildMapInterfaceDefinition(map.get("interfaces"), "TRelationshipDefinition"))
+            .setInterfaces(buildMap(map.get("interfaces"), "TRelationshipDefinition", this::buildInterfaceDefinition))
             .build();
     }
 
     @Nullable
-    public Map<String, TCapabilityDefinition> buildMapCapabilityDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildCapabilityDefinition(entry.getValue())));
-    }
-
-    private <T> void put(Map<String, T> map, String key, T value) {
-        if (Objects.nonNull(map) && Objects.nonNull(key) && Objects.nonNull(value)) map.put(key, value);
-    }
-
-    private <T> boolean nonNull(Map.Entry<String, T> entry) {
-        return Objects.nonNull(entry) && Objects.nonNull(entry.getKey()) && Objects.nonNull(entry.getValue());
-    }
-
-    @Nullable
     public TCapabilityDefinition buildCapabilityDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) return new TCapabilityDefinition.Builder(buildQName((String) object)).build();
         if (!validate(TCapabilityDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
@@ -804,24 +626,14 @@ public class Builder {
             .setDescription(buildDescription(map.get("description")))
             .setOccurrences(buildListString(map.get("occurrences")))
             .setValidSourceTypes(buildListQName(buildListString(map.get("valid_source_types"))))
-            .setProperties(buildProperties(map.get("properties")))
-            .setAttributes(buildAttributes(map.get("attributes")))
+            .setProperties(buildMap(map.get("properties"), TPropertyDefinition.class, this::buildPropertyDefinition))
+            .setAttributes(buildMap(map.get("attributes"), this::buildAttributeDefinition))
             .build();
     }
 
     @Nullable
-    public Map<String, TArtifactDefinition> buildMapArtifactDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildArtifactDefinition(entry.getValue())));
-    }
-
-    @Nullable
     public TArtifactDefinition buildArtifactDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) {
             String file = (String) object;
             // TODO infer artifact type and mime type from file URI
@@ -846,46 +658,26 @@ public class Builder {
             .setRepository((String) map.get("repository"))
             .setDescription(buildDescription(map.get("description")))
             .setDeployPath((String) map.get("deploy_path"))
-            .setProperties(buildMapPropertyAssignment(map.get("properties")))
+            .setProperties(buildMap(map.get("properties"), this::buildPropertyAssignment))
             .build();
-    }
-
-    @Nullable
-    public Map<String, TGroupType> buildGroupTypes(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildGroupType(entry.getValue())));
     }
 
     @Nullable
     public TGroupType buildGroupType(Object object) {
-        if (!Objects.nonNull(object) || !validate(TGroupType.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TGroupType.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return buildEntityType(object, TGroupType.class, new TGroupType.Builder())
             .setMembers(buildListQName(buildListString(map.get("members"))))
-            .setRequirements(buildListMapRequirementDefinition(map.get("requirements")))
-            .setCapabilities(buildMapCapabilityDefinition(map.get("capabilities")))
-            .setInterfaces(buildMapInterfaceDefinition(map.get("interfaces"), "TGroupType"))
+            .setRequirements(buildList(map.get("requirements"), this::buildMapRequirementDefinition))
+            .setCapabilities(buildMap(map.get("capabilities"), this::buildCapabilityDefinition))
+            .setInterfaces(buildMap(map.get("interfaces"), "TGroupType", this::buildInterfaceDefinition))
             .build();
     }
 
     @Nullable
-    public Map<String, TPolicyType> buildPolicyTypes(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildPolicyType(entry.getValue())));
-    }
-
-    @Nullable
     public TPolicyType buildPolicyType(Object object) {
-        if (!Objects.nonNull(object) || !validate(TPolicyType.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TPolicyType.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return buildEntityType(object, TPolicyType.class, new TPolicyType.Builder())
@@ -895,18 +687,8 @@ public class Builder {
     }
 
     @Nullable
-    public Map<String, TParameterDefinition> buildMapParameterDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildParameterDefinition(entry.getValue())));
-    }
-
-    @Nullable
     public TParameterDefinition buildParameterDefinition(Object object) {
-        if (!Objects.nonNull(object) || !validate(TParameterDefinition.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TParameterDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TParameterDefinition.Builder(buildPropertyDefinition(object, TParameterDefinition.class))
@@ -915,73 +697,50 @@ public class Builder {
     }
 
     @Nullable
-    public Map<String, TNodeTemplate> buildNodeTemplates(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildNodeTemplate(entry.getValue())));
-    }
-
-    @Nullable
     public TNodeTemplate buildNodeTemplate(Object object) {
-        if (!Objects.nonNull(object) || !validate(TNodeTemplate.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TNodeTemplate.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TNodeTemplate.Builder(buildQName((String) map.get("type")))
             .setDescription(buildDescription(map.get("description")))
             .setMetadata(buildMetadata(map.get("metadata")))
             .setDirectives(buildListString(map.get("directives")))
-            .setProperties(buildMapPropertyAssignment(map.get("properties")))
-            .setAttributes(buildMapAttributeAssignment(map.get("attributes")))
-            .setRequirements(buildListMapRequirementAssignment(map.get("requirements")))
-            .setCapabilities(buildMapCapabilityAssignment(map.get("capabilities")))
-            .setInterfaces(buildMapInterfaceDefinition(map.get("interfaces"), "TNodeTemplate"))
-            .setArtifacts(buildMapArtifactDefinition(map.get("artifacts")))
+            .setProperties(buildMap(map.get("properties"), this::buildPropertyAssignment))
+            .setAttributes(buildMap(map.get("attributes"), this::buildAttributeAssignment))
+            .setRequirements(buildList(map.get("requirements"), this::buildMapRequirementAssignment))
+            .setCapabilities(buildMap(map.get("capabilities"), this::buildCapabilityAssignment))
+            .setInterfaces(buildMap(map.get("interfaces"), "TNodeTemplate", this::buildInterfaceDefinition))
+            .setArtifacts(buildMap(map.get("artifacts"), this::buildArtifactDefinition))
             .setNodeFilter(buildNodeFilterDefinition(map.get("node_filter")))
             .setCopy(buildQName((String) map.get("copy")))
             .build();
     }
 
     @Nullable
-    public Map<String, TAttributeAssignment> buildMapAttributeAssignment(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildAttributeAssignment(entry.getValue())));
-    }
-
-    @Nullable
     public TAttributeAssignment buildAttributeAssignment(Object object) {
-        if (!Objects.nonNull(object) || !validate(TAttributeAssignment.class, object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return new TAttributeAssignment.Builder()
-            .setDescription(buildDescription(map.get("description")))
-            .setValue(map.get("value"))
-            .build();
-    }
-
-    @Nullable
-    public List<TMapRequirementAssignment> buildListMapRequirementAssignment(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> list = (List<Map<String, Object>>) object;
-        return list.stream()
-            .filter(Objects::nonNull)
-            .flatMap(entry -> entry.entrySet().stream())
-            .filter(Objects::nonNull)
-            .map(entry -> buildMapRequirementAssignment(entry.getKey(), entry.getValue()))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+        if (Objects.isNull(object)) return null;
+        if (!(object instanceof Map)) {
+            // Attribute assignment with simple value
+            return new TAttributeAssignment.Builder().setValue(object).build();
+        } else if (!((Map) object).containsKey("value")) {
+            // Attribute assignment with <attribute_value_expression>
+            return new TAttributeAssignment.Builder().setValue(object).build();
+        } else if (((Map) object).containsKey("value") && validate(TAttributeAssignment.class, object)) {
+            // Attribute assignment with extended notation
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map<String, Object>) object;
+            return new TAttributeAssignment.Builder()
+                .setDescription(buildDescription(map.get("description")))
+                .setValue(map.get("value"))
+                .build();
+        } else {
+            return null;
+        }
     }
 
     @Nullable
     public TMapRequirementAssignment buildMapRequirementAssignment(String key, Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         TMapRequirementAssignment result = new TMapRequirementAssignment();
         put(result, key, buildRequirementAssignment(object));
         return result;
@@ -989,7 +748,7 @@ public class Builder {
 
     @Nullable
     public TRequirementAssignment buildRequirementAssignment(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) return new TRequirementAssignment(buildQName((String) object));
         if (!validate(TRequirementAssignment.class, object)) return null;
         @SuppressWarnings("unchecked")
@@ -1005,76 +764,51 @@ public class Builder {
 
     @Nullable
     public TRelationshipAssignment buildRelationshipAssignment(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         if (object instanceof String) return new TRelationshipAssignment.Builder(buildQName((String) object)).build();
         if (!validate(TRelationshipAssignment.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TRelationshipAssignment.Builder(buildQName((String) map.get("type")))
-            .setProperties(buildMapPropertyAssignment(map.get("properties")))
-            .setInterfaces(buildMapInterfaceAssignment(map.get("interfaces")))
+            .setProperties(buildMap(map.get("properties"), this::buildPropertyAssignment))
+            .setInterfaces(buildMap(map.get("interfaces"), this::buildInterfaceAssignment))
             .build();
-    }
-
-    @Nullable
-    public Map<String, TInterfaceAssignment> buildMapInterfaceAssignment(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildInterfaceAssignment(entry.getValue())));
     }
 
     @Nullable
     public TInterfaceAssignment buildInterfaceAssignment(Object object) {
-        if (!Objects.nonNull(object) || !validate(TInterfaceAssignment.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TInterfaceAssignment.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
-        Set<String> keys = Stream.of("type", "inputs").collect(Collectors.toSet());
         TInterfaceAssignment.Builder builder = new TInterfaceAssignment.Builder();
         builder.setType(buildQName((String) map.get("type")))
             .setInputs(buildPropertyAssignmentOrDefinition(map.get("inputs"), "TInterfaceAssignment"))
             .setOperations(
-                map.entrySet().stream()
-                    .filter(Objects::nonNull)
-                    .filter(entry -> !keys.contains(entry.getKey()))
-                    .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> buildOperationDefinition(entry.getValue(), "TInterfaceAssignment")
-                    ))
+                buildMap(object, "TInterfaceAssignment", this::buildOperationDefinition, this::filterInterfaceAssignmentOperation)
             );
         return builder.build();
     }
 
+    private Boolean filterInterfaceAssignmentOperation(Map.Entry<String, Object> entry) {
+        if (Objects.isNull(entry.getKey())) return false;
+        Set<String> keys = Stream.of("type", "inputs").collect(Collectors.toSet());
+        return !keys.contains(entry.getKey());
+    }
+
     @Nullable
     public TNodeFilterDefinition buildNodeFilterDefinition(Object object) {
-        if (!Objects.nonNull(object) || !validate(TNodeFilterDefinition.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TNodeFilterDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TNodeFilterDefinition.Builder()
-            .setProperties(buildListMapPropertyFilterDefinition(map.get("properties")))
-            .setCapabilities(buildListMapObjectValue(map.get("capabilities")))
+            .setProperties(buildList(map.get("properties"), this::buildMapPropertyDefinition))
+            .setCapabilities(buildList(map.get("capabilities"), this::buildMapObjectValue))
             .build();
     }
 
     @Nullable
-    public List<TMapPropertyFilterDefinition> buildListMapPropertyFilterDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> list = (List<Map<String, Object>>) object;
-        return list.stream()
-            .filter(Objects::nonNull)
-            .flatMap(entry -> entry.entrySet().stream())
-            .filter(Objects::nonNull)
-            .map(entry -> buildMapPropertyDefinition(entry.getKey(), entry.getValue()))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    }
-
-    @Nullable
     public TMapPropertyFilterDefinition buildMapPropertyDefinition(String key, Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         TMapPropertyFilterDefinition result = new TMapPropertyFilterDefinition();
         put(result, key, buildPropertyFilterDefinition(object));
         return result;
@@ -1082,158 +816,152 @@ public class Builder {
 
     @Nullable
     public TPropertyFilterDefinition buildPropertyFilterDefinition(Object object) {
-        if (!Objects.nonNull(object) || !validate(TPropertyFilterDefinition.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TPropertyFilterDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TPropertyFilterDefinition.Builder()
-            .setConstraints(buildConstraints(map.get("constraints")))
+            .setConstraints(buildList(map.get("constraints"), this::buildConstraintClause))
             .build();
     }
 
     @Nullable
-    public List<TMapObject> buildListMapObjectValue(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> list = (List<Map<String, Object>>) object;
-        return list.stream()
-            .filter(Objects::nonNull)
-            .flatMap(map -> map.entrySet().stream())
-            .filter(Objects::nonNull)
-            .map(entry -> buildMapObjectValue(entry.getKey(), entry.getValue()))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    }
-
-    @Nullable
     public TMapObject buildMapObjectValue(String key, Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         TMapObject result = new TMapObject();
         put(result, key, object);
         return result;
     }
 
     @Nullable
-    public Map<String, TCapabilityAssignment> buildMapCapabilityAssignment(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildCapabilityAssignment(entry.getValue())));
-    }
-
-    @Nullable
     public TCapabilityAssignment buildCapabilityAssignment(Object object) {
-        if (!Objects.nonNull(object) || !validate(TCapabilityAssignment.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TCapabilityAssignment.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TCapabilityAssignment.Builder()
-            .setProperties(buildMapPropertyAssignment(map.get("properties")))
-            .setAttributes(buildMapAttributeAssignment(map.get("attributes")))
+            .setProperties(buildMap(map.get("properties"), this::buildPropertyAssignment))
+            .setAttributes(buildMap(map.get("attributes"), this::buildAttributeAssignment))
             .build();
     }
 
     @Nullable
-    public Map<String, TRelationshipTemplate> buildRelationshipTemplates(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildRelationshipTemplate(entry.getValue())));
-    }
-
-    @Nullable
     public TRelationshipTemplate buildRelationshipTemplate(Object object) {
-        if (!Objects.nonNull(object) || !validate(TRelationshipTemplate.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TRelationshipTemplate.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TRelationshipTemplate.Builder(buildQName((String) map.get("type")))
             .setDescription(buildDescription(map.get("description")))
             .setMetadata(buildMetadata(map.get("metadata")))
-            .setProperties(buildMapPropertyAssignment(map.get("properties")))
-            .setAttributes(buildMapAttributeAssignment(map.get("attributes")))
-            .setInterfaces(buildMapInterfaceDefinition(map.get("interfaces"), "TRelationshipTemplate"))
+            .setProperties(buildMap(map.get("properties"), this::buildPropertyAssignment))
+            .setAttributes(buildMap(map.get("attributes"), this::buildAttributeAssignment))
+            .setInterfaces(buildMap(map.get("interfaces"), "TRelationshipTemplate", this::buildInterfaceDefinition))
             .setCopy(buildQName((String) map.get("copy")))
             .build();
     }
 
     @Nullable
-    public Map<String, TGroupDefinition> buildGroupDefinitions(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildGroupDefinition(entry.getValue())));
-    }
-
-    @Nullable
     public TGroupDefinition buildGroupDefinition(Object object) {
-        if (!Objects.nonNull(object) || !validate(TGroupDefinition.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TGroupDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TGroupDefinition.Builder(buildQName((String) map.get("type")))
             .setDescription(buildDescription(map.get("description")))
             .setMetadata(buildMetadata(map.get("metadata")))
-            .setProperties(buildMapPropertyAssignment(map.get("properties")))
+            .setProperties(buildMap(map.get("properties"), this::buildPropertyAssignment))
             .setMembers(buildListQName(buildListString(map.get("members"))))
-            .setInterfaces(buildMapInterfaceDefinition(map.get("interfaces"), "TGroupDefinition"))
+            .setInterfaces(buildMap(map.get("interfaces"), "TGroupDefinition", this::buildInterfaceDefinition))
             .build();
     }
 
     @Nullable
-    public Map<String, TPolicyDefinition> buildMapPolicyDefinition(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildPolicyDefinition(entry.getValue())));
-    }
-
-    @Nullable
     public TPolicyDefinition buildPolicyDefinition(Object object) {
-        if (!Objects.nonNull(object) || !validate(TPolicyDefinition.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TPolicyDefinition.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TPolicyDefinition.Builder(buildQName((String) map.get("type")))
             .setDescription(buildDescription(map.get("description")))
             .setMetadata(buildMetadata(map.get("metadata")))
-            .setProperties(buildMapPropertyAssignment(map.get("properties")))
+            .setProperties(buildMap(map.get("properties"), this::buildPropertyAssignment))
             .setTargets(buildListQName(buildListString(map.get("targets"))))
             .build();
     }
 
     @Nullable
     public TSubstitutionMappings buildSubstitutionMappings(Object object) {
-        if (!Objects.nonNull(object) || !validate(TSubstitutionMappings.class, object)) return null;
+        if (Objects.isNull(object) || !validate(TSubstitutionMappings.class, object)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
         return new TSubstitutionMappings.Builder()
             .setNodeType(buildQName((String) map.get("node_type")))
-            .setCapabilities(buildMapStringList(map.get("capabilities")))
-            .setRequirements(buildMapStringList(map.get("requirements")))
+            .setCapabilities(buildMap(map.get("capabilities"), this::buildStringList))
+            .setRequirements(buildMap(map.get("requirements"), this::buildStringList))
             .build();
     }
 
     @Nullable
-    public Map<String, TListString> buildMapStringList(Object object) {
-        if (!Objects.nonNull(object)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return map.entrySet().stream()
-            .filter(this::nonNull)
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> buildStringList(entry.getValue())));
-    }
-
-    @Nullable
     public TListString buildStringList(Object object) {
-        if (!Objects.nonNull(object)) return null;
+        if (Objects.isNull(object)) return null;
         @SuppressWarnings("unchecked")
         List<String> tmp = (List<String>) object;
         TListString stringList = new TListString();
         stringList.addAll(tmp);
         return stringList;
+    }
+
+    private <T> void put(Map<String, T> map, String key, T value) {
+        if (Objects.nonNull(map) && Objects.nonNull(key) && Objects.nonNull(value)) map.put(key, value);
+    }
+
+    private <T> boolean nonNull(Map.Entry<String, T> entry) {
+        return Objects.nonNull(entry) && Objects.nonNull(entry.getKey()) && Objects.nonNull(entry.getValue());
+    }
+
+    private <T> boolean nonNull(Pair<String, T> pair) {
+        return Objects.nonNull(pair) && Objects.nonNull(pair.getOne()) && Objects.nonNull(pair.getTwo());
+    }
+
+    private <T> Map<String, T> buildMap(Object object, @NonNull Function<Object, T> builder) {
+        return buildMap(object, builder, this::nonNull);
+    }
+
+    private <T, K> Map<String, T> buildMap(Object objectA, @NonNull K objectB, @NonNull BiFunction<Object, K, T> builder) {
+        return buildMap(objectA, objectB, builder, this::nonNull);
+    }
+
+    private <T, K> Map<String, T> buildMap(Object object, @NonNull K context, @NonNull BiFunction<Object, K, T> builder,
+                                           Predicate<Map.Entry<String, Object>> filter) {
+        if (Objects.isNull(object)) return null;
+        return buildStream(object, filter)
+            .map(entry -> Tuples.pair(entry.getKey(), builder.apply(entry.getValue(), context)))
+            .filter(this::nonNull)
+            .collect(Collectors.toMap(Pair::getOne, Pair::getTwo));
+    }
+
+    private <T> Map<String, T> buildMap(Object object, @NonNull Function<Object, T> builder,
+                                        Predicate<Map.Entry<String, Object>> filter) {
+        if (Objects.isNull(object)) return null;
+        return buildStream(object, filter)
+            .map(entry -> Tuples.pair(entry.getKey(), builder.apply(entry.getValue())))
+            .filter(this::nonNull)
+            .collect(Collectors.toMap(Pair::getOne, Pair::getTwo));
+    }
+
+    private Stream<Map.Entry<String, Object>> buildStream(Object object, Predicate<Map.Entry<String, Object>> filter) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = (Map<String, Object>) object;
+        return map.entrySet().stream()
+            .filter(filter);
+    }
+    
+    private <T> List<T> buildList(Object object, BiFunction<String, Object, T> builder) {
+        if (Objects.isNull(object)) return null;
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> list = (List<Map<String, Object>>) object;
+        return list.stream()
+            .filter(Objects::nonNull)
+            .flatMap(map -> map.entrySet().stream())
+            .filter(this::nonNull)
+            .map(entry -> builder.apply(entry.getKey(), entry.getValue()))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 }
