@@ -6,7 +6,7 @@ This file explains how to create and maintain copyright headers in source files.
 
 ```
 /********************************************************************************
- * Copyright (c) ${year} Contributors to the Eclipse Foundation
+ * Copyright (c) ${YEAR} Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
