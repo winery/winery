@@ -1,12 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.visitors.support;
+
+import java.nio.file.Path;
 
 import javax.xml.namespace.QName;
 
@@ -14,24 +21,24 @@ import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 
 public class Parameter extends AbstractParameter<Parameter> {
 	private final String namespace;
-	private String path;
+	private Path path;
 	// SchemaVisitor
 	private QName datatype;
 	private Boolean buildSchema;
 	private Boolean buildComplexType;
 
-	public Parameter(String path, String namespace) {
+	public Parameter(Path path, String namespace) {
 		this.namespace = namespace;
 		this.path = path;
 		this.buildSchema = true;
 		this.buildComplexType = true;
 	}
 
-	public String getPath() {
+	public Path getPath() {
 		return path;
 	}
 
-	public Parameter setPath(String path) {
+	public Parameter setPath(Path path) {
 		this.path = path;
 		return this;
 	}

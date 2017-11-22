@@ -1,10 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.reader.yaml;
 
@@ -156,7 +161,7 @@ public class Builder {
         initPrefix2Namespace(map.get("imports"));
 
         TServiceTemplate.Builder builder = new TServiceTemplate.Builder(
-            map.get("tosca_definitions_version").toString()
+            map.getOrDefault("tosca_definitions_version", "").toString()
         ).setMetadata(buildMetadata(map.get("metadata")))
             .setDescription(buildDescription(map.get("description")))
             .setDslDefinitions(buildMap(map.get("dsl_definitions"), obj -> obj))
@@ -237,6 +242,7 @@ public class Builder {
         return new Credential.Builder((String) map.get("token_type"))
             .setProtocol((String) map.get("protocol"))
             .setToken((String) map.get("token"))
+            .setUser((String) map.get("user"))
             .setKeys(keys)
             .build();
     }
@@ -282,6 +288,8 @@ public class Builder {
             return new QName(Namespaces.TOSCA_NS, name, "tosca");
         } else if (Defaults.YAML_TYPES.contains(name)) {
             return new QName(Namespaces.YAML_NS, name, "yaml");
+        } else if (Defaults.TOSCA_TYPES.contains(name)) {
+            return new QName(Namespaces.TOSCA_NS, name, "tosca");
         } else {
             return new QName(namespace, name, "");
         }
@@ -951,7 +959,7 @@ public class Builder {
         return map.entrySet().stream()
             .filter(filter);
     }
-    
+
     private <T> List<T> buildList(Object object, BiFunction<String, Object, T> builder) {
         if (Objects.isNull(object)) return null;
         @SuppressWarnings("unchecked")

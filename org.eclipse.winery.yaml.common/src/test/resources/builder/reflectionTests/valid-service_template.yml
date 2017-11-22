@@ -1,0 +1,394 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains a valid service template (Not Complete)
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  exception: None
+  assert-typeof: |
+      repositories.rp1 = TRepositoryDefinition 
+  assert: |
+    metadata.description = This test contains a valid service template (Not Complete)
+    metadata.targetNamespace = http://www.example.org/ns/simple/yaml/1.1/test
+    description = Description of service template
+    repositories.rp1.url = http://github.com/kleinech
+    repositories.rp2.description = Repository description
+    repositories.rp2.url = http://github.com/kleinech
+    repositories.rp2.credential.protocol = http
+    repositories.rp2.credential.token_type = basic_auth
+    repositories.rp2.credential.token = kleinech:rDMEcq7qG2P5tLT95daz3yzseUruxy
+    repositories.rp3.url = http://github.com/kleinech
+    repositories.rp3.credential.token_type = password
+    repositories.rp3.credential.token = rDMEcq7qG2P5tLT95daz3yzseUruxy
+    repositories.rp3.credential.user = kleinech
+    imports.0.imp1.file = imports/import.yml
+    imports.1.imp2.file = imports/import.yml
+    imports.1.imp2.namespace_uri = http://www.example.org/ns/simple/yaml/1.1/test
+    imports.1.imp2.namespace_prefix = imp
+    artifact_types.artf1.derived_from = tosca.artifacts.File
+    artifact_types.artf1.version = 1.0.0-rc4 
+    artifact_types.artf1.metadata.md1 = Metadata value  
+    artifact_types.artf1.metadata.md2 = Metadata value 
+    artifact_types.artf1.description = Artifact type description 
+    artifact_types.artf1.mime_type = text/plain 
+    artifact_types.artf1.file_ext = [ txt, md ] 
+    artifact_types.artf1.properties.artf1.prt1.type = string 
+    artifact_types.artf1.properties.artf1.prt1.description = Property description 
+    artifact_types.artf1.properties.artf1.prt1.required = false 
+    artifact_types.artf1.properties.artf1.prt1.default = Default value 
+    artifact_types.artf1.properties.artf1.prt1.status = supported 
+    artifact_types.artf1.properties.artf1.prt1.constraints.0.valid_values = [Default value, Non default value] 
+    artifact_types.artf1.properties.artf1.prt2.type = list 
+    artifact_types.artf1.properties.artf1.prt2.entry_schema.description = Entry schema description 
+    artifact_types.artf1.properties.artf1.prt2.entry_schema.type = integer 
+    artifact_types.artf1.properties.artf1.prt2.entry_schema.constraints.0.in_range = [1,10]
+    data_types.dtp1.derived_from = tosca.datatypes.TimeInterval
+    data_types.dtp1.version = 1.0.0
+    data_types.dtp1.metadata.md1 = Metadata value
+    data_types.dtp1.description = Datatype description
+    data_types.dtp1.properties.dtp1.prt1.type = string
+    capability_types.cbt1.derived_from = tosca.capabilities.Node
+    capability_types.cbt1.version = 1.0.0
+    capability_types.cbt1.description = Capability type description
+    capability_types.cbt1.properties.cbt1.prt1.type = string
+    capability_types.cbt1.attributes.cbt1.attr1.type = string
+    capability_types.cbt1.attributes.cbt1.attr1.description = Attribute description
+    capability_types.cbt1.attributes.cbt1.attr1.default = 42
+    capability_types.cbt1.attributes.cbt1.attr1.status = experimental
+    capability_types.cbt1.valid_source_types = [ntp1]
+    interface_types.ift1.derived_from = tosca.interfaces.Root
+    interface_types.ift1.version = 1.0.0
+    interface_types.ift1.metadata.md1 = Metadata value
+    interface_types.ift1.description = Interface type description
+    interface_types.ift1.inputs.ift1.ipt1.type = string
+    interface_types.ift1.operations.op1.description = Interface operation description
+    relationship_types.rlt1.derived_from = tosca.relationships.Root
+    relationship_types.rlt1.version = 1.0.0
+    relationship_types.rlt1.description = Relationship type description
+    relationship_types.rlt1.metadata.md1 = Metadata value
+    relationship_types.rlt1.properties.rlt1.prt1.type = string
+    relationship_types.rlt1.attributes.rlt1.attr1.type = string
+    relationship_types.rlt1.interfaces.intf1.type = tosca.interfaces.node.lifecycle.Standard
+    relationship_types.rlt1.interfaces.intf1.inputs.intf1.prt1.type = string
+    relationship_types.rlt1.interfaces.intf1.operations.op1.description = Interface operation description
+    relationship_types.rlt1.valid_target_types = [ntp1]
+    node_types.ntp1.derived_from = tosca.nodes.Root
+    node_types.ntp1.version = 1.0.0
+    node_types.ntp1.metadata.md1 = Metadata value
+    node_types.ntp1.description = Node type description
+    node_types.ntp1.attributes.ntp1.attr1.type = string
+    node_types.ntp1.properties.ntp1.prt1.type = string
+    node_types.ntp1.requirements.0.rqr1.capability = cbt1
+    node_types.ntp1.requirements.0.rqr1.node = ntp1
+    node_types.ntp1.requirements.0.rqr1.relationship.type = rlt1
+    node_types.ntp1.requirements.0.rqr1.occurrences = [1,10]
+    node_types.ntp1.capabilities.cbt1.type = cbt1
+    node_types.ntp1.capabilities.cbt1.description = Node type capability description
+    node_types.ntp1.capabilities.cbt1.properties.prt1.type = string
+    node_types.ntp1.capabilities.cbt1.attributes.attr1.type = string
+    node_types.ntp1.capabilities.cbt1.valid_source_types = [ntp1]
+    node_types.ntp1.capabilities.cbt1.occurrences = [1,UNBOUNDED]
+    node_types.ntp1.capabilities.cbt2.type = cbt1
+    node_types.ntp1.interfaces.intf1.type = tosca.interfaces.node.lifecycle.Standard
+    group_types.gt1.derived_from = tosca.groups.Root
+    group_types.gt1.version = 1.0.0
+    group_types.gt1.metadata.md1 = Metadata value
+    group_types.gt1.description = Group definition description
+    group_types.gt1.properties.gt1.prt1.type = string
+    group_types.gt1.members = [ntp1]
+    group_types.gt1.requirements.0.rqr1.capability = cbt1
+    group_types.gt1.requirements.0.rqr1.node = ntp1
+    group_types.gt1.requirements.0.rqr1.relationship.type = rlt1
+    group_types.gt1.requirements.0.rqr1.occurrences = [1,10]
+    group_types.gt1.capabilities.cbt1.type = cbt1
+    group_types.gt1.capabilities.cbt1.description = Group type capability description
+    group_types.gt1.capabilities.cbt1.properties.prt1.type = string
+    group_types.gt1.interfaces.intf1.type = tosca.interfaces.node.lifecycle.Standard
+    policy_types.plt1.derived_from = tosca.policies.Performance
+    policy_types.plt1.version = 1.0.0
+    policy_types.plt1.metadata.md1 = Metadata value
+    policy_types.plt1.description = Policy type description
+    policy_types.plt1.properties.plt1.prt1.type = string
+    policy_types.plt1.targets = [ntp1]
+    topology_template.description = Topology template description
+    topology_template.inputs.ipt1.type = integer
+    topology_template.inputs.ipt1.description = Topology template input description
+    topology_template.inputs.ipt1.value = 42
+    topology_template.inputs.ipt1.required = false
+    topology_template.inputs.ipt1.default = 99
+    topology_template.inputs.ipt1.constraints.0.greater_or_equal = 42
+    topology_template.node_templates.ndt1.type = ntp1
+    topology_template.node_templates.ndt1.description = Node template description
+    topology_template.node_templates.ndt1.metadata.md1 = Metadata value
+    topology_template.node_templates.ndt1.directives = [drt1]
+    topology_template.node_templates.ndt1.properties.ndt1.prp1 = Property value
+    topology_template.node_templates.ndt1.attributes.ndt1.attr1 = Attribute value
+    topology_template.node_templates.ndt1.requirements.0.rqr1.node = ndt1
+    topology_template.node_templates.ndt1.capabilities.cbt1.properties.prt1 = Property assignment value
+    topology_template.relationship_templates.rltp1.type = rlt1
+    topology_template.relationship_templates.rltp1.description = Relationship template description
+    topology_template.relationship_templates.rltp1.metadata.md1 = Metadata value
+    topology_template.relationship_templates.rltp1.properties.rlt1.prt1 = String value
+    topology_template.relationship_templates.rltp1.attributes.rlt1.attr = String value
+    topology_template.groups.gtd1.type = gt1
+    topology_template.groups.gtd1.description = Topology template group description
+    topology_template.groups.gtd1.metadata.md1 = Metadata value
+    topology_template.groups.gtd1.properties.gt1.prt1 = Property value
+    topology_template.policies.plc1.type = plt1
+    topology_template.policies.plc1.description = Policy definition
+    topology_template.policies.plc1.metadata.md1 = Metadata value
+    topology_template.policies.plc1.properties.plc1.prt1 = Property value
+    topology_template.outputs.opt1.type = integer
+    topology_template.outputs.opt1.description = Topology template output description
+    
+description: Description of service template
+
+repositories:
+  rp1: http://github.com/kleinech
+  rp2:
+    description: Repository description
+    url: http://github.com/kleinech
+    credential:
+      protocol: http
+      token_type: basic_auth
+      token: kleinech:rDMEcq7qG2P5tLT95daz3yzseUruxy
+  rp3:
+    url: http://github.com/kleinech
+    credential:
+      token_type: password
+      token: rDMEcq7qG2P5tLT95daz3yzseUruxy
+      user: kleinech
+      
+imports:
+  - imp1: imports/import.yml
+  - imp2:
+      file: imports/import.yml
+      namespace_uri: http://www.example.org/ns/simple/yaml/1.1/test
+      namespace_prefix: imp
+    
+artifact_types:
+  artf1:
+    derived_from: tosca.artifacts.File
+    version: 1.0.0-rc4
+    metadata:
+      md1: Metadata value
+      md2: Metadata value
+    description: Artifact type description
+    mime_type: text/plain
+    file_ext: [ txt, md ]
+    properties:
+      artf1.prt1: 
+        type: string
+        description: Property description
+        required: false
+        default: Default value
+        status: supported
+        constraints:
+          - valid_values: ["Default value", "Non default value"]
+      artf1.prt2:
+        type: list
+        entry_schema:
+          description: Entry schema description
+          type: integer
+          constraints:
+            - in_range: [1,10]
+          
+data_types:
+  dtp1: 
+    derived_from: tosca.datatypes.TimeInterval
+    version: 1.0.0
+    metadata:
+      md1: Metadata value
+    description: Datatype description
+    properties:
+      dtp1.prt1:
+        type: string
+
+capability_types:
+  cbt1:
+    derived_from: tosca.capabilities.Node
+    version: 1.0.0
+    description: Capability type description
+    properties: 
+      cbt1.prt1:
+        type: string
+    attributes:
+      cbt1.attr1:
+        type: string
+        description: Attribute description
+        default: 42
+        status: experimental
+    valid_source_types: [ ntp1 ]
+
+interface_types:
+  ift1:
+    derived_from: tosca.interfaces.Root
+    version: 1.0.0
+    metadata:
+      md1: Metadata value
+    description: Interface type description
+    inputs: 
+      ift1.ipt1:
+        type: string
+    op1: 
+      description: Interface operation description
+
+relationship_types:
+  rlt1:
+    derived_from: tosca.relationships.Root
+    version: 1.0.0
+    description: Relationship type description
+    metadata:
+      md1: Metadata value
+    properties: 
+      rlt1.prt1: 
+        type: string
+    attributes: 
+      rlt1.attr1: 
+        type: string
+    interfaces:
+      intf1:
+        type: tosca.interfaces.node.lifecycle.Standard
+        inputs:
+          intf1.prt1: 
+            type: string
+        op1:
+          description: Interface operation description
+    valid_target_types: [ ntp1 ]
+
+node_types:
+  ntp1:
+    derived_from: tosca.nodes.Root
+    version: 1.0.0
+    metadata:
+      md1: Metadata value
+    description: Node type description
+    attributes: 
+      ntp1.attr1:
+        type: string
+    properties:
+      ntp1.prt1:
+        type: string
+    requirements:
+      - rqr1:
+          capability: cbt1
+          node: ntp1
+          relationship: rlt1
+          occurrences: [1, 10]
+    capabilities:
+      cbt1:
+        type: cbt1
+        description: Node type capability description
+        properties: 
+          prt1: 
+            type: string
+        attributes: 
+          attr1: 
+            type: string
+        valid_source_types: [ ntp1 ]
+        occurrences: [1,UNBOUNDED]
+      cbt2: cbt1
+    interfaces:
+      intf1:
+        type: tosca.interfaces.node.lifecycle.Standard
+       
+group_types:
+  gt1:
+    derived_from: tosca.groups.Root
+    version: 1.0.0
+    metadata:
+      md1: Metadata value
+    description: Group definition description
+    properties: 
+      gt1.prt1: 
+        type: string
+    members: [ntp1]
+    requirements:
+      - rqr1:
+          capability: cbt1
+          node: ntp1
+          relationship: rlt1
+          occurrences: [1, 10]
+    capabilities:
+      cbt1:
+        type: cbt1
+        description: Group type capability description
+        properties: 
+          prt1: 
+            type: string
+    interfaces:
+      intf1:
+        type: tosca.interfaces.node.lifecycle.Standard
+    
+policy_types:
+  plt1:
+    derived_from: tosca.policies.Performance
+    version: 1.0.0
+    metadata:
+      md1: Metadata value
+    description: Policy type description
+    properties:
+      plt1.prt1:
+        type: string
+    targets: [ntp1]
+    
+topology_template:
+  description: Topology template description
+  inputs: 
+    ipt1: 
+      type: integer
+      description: Topology template input description
+      value: 42
+      required: false
+      default: 99
+      constraints:
+        - greater_or_equal: 42
+  node_templates:
+    ndt1:
+      type: ntp1
+      description: Node template description
+      metadata: 
+        md1: Metadata value
+      directives: [drt1]
+      properties:
+        ndt1.prp1: Property value
+      attributes:
+        ndt1.attr1: Attribute value
+      requirements:
+        - rqr1:
+            node: ndt1
+      capabilities: 
+        cbt1:
+          properties: 
+            prt1: Property assignment value
+  relationship_templates:
+    rltp1:
+      type: rlt1
+      description: Relationship template description
+      metadata:
+        md1: Metadata value
+      properties:
+        rlt1.prt1: String value
+      attributes:
+        rlt1.attr: String value
+  groups:
+    gtd1:
+      type: gt1
+      description: Topology template group description
+      metadata:
+        md1: Metadata value
+      properties:
+        gt1.prt1: Property value
+  policies:
+    plc1:
+      type: plt1
+      description: Policy definition
+      metadata:
+        md1: Metadata value
+      properties:
+        plc1.prt1: Property value
+  outputs:
+    opt1: 
+      type: integer
+      description: Topology template output description
+        

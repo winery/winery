@@ -1,16 +1,23 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
@@ -26,25 +33,25 @@ import org.eclipse.winery.yaml.common.validator.support.Parameter;
 import org.eclipse.winery.yaml.common.validator.support.Result;
 
 public class ImportVisitor extends ExceptionVisitor<Result, Parameter> {
-    protected final String path;
+    protected final Path path;
     protected String namespace;
 
-    public ImportVisitor(String namespace, String path) {
+    public ImportVisitor(String namespace, Path path) {
         this.path = path;
         this.namespace = namespace;
     }
 
     @Override
     public Result visit(TServiceTemplate node, Parameter parameter) {
-        Reader reader = new Reader();
+        Reader reader = Reader.getReader();
         if (!this.namespace.equals(Namespaces.TOSCA_NS)) {
             TServiceTemplate serviceTemplate;
             try {
-                File out = new File(Utils.getTmpDir("normative_file").toString() + Defaults.TOSCA_NORMATIVE_TYPES);
-                InputStream inputStream = this.getClass().getResourceAsStream(Defaults.TOSCA_NORMATIVE_TYPES);
-                Files.copy(inputStream, out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Path outFilePath = Utils.getTmpDir(Paths.get("normative_file")).resolve(Defaults.TOSCA_NORMATIVE_TYPES);
+                InputStream inputStream = this.getClass().getResourceAsStream(File.separator.concat(Defaults.TOSCA_NORMATIVE_TYPES));
+                Files.copy(inputStream, outFilePath, StandardCopyOption.REPLACE_EXISTING);
 
-                serviceTemplate = reader.parseSkipTest(out.toString(), Namespaces.TOSCA_NS);
+                serviceTemplate = reader.parseSkipTest(outFilePath, Namespaces.TOSCA_NS);
                 String tmpNamespace = this.namespace;
                 this.namespace = Namespaces.TOSCA_NS;
                 this.visit(serviceTemplate, new Parameter());
@@ -62,7 +69,7 @@ public class ImportVisitor extends ExceptionVisitor<Result, Parameter> {
 
     @Override
     public Result visit(TImportDefinition node, Parameter parameter) {
-        Reader reader = new Reader();
+        Reader reader = Reader.getReader();
         String importNamespace = node.getNamespaceUri() == null ? this.namespace : node.getNamespaceUri();
         try {
             TServiceTemplate serviceTemplate = reader.parse(node, path, importNamespace);

@@ -1,0 +1,7 @@
+tosca_definitions_version: tosca_simple_yaml_1_1 description: test whether parser can handle a missing line break
+
+metadata:
+  description: This test contains an invalid tosca_definitions_value.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  exception: InvalidSyntax

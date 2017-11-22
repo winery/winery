@@ -1,10 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter;
 
@@ -49,7 +54,7 @@ public class Converter {
 		this.repository = repository;
 	}
 
-	public Definitions convertY2X(TServiceTemplate serviceTemplate, String name, String namespace, String path, String outPath) {
+	public Definitions convertY2X(TServiceTemplate serviceTemplate, String name, String namespace, Path path, Path outPath) {
 		return new Y2XConverter(this.repository).convert(serviceTemplate, name, namespace, path, outPath);
 	}
 
@@ -62,17 +67,16 @@ public class Converter {
 				.map(File::toPath)
 				.filter(file -> matcher.matches(file.getFileName()))
 				.map(file -> {
-					Reader reader = new Reader();
+					Reader reader = Reader.getReader();
 					try {
 						String id = file.getFileName().toString().substring(0, file.getFileName().toString().lastIndexOf("."));
-						String fileName = file.subpath(path.getNameCount(), file.getNameCount()).toString();
-						String filePath = path.toString();
-						String fileOutPath = filePath + File.separator + "tmp";
-						String namespace = reader.getNamespace(filePath, fileName);
-						TServiceTemplate serviceTemplate = reader.parse(filePath, fileName);
+						Path fileName = file.subpath(path.getNameCount(), file.getNameCount());
+						Path fileOutPath = path.resolve("tmp");
+						String namespace = reader.getNamespace(path, fileName);
+						TServiceTemplate serviceTemplate = reader.parse(path, fileName);
 						LOGGER.debug("Convert filePath = {}, fileName = {}, id = {}, namespace = {}, fileOutPath = {}",
-							filePath, fileName, id, namespace, fileOutPath);
-						this.convertY2X(serviceTemplate, id, namespace, filePath, fileOutPath);
+							path, fileName, id, namespace, fileOutPath);
+						this.convertY2X(serviceTemplate, id, namespace, path, fileOutPath);
 					} catch (YAMLParserException e) {
 						return new MultiException().add(e);
 					} catch (MultiException e) {
@@ -89,22 +93,21 @@ public class Converter {
 	}
 
 	public InputStream convertX2Y(InputStream csar) {
-		Path path = Utils.unzipFile(csar);
-		String filePath = path.toString();
-		String fileOutPath = path + File.separator + "tmp";
+		Path filePath = Utils.unzipFile(csar);
+		Path fileOutPath = filePath.resolve("tmp");
 		try {
 			TOSCAMetaFileParser parser = new TOSCAMetaFileParser();
-			TOSCAMetaFile metaFile = parser.parse(path.resolve("TOSCA-Metadata").resolve("TOSCA.meta"));
+			TOSCAMetaFile metaFile = parser.parse(filePath.resolve("TOSCA-Metadata").resolve("TOSCA.meta"));
 
 			org.eclipse.winery.yaml.common.reader.xml.Reader reader = new org.eclipse.winery.yaml.common.reader.xml.Reader();
 			try {
 				String fileName = metaFile.getEntryDefinitions();
-				Definitions definitions = reader.parse(filePath, fileName);
+				Definitions definitions = reader.parse(filePath, Paths.get(fileName));
 				this.convertX2Y(definitions, fileOutPath);
 			} catch (MultiException e) {
 				LOGGER.error("Convert TOSCA XML to TOSCA YAML error", e);
 			}
-			return Utils.zipPath(Paths.get(fileOutPath));
+			return Utils.zipPath(fileOutPath);
 		} catch (Exception e) {
 			LOGGER.error("Error", e);
 			throw new AssertionError();
@@ -112,12 +115,12 @@ public class Converter {
 	}
 
 	public InputStream convertX2Y(DefinitionsChildId id) {
-		File path = Utils.getTmpDir(id.getQName().getLocalPart());
-		convertX2Y(repository.getDefinitions(id), path.getPath());
-		return Utils.zipPath(path.toPath());
+		Path path = Utils.getTmpDir(Paths.get(id.getQName().getLocalPart()));
+		convertX2Y(repository.getDefinitions(id), path);
+		return Utils.zipPath(path);
 	}
 
-	public Map<File, TServiceTemplate> convertX2Y(Definitions definitions, String outPath) {
+	public Map<File, TServiceTemplate> convertX2Y(Definitions definitions, Path outPath) {
 		return new X2YConverter(this.repository, outPath).convert(definitions, outPath);
 	}
 }

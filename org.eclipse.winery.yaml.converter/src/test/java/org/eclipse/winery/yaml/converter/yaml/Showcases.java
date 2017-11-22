@@ -1,16 +1,22 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -33,7 +39,7 @@ import org.junit.Test;
 public class Showcases extends AbstractTestY2X {
 
 	public Showcases() {
-		super("src/test/resources/yaml/Showcase");
+		super(Paths.get("src/test/resources/yaml/Showcase"));
 	}
 
 	public MultiException convert(String path, String namespace, Stream<String> files) throws Exception {
@@ -50,7 +56,7 @@ public class Showcases extends AbstractTestY2X {
 			})
 			.filter(Objects::nonNull)
 			.map(entry -> new LinkedHashMap.SimpleEntry<>(entry.getKey(), convert(entry.getValue(), entry.getKey(), namespace)))
-			.forEach(entry -> WriterUtils.saveDefinitions(entry.getValue(), OUT_PATH, namespace, entry.getKey()));
+			.forEach(entry -> WriterUtils.saveDefinitions(entry.getValue(), outPath, namespace, entry.getKey()));
 		if (exception.hasException()) {
 			throw exception.getException();
 		}
@@ -83,7 +89,7 @@ public class Showcases extends AbstractTestY2X {
 	@Test
 	public void zipTypeTest() throws Exception {
 		String name = "Showcase.csar";
-		InputStream inputStream = new FileInputStream(PATH + File.separator + name);
+		InputStream inputStream = new FileInputStream(path + File.separator + name);
 		Converter converter = new Converter();
 		converter.convertY2X(inputStream);
 		TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(
