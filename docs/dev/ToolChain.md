@@ -88,7 +88,7 @@ This is required by the Eclipse process for checking for intellectual property (
      Now, Git Gui shows the difference between `upstream/master` and your changes.
   6. Check changes in Git Gui:
      - Each change you wanted: Is it recognized?
-     - At each file: Is the copyright information in the header OK?
+     - At each file: Is the copyright information in the [header](CodeHeaders.md) OK?
      - Are there too much changed lines? 🡒 Do not stage spurious lines to the commit (e.g., tab to spaces, ...)
      - Are there too much changed files? 🡒 Do not stage files you did not intend to change (e.g., `build.gradle` if you did not touch `build.gradle` at all)
      - Check again the style (!)
