@@ -62,304 +62,532 @@ Copyright (c) 2017 ZTE Coperation
 
 == Third-party Content
 
-Apache Commons Codec Version: 1.3 
-* License: Apache License 2.0
+@angular/animations/browser/testing Version:  
+* License: 
 
-Apache Commons Compress Version: 1.6 
-* License: Apache License 2.0
+@angular/common/http/testing Version:  
+* License: 
 
-Apache Commons Configuration Version: 1.2 
-* License: Apache License 2.0
+@angular/common/testing Version:  
+* License: 
 
-Apache Commons Configuration Version: 1.9 
-* License: Apache License 2.0
+@angular/compiler/testing Version:  
+* License: 
 
-Apache Commons Lang Version: 2.6 
-* License: Apache License 2.0
+@angular/core/testing Version:  
+* License: 
 
-Apache Commons Lang Version: 3.1.0 
-* License: Apache License 2.0
+@angular/http/testing Version:  
+* License: 
 
-Apache Commons IO Version: 2.1 
-* License: Apache License 2.0
+@angular/platform-browser-dynamic/testing Version:  
+* License: 
 
-Apache Commons IO Version: 2.4 
-* License: Apache License 2.0
+@angular/platform-browser/testing Version:  
+* License: 
 
-Apache httpclient Version: 3.1 
-* License: Apache License 2.0
+@angular/router/testing Version:  
+* License: 
 
-Apache Tika Core Version: 1.3 *subset excluding test folder* 
-* License: Apache License 2.0
+@angular/router/upgrade Version:  
+* License: 
 
-blueimp canvas to blob Version: 2.1.0
-* License: MIT License
-* Project: https://github.com/blueimp/JavaScript-Canvas-to-Blob
-* Source: https://github.com/blueimp/JavaScript-Canvas-to-Blob/archive/2.1.0.zip
-
-blueimp file upload Version: 9.5.3
-* License: MIT License
-* Project: https://github.com/blueimp/jQuery-File-Upload
-* Source: https://github.com/blueimp/jQuery-File-Upload/archive/9.5.3.zip
-
-blueimp load image  Version: 1.11.0
-* License: MIT License
-* Project: https://github.com/blueimp/JavaScript-Load-Image
-* Source: https://github.com/blueimp/JavaScript-Load-Image/archive/1.11.0.zip
-
-blueimp tmpl  Version: 2.5.3
-* License: MIT License
-* Project: https://github.com/blueimp/JavaScript-Templates
-* Source: https://github.com/blueimp/JavaScript-Templates/archive/2.5.3.zip
-
-Bootstrap Switch Version: 1.9.0
-* License: Apache License, 2.0
-* Project: http://www.bootstrap-switch.org/
-* Source: https://github.com/nostalgiaz/bootstrap-switch/archive/v1.9.0.zip
-
-bootstrap-touchspin Version: 3.1.2
-* License: Apache License, 2.0
-* Project: https://github.com/istvan-ujjmeszaros/bootstrap-touchspin
-* Source: https://github.com/istvan-ujjmeszaros/bootstrap-touchspin
-
-bootstrap 3 typeahead version 4.0.2
-* License: Apache License, 2.0
-* Project: https://github.com/bassjobsen/Bootstrap-3-Typeahead
-* Source: https://github.com/bassjobsen/Bootstrap-3-Typeahead
-
-bootstrap3-wysihtml5-bower Version: 0.2.8
-* License: MIT License
-* Project: https://github.com/Waxolunist/bootstrap3-wysihtml5-bower
-* Source: https://github.com/Waxolunist/bootstrap3-wysihtml5-bower/archive/v0.2.8.zip
-
-Datatables Version: 1.9.4 
-* License: New BSD license, MIT
-
-Google Guava Version: 15.0.0 
-* License: Apache License 2.0
-
-Git Logomark Version: n/a 
-* License: Creative Commons Attribution 3.0 Unported
-
-Handlebars Version: 1.3.0
-* License: MIT License
-* Project: http://handlebarsjs.com/
-* Source: https://github.com/wycats/handlebars.js/archive/v1.3.0.zip
-
-httpclient Version: 4.0b1 
-* License: Apache License, 2.0
-
-Jackson  2.2.2 
-* License: Apache License 2.0
-
-Jackson-Annotations Version: 2.2.2
-* License: Apache License, 2.0
-* Project: https://github.com/FasterXML/jackson-annotations
-* Source: https://github.com/FasterXML/jackson-annotations/archive/jackson-annotations-2.2.2.zip
-
-jackson-core Version 2.8.6 
-* License: Apache-2.0 
-
-jackson-databind Version: 2.8.6 
-* License: Apache-2.0 
-
-jackson-annotations Version: 2.8.0 
-* License: Apache-2.0 
-
-jackson-jaxrs-json-provider Version:2.7.7 
-* License: Apache-2.0 
-
-jackson-jaxrs-base Version:2.7.7 
-* License: Apache-2.0 
-
-Jackson: JAX-RS providers Version: 2.2.2
-* License: Apache License, 2.0
-* Project: https://github.com/FasterXML/jackson-jaxrs-providers
-* Source: https://github.com/FasterXML/jackson-jaxrs-providers/archive/jackson-jaxrs-providers-2.2.2.zip
-
-jackson-module-jaxb-annotations Version: 2.7.7 
-* License: Apache-2.0 
-
-Jackson Module: JAXB Annotations Version: 2.3.0
-* License: Apache License, 2.0
-* Project: https://github.com/FasterXML/jackson-module-jaxb-annotations
-* Source: https://github.com/FasterXML/jackson-module-jaxb-annotations/archive/jackson-module-jaxb-annotations-2.3.0.zip
-
-Jackson Module: JSON Schema Version: 2.3.0
-* License: Apache License, 2.0
-* Project: https://github.com/FasterXML/jackson-module-jsonSchema
-* Source: https://github.com/FasterXML/jackson-module-jsonSchema/archive/jackson-module-jsonSchema-2.3.0.zip
-
-javax.servlet.jsp.jstl implementation Version: 1.2 
-* License: Common Development and Distribution License, Apache 2.0 License
-
-jaxb-impl-2.2.5 Version: jar 
-* License: Common Development and Distribution License
-
-JavaEWAH Version: 0.5.6 
-* License: Apache License 2.0
-
-javax.servlet.jsp.jstl api Version: 1.2 
-* License: Common Development and Distribution License, Apache License 2.0
-
-Java Util Parser Manifest Version: 2.0.5
-* License: Apache License, 2.0
-* Project: http://ebr.springsource.com/repository/app/bundle/version/detail?name=com.springsource.util.parser.manifest&version=2.0.5.RELEASE
-* Source: http://ebr.springsource.com/repository/app/bundle/version/download?name=com.springsource.util.parser.manifest&version=2.0.5.RELEASE&type=source
-
-JAX-RS  API Version: 1.1.1 
-* License: Common Development and Distribution License, + 1 file partial ASL 2.0	
-
-Jersey Contribs: Jersey-Multipart Version: 1.17
-* License: Common Development and Distribution License
-* Project: https://jersey.java.net/
-* Source: https://svn.java.net/svn/jersey~svn/tags/jersey-1.17/jersey/contribs/jersey-multipart
-
-Jersey JAX-RS all-in-one bundle Version: 1.17 
-* License: CDDL, Apache 2.0
-
-jersey-servlet Version: 1.11 
-* License: Common Development and Distribution License
-
-jersey-servlet Version: 1.19.3
-* License: CDDL-1.1 OR GPL-2.0
-* Project: https://jersey.github.io/
-* Source: https://maven.java.net/content/repositories/releases/com/sun/jersey/jersey-servlet/1.19.3/jersey-servlet-1.19.3-sources.jar
-
-jQuery Version: 2.0.3
-* License: MIT License
-* Project: http://jquery.com/
-* Source: https://github.com/jquery/jquery/tree/2.0.3
-
-jquery typing Version: 0.3.2-2
-* License: MIT License
-* Project: http://tnajdek.github.io/jquery-typing/
-* Source: https://github.com/tnajdek/jquery-typing/archive/v0.3.2-2.zip
-
-jquery-ui.html  Version: 9.0.1
-* License: MIT License
-* Project: https://github.com/blueimp/jQuery-File-Upload/
-* Source: https://raw.github.com/blueimp/jQuery-File-Upload/9.5.4/jquery-ui.html
-
-jQuery UI Version: 1.10.2 
-* License: MIT License, BSD License
-
-jsBezier Version: 0.6
-* License: MIT License
-* Project: https://github.com/jsplumb/jsBezier
-* Source: https://github.com/jsplumb/jsBezier/tree/master/js/0.6
-
-jsPlumb Version: 1.5.4
-* License: MIT License
-* Project: http://jsplumb.org/
-* Source: https://github.com/sporritt/jsPlumb/tree/1.5.5
-
-jsPlumbGeom  Version: 0.1
-* License: MIT License
-* Project: https://github.com/jsplumb/biltong/
-* Source: https://github.com/jsplumb/biltong/archive/0.1.zip
-
-JSch version 0.1.46 
-* License: New BSD License
-
-KeyboardJS Version: 0.4.2
-* License: BSD License
-* Project: http://robertwhurst.github.io/KeyboardJS/
-* Source: https://github.com/RobertWHurst/KeyboardJS/tree/v0.4.2
-
-Logback Classic Version: 1.1.1
-* License: Eclipse Public License
-* Project: http://logback.qos.ch/
-* Source: http://logback.qos.ch/dist/logback-1.1.1.zip
-
-Logback Core Version: 1.1.1
-* License: Eclipse Public License
-* Project: http://logback.qos.ch/
-* Source: http://logback.qos.ch/dist/logback-1.1.1.zip
-
-OASIS TOSCA.xsd Version: v1.0
-* License: OASIS IPR License (RF on Limited Terms)
-* Project: https://www.oasis-open.org/committees/tosca/
-* Source: http://docs.oasis-open.org/tosca/TOSCA/v1.0/os/schemas/
-
-org.jvnet.mimepull Version: 1.9.4
-* License: Common Development and Distribution License
-* Project: https://mimepull.java.net/
-* Source: https://maven.java.net/content/repositories/releases/org/jvnet/mimepull/mimepull/1.9.4/mimepull-1.9.4-sources.jar
-
-pnotify Version: 1.3.1
-* License: Mozilla Public License 1.1 (MPL)
-* Project: http://sciactive.com/pnotify/
-* Source: https://github.com/sciactive/pnotify/tree/1.3.1
-
-Raphael Version: 2.0.1 
+Angular Animations Version: 4.3.5 
 * License: MIT
+* Project: https://github.com/angular/angular#readme
+* Source: https://registry.npmjs.org/@angular/animations/-/animations-4.3.5.tgz
 
-requirejs Version: 2.1.5 
-* License: Dual: New BSD or MIT License, New BSD (domready.js) only
+Angular Browser Version:  
+* License: 
 
-RestDoc Java Server  Version: 1.7.1
-* License: Apache License, 2.0
-* Project: https://github.com/hoegertn/restdoc-java-server/tree/jaxrs11
-* Source: https://github.com/hoegertn/restdoc-java-server/archive/jaxrs11-v1.7.1.zip
+Angular Common Version: 4.3.5 
+* License: MIT
+* Project: https://github.com/angular/angular#readme
+* Source: https://registry.npmjs.org/@angular/common/-/common-4.3.5.tgz
 
-RestDoc Java Specification  Version: 1.3.0
-* License: Apache License, 2.0
-* Project: https://github.com/RestDoc/restdoc-api
-* Source: https://github.com/RestDoc/restdoc-api/archive/v1.3.0.zip
+Angular Common HTTP Version:  
+* License: 
 
-RestDoc Jersey Server Version: 1.0.1
-* License: Apache License, 2.0
-* Project: https://github.com/koppor/restdoc-server-jersey/tree/v1.0.1
-* Source: https://github.com/koppor/restdoc-server-jersey/archive/v1.0.1.zip
+Angular Compiler Version: 4.3.5 
+* License: MIT
+* Project: https://github.com/angular/angular#readme
+* Source: https://registry.npmjs.org/@angular/compiler/-/compiler-4.3.5.tgz
 
-SLF4J API Version: 1.7.6
-* License: MIT License
-* Project: http://www.slf4j.org/
-* Source: http://www.slf4j.org/dist/slf4j-1.7.6.zip
+Angular Core Version: 4.3.5 
+* License: MIT
+* Project: https://github.com/angular/angular#readme
+* Source: https://registry.npmjs.org/@angular/core/-/core-4.3.5.tgz
+
+Angular Forms Version: 4.3.5 
+* License: MIT
+* Project: https://github.com/angular/angular#readme
+* Source: https://registry.npmjs.org/@angular/forms/-/forms-4.3.5.tgz
+
+Angular HTTP Version: 4.3.5 
+* License: MIT
+* Project: https://github.com/angular/angular#readme
+* Source: https://registry.npmjs.org/@angular/http/-/http-4.3.5.tgz
+
+Angular Platform-Browser Version: 4.3.5 
+* License: MIT
+* Project: https://github.com/angular/angular#readme
+* Source: https://registry.npmjs.org/@angular/platform-browser/-/platform-browser-4.3.5.tgz
+
+Angular Platform-Browser Animations Version:  
+* License: 
+
+Angular Platform-Browser Dynamic Version: 4.3.5 
+* License: MIT
+* Project: https://github.com/angular/angular#readme
+* Source: https://registry.npmjs.org/@angular/platform-browser-dynamic/-/platform-browser-dynamic-4.3.5.tgz
+
+Angular Router Version: 4.3.5 
+* License: MIT
+* Project: https://github.com/angular/angular/tree/master/packages/router
+* Source: https://registry.npmjs.org/@angular/router/-/router-4.3.5.tgz
+
+Angular2 Websocket Version: 0.9.3 
+* License: 
+* Project: https://github.com/afrad/angular2-websocket#readme
+* Source: https://registry.npmjs.org/angular2-websocket/-/angular2-websocket-0.9.3.tgz
+
+Apache Commons: Beanutils Version: 1.9.3 
+* License: 
+
+Apache Commons: CLI Version: 1.4 
+* License: 
+
+Apache Commons: Codec Version: 1.3 
+* License: Apache-2.0
+* Project: http://jakarta.apache.org/commons/codec/
+
+Apache Commons: Codec Version: 1.9 
+* License: Apache-2.0
+* Project: http://commons.apache.org/proper/commons-codec/
+
+Apache Commons: Collections Version: 3.2.1 
+* License: Apache-2.0
+* Project: http://commons.apache.org/collections/
+
+Apache Commons: Commons-Compress Version: 1.6 
+* License: Apache-2.0
+* Project: http://commons.apache.org/proper/commons-compress/
+
+Apache Commons: Commons-Lang Version: 2.4 
+* License: Apache-2.0
+* Project: http://commons.apache.org/lang/
+
+Apache Commons: Commons-Lang 3 Version: 3.1 
+* License: 
+
+Apache Commons: Commons-Lang 3 Version: 3.6 
+* License: 
+
+Apache Commons: Commons-Logging Version: 1.2 
+* License: Apache-2.0
+* Project: http://commons.apache.org/proper/commons-logging/
+
+Apache Commons: Configuration Version: 1.9 
+* License: 
+
+Apache Commons: Configuration2 Version: 2.1.1 
+* License: 
+
+Apache Commons: HTTPClient Version: 3.1 
+* License: Apache License
+* Project: http://jakarta.apache.org/httpcomponents/httpclient-3.x/
+
+Apache Commons: IO Version: 2.4 
+* License: 
+
+Apache Velocity Version: 1.7 
+* License: Apache-2.0
+* Project: http://velocity.apache.org/engine/devel/
+
+ApacheHTTP Client Version: 4.5.2 
+* License: Apache-2.0
+* Project: http://hc.apache.org/httpcomponents-client
+
+ApacheHTTP Core Version: 4.4.4 
+* License: Apache-2.0
+* Project: http://hc.apache.org/httpcomponents-core-ga
+
+AspectJ Version: 1.8.4 
+* License: EPL-1.0
+* Project: http://www.aspectj.org
+
+Eclipse Collections Version: 8.2.0 
+* License: Eclipse Distribution License - v 1.0
+* Project: https://github.com/eclipse/eclipse-collections/eclipse-collections
+
+Eclipse Collections-API Version: 8.2.0 
+* License: Eclipse Distribution License - v 1.0
+* Project: https://github.com/eclipse/eclipse-collections/eclipse-collections-api
+
+Eclipse JDT Version: 2.1.0 
+* License: Eclipse Public License
+* Project: http://www.eclipse.org/jdt
+
+Eclipse Virgo Parser Manifest Version: 3.5.0.RELEASE 
+* License: EPL-1.0
+* Project: http://www.eclipse.org/virgo/
+
+Findbugs JSR305 Version: 1.3.9 
+* License: Apache-2.0
+* Project: http://findbugs.sourceforge.net/
+
+Google Errorprone Annotations Version: 2.0.18 
+* License: Apache-2.0
+* Project: http://nexus.sonatype.org/oss-repository-hosting.html/error_prone_parent/error_prone_annotations
+
+Google Guava Version: 23.0 
+* License: Apache-2.0
+* Project: https://github.com/google/guava/guava
+
+Hamcrest Core Version: 1.3 
+* License: New BSD License
+* Project: https://github.com/hamcrest/JavaHamcrest/hamcrest-core
+
+Hamcrest Library Version: 1.3 
+* License: New BSD License
+* Project: https://github.com/hamcrest/JavaHamcrest/hamcrest-library
+
+J2ObjC Version: 1.1 
+* License: Apache-2.0
+* Project: https://github.com/google/j2objc/
+
+JAXB Core Version: 2.2.11 
+* License: 
+
+JAXB Impl Version: 2.2.11 
+* License: 
+
+JAXB Impl Version: 2.2.5 
+* License: CDDL-1.1
+* Project: http://jaxb.java.net/
+
+JCABI Version: 0.22 
+* License: BSD
+* Project: http://www.jcabi.com/jcabi-aspects
+
+JCABI Logging Version: 0.17.1 
+* License: BSD
+* Project: http://www.jcabi.com/jcabi-log
+
+JCIP Version: 1.0 
+* License: Unknown license
+* Project: http://jcip.net/
+
+JGit Version: 4.8.0.201706111038-r 
+* License: 
+
+JGit Version: 4.9.0.201710071750-r 
+* License: 
+
+JGraph Core Version: 0.9.1 
+* License: 
+
+JSTL Version: 1.2 
+* License: Unknown license
+* Project: no url defined
+
+Jackson Annoations Version: 2.8.0 
+* License: Apache-2.0
+* Project: http://github.com/FasterXML/jackson
+
+Jackson Annoations: JAXB Version: 2.7.7 
+* License: Apache-2.0
+* Project: http://github.com/FasterXML/jackson-module-jaxb-annotations
+
+Jackson Core Version: 2.8.6 
+* License: Apache-2.0
+* Project: https://github.com/FasterXML/jackson-core
+
+Jackson Databind Version: 2.8.6 
+* License: Apache-2.0
+* Project: http://github.com/FasterXML/jackson
+
+Jackson Databind: Yaml Version: 2.8.9 
+* License: Apache-2.0
+* Project: https://github.com/FasterXML/jackson
+
+Jackson JAX-RS Version: 2.7.7 
+* License: Apache-2.0
+* Project: http://wiki.fasterxml.com/JacksonHome/jackson-jaxrs-base
+
+Jackson JAX-RS: JSON Provider Version: 2.7.7 
+* License: Apache-2.0
+* Project: http://wiki.fasterxml.com/JacksonHome/jackson-jaxrs-json-provider
+
+Javassist Version: 3.21.0-GA 
+* License: 
+
+Jersey Client Version: 1.19.3 
+* License: CDDL-1.1
+* Project: https://jersey.java.net/jersey-client/
+
+Jersey Core Version: 1.19.3 
+* License: CDDL-1.1
+* Project: https://jersey.java.net/jersey-core/
+
+Jersey Multipart Version: 1.19.3 
+* License: CDDL-1.1
+* Project: https://jersey.java.net/jersey-contribs/jersey-multipart/
+
+Jersey Server Version: 1.19.3 
+* License: CDDL-1.1
+* Project: https://jersey.java.net/jersey-server/
+
+Jersey Servlet Version: 1.19.3 
+* License: CDDL-1.1
+* Project: https://jersey.java.net/jersey-servlet/
+
+Jetty Servlet Version: 9.4.2.v20170220 
+* License: 
+
+Jetty Servlets Version: 9.4.2.v20170220 
+* License: 
+
+Jetty TestHelper Version: 4.2 
+* License: Apache-2.0
+* Project: http://www.eclipse.org/jetty/jetty-toolchain/jetty-test-helper
+
+Logback: Logback Classic Version: 1.1.1 
+* License: EPL-1.0
+* Project: http://logback.qos.ch
+
+Logback: Logback Core Version: 1.1.1 
+* License: EPL-1.0
+* Project: http://logback.qos.ch
+
+Maven Animal-Sniffer Version: 1.14 
+* License: MIT
+* Project: http://mojo.codehaus.org/animal-sniffer/animal-sniffer-annotations
+
+Moment.JS Version: 2.18.1 
+* License: MIT
+* Project: http://momentjs.com
+* Source: https://registry.npmjs.org/moment/-/moment-2.18.1.tgz
+
+NG2 File Upload Version: 1.2.0 
+* License: MIT
+* Project: https://github.com/valor-software/ng2-file-upload#readme
+* Source: https://registry.npmjs.org/ng2-file-upload/-/ng2-file-upload-1.2.0.tgz
+
+NG2 Material Dropdown Version: 0.7.10 
+* License: MIT
+* Project: https://github.com/Gbuomprisco/ng2-material-dropdown
+* Source: https://registry.npmjs.org/ng2-material-dropdown/-/ng2-material-dropdown-0.7.10.tgz
+
+NG2 Select Version: 1.2.0 
+* License: MIT
+* Project: https://github.com/valor-software/ng2-select#readme
+* Source: https://registry.npmjs.org/ng2-select/-/ng2-select-1.2.0.tgz
+
+NG2 Table Version: 1.3.2 
+* License: MIT
+* Project: https://github.com/valor-software/ng2-table#readme
+* Source: https://registry.npmjs.org/ng2-table/-/ng2-table-1.3.2.tgz
+
+NG2 Toaster Version: 4.0.1 
+* License: ISC
+* Project: https://github.com/PointInside/ng2-toastr#readme
+* Source: https://registry.npmjs.org/ng2-toastr/-/ng2-toastr-4.0.1.tgz
+
+NGx Bootstrap Version: 1.8.1 
+* License: MIT
+* Project: https://github.com/valor-software/ngx-bootstrap#readme
+* Source: https://registry.npmjs.org/ngx-bootstrap/-/ngx-bootstrap-1.8.1.tgz
+
+NGx Chips Version: 1.5.3 
+* License: MIT
+* Project: https://github.com/Gbuomprisco/ngx-chips
+* Source: https://registry.npmjs.org/ngx-chips/-/ngx-chips-1.5.3.tgz
+
+NGx Pagination Version: 3.0.1 
+* License: MIT
+* Project: https://github.com/michaelbromley/ngx-pagination#readme
+* Source: https://registry.npmjs.org/ngx-pagination/-/ngx-pagination-3.0.1.tgz
+
+React-JS Version: 5.4.3 
+* License: Apache-2.0
+* Project: https://github.com/ReactiveX/RxJS
+* Source: https://registry.npmjs.org/rxjs/-/rxjs-5.4.3.tgz
+
+SLF4J API Version: 1.7.13 
+* License: MIT
+* Project: http://www.slf4j.org
+
+SLF4J API Version: 1.7.2 
+* License: MIT
+* Project: http://www.slf4j.org
+
+SLF4J API Version: 1.7.6 
+* License: MIT
+* Project: http://www.slf4j.org
 
 SLF4J EXT Version: 1.7.2 
-* License: MIT License
+* License: MIT
+* Project: http://www.slf4j.org
 
-SLF4J jcl-over-slf4j Version: 1.7.6
+SLF4J JCL Version: 1.7.6 
+* License: MIT
+* Project: http://www.slf4j.org
+
+Snakeyaml Version: 1.17 
+* License: 
+
+Swagger Annotations Version: 1.5.16 
 * License: Apache License 2.0
-* Project: http://www.slf4j.org/legacy.html
-* Source: http://www.slf4j.org/dist/slf4j-1.7.6.zip
+* Project: https://github.com/swagger-api/swagger-core/modules/swagger-annotations
 
-Twitter Bootstrap Version: 3.1.1
-* License: MIT License
-* Project: http://getbootstrap.com/getting-started/
-* Source: https://github.com/twbs/bootstrap/archive/v3.1.1.zip
-
-wysihtml5 Version: 0.3.0
-* License: MIT License
-* Project: https://github.com/xing/wysihtml
-* Source: https://github.com/xing/wysihtml5/archive/0.3.0.zip
-
-X-editable  Version: 1.5.1
-* License: MIT License
-* Project: http://vitalets.github.io/x-editable/index.html
-* Source: https://github.com/vitalets/x-editable/tree/1.5.1
-
-Xerces 2.9.1 Version: 2.9.1 
+Swagger Core Version: 1.5.16 
 * License: Apache License 2.0
+* Project: https://github.com/swagger-api/swagger-core/modules/swagger-core
 
-xml-apis.jar Version: 1.3.04 
-* License: Apache License, 2.0, Public Domain, W3C
+Swagger JAX-RS Version: 1.5.16 
+* License: Apache License 2.0
+* Project: https://github.com/swagger-api/swagger-core/modules/swagger-jaxrs
 
-XMLTree Version: 3.1.2
-* License: MIT License
-* Project: https://github.com/koppor/xmltree/
-* Source: https://github.com/koppor/xmltree/archive/v3.1.2.zip
+Swagger Jersey/JAX-RS Version: 1.5.16 
+* License: Apache License 2.0
+* Project: https://github.com/swagger-api/swagger-core/modules/swagger-jersey-jaxrs
 
-XMLWriter Version: 1.0.2
-* License: New BSD license
-* Project: https://github.com/flesler/XMLWriter
-* Source: https://github.com/flesler/XMLWriter/archive/v1.0.2.zip
+Swagger Models Version: 1.5.16 
+* License: Apache License 2.0
+* Project: https://github.com/swagger-api/swagger-core/modules/swagger-models
 
-xz for Java Version: 1.3 
+Tika Core Version: 1.3 
+* License: Apache-2.0
+* Project: http://tika.apache.org/
+
+Winery BPMN4Tosca Model Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: http://www.eclipse.org/winery
+
+Winery CSAR Toscametafile Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: http://www.eclipse.org/winery
+
+Winery Common Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: https://eclipse.github.io/winery/org.eclipse.winery.common
+
+Winery Generators Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: https://eclipse.github.io/winery/org.eclipse.winery.generators.ia
+
+Winery Repository Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: https://eclipse.github.io/winery/org.eclipse.winery.repository
+
+Winery Repository Client Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: https://eclipse.github.io/winery/org.eclipse.winery.repository.client
+
+Winery Repository Configuration Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: https://eclipse.github.io/winery/org.eclipse.winery.repository.configuration
+
+Winery Selfservice Model Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: https://eclipse.github.io/winery/org.eclipse.winery.model.selfservice
+
+Winery Tosca Model Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: http://www.eclipse.org/winery
+
+Winery Tosca Yaml Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: http://www.eclipse.org/winery
+
+Winery Yaml Common Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: http://www.eclipse.org/winery
+
+Winery Yaml Converter Version: 2.0.0-SNAPSHOT 
+* License: Apache-2.0
+* Project: http://www.eclipse.org/winery
+
+XML-Apis Version: 1.3.04 
+* License: Apache-2.0
+* Project: http://xml.apache.org/commons/components/external/
+
+Xerces Impl Version: 2.9.1 
+* License: Apache-2.0
+* Project: http://xerces.apache.org/xerces2-j
+
+bluebird Version: 3.5.0 
+* License: MIT
+* Project: https://github.com/petkaantonov/bluebird
+* Source: https://registry.npmjs.org/bluebird/-/bluebird-3.5.0.tgz
+
+core-js Version: 2.5.0 
+* License: MIT
+* Project: https://github.com/zloirock/core-js#readme
+* Source: https://registry.npmjs.org/core-js/-/core-js-2.5.0.tgz
+
+font-awesome Version: 4.7.0 
+* License: (OFL-1.1 AND MIT)
+* Project: http://fontawesome.io/
+* Source: https://registry.npmjs.org/font-awesome/-/font-awesome-4.7.0.tgz
+
+io.github.adr.e-adr Version: 1.0.0 
+* License: EPL-2.0
+* Project: https://github.com/adr/e-adr/
+
+javax.servlet.javax.servlet-api Version: 3.1.0 
+* License: GPL-2.0-with-classpath-exception
+* Project: http://servlet-spec.java.net
+
+javax.validation.validation-api Version: 1.1.0.Final 
+* License: Apache-2.0
+* Project: http://beanvalidation.org
+
+javax.websocket.javax.websocket-api Version: 1.1 
+* License: CDDL-1.1 AND GPL-2.0
+* Project: http://websocket-spec.java.net
+
+javax.ws.rs.jsr311-api Version: 1.1.1 
+* License: CDDL License
+* Project: https://jsr311.dev.java.net
+
+org.jvnet.mimepull.mimepull Version: 1.9.4 
+* License: CDDL-1.1
+* Project: http://mimepull.java.net
+
+org.reflections.reflections Version: 0.9.11 
+* License: The New BSD License
+* Project: http://github.com/ronmamo/reflections
+
+org.tukaani.xz Version: 1.3 
 * License: Public Domain
+* Project: http://tukaani.org/xz/java.html
 
+reflect-metadata Version: 0.1.10 
+* License: Apache-2.0
+* Project: http://rbuckton.github.io/reflect-metadata
+* Source: https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.1.10.tgz
+
+spinkit Version: 1.2.5 
+* License: MIT
+* Project: https://github.com/tobiasahlin/SpinKit
+* Source: https://registry.npmjs.org/spinkit/-/spinkit-1.2.5.tgz
+
+symbol-observable Version: 1.0.4 
+* License: MIT
+* Project: https://github.com/blesh/symbol-observable#readme
+* Source: https://registry.npmjs.org/symbol-observable/-/symbol-observable-1.0.4.tgz
+
+tslib Version: 1.7.1 
+* License: Apache-2.0
+* Project: http://typescriptlang.org/
+* Source: https://registry.npmjs.org/tslib/-/tslib-1.7.1.tgz
+
+zone.js Version: 0.8.16 
+* License: MIT
+* Project: https://github.com/angular/zone.js#readme
+* Source: https://registry.npmjs.org/zone.js/-/zone.js-0.8.16.tgz
 
 == Cryptography
 
