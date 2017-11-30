@@ -1,13 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.visitors;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,16 +37,16 @@ public class ReferenceVisitor extends ExceptionVisitor<ReferenceVisitor.Result, 
 	private final TServiceTemplate serviceTemplate;
 	private final String namespace;
 	private final Reader reader;
-	private final String PATH;
+	private final Path path;
 
 	private Map<TImportDefinition, ReferenceVisitor> visitors;
 	private Map<TImportDefinition, TServiceTemplate> serviceTemplates;
 
-	public ReferenceVisitor(TServiceTemplate serviceTemplate, String namespace, String PATH) {
+	public ReferenceVisitor(TServiceTemplate serviceTemplate, String namespace, Path path) {
 		this.serviceTemplate = serviceTemplate;
 		this.namespace = namespace;
-		this.reader = new Reader();
-		this.PATH = PATH;
+		this.reader = Reader.getReader();
+		this.path = path;
 		this.visitors = new LinkedHashMap<>();
 		this.serviceTemplates = new LinkedHashMap<>();
 	}
@@ -58,11 +64,11 @@ public class ReferenceVisitor extends ExceptionVisitor<ReferenceVisitor.Result, 
 		String namespace = node.getNamespaceUri() == null ? Namespaces.DEFAULT_NS : node.getNamespaceUri();
 		if (!this.visitors.containsKey(node)) {
 			try {
-				this.serviceTemplates.put(node, reader.readImportDefinition(node, PATH, namespace));
+				this.serviceTemplates.put(node, reader.readImportDefinition(node, path, namespace));
 			} catch (MultiException e) {
 				setException(e);
 			}
-			this.visitors.put(node, new ReferenceVisitor(this.serviceTemplates.get(node), namespace, PATH));
+			this.visitors.put(node, new ReferenceVisitor(this.serviceTemplates.get(node), namespace, path));
 		}
 
 		return this.visitors.get(node).visit(this.serviceTemplates.get(node), parameter);

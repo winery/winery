@@ -1,16 +1,22 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.reader.xml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -34,8 +40,8 @@ public class Reader {
         return (Definitions) unmarshaller.unmarshal(inputStream);
     }
 
-    public Definitions parse(String fileName) throws JAXBException {
-        File file = new File(fileName);
+    public Definitions parse(Path fileName) throws JAXBException {
+        File file = fileName.toFile();
         try {
             return parse(new FileInputStream(file));
         } catch (Exception e) {
@@ -44,7 +50,7 @@ public class Reader {
         return null;
     }
 
-    public Definitions parse(String path, String name) throws Exception {
-        return parse(path + File.separator + name);
+    public Definitions parse(Path path, Path name) throws Exception {
+        return parse(path.resolve(name));
     }
 }

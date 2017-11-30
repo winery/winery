@@ -1,10 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.xml;
 
@@ -13,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -107,19 +111,19 @@ public class X2YConverter {
 	public final static Logger LOGGER = LoggerFactory.getLogger(X2YConverter.class);
 
 	private final IRepository repository;
-	private final String path;
+	private final Path path;
 
 	private HashBiMap<String, String> prefixNamespace;
 	private Map<DefinitionsChildId, Definitions> importDefinitions;
 
-	public X2YConverter(IRepository repository, String path) {
+	public X2YConverter(IRepository repository, Path path) {
 		this.repository = repository;
 		this.path = path;
 		this.prefixNamespace = new HashBiMap<>();
 		this.importDefinitions = new LinkedHashMap<>();
 	}
 
-	public Map<File, TServiceTemplate> convert(Definitions node, String outPath) {
+	public Map<File, TServiceTemplate> convert(Definitions node, Path outPath) {
 		return convert(node, outPath, new QName(node.getTargetNamespace(), node.getIdFromIdOrNameField()));
 	}
 
@@ -127,10 +131,10 @@ public class X2YConverter {
 	 * Converts TOSCA XML Definitions to TOSCA YAML ServiceTemplates
 	 */
 	@NonNull
-	public Map<File, TServiceTemplate> convert(Definitions node, String outPath, QName name) {
+	public Map<File, TServiceTemplate> convert(Definitions node, Path outPath, QName name) {
 		if (Objects.isNull(node)) return new LinkedHashMap<>();
 		QName tmpName = name;
-		
+
 		LOGGER.debug("Convert TServiceTemplate: {}", node.getIdFromIdOrNameField());
 
 		TServiceTemplate.Builder builder = new TServiceTemplate.Builder(Defaults.TOSCA_DEFINITIONS_VERSION)
@@ -150,14 +154,14 @@ public class X2YConverter {
 		}
 
 		importDefinitions.forEach((id, def) -> {
-			String path = this.path + File.separator + id.getGroup() + File.separator + id.getNamespace().getEncoded();
+			Path path = this.path.resolve(id.getGroup()).resolve(id.getNamespace().getEncoded());
 			Map<File, TServiceTemplate> map = new X2YConverter(repository, this.path).convert(def, path, id.getQName());
 			Optional.ofNullable(map).orElse(new LinkedHashMap<>())
 				.forEach((File key, TServiceTemplate value) ->
 					builder.addImports(
 						key.getName(),
 						new TImportDefinition.Builder(
-							Paths.get(this.path).relativize(key.toPath()).toString())
+							this.path.relativize(key.toPath()).toString())
 							.setNamespaceUri(def.getTargetNamespace())
 							.setNamespacePrefix(getNamespacePrefix(def.getTargetNamespace()))
 							.build()
@@ -178,7 +182,7 @@ public class X2YConverter {
 
 	public Map<String, TPropertyAssignment> convert(TEntityTemplate tEntityTemplate, TEntityTemplate.Properties node) {
 		if (Objects.isNull(node)) return null;
-		Map<String,String> propertiesKV = ModelUtilities.getPropertiesKV(tEntityTemplate);
+		Map<String, String> propertiesKV = ModelUtilities.getPropertiesKV(tEntityTemplate);
 		if (Objects.isNull(propertiesKV)) return null;
 		return propertiesKV.entrySet().stream()
 			.map(entry ->
@@ -571,13 +575,16 @@ public class X2YConverter {
 			.map(ref -> {
 				try {
 					InputStream inputStream = repository.newInputStream(ref);
-					Path path = Paths.get(this.path, id.getGroup(), id.getNamespace().getEncoded(), node.getIdFromIdOrNameField(), ref.getFileName());
+					Path path = this.path.resolve(id.getGroup())
+						.resolve(id.getNamespace().getEncoded())
+						.resolve(node.getIdFromIdOrNameField())
+						.resolve(ref.getFileName());
 					if (!path.toFile().exists()) {
 						//noinspection ResultOfMethodCallIgnored
 						path.getParent().toFile().mkdirs();
 						Files.copy(inputStream, path);
 					}
-					return Paths.get(this.path).relativize(path).toString();
+					return this.path.relativize(path).toString();
 				} catch (IOException e) {
 					LOGGER.error("Failed to copy Artifact file", e);
 					return null;

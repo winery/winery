@@ -1,14 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.xml.support;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
@@ -23,27 +30,26 @@ import org.eclipse.winery.yaml.converter.Converter;
 import org.junit.BeforeClass;
 
 public abstract class AbstractTestX2Y {
+	protected final Path path;
+	protected final Path outPath;
+	private final String fileExtension = ".xml";
 
-	private final static String FILE_EXTENSION = ".xml";
-	protected final String PATH;
-	protected final String OUT_PATH;
-
-	public AbstractTestX2Y(String PATH) {
-		this.PATH = PATH;
-		this.OUT_PATH = PATH + File.separator + "tmp";
+	public AbstractTestX2Y(Path path) {
+		this.path = path;
+		this.outPath = path.resolve("tmp");
 	}
 
 	@BeforeClass
 	public static void setRepository() {
-		RepositoryFactory.getRepository(Utils.getTmpDir("AbstractTests").toPath());
+		RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("AbstractTests")));
 	}
 
 	public Definitions readDefinitions(String name) throws JAXBException {
 		Reader reader = new Reader();
-		return reader.parse(PATH + name + FILE_EXTENSION);
+		return reader.parse(path.resolve(name.concat(fileExtension)));
 	}
 
-	public Map<File, TServiceTemplate> convert(Definitions serviceTemplate, String outPath) {
+	public Map<File, TServiceTemplate> convert(Definitions serviceTemplate, Path outPath) {
 		Converter converter = new Converter();
 		return converter.convertX2Y(serviceTemplate, outPath);
 	}

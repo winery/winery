@@ -1,13 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.visitors;
 
+import java.nio.file.Path;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,10 +86,10 @@ public class SchemaVisitor extends ExceptionVisitor<Result, Parameter> {
 		}
 	}
 
-	public Map<QName, Map<String, QName>> visit(TServiceTemplate node, String path, String outpath, String namespace) {
+	public Map<QName, Map<String, QName>> visit(TServiceTemplate node, Path path, Path outpath, String namespace) {
 		for (TMapImportDefinition map : node.getImports()) {
 			for (Map.Entry<String, TImportDefinition> entry : map.entrySet()) {
-				Reader reader = new Reader();
+				Reader reader = Reader.getReader();
 				try {
 					TServiceTemplate serviceTemplate = reader.parse(entry.getValue(), path, entry.getValue().getNamespaceUri());
 					visit(serviceTemplate, new Parameter(outpath, entry.getValue().getNamespaceUri()).setBuildSchema(false));
@@ -175,7 +181,7 @@ public class SchemaVisitor extends ExceptionVisitor<Result, Parameter> {
 				|| !this.localDatatypeNames.contains(type.getLocalPart())) {
 				for (Map.Entry<String, TImportDefinition> importDefinition : imports.get(type.getNamespaceURI())) {
 					try {
-						Reader reader = new Reader();
+						Reader reader = Reader.getReader();
 						TServiceTemplate serviceTemplate = reader.parse(importDefinition.getValue(), parameter.getPath(), importDefinition.getValue().getNamespaceUri());
 						visit(serviceTemplate,
 							new Parameter(parameter.getPath(), type.getNamespaceURI())

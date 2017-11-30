@@ -1,15 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+
 package org.eclipse.winery.yaml.converter.yaml;
 
 import java.io.File;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -91,8 +97,8 @@ public class Y2XConverter {
 	public final static Logger LOGGER = LoggerFactory.getLogger(Y2XConverter.class);
 	private final IRepository repository;
 	private String namespace;
-	private String path;
-	private String outPath;
+	private Path path;
+	private Path outPath;
 	private List<TNodeTypeImplementation> nodeTypeImplementations;
 	private Map<String, TArtifactTemplate> artifactTemplates;
 	private List<TPolicyTemplate> policyTemplates;
@@ -140,7 +146,7 @@ public class Y2XConverter {
 	 * @return TOSCA XML Definitions
 	 */
 	@NonNull
-	public Definitions convert(org.eclipse.winery.model.tosca.yaml.TServiceTemplate node, String id, String target_namespace, String path, String outPath) {
+	public Definitions convert(org.eclipse.winery.model.tosca.yaml.TServiceTemplate node, String id, String target_namespace, Path path, Path outPath) {
 		if (node == null) return new Definitions();
 		LOGGER.debug("Converting TServiceTemplate");
 
@@ -171,7 +177,7 @@ public class Y2XConverter {
 			.addRequirementTypes(this.requirementTypes)
 			.addPolicyTemplates(this.policyTemplates)
 			.build();
-		WriterUtils.storeDefinitions(definitions, true, Paths.get(path));
+		WriterUtils.storeDefinitions(definitions, true, path);
 		return definitions;
 	}
 
@@ -216,9 +222,8 @@ public class Y2XConverter {
 	/**
 	 * Converts TOSCA YAML EntityTypes to TOSCA XML EntityTypes
 	 *
-	 * Additional element version added to tag.
-	 * Missing elements abstract, final will not be set.
-	 * Missing element targetNamespace is searched in metadata
+	 * Additional element version added to tag. Missing elements abstract, final will not be set. Missing element
+	 * targetNamespace is searched in metadata
 	 *
 	 * @param node TOSCA YAML EntityType
 	 * @return TOSCA XML EntityType
@@ -263,8 +268,7 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Converts TOSCA YAML ArtifactTypes to TOSCA XML ArtifactTypes.
-	 * Both objects have a super type EntityType.
+	 * Converts TOSCA YAML ArtifactTypes to TOSCA XML ArtifactTypes. Both objects have a super type EntityType.
 	 * Additional elements mime_type and file_ext from TOSCA YAML are moved to tags in TOSCA XML
 	 *
 	 * @param node the YAML ArtifactType
@@ -363,9 +367,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Inserts operation output definitions defined in attributes
-	 * "{ get_operation_output: [ SELF, interfaceName, operationName, propertyName ] }"
-	 * into interfaceDefinitions
+	 * Inserts operation output definitions defined in attributes "{ get_operation_output: [ SELF, interfaceName,
+	 * operationName, propertyName ] }" into interfaceDefinitions
 	 */
 	private Map<String, TInterfaceDefinition> refactor(Map<String, TInterfaceDefinition> map, org.eclipse.winery.model.tosca.yaml.TNodeType node) {
 		if (Objects.isNull(map) || map.isEmpty() || node.getAttributes().isEmpty()) return map;
@@ -481,9 +484,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Converts TOSCA YAML NodeTemplates to TOSCA XML NodeTemplates
-	 * Additional TOSCA YAML element metadata is put into TOSCA XML documentation element
-	 * Additional TOSCA YAML elements directives and copy are not converted
+	 * Converts TOSCA YAML NodeTemplates to TOSCA XML NodeTemplates Additional TOSCA YAML element metadata is put into
+	 * TOSCA XML documentation element Additional TOSCA YAML elements directives and copy are not converted
 	 *
 	 * @param node TOSCA YAML NodeTemplate
 	 * @return TOSCA XML NodeTemplate
@@ -585,8 +587,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Converts TOSCA YAML RequirementAssignments to TOSCA XML Requirements
-	 * Additional TOSCA YAML elements node_filter and occurrences are not converted
+	 * Converts TOSCA YAML RequirementAssignments to TOSCA XML Requirements Additional TOSCA YAML elements node_filter
+	 * and occurrences are not converted
 	 *
 	 * @param node TOSCA YAML RequirementAssignments
 	 * @return return List of TOSCA XML Requirements
@@ -629,8 +631,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Converts TOSCA YAML CapabilityDefinitions to TOSCA XML CapabilityDefinitions
-	 * Additional TOSCA YAML elements properties, attributes and valid_source_types are not converted
+	 * Converts TOSCA YAML CapabilityDefinitions to TOSCA XML CapabilityDefinitions Additional TOSCA YAML elements
+	 * properties, attributes and valid_source_types are not converted
 	 *
 	 * @param node TOSCA YAML CapabilityDefinition
 	 * @return TOSCA XML CapabilityDefinition
@@ -645,8 +647,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Converts TOSCA YAML InterfaceDefinitions to TOSCA XML Interface
-	 * Additional TOSCA YAML element input with PropertyAssignment or PropertyDefinition is not converted
+	 * Converts TOSCA YAML InterfaceDefinitions to TOSCA XML Interface Additional TOSCA YAML element input with
+	 * PropertyAssignment or PropertyDefinition is not converted
 	 *
 	 * @param node TOSCA YAML InterfaceDefinition
 	 * @return TOSCA XML Interface
@@ -665,9 +667,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Convert TOSCA YAML TopologyTemplatesDefinition to TOSCA XML TopologyTemplates
-	 * Additional TOSCA YAML elements inputs, outputs, groups, policies,
-	 * substitution_mappings and workflows are not converted
+	 * Convert TOSCA YAML TopologyTemplatesDefinition to TOSCA XML TopologyTemplates Additional TOSCA YAML elements
+	 * inputs, outputs, groups, policies, substitution_mappings and workflows are not converted
 	 *
 	 * @param node TOSCA YAML TopologyTemplateDefinition
 	 * @return TOSCA XML TopologyTemplate
@@ -688,8 +689,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Converts TOSCA YAML RelationshipTypes to TOSCA XML RelationshipTypes
-	 * Additional element valid_target_types (specifying Capability Types) is not converted
+	 * Converts TOSCA YAML RelationshipTypes to TOSCA XML RelationshipTypes Additional element valid_target_types
+	 * (specifying Capability Types) is not converted
 	 *
 	 * @param node TOSCA YAML RelationshipType
 	 * @return TOSCA XML RelationshipType
@@ -703,8 +704,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Converts TOSCA YAML RelationshipTemplate to TOSCA XML RelationshipTemplate
-	 * Additional TOSCA YAML element interfaces is not converted
+	 * Converts TOSCA YAML RelationshipTemplate to TOSCA XML RelationshipTemplate Additional TOSCA YAML element
+	 * interfaces is not converted
 	 *
 	 * @param node TOSCA YAML RelationshipTemplate
 	 * @return TOSCA XML RelationshipTemplate
@@ -732,8 +733,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Converts TOSCA YAML PolicyTypes to TOSCA XML  PolicyTypes
-	 * Additional TOSCA YAML element triggers is not converted
+	 * Converts TOSCA YAML PolicyTypes to TOSCA XML  PolicyTypes Additional TOSCA YAML element triggers is not
+	 * converted
 	 *
 	 * @param node TOSCA YAML PolicyType
 	 * @return TOSCA XML PolicyType
@@ -751,8 +752,8 @@ public class Y2XConverter {
 	}
 
 	/**
-	 * Converts TOSCA YAML PolicyDefinitions to TOSCA XML Policy and PolicyTemplate
-	 * Additional TOSCA YAML element trigger is not converted
+	 * Converts TOSCA YAML PolicyDefinitions to TOSCA XML Policy and PolicyTemplate Additional TOSCA YAML element
+	 * trigger is not converted
 	 *
 	 * @param node TOSCA YAML PolicyDefinition
 	 */
@@ -801,7 +802,7 @@ public class Y2XConverter {
 	 * Converts TOSCA YAML TImportDefinitions and returns list of TOSCA XML TImports
 	 */
 	private TImport convert(TImportDefinition node, String name) {
-		Reader reader = new Reader();
+		Reader reader = Reader.getReader();
 		String namespace = node.getNamespaceUri() == null ? this.namespace : node.getNamespaceUri();
 		try {
 			org.eclipse.winery.model.tosca.yaml.TServiceTemplate serviceTemplate = reader.readImportDefinition(node, path, namespace);
