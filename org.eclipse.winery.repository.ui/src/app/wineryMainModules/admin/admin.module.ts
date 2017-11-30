@@ -22,6 +22,9 @@ import { CommonModule } from '@angular/common';
 import { WineryDuplicateValidatorModule } from '../../wineryValidators/wineryDuplicateValidator.module';
 import { WineryNamespaceSelectorModule } from '../../wineryNamespaceSelector/wineryNamespaceSelector.module';
 import { FormsModule } from '@angular/forms';
+import { ConsistencyCheckComponent } from '../../instance/admin/consistencyCheck/consistencyCheck.component';
+import { ProgressbarModule } from 'ngx-bootstrap';
+import { ErrorElementToLinkPipe } from '../../instance/admin/consistencyCheck/errorElementToLink.pipe';
 
 @NgModule({
     imports: [
@@ -33,12 +36,15 @@ import { FormsModule } from '@angular/forms';
         WineryModalModule,
         WineryTableModule,
         WineryNamespaceSelectorModule,
+        ProgressbarModule.forRoot(),
         AdminRouterModule,
     ],
     declarations: [
         NamespacesComponent,
         LoggerComponent,
-        TypeWithShortNameComponent
+        TypeWithShortNameComponent,
+        ConsistencyCheckComponent,
+        ErrorElementToLinkPipe
     ]
 })
 export class AdminModule {

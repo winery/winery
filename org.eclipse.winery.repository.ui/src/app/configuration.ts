@@ -11,6 +11,7 @@
 // otherwise, assume that backend runs on the some port
 export const hostURL = location.protocol + '//' + location.hostname + ':' + (location.port === '4200' ? '8080' : location.port);
 export const backendBaseURL = hostURL + '/winery';
+export const webSocketURL = 'ws://' + location.hostname + ':' + (location.port === '4200' ? '8080' : location.port) + '/winery';
 // when running in development mode, use the workflow modelers development port
 // it also is not running on /winery-workflowmodeler in dev-mode.
 export const workflowModelerURL = location.protocol + '//' + location.hostname + ':' + (location.port === '4200' ? '9527' : location.port

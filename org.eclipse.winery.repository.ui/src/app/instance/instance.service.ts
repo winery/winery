@@ -76,7 +76,7 @@ export class InstanceService {
                 subMenu = ['All Declared Elements Local Names', 'All Defined Types Local Names'];
                 break;
             default: // assume Admin
-                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Log'];
+                subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Consistency Check', 'Log'];
         }
 
         return subMenu;
