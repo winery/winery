@@ -14,9 +14,7 @@ import { isNullOrUndefined } from 'util';
 import { WineryModalFooterComponent } from './winery.modal.footer.component';
 import { WineryModalHeaderComponent } from './winery.modal.header.component';
 import { ModalDirective } from 'ngx-bootstrap';
-
-const SMALL = 'sm';
-const LARGE = 'lg';
+import { WineryModalSize } from './wineryModalSize';
 
 /**
  * This component provides a generic modal component for any kind of pop-ups.
@@ -95,7 +93,7 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
 
         this.modalRef.config.keyboard = this.keyboard;
 
-        if (ModalSize.validSize(this.size)) {
+        if (WineryModalSize.validSize(this.size)) {
             this.overrideSize = this.size;
         }
     }
@@ -104,11 +102,11 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
         const classes: string[] = [];
 
         if (this.isSmall()) {
-            classes.push('modal-sm');
+            classes.push(WineryModalSize.SMALL);
         }
 
         if (this.isLarge()) {
-            classes.push('modal-lg');
+            classes.push(WineryModalSize.LARGE);
         }
 
         if (this.cssClass !== '') {
@@ -119,24 +117,14 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
     }
 
     private isSmall() {
-        return this.overrideSize !== LARGE
-            && this.size === SMALL
-            || this.overrideSize === SMALL;
+        return this.overrideSize !== WineryModalSize.LARGE
+            && this.size === WineryModalSize.SMALL
+            || this.overrideSize === WineryModalSize.SMALL;
     }
 
     private isLarge() {
-        return this.overrideSize !== SMALL
-            && this.size === LARGE
-            || this.overrideSize === LARGE;
+        return this.overrideSize !== WineryModalSize.SMALL
+            && this.size === WineryModalSize.LARGE
+            || this.overrideSize === WineryModalSize.LARGE;
     }
-}
-
-/**
- * This class is used to determine the modal's size
- */
-export class ModalSize {
-    static validSize(size: string) {
-        return size && (size === SMALL || size === LARGE);
-    }
-
 }
