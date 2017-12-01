@@ -19,6 +19,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
@@ -45,22 +48,26 @@ public class ImportVisitor extends ExceptionVisitor<Result, Parameter> {
     public Result visit(TServiceTemplate node, Parameter parameter) {
         Reader reader = Reader.getReader();
         if (!this.namespace.equals(Namespaces.TOSCA_NS)) {
-            TServiceTemplate serviceTemplate;
-            try {
-                Path outFilePath = Utils.getTmpDir(Paths.get("normative_file")).resolve(Defaults.TOSCA_NORMATIVE_TYPES);
-                InputStream inputStream = this.getClass().getResourceAsStream(File.separator.concat(Defaults.TOSCA_NORMATIVE_TYPES));
-                Files.copy(inputStream, outFilePath, StandardCopyOption.REPLACE_EXISTING);
-
-                serviceTemplate = reader.parseSkipTest(outFilePath, Namespaces.TOSCA_NS);
-                String tmpNamespace = this.namespace;
-                this.namespace = Namespaces.TOSCA_NS;
-                this.visit(serviceTemplate, new Parameter());
-                this.namespace = tmpNamespace;
-            } catch (YAMLParserException e) {
-                setException(e);
-            } catch (Exception e) {
-                e.printStackTrace();
+            Set<String> typeDefinitions = new HashSet<>(Arrays.asList(
+                Defaults.TOSCA_NORMATIVE_TYPES, Defaults.TOSCA_NONNORMATIVE_TYPES));
+            String tmpNamespace = this.namespace;
+            this.namespace = Namespaces.TOSCA_NS;
+            Path tmpDir = Utils.getTmpDir(Paths.get("types"));
+            for (String typeDefinition : typeDefinitions) {
+                try {
+                    Path outFilePath = tmpDir.resolve(typeDefinition);
+                    InputStream inputStream = this.getClass().getResourceAsStream(
+                        File.separator.concat(typeDefinition));
+                    Files.copy(inputStream, outFilePath, StandardCopyOption.REPLACE_EXISTING);
+                    TServiceTemplate serviceTemplate = reader.parseSkipTest(outFilePath, Namespaces.TOSCA_NS);
+                    this.visit(serviceTemplate, new Parameter());
+                } catch (YAMLParserException e) {
+                    setException(e);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            this.namespace = tmpNamespace;
         }
 
         super.visit(node, parameter);
