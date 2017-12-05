@@ -16,6 +16,7 @@ import { RepositoryComponent } from '../../instance/admin/repository/repository.
 import { TypeWithShortNameComponent } from '../../instance/admin/typesWithShortName/typeWithShortName.component';
 import { NamespacesComponent } from '../../instance/admin/namespaces/namespaces.component';
 import { LoggerComponent } from '../../instance/admin/logger/logger.component';
+import { ConsistencyCheckComponent } from '../../instance/admin/consistencyCheck/consistencyCheck.component';
 
 const toscaType = ToscaTypes.Admin;
 
@@ -29,6 +30,7 @@ const adminRoutes: Routes = [
             { path: 'planlanguages', component: TypeWithShortNameComponent },
             { path: 'plantypes', component: TypeWithShortNameComponent },
             { path: 'constrainttypes', component: TypeWithShortNameComponent },
+            { path: 'consistencycheck', component: ConsistencyCheckComponent },
             { path: 'log', component: LoggerComponent },
             { path: '', redirectTo: 'namespaces', pathMatch: 'full' }
         ]

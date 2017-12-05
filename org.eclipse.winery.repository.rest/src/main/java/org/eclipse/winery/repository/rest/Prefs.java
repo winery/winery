@@ -26,6 +26,7 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.configuration.Environment;
+import org.eclipse.winery.repository.rest.websockets.GitWebSocket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
