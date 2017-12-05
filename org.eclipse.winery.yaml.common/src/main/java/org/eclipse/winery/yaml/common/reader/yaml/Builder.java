@@ -284,7 +284,7 @@ public class Builder {
                 this.exceptionMessages.add("Prefix \"" + prefix + "\" for name \"" + localPart + "\" is not defined!");
             }
             return new QName(prefix2Namespace.get(prefix), localPart, prefix);
-        } else if (Defaults.TOSCA_NORMATIVE_NAMES.contains(name)) {
+        } else if (Defaults.TOSCA_NORMATIVE_NAMES.contains(name) || Defaults.TOSCA_NONNORMATIVE_NAMES.contains(name)) {
             return new QName(Namespaces.TOSCA_NS, name, "tosca");
         } else if (Defaults.YAML_TYPES.contains(name)) {
             return new QName(Namespaces.YAML_NS, name, "yaml");
