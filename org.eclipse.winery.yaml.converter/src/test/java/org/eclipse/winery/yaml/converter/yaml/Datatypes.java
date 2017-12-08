@@ -23,55 +23,55 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class Datatypes extends AbstractTestY2X {
-	public Datatypes() {
-		super(Paths.get("src/test/resources/yaml/Datatypes/"));
-	}
+    public Datatypes() {
+        super(Paths.get("src/test/resources/yaml/Datatypes/"));
+    }
 
-	@Test
-	public void testDataTypes() throws Exception {
-		String name = "data_types";
-		String namespace = "http://www.example.com/DataTypesTest";
+    @Test
+    public void testDataTypes() throws Exception {
+        String name = "data_types";
+        String namespace = "http://www.example.com/DataTypesTest";
 
-		TServiceTemplate serviceTemplate = readServiceTemplate(name, namespace);
-		Definitions definitions = convert(serviceTemplate, name, namespace);
-		writeXml(definitions, name, namespace);
+        TServiceTemplate serviceTemplate = readServiceTemplate(name, namespace);
+        Definitions definitions = convert(serviceTemplate, name, namespace);
+        writeXml(definitions, name, namespace);
 
-		Assert.assertNotNull(definitions);
-	}
+        Assert.assertNotNull(definitions);
+    }
 
-	@Test
-	public void testDataTypesWithImport() throws Exception {
-		String name = "data_types-with_import";
-		String namespace = "http://www.example.com/DataTypesWithImportTest";
+    @Test
+    public void testDataTypesWithImport() throws Exception {
+        String name = "data_types-with_import";
+        String namespace = "http://www.example.com/DataTypesWithImportTest";
 
-		TServiceTemplate serviceTemplate = readServiceTemplate(name, namespace);
-		Definitions definitions = convert(serviceTemplate, name, namespace);
-		writeXml(definitions, name, namespace);
+        TServiceTemplate serviceTemplate = readServiceTemplate(name, namespace);
+        Definitions definitions = convert(serviceTemplate, name, namespace);
+        writeXml(definitions, name, namespace);
 
-		Assert.assertNotNull(definitions);
-	}
+        Assert.assertNotNull(definitions);
+    }
 
-	@Test
-	public void testDataTypesRecursive() throws Exception {
-		String name = "data_types-recursive";
-		String namespace = "http://www.example.com/DataTypesRecursive";
+    @Test
+    public void testDataTypesRecursive() throws Exception {
+        String name = "data_types-recursive";
+        String namespace = "http://www.example.com/DataTypesRecursive";
 
-		TServiceTemplate serviceTemplate = readServiceTemplate(name, namespace);
-		Definitions definitions = convert(serviceTemplate, name, namespace);
-		writeXml(definitions, name, namespace);
+        TServiceTemplate serviceTemplate = readServiceTemplate(name, namespace);
+        Definitions definitions = convert(serviceTemplate, name, namespace);
+        writeXml(definitions, name, namespace);
 
-		Assert.assertNotNull(definitions);
-	}
+        Assert.assertNotNull(definitions);
+    }
 
-	@Test
-	public void testNodeTemplateWithDataTypes() throws Exception {
-		String name = "node_template-using-data_types";
-		String namespace = "http://www.example.com/NodeTemplateUsingDataType";
+    @Test
+    public void testNodeTemplateWithDataTypes() throws Exception {
+        String name = "node_template-using-data_types";
+        String namespace = "http://www.example.com/NodeTemplateUsingDataType";
 
-		TServiceTemplate serviceTemplate = readServiceTemplate(name, namespace);
-		Definitions definitions = convert(serviceTemplate, name, namespace);
-		writeXml(definitions, name, namespace);
+        TServiceTemplate serviceTemplate = readServiceTemplate(name, namespace);
+        Definitions definitions = convert(serviceTemplate, name, namespace);
+        writeXml(definitions, name, namespace);
 
-		Assert.assertNotNull(definitions);
-	}
+        Assert.assertNotNull(definitions);
+    }
 }

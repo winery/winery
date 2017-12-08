@@ -70,9 +70,27 @@ import org.eclipse.winery.model.tosca.yaml.TVersion;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.yaml.common.AbstractTest;
 import org.eclipse.winery.yaml.common.ReflectionUtil;
+import org.eclipse.winery.yaml.common.exception.Invalid;
+import org.eclipse.winery.yaml.common.exception.InvalidField;
+import org.eclipse.winery.yaml.common.exception.InvalidParentType;
 import org.eclipse.winery.yaml.common.exception.InvalidSyntax;
-import org.eclipse.winery.yaml.common.exception.InvalidTOSCAVersion;
+import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
+import org.eclipse.winery.yaml.common.exception.InvalidToscaVersion;
+import org.eclipse.winery.yaml.common.exception.InvalidType;
+import org.eclipse.winery.yaml.common.exception.InvalidDefinition;
+import org.eclipse.winery.yaml.common.exception.InvalidTypeExtend;
+import org.eclipse.winery.yaml.common.exception.InvalidYamlSyntax;
 import org.eclipse.winery.yaml.common.exception.MultiException;
+import org.eclipse.winery.yaml.common.exception.Undefined;
+import org.eclipse.winery.yaml.common.exception.UndefinedDefinition;
+import org.eclipse.winery.yaml.common.exception.UndefinedField;
+import org.eclipse.winery.yaml.common.exception.UndefinedFile;
+import org.eclipse.winery.yaml.common.exception.UndefinedImport;
+import org.eclipse.winery.yaml.common.exception.UndefinedPrefix;
+import org.eclipse.winery.yaml.common.exception.UndefinedRequiredKeyname;
+import org.eclipse.winery.yaml.common.exception.UndefinedToscaVersion;
+import org.eclipse.winery.yaml.common.exception.UndefinedType;
+import org.eclipse.winery.yaml.common.exception.YAMLParserException;
 
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.tuple.Tuples;
@@ -104,8 +122,26 @@ public class ReflectionTests extends AbstractTest {
 
         exceptionClasses = Stream.of(
             MultiException.class,
-            InvalidTOSCAVersion.class,
-            InvalidSyntax.class
+            YAMLParserException.class,
+            Invalid.class,
+            InvalidSyntax.class,
+            InvalidYamlSyntax.class,
+            InvalidToscaSyntax.class,
+            InvalidDefinition.class,
+            InvalidType.class,
+            InvalidParentType.class,
+            InvalidTypeExtend.class,
+            InvalidField.class,
+            InvalidToscaVersion.class,
+            Undefined.class,
+            UndefinedType.class,
+            UndefinedDefinition.class,
+            UndefinedPrefix.class,
+            UndefinedField.class,
+            UndefinedToscaVersion.class,
+            UndefinedRequiredKeyname.class,
+            UndefinedFile.class,
+            UndefinedImport.class
         ).map(exception -> Tuples.pair(exception.getSimpleName(), exception))
             .collect(Collectors.toMap(Pair::getOne, Pair::getTwo));
 
@@ -174,7 +210,7 @@ public class ReflectionTests extends AbstractTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "valid-service_template"
+        "constraints/valid-constraints-artifact_type-complete"
     })
     public void testSingleServiceTemplates(String fileName) throws Exception {
         testServiceTemplates(getYamlFile(fileName));
@@ -182,7 +218,7 @@ public class ReflectionTests extends AbstractTest {
 
     @ParameterizedTest
     @CsvSource({
-        "valid-service_template, 'topology_template.groups.gtd1.metadata.md1 = Metadata value'"
+        "valid-service_template, 'relationship_types.rlt1.interfaces.intf1.inputs.intf1.prt1.type = string'"
     })
     public void testSingleServiceTemplatesAssertValue(String fileName,
                                                       String assertValue) throws Exception {
@@ -200,7 +236,7 @@ public class ReflectionTests extends AbstractTest {
 
     @ParameterizedTest
     @CsvSource({
-        "invalid-yaml-syntax, InvalidSyntax"
+        "invalid-yaml_syntax-missing_line_break, InvalidSyntax"
     })
     public void testSingleServiceTemplatesException(String fileName,
                                                     String exception) throws Exception {
@@ -216,7 +252,7 @@ public class ReflectionTests extends AbstractTest {
             try {
                 getYamlServiceTemplate(fileName);
             } catch (MultiException multi) {
-                Assertions.assertEquals(multi.getException().getClass(), exceptionClasses.get(exception));
+                Assertions.assertEquals(exceptionClasses.get(exception), multi.getException().getClass());
                 logger.info("Assertion(error) success: {}", exceptionClasses.get(exception));
             }
             return;
@@ -302,7 +338,7 @@ public class ReflectionTests extends AbstractTest {
         Object result = reflectionUtil.resolve(pair.getOne(), object);
         Assertions.assertNotNull(result, "Could not resolve '" + pair.getOne() + "' for " + object);
 
-        assertEquals(result, pair.getTwo());
+        assertEquals(pair.getTwo(), result);
         logger.info("Assertion(value) success: {}", pair);
     }
 
@@ -320,9 +356,9 @@ public class ReflectionTests extends AbstractTest {
         logger.info("Assertion(typeof) success: {}", pair);
     }
 
-    private void assertEquals(Object result, String expected) {
+    private void assertEquals(String expected, Object result) {
         if (result instanceof String) {
-            Assertions.assertEquals(expected, result);
+            Assertions.assertEquals(expected.trim(), ((String) result).trim());
         } else if (result instanceof Integer) {
             Assertions.assertEquals(Integer.valueOf(expected), result);
         } else if (result instanceof Float) {
@@ -346,7 +382,7 @@ public class ReflectionTests extends AbstractTest {
             Assertions.assertEquals(list.size(), ((List) result).size(),
                 "Size of expected list " + list + " does not equal size of actual list " + result);
             for (int i = 0; i < list.size(); i++) {
-                assertEquals(((List) result).get(i), list.get(i));
+                assertEquals(list.get(i), ((List) result).get(i));
             }
         } else {
             Assertions.fail("Unknown instanceof for " + result);

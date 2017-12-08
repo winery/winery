@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class MissingTOSCAVersion extends YAMLParserException {
-    public MissingTOSCAVersion(String msg) {
-        super(msg);
+public class InvalidYamlSyntax extends InvalidSyntax {
+    public InvalidYamlSyntax(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

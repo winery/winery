@@ -23,3 +23,19 @@
 .fileOver {
     border: dotted 3px lightcoral;
 }
+
+.bs-callout {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
+}
+
+.bs-callout p:last-child {
+    margin-bottom: 0;
+}
+
+.bs-callout-danger {
+    border-left-color: #d9534f;
+}

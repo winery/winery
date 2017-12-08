@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class ValueTypeMismatch extends YAMLParserException {
-    public ValueTypeMismatch(String msg) {
-        super(msg);
+public abstract class Invalid extends YAMLParserException {
+    public Invalid(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

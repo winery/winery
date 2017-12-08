@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class UnknownRepository extends YAMLParserException {
-    public UnknownRepository(String msg) {
-        super(msg);
+public class InvalidTypeExtend extends InvalidType {
+    public InvalidTypeExtend(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

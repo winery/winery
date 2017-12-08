@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class MissingRepositoryDefinition extends YAMLParserException {
-    public MissingRepositoryDefinition(String msg) {
-        super(msg);
+public class UndefinedField extends Undefined {
+    public UndefinedField(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

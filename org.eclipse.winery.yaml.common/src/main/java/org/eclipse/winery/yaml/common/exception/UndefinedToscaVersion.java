@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class MissingRequiredKeyname extends YAMLParserException {
-    public MissingRequiredKeyname(String keyname, String context) {
-        super("The " + context + " is missing the required keyname \"" + keyname + "\".");
+public class UndefinedToscaVersion extends UndefinedField {
+    public UndefinedToscaVersion(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

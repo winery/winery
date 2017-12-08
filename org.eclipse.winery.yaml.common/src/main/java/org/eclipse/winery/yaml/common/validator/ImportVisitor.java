@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
@@ -29,7 +30,6 @@ import org.eclipse.winery.yaml.common.Defaults;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.Utils;
 import org.eclipse.winery.yaml.common.exception.MultiException;
-import org.eclipse.winery.yaml.common.exception.YAMLParserException;
 import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionVisitor;
 import org.eclipse.winery.yaml.common.validator.support.Parameter;
@@ -60,8 +60,10 @@ public class ImportVisitor extends ExceptionVisitor<Result, Parameter> {
                         File.separator.concat(typeDefinition));
                     Files.copy(inputStream, outFilePath, StandardCopyOption.REPLACE_EXISTING);
                     TServiceTemplate serviceTemplate = reader.parseSkipTest(outFilePath, Namespaces.TOSCA_NS);
-                    this.visit(serviceTemplate, new Parameter());
-                } catch (YAMLParserException e) {
+                    if (Objects.nonNull(serviceTemplate)) {
+                        serviceTemplate.accept(this, new Parameter());
+                    }
+                } catch (MultiException e) {
                     setException(e);
                 } catch (Exception e) {
                     e.printStackTrace();

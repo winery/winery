@@ -14,7 +14,10 @@ import { WineryNotificationService } from '../../../wineryNotificationModule/win
 
 @Component({
     selector: 'winery-instance-logger-component',
-    templateUrl: 'logger.component.html'
+    templateUrl: 'logger.component.html',
+    styleUrls: [
+        'logger.component.css'
+    ],
 })
 export class LoggerComponent implements OnInit {
 

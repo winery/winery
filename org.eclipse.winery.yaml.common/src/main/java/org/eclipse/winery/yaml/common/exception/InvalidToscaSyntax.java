@@ -10,11 +10,11 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
+ ********************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class TOSCAVersionMustBeFirstLine extends YAMLParserException {
-    public TOSCAVersionMustBeFirstLine(String msg) {
-        super(msg);
+public class InvalidToscaSyntax extends InvalidSyntax {
+    public InvalidToscaSyntax(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

@@ -23,7 +23,6 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.yaml.common.exception.MultiException;
-import org.eclipse.winery.yaml.common.exception.YAMLParserException;
 import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 import org.eclipse.winery.yaml.common.writer.yaml.Writer;
 
@@ -103,7 +102,7 @@ public abstract class AbstractTest {
     }
 
     @NonNull
-    public Metadata getMetadata(Path name) throws YAMLParserException {
+    public Metadata getMetadata(Path name) throws MultiException {
         return yamlReader.getMetadata(path, name);
     }
 }

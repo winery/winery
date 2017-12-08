@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class UnknownDataType extends YAMLParserException {
-    public UnknownDataType(String msg) {
-        super(msg);
+public class UndefinedFile extends Undefined {
+    public UndefinedFile(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

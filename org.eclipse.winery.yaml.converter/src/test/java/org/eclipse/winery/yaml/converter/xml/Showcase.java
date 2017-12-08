@@ -31,37 +31,37 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class Showcase extends AbstractTestX2Y {
-	public Showcase() {
-		super(Paths.get("src/test/resources/xml/Showcase"));
-	}
+    public Showcase() {
+        super(Paths.get("src/test/resources/xml/Showcase"));
+    }
 
-	@Test
-	public void zipTypeTest() throws Exception {
-		String name = "Showcase";
-		String path = this.path + File.separator + name + ".csar";
+    @Test
+    public void zipTypeTest() throws Exception {
+        String name = "Showcase";
+        String path = this.path + File.separator + name + ".csar";
 
-		// Read DriverInjectionTest and import the csar into the repository 
-		InputStream fis = new FileInputStream(path);
-		IRepository repository = RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("repository")));
-		CsarImporter csarImporter = new CsarImporter();
-		csarImporter.readCSAR(fis, true, true);
+        // Read DriverInjectionTest and import the csar into the repository 
+        InputStream fis = new FileInputStream(path);
+        IRepository repository = RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("repository")));
+        CsarImporter csarImporter = new CsarImporter();
+        csarImporter.readCSAR(fis, true, true);
 
-		// Read the csar again and convert it to yaml the resulting yaml service templates
-		// are written to a temporary dir and converted to a input stream of a zip file
-		Converter converter = new Converter(repository);
-		fis = new FileInputStream(path);
-		InputStream zip = converter.convertX2Y(fis);
+        // Read the csar again and convert it to yaml the resulting yaml service templates
+        // are written to a temporary dir and converted to a input stream of a zip file
+        Converter converter = new Converter(repository);
+        fis = new FileInputStream(path);
+        InputStream zip = converter.convertX2Y(fis);
 
-		// Write the zip file to the output path and rename it
-		File zipFile = new File(outPath + File.separator + name + ".csar");
-		if (!zipFile.getParentFile().exists()) {
-			zipFile.getParentFile().mkdirs();
-		}
-		Files.copy(zip, zipFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        // Write the zip file to the output path and rename it
+        File zipFile = new File(outPath + File.separator + name + ".csar");
+        if (!zipFile.getParentFile().exists()) {
+            zipFile.getParentFile().mkdirs();
+        }
+        Files.copy(zip, zipFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-		// clean temporary repository
-		Utils.deleteTmpDir(Paths.get("repository"));
+        // clean temporary repository
+        Utils.deleteTmpDir(Paths.get("repository"));
 
-		Assert.assertTrue(zipFile.exists());
-	}
+        Assert.assertTrue(zipFile.exists());
+    }
 }
