@@ -1,0 +1,24 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: Valid repository definitions.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  exception: None
+  tosca.version: 1.1
+  references: 3.5.5.1
+  keyname: repositories
+  assert: |
+    test.repositories.rp1.description = Repository description
+    test.repositories.rp1.url = http://example.com/repository1
+    test.repositories.rp1.credential.token_type = password
+    test.repositories.rp1.credential.token = yKpYK6fsShPxAYYHaCEBPMFFQ7DPYBx0
+    test.repositories.rp2.url = http://example.com/repository2
+
+repositories:
+  test.repositories.rp1:
+    description: Repository description
+    url: http://example.com/repository1
+    credential:
+      token_type: password
+      token: yKpYK6fsShPxAYYHaCEBPMFFQ7DPYBx0
+  test.repositories.rp2: http://example.com/repository2

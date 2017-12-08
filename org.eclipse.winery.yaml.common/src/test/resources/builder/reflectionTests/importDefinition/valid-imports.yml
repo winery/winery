@@ -1,0 +1,21 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains an invalid imports field. The file filed must not be empty.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.7.1
+  exception: None
+  keyname: imports
+  assert: |
+    0.imp1.file = imports/import.yml
+    1.imp2.file = imports/import.yml
+    1.imp2.namespace_uri = http://www.example.org/ns/simple/yaml/1.1/test
+    1.imp2.namespace_prefix = imports
+
+imports:
+  - imp1: imports/import.yml
+  - imp2:
+      file: imports/import.yml
+      namespace_uri: http://www.example.org/ns/simple/yaml/1.1/test
+      namespace_prefix: imports
