@@ -57,7 +57,9 @@ public class ImportVisitor extends ExceptionVisitor<Result, Parameter> {
                 try {
                     Path outFilePath = tmpDir.resolve(typeDefinition);
                     InputStream inputStream = this.getClass().getResourceAsStream(
-                        File.separator.concat(typeDefinition));
+                        // Do not use File.separator here (https://stackoverflow.com/a/41677152/8235252)
+                        "/".concat(typeDefinition)
+                    );
                     Files.copy(inputStream, outFilePath, StandardCopyOption.REPLACE_EXISTING);
                     TServiceTemplate serviceTemplate = reader.parseSkipTest(outFilePath, Namespaces.TOSCA_NS);
                     this.visit(serviceTemplate, new Parameter());
