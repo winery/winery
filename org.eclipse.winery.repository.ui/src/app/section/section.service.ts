@@ -43,15 +43,14 @@ export class SectionService {
             .map(res => res.json());
     }
 
-    createComponent(newComponentName: string, newComponentNamespace: string, newComponentSelectedType?: string) {
+    createComponent(newComponentName: string, newComponentNamespace: string, newComponentSelectedType: string) {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
 
-        let saveObject: any;
-        if (!isNullOrUndefined(newComponentSelectedType)) {
-            saveObject = { localname: newComponentName, namespace: newComponentNamespace, type: newComponentSelectedType };
-        } else {
-            saveObject = { localname: newComponentName, namespace: newComponentNamespace };
+        const saveObject: any = { localname: newComponentName, namespace: newComponentNamespace };
+
+        if (!isNullOrUndefined(newComponentSelectedType) && newComponentSelectedType.length > 0) {
+            saveObject.type = newComponentSelectedType;
         }
 
         return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(saveObject), options);

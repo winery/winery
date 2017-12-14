@@ -28,4 +28,6 @@ hs_err_pid*
 
 # Testgenerated files...
 /src/test/resources/bpmn4tosca/managementplan.exclusivegateway.zip
+/src/test/resources/bpmn4tosca/managementplan.noEndpoint.zip
 /src/test/resources/bpmn4tosca/managementplan.zip
+/src/test/resources/bpmn4tosca/managementplan.undefinedEndpoint.zip

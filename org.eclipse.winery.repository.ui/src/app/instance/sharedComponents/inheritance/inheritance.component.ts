@@ -17,6 +17,8 @@ import { ToscaTypes } from '../../../wineryInterfaces/enums';
 import { SelectData } from '../../../wineryInterfaces/selectData';
 import { SelectItem } from 'ng2-select';
 import { Router } from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap';
+import { WineryAddComponent } from '../../../wineryAddComponentModule/addComponent.component';
 
 @Component({
     selector: 'winery-instance-inheritance',
@@ -32,10 +34,11 @@ export class InheritanceComponent implements OnInit {
     toscaType: ToscaTypes;
     loading = true;
     enableButton = false;
-    @ViewChild('derivedFromSelector') aboutModal: any;
+    @ViewChild('derivedFromSelector') aboutModal: ModalDirective;
+    @ViewChild('addSubTypeModal') addSubTypeModal: WineryAddComponent;
     initialActiveItem: Array<SelectData>;
 
-    constructor(private sharedData: InstanceService,
+    constructor(public sharedData: InstanceService,
                 private service: InheritanceService,
                 private notify: WineryNotificationService, private router: Router) {
     }
@@ -79,6 +82,10 @@ export class InheritanceComponent implements OnInit {
         this.router.navigate([this.toscaType + '/' + encodeURIComponent(namespace) + '/' + name]);
     }
 
+    onAddSubType() {
+        this.addSubTypeModal.onAdd();
+    }
+
     private handleInheritanceData(inheritance: InheritanceApiData) {
         this.inheritanceApiData = inheritance;
         this.initialActiveItem = [{
@@ -108,5 +115,4 @@ export class InheritanceComponent implements OnInit {
         this.loading = false;
         this.notify.error(error.text(), 'Error');
     }
-
 }

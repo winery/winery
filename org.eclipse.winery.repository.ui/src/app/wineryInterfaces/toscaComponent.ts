@@ -32,4 +32,8 @@ export class ToscaComponent {
             }
         }
     }
+
+    getQName(): string {
+        return '{' + this.namespace + '}' + this.localName;
+    }
 }
