@@ -1,0 +1,32 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains a valid property definition for artifact types.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.8.2
+  keyname: artifact_types.test.artifacttypes.at1.properties
+  assert-typeof: |
+    prop1 = TPropertyDefinition
+  assert: |
+    prop1.type = integer
+    prop1.description = Testing Entity type properties
+    prop1.required = true
+    prop1.default = 2
+    prop1.status = supported
+    prop1.constraints.0.greater_than = 0
+    prop1.entry_schema.description = Entry schema description    
+
+artifact_types:  
+  test.artifacttypes.at1:
+    properties:
+      prop1:
+        type: integer
+        description: Testing Entity type properties
+        required: true
+        default: 2
+        status: supported
+        constraints:
+          - greater_than: 0
+        entry_schema:
+          description: Entry schema description
