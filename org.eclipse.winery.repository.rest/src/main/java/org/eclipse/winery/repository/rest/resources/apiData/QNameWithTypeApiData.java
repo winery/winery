@@ -11,17 +11,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-public class QNameWithTypeApiData {
-
-	/**
-	 * The namespace of the element
-	 */
-	public String namespace;
-
-	/**
-	 * The local name (id) of the element
-	 */
-	public String localname;
+public class QNameWithTypeApiData extends QNameApiData {
 
 	/**
 	 * QName as string of the referenced type

@@ -20,6 +20,7 @@ import { WineryQNameSelectorModule } from '../../../wineryQNameSelector/wineryQN
 import { SelectModule } from 'ng2-select';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.moudle';
 
 @NgModule({
     imports: [
@@ -32,6 +33,7 @@ import { RouterModule } from '@angular/router';
         WineryModalModule,
         WineryLoaderModule,
         WineryQNameSelectorModule,
+        WineryAddModule,
     ],
     exports: [InheritanceComponent],
     declarations: [InheritanceComponent],
