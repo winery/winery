@@ -11,11 +11,11 @@ More information about encoding is available at [dev/Encoding.md](dev/Encoding).
 * Single-encoded URLs and forcing the environment to be reconfigered
 * Double-encoded URLs
 
-## Conclusion
+## Decision Outcome
 
 * *Chosen Alternative: Double-encoded URLs*
 
-## Comparison (Optional)
+## Pros and Cons of the Alternatives
 
 ### Using namespace prefixes in the URLs
 

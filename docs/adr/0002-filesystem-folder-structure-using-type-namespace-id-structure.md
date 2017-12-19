@@ -11,7 +11,7 @@ The contents of the repository should be
 * Folder structure using type-namespace-id
 * Everything in one folder. Hash-based storing similar to git.
 
-## Conclusion
+## Decision Outcome
 
 *Chosen Alternative: Folders subdivided in type-namespace-id*
 

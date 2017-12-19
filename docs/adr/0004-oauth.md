@@ -13,18 +13,19 @@ In order to use (private) repositories instead of uploading all files into a Art
 
 ![OAuth flow diagram](graphics/oauth-flow.png)  
 
-## Considered Alternatives:
+## Considered Alternatives
 * *[ALTERNATIVE 1]* Perform the whole login process in the browser
 * *[ALTERNATIVE 2]* Perform the whole login process in the backend
 * *[ALTERNATIVE 3]* Mix both, frontend and backend to get the access token
 
-## Conclusion
+## Decision Outcome
 * *Chosen Alternative: [ALTERNATIVE 3]*
    because we can easily protect our client secret on the server, store the token safely in the clients local storage and 
    do not need to keep the state at the server. Further, it is possible to save additional user information in the local
    storage without the need for getting it every time from the server.
 
-## Comparison
+## Pros and Cons of the Alternatives
+
 ### [ALTERNATIVE 1]
 * *+ good separation of concerns*
 * *+ fast and direct communication between client and OAuth provider*

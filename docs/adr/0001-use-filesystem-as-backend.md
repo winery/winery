@@ -8,11 +8,11 @@ These contents need to be shared.
 * Filesystem
 * Database
 
-## Conclusion
+## Decision Outcome
 
 * *Chosen Alternative: Filesystem*
 
-## Comparison
+## Pros and Cons of the Alternatives 
 
 ### Filesystem
 

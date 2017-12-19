@@ -4,7 +4,7 @@ This lists the architectural decisions for Eclipse Winery.
 
 <!-- adrlog -->
 
-- [ADR-0000](0000-use-architectural-decision-records.md) - Use Architectural Decision Records
+- [ADR-0000](0000-use-architectural-decision-records.md) - Use Markdown Architectural Decision Records
 - [ADR-0001](0001-use-filesystem-as-backend.md) - Use filesystem as backend
 - [ADR-0002](0002-filesystem-folder-structure-using-type-namespace-id-structure.md) - File system folder structure using type-namespace-id structure
 - [ADR-0003](0003-double-encoded-urls.md) - Double Encoded URLs
@@ -20,7 +20,7 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0013](0013-routes-in-Angular.md) - *Routes in the Repository Angular App*
 - [ADR-0014](0014-use-eclipse-orion-as-editor.md) - Use Eclipse Orion as Editor
 - [ADR-0015](0015-copy-source-to-files.md) - Offer copying files from the source to the files folder
-- [ADR-0016](0016-reflection-test-for-tosca-yaml-builder.md) - Reflection test for TOSCA YAML builder
+- [ADR-0016](0016-reflection-test-for-tosca-yaml-builder.md) - Reflection test for TOSCA YAML builder
 
 <!-- adrlogstop -->
 
