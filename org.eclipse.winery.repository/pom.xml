@@ -228,6 +228,11 @@
 			<artifactId>eclipse-collections</artifactId>
 			<version>8.2.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jgrapht</groupId>
+			<artifactId>jgrapht-core</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -243,6 +248,7 @@
 				<filtering>true</filtering>
 				<includes>
 					<include>winery.properties</include>
+					<include>patterndetection.properties</include>
 					<include>logback.xml</include>
 					<include>logback-test.xml</include>
 				</includes>

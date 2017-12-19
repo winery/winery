@@ -307,6 +307,7 @@ winery.events.name.SELECTION_CHANGED = "selectionchanged";
 winery.events.name.command.SELECT_ALL_NODETEMPLATES = "selectAllNodeTemplates";
 winery.events.name.command.UNSELECT_ALL_NODETEMPLATES = "unselectAllNodeTemplates";
 winery.events.name.command.DELETE_SELECTION = "deleteSelection";
+winery.events.name.VISUALIZE = "visualize";
 
 winery.events.name.command.MOVE_DOWN = "moveDown";
 winery.events.name.command.MOVE_UP = "moveUp";
@@ -316,3 +317,6 @@ winery.events.name.command.MOVE_RIGHT = "moveRight";
 winery.events.name.command.SAVE = "save";
 winery.events.name.command.SPLIT = "split";
 winery.events.name.command.MATCH = "match";
+winery.events.name.command.PATTERN_DETECTION = "detectPattern";
+winery.events.name.command.VISUALIZE_PATTERNS = "visualizePatterns";
+winery.events.name.command.HIGHLIGHT_PATTERN = "highlightPattern";
