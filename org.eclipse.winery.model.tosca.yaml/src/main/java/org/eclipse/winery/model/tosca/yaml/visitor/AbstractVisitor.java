@@ -191,8 +191,8 @@ public abstract class AbstractVisitor<R extends AbstractResult<R>, P extends Abs
             visitElement(node.getAttributes(), parameter, "attributes"),
             visitMapElement(node.getRequirements(), parameter, "requirements"),
             visitElement(node.getCapabilities(), parameter, "capabilities"),
-            visitElement(node.getInterfaces(), parameter, "interfaces"),
             visitElement(node.getArtifacts(), parameter, "artifacts"),
+            visitElement(node.getInterfaces(), parameter, "interfaces"),
             visitElement(node.getNodeFilter(), parameter, "node_filter")
         ));
     }
