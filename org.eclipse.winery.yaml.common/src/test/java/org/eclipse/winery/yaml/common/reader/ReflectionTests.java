@@ -210,7 +210,7 @@ public class ReflectionTests extends AbstractTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "constraints/valid-constraints-artifact_type-complete"
+        "capabilityTypes/invalid-capability_type-undefined_derived_from"
     })
     public void testSingleServiceTemplates(String fileName) throws Exception {
         testServiceTemplates(getYamlFile(fileName));
