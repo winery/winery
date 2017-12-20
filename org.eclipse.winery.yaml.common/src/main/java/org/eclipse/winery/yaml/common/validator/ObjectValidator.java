@@ -17,18 +17,19 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.winery.yaml.common.exception.TOSCAVersionMustBeFirstLine;
+import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
 
 public class ObjectValidator {
-    public void validateObject(Object object) throws TOSCAVersionMustBeFirstLine {
+    public void validateObject(Object object) throws InvalidToscaSyntax {
         if (object instanceof LinkedHashMap) {
             LinkedHashMap map = (LinkedHashMap) object;
             Set<Map.Entry> entries = map.entrySet();
             if (entries.size() == 0 || !entries.iterator().next().getKey().equals("tosca_definitions_version")) {
                 for (Map.Entry entry : entries) {
                     if (entry.getKey().equals("tosca_definitions_version")) {
-                        String msg = "tosca_definitions_version must be defined before all other YAML elements!";
-                        throw new TOSCAVersionMustBeFirstLine(msg);
+                        throw new InvalidToscaSyntax(
+                            "The field tosca_definitions_version MUST be defined before all other YAML elements"
+                        );
                     }
                 }
             }

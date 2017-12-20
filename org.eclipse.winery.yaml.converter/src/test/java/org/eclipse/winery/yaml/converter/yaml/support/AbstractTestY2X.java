@@ -30,45 +30,45 @@ import org.junit.BeforeClass;
 
 public abstract class AbstractTestY2X {
 
-	private final static String fileExtension = ".yml";
-	protected final Path path;
-	protected final Path outPath;
+    private final static String fileExtension = ".yml";
+    protected final Path path;
+    protected final Path outPath;
 
-	public AbstractTestY2X(Path path) {
-		this.path = path;
-		this.outPath = path.resolve("tmp");
-	}
+    public AbstractTestY2X(Path path) {
+        this.path = path;
+        this.outPath = path.resolve("tmp");
+    }
 
-	@BeforeClass
-	public static void setRepository() {
-		RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("AbstractTests")));
-	}
+    @BeforeClass
+    public static void setRepository() {
+        RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("AbstractTests")));
+    }
 
-	public String getName(String name) {
-		return name + fileExtension;
-	}
+    public String getName(String name) {
+        return name + fileExtension;
+    }
 
-	public TServiceTemplate readServiceTemplate(String name) throws Exception {
-		Reader reader = Reader.getReader();
-		return reader.parse(path, Paths.get(getName(name)));
-	}
+    public TServiceTemplate readServiceTemplate(String name) throws Exception {
+        Reader reader = Reader.getReader();
+        return reader.parse(path, Paths.get(getName(name)));
+    }
 
-	public TServiceTemplate readServiceTemplate(String name, String namespace) throws Exception {
-		Reader reader = Reader.getReader();
-		return reader.parse(path, Paths.get(getName(name), namespace));
-	}
+    public TServiceTemplate readServiceTemplate(String name, String namespace) throws Exception {
+        Reader reader = Reader.getReader();
+        return reader.parse(path, Paths.get(getName(name), namespace));
+    }
 
-	public TServiceTemplate readServiceTemplate(Path path, String name, String namespace) throws Exception {
-		Reader reader = Reader.getReader();
-		return reader.parse(this.path, path.resolve(name.concat(fileExtension)), namespace);
-	}
+    public TServiceTemplate readServiceTemplate(Path path, String name, String namespace) throws Exception {
+        Reader reader = Reader.getReader();
+        return reader.parse(this.path, path.resolve(name.concat(fileExtension)), namespace);
+    }
 
-	public Definitions convert(TServiceTemplate serviceTemplate, String name, String namespace) {
-		Converter converter = new Converter();
-		return converter.convertY2X(serviceTemplate, name, namespace, path, path.resolve("tmp"));
-	}
+    public Definitions convert(TServiceTemplate serviceTemplate, String name, String namespace) {
+        Converter converter = new Converter();
+        return converter.convertY2X(serviceTemplate, name, namespace, path, path.resolve("tmp"));
+    }
 
-	public void writeXml(Definitions definitions, String name, String namespace) throws JAXBException {
-		WriterUtils.saveDefinitions(definitions, outPath, namespace, name);
-	}
+    public void writeXml(Definitions definitions, String name, String namespace) throws JAXBException {
+        WriterUtils.saveDefinitions(definitions, outPath, namespace, name);
+    }
 }

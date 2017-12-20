@@ -13,18 +13,52 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class YAMLParserException extends Exception {
-    private String fileContext;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
-    public YAMLParserException(String msg) {
-        super(msg);
+import org.eclipse.jdt.annotation.NonNull;
+import org.slf4j.helpers.MessageFormatter;
+
+public abstract class YAMLParserException extends Exception {
+    private List<Object> argArray;
+    private String inlineContext;
+    private Path fileContext;
+
+    public YAMLParserException(@NonNull String messagePattern, Object... args) {
+        super(messagePattern);
+        argArray = new ArrayList<>();
+        if (Objects.nonNull(args)) argArray.addAll(Arrays.asList(args));
     }
 
-    public void setFileContext(String msg) {
-        this.fileContext = "Context::FILE = " + msg;
+    public YAMLParserException setContext(List<String> context) {
+        inlineContext = String.join(":", context);
+        return this;
     }
 
     public String getMessage() {
-        return super.getMessage() + "\n" + this.fileContext + "\n";
+        return MessageFormatter.arrayFormat(
+            super.getMessage(),
+            argArray.toArray()
+        ).getMessage().trim()
+            .concat(getFileContext())
+            .concat(getInlineContext());
+    }
+
+    public String getFileContext() {
+        if (Objects.isNull(fileContext)) return "";
+        return "\nContext::FILE = ".concat(String.valueOf(fileContext));
+    }
+
+    public YAMLParserException setFileContext(Path path) {
+        fileContext = path;
+        return this;
+    }
+
+    public String getInlineContext() {
+        if (Objects.isNull(inlineContext)) return "";
+        return "\nContext::INLINE = ".concat(String.valueOf(inlineContext));
     }
 }

@@ -20,59 +20,59 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
 
 public class TImplementationArtifactDefinition extends TArtifactDefinition {
-	private String interfaceName;
-	private String operationName;
+    private String interfaceName;
+    private String operationName;
 
-	public TImplementationArtifactDefinition() {
+    public TImplementationArtifactDefinition() {
 
-	}
+    }
 
-	public TImplementationArtifactDefinition(Builder builder) {
-		super(builder);
-		this.interfaceName = builder.interfaceName;
-		this.operationName = builder.operationName;
-	}
+    public TImplementationArtifactDefinition(Builder builder) {
+        super(builder);
+        this.interfaceName = builder.interfaceName;
+        this.operationName = builder.operationName;
+    }
 
-	public String getInterfaceName() {
-		return interfaceName;
-	}
+    public String getInterfaceName() {
+        return interfaceName;
+    }
 
-	public void setInterfaceName(String interfaceName) {
-		this.interfaceName = interfaceName;
-	}
+    public void setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
+    }
 
-	public String getOperationName() {
-		return operationName;
-	}
+    public String getOperationName() {
+        return operationName;
+    }
 
-	public void setOperationName(String operationName) {
-		this.operationName = operationName;
-	}
+    public void setOperationName(String operationName) {
+        this.operationName = operationName;
+    }
 
-	public static class Builder extends TArtifactDefinition.Builder {
-		private String interfaceName;
-		private String operationName;
+    public static class Builder extends TArtifactDefinition.Builder {
+        private String interfaceName;
+        private String operationName;
 
-		public Builder(QName type, List<String> files) {
-			super(type, files);
-		}
+        public Builder(QName type, List<String> files) {
+            super(type, files);
+        }
 
-		public Builder(TArtifactDefinition artifactDefinition) {
-			super(artifactDefinition);
-		}
+        public Builder(TArtifactDefinition artifactDefinition) {
+            super(artifactDefinition);
+        }
 
-		public Builder setInterfaceName(String interfaceName) {
-			this.interfaceName = interfaceName;
-			return this;
-		}
+        public Builder setInterfaceName(String interfaceName) {
+            this.interfaceName = interfaceName;
+            return this;
+        }
 
-		public Builder setOperationName(String operationName) {
-			this.operationName = operationName;
-			return this;
-		}
+        public Builder setOperationName(String operationName) {
+            this.operationName = operationName;
+            return this;
+        }
 
-		public TImplementationArtifactDefinition build() {
-			return new TImplementationArtifactDefinition(this);
-		}
-	}
+        public TImplementationArtifactDefinition build() {
+            return new TImplementationArtifactDefinition(this);
+        }
+    }
 }

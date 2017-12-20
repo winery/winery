@@ -13,8 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator.support;
 
-import org.eclipse.winery.yaml.common.exception.InvalidSyntax;
-import org.eclipse.winery.yaml.common.exception.InvalidType;
+import org.eclipse.winery.yaml.common.exception.InvalidYamlSyntax;
 import org.eclipse.winery.yaml.common.exception.YAMLParserException;
 
 import org.yaml.snakeyaml.constructor.ConstructorException;
@@ -27,18 +26,19 @@ public class ExceptionInterpreter {
         if (e.getCause() instanceof MarkedYAMLException) {
             context = ((MarkedYAMLException) e.getCause()).getContext();
         } else {
-            return new InvalidSyntax(e.toString());
+            return new InvalidYamlSyntax(e.toString());
         }
+        String messagePattern = "The property= '{}' could not be interpreted by the SnakeYAML parser\n{}";
         String invalidDescription = "Cannot create property=description.*";
         if (context.matches(invalidDescription)) {
-            return new InvalidType("description", e);
+            return new InvalidYamlSyntax(messagePattern, "description", e);
         }
         String invalidType = "Cannot create property=metadata.*";
         if (context.matches(invalidType)) {
-            return new InvalidType("metadata", e);
+            return new InvalidYamlSyntax(messagePattern, "metadata", e);
         }
 
-        return new InvalidSyntax(e.toString());
+        return new InvalidYamlSyntax(e.toString());
     }
 
     public YAMLParserException interpret(ScannerException e) {
@@ -53,10 +53,10 @@ public class ExceptionInterpreter {
                     "(Example VALID:   { get_operation_output: [ SELF, \"http://www.example.com/interface/lifecycle\", " +
                     "operationName, outputName ] })\n\n" +
                     e.getMessage();
-                return new InvalidSyntax(msg);
+                return new InvalidYamlSyntax(msg);
             }
         }
 
-        return new InvalidSyntax(e.toString());
+        return new InvalidYamlSyntax(e.toString());
     }
 }

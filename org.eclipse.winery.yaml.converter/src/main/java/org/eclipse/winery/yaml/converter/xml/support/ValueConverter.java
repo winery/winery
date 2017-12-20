@@ -14,14 +14,14 @@
 package org.eclipse.winery.yaml.converter.xml.support;
 
 public class ValueConverter {
-	public static ValueConverter INSTANCE = new ValueConverter();
+    public static ValueConverter INSTANCE = new ValueConverter();
 
-	public String convert(String value) {
-		if (value.matches("get_input:.*")) return "{ ".concat(value.trim()).concat(" }");
-		return value;
-	}
+    public String convert(String value) {
+        if (value.matches("get_input:.*")) return "{ ".concat(value.trim()).concat(" }");
+        return value;
+    }
 
-	public String convert(Object value) {
-		return convert(value.toString());
-	}
+    public String convert(Object value) {
+        return convert(value.toString());
+    }
 }

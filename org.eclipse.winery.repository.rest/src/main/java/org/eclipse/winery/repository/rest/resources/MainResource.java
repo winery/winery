@@ -47,6 +47,7 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptype
 import org.eclipse.winery.repository.rest.resources.entitytypes.requirementtypes.RequirementTypesResource;
 import org.eclipse.winery.repository.rest.resources.imports.ImportsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplatesResource;
+import org.eclipse.winery.repository.rest.resources.yaml.YAMLParserResource;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;

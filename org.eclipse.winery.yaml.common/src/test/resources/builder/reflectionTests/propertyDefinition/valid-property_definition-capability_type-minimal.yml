@@ -1,0 +1,18 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains a valid property definition for capability types.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.8.2
+  keyname: capability_types.test.capabilities.ct1.properties
+  assert-typeof: |
+    prop1 = TPropertyDefinition
+  assert: |
+    prop1.type = string
+
+capability_types:  
+  test.capabilities.ct1:
+    properties:
+      prop1:
+        type: string

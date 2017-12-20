@@ -15,6 +15,7 @@ package org.eclipse.winery.yaml.common.validator;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Objects;
 
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.TInterfaceType;
@@ -24,12 +25,12 @@ import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.model.tosca.yaml.tosca.datatypes.Credential;
 import org.eclipse.winery.yaml.common.Defaults;
-import org.eclipse.winery.yaml.common.exception.ImplementationArtifactInvalidOnInterfaceType;
-import org.eclipse.winery.yaml.common.exception.InvalidTOSCAVersion;
-import org.eclipse.winery.yaml.common.exception.MissingRequiredKeyname;
-import org.eclipse.winery.yaml.common.exception.MissingTOSCAVersion;
+import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
+import org.eclipse.winery.yaml.common.exception.InvalidToscaVersion;
 import org.eclipse.winery.yaml.common.exception.MultiException;
-import org.eclipse.winery.yaml.common.exception.ValueTypeMismatch;
+import org.eclipse.winery.yaml.common.exception.UndefinedFile;
+import org.eclipse.winery.yaml.common.exception.UndefinedRequiredKeyname;
+import org.eclipse.winery.yaml.common.exception.UndefinedToscaVersion;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionVisitor;
 import org.eclipse.winery.yaml.common.validator.support.Parameter;
 import org.eclipse.winery.yaml.common.validator.support.Result;
@@ -42,25 +43,29 @@ public class Validator extends ExceptionVisitor<Result, Parameter> {
     }
 
     public void validate(TServiceTemplate serviceTemplate, String namespace) throws MultiException {
+        if (Objects.isNull(serviceTemplate)) return;
+        
         TypeValidator typeValidator = new TypeValidator(path, namespace);
         typeValidator.validate(serviceTemplate);
 
         DefinitionValidator definitionValidator = new DefinitionValidator(path);
         definitionValidator.validate(serviceTemplate);
 
-        visit(serviceTemplate, new Parameter());
+        serviceTemplate.accept(this, new Parameter());
 
-        if (this.hasExceptions()) {
-            throw this.getException();
-        }
+        if (this.hasExceptions()) throw this.getException();
     }
 
     @Override
     public Result visit(TInterfaceType node, Parameter parameter) {
-        if (node.getOperations() != null) {
+        if (Objects.nonNull(node.getOperations())) {
             for (Map.Entry<String, TOperationDefinition> entry : node.getOperations().entrySet()) {
-                if (entry.getValue().getImplementation() != null) {
-                    setException(new ImplementationArtifactInvalidOnInterfaceType("The InterfaceType \"" + parameter.getKey() + "\" MUST NOT include any implementations for defined operations"));
+                if (Objects.nonNull(entry.getValue().getImplementation())) {
+                    setException(new InvalidToscaSyntax(
+                            "The InterfaceType '{}' MUST NOT include any implementations for defined operations",
+                            parameter.getKey()
+                        ).setContext(parameter.getContext())
+                    );
                 }
             }
         }
@@ -69,53 +74,55 @@ public class Validator extends ExceptionVisitor<Result, Parameter> {
 
     @Override
     public Result visit(TImportDefinition node, Parameter parameter) {
-        if (node.getFile() == null || node.getFile().isEmpty()) {
-            String context = "Import Definition \"" + parameter.getKey() + "\"";
-            String keyname = "file";
-            setException(new MissingRequiredKeyname(keyname, context));
+        if (Objects.isNull(node.getFile()) || node.getFile().isEmpty()) {
+            setException(new UndefinedFile("Field 'file' is undefined")
+                .setContext(parameter.getContext())
+            );
         }
         return super.visit(node, parameter);
     }
 
     @Override
     public Result visit(TServiceTemplate node, Parameter parameter) {
-        if (node.getToscaDefinitionsVersion() == null) {
-            String msg = "tosca_definition_version is missing";
-            setException(new MissingTOSCAVersion(msg));
+        if (Objects.isNull(node.getToscaDefinitionsVersion())) {
+            setException(new UndefinedToscaVersion(
+                    "The field 'tosca_definition_version' is undefined"
+                ).setContext(parameter.getContext())
+            );
         }
 
         if (!node.getToscaDefinitionsVersion().matches(Defaults.TOSCA_DEFINITIONS_VERSION_PATTERN)) {
-            String msg = "\"" + node.getToscaDefinitionsVersion()
-                + "\" is an invalid tosca_definition_version, which does not follow the pattern: \""
-                + Defaults.TOSCA_DEFINITIONS_VERSION_PATTERN + "\"";
-            setException(new InvalidTOSCAVersion(msg));
+            setException(new InvalidToscaVersion(
+                    "The value '{}' is invalid for 'tosca_definition_version' \nValid values match the pattern '{}'",
+                    node.getToscaDefinitionsVersion(),
+                    Defaults.TOSCA_DEFINITIONS_VERSION_PATTERN
+                ).setContext(parameter.getContext())
+            );
         }
         return super.visit(node, parameter);
     }
 
     @Override
     public Result visit(TRepositoryDefinition node, Parameter parameter) {
-        if (node == null) {
-            return null;
+        if (Objects.isNull(node)) return null;
+
+        if (Objects.isNull(node.getUrl()) || node.getUrl().isEmpty()) {
+            setException(new UndefinedRequiredKeyname("Field 'url' is required")
+                .setContext(parameter.getContext())
+            );
         }
 
-        String contextPrefix = "Repository definition \"";
-        String contextPostfix = "\"";
-
-        if (node.getUrl() == null || node.getUrl().isEmpty()) {
-            String keyname = "url";
-            setException(new MissingRequiredKeyname(keyname, contextPrefix + parameter.getKey() + contextPostfix));
-        }
-
-        if (node.getCredential() != null) {
+        if (Objects.nonNull(node.getCredential())) {
             Credential credential = node.getCredential();
-            if (credential.getToken() == null || credential.getToken().isEmpty()) {
-                String keyname = "credential.token";
-                setException(new MissingRequiredKeyname(keyname, contextPrefix + parameter.getKey() + contextPostfix));
+            if (Objects.isNull(credential.getToken()) || credential.getToken().isEmpty()) {
+                setException(new UndefinedRequiredKeyname("Field 'credential.token' is required")
+                    .setContext(parameter.getContext())
+                );
             }
-            if (credential.getTokenType() == null || credential.getTokenType().isEmpty()) {
-                String keyname = "credential.token_type";
-                setException(new MissingRequiredKeyname(keyname, contextPrefix + parameter.getKey() + contextPostfix));
+            if (Objects.isNull(credential.getTokenType()) || credential.getTokenType().isEmpty()) {
+                setException(new UndefinedRequiredKeyname("Field 'credential.token_type' is required")
+                    .setContext(parameter.getContext())
+                );
             }
         }
         return super.visit(node, parameter);
@@ -123,17 +130,19 @@ public class Validator extends ExceptionVisitor<Result, Parameter> {
 
     @Override
     public Result visit(Metadata node, Parameter parameter) {
-        if (node == null) {
-            return null;
-        }
+        if (Objects.isNull(node)) return null;
 
         if (node.containsKey("template_version")) {
             String templateVersion = node.get("template_version");
             String templateVersionMatch = "\\d+\\.\\d+(\\.\\d+(\\.\\w+(-\\d+)?)?)?";
 
             if (!templateVersion.matches(templateVersionMatch)) {
-                String msg = "The value of the metadata field template_version is invalid";
-                setException(new ValueTypeMismatch(msg));
+                setException(new InvalidToscaSyntax(
+                        "Invalid value '{}' for field template_version\nValid version pattern matches '{}'",
+                        templateVersion,
+                        templateVersionMatch
+                    ).setContext(parameter.getContext())
+                );
             }
         }
         return super.visit(node, parameter);

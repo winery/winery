@@ -13,17 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-import org.yaml.snakeyaml.constructor.ConstructorException;
-
-public class InvalidType extends YAMLParserException {
-    private final ConstructorException constructorException;
-
-    public InvalidType(String property, ConstructorException e) {
-        super("The property=\"" + property + "\" has an InvalidType");
-        this.constructorException = e;
-    }
-
-    public String toString() {
-        return this.getMessage() + "\n" + constructorException.toString();
+public class InvalidType extends Invalid {
+    public InvalidType(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }
