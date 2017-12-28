@@ -14,10 +14,10 @@
  ********************************************************************************/
 -->
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <div *ngIf="!loading; else showLoader">
-        <winery-modal-header [title]="'Add new ' + addModalType"></winery-modal-header>
-        <winery-modal-body>
-            <form #addComponentForm="ngForm">
+    <winery-modal-header [title]="'Add new ' + addModalType"></winery-modal-header>
+    <winery-modal-body>
+        <form #addComponentForm="ngForm">
+            <div *ngIf="!loading; else showLoader">
                 <div class="form-group">
                     <label for="componentName" class="control-label">Name</label>
                     <input type="text"
@@ -53,16 +53,16 @@
                     <ng-select id="typeSelect" [items]="types" (selected)="typeSelected($event)"
                                [active]="[newComponentSelectedType]"></ng-select>
                 </div>
-            </form>
-        </winery-modal-body>
-        <winery-modal-footer
-            (onOk)="addComponent()"
-            [closeButtonLabel]="'Cancel'"
-            [okButtonLabel]="'Add'"
-            [disableOkButton]="!addComponentForm?.valid">
-        </winery-modal-footer>
-    </div>
-    <ng-template #showLoader>
-        <winery-loader></winery-loader>
-    </ng-template>
+            </div>
+            <ng-template #showLoader>
+                <winery-loader></winery-loader>
+            </ng-template>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer
+        (onOk)="addComponent()"
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Add'"
+        [disableOkButton]="!addComponentForm?.valid">
+    </winery-modal-footer>
 </winery-modal>

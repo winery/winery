@@ -51,9 +51,6 @@ export class SectionComponent implements OnInit, OnDestroy {
 
     importXsdSchemaType: string;
 
-    newComponentNamespace: string;
-    validatorObject: WineryValidatorObject;
-
     fileUploadUrl = backendBaseURL + '/';
 
     @ViewChild('addModal') addModal: WineryAddComponent;

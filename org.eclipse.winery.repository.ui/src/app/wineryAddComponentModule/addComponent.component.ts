@@ -81,23 +81,9 @@ export class WineryAddComponent implements OnInit {
                     data => this.handleTypes(data),
                     error => this.handleError(error)
                 );
-        }
-
-        this.validatorObject = new WineryValidatorObject(this.componentData, 'id');
-
-        // This is needed for the modal to correctly display the selected namespace
-        if (!this.useStartNamespace) {
-            this.newComponentNamespace = this.namespace;
         } else {
-            this.newComponentNamespace = '';
-            this.addComponentForm.reset();
+            this.showModal();
         }
-        this.change.detectChanges();
-
-        this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
-        this.namespaceInput.writeValue(this.newComponentNamespace);
-
-        this.addModal.show();
     }
 
     addComponent() {
@@ -117,6 +103,28 @@ export class WineryAddComponent implements OnInit {
     private handleTypes(types: SelectData[]): void {
         this.loading = false;
         this.types = types.length > 0 ? types : null;
+        this.showModal();
+    }
+
+    private showModal() {
+        this.validatorObject = new WineryValidatorObject(this.componentData, 'id');
+
+        // This is needed for the modal to correctly display the selected namespace
+        if (!this.useStartNamespace) {
+            this.newComponentNamespace = this.namespace;
+        } else {
+            this.newComponentNamespace = '';
+
+            if (!isNullOrUndefined(this.addComponentForm)) {
+                this.addComponentForm.reset();
+            }
+        }
+        this.change.detectChanges();
+
+        this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
+        this.namespaceInput.writeValue(this.newComponentNamespace);
+
+        this.addModal.show();
     }
 
     private handleSaveSuccess() {
