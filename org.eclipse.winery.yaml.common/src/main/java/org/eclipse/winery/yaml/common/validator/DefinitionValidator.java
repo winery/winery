@@ -13,30 +13,37 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.yaml.common.Namespaces;
-import org.eclipse.winery.yaml.common.exception.MissingRepositoryDefinition;
 import org.eclipse.winery.yaml.common.exception.MultiException;
+import org.eclipse.winery.yaml.common.exception.UndefinedField;
+import org.eclipse.winery.yaml.common.exception.UndefinedFile;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionVisitor;
 import org.eclipse.winery.yaml.common.validator.support.Parameter;
 import org.eclipse.winery.yaml.common.validator.support.Result;
 
 public class DefinitionValidator extends ExceptionVisitor<Result, Parameter> {
+    public final Path path;
     private DefinitionsVisitor definitionsVisitor;
 
     public DefinitionValidator(Path path) {
         definitionsVisitor = new DefinitionsVisitor(Namespaces.DEFAULT_NS, path);
+        this.path = path;
     }
 
     public void validate(TServiceTemplate serviceTemplate) throws MultiException {
-        definitionsVisitor.visit(serviceTemplate, new Parameter());
+        serviceTemplate.accept(definitionsVisitor, new Parameter());
+        serviceTemplate.accept(this, new Parameter());
         if (hasExceptions()) {
             throw getException();
         }
@@ -45,18 +52,30 @@ public class DefinitionValidator extends ExceptionVisitor<Result, Parameter> {
     @Override
     public Result visit(TImportDefinition node, Parameter parameter) {
         if (!isDefined(node.getRepository(), definitionsVisitor.getRepositoryDefinitions())) {
-            String msg = "No Repository definition for property repository \"" +
-                node.getRepository() + "\" found! \n" + print(parameter.getContext());
-            setException(new MissingRepositoryDefinition(msg));
+            setException(new UndefinedField(
+                    "Repository definition '{}' is undefined",
+                    node.getRepository()
+                ).setContext(parameter.getContext())
+            );
         }
         return super.visit(node, parameter);
     }
 
-    private Boolean isDefined(QName name, Map<String, List<String>> map) {
-        return name == null || map.containsKey(name.getNamespaceURI()) && map.get(name.getNamespaceURI()).contains(name.getLocalPart());
+    @Override
+    public Result visit(TArtifactDefinition node, Parameter parameter) {
+        node.getFiles().forEach(file -> {
+                if (!Files.exists(path.resolve(file))) {
+                    setException(new UndefinedFile(
+                        "Artifact file '{}' is undefined",
+                        path.resolve(file)
+                    ));
+                }
+            }
+        );
+        return super.visit(node, parameter);
     }
 
-    private String print(List<String> list) {
-        return "Context::INLINE = " + String.join(":", list);
+    private Boolean isDefined(QName name, Map<String, List<String>> map) {
+        return Objects.isNull(name) || map.containsKey(name.getNamespaceURI()) && map.get(name.getNamespaceURI()).contains(name.getLocalPart());
     }
 }

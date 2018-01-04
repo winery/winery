@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class InvalidNativeTypeExtend extends YAMLParserException {
-    public InvalidNativeTypeExtend(String msg) {
-        super(msg);
+public class UndefinedDefinition extends Undefined {
+    public UndefinedDefinition(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

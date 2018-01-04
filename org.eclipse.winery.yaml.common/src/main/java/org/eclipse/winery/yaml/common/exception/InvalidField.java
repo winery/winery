@@ -13,11 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-public class UnrecognizedFieldException extends YAMLParserException {
-    public UnrecognizedFieldException(List<String> messages) {
-        super("\n   " + messages.stream().collect(Collectors.joining("\n   ")));
+public class InvalidField extends Invalid {
+    public InvalidField(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

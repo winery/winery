@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class MissingArtifactType extends YAMLParserException {
-    public MissingArtifactType(String msg) {
-        super(msg);
+public class UndefinedPrefix extends Undefined {
+    public UndefinedPrefix(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

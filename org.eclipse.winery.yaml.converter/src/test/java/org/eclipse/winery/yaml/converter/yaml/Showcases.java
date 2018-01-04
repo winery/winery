@@ -38,67 +38,67 @@ import org.junit.Test;
 
 public class Showcases extends AbstractTestY2X {
 
-	public Showcases() {
-		super(Paths.get("src/test/resources/yaml/Showcase"));
-	}
+    public Showcases() {
+        super(Paths.get("src/test/resources/yaml/Showcase"));
+    }
 
-	public MultiException convert(String path, String namespace, Stream<String> files) throws Exception {
-		MultiException exception = new MultiException();
+    public MultiException convert(String path, String namespace, Stream<String> files) throws Exception {
+        MultiException exception = new MultiException();
 
-		files
-			.map(name -> {
-				try {
-					return new LinkedHashMap.SimpleEntry<>(name, readServiceTemplate(path + File.separator + name));
-				} catch (Exception e) {
-					exception.add(e);
-				}
-				return null;
-			})
-			.filter(Objects::nonNull)
-			.map(entry -> new LinkedHashMap.SimpleEntry<>(entry.getKey(), convert(entry.getValue(), entry.getKey(), namespace)))
-			.forEach(entry -> WriterUtils.saveDefinitions(entry.getValue(), outPath, namespace, entry.getKey()));
-		if (exception.hasException()) {
-			throw exception.getException();
-		}
+        files
+            .map(name -> {
+                try {
+                    return new LinkedHashMap.SimpleEntry<>(name, readServiceTemplate(path + File.separator + name));
+                } catch (Exception e) {
+                    exception.add(e);
+                }
+                return null;
+            })
+            .filter(Objects::nonNull)
+            .map(entry -> new LinkedHashMap.SimpleEntry<>(entry.getKey(), convert(entry.getValue(), entry.getKey(), namespace)))
+            .forEach(entry -> WriterUtils.saveDefinitions(entry.getValue(), outPath, namespace, entry.getKey()));
+        if (exception.hasException()) {
+            throw exception.getException();
+        }
 
-		return exception;
-	}
+        return exception;
+    }
 
-	@Ignore
-	@Test
-	public void nodeTypesTest() throws Exception {
-		String path = "nodetypes";
-		String namespace = "http://placeholder.org/nodetypes";
-		Stream<String> files = Stream.of(
-		);
+    @Ignore
+    @Test
+    public void nodeTypesTest() throws Exception {
+        String path = "nodetypes";
+        String namespace = "http://placeholder.org/nodetypes";
+        Stream<String> files = Stream.of(
+        );
 
-		Assert.assertTrue(convert(path, namespace, files).isEmpty());
-	}
+        Assert.assertTrue(convert(path, namespace, files).isEmpty());
+    }
 
-	@Ignore
-	@Test
-	public void serviceTemplateTest() throws Exception {
-		String path = "servicetemplates";
-		String namespace = "http://placeholder.org/servicetemplates";
-		Stream<String> files = Stream.of(
-		);
+    @Ignore
+    @Test
+    public void serviceTemplateTest() throws Exception {
+        String path = "servicetemplates";
+        String namespace = "http://placeholder.org/servicetemplates";
+        Stream<String> files = Stream.of(
+        );
 
-		Assert.assertTrue(convert(path, namespace, files).isEmpty());
-	}
+        Assert.assertTrue(convert(path, namespace, files).isEmpty());
+    }
 
-	@Test
-	public void zipTypeTest() throws Exception {
-		String name = "Showcase.csar";
-		InputStream inputStream = new FileInputStream(path + File.separator + name);
-		Converter converter = new Converter();
-		converter.convertY2X(inputStream);
-		TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(
-			new ServiceTemplateId(
-				new Namespace(Namespaces.DEFAULT_NS, false),
-				new XmlId("Showcase", false)
-			)
-		);
+    @Test
+    public void zipTypeTest() throws Exception {
+        String name = "Showcase.csar";
+        InputStream inputStream = new FileInputStream(path + File.separator + name);
+        Converter converter = new Converter();
+        converter.convertY2X(inputStream);
+        TServiceTemplate serviceTemplate = RepositoryFactory.getRepository().getElement(
+            new ServiceTemplateId(
+                new Namespace(Namespaces.DEFAULT_NS, false),
+                new XmlId("Showcase", false)
+            )
+        );
 
-		Assert.assertNotNull(serviceTemplate);
-	}
+        Assert.assertNotNull(serviceTemplate);
+    }
 }

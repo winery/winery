@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class MissingFile extends YAMLParserException {
-    public MissingFile(String msg) {
-        super(msg);
+public class UndefinedRequiredKeyname extends UndefinedField {
+    public UndefinedRequiredKeyname(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

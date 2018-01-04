@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class MissingNodeType extends YAMLParserException {
-    public MissingNodeType(String msg) {
-        super(msg);
+public class InvalidDefinition extends InvalidToscaSyntax {
+    public InvalidDefinition(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

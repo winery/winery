@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class UnknownCapabilitySourceType extends YAMLParserException {
-    public UnknownCapabilitySourceType(String msg) {
-        super(msg);
+public class Undefined extends YAMLParserException {
+    public Undefined(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

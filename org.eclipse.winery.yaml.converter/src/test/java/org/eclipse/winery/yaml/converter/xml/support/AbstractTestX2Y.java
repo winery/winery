@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.xml.support;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -24,33 +23,34 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.yaml.common.Utils;
+import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.common.reader.xml.Reader;
 import org.eclipse.winery.yaml.converter.Converter;
 
 import org.junit.BeforeClass;
 
 public abstract class AbstractTestX2Y {
-	protected final Path path;
-	protected final Path outPath;
-	private final String fileExtension = ".xml";
+    protected final Path path;
+    protected final Path outPath;
+    private final String fileExtension = ".xml";
 
-	public AbstractTestX2Y(Path path) {
-		this.path = path;
-		this.outPath = path.resolve("tmp");
-	}
+    public AbstractTestX2Y(Path path) {
+        this.path = path;
+        this.outPath = path.resolve("tmp");
+    }
 
-	@BeforeClass
-	public static void setRepository() {
-		RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("AbstractTests")));
-	}
+    @BeforeClass
+    public static void setRepository() {
+        RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("AbstractTests")));
+    }
 
-	public Definitions readDefinitions(String name) throws JAXBException {
-		Reader reader = new Reader();
-		return reader.parse(path.resolve(name.concat(fileExtension)));
-	}
+    public Definitions readDefinitions(String name) throws JAXBException {
+        Reader reader = new Reader();
+        return reader.parse(path.resolve(name.concat(fileExtension)));
+    }
 
-	public Map<File, TServiceTemplate> convert(Definitions serviceTemplate, Path outPath) {
-		Converter converter = new Converter();
-		return converter.convertX2Y(serviceTemplate, outPath);
-	}
+    public Map<Path, TServiceTemplate> convert(Definitions serviceTemplate, Path outPath) throws MultiException {
+        Converter converter = new Converter();
+        return converter.convertX2Y(serviceTemplate, outPath);
+    }
 }

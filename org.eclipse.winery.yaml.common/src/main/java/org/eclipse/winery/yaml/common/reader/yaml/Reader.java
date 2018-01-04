@@ -35,9 +35,8 @@ import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.Utils;
-import org.eclipse.winery.yaml.common.exception.MissingFile;
 import org.eclipse.winery.yaml.common.exception.MultiException;
-import org.eclipse.winery.yaml.common.exception.UnrecognizedFieldException;
+import org.eclipse.winery.yaml.common.exception.UndefinedFile;
 import org.eclipse.winery.yaml.common.exception.YAMLParserException;
 import org.eclipse.winery.yaml.common.validator.ObjectValidator;
 import org.eclipse.winery.yaml.common.validator.Validator;
@@ -82,32 +81,32 @@ public class Reader {
         return this.readImportDefinition(definition, path, namespace);
     }
 
-    public TServiceTemplate parseSkipTest(Path uri, String namespace) throws YAMLParserException {
+    public TServiceTemplate parseSkipTest(Path uri, String namespace) throws MultiException {
         return this.readServiceTemplateSkipTest(uri, namespace);
     }
 
     @NonNull
-    public Metadata getMetadata(Path path, Path file) throws YAMLParserException {
+    public Metadata getMetadata(Path path, Path file) throws MultiException {
         return readServiceTemplateMetadataSkipTest(path.resolve(file), Namespaces.DEFAULT_NS);
     }
 
     @NonNull
-    public String getNamespace(Path path, Path file) throws YAMLParserException {
+    public String getNamespace(Path path, Path file) throws MultiException {
         return getMetadata(path, file).getOrDefault("targetNamespace", Namespaces.DEFAULT_NS);
     }
 
-    private TServiceTemplate readServiceTemplateSkipTest(Path filePath, String namespace) throws YAMLParserException {
+    private TServiceTemplate readServiceTemplateSkipTest(Path filePath, String namespace) throws MultiException {
         Object object = readObject(filePath);
         return buildServiceTemplate(object, namespace);
     }
 
     @NonNull
-    private Metadata readServiceTemplateMetadataSkipTest(Path filePath, String namespace) throws YAMLParserException {
+    private Metadata readServiceTemplateMetadataSkipTest(Path filePath, String namespace) throws MultiException {
         Object object = readMetadataObject(filePath);
         return Optional.ofNullable(buildServiceTemplate(object, namespace)).map(TServiceTemplate::getMetadata).orElse(new Metadata());
     }
 
-    private TServiceTemplate buildServiceTemplate(Object object, String namespace) throws UnrecognizedFieldException {
+    private TServiceTemplate buildServiceTemplate(Object object, String namespace) throws MultiException {
         Builder builder = new Builder(namespace);
         return builder.buildServiceTemplate(object);
     }
@@ -117,15 +116,16 @@ public class Reader {
      *
      * @param path name
      * @return Object (Lists, Maps, Strings, Integers, Dates)
-     * @throws MissingFile if the file could not be found.
+     * @throws UndefinedFile if the file could not be found.
      */
-    private Object readObject(Path path) throws MissingFile {
+    private Object readObject(Path path) throws MultiException {
         try (InputStream inputStream = new FileInputStream(path.toFile())) {
             return this.yaml.load(inputStream);
         } catch (FileNotFoundException e) {
-            MissingFile ex = new MissingFile("The file \"" + path + "\" could not be found!");
-            ex.setFileContext(path.toString());
-            throw ex;
+            throw new MultiException().add(new UndefinedFile(
+                "The file '{}' is missing",
+                path
+            ).setFileContext(path));
         } catch (IOException e) {
             logger.error("Could not read from inputstream", e);
             return null;
@@ -136,9 +136,9 @@ public class Reader {
      * Uses snakeyaml to convert the part of an file containing metadata into an Object
      *
      * @return Object (Lists, Maps, Strings, Integers, Dates)
-     * @throws MissingFile if the file could not be found.
+     * @throws UndefinedFile if the file could not be found.
      */
-    private Object readMetadataObject(Path path) throws MissingFile {
+    private Object readMetadataObject(Path path) throws MultiException {
         try (InputStream inputStream = new FileInputStream(path.toFile())) {
             BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
             String metadata = buffer.lines().collect(Collectors.joining("\n"));
@@ -160,9 +160,10 @@ public class Reader {
 
             return this.yaml.load(metadata);
         } catch (FileNotFoundException e) {
-            MissingFile ex = new MissingFile("The file \"" + path + "\" could not be found!");
-            ex.setFileContext(path.toString());
-            throw ex;
+            throw new MultiException().add(new UndefinedFile(
+                "The file '{}' is missing",
+                path
+            ).setFileContext(path));
         } catch (IOException e) {
             logger.error("Could not read from inputstream", e);
             return null;
@@ -232,41 +233,29 @@ public class Reader {
             }
 
             // parse checking
-            TServiceTemplate result;
-            try {
-                result = buildServiceTemplate(readObject(filePath), namespace);
-            } catch (YAMLParserException e) {
-                throw new MultiException().add(e).add(filePath.toString());
-            }
+            TServiceTemplate result = buildServiceTemplate(readObject(filePath), namespace);
 
             // post parse checking
             Validator validator = new Validator(path);
-            try {
-                validator.validate(result, namespace);
-            } catch (MultiException e) {
-                e.add(filePath.toString());
-                throw e;
-            }
+            validator.validate(result, namespace);
 
             serviceTemplateBuffer.put(filePath, result);
             return result;
         } catch (MultiException e) {
             exceptionBuffer.put(filePath, e);
-            throw e;
+            throw e.add(file.toString());
         }
     }
 
     public TServiceTemplate readImportDefinition(TImportDefinition definition, Path path, String namespace) throws MultiException {
-        if (definition == null) {
-            return null;
-        }
+        if (Objects.isNull(definition) || Objects.isNull(definition.getFile())) return null;
 
         String importNamespace = definition.getNamespaceUri() == null ? namespace : definition.getNamespaceUri();
-        if (definition.getRepository() == null) {
-            return readServiceTemplate(path, Paths.get(definition.getFile()), importNamespace);
-        } else {
+        if (Objects.nonNull(definition.getRepository())) {
             // TODO Support Repositories
             return null;
+        } else {
+            return readServiceTemplate(path, Paths.get(definition.getFile()), importNamespace);
         }
     }
 }

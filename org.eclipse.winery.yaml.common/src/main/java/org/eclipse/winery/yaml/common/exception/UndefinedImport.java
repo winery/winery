@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
-public class ImplementationArtifactInvalidOnInterfaceType extends YAMLParserException {
-    public ImplementationArtifactInvalidOnInterfaceType(String msg) {
-        super(msg);
+public class UndefinedImport extends UndefinedFile {
+    public UndefinedImport(String messagePattern, Object... args) {
+        super(messagePattern, args);
     }
 }

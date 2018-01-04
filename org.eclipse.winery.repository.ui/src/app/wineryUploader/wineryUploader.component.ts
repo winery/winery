@@ -10,7 +10,7 @@
  *     Lukas Harzenetter - initial API and implementation
  *     Niko Stadelmaier - module refactoring
  */
-import { Component, EventEmitter, Input, OnInit, Output, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { WineryUploaderService } from './wineryUploader.service';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
@@ -60,6 +60,9 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
 
     fileOver = false;
     loading = false;
+    error = false;
+
+    errorMessage = '';
 
     @Input() uploadUrl: string;
     @Input() showProgress = true;
@@ -84,6 +87,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
     ngOnChanges() {
         this.service.uploadUrl = this.uploadUrl;
     }
+
     getUploader(): FileUploader {
         return this.service.uploader;
     }
@@ -116,7 +120,13 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
                 }
                 this.onSuccess.emit();
             } else {
-                this.notify.error('Error while uploading file ' + item.file.name);
+                if (response) {
+                    this.error = true;
+                    this.errorMessage = response;
+                    this.notify.error('<pre>'.concat(this.errorMessage, '</pre>'), 'Error while uploading file ' + item.file.name);
+                } else {
+                    this.notify.error('Error while uploading file ' + item.file.name);
+                }
                 this.onError.emit(new Error('Error while uploading file ' + item.file.name));
             }
 
