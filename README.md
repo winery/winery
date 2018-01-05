@@ -1,6 +1,6 @@
 # Eclipse Winery
 
-[![License](https://img.shields.io/badge/License-EPL%202.0-red.svg)](https://opensource.org/licenses/EPL-2.0)
+[![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://opensource.org/licenses/EPL-2.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these topologies.
@@ -9,7 +9,9 @@ Winery is also part of the OpenTOSCA ecosystem where more information is availab
 
 **The code and the linked libraries are NOT approved by Eclipse Legal.**
 
-Both development and user documentation is rendered at <http://eclipse.github.io/winery/>.
+**There was no security of Eclipse Winey. There might be [remote code execution vulnerabilities](https://github.com/mbechler/marshalsec). Thus, when hosting Eclipse Winery, make it accessible to turstworthy parties only.**
+
+Both development and user documentation is rendered at <https://eclipse.github.io/winery/>.
 The source for the documentation can be found at [docs/](docs).
 
 ## Next steps
