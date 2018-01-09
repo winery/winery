@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.ConstructorException;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.scanner.ScannerException;
 
 public class Reader {
@@ -59,7 +60,7 @@ public class Reader {
     private Map<Path, MultiException> exceptionBuffer = new HashMap<>();
 
     private Reader() {
-        this.yaml = new Yaml();
+        this.yaml = new Yaml(new SafeConstructor());
     }
 
     public static Reader getReader() {
