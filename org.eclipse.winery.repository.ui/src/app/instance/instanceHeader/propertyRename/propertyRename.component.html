@@ -27,6 +27,6 @@
     <div *ngIf="!editMode">
         <span (click)="onClickEdit()" *ngIf="propertyName === 'localName'">{{toscaComponent.localName}}</span>
         <span (click)="onClickEdit()" *ngIf="propertyName === 'namespace'">{{toscaComponent.namespace}}</span>
-        <i *ngIf="!disableEditing" class="fa fa-pencil-square-o" (click)="onClickEdit()"></i>
+        <i *ngIf="!disableEditing" class="fa fa-pencil-square-o" id="{{ propertyName }}" (click)="onClickEdit()"></i>
     </div>
 </div>
