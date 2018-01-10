@@ -4,6 +4,7 @@
 - [API](api/) - the description of the REST API
 - [DeveloperGuide](dev/) - a guide for developers
 - [TOSCA](tosca/) - notes on OASIS TOSCA
+- [Architectural Decisions](adr/) - documentation for ADRs
 
 ## Contributing
 

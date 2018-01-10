@@ -1,10 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer;
 
@@ -20,9 +25,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.xml.bind.JAXBException;
@@ -54,6 +59,7 @@ import org.eclipse.winery.yaml.common.reader.xml.Reader;
 import org.eclipse.winery.yaml.common.writer.xml.Writer;
 
 import org.apache.tika.mime.MediaType;
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -62,9 +68,9 @@ public class WriterUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(WriterUtils.class);
 
     public static void storeDefinitions(Definitions definitions, boolean overwrite, Path dir) {
-        String path = null;
+        Path path = null;
         try {
-            path = Files.createTempDirectory("winery").toString();
+            path = Files.createTempDirectory("winery");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -145,11 +151,11 @@ public class WriterUtils {
         });
     }
 
-    public static void storeTypes(String path, String name, String namespace, String id) {
-        WriterUtils.storeTypes(getTypeFile(path, namespace, name).getParentFile(), namespace, id);
+    public static void storeTypes(Path path, String name, String namespace, String id) {
+        WriterUtils.storeTypes(getTypeFile(path, namespace, name).getParent(), namespace, id);
     }
 
-    public static void storeTypes(File folder, String namespace, String id) {
+    public static void storeTypes(Path path, String namespace, String id) {
         LOGGER.debug("Store type: {}", id);
         try {
             MediaType mediaType = MediaTypes.MEDIATYPE_XSD;
@@ -165,7 +171,8 @@ public class WriterUtils {
 
             RepositoryFileReference ref = BackendUtils.getRefOfDefinitions(rid);
 
-            ArrayList<File> files = new ArrayList<>(Arrays.asList(folder.listFiles()));
+            List<File> files = Files.list(path).filter(Files::isRegularFile)
+                .map(Path::toFile).collect(Collectors.toList());
             for (File file : files) {
                 BufferedInputStream stream = new BufferedInputStream(new FileInputStream(file));
                 RepositoryFileReference fileRef = new RepositoryFileReference(ref.getParent(), file.getName());
@@ -176,43 +183,39 @@ public class WriterUtils {
         }
     }
 
-    public static void storeArtifact(String path, String file) {
-
+    public static void saveDefinitions(Definitions definitions, Path path, String namespace, String name) {
+        saveDefinitions(definitions, getDefinitionsPath(path, namespace, name));
     }
 
-    public static void saveDefinitions(Definitions definitions, String path, String namespace, String name) {
-        saveDefinitions(definitions, getDefinitionsFile(path, namespace, name));
-    }
-
-    public static void saveDefinitions(Definitions definitions, File file) {
+    public static void saveDefinitions(Definitions definitions, Path filePath) {
         Writer writer = new Writer();
         try {
-            writer.writeXML(definitions, file);
+            writer.writeXML(definitions, filePath);
         } catch (JAXBException e) {
             e.printStackTrace();
         }
     }
 
-    public static Definitions loadDefinitions(String path, String namespace, String name) {
-        File file = getDefinitionsFile(path, namespace, name);
+    public static Definitions loadDefinitions(Path path, String namespace, String name) {
+        Path filePath = getDefinitionsPath(path, namespace, name);
         Reader reader = new Reader();
         try {
-            return reader.parse(new FileInputStream(file));
+            return reader.parse(new FileInputStream(filePath.toFile()));
         } catch (JAXBException | FileNotFoundException e) {
             e.printStackTrace();
         }
         return new Definitions();
     }
 
-    public static void saveType(Document document, String path, String namespace, String name) {
+    public static void saveType(Document document, Path path, String namespace, String name) {
         WriterUtils.saveType(document, getTypeFile(path, namespace, name));
     }
 
-    public static void saveType(Document document, File file) {
+    public static void saveType(Document document, Path filePath) {
         DOMSource source = new DOMSource(document);
         try {
-            file.getParentFile().mkdirs();
-            FileWriter writer = new FileWriter(file);
+            Files.createDirectories(filePath.getParent());
+            FileWriter writer = new FileWriter(filePath.toFile());
             StreamResult result = new StreamResult(writer);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -227,21 +230,21 @@ public class WriterUtils {
         }
     }
 
-    private static File getTypeFile(String path, String namespace, String name) {
-        return new File(path + File.separator
-            + Util.URLencode(namespace) + File.separator
-            + "types" + File.separator
-            + Util.URLencode(name) + ".xsd");
+    private static Path getTypeFile(Path path, String namespace, @NonNull String name) {
+        return path.resolve(name)
+            .resolve(Util.URLencode(namespace))
+            .resolve("types")
+            .resolve(Util.URLencode(name.concat(".xsd")));
     }
 
-    private static File getDefinitionsFile(String path, String namespace, String name) {
-        return new File(path + File.separator
-            + Util.URLencode(namespace) + File.separator
-            + Util.URLencode(name) + ".tosca");
+    private static Path getDefinitionsPath(Path path, String namespace, @NonNull String name) {
+        return path.resolve(Util.URLencode(namespace))
+            .resolve(name.concat(".tosca"));
     }
 
-    public static String getDefinitionsLocation(String namespace, String name) {
+    public static String getDefinitionsLocation(String namespace, @NonNull String name) {
         return Util.URLencode(namespace) + File.separator
             + Util.URLencode(name) + ".tosca";
     }
 }
+    

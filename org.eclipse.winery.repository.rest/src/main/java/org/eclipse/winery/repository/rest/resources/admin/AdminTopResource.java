@@ -12,15 +12,24 @@
 package org.eclipse.winery.repository.rest.resources.admin;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
+import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorLogger;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.configuration.GitHubConfiguration;
 import org.eclipse.winery.repository.rest.resources.admin.types.ConstraintTypesManager;
@@ -65,6 +74,16 @@ public class AdminTopResource {
 		return ConstraintTypesManager.INSTANCE;
 	}
 
+	@GET
+	@Path("consistencycheck")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ConsistencyErrorLogger checkConsistency(@QueryParam("serviceTemplatesOnly") boolean serviceTemplatesOnly, @QueryParam("checkDocumentation") boolean checkDocumentation) {
+		IRepository repo = RepositoryFactory.getRepository();
+		EnumSet<ConsistencyCheckerVerbosity> verbosity = EnumSet.of(ConsistencyCheckerVerbosity.NONE);
+		ConsistencyCheckerConfiguration config = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repo);
+		return ConsistencyChecker.checkCorruptionUsingCsarExport(config);
+	}
+
 	@POST
 	@Path("githubaccesstoken")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -74,7 +93,7 @@ public class AdminTopResource {
 		HttpPost httppost = new HttpPost("https://github.com/login/oauth/access_token");
 		httppost.setHeader("Accept", "application/json");
 
-		List<NameValuePair> params = new ArrayList<NameValuePair>(4);
+		List<NameValuePair> params = new ArrayList<>(4);
 
 		// get configuration and fill with default values if no configuration exists
 		final GitHubConfiguration gitHubConfiguration = Environment.getGitHubConfiguration().orElse(new GitHubConfiguration("id", "secreat"));
@@ -88,8 +107,8 @@ public class AdminTopResource {
 		HttpResponse response = httpclient.execute(httppost);
 
 		return Response
-				.status(response.getStatusLine().getStatusCode())
-				.entity(response.getEntity().getContent())
-				.build();
+			.status(response.getStatusLine().getStatusCode())
+			.entity(response.getEntity().getContent())
+			.build();
 	}
 }

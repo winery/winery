@@ -10,20 +10,16 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@ang
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SectionResolverData } from '../wineryInterfaces/resolverData';
-import { SelectData } from '../wineryInterfaces/selectData';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
 import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { backendBaseURL } from '../configuration';
-import { isNullOrUndefined } from 'util';
-import { NgForm } from '@angular/forms';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Response } from '@angular/http';
 import { ToscaTypes } from '../wineryInterfaces/enums';
-import { Utils } from '../wineryUtils/utils';
 import { WineryUploaderComponent } from '../wineryUploader/wineryUploader.component';
-import { WineryNamespaceSelectorComponent } from '../wineryNamespaceSelector/wineryNamespaceSelector.component';
+import { WineryAddComponent } from '../wineryAddComponentModule/addComponent.component';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -43,7 +39,6 @@ export class SectionComponent implements OnInit, OnDestroy {
     loading = true;
     toscaType: ToscaTypes;
     toscaTypes = ToscaTypes;
-    addModalType: string;
     routeSub: Subscription;
     filterString = '';
     itemsPerPage = 10;
@@ -52,28 +47,17 @@ export class SectionComponent implements OnInit, OnDestroy {
     changeViewButtonTitle = showGrouped;
     componentData: SectionData[];
     elementToRemove: SectionData;
-    types: SelectData[];
     overwriteValue = false;
 
     importXsdSchemaType: string;
-    formValid: boolean;
-
-    newComponentName: string;
-    newComponentNamespace: string;
-    newComponentSelectedType: SelectData = new SelectData();
-    validatorObject: WineryValidatorObject;
 
     fileUploadUrl = backendBaseURL + '/';
-    namespaceValid: boolean;
 
-    @ViewChild('addModal') addModal: ModalDirective;
-    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
-    @ViewChild('addComponentForm') addComponentForm: NgForm;
+    @ViewChild('addModal') addModal: WineryAddComponent;
     @ViewChild('addCsarModal') addCsarModal: ModalDirective;
+    @ViewChild('removeElementModal') removeElementModal: ModalDirective;
     @ViewChild('addYamlModal') addYamlModal: ModalDirective;
     @ViewChild('fileUploader') fileUploader: WineryUploaderComponent;
-
-    @ViewChild('namespaceInput') namespaceInput: WineryNamespaceSelectorComponent;
 
     constructor(private route: ActivatedRoute,
                 private change: ChangeDetectorRef,
@@ -114,31 +98,8 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     onAdd() {
-        this.validatorObject = new WineryValidatorObject(this.componentData, 'id');
-
-        // This is needed for the modal to correctly display the selected namespace
-        this.newComponentNamespace = '';
-        this.change.detectChanges();
-        this.addComponentForm.reset();
-
-        this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
-        this.newComponentNamespace = (this.showNamespace !== 'all' && this.showNamespace !== 'group') ? this.showNamespace : '';
-        this.namespaceInput.writeValue(this.newComponentNamespace);
-
-        this.addModal.show();
-    }
-
-    typeSelected(event: SelectData) {
-        this.newComponentSelectedType = event;
-    }
-
-    addComponent() {
-        const compType = this.newComponentSelectedType ? this.newComponentSelectedType.id : null;
-        this.service.createComponent(this.newComponentName, this.newComponentNamespace, compType)
-            .subscribe(
-                data => this.handleSaveSuccess(),
-                error => this.handleError(error)
-            );
+        this.addModal.namespace = (this.showNamespace !== 'all' && this.showNamespace !== 'group') ? this.showNamespace : '';
+        this.addModal.onAdd();
     }
 
     showSpecificNamespaceOnly(): boolean {
@@ -182,12 +143,9 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.toscaType = resolved.section;
         this.importXsdSchemaType = resolved.xsdSchemaType;
 
-        this.addModalType = Utils.getToscaTypeNameFromToscaType(this.toscaType);
-
         const storedNamespace = localStorage.getItem(this.toscaType + '_showNamespace') !== null ?
             localStorage.getItem(this.toscaType + '_showNamespace') : 'all';
         this.showNamespace = resolved.namespace ? resolved.namespace : storedNamespace;
-        this.types = null;
 
         this.service.setPath(resolved.path);
         this.getSectionsData();
@@ -208,31 +166,7 @@ export class SectionComponent implements OnInit, OnDestroy {
         } else {
             this.changeViewButtonTitle = showGrouped;
         }
-
-        const typesUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaType);
-
-        if (!isNullOrUndefined(typesUrl)) {
-            this.service.getSectionData('/' + typesUrl + '?grouped=angularSelect')
-                .subscribe(
-                    data => this.handleTypes(data),
-                    error => this.handleError(error)
-                );
-        } else {
-            this.loading = false;
-        }
-    }
-
-    private handleTypes(types: SelectData[]): void {
         this.loading = false;
-        this.types = types.length > 0 ? types : null;
-    }
-
-    private handleSaveSuccess() {
-        this.newComponentName = this.newComponentName.replace(/\s/g, '_');
-        this.notify.success('Successfully saved component ' + this.newComponentName);
-        this.router.navigateByUrl('/' + this.toscaType + '/'
-            + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
-            + this.newComponentName);
     }
 
     private handleError(error: Response): void {

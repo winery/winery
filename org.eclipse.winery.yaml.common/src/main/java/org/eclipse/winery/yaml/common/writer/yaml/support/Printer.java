@@ -1,10 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer.yaml.support;
 
@@ -77,7 +82,7 @@ public class Printer extends AbstractResult<Printer> {
     }
 
     public Printer print(Printer printer) {
-        if (!Objects.nonNull(printer) || printer.isEmpty()) return this;
+        if (Objects.isNull(printer) || printer.isEmpty()) return this;
         if (endsWithNewLine()) {
             int cut = 0;
             for (int i = stringBuilder.length() - 1; i >= 0; i--) {
@@ -107,7 +112,7 @@ public class Printer extends AbstractResult<Printer> {
     }
 
     public Printer printKeyValue(String key, String value) {
-        if (!Objects.nonNull(value) || value.isEmpty()) return this;
+        if (Objects.isNull(value) || value.isEmpty()) return this;
         if (value.contains("\n")) {
             return print(key)
                 .print(": >")
@@ -124,17 +129,17 @@ public class Printer extends AbstractResult<Printer> {
     }
 
     public Printer printKeyValue(String key, TVersion value) {
-        if (!Objects.nonNull(value)) return this;
+        if (Objects.isNull(value)) return this;
         return printKeyValue(key, value.getVersion());
     }
 
     public Printer printKeyValue(String key, TStatusValue value) {
-        if (!Objects.nonNull(value)) return this;
+        if (Objects.isNull(value)) return this;
         return printKeyValue(key, value.name());
     }
 
     public Printer printKeyValue(String key, Boolean value) {
-        if (!Objects.nonNull(value)) return this;
+        if (Objects.isNull(value)) return this;
         return print(key)
             .print(':')
             .print(' ')
@@ -150,7 +155,7 @@ public class Printer extends AbstractResult<Printer> {
     }
 
     public Printer printKeyValue(String key, List<? extends Object> value) {
-        if (!Objects.nonNull(value) || value.isEmpty()) return this;
+        if (Objects.isNull(value) || value.isEmpty()) return this;
         return print(key)
             .print(':')
             .print(' ')
@@ -171,7 +176,7 @@ public class Printer extends AbstractResult<Printer> {
     }
 
     public Printer printKeyValue(String key, QName value) {
-        if (!Objects.nonNull(value) || value.getLocalPart().isEmpty()) return this;
+        if (Objects.isNull(value) || value.getLocalPart().isEmpty()) return this;
         return printKeyValue(key, qNameToString(value));
     }
 
@@ -188,7 +193,7 @@ public class Printer extends AbstractResult<Printer> {
     }
 
     public Printer printKeyObject(String key, Object object) {
-        if (!Objects.nonNull(object)) return this;
+        if (Objects.isNull(object)) return this;
         if (object instanceof String) {
             printKeyValue(key, (String) object);
         } else if (object instanceof Map) {
@@ -255,7 +260,7 @@ public class Printer extends AbstractResult<Printer> {
     }
 
     public Printer printKeyListObjectInline(String key, List<Object> list) {
-        if (!Objects.nonNull(list) || list.isEmpty()) return this;
+        if (Objects.isNull(list) || list.isEmpty()) return this;
         print(key)
             .print(':')
             .print(' ')

@@ -1,10 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter;
 
@@ -28,7 +33,6 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.yaml.common.Utils;
 import org.eclipse.winery.yaml.common.exception.MultiException;
-import org.eclipse.winery.yaml.common.exception.YAMLParserException;
 import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 import org.eclipse.winery.yaml.converter.xml.X2YConverter;
 import org.eclipse.winery.yaml.converter.yaml.Y2XConverter;
@@ -37,87 +41,81 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Converter {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Converter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Converter.class);
 
-	private final IRepository repository;
+    private final IRepository repository;
 
-	public Converter() {
-		this.repository = RepositoryFactory.getRepository();
-	}
+    public Converter() {
+        this.repository = RepositoryFactory.getRepository();
+    }
 
-	public Converter(IRepository repository) {
-		this.repository = repository;
-	}
+    public Converter(IRepository repository) {
+        this.repository = repository;
+    }
 
-	public Definitions convertY2X(TServiceTemplate serviceTemplate, String name, String namespace, String path, String outPath) {
-		return new Y2XConverter(this.repository).convert(serviceTemplate, name, namespace, path, outPath);
-	}
+    public Definitions convertY2X(TServiceTemplate serviceTemplate, String name, String namespace, Path path, Path outPath) {
+        return new Y2XConverter(this.repository).convert(serviceTemplate, name, namespace, path, outPath);
+    }
 
-	public void convertY2X(InputStream zip) {
-		Path path = Utils.unzipFile(zip);
-		LOGGER.debug("Unzip path: {}", path);
-		try {
-			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.{yml,yaml}");
-			Arrays.stream(Optional.ofNullable(path.toFile().listFiles()).orElse(new File[]{}))
-				.map(File::toPath)
-				.filter(file -> matcher.matches(file.getFileName()))
-				.map(file -> {
-					Reader reader = new Reader();
-					try {
-						String id = file.getFileName().toString().substring(0, file.getFileName().toString().lastIndexOf("."));
-						String fileName = file.subpath(path.getNameCount(), file.getNameCount()).toString();
-						String filePath = path.toString();
-						String fileOutPath = filePath + File.separator + "tmp";
-						String namespace = reader.getNamespace(filePath, fileName);
-						TServiceTemplate serviceTemplate = reader.parse(filePath, fileName);
-						LOGGER.debug("Convert filePath = {}, fileName = {}, id = {}, namespace = {}, fileOutPath = {}",
-							filePath, fileName, id, namespace, fileOutPath);
-						this.convertY2X(serviceTemplate, id, namespace, filePath, fileOutPath);
-					} catch (YAMLParserException e) {
-						return new MultiException().add(e);
-					} catch (MultiException e) {
-						return e;
-					}
-					return null;
-				})
-				.filter(Objects::nonNull)
-				.reduce(MultiException::add)
-				.ifPresent(e -> LOGGER.error("MultiException: ", e));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public void convertY2X(InputStream zip) throws MultiException {
+        Path path = Utils.unzipFile(zip);
+        LOGGER.debug("Unzip path: {}", path);
 
-	public InputStream convertX2Y(InputStream csar) {
-		Path path = Utils.unzipFile(csar);
-		String filePath = path.toString();
-		String fileOutPath = path + File.separator + "tmp";
-		try {
-			TOSCAMetaFileParser parser = new TOSCAMetaFileParser();
-			TOSCAMetaFile metaFile = parser.parse(path.resolve("TOSCA-Metadata").resolve("TOSCA.meta"));
+        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.{yml,yaml}");
+        MultiException exception = Arrays.stream(Optional.ofNullable(path.toFile().listFiles()).orElse(new File[]{}))
+            .map(File::toPath)
+            .filter(file -> matcher.matches(file.getFileName()))
+            .map(file -> {
+                Reader reader = Reader.getReader();
+                try {
+                    String id = file.getFileName().toString().substring(0, file.getFileName().toString().lastIndexOf("."));
+                    Path fileName = file.subpath(path.getNameCount(), file.getNameCount());
+                    Path fileOutPath = path.resolve("tmp");
+                    String namespace = reader.getNamespace(path, fileName);
+                    TServiceTemplate serviceTemplate = reader.parse(path, fileName);
+                    LOGGER.debug("Convert filePath = {}, fileName = {}, id = {}, namespace = {}, fileOutPath = {}",
+                        path, fileName, id, namespace, fileOutPath);
+                    this.convertY2X(serviceTemplate, id, namespace, path, fileOutPath);
+                } catch (MultiException e) {
+                    return e;
+                }
+                return null;
+            })
+            .filter(Objects::nonNull)
+            .reduce(MultiException::add)
+            .orElse(new MultiException());
+        if (exception.hasException()) throw exception;
+    }
 
-			org.eclipse.winery.yaml.common.reader.xml.Reader reader = new org.eclipse.winery.yaml.common.reader.xml.Reader();
-			try {
-				String fileName = metaFile.getEntryDefinitions();
-				Definitions definitions = reader.parse(filePath, fileName);
-				this.convertX2Y(definitions, fileOutPath);
-			} catch (MultiException e) {
-				LOGGER.error("Convert TOSCA XML to TOSCA YAML error", e);
-			}
-			return Utils.zipPath(Paths.get(fileOutPath));
-		} catch (Exception e) {
-			LOGGER.error("Error", e);
-			throw new AssertionError();
-		}
-	}
+    public InputStream convertX2Y(InputStream csar) {
+        Path filePath = Utils.unzipFile(csar);
+        Path fileOutPath = filePath.resolve("tmp");
+        try {
+            TOSCAMetaFileParser parser = new TOSCAMetaFileParser();
+            TOSCAMetaFile metaFile = parser.parse(filePath.resolve("TOSCA-Metadata").resolve("TOSCA.meta"));
 
-	public InputStream convertX2Y(DefinitionsChildId id) {
-		File path = Utils.getTmpDir(id.getQName().getLocalPart());
-		convertX2Y(repository.getDefinitions(id), path.getPath());
-		return Utils.zipPath(path.toPath());
-	}
+            org.eclipse.winery.yaml.common.reader.xml.Reader reader = new org.eclipse.winery.yaml.common.reader.xml.Reader();
+            try {
+                String fileName = metaFile.getEntryDefinitions();
+                Definitions definitions = reader.parse(filePath, Paths.get(fileName));
+                this.convertX2Y(definitions, fileOutPath);
+            } catch (MultiException e) {
+                LOGGER.error("Convert TOSCA XML to TOSCA YAML error", e);
+            }
+            return Utils.zipPath(fileOutPath);
+        } catch (Exception e) {
+            LOGGER.error("Error", e);
+            throw new AssertionError();
+        }
+    }
 
-	public Map<File, TServiceTemplate> convertX2Y(Definitions definitions, String outPath) {
-		return new X2YConverter(this.repository, outPath).convert(definitions, outPath);
-	}
+    public InputStream convertX2Y(DefinitionsChildId id) throws MultiException {
+        Path path = Utils.getTmpDir(Paths.get(id.getQName().getLocalPart()));
+        convertX2Y(repository.getDefinitions(id), path);
+        return Utils.zipPath(path);
+    }
+
+    public Map<Path, TServiceTemplate> convertX2Y(Definitions definitions, Path outPath) throws MultiException {
+        return new X2YConverter(this.repository, outPath).convert(definitions, outPath);
+    }
 }

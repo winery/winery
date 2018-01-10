@@ -1,0 +1,72 @@
+<!--
+/********************************************************************************
+ * Copyright (c)  Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+-->
+<div>
+    <span>&nbsp;</span>
+    <div *ngIf="!loading && !errorList" class="alert alert-info">
+        <h4>
+            <strong>Note:</strong> Depending on the size of the repository, checking the repository may take
+            several minutes!
+        </h4>
+    </div>
+    <div *ngIf="!loading; else loadingCircle">
+        <div *ngIf="errorList && errorList.length > 0">
+            <h4>Errors found in the repository:</h4>
+            <ul>
+                <li *ngFor="let qName of errorList">
+                    <a [routerLink]="[ qName | wineryElementToLink ]">{{ qName.key }}</a>
+                    <ul class="alert-danger">
+                        <li *ngFor="let error of qName.value['errors']">
+                            {{ error }}
+                        </li>
+                    </ul>
+                    <ul class="alert-warning">
+                        <li *ngFor="let warning of qName.value['warnings']">
+                            {{ warning }}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div *ngIf="errorList && errorList.length === 0">
+            <div class="alert alert-success">
+                <h4>The repository is valid!</h4>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="checkbox" [(ngModel)]="configuration.serviceTemplatesOnly" id="stOnly"
+                   checked="{{configuration.serviceTemplatesOnly}}">
+            <label for="stOnly">Check Service Templates only</label><br>
+            <input type="checkbox" [(ngModel)]="configuration.checkDocumentation" id="checkDoku"
+                   checked="{{configuration.checkDocumentation}}">
+            <label for="checkDoku">Check Documentation</label><br>
+        </div>
+        <div>
+            <button class="btn btn-primary" (click)="startWebSocket()">Check</button>
+        </div>
+    </div>
+    <ng-template #loadingCircle>
+        <div class="loader-container">
+            <label>Currently checking...</label>
+            <div class="loader"></div>
+        </div>
+        <progressbar class="progress-striped active" [animate]="true" [value]="progress">
+            <b>{{ progress }}%</b>
+        </progressbar>
+        <div class="alert alert-warning">
+            <h4>Please don't leave this page, otherwise you wont see the results!</h4>
+        </div>
+    </ng-template>
+</div>

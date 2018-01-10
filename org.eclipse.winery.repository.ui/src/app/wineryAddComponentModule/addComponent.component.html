@@ -1,0 +1,68 @@
+<!--
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+-->
+<winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
+    <winery-modal-header [title]="'Add new ' + addModalType"></winery-modal-header>
+    <winery-modal-body>
+        <form #addComponentForm="ngForm">
+            <div *ngIf="!loading; else showLoader">
+                <div class="form-group">
+                    <label for="componentName" class="control-label">Name</label>
+                    <input type="text"
+                           class="form-control"
+                           id="componentName"
+                           name="componentName"
+                           #newName="ngModel"
+                           [(ngModel)]="newComponentName"
+                           required
+                           [wineryDuplicateValidator]="validatorObject">
+                    <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
+                         class="alert alert-danger">
+                        <div [hidden]="!newName.errors.wineryDuplicateValidator">
+                            No duplicates allowed!
+                        </div>
+                        <div [hidden]="!newName.errors.required">
+                            Name is required!
+                        </div>
+                    </div>
+                </div>
+                <!-- pattern parameter is required to enable form validation -->
+                <winery-namespace-selector #namespaceInput
+                                           name="namespace"
+                                           required
+                                           pattern="^\S*$"
+                                           [(ngModel)]="newComponentNamespace"
+                                           [isRequired]="true"
+                                           [useStartNamespace]="useStartNamespace"
+                                           [toscaType]="toscaType">
+                </winery-namespace-selector>
+                <div class="form-group" *ngIf="types">
+                    <label for="typeSelect" class="control-label">Type</label>
+                    <ng-select id="typeSelect" [items]="types" (selected)="typeSelected($event)"
+                               [active]="[newComponentSelectedType]"></ng-select>
+                </div>
+            </div>
+            <ng-template #showLoader>
+                <winery-loader></winery-loader>
+            </ng-template>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer
+        (onOk)="addComponent()"
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Add'"
+        [disableOkButton]="!addComponentForm?.valid">
+    </winery-modal-footer>
+</winery-modal>

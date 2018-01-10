@@ -28,30 +28,42 @@ export class Utils {
     }
 
     public static getToscaTypeFromString(value: string): ToscaTypes {
-        switch (value) {
+        switch (value.toLowerCase()) {
             case ToscaTypes.ServiceTemplate:
+            case ToscaTypes.ServiceTemplate.toString().slice(0, -1):
                 return ToscaTypes.ServiceTemplate;
             case ToscaTypes.NodeType:
+            case ToscaTypes.NodeType.toString().slice(0, -1):
                 return ToscaTypes.NodeType;
             case ToscaTypes.RelationshipType:
+            case ToscaTypes.RelationshipType.toString().slice(0, -1):
                 return ToscaTypes.RelationshipType;
             case ToscaTypes.ArtifactType:
+            case ToscaTypes.ArtifactType.toString().slice(0, -1):
                 return ToscaTypes.ArtifactType;
             case ToscaTypes.ArtifactTemplate:
+            case ToscaTypes.ArtifactTemplate.toString().slice(0, -1):
                 return ToscaTypes.ArtifactTemplate;
             case ToscaTypes.RequirementType:
+            case ToscaTypes.RequirementType.toString().slice(0, -1):
                 return ToscaTypes.RequirementType;
             case ToscaTypes.CapabilityType:
+            case ToscaTypes.CapabilityType.toString().slice(0, -1):
                 return ToscaTypes.CapabilityType;
             case ToscaTypes.NodeTypeImplementation:
+            case ToscaTypes.NodeTypeImplementation.toString().slice(0, -1):
                 return ToscaTypes.NodeTypeImplementation;
             case ToscaTypes.RelationshipTypeImplementation:
+            case ToscaTypes.RelationshipTypeImplementation.toString().slice(0, -1):
                 return ToscaTypes.RelationshipTypeImplementation;
             case ToscaTypes.PolicyType:
+            case ToscaTypes.PolicyType.toString().slice(0, -1):
                 return ToscaTypes.PolicyType;
             case ToscaTypes.PolicyTemplate:
+            case ToscaTypes.PolicyTemplate.toString().slice(0, -1):
                 return ToscaTypes.PolicyTemplate;
             case ToscaTypes.Imports:
+            case ToscaTypes.Imports.toString().slice(0, -1):
                 return ToscaTypes.Imports;
             default:
                 return ToscaTypes.Admin;

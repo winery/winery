@@ -134,7 +134,7 @@ public abstract class DefinitionsChildId extends GenericId {
 	@Override
 	public int compareTo(GenericId o1) {
 		if (o1 instanceof DefinitionsChildId) {
-			int res = this.getClass().getName().compareTo(o1.getClass().toString());
+			int res = this.getClass().getName().compareTo(o1.getClass().getName());
 			if (res == 0) {
 				DefinitionsChildId o = (DefinitionsChildId) o1;
 				res = this.getXmlId().compareTo(o.getXmlId());

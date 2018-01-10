@@ -1,19 +1,26 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.common;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -21,11 +28,13 @@ import java.util.zip.ZipOutputStream;
 
 import org.eclipse.winery.repository.backend.filebased.FileUtils;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Utils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Utils.class);
+    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
+    private static Path tmpBase;
 
     public static String getFile(String path, String name) {
         return path + File.separator + name;
@@ -40,7 +49,7 @@ public class Utils {
     }
 
     public static Path unzipFile(InputStream in) {
-        Path dir = getTmpDir("zip").toPath();
+        Path dir = Utils.getTmpDir(Paths.get("zip"));
         FileUtils.forceDelete(dir);
         try (ZipInputStream inputStream = new ZipInputStream(in)) {
             ZipEntry entry;
@@ -49,11 +58,11 @@ public class Utils {
                     Path targetPath = dir.resolve(entry.getName());
                     Files.createDirectories(targetPath.getParent());
                     Files.copy(inputStream, targetPath);
-                    LOGGER.debug("Write tmp file: {}", targetPath.toString());
+                    logger.debug("Write tmp file: {}", targetPath.toString());
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Create zip tmp file error: ", e);
+            logger.error("Create zip tmp file error: ", e);
         }
         return dir;
     }
@@ -77,27 +86,38 @@ public class Utils {
                 });
             return new FileInputStream(zipFile);
         } catch (Exception e) {
-            LOGGER.error("Create zip tmp file error: ", e);
+            logger.error("Create zip tmp file error: ", e);
         }
         return null;
     }
 
-    public static File getTmpDir(String name) {
+    public static Path getTmpDir(Path path) {
         try {
-            Path path = Files.createTempDirectory("winery");
-            File file = new File(path.getParent().toString() + File.separator + "winery" + File.separator + name);
-            path.toFile().delete();
+            if (Objects.isNull(tmpBase)) {
+                tmpBase = Files.createTempDirectory("winery");
+            }
+        } catch (Exception e) {
+            logger.error("Failed to create tmp dir with name 'winery'", e);
+        }
 
-            if (file.exists()) deleteTmpDir(file);
-            if (!file.exists()) file.mkdirs();
-            return file;
+        Path result = tmpBase.resolve(path);
+        try {
+            Files.createDirectories(result);
+        } catch (IOException e) {
+            logger.error("Failed to create tmp dir '{}':\n {}", result, e);
+        }
+        return result;
+    }
+
+    public static void deleteTmpDir(Path path) {
+        try {
+            Files.deleteIfExists(tmpBase);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
     }
 
-    public static void deleteTmpDir(File file) {
-        FileUtils.forceDelete(file.toPath());
+    public static byte[] getHashValueOfFile(File file) throws IOException {
+        return DigestUtils.md5(new FileInputStream(file));
     }
 }

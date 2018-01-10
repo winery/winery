@@ -103,5 +103,5 @@ This is howto is based on the [Jetty Contributing Patches] documentation.
  [contributing via Git]: http://wiki.eclipse.org/Development_Resources/Contributing_via_Git
  [Eclipse projects forge]: https://projects.eclipse.org/user/login/sso
  [ASL]: http://www.apache.org/licenses/LICENSE-2.0
- [EPL]: https://www.eclipse.org/legal/epl-v10.html
+ [EPL]: https://www.eclipse.org/legal/epl-v20.html
  [Jetty Contributing Patches]: https://www.eclipse.org/jetty/documentation/current/contributing-patches.html

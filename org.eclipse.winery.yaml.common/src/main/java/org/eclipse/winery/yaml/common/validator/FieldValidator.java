@@ -1,10 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
@@ -22,6 +27,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
+import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
+import org.eclipse.winery.yaml.common.reader.yaml.Builder;
 
 public class FieldValidator {
     private Map<Class, Set<String>> declaredFields;
@@ -57,8 +64,8 @@ public class FieldValidator {
         }
     }
 
-    public <T> List<String> validate(Class<T> t, Map<String, Object> fields) {
-        List<String> msg = new ArrayList<>();
+    public <T, K> List<Exception> validate(Class<T> t, Map<String, Object> fields, Builder.Parameter<K> parameter) {
+        List<Exception> exceptions = new ArrayList<>();
 
         if (!fields.isEmpty() && !this.declaredFields.containsKey(t)) {
             setDeclaredFields(t, t);
@@ -67,9 +74,15 @@ public class FieldValidator {
         Set<String> declaredFields = this.declaredFields.get(t);
         fields.forEach((key, value) -> {
             if (!declaredFields.contains(key)) {
-                msg.add("\"" + t.getName() + "\" does not have a field with the name \"" + key + "\"");
+                exceptions.add(new InvalidToscaSyntax(
+                        "Class '{}' has no field with name '{}'\n Possible fields are '{}'",
+                        t.getName(),
+                        key,
+                        declaredFields
+                    ).setContext(new ArrayList<>(parameter.copy().addContext(key).getContext()))
+                );
             }
         });
-        return msg;
+        return exceptions;
     }
 }

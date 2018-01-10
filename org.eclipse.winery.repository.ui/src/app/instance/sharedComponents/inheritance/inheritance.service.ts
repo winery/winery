@@ -40,6 +40,17 @@ export class InheritanceService {
             .map(res => res.json());
     }
 
+    saveInheritanceFromString(url: string, inheritFrom: string): Observable<any> {
+        const inheritanceData = new InheritanceApiData();
+        inheritanceData.isAbstract = 'no';
+        inheritanceData.isFinal = 'no';
+        inheritanceData.derivedFrom = inheritFrom;
+
+        this.path = url;
+
+        return this.saveInheritanceData(inheritanceData);
+    }
+
     saveInheritanceData(inheritanceData: InheritanceApiData): Observable<any> {
         const headers = new Headers({ 'Content-Type': 'application/json', 'Accept': 'application/json' });
         const options = new RequestOptions({ headers: headers });

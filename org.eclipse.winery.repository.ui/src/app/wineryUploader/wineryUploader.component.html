@@ -20,7 +20,8 @@
     </div>
 </div>
 <ng-template #elseBlock>
-    <input *ngIf="allowMultipleFiles; else singleFile" type="file" ng2FileSelect [uploader]="service.uploader" (change)="dropFile()" multiple/>
+    <input *ngIf="allowMultipleFiles; else singleFile" type="file" ng2FileSelect [uploader]="service.uploader"
+           (change)="dropFile()" multiple/>
     <ng-template #singleFile>
         <input type="file" ng2FileSelect [uploader]="service.uploader" (change)="dropFile()"/>
     </ng-template>
@@ -32,5 +33,13 @@
          [uploader]="service.uploader">
         You may <span style="font-weight:bold;">drop the file<span *ngIf="allowMultipleFiles">s</span></span> here.
     </div>
-    <p *ngIf="uploadImmediately">The file<span *ngIf="allowMultipleFiles; else singleFileVerb">s are </span><ng-template #singleFileVerb> is </ng-template><span style="font-weight:bold;">immediately</span> uploaded without any confirmation.</p>
+    <p *ngIf="uploadImmediately">The file<span *ngIf="allowMultipleFiles; else singleFileVerb">s are </span>
+        <ng-template #singleFileVerb> is</ng-template>
+        <span style="font-weight:bold;">immediately</span> uploaded without any confirmation.
+    </p>
 </ng-template>
+<div *ngIf="error">
+    <div class="bs-callout bs-callout-danger">
+        <div style="white-space: pre-wrap;">{{errorMessage}}</div>
+    </div>
+</div>

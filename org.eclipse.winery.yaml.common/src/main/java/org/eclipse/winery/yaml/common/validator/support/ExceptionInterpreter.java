@@ -1,15 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator.support;
 
-import org.eclipse.winery.yaml.common.exception.InvalidSyntax;
-import org.eclipse.winery.yaml.common.exception.InvalidType;
+import org.eclipse.winery.yaml.common.exception.InvalidYamlSyntax;
 import org.eclipse.winery.yaml.common.exception.YAMLParserException;
 
 import org.yaml.snakeyaml.constructor.ConstructorException;
@@ -22,18 +26,19 @@ public class ExceptionInterpreter {
         if (e.getCause() instanceof MarkedYAMLException) {
             context = ((MarkedYAMLException) e.getCause()).getContext();
         } else {
-            return new InvalidSyntax(e.toString());
+            return new InvalidYamlSyntax(e.toString());
         }
+        String messagePattern = "The property= '{}' could not be interpreted by the SnakeYAML parser\n{}";
         String invalidDescription = "Cannot create property=description.*";
         if (context.matches(invalidDescription)) {
-            return new InvalidType("description", e);
+            return new InvalidYamlSyntax(messagePattern, "description", e);
         }
         String invalidType = "Cannot create property=metadata.*";
         if (context.matches(invalidType)) {
-            return new InvalidType("metadata", e);
+            return new InvalidYamlSyntax(messagePattern, "metadata", e);
         }
 
-        return new InvalidSyntax(e.toString());
+        return new InvalidYamlSyntax(e.toString());
     }
 
     public YAMLParserException interpret(ScannerException e) {
@@ -48,10 +53,10 @@ public class ExceptionInterpreter {
                     "(Example VALID:   { get_operation_output: [ SELF, \"http://www.example.com/interface/lifecycle\", " +
                     "operationName, outputName ] })\n\n" +
                     e.getMessage();
-                return new InvalidSyntax(msg);
+                return new InvalidYamlSyntax(msg);
             }
         }
 
-        return new InvalidSyntax(e.toString());
+        return new InvalidYamlSyntax(e.toString());
     }
 }

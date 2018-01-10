@@ -15,6 +15,8 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ## [unreleased]
 
 ### Changed
+- Add a subtype in the inheritance view
+- Add consistency check in the UI
 - Add files in the self-service for Servicetemplates
 - Add error message if entered namespace contains a whitespace
 - Add filtering to namespaces to filter non allowed namespaces 

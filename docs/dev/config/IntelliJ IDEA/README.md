@@ -28,6 +28,11 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
     7. Press "OK"
     8. Press "Close"
     9. Press "OK"
+5. Setup code headers to be inserted automatically
+    1. Open the Settings by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>
+    2. Go to "Editor > File and Code Templates page"
+    3. Edit each java, typescript, html and xml template to contain the license header shown in [CodeHeaders.md](../../CodeHeaders.md)
+    4. Click apply
 6. Setup tomcat as usual. In case you develop the backend, use following configuration:
   - `org.eclipse.winery.repository.rest:war exploded` to `/winery`
   - External artifact `.../org.eclipse.winery.repository.ui/target/winery-ui.war` to `/winery-ui`
@@ -37,7 +42,7 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
   - <https://youtrack.jetbrains.com/issue/IDEA-147601>
   - <https://youtrack.jetbrains.com/issue/IDEA-142591>
   - <https://youtrack.jetbrains.com/issue/IDEA-176611>
-  - <https://youtrack.jetbrains.com/issue/IDEA-68079>
+  - <https://youtrack.jetbrains.com/issue/IDEA-75437>
   - <https://youtrack.jetbrains.com/issue/IDEA-159739>
   - <https://youtrack.jetbrains.com/issue/IDEA-131223>
 8. Pros: Install the [Key Promoter X plugin](https://plugins.jetbrains.com/plugin/9792-key-promoter-x).

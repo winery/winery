@@ -11,6 +11,7 @@ import { GitLogApiData } from './GitLogApiData';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
+import { webSocketURL } from '../configuration';
 
 @Component({
     selector: 'winery-gitlog',
@@ -36,7 +37,7 @@ export class WineryGitLogComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.webSocket = new WebSocket('ws://' + location.hostname + ':8080/winery/git');
+        this.webSocket = new WebSocket(webSocketURL + '/git');
         this.webSocket.onopen = event => {
             this.refreshLog();
             this.show = true;

@@ -1,14 +1,20 @@
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.support;
 
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.xml.bind.JAXBException;
 
@@ -24,45 +30,45 @@ import org.junit.BeforeClass;
 
 public abstract class AbstractTestY2X {
 
-	private final static String FILE_EXTENSION = ".yml";
-	protected final String PATH;
-	protected final String OUT_PATH;
+    private final static String fileExtension = ".yml";
+    protected final Path path;
+    protected final Path outPath;
 
-	public AbstractTestY2X(String PATH) {
-		this.PATH = PATH;
-		this.OUT_PATH = PATH + File.separator + "tmp";
-	}
+    public AbstractTestY2X(Path path) {
+        this.path = path;
+        this.outPath = path.resolve("tmp");
+    }
 
-	@BeforeClass
-	public static void setRepository() {
-		RepositoryFactory.getRepository(Utils.getTmpDir("AbstractTests").toPath());
-	}
+    @BeforeClass
+    public static void setRepository() {
+        RepositoryFactory.getRepository(Utils.getTmpDir(Paths.get("AbstractTests")));
+    }
 
-	public String getName(String name) {
-		return name + FILE_EXTENSION;
-	}
+    public String getName(String name) {
+        return name + fileExtension;
+    }
 
-	public TServiceTemplate readServiceTemplate(String name) throws Exception {
-		Reader reader = new Reader();
-		return reader.parse(PATH, getName(name));
-	}
+    public TServiceTemplate readServiceTemplate(String name) throws Exception {
+        Reader reader = Reader.getReader();
+        return reader.parse(path, Paths.get(getName(name)));
+    }
 
-	public TServiceTemplate readServiceTemplate(String name, String namespace) throws Exception {
-		Reader reader = new Reader();
-		return reader.parse(PATH, getName(name), namespace);
-	}
+    public TServiceTemplate readServiceTemplate(String name, String namespace) throws Exception {
+        Reader reader = Reader.getReader();
+        return reader.parse(path, Paths.get(getName(name), namespace));
+    }
 
-	public TServiceTemplate readServiceTemplate(String path, String name, String namespace) throws Exception {
-		Reader reader = new Reader();
-		return reader.parse(PATH, path + File.separator + name + FILE_EXTENSION, namespace);
-	}
+    public TServiceTemplate readServiceTemplate(Path path, String name, String namespace) throws Exception {
+        Reader reader = Reader.getReader();
+        return reader.parse(this.path, path.resolve(name.concat(fileExtension)), namespace);
+    }
 
-	public Definitions convert(TServiceTemplate serviceTemplate, String name, String namespace) {
-		Converter converter = new Converter();
-		return converter.convertY2X(serviceTemplate, name, namespace, PATH, PATH + File.separator + "tmp");
-	}
+    public Definitions convert(TServiceTemplate serviceTemplate, String name, String namespace) {
+        Converter converter = new Converter();
+        return converter.convertY2X(serviceTemplate, name, namespace, path, path.resolve("tmp"));
+    }
 
-	public void writeXml(Definitions definitions, String name, String namespace) throws JAXBException {
-		WriterUtils.saveDefinitions(definitions, OUT_PATH, namespace, name);
-	}
+    public void writeXml(Definitions definitions, String name, String namespace) throws JAXBException {
+        WriterUtils.saveDefinitions(definitions, outPath, namespace, name);
+    }
 }
