@@ -19,7 +19,7 @@ before_install:
 
 script:
   - mvn package
-#  - mvn jacoco:report-aggregate
+  # - mvn jacoco:report-aggregate
   - mkdir build
   - mv org.eclipse.winery.cli/target/*.jar build/
   - mv org.eclipse.winery.repository.client/target/*.jar build/
@@ -29,15 +29,25 @@ script:
   - mv org.eclipse.winery.workflowmodeler/target/*.war build/
 
 deploy:
-  provider: s3
-  skip_cleanup: true
-  access_key_id: $AWSAccessKeyId
-  secret_access_key: $AWSSecretKey
-  bucket: builds.opentosca.org
-  acl: public_read
-  local_dir: "build/"
-  upload-dir: "winery-eclipse/$TRAVIS_BRANCH"
-  region: eu-central-1
-  on:
-    all_branches: true
-    condition: $AWSAccessKeyId
+  - provider: s3
+    skip_cleanup: true
+    access_key_id: $AWSAccessKeyId
+    secret_access_key: $AWSSecretKey
+    bucket: builds.opentosca.org
+    acl: public_read
+    local_dir: "build/"
+    upload-dir: "winery/$TRAVIS_BRANCH"
+    region: eu-central-1
+    on:
+      all_branches: true
+      condition: $AWSAccessKeyId
+  - provider: script
+    script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: script
+    script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
+    skip_cleanup: true
+    on:
+      branch: mvndeploy

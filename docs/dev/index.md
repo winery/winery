@@ -569,6 +569,15 @@ Preparing ../git-repositories/winery/winery-repository-gh-pages (identifier wine
 HEAD is now at 5017713 Initial documentation
 ```
 
+## Regenerating the static HTML API documentation
+
+The static HTML API documentation is generated using [bootprint-openapi](https://github.com/bootprint/bootprint-openapi).
+
+1. Pre condition: `npm install -g bootprint bootprint-openapi`
+2. Start Tomcat with the API deployed - do not use `org.eclipse.winery.repository.rest.server.WineryUsingHttpServer.main`, because it does not integrate the swagger generation.
+3. In directory `docs/api` execute `./generate-swagger-doc.sh`
+
+
 ## Recommended programming literature
 
 * Joshua Bloch. Effective Java, 2nd edition. Addison-Wesley
