@@ -11,7 +11,6 @@
 - [GitHub - Change Final Pull Request](#github---change-final-pull-request)
 - [GitHub - After Pull Request Got Merged](#github---after-pull-request-got-merged)
 - [Excursus: Git](#excursus-git)
-- [Update copyright header](#update-copyright-header)
 - [License](#license)
 
 <!-- tocstop -->
@@ -64,19 +63,19 @@ Email your supervisor your GitHub username.
   6. Push the changes to origin: `git push`.
   7. Create [WIP] Pull Request.
      - Go to <https://github.com/opentosca/winery> 🡒 Pull Request
-     - Fill in the title of the Pull Request following the patter `[WIP] Title of the thesis/work/target`
-
-    - Fill in the provided description form
-
+     - Change the "base branch" to OpenTOSCA/winery
+       ![change-base-fork-to-opentosca-winery](graphics/toolchain-change-base-fork-to-opentosca-winery.png)
+     - Fill in the title of the Pull Request following the pattern `[WIP] Title of the thesis/work/target`
+     - Fill in the provided description form
      - Add `[x]` to the items listed in the write field
      - Check the description in the Preview and send the Pull Request
   8. There are automatic checks in place
+     ![GitAutoCheck](graphics/autoCheckGit.png)
+  9. If there is a red cross, click in respective "Details" and fix them
 
-![GitAutoCheck](graphics/autoCheckGit.png)
+**You keep working and discuss with your supervisor how things go.**
 
-  9. If there is a red cross, click in repective "Details" and fix them
-
-You keep working and discuss with your supervisor how things go:
+After each working day, do the following:
     
   1. Commit. Don't forget to sign the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui).
   2. `git push`
@@ -160,31 +159,6 @@ This is required by the Eclipse process for checking for intellectual property (
 ![ExcursusGit](graphics/ExcursusGit.png)
 
 Please see also [use gitk to understand git](https://lostechies.com/joshuaflanagan/2010/09/03/use-gitk-to-understand-git/) to understand the settings in git.
-
-## Update copyright header
-Steps to update copyright headers:
-1. Define scopes to apply the copy right header to:
-    - Open properties `ctrl alt s` and search for `Scopes`
-    - Select packages for the scope and click `Include Recursively`
-    ![GitAutoCheck](graphics/SetScopes.png)
-2. Apply copyright settings to Scope:
-    - Open properties `ctrl alt s` and search for `Copyright`
-    - Add copyright entry and apply previously created scope
-    ![GitAutoCheck](graphics/Copyright.png)
-3. Create copyright profile:
-    - Open Settings/Editor/Copyright/'Copyright Profiles'
-    - Add copyright text without borders
-        - Set Copyright year dynamically with `${today.year}` 
-    - Add copyright regex (Acquired by selecting the copyright header in intellij editor and pressing `ctrl shift f`)
-    - Allow replacing old copyright identified by regex seems not to work
-    ![GitAutoCheck](graphics/CopyrightProfiles.png)
-4. Adjust copyright formatting settings
-    - Open Settings/Editor/Copyright/Formatting
-    - Change to `Use block comments` with `Prefix each line`, set `Relative Location` to `Before other comments`and increase `Separator before/after Length` to `81`
-    ![GitAutoCheck](graphics/CopyrightFormat.png)
-5. Delete previous copyright header manually (Replace with empty String)
-6. Right click package and choose `Update Copyright..`
-    - Check files for duplicated copyright header (occurs if copyright regex not set correctly)
 
 ## License
 
