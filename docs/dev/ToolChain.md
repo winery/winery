@@ -63,19 +63,19 @@ Email your supervisor your GitHub username.
   6. Push the changes to origin: `git push`.
   7. Create [WIP] Pull Request.
      - Go to <https://github.com/opentosca/winery> 🡒 Pull Request
-     - Fill in the title of the Pull Request following the patter `[WIP] Title of the thesis/work/target`
-
-    - Fill in the provided description form
-
+     - Change the "base branch" to OpenTOSCA/winery
+       ![change-base-fork-to-opentosca-winery](graphics/toolchain-change-base-fork-to-opentosca-winery.png)
+     - Fill in the title of the Pull Request following the pattern `[WIP] Title of the thesis/work/target`
+     - Fill in the provided description form
      - Add `[x]` to the items listed in the write field
      - Check the description in the Preview and send the Pull Request
   8. There are automatic checks in place
+     ![GitAutoCheck](graphics/autoCheckGit.png)
+  9. If there is a red cross, click in respective "Details" and fix them
 
-![GitAutoCheck](graphics/autoCheckGit.png)
+**You keep working and discuss with your supervisor how things go.**
 
-  9. If there is a red cross, click in repective "Details" and fix them
-
-You keep working and discuss with your supervisor how things go:
+After each working day, do the following:
     
   1. Commit. Don't forget to sign the commit (<kbd>Ctrl</kbd>+<kbd>S</kbd> in Git Gui).
   2. `git push`
