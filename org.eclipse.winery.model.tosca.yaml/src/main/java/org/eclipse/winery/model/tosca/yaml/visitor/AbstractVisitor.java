@@ -216,7 +216,10 @@ public abstract class AbstractVisitor<R extends AbstractResult<R>, P extends Abs
 
     @Override
     public R visit(TParameterDefinition node, P parameter) {
-        return null;
+        return reduce(Stream.of(
+            visitElement(node.getConstraints(), parameter, "constraints"),
+            visitElement(node.getEntrySchema(), parameter, "entry_schema")
+        ));
     }
 
     @Override

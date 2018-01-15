@@ -822,10 +822,16 @@ public class Builder {
         if (Objects.isNull(object) || !validate(TParameterDefinition.class, object, parameter)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
-        return new TParameterDefinition.Builder(buildPropertyDefinition(object,
-            new Parameter<>(parameter.getContext())
-                .setClazz(TParameterDefinition.class)
-        ))
+        return new TParameterDefinition.Builder()
+            .setType(buildQName(stringValue(map.get("type"))))
+            .setDescription(buildDescription(map.get("description")))
+            .setRequired(buildRequired(map.get("required")))
+            .setDefault(map.get("default"))
+            .setStatus(buildStatus(map.get("status")))
+            .setConstraints(buildList(map, "constraints", this::buildConstraintClause, parameter))
+            .setEntrySchema(buildEntrySchema(map.get("entry_schema"),
+                new Parameter<TEntrySchema>(parameter.getContext()).addContext("entry_schema")
+            ))
             .setValue(map.get("value"))
             .build();
     }
