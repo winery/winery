@@ -210,7 +210,8 @@ public class ReflectionTests extends AbstractTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "constraints/valid-constraints-artifact_type-complete"
+        "operationDefinition/valid-operation_definition-short",
+        "operationDefinition/valid-operation_definition-topology_template"
     })
     public void testSingleServiceTemplates(String fileName) throws Exception {
         testServiceTemplates(getYamlFile(fileName));
@@ -236,7 +237,7 @@ public class ReflectionTests extends AbstractTest {
 
     @ParameterizedTest
     @CsvSource({
-        "invalid-yaml_syntax-missing_line_break, InvalidSyntax"
+        "invalid-yaml_syntax-missing_line_break, InvalidYamlSyntax"
     })
     public void testSingleServiceTemplatesException(String fileName,
                                                     String exception) throws Exception {
