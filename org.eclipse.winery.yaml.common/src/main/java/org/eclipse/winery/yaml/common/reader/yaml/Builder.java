@@ -145,6 +145,7 @@ public class Builder {
             switch (clazz.getSimpleName()) {
                 case "TAttributeAssignment":
                 case "TRequirementAssignment":
+                case "TOperationDefinition":
                     return true;
                 default:
                     return false;
@@ -560,22 +561,30 @@ public class Builder {
     @Nullable
     public TOperationDefinition buildOperationDefinition(Object object, Parameter<TOperationDefinition> parameter) {
         if (Objects.isNull(object) || !validate(TOperationDefinition.class, object, parameter)) return null;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = (Map<String, Object>) object;
-        return new TOperationDefinition.Builder()
-            .setDescription(buildDescription(map.get("description")))
-            .setInputs(buildPropertyAssignmentOrDefinition(map.get("inputs"),
-                new Parameter<>(parameter.getContext()).addContext("Inputs")
-                    .setValue(parameter.getValue())
-            ))
-            .setOutputs(buildPropertyAssignmentOrDefinition(map.get("outputs"),
-                new Parameter<>(parameter.getContext()).addContext("outputs")
-                    .setValue(parameter.getValue())
-            ))
-            .setImplementation(buildImplementation(map.get("implementation"),
-                new Parameter<TImplementation>(parameter.getContext()).addContext("implementation")
-            ))
-            .build();
+        // short notation
+        if (object instanceof String) {
+            return new TOperationDefinition.Builder()
+                .setImplementation(new TImplementation.Builder(buildQName(stringValue(object))).build())
+                .build();
+        } else if (object instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map<String, Object>) object;
+            return new TOperationDefinition.Builder()
+                .setDescription(buildDescription(map.get("description")))
+                .setInputs(buildPropertyAssignmentOrDefinition(map.get("inputs"),
+                    new Parameter<>(parameter.getContext()).addContext("Inputs")
+                        .setValue(parameter.getValue())
+                ))
+                .setOutputs(buildPropertyAssignmentOrDefinition(map.get("outputs"),
+                    new Parameter<>(parameter.getContext()).addContext("outputs")
+                        .setValue(parameter.getValue())
+                ))
+                .setImplementation(buildImplementation(map.get("implementation"),
+                    new Parameter<TImplementation>(parameter.getContext()).addContext("implementation")
+                ))
+                .build();
+        }
+        return null;
     }
 
     @Nullable
@@ -822,10 +831,16 @@ public class Builder {
         if (Objects.isNull(object) || !validate(TParameterDefinition.class, object, parameter)) return null;
         @SuppressWarnings("unchecked")
         Map<String, Object> map = (Map<String, Object>) object;
-        return new TParameterDefinition.Builder(buildPropertyDefinition(object,
-            new Parameter<>(parameter.getContext())
-                .setClazz(TParameterDefinition.class)
-        ))
+        return new TParameterDefinition.Builder()
+            .setType(buildQName(stringValue(map.get("type"))))
+            .setDescription(buildDescription(map.get("description")))
+            .setRequired(buildRequired(map.get("required")))
+            .setDefault(map.get("default"))
+            .setStatus(buildStatus(map.get("status")))
+            .setConstraints(buildList(map, "constraints", this::buildConstraintClause, parameter))
+            .setEntrySchema(buildEntrySchema(map.get("entry_schema"),
+                new Parameter<TEntrySchema>(parameter.getContext()).addContext("entry_schema")
+            ))
             .setValue(map.get("value"))
             .build();
     }

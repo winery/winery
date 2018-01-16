@@ -119,7 +119,7 @@
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-jersey-jaxrs</artifactId>
-			<version>1.5.16</version>
+			<version>1.5.17</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
