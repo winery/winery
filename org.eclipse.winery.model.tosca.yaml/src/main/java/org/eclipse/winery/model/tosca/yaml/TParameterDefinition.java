@@ -34,6 +34,13 @@ import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tParameterDefinition", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {
+    "type",
+    "description",
+    "required",
+    "defaultValue",
+    "status",
+    "constraints",
+    "entrySchema",
     "value"
 })
 public class TParameterDefinition implements VisitorNode {
@@ -164,17 +171,9 @@ public class TParameterDefinition implements VisitorNode {
         private TEntrySchema entrySchema;
         private Object value;
 
-        public QName getType() {
-            return type;
-        }
-
         public Builder setType(QName type) {
             this.type = type;
             return this;
-        }
-
-        public String getDescription() {
-            return description;
         }
 
         public Builder setDescription(String description) {
@@ -182,17 +181,9 @@ public class TParameterDefinition implements VisitorNode {
             return this;
         }
 
-        public Boolean getRequired() {
-            return required;
-        }
-
         public Builder setRequired(Boolean required) {
             this.required = required;
             return this;
-        }
-
-        public Object getDefault() {
-            return defaultValue;
         }
 
         public Builder setDefault(Object defaultValue) {
@@ -230,20 +221,12 @@ public class TParameterDefinition implements VisitorNode {
             }
         }
 
-        public List<TConstraintClause> getConstraints() {
-            return constraints;
-        }
-
         public Builder setConstraints(List<TConstraintClause> constraints) {
             if (Objects.isNull(constraints)) {
                 constraints = new ArrayList<>();
             }
             this.constraints = constraints;
             return this;
-        }
-
-        public TEntrySchema getEntrySchema() {
-            return entrySchema;
         }
 
         public Builder setEntrySchema(TEntrySchema entrySchema) {

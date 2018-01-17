@@ -15,6 +15,7 @@ This is similar to [Angular's CHANGELOG.md](https://github.com/angular/angular/b
 ## [unreleased]
 
 ### Changed
+- Fix maven tests for junit5
 - Add a subtype in the inheritance view
 - Add consistency check in the UI
 - Add files in the self-service for Servicetemplates
