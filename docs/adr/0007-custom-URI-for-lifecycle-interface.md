@@ -9,6 +9,12 @@ That interface has to take a URI for a name
 * `http://www.example.com/interfaces/lifecycle` (from http://docs.oasis-open.org/tosca/tosca-primer/v1.0/tosca-primer-v1.0.html)
 * `tosca.interfaces.node.lifecycle.Standard` (from http://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.1/TOSCA-Simple-Profile-YAML-v1.1.html)  
 
+## Decision Outcome
+
+* Chosen Alternative: `http://www.example.com/interfaces/lifecycle`
+* Although the alternative is not standardized, it is the one consistent with the primer for TOSCA 1.0.
+
+
 ## License
 
 Copyright (c) 2017 Contributors to the Eclipse Foundation
