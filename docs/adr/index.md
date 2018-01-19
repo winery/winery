@@ -13,11 +13,11 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0006](0006-wrap-properties-in-tosca-properties-element.md) - Wrap properties in TOSCA properties element
 - [ADR-0007](0007-custom-URI-for-lifecycle-interface.md) - Custom URI for lifecycle interface
 - [ADR-0008](0008-no-support-for-local-git-source-clones.md) - No support for local git source clones
-- [ADR-0009](0009-manual-tosca-yaml-serialisation.md) - TOSCA YAML serialization deserialization using SnakeYAML
-- [ADR-0010](0010-tosca-yaml-deserialisation-using-snakeyaml.md) - TOSCA YAML Deserialization Using SnakeYAML
+- [ADR-0009](0009-manual-tosca-yaml-serialisation.md) - Manual serialization of SnakeYAML
+- [ADR-0010](0010-tosca-yaml-deserialisation-using-snakeyaml.md) - TOSCA YAML deserialization using SnakeYAML
 - [ADR-0011](0011-use-builder-pattern-for-model-classes.md) - Use Builder Pattern for Model Classes
 - [ADR-0012](0012-provide-support-for-custom-kv-properties.md) - Provide Support for Custom Key-Value Properties
-- [ADR-0013](0013-routes-in-Angular.md) - *Routes in the Repository Angular App*
+- [ADR-0013](0013-routes-in-Angular.md) - Routes in the Repository Angular App
 - [ADR-0014](0014-use-eclipse-orion-as-editor.md) - Use Eclipse Orion as Editor
 - [ADR-0015](0015-copy-source-to-files.md) - Offer copying files from the source to the files folder
 - [ADR-0016](0016-reflection-test-for-tosca-yaml-builder.md) - Reflection test for TOSCA YAML builder

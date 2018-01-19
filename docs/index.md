@@ -1,14 +1,16 @@
 # Eclipse Winery
 
-- [UserGuide](user/) - a guide for the users
+This is the main index page of Eclipse Winery.
+Organizational information is provided at the [eclipse.org page](http://eclipse.org/winery/).
+
+Information for users and developers is found at the following items:
+
+- [UserGuide](user/) - a guide for users
 - [API](api/) - the description of the REST API
 - [DeveloperGuide](dev/) - a guide for developers
 - [TOSCA](tosca/) - notes on OASIS TOSCA
-- [Architectural Decisions](adr/) - documentation for ADRs
-
-## Contributing
-
-Please head to [CONTRIBUTING.md](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md).
+- [Architectural Decisions](adr/) - documentation of ADRs
+- [CONTRIBUTING.md](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md) - explains how to contribute to Eclipse Winery
 
 ## License
 
