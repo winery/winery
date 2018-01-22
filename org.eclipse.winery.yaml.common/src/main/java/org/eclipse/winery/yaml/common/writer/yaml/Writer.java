@@ -413,6 +413,13 @@ public class Writer extends AbstractVisitor<Printer, Writer.Parameter> {
 
     public Printer visit(TParameterDefinition node, Parameter parameter) {
         return new Printer(parameter.getIndent())
+            .printKeyValue("type", node.getType())
+            .printKeyValue("description", node.getDescription())
+            .printKeyValue("required", node.getRequired())
+            .printKeyObject("default", node.getDefault())
+            .printKeyValue("status", node.getStatus())
+            .print(printList("constraints", node.getConstraints(), parameter))
+            .print(printVisitorNode(node.getEntrySchema(), parameter))
             .printKeyObject(parameter.getKey(), node.getValue());
     }
 
