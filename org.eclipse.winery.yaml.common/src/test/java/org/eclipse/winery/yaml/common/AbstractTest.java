@@ -28,7 +28,7 @@ import org.eclipse.winery.yaml.common.writer.yaml.Writer;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-public abstract class AbstractTest {
+public class AbstractTest {
     protected static Path path;
     private final org.eclipse.winery.yaml.common.reader.xml.Reader xmlReader;
     private final Reader yamlReader;

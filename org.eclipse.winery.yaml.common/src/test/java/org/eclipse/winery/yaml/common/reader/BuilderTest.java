@@ -24,7 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class BuilderTests extends AbstractTest {
+public class BuilderTest extends AbstractTest {
     @BeforeAll
     private static void setPath() {
         AbstractTest.path = Paths.get("src/test/resources/builder/simpleTests");

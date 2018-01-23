@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class YamlWriterTest extends AbstractTest {
     private static Path temporaryFolder;
@@ -39,9 +40,22 @@ public class YamlWriterTest extends AbstractTest {
     @ParameterizedTest(name = "{index} name=''{0}''")
     @MethodSource("getYamlFiles")
     public void roundTripTest(Path fileName) throws Exception {
-        TServiceTemplate serviceTemplate = getYamlServiceTemplate(fileName);
+        TServiceTemplate serviceTemplate = this.getYamlServiceTemplate(fileName);
         writeYamlServiceTemplate(serviceTemplate, temporaryFolder.resolve(fileName));
-        TServiceTemplate out = getYamlServiceTemplate(fileName, temporaryFolder);
+        TServiceTemplate out = this.getYamlServiceTemplate(fileName, temporaryFolder);
+        Assertions.assertEquals(serviceTemplate, out);
+    }
+
+    @DisplayName("Test read and write single round trip")
+    @ParameterizedTest(name = "{index} name=''{0}''")
+    @ValueSource(strings = {
+        "example_16-topology_templates-1_1"
+    })
+    public void roundTripSingleTest(String file) throws Exception {
+        Path fileName = getYamlFile(file);
+        TServiceTemplate serviceTemplate = this.getYamlServiceTemplate(fileName);
+        writeYamlServiceTemplate(serviceTemplate, temporaryFolder.resolve(fileName));
+        TServiceTemplate out = this.getYamlServiceTemplate(fileName, temporaryFolder);
         Assertions.assertEquals(serviceTemplate, out);
     }
 }

@@ -106,13 +106,13 @@ import org.opentest4j.ValueWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ReflectionTests extends AbstractTest {
-    private static Logger logger = LoggerFactory.getLogger(ReflectionTests.class);
+public class ReflectionTest extends AbstractTest {
+    private static Logger logger = LoggerFactory.getLogger(ReflectionTest.class);
     private static Map<String, Class<? extends Exception>> exceptionClasses;
     private static Map<String, Class<?>> toscaYamlClasses;
     private ReflectionUtil reflectionUtil;
 
-    public ReflectionTests() {
+    public ReflectionTest() {
         this.reflectionUtil = new ReflectionUtil();
     }
 
