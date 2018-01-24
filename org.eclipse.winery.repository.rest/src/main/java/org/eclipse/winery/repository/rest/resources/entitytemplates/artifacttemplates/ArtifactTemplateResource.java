@@ -27,7 +27,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.winery.Logger;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
@@ -47,6 +46,8 @@ import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTempl
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
 
 import io.swagger.annotations.ApiParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Models an Artifact Template with its artifact references
@@ -61,7 +62,9 @@ import io.swagger.annotations.ApiParam;
 
 public class ArtifactTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IEntityTemplateResource<TArtifactTemplate>, IHasName {
 
-	private final ArtifactTemplateFilesDirectoryId filesDirectoryId;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArtifactTemplateResource.class);
+
+    private final ArtifactTemplateFilesDirectoryId filesDirectoryId;
 	private final ArtifactTemplateSourceDirectoryId sourceDirectoryId;
 
 	public ArtifactTemplateResource(ArtifactTemplateId id) {
@@ -113,7 +116,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 					String subDirectory = ref.getSubDirectory().map(s -> s.toString()).orElse("");
 					filesResource.putFile(fileName, subDirectory, inputStream);
 				} catch (IOException e) {
-					Logger.debug(this, e, "The artifact source " + ref.getFileName() + " could not be copied to the files directory.");
+					LOGGER.debug("The artifact source " + ref.getFileName() + " could not be copied to the files directory.", e);
 					return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 				}
 			}
