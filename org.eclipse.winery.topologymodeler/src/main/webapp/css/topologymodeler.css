@@ -128,6 +128,31 @@ div.NodeTemplateShape.selected {
 	background-image: linear-gradient(to bottom, #FFFFFF 0%, #FFD391 100%);
 }
 
+/* change background color for components of detected patterns */
+div.NodeTemplateShape.detected {
+	background: rgb(226, 255, 216);
+	border: 2px solid rgb(255, 127, 26);
+
+
+	/* IE10 Consumer Preview */
+	background-image: -ms-linear-gradient(top, #FFFFFF 0%, #26da11 100%);
+
+	/* Mozilla Firefox */
+	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #26da11 100%);
+
+	/* Opera */
+	background-image: -o-linear-gradient(top, #FFFFFF 0%, #26da11 100%);
+
+	/* Webkit (Safari/Chrome 10) */
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #26da11));
+
+	/* Webkit (Chrome 11+) */
+	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #26da11 100%);
+
+	/* W3C Markup, IE10 Release Preview */
+	background-image: linear-gradient(to bottom, #FFFFFF 0%, #26da11 100%);
+}
+
 div.content {
 	overflow: hidden;
 	width: 100%;

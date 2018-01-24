@@ -101,7 +101,7 @@ export class EntityContainerComponent implements OnInit {
             window.open(topologyModeler, '_blank');
         } else {
             this.router.navigateByUrl('/' + this.toscaType + '/' +
-                encodeURIComponent(encodeURIComponent(encodeURIComponent(this.data.namespace))) + '/'
+                encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/'
                 + this.data.id);
         }
     }

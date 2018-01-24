@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
+			<version>3.7</version>
 			<scope>compile</scope>
 			<exclusions>
 			<exclusion>
@@ -92,13 +92,13 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.1</version>
+			<version>1.2.3</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.7.6</version>
+			<version>1.7.25</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

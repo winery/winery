@@ -9,15 +9,16 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
       It is for free if JRebel may post to your Twitter account.
     - File --> Settings --> Plugins --> Search for JRebel
     - If JRebel is not available press "Browse repositories" --> Search -->Install
-2. Enable checkstyle: Follow the shown steps and apply them in IntelliJ
+2. Open `pom.xml` in the main directory
+3. Enable checkstyle: Follow the shown steps and apply them in IntelliJ
   ![Enable CheckStyle in IntelliJ](activate-checkstyle.gif)
   - Install the [IntelliJ Checkstyle Plugin](https://plugins.jetbrains.com/plugin/1065-checkstyle-idea).
-  - Open Settings > Other Settings > CheckStyle.
+    It can be found via plug-in repository (Settings -> Plugins -> Browse repositories)
+  - Open the Settings (by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>)
+  - Go to Other Settings -> CheckStyle.
   - Click on the green plus and add `checkstyle.xml` from the root of the Winery code repository.
-3. Open `pom.xml` in the main directory
-4. Configure the code style (Source: https://youtrack.jetbrains.com/issue/IDEA-61520#comment=27-1292600)
-    1. Press <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>
-    2. Please install CheckStyle-IDEA plugin (http://plugins.jetbrains.com/plugin/1065?pr=idea), it can be found via plug-in repository (Settings|Plugins|Browse repositories).
+4. Configure the code style (Source: <https://youtrack.jetbrains.com/issue/IDEA-61520#comment=27-1292600>)
+    1. Open the Settings (by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>)
     3. Go to "Editor > Code Style"
     3. Click "Manage..." (right of "Scheme:")
     4. Click "Import..."
@@ -29,7 +30,7 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
     8. Press "Close"
     9. Press "OK"
 5. Setup code headers to be inserted automatically
-    1. Open the Settings by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>
+    1. Open the Settings (by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>)
     2. Go to "Editor > File and Code Templates page"
     3. Edit each java, typescript, html and xml template to contain the license header shown in [CodeHeaders.md](../../CodeHeaders.md)
     4. Click apply

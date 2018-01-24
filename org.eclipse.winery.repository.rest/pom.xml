@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.1.1</version>
+			<version>1.2.3</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -140,12 +140,11 @@
 			<version>1.9.4</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<!-- 3.1 does not work, because swagger needs a higher version -->
-			<version>3.6</version>
-			<scope>compile</scope>
-		</dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.7</version>
+        <scope>compile</scope>
+    </dependency>
 		<dependency>
 			<groupId>org.eclipse.winery</groupId>
 			<artifactId>org.eclipse.winery.model.selfservice</artifactId>
@@ -166,7 +165,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.7.6</version>
+			<version>1.7.25</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -201,7 +200,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-ext</artifactId>
-			<version>1.7.2</version>
+			<version>1.7.25</version>
 			<scope>compile</scope>
 			<!-- not approved by Eclipse legal -->
 			<exclusions>
@@ -247,10 +246,27 @@
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.2.11</version>
 		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.11</version>
+        </dependency>
+        <dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.5.2</version>
+            <exclusions>
+                <!-- provided by jcl-over-slf4j to enable logging via logback -->
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <!--provided in version 1.11-->
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.winery</groupId>
