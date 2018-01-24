@@ -23,16 +23,20 @@ define(
 		var TOSCA_WINERY_EXTENSIONS_NAMESPACE ="http://www.opentosca.org/winery/extensions/tosca/2013/02/12";
 
 		var topologyTemplateURL;
+		var patternId;
 
 		return {
 			openChooseTopologyToImportDiag: openChooseTopologyToImportDiag,
 			importTopology: importTopology,
 			save: save,
 			split: split,
+			detectPattern: detectPattern,
+			visualizePatterns: visualizePatterns,
 			match: match,
 			setTopologyTemplateURL: function (url) {
 				topologyTemplateURL = url;
 			},
+			highlightPattern: highlightPattern,
 			getTopologyTemplateAsXML: getTopologyTemplateAsXML,
 
 			TOSCA_NAMESPACE: TOSCA_NAMESPACE,
@@ -148,6 +152,90 @@ define(
 				error: function(jqXHR, textStatus, errorThrown) {
 					$("#matchBtn").button("reset");
 					vShowAJAXError("Could not match", jqXHR, errorThrown);
+				}
+			});
+		}
+
+
+		/**
+		 * "detectPattern"
+		 */
+		function detectPattern() {
+			$("#patterndetectionBtn").button("loading");
+
+			$.ajax({
+				url: topologyTemplateURL + "patterndetection",
+				type: "POST",
+				success: function(data, textStatus, jqXHR) {
+					$("#patterndetectionBtn").button("reset");
+					//var location = jqXHR.getResponseHeader("Location");
+					vShowSuccess("Algorithm was successful.\n" + data);
+
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#patterndetectionBtn").button("reset");
+					vShowAJAXError("Could not detect Patterns");
+				}
+			});
+		}
+
+		/**
+		 * "visualizePatterns"
+		 */
+		function visualizePatterns() {
+			$("#visualizePatternBtn").button("loading");
+
+			$.ajax({
+				url: topologyTemplateURL + "visualizepatterns",
+				type: "POST",
+				success: function(data, textStatus, jqXHR) {
+					$("#visualizePatternBtn").button("reset");
+					addPatternButtons();
+
+					function addPatternButtons() {
+						var lines = data.split('\n');
+						for (var i = 0; i < lines.length-1; i++) {
+							var tmp = lines[i].split(':');
+							var pattern = tmp[0];
+							$("#patternList").append('<li><a href="#" onclick="highlightPattern(this.id)" id="' + pattern + '">'+pattern+'</a></li>');
+						}
+					};
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#visualizePatternBtn").button("reset");
+					vShowAJAXError("Could not visualize Patterns");
+				}
+			});
+		}
+
+		function highlightPattern(patternId) {
+			console.log("PatternId: " + patternId);
+			$("div.NodeTemplateShape.detected").each(function () {
+				$(this).removeClass("detected");
+			});
+			$.ajax({
+				url: topologyTemplateURL + "visualizepatterns",
+				type: "POST",
+				success: function(data, textStatus, jqXHR) {
+					var lines = data.split('\n');
+					for (var i = 0; i < lines.length - 1; i++) {
+						var tmp = lines[i].split(':');
+						var patternName = tmp[0];
+						if (patternName === patternId) {
+							var nodes = tmp[1].split(',');
+							for (var j = 0; j < nodes.length; j++) {
+								$("div.NodeTemplateShape").each(function () {
+									if (nodes[j] === $(this).attr("id")) {
+										$(this).addClass("detected");
+									}
+								});
+							}
+						}
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					$("#visualizePatternBtn").button("reset");
+					vShowAJAXError("Could not visualize Patterns");
 				}
 			});
 		}
