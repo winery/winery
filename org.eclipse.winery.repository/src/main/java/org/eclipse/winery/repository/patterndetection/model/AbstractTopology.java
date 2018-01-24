@@ -16,14 +16,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DirectedSubgraph;
 
 public class AbstractTopology {
 

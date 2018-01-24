@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
-import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;

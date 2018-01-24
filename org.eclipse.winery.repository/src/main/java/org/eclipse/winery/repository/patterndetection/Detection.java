@@ -18,11 +18,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.eclipse.winery.common.ModelUtilities;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.patterndetection.keywords.Messaging;
 import org.eclipse.winery.repository.patterndetection.keywords.OperatingSystem;
 import org.eclipse.winery.repository.patterndetection.keywords.Server;
@@ -46,8 +47,6 @@ import org.eclipse.winery.repository.patterndetection.model.patterns.NodeBasedAv
 import org.eclipse.winery.repository.patterndetection.model.patterns.RelationalDatabasePattern;
 import org.eclipse.winery.repository.patterndetection.model.patterntaxonomies.IaaSTaxonomy;
 import org.eclipse.winery.repository.patterndetection.model.patterntaxonomies.PaaSTaxonomy;
-import org.eclipse.winery.repository.resources.AbstractComponentsResource;
-import org.eclipse.winery.repository.resources.servicetemplates.ServiceTemplateResource;
 
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.isomorphism.IsomorphicGraphMapping;
@@ -175,8 +174,7 @@ public class Detection {
 	}
 
 	public List<List<String>> detectPattern() {
-		ServiceTemplateResource serviceTempateResource = (ServiceTemplateResource) AbstractComponentsResource.getComponentInstaceResource(serviceTemplateId);
-		TTopologyTemplate tTopologyTemplate = serviceTempateResource.getServiceTemplate().getTopologyTemplate();
+		TTopologyTemplate tTopologyTemplate = RepositoryFactory.getRepository().getElement(serviceTemplateId).getTopologyTemplate();
 		searchForKeywords(tTopologyTemplate);
 		detectPattern(tTopologyTemplate);
 		List<List<String>> listLists = new ArrayList<>();

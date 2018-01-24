@@ -8,8 +8,7 @@
  */
 package org.eclipse.winery.repository.patterndetection.keywords;
 
-
 public enum Storage {
-	MySQL,
-	MongoDB
+    MySQL,
+    MongoDB
 }
