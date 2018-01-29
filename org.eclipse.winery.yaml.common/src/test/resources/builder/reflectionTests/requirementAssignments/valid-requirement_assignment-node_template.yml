@@ -1,0 +1,47 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains a valid requirement assignment.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.7.2
+  exception: None
+  keyname: topology_template.node_templates.ndt1
+  assert-typeof:
+   requirements.0.rq1 = TRequirementAssignment  
+  assert: |
+    type = ntp1
+    requirements.0.rq1.capability = cbt1
+    requirements.0.rq1.node = ndt1
+    requirements.0.rq1.relationship.type = rlt1
+    requirements.0.rq1.node_filter.capabilities.0.cbt1.properties.0.prop1.equal = test
+    requirements.0.rq1.occurrences = [1,10]
+
+capability_types:
+  cbt1:
+    derived_from: tosca.capabilities.Node
+    
+relationship_types:
+  rlt1:
+    derived_from: tosca.relationships.Root    
+    
+node_types:
+  ntp1:
+    derived_from: tosca.nodes.Root
+
+topology_template:
+  node_templates:
+    ndt1:
+      type: ntp1
+      requirements:
+        - rq1:
+            capability: cbt1
+            node: ndt1
+            relationship: rlt1
+            node_filter:
+              capabilities:
+                - cbt1:
+                    properties:
+                      - prop1: { equal: test }
+            occurrences: [1,10]    
+

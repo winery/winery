@@ -1,0 +1,14 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: Valid multi line description.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.1
+  exception: None
+  assert: |
+    description = This is an example of a multi-line description using YAML. It permits for line breaks for easier readability... if needed. However, (multiple) line breaks are folded into a single space character when processed into a single string value.
+    
+description: >
+  This is an example of a multi-line description using YAML. It permits for line breaks for easier readability...
+  if needed. However, (multiple) line breaks are folded into a single space character when processed into a single string value.

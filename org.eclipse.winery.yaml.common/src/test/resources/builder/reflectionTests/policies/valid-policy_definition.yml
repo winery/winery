@@ -1,0 +1,44 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: Valid policy definition
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.7.6
+  exception: None
+  assert: |    
+    node_types.ntp1.derived_from = tosca.nodes.Root
+    policy_types.plt1.properties.plt1.prt1.type = string
+    policy_types.plt1.targets = [ntp1]
+    topology_template.node_templates.ndt1.type = ntp1
+    topology_template.policies.plc1.type = plt1
+    topology_template.policies.plc1.description = Policy definition
+    topology_template.policies.plc1.metadata.md1 = Metadata value
+    topology_template.policies.plc1.properties.plc1.prt1 = Property value
+    topology_template.policies.plc1.targets = [ndt1]    
+
+node_types:
+  ntp1:
+    derived_from: tosca.nodes.Root
+    
+policy_types:
+  plt1:
+    derived_from: tosca.policies.Performance
+    properties:
+      plt1.prt1:
+        type: string
+    targets: [ntp1]
+    
+topology_template:
+  node_templates:
+    ndt1:
+      type: ntp1
+  policies:
+    plc1:
+      type: plt1
+      description: Policy definition
+      metadata:
+        md1: Metadata value
+      properties:
+        plc1.prt1: Property value
+      targets: [ ndt1 ]

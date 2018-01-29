@@ -1,0 +1,13 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: Invalid interface type with wrong 'derived_from' field.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.6.5.1
+  exception: UndefinedType
+  
+interface_types:
+  test.interfacetypes.it1:
+    derived_from: undefined
+    

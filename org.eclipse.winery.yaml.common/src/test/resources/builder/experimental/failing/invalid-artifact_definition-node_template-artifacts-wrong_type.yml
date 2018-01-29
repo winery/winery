@@ -1,0 +1,19 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains an invalid artifact definition.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.6
+  exception: UndefinedType
+
+
+topology_template:
+  node_templates:
+    ndt1:
+      type: tosca.nodes.Root      
+      artifacts:
+        artf1:
+          type: type
+          file: artifacts/example.py     
+    

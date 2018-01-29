@@ -1,0 +1,20 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: Invalid artifact definition.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.6
+  exception: UndefinedFile
+
+node_types:
+  test.nodetypes.nt1:
+    derived_from: tosca.nodes.Root
+    artifacts:
+      artf1:
+        type: test.artifacttypes.at1
+        file: 
+
+artifact_types:
+  test.artifacttypes.at1:
+    derived_from: tosca.artifacts.Root
