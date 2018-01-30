@@ -154,6 +154,13 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
 	}
 
 	@Test
+	public void getAllVisualAppearances() throws Exception {
+		this.setRevisionTo("8cf0ce80c2c40c6ec178ef8e5bdc4e2fcdecc7f9");
+		this.assertGet("nodetypes/allvisualappearancedata", "entitytypes/nodetypes/test.visualappearances.json");
+	}
+
+
+	@Test
 	public void nodeTypeWithTwoKVPropertiesCorrectJson() throws Exception {
 		this.setRevisionTo("origin/plain");
 		this.assertGet("nodetypes/http%253A%252F%252Fplain.winery.opentosca.org%252Fnodetypes/NodeTypeWithTwoKVProperties/", "entitytypes/nodetypes/NodeTypeWithTwoKVProperties.json");

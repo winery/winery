@@ -12,6 +12,7 @@
 package org.eclipse.winery.repository.rest.resources._support;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -25,8 +26,10 @@ import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.repository.backend.constants.Filename;
+import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
@@ -63,6 +66,16 @@ public abstract class GenericVisualAppearanceResource {
 	@DELETE
 	public Response onDelete() {
 		return RestUtils.delete(this.id);
+	}
+
+	/**
+	 * Used for GUI when accessing the resource as data E.g., for topology
+	 * template
+	 */
+	public URI getAbsoluteURL() {
+		String URI = Environment.getUrlConfiguration().getRepositoryApiUrl();
+		URI = URI + "/" + Util.getUrlPath(this.id);
+		return RestUtils.createURI(URI);
 	}
 
 	public ToscaElementId getId() {
