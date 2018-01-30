@@ -9,8 +9,8 @@ public class UrlConfiguration {
 	private String repositoryApiUrl = "http://localhost:8080/winery";
 
 	private String repositoryUiUrl = "http://localhost:8080/#/";
-	private String bpmn4ToscaModelerUrl = "http://localhost:8080/winery-topoloymodeler";
-	private String topologyModelerUrl = "http://localhost:8080/winery-workflowmodeler";
+	private String topologyModelerUrl = "http://localhost:8080/winery-topologymodeler";
+	private String bpmn4ToscaModelerUrl = "http://localhost:8080/winery-workflowmodeler";
 
 	public UrlConfiguration() {
 	}
