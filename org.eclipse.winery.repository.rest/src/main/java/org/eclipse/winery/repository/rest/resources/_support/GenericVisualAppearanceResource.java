@@ -72,7 +72,6 @@ public abstract class GenericVisualAppearanceResource {
 	 * Used for GUI when accessing the resource as data E.g., for topology
 	 * template
 	 */
-	//@JsonIgnore
 	public URI getAbsoluteURL() {
 		String URI = Environment.getUrlConfiguration().getRepositoryApiUrl();
 		URI = URI + "/" + Util.getUrlPath(this.id);
