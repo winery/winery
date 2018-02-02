@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.attribute.FileTime;
 import java.security.AccessControlException;
 import java.util.ArrayList;
@@ -126,12 +125,7 @@ public class RestUtils {
     }
 
     public static URI createURI(String uri) {
-        try {
-            return new URI(uri);
-        } catch (URISyntaxException e) {
-            LOGGER.error("uri " + uri + " caused an exception", e);
-            throw new IllegalStateException();
-        }
+        return URI.create(uri);
     }
 
     /**
