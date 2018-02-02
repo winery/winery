@@ -1,6 +1,6 @@
 <%--
 /********************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -53,6 +53,8 @@
 <%@page import="com.sun.jersey.api.client.config.ClientConfig"%>
 <%@page import="com.sun.jersey.api.client.config.DefaultClientConfig"%>
 <%@ page import="org.eclipse.winery.model.tosca.TServiceTemplate" %>
+<%@ page import="org.eclipse.winery.common.ids.GenericId" %>
+<%@ page import="org.eclipse.winery.common.ids.definitions.ComplianceRule" %>
 
 <%-- nc.. = non-common .. --%>
 <%@taglib prefix="ncnt"  tagdir="/WEB-INF/tags/templates/nodetemplates" %>
@@ -122,16 +124,30 @@
 	}
 
 	QName serviceTemplateQName = new QName(ns, id);
-	TTopologyTemplate topologyTemplate = client.getTopologyTemplate(serviceTemplateQName);
+	TTopologyTemplate topologyTemplate;
+	String parentPath;
+	String elementPath;
+	GenericId elementId;
+	if (request.getParameterMap().containsKey("parentPath") && request.getParameterMap().containsKey("elementPath")) {
+		parentPath =  "/" + request.getParameter("parentPath") + "/";
+		elementPath = "/" + request.getParameter("elementPath") + "/";
+		elementId = new ComplianceRule(serviceTemplateQName);
+		topologyTemplate = client.getTopologyTemplate(serviceTemplateQName, parentPath, elementPath);
+	} else {
+		parentPath = "/servicetemplates/";
+		elementPath = "/topologytemplate/";
+		elementId = new ServiceTemplateId(serviceTemplateQName);
+		topologyTemplate = client.getTopologyTemplate(serviceTemplateQName);
+	}
 	if (topologyTemplate == null) {
 %>
 		Something went wrong in the repository: topology template not found.
 <%
 		return;
 	}
-
-	String topologyTemplateURL = repositoryURL + "/servicetemplates/" + Util.DoubleURLencode(serviceTemplateQName) + "/topologytemplate/";
-	String serviceTemplateName = client.getName(new ServiceTemplateId(serviceTemplateQName));
+ 
+	String topologyTemplateURL = repositoryURL + parentPath + Util.DoubleURLencode(serviceTemplateQName) + elementPath;
+	String serviceTemplateName = client.getName(elementId);
 %>
 <!DOCTYPE html>
 <html>

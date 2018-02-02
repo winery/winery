@@ -1,0 +1,129 @@
+<!--
+/********************************************************************************
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+-->
+<div *ngIf="loading; else elseBlock">
+    <winery-loader></winery-loader>
+</div>
+
+<ng-template #elseBlock>
+    <winery-table *ngIf="plansApiData"
+                  [title]="'Embedded Plans'"
+                  [columns]="embeddedPlansColumns"
+                  [data]="plansApiData"
+                  [enableEditButton]="enableEditButton"
+                  [enableIOButton]="true"
+                  (cellSelected)="onCellSelected($event)"
+                  (addBtnClicked)="onAddPlanType();"
+                  (editBtnClicked)="onEditPlan($event);"
+                  (removeBtnClicked)="onRemovePlan($event);"
+                  (ioBtnClicked)="onEditPlanIOParameters($event);">
+    </winery-table>
+    <winery-table *ngIf="linkedPlans"
+                  [title]="'Linked Plans'"
+                  [columns]="linkedPlansColumns"
+                  [data]="linkedPlans"
+                  [disableButtons]="true">
+    </winery-table>
+</ng-template>
+
+<winery-modal bsModal #addPlanModal="bs-modal" [modalRef]="addPlanModal">
+    <winery-modal-header [title]="'Add Plan'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <form #addPlanFrom="ngForm" id="addPlanForm">
+            <div class="form-group">
+                <label class="control-label" for="key">Name</label>
+                <input #propName="ngModel"
+                       id="key"
+                       class="form-control"
+                       type="text"
+                       name="key"
+                       autocomplete=off
+                       required
+                       [(ngModel)]="newPlan.name"/>
+
+                <div *ngIf="propName.errors && (propName.dirty || propName.touched)"
+                     class="alert alert-danger">
+                    <div [hidden]="!propName.errors.required">
+                        Name is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" for="planType">Type</label>
+                <ng-select id="planType" [items]="planTypes" [active]="[selectedPlanType]"
+                           (selected)="planTypeSelected($event)"></ng-select>
+                <button class="btn btn-info btn-xs" (click)="refreshPlanTypes()">Refresh</button>
+                <button class="btn btn-info btn-xs" [routerLink]="['/admin/plantypes']">Manage</button>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="planLanguage">Language</label>
+                <ng-select id="planLanguage" [items]="planLanguages" [active]="[selectedPlanLanguage]"
+                           (selected)="planLanguageSelected($event)"></ng-select>
+                <button class="btn btn-info btn-xs" (click)="refreshPlanLanguages()">Refresh</button>
+                <button class="btn btn-info btn-xs" [routerLink]="['/admin/planlanguages']">Manage</button>
+            </div>
+
+            <div [hidden]="!showArchiveUpload" class="form-group">
+                <label for="uploader">Archive</label>
+                <winery-uploader #uploader id="uploader"
+                                 [uploadUrl]="uploaderUrl"
+                                 (onFileDropped)="onFileDropped($event);"
+                                 [uploadImmediately]="false"
+                                 [uploadMethod]="'PUT'"
+                                 (onSuccess)="getPlanTypesData()"
+                                 (onError)="handleError($event)">
+                </winery-uploader>
+            </div>
+        </form>
+    </winery-modal-body>
+    <winery-modal-footer
+        (onOk)="addPlan()"
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Add'"
+        [disableOkButton]="!addPlanFrom?.form.valid || !fileDropped">
+    </winery-modal-footer>
+</winery-modal>
+
+
+<winery-modal bsModal #ioModal="bs-modal" [modalRef]="ioModal">
+    <winery-modal-header [title]="'Edit Parameters'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <winery-io-parameter [inputParameters]="newPlan.inputParameters.inputParameter"
+                             [outputParameters]="newPlan.outputParameters.outputParameter">
+        </winery-io-parameter>
+    </winery-modal-body>
+    <winery-modal-footer
+        (onOk)="editPlan()"
+        [closeButtonLabel]="'Cancel'"
+        [okButtonLabel]="'Save'">
+    </winery-modal-footer>
+</winery-modal>
+
+<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
+    <winery-modal-header [title]="'Delete Property'">
+    </winery-modal-header>
+    <winery-modal-body>
+        <p *ngIf="elementToRemove != null">
+            Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove.name }}</span>?
+        </p>
+    </winery-modal-body>
+    <winery-modal-footer (onOk)="deletePlan();"
+                         [closeButtonLabel]="'Cancel'"
+                         [okButtonLabel]="'Delete'">
+    </winery-modal-footer>
+</winery-modal>
