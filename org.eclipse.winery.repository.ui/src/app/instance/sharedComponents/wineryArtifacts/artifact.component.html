@@ -68,13 +68,13 @@
             </div>
 
             <div *ngIf="!isDeploymentArtifact">
-                <label class="control-label" for="key">Interface Name</label>
-                <select [(ngModel)]="selectedInterface" name="interfaces" class="form-control">
+                <label class="control-label" for="interfaces">Interface Name</label>
+                <select [(ngModel)]="selectedInterface" id="interfaces" name="interfaces" class="form-control">
                     <option *ngFor="let interfaceItem of interfacesList" [ngValue]="interfaceItem">{{interfaceItem.text}}</option>
                 </select>
 
-                <label class="control-label" for="key">Operations</label>
-                <select [(ngModel)]="selectedOperation" name="interfaces" class="form-control">
+                <label class="control-label" for="operations">Operations</label>
+                <select [(ngModel)]="selectedOperation" id="operations" name="operations" class="form-control">
                     <option *ngFor="let operation of selectedInterface?.operations" [ngValue]="operation">
                         {{operation}}
                     </option>
