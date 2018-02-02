@@ -1,16 +1,16 @@
-/*******************************************************************************
- * Copyright (c) 2012-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
- *     Tino Stadelmaier, Philipp Meyer - rename for id and namespace
- *     Nicole Keppler - support for JSON response
- *******************************************************************************/
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
 import java.io.IOException;
@@ -216,7 +216,8 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 	}
 
 	/**
-	 * Returns the definitions of this resource. Includes required imports of other definitions
+	 * Returns the definitions of this resource. Includes required imports of other definitions.
+     * Also called by the UI
 	 *
 	 * @param csar used because plan generator's GET request lands here
 	 */
@@ -234,7 +235,11 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
 		// TODO: It should be possible to specify ?yaml&csar to retrieve a CSAR and ?yaml to retrieve the .yaml representation
 		if (yaml != null) {
-			return RestUtils.getYamlCSARofSelectedResource(this);
+		    if (csar != null) {
+                return RestUtils.getYamlCSARofSelectedResource(this);
+            } else {
+		        return RestUtils.getYamlOfSelectedResource(this.getId());
+            }
 		} else if (csar == null) {
 			// we cannot use this.definitions as that definitions is Winery's internal representation of the data and not the full blown definitions (including imports to referenced elements)
 			return RestUtils.getDefinitionsOfSelectedResource(this, uriInfo.getBaseUri());
@@ -242,6 +247,12 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 			return RestUtils.getCSARofSelectedResource(this);
 		}
 	}
+
+	@GET
+	@Produces(MimeTypes.MIMETYPE_YAML)
+	public Response getElementAsYaml() {
+	    return RestUtils.getYamlOfSelectedResource(this.getId());
+    }
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
