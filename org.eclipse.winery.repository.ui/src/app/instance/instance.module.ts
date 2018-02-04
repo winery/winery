@@ -20,6 +20,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PropertyRenameComponent } from './instanceHeader/propertyRename/propertyRename.component';
 import { FormsModule } from '@angular/forms';
+import { BsDropdownModule } from 'ngx-bootstrap';
 
 @NgModule({
     imports: [
@@ -28,7 +29,8 @@ import { FormsModule } from '@angular/forms';
         WineryLoaderModule,
         WineryModalModule,
         WineryPipesModule,
-        FormsModule
+        FormsModule,
+        BsDropdownModule.forRoot()
     ],
     exports: [InstanceComponent],
     declarations: [

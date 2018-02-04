@@ -15,13 +15,31 @@
         <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'namespace'"></winery-property-rename>
     </div>
     <div class="managementButtons" *ngIf="showManagementButtons">
-        <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
-        <a class="btn btn-info" target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
-        <a class="btn btn-info" target="_blank" href="{{ toscaComponent.yamlPath }}">YAML</a>
-        <a class="btn btn-info" target="_blank" href="{{ toscaComponent.yamlCsarPath }}">CSAR (YAML)</a>
-        <a class="btn btn-info" target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR (XML)</a>
+        <div style="float:right;">
+            <div class="btn-group" dropdown>
+                <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
+                    Export <span class="caret"></span>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.xmlPath }}">XML</a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.yamlPath }}">YAML</a>
+                    </li>
+                    <li class="divider dropdown-divider"></li>
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.yamlCsarPath }}">CSAR (YAML)</a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="{{ toscaComponent.xmlCsarPath }}">CSAR (XML)</a>
+                    </li>
+                </ul>
+            </div>
+            <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
+        </div>
         <div *ngIf="typeUrl">
-            {{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a>
+            <span style="white-space: pre">{{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a></span>
         </div>
     </div>
     <div class="subMenu">
