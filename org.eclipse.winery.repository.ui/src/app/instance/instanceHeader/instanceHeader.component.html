@@ -16,6 +16,7 @@
     </div>
     <div class="managementButtons" *ngIf="showManagementButtons">
         <div style="float:right;">
+            <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
             <div class="btn-group" dropdown>
                 <button dropdownToggle type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split">
                     Export <span class="caret"></span>
@@ -36,7 +37,6 @@
                     </li>
                 </ul>
             </div>
-            <button class="btn btn-danger" (click)="confirmDeleteModal.show()">Delete</button>
         </div>
         <div *ngIf="typeUrl">
             <span style="white-space: pre">{{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a></span>
