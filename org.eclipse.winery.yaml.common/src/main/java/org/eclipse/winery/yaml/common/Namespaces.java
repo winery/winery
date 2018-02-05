@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,6 +15,10 @@ package org.eclipse.winery.yaml.common;
 
 import javax.xml.XMLConstants;
 
+/**
+ * Defines namespaces of YAML and related ones.
+ * For general namespaces used in Winery, see {@link org.eclipse.winery.model.tosca.constants.Namespaces}
+ */
 public class Namespaces {
     public static final String TOSCA_NS = "http://docs.oasis-open.org/tosca/ns/simple/yaml/1.1";
     public static final String DEFAULT_NS = "http://www.eclipse.org/winery/ns/simple/yaml/1.1/default";
