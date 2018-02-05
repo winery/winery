@@ -6,7 +6,9 @@
 	Copyright (c) OASIS Open 2013. All rights reserved.
      Source: http://docs.oasis-open.org/tosca/TOSCA/v1.0/csd08/schemas/
 -->
-<xs:schema targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12" elementFormDefault="qualified"
+           attributeFormDefault="unqualified" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
  <xs:element name="documentation" type="tDocumentation"/>
  <xs:complexType name="tDocumentation" mixed="true">
@@ -369,14 +371,16 @@
      <xs:element name="RequirementDefinitions" minOccurs="0">
       <xs:complexType>
        <xs:sequence>
-        <xs:element name="RequirementDefinition" type="tRequirementDefinition" maxOccurs="unbounded"/>
+        <xs:element name="RequirementDefinition" type="tRequirementDefinition"
+                    maxOccurs="unbounded"/>
        </xs:sequence>
       </xs:complexType>
      </xs:element>
      <xs:element name="CapabilityDefinitions" minOccurs="0">
       <xs:complexType>
        <xs:sequence>
-        <xs:element name="CapabilityDefinition" type="tCapabilityDefinition" maxOccurs="unbounded"/>
+        <xs:element name="CapabilityDefinition" type="tCapabilityDefinition"
+                    maxOccurs="unbounded"/>
        </xs:sequence>
       </xs:complexType>
      </xs:element>
