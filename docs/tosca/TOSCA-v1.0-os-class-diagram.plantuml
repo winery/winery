@@ -1,16 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2013-2014 Contributors to the Eclipse Foundation
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
- * which is available at https://www.apache.org/licenses/LICENSE-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
+Copyright (c) 2013-2014 Contributors to the Eclipse Foundation
+
+See the NOTICE file(s) distributed with this work for additional
+information regarding copyright ownership.
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+which is available at https://www.apache.org/licenses/LICENSE-2.0.
+
+SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 
 
 This model describes the XSD of TOSCA-v1.0.xsd as released by TOSCA v1.0 cos01.
@@ -39,7 +37,7 @@ skinparam noteBorderColor Black
 skinparam defaultFontName sans-serif
 
 
-Title <size:33>TOSCA v1.0 as UML class diagram. This is not an official OASIS document. No warranty. (c) University of Stuttgart. Dual-licensed under EPL and ASLv2. Version 2014-01-29.
+Title <size:33>TOSCA v1.0 as UML class diagram. This is not an official OASIS document. No warranty. (c) Contributors to the Eclipse Foundation. Dual-licensed under EPL and ASLv2. Version 2014-01-29.
 
 legend right
 == Note on the model
