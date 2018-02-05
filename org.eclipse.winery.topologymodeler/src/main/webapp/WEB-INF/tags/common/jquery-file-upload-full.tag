@@ -1,16 +1,16 @@
-<%--
-/*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *    Oliver Kopp - initial API and implementation and/or initial documentation
- *******************************************************************************/
---%>
+<%--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--%>
 <%@tag description="HTML + JavaScript enabling the full jQuery file upload as shown at http://blueimp.github.com/jQuery-File-Upload/" pageEncoding="UTF-8"%>
 
 <%-- Original Source https://raw.github.com/blueimp/jQuery-File-Upload/9.5.4/jquery-ui.html, License: MIT; See also CQ 8006 --%>
