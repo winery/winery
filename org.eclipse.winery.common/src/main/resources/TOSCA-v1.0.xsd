@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 	Topology and Orchestration Specification for Cloud Applications Version 1.0
-	Committee Specification Draft 08
-	09 May 2013
+	OASIS Standard
+	25 November 2013
 	Copyright (c) OASIS Open 2013. All rights reserved.
-     Source: http://docs.oasis-open.org/tosca/TOSCA/v1.0/csd08/schemas/
+	Source: http://docs.oasis-open.org/tosca/TOSCA/v1.0/os/schemas/
 -->
 <xs:schema targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12" elementFormDefault="qualified"
            attributeFormDefault="unqualified" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
