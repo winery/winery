@@ -1,10 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 University of Stuttgart
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
@@ -44,9 +49,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 
-/**
- * Java class for tEntityTemplate complex type.
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityTemplate", propOrder = {
     "properties",
@@ -105,59 +107,29 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         return Objects.hash(super.hashCode(), properties, propertyConstraints, type);
     }
 
-    /**
-     * Gets the value of the properties property.
-     *
-     * @return possible object is {@link TEntityTemplate.Properties }
-     */
     /*@Nullable*/
     public TEntityTemplate.Properties getProperties() {
         return properties;
     }
 
-    /**
-     * Sets the value of the properties property.
-     *
-     * @param value allowed object is {@link TEntityTemplate.Properties }
-     */
     public void setProperties(TEntityTemplate.Properties value) {
         this.properties = value;
     }
 
-    /**
-     * Gets the value of the propertyConstraints property.
-     *
-     * @return possible object is {@link TEntityTemplate.PropertyConstraints }
-     */
     /*@Nullable*/
     public TEntityTemplate.PropertyConstraints getPropertyConstraints() {
         return propertyConstraints;
     }
 
-    /**
-     * Sets the value of the propertyConstraints property.
-     *
-     * @param value allowed object is {@link TEntityTemplate.PropertyConstraints }
-     */
     public void setPropertyConstraints(TEntityTemplate.PropertyConstraints value) {
         this.propertyConstraints = value;
     }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link QName }
-     */
     @NonNull
     public QName getType() {
         return type;
     }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value allowed object is {@link QName }
-     */
     public void setType(QName value) {
         this.type = value;
     }
@@ -167,23 +139,6 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         return this.getType();
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     *
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     *
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;any processContents='lax' namespace='##other'/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "any"
@@ -366,24 +321,6 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         }
     }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     *
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     *
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="PropertyConstraint" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tPropertyConstraint"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "propertyConstraint"
