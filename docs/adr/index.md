@@ -21,6 +21,7 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0014](0014-use-eclipse-orion-as-editor.md) - Use Eclipse Orion as Editor
 - [ADR-0015](0015-copy-source-to-files.md) - Offer copying files from the source to the files folder
 - [ADR-0016](0016-reflection-test-for-tosca-yaml-builder.md) - Reflection test for TOSCA YAML builder
+- [ADR-0017](0017-modify-jax-b-generated-classes.md) - Modify JAX-B generated classes
 
 <!-- adrlogstop -->
 
