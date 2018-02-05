@@ -12,6 +12,7 @@
    This is necessary to identify a single implementation artifact in a list of implementation artifacts.
    See https://github.com/eclipse/winery/issues/71 for a discussion.
  - `processContents="lax"` was added to Properties at Boundary definitions.
+ - Make "Types" in "<Definitions>" valid as the only nested element in "<Definitions>"
 -->
 <xs:schema targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12" elementFormDefault="qualified"
            attributeFormDefault="unqualified" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
@@ -60,14 +61,14 @@
       </xs:complexType>
      </xs:element>
      <xs:element name="Import" type="tImport" minOccurs="0" maxOccurs="unbounded"/>
-     <xs:element name="Types" minOccurs="0">
-      <xs:complexType>
-       <xs:sequence>
-        <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-       </xs:sequence>
-      </xs:complexType>
-     </xs:element>
      <xs:choice maxOccurs="unbounded">
+      <xs:element name="Types">
+       <xs:complexType>
+        <xs:sequence>
+         <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+       </xs:complexType>
+      </xs:element>
       <xs:element name="ServiceTemplate" type="tServiceTemplate"/>
       <xs:element name="NodeType" type="tNodeType"/>
       <xs:element name="NodeTypeImplementation" type="tNodeTypeImplementation"/>
