@@ -1,0 +1,13 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: Invalid data type definition. Missing valid property definition.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.6.6.3
+  exception: 
+   
+data_types:
+  test.datatypes.dt1:
+    derived_from: tosca.datatypes.Root
+    properties:
