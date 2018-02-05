@@ -1,14 +1,28 @@
 <?xml version="1.0"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <definitions name="TrustedCloudApplication2_buildPlan"
 	targetNamespace="ba.example" xmlns:tns="ba.example"
 	xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
 	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop"
 	xmlns:ns0="http://siserver.org/wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-		TYPE DEFINITION - List of services participating in this BPEL process The 
-		default output of the BPEL designer uses strings as input and output to the 
-		BPEL Process. But you can define or import any XML Schema type and us them 
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		TYPE DEFINITION - List of services participating in this BPEL process The
+		default output of the BPEL designer uses strings as input and output to the
+		BPEL Process. But you can define or import any XML Schema type and us them
 		as part of the message types. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<plnk:partnerLinkType name="InvokePortTypePLT1">
 		<plnk:role name="Requester" portType="ns0:CallbackPortType" />
@@ -211,8 +225,8 @@
 		</schema>
 	</types>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-		MESSAGE TYPE DEFINITION - Definition of the message types used as part of 
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		MESSAGE TYPE DEFINITION - Definition of the message types used as part of
 		the port type defintions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<message name="TrustedCloudApplication2_buildPlanRequestMessage">
 		<part name="payload" element="tns:TrustedCloudApplication2_buildPlanRequest" />
@@ -223,8 +237,8 @@
 	</message>
 
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-		PORT TYPE DEFINITION - A port type groups a set of operations into a logical 
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		PORT TYPE DEFINITION - A port type groups a set of operations into a logical
 		service unit. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- portType implemented by the bamoodlebuildplan BPEL process -->
 	<portType name="TrustedCloudApplication2_buildPlan">
@@ -233,7 +247,7 @@
 		</operation>
 	</portType>
 
-	<!-- portType implemented by the requester of bamoodlebuildplan BPEL process 
+	<!-- portType implemented by the requester of bamoodlebuildplan BPEL process
 		for asynchronous callback purposes -->
 	<portType name="TrustedCloudApplication2_buildPlanCallback">
 		<operation name="onResult">
@@ -242,8 +256,8 @@
 	</portType>
 
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-		PARTNER LINK TYPE DEFINITION the bamoodlebuildplan partnerLinkType binds 
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		PARTNER LINK TYPE DEFINITION the bamoodlebuildplan partnerLinkType binds
 		the provider and requester portType into an asynchronous conversation. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<plnk:partnerLinkType name="TrustedCloudApplication2_buildPlan">
 		<plnk:role name="TrustedCloudApplication2_buildPlanProvider"
@@ -252,8 +266,8 @@
 			portType="tns:TrustedCloudApplication2_buildPlanCallback" />
 	</plnk:partnerLinkType>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-		BINDING DEFINITION - Defines the message format and protocol details for 
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		BINDING DEFINITION - Defines the message format and protocol details for
 		a web service. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<binding name="TrustedCloudApplication2_buildPlanBinding" type="tns:TrustedCloudApplication2_buildPlan">
 		<soap:binding style="document"
@@ -278,8 +292,8 @@
 		</operation>
 	</binding>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-		SERVICE DEFINITION - A service groups a set of ports into a service unit. 
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		SERVICE DEFINITION - A service groups a set of ports into a service unit.
 		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<service name="TrustedCloudApplication2_buildPlanService">
 		<port name="TrustedCloudApplication2_buildPlanPort" binding="tns:TrustedCloudApplication2_buildPlanBinding">

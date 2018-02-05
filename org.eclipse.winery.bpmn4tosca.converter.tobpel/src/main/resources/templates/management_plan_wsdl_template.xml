@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <definitions name="ManagementPlan"
 	targetNamespace="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
 	xmlns:tns="http://iaas.uni-stuttgart.de/bpmn4tosca/managementplan/"
@@ -31,7 +44,7 @@
 				<complexType>
 					<sequence>
 						<element name="correlationId" type="string" />
-						<!-- Relevant if build plan was executed that created a new service 
+						<!-- Relevant if build plan was executed that created a new service
 							instance -->
 						<element name="serviceInstanceId" type="string" />
 					</sequence>
@@ -70,7 +83,7 @@
 		<vprop:query><![CDATA[//*[local-name()="MessageID" and namespace-uri()="http://siserver.org/schema"]]]></vprop:query>
 	</vprop:propertyAlias>
 
-	<!-- Port type provides the operation to the client for starting the management 
+	<!-- Port type provides the operation to the client for starting the management
 		plan -->
 	<portType name="ManagementPlanPT">
 		<operation name="initiatePlan">

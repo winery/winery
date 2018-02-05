@@ -1,3 +1,17 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <!-- beispiel vars: -->
 <!-- Wir nehmen einfach jedes Stück XML (anyType), XPath muss halt passen -->
 <variable name="bpel4restlightVarResponse" type="xsd:anyType"/>
@@ -7,13 +21,13 @@
 <variable name="instanceDataAPIUrl" type="xsd:string"/>
 
 <!-- Get NodeInstance URL-->
-<bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">    
+<bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">
 	<bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse" uri="$bpelvar[instanceDataAPIUrl]/nodeInstances?nodeTemplateID={http://trustedcloud.de}OpenStack&amp;serviceInstanceID=$bpelvar[OpenTOSCAContainerAPIServiceInstanceURL]"/>
 </bpel:extensionActivity>
 
 <!-- Aus der List der NodeInstances die "richtige" auswählen -->
 <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="$assignName" validate="no">
-    <bpel:copy>     
+    <bpel:copy>
         <bpel:from variable="bpel4restlightVarResponse">
                                     <bpel:query xmlns:pp="http://opentosca.org/api/pp" xmlns:xlink="http://www.w3.org/1999/xlink" queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"><![CDATA[string(//pp:NodeInstanceList/pp:nodeinstances/pp:link/@xlink:href)]]></bpel:query>
                                 </bpel:from>
@@ -22,6 +36,6 @@
 </bpel:assign>
 
 <!-- Properties der NodeInstanz besorgen -->
-<bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">    
+<bpel:extensionActivity xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:bpel4RestLight="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight">
 	<bpel4RestLight:GET accept="application/xml" response="bpel4restlightVarResponse" uri="$bpelvar[nodeInstanceURLbpel4restlightVarResponse17]/properties"/>
 </bpel:extensionActivity>

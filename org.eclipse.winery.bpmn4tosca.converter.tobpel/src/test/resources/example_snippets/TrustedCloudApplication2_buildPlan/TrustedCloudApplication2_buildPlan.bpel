@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <process xmlns:ns0="http://siserver.org/wsdl" xmlns:tns="ba.example" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="TrustedCloudApplication2_buildPlan" targetNamespace="ba.example" xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
     <extensions>
         <extension mustUnderstand="yes" namespace="http://iaas.uni-stuttgart.de/bpel/extensions/bpel4restlight"/>
@@ -340,7 +354,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from variable="prop_Ubuntu-13_10-Server-VM_instanceType"/>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest3">
@@ -474,7 +488,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest9"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -795,7 +809,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest29"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -904,7 +918,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest35"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -1027,7 +1041,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest48"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -1136,7 +1150,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest54"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -1261,7 +1275,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest62"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -1378,7 +1392,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest70"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -1534,7 +1548,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest83"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -1643,7 +1657,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest89"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -1766,7 +1780,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest102"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -1875,7 +1889,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest108"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>
@@ -2000,7 +2014,7 @@
 		</bpel:from>
 		<bpel:to part="invokeOperationAsync" variable="InvokePortTypeinvokeOperationAsyncMessageRequest116"/>
 	</bpel:copy>
-	
+
 <bpel:copy>
 		<bpel:from part="payload" variable="input">
 			<bpel:query queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0"><![CDATA[tns:sshKey]]></bpel:query>

@@ -1,3 +1,17 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <bpel:assign xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" name="AssignCreateEC2SIRequest" validate="no">
 	<bpel:copy>
 		<bpel:from>
@@ -96,7 +110,7 @@
 		</bpel:to>
 	</bpel:copy>
 </bpel:assign>
-<!-- correlationSet auch wichtig: 
+<!-- correlationSet auch wichtig:
 CorrelationSet bezieht sich auf die MessageID innerhalb der Invoker Requests und Responses. Siehe bei oberstem literal assign.
 <vprop:property name="InvokePortTypeProperty" type="xsd:string"/>
 
@@ -106,7 +120,7 @@ Der Alias:
 
 Dann im passenden Scope:
 <correlationSets>
-	<correlationSet name="InvokePortTypeCorrelationSet" properties="tns:InvokePortTypeProperty"/>                    
+	<correlationSet name="InvokePortTypeCorrelationSet" properties="tns:InvokePortTypeProperty"/>
 </correlationSets>
 -->
 <bpel:invoke xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable" inputVariable="InvokePortTypeinvokeOperationAsyncMessageRequest87" name="invoke_InvokePortTypeinvokeOperationAsyncMessageRequest87" operation="invokeOperationAsync" partnerLink="InvokePortTypePL86" portType="ns0:InvokePortType">
