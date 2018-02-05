@@ -11,18 +11,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { PlansApiData } from './plansApiData';
-import { PlansService } from './plans.service';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
-import { SelectData } from '../../../wineryInterfaces/selectData';
-import { WineryUploaderComponent } from '../../../wineryUploader/wineryUploader.component';
-import { SelectItem } from 'ng2-select';
-import { InputParameters, OutputParameters } from '../../../wineryInterfaces/parameters';
-import { backendBaseURL, workflowModelerURL } from '../../../configuration';
-import { InstanceService } from '../../instance.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {WineryRowData, WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
+import {PlansApiData} from './plansApiData';
+import {PlansService} from './plans.service';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {isNullOrUndefined} from 'util';
+import {SelectData} from '../../../wineryInterfaces/selectData';
+import {WineryUploaderComponent} from '../../../wineryUploader/wineryUploader.component';
+import {SelectItem} from 'ng2-select';
+import {InputParameters, OutputParameters} from '../../../wineryInterfaces/parameters';
+import {backendBaseURL, workflowModelerURL} from '../../../configuration';
+import {InstanceService} from '../../instance.service';
 
 const bpmn4tosca = 'http://www.opentosca.org/bpmn4tosca';
 
@@ -38,17 +38,17 @@ export class PlansComponent implements OnInit {
     loading = true;
 
     embeddedPlansColumns: Array<WineryTableColumn> = [
-        { title: 'Precondition', name: 'precondition', sort: true },
-        { title: 'Name', name: 'name', sort: true },
-        { title: 'Type', name: 'planType', sort: true },
-        { title: 'Language', name: 'planLanguage', sort: true }
+        {title: 'Precondition', name: 'precondition', sort: true},
+        {title: 'Name', name: 'name', sort: true},
+        {title: 'Type', name: 'planType', sort: true},
+        {title: 'Language', name: 'planLanguage', sort: true}
     ];
     linkedPlansColumns: Array<WineryTableColumn> = [
-        { title: 'Precondition', name: 'precondition', sort: true },
-        { title: 'Name', name: 'name', sort: true },
-        { title: 'Type', name: 'planType', sort: true },
-        { title: 'Language', name: 'planLanguage', sort: true },
-        { title: 'Reference', name: 'planModelReference.reference', sort: true }
+        {title: 'Precondition', name: 'precondition', sort: true},
+        {title: 'Name', name: 'name', sort: true},
+        {title: 'Type', name: 'planType', sort: true},
+        {title: 'Language', name: 'planLanguage', sort: true},
+        {title: 'Reference', name: 'planModelReference.reference', sort: true}
     ];
 
     plansApiData: PlansApiData[] = null;

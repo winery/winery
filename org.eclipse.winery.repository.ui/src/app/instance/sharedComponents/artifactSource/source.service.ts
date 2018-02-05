@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
-import { InstanceService } from '../../instance.service';
-import { Observable } from 'rxjs/Observable';
-import { backendBaseURL, hostURL } from '../../../configuration';
-import { SourceApiData } from './sourceApiData';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
-import { Router } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, URLSearchParams} from '@angular/http';
+import {InstanceService} from '../../instance.service';
+import {Observable} from 'rxjs/Observable';
+import {backendBaseURL, hostURL} from '../../../configuration';
+import {SourceApiData} from './sourceApiData';
+import {ToscaTypes} from '../../../wineryInterfaces/enums';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class SourceService {
@@ -45,18 +45,18 @@ export class SourceService {
     }
 
     getFiles(): Observable<{ files: FilesApiData[], paths: string[] }> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(this.path, options)
             .map(res => res.json());
     }
 
     getFile(file: FilesApiData): Observable<string> {
-        const headers = new Headers({ 'Accept': 'text/plain' });
+        const headers = new Headers({'Accept': 'text/plain'});
         const params = new URLSearchParams();
         params.set('path', file.subDirectory);
-        const options = new RequestOptions({ headers: headers, params: params });
+        const options = new RequestOptions({headers: headers, params: params});
         return this.http.get(this.path + file.name, options)
             .map(res => res.text());
     }
@@ -64,28 +64,28 @@ export class SourceService {
     deleteFile(fileToRemove: FilesApiData) {
         const params = new URLSearchParams();
         params.set('path', fileToRemove.subDirectory);
-        const options = new RequestOptions({ params: params });
+        const options = new RequestOptions({params: params});
         return this.http.delete(hostURL + fileToRemove.deleteUrl, options);
     }
 
     copySourcesToFiles() {
-        const headers = new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json', 'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         const data = {};
         return this.http.post(this.parentPath, data, options)
             .map(res => res.ok);
     }
 
     postToSources(data: SourceApiData) {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.post(this.path + data.getFileName(), data, options)
             .map(res => res.json());
     }
 
     postToFiles(data: SourceApiData) {
-        const headers = new Headers({ 'Accept': 'application/json', 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json', 'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(this.pathToFiles + data.getFileName(), data, options)
             .map(res => res.json());

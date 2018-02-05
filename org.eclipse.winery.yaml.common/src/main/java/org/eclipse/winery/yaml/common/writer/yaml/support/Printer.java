@@ -13,17 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer.yaml.support;
 
+import org.eclipse.winery.model.tosca.yaml.TStatusValue;
+import org.eclipse.winery.model.tosca.yaml.TVersion;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
+
+import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
-
-import org.eclipse.winery.model.tosca.yaml.TStatusValue;
-import org.eclipse.winery.model.tosca.yaml.TVersion;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
 
 public class Printer extends AbstractResult<Printer> {
 

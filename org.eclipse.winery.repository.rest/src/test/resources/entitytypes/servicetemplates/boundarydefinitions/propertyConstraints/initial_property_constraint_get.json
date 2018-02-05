@@ -1,7 +1,7 @@
 [
-  {
-	"property": "/*[local-name()='harvest']",
-	"fragments": null,
-	"constraintType": "baobab"
-  }
+    {
+        "property": "/*[local-name()='harvest']",
+        "fragments": null,
+        "constraintType": "baobab"
+    }
 ]

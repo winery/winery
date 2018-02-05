@@ -15,7 +15,6 @@ package org.eclipse.winery.yaml.common.validator.support;
 
 import org.eclipse.winery.yaml.common.exception.InvalidYamlSyntax;
 import org.eclipse.winery.yaml.common.exception.YAMLParserException;
-
 import org.yaml.snakeyaml.constructor.ConstructorException;
 import org.yaml.snakeyaml.error.MarkedYAMLException;
 import org.yaml.snakeyaml.scanner.ScannerException;

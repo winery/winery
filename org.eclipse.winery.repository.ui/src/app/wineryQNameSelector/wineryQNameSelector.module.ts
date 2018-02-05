@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
-import { WineryQNameSelectorComponent } from './wineryQNameSelector.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import {WineryQNameSelectorComponent} from './wineryQNameSelector.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+import {WineryLoaderModule} from '../wineryLoader/wineryLoader.module';
+import {CommonModule} from '@angular/common';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
     imports: [

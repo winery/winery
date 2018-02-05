@@ -11,21 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
-import { DocumentationComponent } from './documentation.component';
-import { CommonModule } from '@angular/common';
-import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
-import { FormsModule } from '@angular/forms';
+import {DocumentationComponent} from './documentation.component';
+import {CommonModule} from '@angular/common';
+import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
- imports: [
-     CommonModule,
-     FormsModule,
-     WineryLoaderModule,
- ],
- exports: [DocumentationComponent],
- declarations: [DocumentationComponent],
- providers: [],
+    imports: [
+        CommonModule,
+        FormsModule,
+        WineryLoaderModule,
+    ],
+    exports: [DocumentationComponent],
+    declarations: [DocumentationComponent],
+    providers: [],
 })
-export class DocumentationModule { }
+export class DocumentationModule {
+}

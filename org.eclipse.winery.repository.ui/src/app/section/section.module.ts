@@ -11,26 +11,26 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
-import { NgxPaginationModule } from 'ngx-pagination';
-import { SelectModule } from 'ng2-select';
-import { EntityContainerComponent } from './entityContainer/entityContainer.component';
-import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
-import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
-import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplicateValidator.module';
-import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
-import { SectionComponent } from './section.component';
-import { SectionPipe } from './section.pipe';
-import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
-import { TooltipModule } from 'ngx-bootstrap';
-import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
-import { XaasPackagerComponent } from './xaasPackager/xaasPackager.component';
-import { TagInputModule } from 'ngx-chips';
-import { WineryAddModule } from '../wineryAddComponentModule/addComponent.moudle';
+import {CommonModule} from '@angular/common';
+import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {BrowserModule} from '@angular/platform-browser';
+import {RouterModule} from '@angular/router';
+import {NgxPaginationModule} from 'ngx-pagination';
+import {SelectModule} from 'ng2-select';
+import {EntityContainerComponent} from './entityContainer/entityContainer.component';
+import {WineryLoaderModule} from '../wineryLoader/wineryLoader.module';
+import {WineryNamespaceSelectorModule} from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
+import {WineryDuplicateValidatorModule} from '../wineryValidators/wineryDuplicateValidator.module';
+import {WineryModalModule} from '../wineryModalModule/winery.modal.module';
+import {SectionComponent} from './section.component';
+import {SectionPipe} from './section.pipe';
+import {WineryUploaderModule} from '../wineryUploader/wineryUploader.module';
+import {TooltipModule} from 'ngx-bootstrap';
+import {WineryPipesModule} from '../wineryPipes/wineryPipes.module';
+import {XaasPackagerComponent} from './xaasPackager/xaasPackager.component';
+import {TagInputModule} from 'ngx-chips';
+import {WineryAddModule} from '../wineryAddComponentModule/addComponent.moudle';
 
 @NgModule({
     imports: [

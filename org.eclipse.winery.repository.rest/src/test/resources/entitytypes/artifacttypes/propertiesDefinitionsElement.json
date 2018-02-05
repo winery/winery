@@ -1,8 +1,8 @@
 {
-	"propertiesDefinition": {
-		"element": "{http://opentosca.org/nodetypes}CloudProviderProperties",
-		"type": null
-	},
-	"winerysPropertiesDefinition": null,
-	"selectedValue": "Element"
+    "propertiesDefinition": {
+        "element": "{http://opentosca.org/nodetypes}CloudProviderProperties",
+        "type": null
+    },
+    "winerysPropertiesDefinition": null,
+    "selectedValue": "Element"
 }

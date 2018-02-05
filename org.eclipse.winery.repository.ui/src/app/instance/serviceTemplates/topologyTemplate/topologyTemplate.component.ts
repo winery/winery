@@ -11,10 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit } from '@angular/core';
-import { InstanceService } from '../../instance.service';
-import { backendBaseURL } from '../../../configuration';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import {Component, OnInit} from '@angular/core';
+import {InstanceService} from '../../instance.service';
+import {backendBaseURL} from '../../../configuration';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 @Component({
     templateUrl: 'topologyTemplate.component.html'

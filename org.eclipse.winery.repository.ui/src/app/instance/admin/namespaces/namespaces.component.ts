@@ -11,15 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
-import { NamespacesService } from './namespaces.service';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import { isNullOrUndefined } from 'util';
-import { NamespaceWithPrefix } from '../../../wineryInterfaces/namespaceWithPrefix';
-import { Response } from '@angular/http';
-import { ModalDirective } from 'ngx-bootstrap';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {WineryNamespaceSelectorService} from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
+import {NamespacesService} from './namespaces.service';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import {isNullOrUndefined} from 'util';
+import {NamespaceWithPrefix} from '../../../wineryInterfaces/namespaceWithPrefix';
+import {Response} from '@angular/http';
+import {ModalDirective} from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-namespaces',
@@ -30,13 +30,13 @@ export class NamespacesComponent implements OnInit {
 
     loading = true;
     adminNamespaces: Array<NamespaceWithPrefix> = [];
-    newNamespace: NamespaceWithPrefix = { prefix: '', namespace: '' };
+    newNamespace: NamespaceWithPrefix = {prefix: '', namespace: ''};
     validatorObjectPrefix: WineryValidatorObject;
     validatorObjectNamespace: WineryValidatorObject;
 
     columns = [
-        { title: 'Prefix', name: 'prefix' },
-        { title: 'Namespace', name: 'namespace' }
+        {title: 'Prefix', name: 'prefix'},
+        {title: 'Namespace', name: 'namespace'}
     ];
     elementToRemove: any;
 

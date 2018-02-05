@@ -12,9 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Pipe, PipeTransform } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { SectionData } from './sectionData';
+import {Pipe, PipeTransform} from '@angular/core';
+import {isNullOrUndefined} from 'util';
+import {SectionData} from './sectionData';
 
 export interface SectionPipeInput {
     /**
@@ -62,7 +62,7 @@ export class SectionPipe implements PipeTransform {
             // Get all namespaces and count their appearance
             for (const item of value) {
                 if (isNullOrUndefined(distinctNamespaces[item.namespace])) {
-                    const o: SectionData = { namespace: item.namespace, count: 1 };
+                    const o: SectionData = {namespace: item.namespace, count: 1};
                     distinctNamespaces[item.namespace] = o;
                     distinctNamespaces.push(o);
                 } else {

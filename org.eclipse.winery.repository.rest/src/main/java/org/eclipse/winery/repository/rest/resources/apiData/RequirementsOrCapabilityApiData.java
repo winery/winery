@@ -15,10 +15,10 @@
 package org.eclipse.winery.repository.rest.resources.apiData;
 
 public class RequirementsOrCapabilityApiData {
-	public String name;
-	public String ref;
-	public String id;
+    public String name;
+    public String ref;
+    public String id;
 
-	public RequirementsOrCapabilityApiData() {
-	}
+    public RequirementsOrCapabilityApiData() {
+    }
 }

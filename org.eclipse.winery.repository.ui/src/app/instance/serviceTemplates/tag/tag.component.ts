@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { TagService } from './tag.service';
-import { TagsAPIData } from './tagsAPIData';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
-import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import { ModalDirective } from 'ngx-bootstrap';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {TagService} from './tag.service';
+import {TagsAPIData} from './tagsAPIData';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {isNullOrUndefined} from 'util';
+import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import {ModalDirective} from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-tag',
@@ -55,7 +55,7 @@ export class TagComponent implements OnInit {
         if (isNullOrUndefined(this.selectedCell)) {
             this.noteService.error('no cell selected!');
         } else {
-          this.confirmDeleteModal.show();
+            this.confirmDeleteModal.show();
         }
     }
 

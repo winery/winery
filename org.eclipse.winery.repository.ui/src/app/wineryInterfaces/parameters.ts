@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { YesNoEnum } from './enums';
+import {YesNoEnum} from './enums';
 
 export class InputParameters {
     inputParameter: InterfaceParameter[] = [];

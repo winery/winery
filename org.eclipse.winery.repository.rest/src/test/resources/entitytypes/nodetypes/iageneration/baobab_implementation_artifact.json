@@ -1,10 +1,10 @@
 {
-	"artifactType": "{http://opentosca.org/artifacttypes}WAR",
-	"javaPackage": "org.opentosca.winery.test.nodetypes.fruits",
-	"autoCreateArtifactTemplate": "yes",
-	"interfaceName": "bananaInterface",
-	"autoGenerateIA": "yes",
-	"artifactName": "baobab_bananaInterface_IA",
-	"artifactTemplateName": "baobab_bananaInterface_IA",
-	"artifactTemplateNamespace": "http://winery.opentosca.org/test/nodetypes/fruits"
+    "artifactType": "{http://opentosca.org/artifacttypes}WAR",
+    "javaPackage": "org.opentosca.winery.test.nodetypes.fruits",
+    "autoCreateArtifactTemplate": "yes",
+    "interfaceName": "bananaInterface",
+    "autoGenerateIA": "yes",
+    "artifactName": "baobab_bananaInterface_IA",
+    "artifactTemplateName": "baobab_bananaInterface_IA",
+    "artifactTemplateNamespace": "http://winery.opentosca.org/test/nodetypes/fruits"
 }

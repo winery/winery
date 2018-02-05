@@ -13,25 +13,24 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.tags;
 
-import java.util.List;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import java.util.List;
+
 public class TagsResource extends EntityWithoutIdCollectionResource<TagResource, TTag> {
 
-	public TagsResource(IPersistable res, List<TTag> list) {
-		super(TagResource.class, TTag.class, list, res);
-	}
+    public TagsResource(IPersistable res, List<TTag> list) {
+        super(TagResource.class, TTag.class, list, res);
+    }
 
-	@Override
-	@Path("{id}/")
-	public TagResource getEntityResource(@PathParam("id") String id) {
-		return this.getEntityResourceFromEncodedId(id);
-	}
+    @Override
+    @Path("{id}/")
+    public TagResource getEntityResource(@PathParam("id") String id) {
+        return this.getEntityResourceFromEncodedId(id);
+    }
 
 }

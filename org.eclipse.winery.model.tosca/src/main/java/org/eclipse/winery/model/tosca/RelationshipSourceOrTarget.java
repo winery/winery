@@ -13,14 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
-import javax.xml.namespace.QName;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import io.github.adr.embedded.ADR;
+
+import javax.xml.namespace.QName;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 // see https://stackoverflow.com/q/44789227/873282 for an explanation for this solution
@@ -28,7 +24,7 @@ import io.github.adr.embedded.ADR;
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.EXISTING_PROPERTY,
     property = "fakeJacksonType")
-@JsonSubTypes({
+@JsonSubTypes( {
     @JsonSubTypes.Type(value = TRequirement.class, name = "requirement"),
     @JsonSubTypes.Type(value = TCapability.class, name = "capability"),
     @JsonSubTypes.Type(value = TNodeTemplate.class, name = "nodetemplate")

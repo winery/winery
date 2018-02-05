@@ -14,15 +14,15 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import java.util.List;
-
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 
-public class InterfacesSelectApiData extends Select2DataItem {
-	public List<String> operations;
+import java.util.List;
 
-	public InterfacesSelectApiData(String text, List<String> operations) {
-		super(text, text);
-		this.operations = operations;
-	}
+public class InterfacesSelectApiData extends Select2DataItem {
+    public List<String> operations;
+
+    public InterfacesSelectApiData(String text, List<String> operations) {
+        super(text, text);
+        this.operations = operations;
+    }
 }

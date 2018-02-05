@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { browser, by, element } from 'protractor';
+import {browser, by, element} from 'protractor';
 
 export class ModelerPage {
-  navigateTo() {
-    return browser.get('/');
-  }
+    navigateTo() {
+        return browser.get('/');
+    }
 
-  getParagraphText() {
-    return element(by.css('app-root h1')).getText();
-  }
+    getParagraphText() {
+        return element(by.css('app-root h1')).getText();
+    }
 }

@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { GitLogApiData } from './GitLogApiData';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
-import { Router } from '@angular/router';
-import { webSocketURL } from '../configuration';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {GitLogApiData} from './GitLogApiData';
+import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
+import {ModalDirective} from 'ngx-bootstrap';
+import {Router} from '@angular/router';
+import {webSocketURL} from '../configuration';
 
 @Component({
     selector: 'winery-gitlog',

@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
+
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
-
-import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 
 /**
  * Interface ensuring that no methods are forgotten when implementing an
@@ -26,10 +26,10 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentIn
  */
 public interface IEntityTemplateResource<E extends TEntityTemplate> {
 
-	@Path("properties/")
-	PropertiesResource getPropertiesResource();
+    @Path("properties/")
+    PropertiesResource getPropertiesResource();
 
-	@DELETE
-	Response onDelete();
+    @DELETE
+    Response onDelete();
 
 }

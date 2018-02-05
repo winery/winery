@@ -11,10 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { Component } from '@angular/core';
-import { ConsistencyCheckConfiguration, ConsistencyCheckService, ConsistencyUpdate } from './consistencyCheck.service';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
+import {Component} from '@angular/core';
+import {ConsistencyCheckConfiguration, ConsistencyCheckService, ConsistencyUpdate} from './consistencyCheck.service';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {isNullOrUndefined} from 'util';
 
 @Component({
     selector: 'winery-consistency-check',

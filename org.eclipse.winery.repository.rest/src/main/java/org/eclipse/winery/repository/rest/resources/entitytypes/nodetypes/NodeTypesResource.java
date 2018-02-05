@@ -13,23 +13,21 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes;
 
-import java.util.List;
-import java.util.SortedSet;
-import java.util.stream.Collectors;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
+import io.swagger.annotations.Api;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsResource;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 import org.eclipse.winery.repository.rest.resources.apiData.NodeTypesVisualsApiData;
 
-import io.swagger.annotations.Api;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 /**
  * Manages all nodetypes in all available namespaces.
@@ -37,21 +35,21 @@ import io.swagger.annotations.Api;
  */
 @Api(tags = "Node Types")
 public class NodeTypesResource extends AbstractComponentsWithoutTypeReferenceResource<NodeTypeResource> {
-	@Path("{namespace}/{id}/")
-	public NodeTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return this.getComponentInstaceResource(namespace, id, true);
-	}
+    @Path("{namespace}/{id}/")
+    public NodeTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstaceResource(namespace, id, true);
+    }
 
-	@GET
-	@Path("allvisualappearancedata")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<NodeTypesVisualsApiData> getVisualAppearanceList() {
-		SortedSet<NodeTypeId> allNodeTypeIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(NodeTypeId.class);
-		return allNodeTypeIds.stream()
-			.map(id -> {
-				NodeTypeResource res = (NodeTypeResource) AbstractComponentsResource.getComponentInstaceResource(id);
-				return res.getVisualAppearanceResource().getJsonData();
-			})
-			.collect(Collectors.toList());
-	}
+    @GET
+    @Path("allvisualappearancedata")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<NodeTypesVisualsApiData> getVisualAppearanceList() {
+        SortedSet<NodeTypeId> allNodeTypeIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(NodeTypeId.class);
+        return allNodeTypeIds.stream()
+            .map(id -> {
+                NodeTypeResource res = (NodeTypeResource) AbstractComponentsResource.getComponentInstaceResource(id);
+                return res.getVisualAppearanceResource().getJsonData();
+            })
+            .collect(Collectors.toList());
+    }
 }

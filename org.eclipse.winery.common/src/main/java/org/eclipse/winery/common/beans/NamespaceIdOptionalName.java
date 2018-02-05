@@ -24,45 +24,45 @@ package org.eclipse.winery.common.beans;
  */
 public class NamespaceIdOptionalName {
 
-	private String namespace;
-	private String id;
-	private String name = null;
-	private String qName = null;
+    private String namespace;
+    private String id;
+    private String name = null;
+    private String qName = null;
 
 
-	public NamespaceIdOptionalName() {
+    public NamespaceIdOptionalName() {
 
-	}
+    }
 
-	public String getNamespace() {
-		return this.namespace;
-	}
+    public String getNamespace() {
+        return this.namespace;
+    }
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getqName() {
-		return qName;
-	}
+    public String getqName() {
+        return qName;
+    }
 
-	public void setqName(String qName) {
-		this.qName = qName;
-	}
+    public void setqName(String qName) {
+        this.qName = qName;
+    }
 }

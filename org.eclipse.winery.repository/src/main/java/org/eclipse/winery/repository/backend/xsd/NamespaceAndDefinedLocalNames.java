@@ -13,33 +13,32 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.xsd;
 
-import java.util.List;
-
-import org.eclipse.winery.common.ids.Namespace;
-
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.winery.common.ids.Namespace;
+
+import java.util.List;
 
 public class NamespaceAndDefinedLocalNames {
 
-	private final Namespace namespace;
+    private final Namespace namespace;
 
-	private final MutableList<String> definedLocalNames;
+    private final MutableList<String> definedLocalNames;
 
-	public NamespaceAndDefinedLocalNames(Namespace namespace) {
-		this.namespace = namespace;
-		this.definedLocalNames = Lists.mutable.empty();
-	}
+    public NamespaceAndDefinedLocalNames(Namespace namespace) {
+        this.namespace = namespace;
+        this.definedLocalNames = Lists.mutable.empty();
+    }
 
-	public Namespace getNamespace() {
-		return namespace;
-	}
+    public Namespace getNamespace() {
+        return namespace;
+    }
 
-	public List<String> getDefinedLocalNames() {
-		return this.definedLocalNames.asUnmodifiable();
-	}
+    public List<String> getDefinedLocalNames() {
+        return this.definedLocalNames.asUnmodifiable();
+    }
 
-	public void addLocalName(String localName) {
-		this.definedLocalNames.add(localName);
-	}
+    public void addLocalName(String localName) {
+        this.definedLocalNames.add(localName);
+    }
 }

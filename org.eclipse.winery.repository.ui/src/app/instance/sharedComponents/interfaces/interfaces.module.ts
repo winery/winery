@@ -11,21 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
-import { WineryNamespaceSelectorModule } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.module';
-import { WineryDuplicateValidatorModule } from '../../../wineryValidators/wineryDuplicateValidator.module';
-import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
-import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
-import { InterfacesComponent } from './interfaces.component';
-import { SelectableListModule } from './selectableList/selectableList.module';
-import { ExistService } from '../../../wineryUtils/existService';
-import { WineryIoParameterModule } from '../../../wineryIoParameter/wineryIoParameters.module';
-import { WineryTargetInterfaceModule } from './targetInterface/wineryTargetInterface.module';
-import { WineryComponentExistsModule } from '../../../wineryComponentExists/wineryComponentExists.module';
+import {CommonModule} from '@angular/common';
+import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {BrowserModule} from '@angular/platform-browser';
+import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
+import {WineryNamespaceSelectorModule} from '../../../wineryNamespaceSelector/wineryNamespaceSelector.module';
+import {WineryDuplicateValidatorModule} from '../../../wineryValidators/wineryDuplicateValidator.module';
+import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
+import {WineryTableModule} from '../../../wineryTableModule/wineryTable.module';
+import {InterfacesComponent} from './interfaces.component';
+import {SelectableListModule} from './selectableList/selectableList.module';
+import {ExistService} from '../../../wineryUtils/existService';
+import {WineryIoParameterModule} from '../../../wineryIoParameter/wineryIoParameters.module';
+import {WineryTargetInterfaceModule} from './targetInterface/wineryTargetInterface.module';
+import {WineryComponentExistsModule} from '../../../wineryComponentExists/wineryComponentExists.module';
 
 @NgModule({
     imports: [

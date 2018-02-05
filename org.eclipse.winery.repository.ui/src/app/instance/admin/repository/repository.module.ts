@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { RepositoryComponent } from './repository.component';
-import { WineryUploaderModule } from '../../../wineryUploader/wineryUploader.module';
-import { RepositoryService } from './repository.service';
-import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
+import {NgModule} from '@angular/core';
+import {RepositoryComponent} from './repository.component';
+import {WineryUploaderModule} from '../../../wineryUploader/wineryUploader.module';
+import {RepositoryService} from './repository.service';
+import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
 
 @NgModule({
     imports: [

@@ -14,23 +14,18 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-
 import org.eclipse.jdt.annotation.NonNull;
+
+import javax.xml.bind.annotation.*;
+import javax.xml.namespace.QName;
+import java.util.Objects;
 
 
 /**
  * <p>Java class for tRelationshipTypeImplementation complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tRelationshipTypeImplementation">
  *   &lt;complexContent>
@@ -121,9 +116,9 @@ public class TRelationshipTypeImplementation extends TEntityTypeImplementation {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>

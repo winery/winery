@@ -13,42 +13,42 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.datatypes;
 
+import org.eclipse.winery.common.ids.Namespace;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.eclipse.winery.common.ids.Namespace;
-
 public class NamespaceAndDefinedLocalNamesForAngular {
-	
-	private final String id;
-	private final String text;
-	private final List<LocalNameForAngular> localNamesForAngular;
 
-	public NamespaceAndDefinedLocalNamesForAngular(final Namespace namespace, final List<String> localNamesForAngular) {
-		Objects.requireNonNull(namespace);
-		Objects.requireNonNull(localNamesForAngular);
-		this.id = namespace.getEncoded();
-		this.text = namespace.getDecoded();
-		this.localNamesForAngular = localNamesForAngular.stream().map(localName -> {
-			final String id = "{" + namespace.getDecoded() + "}" + localName;
-			final String value = localName;
-			return new LocalNameForAngular(id, value);
-		}).collect(Collectors.toList());
-	}
+    private final String id;
+    private final String text;
+    private final List<LocalNameForAngular> localNamesForAngular;
 
-	public String getId() {
-		return id;
-	}
+    public NamespaceAndDefinedLocalNamesForAngular(final Namespace namespace, final List<String> localNamesForAngular) {
+        Objects.requireNonNull(namespace);
+        Objects.requireNonNull(localNamesForAngular);
+        this.id = namespace.getEncoded();
+        this.text = namespace.getDecoded();
+        this.localNamesForAngular = localNamesForAngular.stream().map(localName -> {
+            final String id = "{" + namespace.getDecoded() + "}" + localName;
+            final String value = localName;
+            return new LocalNameForAngular(id, value);
+        }).collect(Collectors.toList());
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * "children" property is used at the UI
-	 */
-	public List<LocalNameForAngular> getChildren() {
-		return localNamesForAngular;
-	}
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * "children" property is used at the UI
+     */
+    public List<LocalNameForAngular> getChildren() {
+        return localNamesForAngular;
+    }
 }

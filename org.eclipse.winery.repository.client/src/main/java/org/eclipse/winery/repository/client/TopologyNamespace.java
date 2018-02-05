@@ -15,6 +15,6 @@
 package org.eclipse.winery.repository.client;
 
 class TopologyNamespace {
-	public String prefix = "";
-	public String namespace = "";
+    public String prefix = "";
+    public String namespace = "";
 }

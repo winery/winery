@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../configuration';
-import { NamespaceWithPrefix } from '../wineryInterfaces/namespaceWithPrefix';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../configuration';
+import {NamespaceWithPrefix} from '../wineryInterfaces/namespaceWithPrefix';
 
 @Injectable()
 export class WineryNamespaceSelectorService {

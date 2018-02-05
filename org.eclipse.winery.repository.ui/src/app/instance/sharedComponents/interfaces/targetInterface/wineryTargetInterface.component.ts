@@ -11,17 +11,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { InterfaceOperationApiData, InterfacesApiData } from '../interfacesApiData';
-import { NodeOperation, PlanOperation, RelationshipOperation } from './operations';
-import { InstanceService } from '../../../instance.service';
-import { isNullOrUndefined } from 'util';
-import { WineryTemplate } from '../../../../wineryInterfaces/wineryComponent';
-import { InterfacesService } from '../interfaces.service';
-import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { SelectItem } from 'ng2-select';
-import { PlansService } from '../../../serviceTemplates/plans/plans.service';
-import { PlansApiData } from '../../../serviceTemplates/plans/plansApiData';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {InterfaceOperationApiData, InterfacesApiData} from '../interfacesApiData';
+import {NodeOperation, PlanOperation, RelationshipOperation} from './operations';
+import {InstanceService} from '../../../instance.service';
+import {isNullOrUndefined} from 'util';
+import {WineryTemplate} from '../../../../wineryInterfaces/wineryComponent';
+import {InterfacesService} from '../interfaces.service';
+import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
+import {SelectItem} from 'ng2-select';
+import {PlansService} from '../../../serviceTemplates/plans/plans.service';
+import {PlansApiData} from '../../../serviceTemplates/plans/plansApiData';
 
 /**
  * Component for setting Boundary Definitions Interfaces. Is used in {@link InterfacesComponent}.

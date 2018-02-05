@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { Response } from '@angular/http';
-import { EditXMLService } from './editXML.service';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Response} from '@angular/http';
+import {EditXMLService} from './editXML.service';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {WineryEditorComponent} from '../../../wineryEditorModule/wineryEditor.component';
 
 declare var requirejs: any;
 

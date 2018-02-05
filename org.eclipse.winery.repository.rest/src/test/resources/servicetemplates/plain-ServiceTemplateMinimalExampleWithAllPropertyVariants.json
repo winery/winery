@@ -1,226 +1,226 @@
 {
-	"documentation": [
-	],
-	"any": [
-	],
-	"otherAttributes": {
-	},
-	"id": "winery-defs-for_servicetemplates-ServiceTemplateMinimalExampleWithAllPropertyVariants",
-	"serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
-		{
-			"documentation": [
-			],
-			"any": [
-			],
-			"otherAttributes": {
-			},
-			"id": "ServiceTemplateMinimalExampleWithAllPropertyVariants",
-			"topologyTemplate": {
-				"documentation": [
-				],
-				"any": [
-				],
-				"otherAttributes": {
-				},
-				"relationshipTemplates": [
-					{
-						"id": "con_16",
-						"documentation": [
-						],
-						"any": [
-						],
-						"otherAttributes": {
-						},
-						"type": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithoutProperties",
-						"sourceElement": {
-							"ref": "NodeTypeWithoutProperties"
-						},
-						"targetElement": {
-							"ref": "NodeTypeWithTwoKVProperties"
-						},
-						"name": "con_16"
-					},
-					{
-						"id": "con_28",
-						"documentation": [
-						],
-						"any": [
-						],
-						"otherAttributes": {
-						},
-						"properties": {
-							"kvproperties": {
-								"key1": "",
-								"key2": ""
-							}
-						},
-						"type": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithTwoKvPropertie",
-						"sourceElement": {
-							"ref": "NodeTypeWithoutProperties"
-						},
-						"targetElement": {
-							"ref": "NodeTypeWithXmlElementProperty"
-						},
-						"name": "con_28"
-					},
-					{
-						"id": "con_40",
-						"documentation": [
-						],
-						"any": [
-						],
-						"otherAttributes": {
-						},
-						"properties": {
-							"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<ns0:shiporder orderid=\"123456\" xmlns=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ns0=\"https://www.w3schools.com/xml/schema_example.asp\" xmlns:relationshiptypes=\"http://plain.winery.opentosca.org/relationshiptypes\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ns0:orderperson>\n                    </ns0:orderperson><ns0:shipto><ns0:name>Name</ns0:name><ns0:address>Address</ns0:address><ns0:city>City</ns0:city><ns0:country>Country</ns0:country>\n                    </ns0:shipto><ns0:item><ns0:title>Title</ns0:title><ns0:quantity>5</ns0:quantity><ns0:price>5.5</ns0:price>\n                    </ns0:item>\n                </ns0:shiporder>"
-						},
-						"type": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithXmlElementProperty",
-						"sourceElement": {
-							"ref": "NodeTypeWithTwoKVProperties"
-						},
-						"targetElement": {
-							"ref": "NodeTypeWithXmlElementProperty"
-						},
-						"name": "con_40"
-					}
-				],
-				"nodeTemplates": [
-					{
-						"id": "NodeTypeWithoutProperties",
-						"documentation": [
-						],
-						"any": [
-						],
-						"otherAttributes": {
-							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "617",
-							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "44"
-						},
-						"type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithoutProperties",
-						"name": "NodeTypeWithoutProperties",
-						"minInstances": 1,
-						"maxInstances": "1",
-						"x": "617",
-						"y": "44"
-					},
-					{
-						"id": "NodeTypeWithXmlElementProperty",
-						"documentation": [
-						],
-						"any": [
-						],
-						"otherAttributes": {
-							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "874",
-							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "462"
-						},
-						"properties": {
-							"any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<ns0:shiporder orderid=\"123456\" xmlns=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:nodetypes=\"http://plain.winery.opentosca.org/nodetypes\" xmlns:ns0=\"https://www.w3schools.com/xml/schema_example.asp\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ns0:orderperson>\n                        </ns0:orderperson><ns0:shipto><ns0:name>Name</ns0:name><ns0:address>Address</ns0:address><ns0:city>City</ns0:city><ns0:country>Country</ns0:country>\n                        </ns0:shipto><ns0:item><ns0:title>Title</ns0:title><ns0:quantity>5</ns0:quantity><ns0:price>5.5</ns0:price>\n                        </ns0:item>\n                    </ns0:shiporder>"
-						},
-						"type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithXmlElementProperty",
-						"name": "NodeTypeWithXmlElementProperty",
-						"minInstances": 1,
-						"maxInstances": "1",
-						"x": "874",
-						"y": "462"
-					},
-					{
-						"id": "NodeTypeWithTwoKVProperties",
-						"documentation": [
-						],
-						"any": [
-						],
-						"otherAttributes": {
-							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "387",
-							"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "461"
-						},
-						"properties": {
-							"kvproperties": {
-								"key1": "value",
-								"key2": ""
-							}
-						},
-						"type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithTwoKVProperties",
-						"name": "NodeTypeWithTwoKVProperties",
-						"minInstances": 1,
-						"maxInstances": "1",
-						"x": "387",
-						"y": "461"
-					}
-				]
-			},
-			"name": "ServiceTemplateMinimalExampleWithAllPropertyVariants",
-			"targetNamespace": "http://plain.winery.opentosca.org/servicetemplates"
-		}
-	],
-	"targetNamespace": "http://plain.winery.opentosca.org/servicetemplates",
-	"import": [
-		{
-			"documentation": [
-			],
-			"any": [
-			],
-			"otherAttributes": {
-			},
-			"namespace": "http://plain.winery.opentosca.org/nodetypes",
-			"location": "nodetypes__NodeTypeWithTwoKVProperties.tosca",
-			"importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
-		},
-		{
-			"documentation": [
-			],
-			"any": [
-			],
-			"otherAttributes": {
-			},
-			"namespace": "http://plain.winery.opentosca.org/nodetypes",
-			"location": "nodetypes__NodeTypeWithXmlElementProperty.tosca",
-			"importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
-		},
-		{
-			"documentation": [
-			],
-			"any": [
-			],
-			"otherAttributes": {
-			},
-			"namespace": "http://plain.winery.opentosca.org/relationshiptypes",
-			"location": "relationshiptypes__RelationshipTypeWithXmlElementProperty.tosca",
-			"importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
-		},
-		{
-			"documentation": [
-			],
-			"any": [
-			],
-			"otherAttributes": {
-			},
-			"namespace": "http://plain.winery.opentosca.org/relationshiptypes",
-			"location": "relationshiptypes__RelationshipTypeWithTwoKvPropertie.tosca",
-			"importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
-		},
-		{
-			"documentation": [
-			],
-			"any": [
-			],
-			"otherAttributes": {
-			},
-			"namespace": "http://plain.winery.opentosca.org/relationshiptypes",
-			"location": "relationshiptypes__RelationshipTypeWithoutProperties.tosca",
-			"importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
-		},
-		{
-			"documentation": [
-			],
-			"any": [
-			],
-			"otherAttributes": {
-			},
-			"namespace": "http://plain.winery.opentosca.org/nodetypes",
-			"location": "nodetypes__NodeTypeWithoutProperties.tosca",
-			"importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
-		}
-	]
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "id": "winery-defs-for_servicetemplates-ServiceTemplateMinimalExampleWithAllPropertyVariants",
+    "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "id": "ServiceTemplateMinimalExampleWithAllPropertyVariants",
+            "topologyTemplate": {
+                "documentation": [
+                ],
+                "any": [
+                ],
+                "otherAttributes": {
+                },
+                "relationshipTemplates": [
+                    {
+                        "id": "con_16",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "type": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithoutProperties",
+                        "sourceElement": {
+                            "ref": "NodeTypeWithoutProperties"
+                        },
+                        "targetElement": {
+                            "ref": "NodeTypeWithTwoKVProperties"
+                        },
+                        "name": "con_16"
+                    },
+                    {
+                        "id": "con_28",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "properties": {
+                            "kvproperties": {
+                                "key1": "",
+                                "key2": ""
+                            }
+                        },
+                        "type": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithTwoKvPropertie",
+                        "sourceElement": {
+                            "ref": "NodeTypeWithoutProperties"
+                        },
+                        "targetElement": {
+                            "ref": "NodeTypeWithXmlElementProperty"
+                        },
+                        "name": "con_28"
+                    },
+                    {
+                        "id": "con_40",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                        },
+                        "properties": {
+                            "any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<ns0:shiporder orderid=\"123456\" xmlns=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:ns0=\"https://www.w3schools.com/xml/schema_example.asp\" xmlns:relationshiptypes=\"http://plain.winery.opentosca.org/relationshiptypes\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ns0:orderperson>\n                    </ns0:orderperson><ns0:shipto><ns0:name>Name</ns0:name><ns0:address>Address</ns0:address><ns0:city>City</ns0:city><ns0:country>Country</ns0:country>\n                    </ns0:shipto><ns0:item><ns0:title>Title</ns0:title><ns0:quantity>5</ns0:quantity><ns0:price>5.5</ns0:price>\n                    </ns0:item>\n                </ns0:shiporder>"
+                        },
+                        "type": "{http://plain.winery.opentosca.org/relationshiptypes}RelationshipTypeWithXmlElementProperty",
+                        "sourceElement": {
+                            "ref": "NodeTypeWithTwoKVProperties"
+                        },
+                        "targetElement": {
+                            "ref": "NodeTypeWithXmlElementProperty"
+                        },
+                        "name": "con_40"
+                    }
+                ],
+                "nodeTemplates": [
+                    {
+                        "id": "NodeTypeWithoutProperties",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "617",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "44"
+                        },
+                        "type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithoutProperties",
+                        "name": "NodeTypeWithoutProperties",
+                        "minInstances": 1,
+                        "maxInstances": "1",
+                        "x": "617",
+                        "y": "44"
+                    },
+                    {
+                        "id": "NodeTypeWithXmlElementProperty",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "874",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "462"
+                        },
+                        "properties": {
+                            "any": "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n<ns0:shiporder orderid=\"123456\" xmlns=\"http://docs.oasis-open.org/tosca/ns/2011/12\" xmlns:nodetypes=\"http://plain.winery.opentosca.org/nodetypes\" xmlns:ns0=\"https://www.w3schools.com/xml/schema_example.asp\" xmlns:selfservice=\"http://www.eclipse.org/winery/model/selfservice\" xmlns:testwineryopentoscaorg=\"http://test.winery.opentosca.org\" xmlns:winery=\"http://www.opentosca.org/winery/extensions/tosca/2013/02/12\"><ns0:orderperson>\n                        </ns0:orderperson><ns0:shipto><ns0:name>Name</ns0:name><ns0:address>Address</ns0:address><ns0:city>City</ns0:city><ns0:country>Country</ns0:country>\n                        </ns0:shipto><ns0:item><ns0:title>Title</ns0:title><ns0:quantity>5</ns0:quantity><ns0:price>5.5</ns0:price>\n                        </ns0:item>\n                    </ns0:shiporder>"
+                        },
+                        "type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithXmlElementProperty",
+                        "name": "NodeTypeWithXmlElementProperty",
+                        "minInstances": 1,
+                        "maxInstances": "1",
+                        "x": "874",
+                        "y": "462"
+                    },
+                    {
+                        "id": "NodeTypeWithTwoKVProperties",
+                        "documentation": [
+                        ],
+                        "any": [
+                        ],
+                        "otherAttributes": {
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "387",
+                            "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "461"
+                        },
+                        "properties": {
+                            "kvproperties": {
+                                "key1": "value",
+                                "key2": ""
+                            }
+                        },
+                        "type": "{http://plain.winery.opentosca.org/nodetypes}NodeTypeWithTwoKVProperties",
+                        "name": "NodeTypeWithTwoKVProperties",
+                        "minInstances": 1,
+                        "maxInstances": "1",
+                        "x": "387",
+                        "y": "461"
+                    }
+                ]
+            },
+            "name": "ServiceTemplateMinimalExampleWithAllPropertyVariants",
+            "targetNamespace": "http://plain.winery.opentosca.org/servicetemplates"
+        }
+    ],
+    "targetNamespace": "http://plain.winery.opentosca.org/servicetemplates",
+    "import": [
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "namespace": "http://plain.winery.opentosca.org/nodetypes",
+            "location": "nodetypes__NodeTypeWithTwoKVProperties.tosca",
+            "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "namespace": "http://plain.winery.opentosca.org/nodetypes",
+            "location": "nodetypes__NodeTypeWithXmlElementProperty.tosca",
+            "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "namespace": "http://plain.winery.opentosca.org/relationshiptypes",
+            "location": "relationshiptypes__RelationshipTypeWithXmlElementProperty.tosca",
+            "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "namespace": "http://plain.winery.opentosca.org/relationshiptypes",
+            "location": "relationshiptypes__RelationshipTypeWithTwoKvPropertie.tosca",
+            "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "namespace": "http://plain.winery.opentosca.org/relationshiptypes",
+            "location": "relationshiptypes__RelationshipTypeWithoutProperties.tosca",
+            "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+        },
+        {
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+            },
+            "namespace": "http://plain.winery.opentosca.org/nodetypes",
+            "location": "nodetypes__NodeTypeWithoutProperties.tosca",
+            "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
+        }
+    ]
 }

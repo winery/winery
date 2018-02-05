@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FilesApiData, FilesService } from './files.service.';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { backendBaseURL, hostURL } from '../../../configuration';
-import { InstanceService } from '../../instance.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FilesApiData, FilesService} from './files.service.';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {backendBaseURL, hostURL} from '../../../configuration';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     templateUrl: 'files.component.html',

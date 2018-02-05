@@ -14,23 +14,17 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.jdt.annotation.NonNull;
+
+import javax.xml.bind.annotation.*;
+import java.util.Objects;
 
 
 /**
  * <p>Java class for tRequirementRef complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tRequirementRef">
  *   &lt;complexContent>
@@ -59,7 +53,7 @@ public class TRequirementRef {
         if (!(o instanceof TRequirementRef)) return false;
         TRequirementRef that = (TRequirementRef) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(ref, that.ref);
+            Objects.equals(ref, that.ref);
     }
 
     @Override

@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 
 /**
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate> as these templates are directly nested in
@@ -26,13 +26,13 @@ import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
  */
 public abstract class AbstractComponentsWithoutTypeReferenceResource<T extends AbstractComponentInstanceResource> extends AbstractComponentsResource<T> {
 
-	/**
-	 * Creates a new component instance in the given namespace
-	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response onJsonPost(QNameApiData jsonData) {
-		ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
-		return creationResult.getResponse();
-	}
+    /**
+     * Creates a new component instance in the given namespace
+     */
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response onJsonPost(QNameApiData jsonData) {
+        ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
+        return creationResult.getResponse();
+    }
 }

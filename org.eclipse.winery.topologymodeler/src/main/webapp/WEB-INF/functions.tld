@@ -13,24 +13,26 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <taglib
-	xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
-	version="2.1">
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+    version="2.1">
 
-	<tlib-version>1.0</tlib-version>
-	<short-name>Winery_TopologyModeler_Functions</short-name>
-	<uri>http://www.eclipse.org/winery/topologymodeler/functions</uri>
+    <tlib-version>1.0</tlib-version>
+    <short-name>Winery_TopologyModeler_Functions</short-name>
+    <uri>http://www.eclipse.org/winery/topologymodeler/functions</uri>
 
-	<function>
-		<name>convertQNameWithNameListToNamespaceToLocalNameNamePairList</name>
-		<function-class>org.eclipse.winery.topologymodeler.WineryUtil</function-class>
-		<function-signature>java.util.SortedMap convertQNameWithNameListToNamespaceToLocalNameNamePairList(java.util.List)</function-signature>
-	</function>
+    <function>
+        <name>convertQNameWithNameListToNamespaceToLocalNameNamePairList</name>
+        <function-class>org.eclipse.winery.topologymodeler.WineryUtil</function-class>
+        <function-signature>java.util.SortedMap
+            convertQNameWithNameListToNamespaceToLocalNameNamePairList(java.util.List)
+        </function-signature>
+    </function>
 
-	<function>
-		<name>escapeHtml4</name>
-		<function-class>org.apache.commons.lang3.StringEscapeUtils</function-class>
-		<function-signature>java.lang.String escapeHtml4(java.lang.String)</function-signature>
-	</function>
+    <function>
+        <name>escapeHtml4</name>
+        <function-class>org.apache.commons.lang3.StringEscapeUtils</function-class>
+        <function-signature>java.lang.String escapeHtml4(java.lang.String)</function-signature>
+    </function>
 </taglib>

@@ -41,7 +41,8 @@
             <div [class.hidden]="!loading">
                 <winery-loader></winery-loader>
             </div>
-            <div *ngIf="validEndingsData.validSource.validEndingsSelectionType === selectedEnum.NODETYPE" [class.hidden] = "loadingSrc">
+            <div *ngIf="validEndingsData.validSource.validEndingsSelectionType === selectedEnum.NODETYPE"
+                 [class.hidden]="loadingSrc">
                 <ng-select [items]="selectSources"
                            [active]="[validEndingsData.validSource.validDataSet]"
                            (selected)="onSelectedSrcValueChanged($event)">
@@ -58,14 +59,17 @@
         <div class="left">
             <form>
                 <fieldset>
-                    <input id="everythingTrgSelectable" type="radio" name="kind" (click)="onValidTargetSelected(selectedEnum.EVERYTHING)"
+                    <input id="everythingTrgSelectable" type="radio" name="kind"
+                           (click)="onValidTargetSelected(selectedEnum.EVERYTHING)"
                            [checked]="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.EVERYTHING">
                     <label for="everythingTrgSelectable" class="cursorpointer"
                            name="everythingTrgSelectable">everything</label>
-                    <input id="validTrgNT" type="radio" name="kind" (click)="onValidTargetSelected(selectedEnum.NODETYPE)"
+                    <input id="validTrgNT" type="radio" name="kind"
+                           (click)="onValidTargetSelected(selectedEnum.NODETYPE)"
                            [checked]="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.NODETYPE">
                     <label for="validTrgNT" class="cursorpointer" name="validTrgNT">Node Types</label>
-                    <input id="validTrgCT" type="radio" name="kind" (click)="onValidTargetSelected(selectedEnum.CAPTYPE)"
+                    <input id="validTrgCT" type="radio" name="kind"
+                           (click)="onValidTargetSelected(selectedEnum.CAPTYPE)"
                            [checked]="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.CAPTYPE">
                     <label for="validTrgCT" class="cursorpointer" name="validTrgRT">Capability Type</label>
                 </fieldset>
@@ -73,8 +77,10 @@
             <div [class.hidden]="!loading">
                 <winery-loader></winery-loader>
             </div>
-            <div *ngIf="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.NODETYPE" [class.hidden] = "loadingTrg">
-                <ng-select id="targetSelect" [items]="selectTargets" (selected)="onSelectedTrgValueChanged($event)" [active]="[validEndingsData.validTarget.validDataSet]"></ng-select>
+            <div *ngIf="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.NODETYPE"
+                 [class.hidden]="loadingTrg">
+                <ng-select id="targetSelect" [items]="selectTargets" (selected)="onSelectedTrgValueChanged($event)"
+                           [active]="[validEndingsData.validTarget.validDataSet]"></ng-select>
             </div>
             <div *ngIf="validEndingsData.validTarget.validEndingsSelectionType === selectedEnum.CAPTYPE">
                 Not implemented yet!

@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { RequirementTypeRouterModule } from './requirementTypeRouter.module';
-import { RequiredCapabilityTypeComponent } from '../../instance/requirementTypes/requiredCapabilityType/requiredCapabilityType.component';
-import { CommonModule } from '@angular/common';
-import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
-import { WineryQNameSelectorModule } from '../../wineryQNameSelector/wineryQNameSelector.module';
-import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
-import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
+import {NgModule} from '@angular/core';
+import {RequirementTypeRouterModule} from './requirementTypeRouter.module';
+import {RequiredCapabilityTypeComponent} from '../../instance/requirementTypes/requiredCapabilityType/requiredCapabilityType.component';
+import {CommonModule} from '@angular/common';
+import {WineryLoaderModule} from '../../wineryLoader/wineryLoader.module';
+import {WineryQNameSelectorModule} from '../../wineryQNameSelector/wineryQNameSelector.module';
+import {WineryReadmeModule} from '../../wineryReadmeModule/wineryReadme.module';
+import {WineryLicenseModule} from '../../wineryLicenseModule/wineryLicense.module';
 
 @NgModule({
     imports: [

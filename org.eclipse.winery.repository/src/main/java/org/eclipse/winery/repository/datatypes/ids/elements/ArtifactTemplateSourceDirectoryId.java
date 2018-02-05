@@ -18,9 +18,9 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 
 public class ArtifactTemplateSourceDirectoryId extends DirectoryId {
 
-	public ArtifactTemplateSourceDirectoryId(ArtifactTemplateId id) {
-		super(id, IdNames.SOURCE_DIRECTORY);
-	}
+    public ArtifactTemplateSourceDirectoryId(ArtifactTemplateId id) {
+        super(id, IdNames.SOURCE_DIRECTORY);
+    }
 }
 
 

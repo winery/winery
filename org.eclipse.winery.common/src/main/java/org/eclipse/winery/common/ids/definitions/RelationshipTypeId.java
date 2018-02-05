@@ -13,26 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
+import javax.xml.namespace.QName;
+
 public final class RelationshipTypeId extends TopologyGraphElementEntityTypeId {
 
-	public RelationshipTypeId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public RelationshipTypeId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public RelationshipTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
-	public RelationshipTypeId(QName qname) {
-		super(qname);
-	}
+    public RelationshipTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	@Override
-	public String getGroup() {
-		return "RelationshipType";
-	}
+    public RelationshipTypeId(QName qname) {
+        super(qname);
+    }
+
+    @Override
+    public String getGroup() {
+        return "RelationshipType";
+    }
 }

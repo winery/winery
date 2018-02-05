@@ -14,27 +14,26 @@
 
 package org.eclipse.winery.repository.rest.resources._support.dataadapter;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import java.util.List;
+
 public class InjectionOption {
-	@XmlElement(name = "NodeID")
-	protected String nodeID;
+    @XmlElement(name = "NodeID")
+    protected String nodeID;
 
-	@XmlElementWrapper(name = "InjectionOptions")
-	@XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
-	protected List<TTopologyTemplate> injectionOptions;
+    @XmlElementWrapper(name = "InjectionOptions")
+    @XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
+    protected List<TTopologyTemplate> injectionOptions;
 
-	public InjectionOption() {
-	}
+    public InjectionOption() {
+    }
 
-	public InjectionOption(String nodeID, List<TTopologyTemplate> injectionOptions) {
-		this.nodeID = nodeID;
-		this.injectionOptions = injectionOptions;
-	}
+    public InjectionOption(String nodeID, List<TTopologyTemplate> injectionOptions) {
+        this.nodeID = nodeID;
+        this.injectionOptions = injectionOptions;
+    }
 }

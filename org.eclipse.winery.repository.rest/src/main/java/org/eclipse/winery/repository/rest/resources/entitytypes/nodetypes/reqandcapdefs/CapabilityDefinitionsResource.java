@@ -13,35 +13,34 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.xml.namespace.QName;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+
 public class CapabilityDefinitionsResource extends RequirementOrCapabilityDefinitionsResource<CapabilityDefinitionResource, TCapabilityDefinition> {
 
-	public CapabilityDefinitionsResource(NodeTypeResource res, List<TCapabilityDefinition> defs) {
-		super(CapabilityDefinitionResource.class, TCapabilityDefinition.class, defs, res);
-	}
+    public CapabilityDefinitionsResource(NodeTypeResource res, List<TCapabilityDefinition> defs) {
+        super(CapabilityDefinitionResource.class, TCapabilityDefinition.class, defs, res);
+    }
 
-	@Override
-	public Collection<QName> getAllTypes() {
-		SortedSet<CapabilityTypeId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(CapabilityTypeId.class);
-		return BackendUtils.convertDefinitionsChildIdCollectionToQNameCollection(allDefinitionsChildIds);
-	}
+    @Override
+    public Collection<QName> getAllTypes() {
+        SortedSet<CapabilityTypeId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(CapabilityTypeId.class);
+        return BackendUtils.convertDefinitionsChildIdCollectionToQNameCollection(allDefinitionsChildIds);
+    }
 
-	@Override
-	@Path("{id}/")
-	public CapabilityDefinitionResource getEntityResource(@PathParam("id") String id) {
-		return this.getEntityResourceFromEncodedId(id);
-	}
+    @Override
+    @Path("{id}/")
+    public CapabilityDefinitionResource getEntityResource(@PathParam("id") String id) {
+        return this.getEntityResourceFromEncodedId(id);
+    }
 }

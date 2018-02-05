@@ -11,9 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable, ViewContainerRef } from '@angular/core';
-import { ToastsManager } from 'ng2-toastr/ng2-toastr';
-import { DatePipe } from '@angular/common';
+import {Injectable, ViewContainerRef} from '@angular/core';
+import {ToastsManager} from 'ng2-toastr/ng2-toastr';
+import {DatePipe} from '@angular/common';
 
 @Injectable()
 export class WineryNotificationService {

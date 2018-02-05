@@ -20,7 +20,4 @@ public interface MngmtActivityTemplatePlaceholders {
 	public static final String SEQUENCE_NAME = "mngmt_scope_seq_name";
 
 
-
-
-
 }

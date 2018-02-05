@@ -13,28 +13,16 @@
  ********************************************************************************/
 package org.eclipse.winery.cli;
 
+import org.apache.commons.cli.*;
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.consistencycheck.*;
+import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+
+import javax.xml.namespace.QName;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerVerbosity;
-import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorLogger;
-import org.eclipse.winery.repository.backend.consistencycheck.ElementErrorList;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 public class WineryCli {
 

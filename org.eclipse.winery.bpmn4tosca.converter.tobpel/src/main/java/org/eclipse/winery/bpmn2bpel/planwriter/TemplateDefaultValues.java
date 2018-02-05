@@ -15,7 +15,7 @@ package org.eclipse.winery.bpmn2bpel.planwriter;
 
 public interface TemplateDefaultValues {
 
-public static final String PLAN_NAMESPACE = "http://iaas.uni-stuttgart.de/bpmn4tosca";
+	public static final String PLAN_NAMESPACE = "http://iaas.uni-stuttgart.de/bpmn4tosca";
 
 	public static final String PLAN_NAME = "ManagementPlan";
 
@@ -52,7 +52,6 @@ public static final String PLAN_NAMESPACE = "http://iaas.uni-stuttgart.de/bpmn4t
 	public static final String SERVICE_INVOKER_WSDL = "service_invoker.wsdl";
 
 	public static final String SERVICE_INVOKER_XSD = "service_invoker.xsd";
-
 
 
 }

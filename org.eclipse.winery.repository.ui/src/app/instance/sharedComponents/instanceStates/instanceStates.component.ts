@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { InstanceStateService } from './instanceStates.service';
-import { InstanceStateApiData } from './InstanceStateApiData';
-import { Response } from '@angular/http';
-import { isNullOrUndefined } from 'util';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {InstanceStateService} from './instanceStates.service';
+import {InstanceStateApiData} from './InstanceStateApiData';
+import {Response} from '@angular/http';
+import {isNullOrUndefined} from 'util';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {ModalDirective} from 'ngx-bootstrap';
 
 @Component({
     templateUrl: 'instanceStates.component.html',

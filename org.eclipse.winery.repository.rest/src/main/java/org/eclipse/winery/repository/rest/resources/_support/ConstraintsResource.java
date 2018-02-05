@@ -13,24 +13,23 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import java.util.List;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.eclipse.winery.model.tosca.TConstraint;
 import org.eclipse.winery.repository.rest.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import java.util.List;
+
 public class ConstraintsResource extends EntityWithoutIdCollectionResource<ConstraintResource, TConstraint> {
 
-	public ConstraintsResource(List<TConstraint> constraints, NodeTypeResource res) {
-		super(ConstraintResource.class, TConstraint.class, constraints, res);
-	}
+    public ConstraintsResource(List<TConstraint> constraints, NodeTypeResource res) {
+        super(ConstraintResource.class, TConstraint.class, constraints, res);
+    }
 
-	@Override
-	@Path("{id}/")
-	public ConstraintResource getEntityResource(@PathParam("id") String id) {
-		return this.getEntityResourceFromEncodedId(id);
-	}
+    @Override
+    @Path("{id}/")
+    public ConstraintResource getEntityResource(@PathParam("id") String id) {
+        return this.getEntityResourceFromEncodedId(id);
+    }
 }

@@ -13,31 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
@@ -47,146 +26,155 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.FileMeta;
 import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourceApiData;
-
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class FilesResource {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FilesResource.class);
-	private final DirectoryId fileDir;
+    private static final Logger LOGGER = LoggerFactory.getLogger(FilesResource.class);
+    private final DirectoryId fileDir;
 
-	public FilesResource(DirectoryId fileDir) {
-		this.fileDir = fileDir;
-	}
+    public FilesResource(DirectoryId fileDir) {
+        this.fileDir = fileDir;
+    }
 
-	/**
-	 * Handles the upload of a <em>single</em> file. Adds the given file to the current artifact template.
-	 *
-	 * If the file already exists, is it <em>overridden</em>
-	 *
-	 * @return JSON with data required by JQuery-File-Upload (see https://github.com/blueimp/jQuery-File-Upload/wiki/Setup)
-	 */
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response onPost(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo) {
-		// existence check not required as instantiation of the resource ensures that the object only exists if the resource exists
-		FilesResource.LOGGER.debug("Beginning with file upload");
+    /**
+     * Handles the upload of a <em>single</em> file. Adds the given file to the current artifact template.
+     * <p>
+     * If the file already exists, is it <em>overridden</em>
+     *
+     * @return JSON with data required by JQuery-File-Upload (see https://github.com/blueimp/jQuery-File-Upload/wiki/Setup)
+     */
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response onPost(@FormDataParam("file") InputStream uploadedInputStream, @FormDataParam("file") FormDataContentDisposition fileDetail, @FormDataParam("file") FormDataBodyPart body, @Context UriInfo uriInfo) {
+        // existence check not required as instantiation of the resource ensures that the object only exists if the resource exists
+        FilesResource.LOGGER.debug("Beginning with file upload");
 
-		String fileName = fileDetail.getFileName();
-		if (StringUtils.isEmpty(fileName)) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, false);
+        String fileName = fileDetail.getFileName();
+        if (StringUtils.isEmpty(fileName)) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        RepositoryFileReference ref = this.fileName2fileRef(fileName, false);
 
-		// TODO: instead of fixing the media type, we could overwrite the browser's mediatype by using some user configuration
-		BufferedInputStream bis = new BufferedInputStream(uploadedInputStream);
-		org.apache.tika.mime.MediaType mediaType = BackendUtils.getFixedMimeType(bis, fileName, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));
+        // TODO: instead of fixing the media type, we could overwrite the browser's mediatype by using some user configuration
+        BufferedInputStream bis = new BufferedInputStream(uploadedInputStream);
+        org.apache.tika.mime.MediaType mediaType = BackendUtils.getFixedMimeType(bis, fileName, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));
 
-		Response response = RestUtils.putContentToFile(ref, bis, mediaType);
-		if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
-			return response;
-		}
+        Response response = RestUtils.putContentToFile(ref, bis, mediaType);
+        if (response.getStatus() == Status.INTERNAL_SERVER_ERROR.getStatusCode()) {
+            return response;
+        }
 
-		try {
-			BackendUtils.synchronizeReferences((ArtifactTemplateId) fileDir.getParent());
-		} catch (IOException e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-		}
+        try {
+            BackendUtils.synchronizeReferences((ArtifactTemplateId) fileDir.getParent());
+        } catch (IOException e) {
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+        }
 
-		String URL = RestUtils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
-		return Response.created(RestUtils.createURI(URL)).entity(this.getAllFileMetas()).build();
-	}
+        String URL = RestUtils.getAbsoluteURL(this.fileDir) + Util.URLencode(fileName);
+        return Response.created(RestUtils.createURI(URL)).entity(this.getAllFileMetas()).build();
+    }
 
-	/**
-	 * Returns a list of file meta object
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getJSON() {
-		String json = BackendUtils.Object2JSON(this.getAllFileMetas());
-		String pathsJson = BackendUtils.Object2JSON(this.getAllFilePaths());
-		json = "{\"files\":" + json + "," +
-			"\"paths\":" + pathsJson + "}";
-		return json;
-	}
+    /**
+     * Returns a list of file meta object
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getJSON() {
+        String json = BackendUtils.Object2JSON(this.getAllFileMetas());
+        String pathsJson = BackendUtils.Object2JSON(this.getAllFilePaths());
+        json = "{\"files\":" + json + "," +
+            "\"paths\":" + pathsJson + "}";
+        return json;
+    }
 
-	private List<FileMeta> getAllFileMetas() {
-		return RepositoryFactory.getRepository()
-			.getContainedFiles(this.fileDir)
-			.stream()
-			.map(ref -> new FileMeta(ref))
-			.collect(Collectors.toList());
-	}
+    private List<FileMeta> getAllFileMetas() {
+        return RepositoryFactory.getRepository()
+            .getContainedFiles(this.fileDir)
+            .stream()
+            .map(ref -> new FileMeta(ref))
+            .collect(Collectors.toList());
+    }
 
-	private List<String> getAllFilePaths() {
-		List<String> paths = new ArrayList<>();
-		for (RepositoryFileReference ref : RepositoryFactory.getRepository().getContainedFiles(this.fileDir)) {
-			if (ref.getSubDirectory().isPresent()) {
-				paths.add(ref.getSubDirectory().get().toString());
-			} else {
-				paths.add("");
-			}
-		}
-		return paths;
-	}
+    private List<String> getAllFilePaths() {
+        List<String> paths = new ArrayList<>();
+        for (RepositoryFileReference ref : RepositoryFactory.getRepository().getContainedFiles(this.fileDir)) {
+            if (ref.getSubDirectory().isPresent()) {
+                paths.add(ref.getSubDirectory().get().toString());
+            } else {
+                paths.add("");
+            }
+        }
+        return paths;
+    }
 
-	private RepositoryFileReference fileName2fileRef(String fileName, boolean fileNameEncoded) {
-		String name = fileNameEncoded ? Util.URLdecode(fileName) : fileName;
-		return new RepositoryFileReference(this.fileDir, name);
-	}
+    private RepositoryFileReference fileName2fileRef(String fileName, boolean fileNameEncoded) {
+        String name = fileNameEncoded ? Util.URLdecode(fileName) : fileName;
+        return new RepositoryFileReference(this.fileDir, name);
+    }
 
-	private RepositoryFileReference fileName2fileRef(String fileName, String path, boolean fileNameEncoded) {
-		String name = fileNameEncoded ? Util.URLdecode(fileName) : fileName;
-		return new RepositoryFileReference(this.fileDir, Paths.get(path), name);
-	}
+    private RepositoryFileReference fileName2fileRef(String fileName, String path, boolean fileNameEncoded) {
+        String name = fileNameEncoded ? Util.URLdecode(fileName) : fileName;
+        return new RepositoryFileReference(this.fileDir, Paths.get(path), name);
+    }
 
-	@GET
-	@Path("/{fileName}")
-	public Response getFile(@PathParam("fileName") String fileName, @HeaderParam("If-Modified-Since") String modified, @QueryParam("path") String path) {
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
-		return RestUtils.returnRepoPath(ref, modified);
-	}
+    @GET
+    @Path("/{fileName}")
+    public Response getFile(@PathParam("fileName") String fileName, @HeaderParam("If-Modified-Since") String modified, @QueryParam("path") String path) {
+        RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
+        return RestUtils.returnRepoPath(ref, modified);
+    }
 
-	@DELETE
-	@Path("/{fileName}")
-	public Response deleteFile(@PathParam("fileName") String fileName, @QueryParam("path") String path) {
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
-		return RestUtils.delete(ref);
-	}
+    @DELETE
+    @Path("/{fileName}")
+    public Response deleteFile(@PathParam("fileName") String fileName, @QueryParam("path") String path) {
+        RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
+        return RestUtils.delete(ref);
+    }
 
-	@POST
-	@Path("/{fileName}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response postFile(@PathParam("fileName") String fileName, ArtifactResourceApiData data) {
-		if (StringUtils.isEmpty(fileName)) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, data.subDirectory, false);
-		return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
-	}
+    @POST
+    @Path("/{fileName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postFile(@PathParam("fileName") String fileName, ArtifactResourceApiData data) {
+        if (StringUtils.isEmpty(fileName)) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        RepositoryFileReference ref = this.fileName2fileRef(fileName, data.subDirectory, false);
+        return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
+    }
 
-	@PUT
-	@Path("/{fileName}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response putFile(@PathParam("fileName") String fileName, ArtifactResourceApiData data) {
-		if (StringUtils.isEmpty(fileName)) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, data.subDirectory, false);
-		return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
-	}
+    @PUT
+    @Path("/{fileName}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response putFile(@PathParam("fileName") String fileName, ArtifactResourceApiData data) {
+        if (StringUtils.isEmpty(fileName)) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        RepositoryFileReference ref = this.fileName2fileRef(fileName, data.subDirectory, false);
+        return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
+    }
 
-	public Response putFile(String fileName, String subDirectory, InputStream content) {
-		if (StringUtils.isEmpty(fileName)) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		RepositoryFileReference ref = this.fileName2fileRef(fileName, subDirectory, false);
-		return RestUtils.putContentToFile(ref, content, MediaType.TEXT_PLAIN_TYPE);
-	}
+    public Response putFile(String fileName, String subDirectory, InputStream content) {
+        if (StringUtils.isEmpty(fileName)) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        RepositoryFileReference ref = this.fileName2fileRef(fileName, subDirectory, false);
+        return RestUtils.putContentToFile(ref, content, MediaType.TEXT_PLAIN_TYPE);
+    }
 }

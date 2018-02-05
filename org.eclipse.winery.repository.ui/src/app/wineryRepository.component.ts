@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { WineryNotificationService } from './wineryNotificationModule/wineryNotification.service';
-import { WineryGitLogComponent } from './wineryGitLog/wineryGitLog.component';
-import { ExistService } from './wineryUtils/existService';
-import { backendBaseURL } from './configuration';
-import { BackendAvailabilityStates } from './wineryInterfaces/enums';
+import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {WineryNotificationService} from './wineryNotificationModule/wineryNotification.service';
+import {WineryGitLogComponent} from './wineryGitLog/wineryGitLog.component';
+import {ExistService} from './wineryUtils/existService';
+import {backendBaseURL} from './configuration';
+import {BackendAvailabilityStates} from './wineryInterfaces/enums';
 
 @Component({
     selector: 'winery-repository',

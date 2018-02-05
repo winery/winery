@@ -11,19 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Response } from '@angular/http';
-import { isNullOrUndefined } from 'util';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { InstanceService } from '../../instance.service';
-import { InheritanceService } from './inheritance.service';
-import { InheritanceApiData } from './inheritanceApiData';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
-import { SelectData } from '../../../wineryInterfaces/selectData';
-import { SelectItem } from 'ng2-select';
-import { Router } from '@angular/router';
-import { ModalDirective } from 'ngx-bootstrap';
-import { WineryAddComponent } from '../../../wineryAddComponentModule/addComponent.component';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Response} from '@angular/http';
+import {isNullOrUndefined} from 'util';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {InstanceService} from '../../instance.service';
+import {InheritanceService} from './inheritance.service';
+import {InheritanceApiData} from './inheritanceApiData';
+import {ToscaTypes} from '../../../wineryInterfaces/enums';
+import {SelectData} from '../../../wineryInterfaces/selectData';
+import {SelectItem} from 'ng2-select';
+import {Router} from '@angular/router';
+import {ModalDirective} from 'ngx-bootstrap';
+import {WineryAddComponent} from '../../../wineryAddComponentModule/addComponent.component';
 
 @Component({
     selector: 'winery-instance-inheritance',
@@ -32,7 +32,7 @@ import { WineryAddComponent } from '../../../wineryAddComponentModule/addCompone
 })
 export class InheritanceComponent implements OnInit {
 
-    readonly noneElement: SelectData[] = [{ text: 'None', id: 'none', children: [{ text: '(none)', id: '(none)' }] }];
+    readonly noneElement: SelectData[] = [{text: 'None', id: 'none', children: [{text: '(none)', id: '(none)'}]}];
 
     inheritanceApiData: InheritanceApiData;
     availableSuperClasses: SelectData[];

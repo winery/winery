@@ -13,44 +13,43 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConverter;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
-import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConverter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Gets all templates/implementations of a type.
  * Returns the templates/implementations in JSON format see: getJSON method
  */
 public abstract class TemplatesOfOneType {
-	
-	/**
-	 * returns a collection of a templates/implementations of a type
-	 * has to be implemented in the concrete class for examples see {@link org.eclipse.winery.repository.rest.resources.entitytypes.policytypes.TemplatesOfOnePolicyTypeResource} and
-	 * {@link org.eclipse.winery.repository.rest.resources.entitytypes.artifacttypes.TemplatesOfOneArtifactTypeResource}
-	 */
-	protected abstract Collection<? extends DefinitionsChildId> getAllImplementations();
 
-	/**
-	 * returns a list of all implementations of a type using the getAllImplementations method
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getJSON() {
-		Collection<? extends DefinitionsChildId> allImplementations = this.getAllImplementations();
-		List<QNameApiData> res = new ArrayList<>(allImplementations.size());
-		QNameConverter adapter = new QNameConverter();
-		for (DefinitionsChildId id : allImplementations) {
-			res.add(adapter.marshal(id.getQName()));
-		}
-		return Response.ok().entity(res).build();
-	}
+    /**
+     * returns a collection of a templates/implementations of a type
+     * has to be implemented in the concrete class for examples see {@link org.eclipse.winery.repository.rest.resources.entitytypes.policytypes.TemplatesOfOnePolicyTypeResource} and
+     * {@link org.eclipse.winery.repository.rest.resources.entitytypes.artifacttypes.TemplatesOfOneArtifactTypeResource}
+     */
+    protected abstract Collection<? extends DefinitionsChildId> getAllImplementations();
+
+    /**
+     * returns a list of all implementations of a type using the getAllImplementations method
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getJSON() {
+        Collection<? extends DefinitionsChildId> allImplementations = this.getAllImplementations();
+        List<QNameApiData> res = new ArrayList<>(allImplementations.size());
+        QNameConverter adapter = new QNameConverter();
+        for (DefinitionsChildId id : allImplementations) {
+            res.add(adapter.marshal(id.getQName()));
+        }
+        return Response.ok().entity(res).build();
+    }
 }

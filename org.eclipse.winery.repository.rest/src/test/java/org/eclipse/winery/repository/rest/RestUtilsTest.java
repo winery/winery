@@ -18,11 +18,11 @@ import org.junit.Test;
 
 public class RestUtilsTest {
 
-	@Test
-	public void testCreateID() {
-		Assert.assertEquals("Frank_s_test", RestUtils.createXMLid("Frank's test").getDecoded());
-		Assert.assertEquals("MyNodeType", RestUtils.createXMLid("MyNodeType").getDecoded());
-		Assert.assertEquals("A_Node_Type", RestUtils.createXMLid("A Node Type").getDecoded());
-	}
+    @Test
+    public void testCreateID() {
+        Assert.assertEquals("Frank_s_test", RestUtils.createXMLid("Frank's test").getDecoded());
+        Assert.assertEquals("MyNodeType", RestUtils.createXMLid("MyNodeType").getDecoded());
+        Assert.assertEquals("A_Node_Type", RestUtils.createXMLid("A Node Type").getDecoded());
+    }
 
 }

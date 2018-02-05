@@ -16,10 +16,10 @@ package org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions
 
 public class PropertyMapping {
 
-	public String serviceTemplatePropertyRef;
-	public String targetObjectRef;
-	public String targetPropertyRef;
+    public String serviceTemplatePropertyRef;
+    public String targetObjectRef;
+    public String targetPropertyRef;
 
-	public PropertyMapping() {
-	}
+    public PropertyMapping() {
+    }
 }

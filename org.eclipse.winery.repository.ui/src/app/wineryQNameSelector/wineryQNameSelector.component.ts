@@ -11,10 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { NameAndQNameApiDataList } from './wineryNameAndQNameApiData';
-import { ToscaTypes } from '../wineryInterfaces/enums';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {isNullOrUndefined} from 'util';
+import {NameAndQNameApiDataList} from './wineryNameAndQNameApiData';
+import {ToscaTypes} from '../wineryInterfaces/enums';
 
 /**
  * This component provides a selector for QNames in addition with a link to the currently

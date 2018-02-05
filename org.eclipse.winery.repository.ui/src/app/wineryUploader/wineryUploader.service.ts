@@ -11,9 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { FileUploader } from 'ng2-file-upload';
-import { isNullOrUndefined } from 'util';
+import {Injectable} from '@angular/core';
+import {FileUploader} from 'ng2-file-upload';
+import {isNullOrUndefined} from 'util';
 
 @Injectable()
 export class WineryUploaderService {

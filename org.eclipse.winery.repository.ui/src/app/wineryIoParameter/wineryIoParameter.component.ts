@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { WineryTableColumn } from '../wineryTableModule/wineryTable.component';
-import { InterfaceParameter } from '../wineryInterfaces/parameters';
-import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
-import { YesNoEnum } from '../wineryInterfaces/enums';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { NgForm } from '@angular/forms';
-import { ModalDirective } from 'ngx-bootstrap';
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {WineryTableColumn} from '../wineryTableModule/wineryTable.component';
+import {InterfaceParameter} from '../wineryInterfaces/parameters';
+import {WineryValidatorObject} from '../wineryValidators/wineryDuplicateValidator.directive';
+import {YesNoEnum} from '../wineryInterfaces/enums';
+import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
+import {NgForm} from '@angular/forms';
+import {ModalDirective} from 'ngx-bootstrap';
 
 /**
  * This component provides two tables for adding and removing input and output parameters as they are used for example

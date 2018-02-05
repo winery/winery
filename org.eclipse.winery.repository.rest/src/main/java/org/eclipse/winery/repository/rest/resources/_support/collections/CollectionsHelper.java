@@ -13,32 +13,32 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections;
 
-import javax.ws.rs.core.Response;
-
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 
+import javax.ws.rs.core.Response;
+
 public class CollectionsHelper {
 
-	private CollectionsHelper() {
-	}
+    private CollectionsHelper() {
+    }
 
-	/**
-	 * @param resource        the resource to be persisted
-	 * @param idDetermination the object to use to determine the id of the entity
-	 * @param entity          the entity that was persisted. Used to determine the id
-	 * @param isPost          true if post, false if put
-	 * @return the new id id of the resource
-	 */
-	public static <X> Response persist(IPersistable resource, IIdDetermination<X> idDetermination, X entity, boolean isPost) {
-		Response.ResponseBuilder res = RestUtils.persistWithResponseBuilder(resource);
-		if (isPost) {
-			res = res.status(201);
-			String id = idDetermination.getId(entity);
-			res = res.entity(id);
-		} else {
-			res = res.status(204);
-		}
-		return res.build();
-	}
+    /**
+     * @param resource        the resource to be persisted
+     * @param idDetermination the object to use to determine the id of the entity
+     * @param entity          the entity that was persisted. Used to determine the id
+     * @param isPost          true if post, false if put
+     * @return the new id id of the resource
+     */
+    public static <X> Response persist(IPersistable resource, IIdDetermination<X> idDetermination, X entity, boolean isPost) {
+        Response.ResponseBuilder res = RestUtils.persistWithResponseBuilder(resource);
+        if (isPost) {
+            res = res.status(201);
+            String id = idDetermination.getId(entity);
+            res = res.entity(id);
+        } else {
+            res = res.status(204);
+        }
+        return res.build();
+    }
 }

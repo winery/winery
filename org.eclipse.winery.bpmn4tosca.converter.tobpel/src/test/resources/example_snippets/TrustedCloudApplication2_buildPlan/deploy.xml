@@ -13,92 +13,120 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03" xmlns:ns2="http://ode.apache.org/activityRecovery">
-    <process xmlns:ns3="ba.example" name="ns3:TrustedCloudApplication2_buildPlan">
-        <process-events generate="all"/>
-        <provide partnerLink="client">
-            <service name="ns3:TrustedCloudApplication2_buildPlanService" port="TrustedCloudApplication2_buildPlanPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL2">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL8">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL28">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL34">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL47">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL53">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL61">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL69">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL82">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL88">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL101">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL107">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <provide partnerLink="InvokePortTypePL115">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="CallbackPort"/>
-        </provide>
-        <invoke partnerLink="client">
-            <service name="ns3:TrustedCloudApplication2_buildPlanServiceCallback" port="TrustedCloudApplication2_buildPlanPortCallbackPort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL2">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL8">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL28">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL34">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL47">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL53">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL61">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL69">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL82">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL88">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL101">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL107">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-        <invoke partnerLink="InvokePortTypePL115">
-            <service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService" port="InvokePort"/>
-        </invoke>
-    </process>
+<deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03">
+	<process xmlns:ns3="ba.example" name="ns3:TrustedCloudApplication2_buildPlan">
+		<process-events generate="all"/>
+		<provide partnerLink="client">
+			<service name="ns3:TrustedCloudApplication2_buildPlanService"
+					 port="TrustedCloudApplication2_buildPlanPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL2">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL8">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL28">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL34">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL47">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL53">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL61">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL69">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL82">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL88">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL101">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL107">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<provide partnerLink="InvokePortTypePL115">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="CallbackPort"/>
+		</provide>
+		<invoke partnerLink="client">
+			<service name="ns3:TrustedCloudApplication2_buildPlanServiceCallback"
+					 port="TrustedCloudApplication2_buildPlanPortCallbackPort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL2">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL8">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL28">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL34">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL47">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL53">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL61">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL69">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL82">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL88">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL101">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL107">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+		<invoke partnerLink="InvokePortTypePL115">
+			<service xmlns:ns4="http://siserver.org/wsdl" name="ns4:TrustedCloudApplication2.csarInvokerService"
+					 port="InvokePort"/>
+		</invoke>
+	</process>
 </deploy>

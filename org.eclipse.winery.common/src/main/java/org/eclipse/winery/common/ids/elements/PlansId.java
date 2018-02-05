@@ -18,13 +18,13 @@ import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 
 /**
  * Pseudo-Id for plans nested in one service template
- *
+ * <p>
  * results in the path "plans/"
  */
 public class PlansId extends ToscaElementId {
 
-	public PlansId(ServiceTemplateId parent) {
-		super(parent, new XmlId("plans", true));
-	}
+    public PlansId(ServiceTemplateId parent) {
+        super(parent, new XmlId("plans", true));
+    }
 
 }

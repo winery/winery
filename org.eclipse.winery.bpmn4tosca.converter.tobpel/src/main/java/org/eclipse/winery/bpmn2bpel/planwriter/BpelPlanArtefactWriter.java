@@ -13,23 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.planwriter;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.winery.bpmn2bpel.model.Gateway;
-import org.eclipse.winery.bpmn2bpel.model.Link;
-import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
-import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
-import org.eclipse.winery.bpmn2bpel.model.Node;
-
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.eclipse.winery.bpmn2bpel.model.*;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.traverse.GraphIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BpelPlanArtefactWriter {
 
@@ -68,7 +63,7 @@ public class BpelPlanArtefactWriter {
 		Template planTemplate = Velocity.getTemplate(TEMPLATE_PATH + "bpel_management_plan_template.xml");
 		context.put("mngmtTaskList", managementTaskSeq);
 		StringWriter planWriter = new StringWriter();
-		planTemplate.merge( context, planWriter );
+		planTemplate.merge(context, planWriter);
 
 		String bpelProcessContent = planWriter.toString();
 
@@ -85,7 +80,7 @@ public class BpelPlanArtefactWriter {
 		Template wsdlTemplate = Velocity.getTemplate(TEMPLATE_PATH + "management_plan_wsdl_template.xml");
 
 		StringWriter wsdlWriter = new StringWriter();
-		wsdlTemplate.merge( context, wsdlWriter );
+		wsdlTemplate.merge(context, wsdlWriter);
 
 		String bpelProcessWSDL = wsdlWriter.toString();
 
@@ -101,7 +96,7 @@ public class BpelPlanArtefactWriter {
 		Template invokerWsdlTemplate = Velocity.getTemplate(TEMPLATE_PATH + "invoker.wsdl");
 
 		StringWriter wsdlWriter = new StringWriter();
-		invokerWsdlTemplate.merge( context, wsdlWriter );
+		invokerWsdlTemplate.merge(context, wsdlWriter);
 
 		return wsdlWriter.toString();
 	}
@@ -113,7 +108,7 @@ public class BpelPlanArtefactWriter {
 		Template invokerXsdTemplate = Velocity.getTemplate(TEMPLATE_PATH + "invoker.xsd");
 
 		StringWriter xsdWriter = new StringWriter();
-		invokerXsdTemplate.merge( context, xsdWriter );
+		invokerXsdTemplate.merge(context, xsdWriter);
 
 		return xsdWriter.toString();
 	}
@@ -125,7 +120,7 @@ public class BpelPlanArtefactWriter {
 		Template invokerXsdTemplate = Velocity.getTemplate(TEMPLATE_PATH + "deploy.xml");
 
 		StringWriter xsdWriter = new StringWriter();
-		invokerXsdTemplate.merge( context, xsdWriter );
+		invokerXsdTemplate.merge(context, xsdWriter);
 
 		return xsdWriter.toString();
 	}

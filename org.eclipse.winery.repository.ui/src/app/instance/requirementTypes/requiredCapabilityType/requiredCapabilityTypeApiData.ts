@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
+import {NameAndQNameApiDataList} from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
 
 export interface RequiredCapabilityTypeApiData {
     currentRequiredCapabilityType: string;

@@ -15,11 +15,11 @@
 package org.eclipse.winery.repository.rest.resources.apiData;
 
 public class CapabilityDefinitionPostData {
-	public String name;
-	public String type;
-	public String upperBound;
-	public String lowerBound;
+    public String name;
+    public String type;
+    public String upperBound;
+    public String lowerBound;
 
-	CapabilityDefinitionPostData() {
-	}
+    CapabilityDefinitionPostData() {
+    }
 }

@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
+import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
 
 public class ObjectValidator {
     public void validateObject(Object object) throws InvalidToscaSyntax {

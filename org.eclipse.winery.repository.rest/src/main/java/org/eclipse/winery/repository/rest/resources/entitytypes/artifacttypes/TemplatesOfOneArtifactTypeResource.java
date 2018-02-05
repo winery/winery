@@ -13,27 +13,28 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.artifacttypes;
 
-import java.util.Collection;
-
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TemplatesOfOneType;
 
+import java.util.Collection;
+
 public class TemplatesOfOneArtifactTypeResource extends TemplatesOfOneType {
 
-	private ArtifactTypeId artifactTypeId;
+    private ArtifactTypeId artifactTypeId;
 
-	/**
-	 * Resource returns all templates/implementations of the given artifact type
-	 * @param artifactTypeId the Id of the artifact type
-	 */
-	public TemplatesOfOneArtifactTypeResource(ArtifactTypeId artifactTypeId) {
-		this.artifactTypeId = artifactTypeId;
-	}
+    /**
+     * Resource returns all templates/implementations of the given artifact type
+     *
+     * @param artifactTypeId the Id of the artifact type
+     */
+    public TemplatesOfOneArtifactTypeResource(ArtifactTypeId artifactTypeId) {
+        this.artifactTypeId = artifactTypeId;
+    }
 
-	@Override
-	public Collection<ArtifactTemplateId> getAllImplementations() {
-		return RepositoryFactory.getRepository().getAllElementsReferencingGivenType(ArtifactTemplateId.class, this.artifactTypeId.getQName());
-	}
+    @Override
+    public Collection<ArtifactTemplateId> getAllImplementations() {
+        return RepositoryFactory.getRepository().getAllElementsReferencingGivenType(ArtifactTemplateId.class, this.artifactTypeId.getQName());
+    }
 }

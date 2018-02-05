@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
-import { Observable } from 'rxjs';
-import { PlansApiData } from './plansApiData';
-import { backendBaseURL } from '../../../configuration';
-import { SelectData } from '../../../wineryInterfaces/selectData';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Observable} from 'rxjs';
+import {PlansApiData} from './plansApiData';
+import {backendBaseURL} from '../../../configuration';
+import {SelectData} from '../../../wineryInterfaces/selectData';
 
 @Injectable()
 export class PlansService {

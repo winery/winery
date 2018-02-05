@@ -13,87 +13,13 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.reader;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.xml.namespace.QName;
-
-import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
-import org.eclipse.winery.model.tosca.yaml.TArtifactType;
-import org.eclipse.winery.model.tosca.yaml.TAttributeAssignment;
-import org.eclipse.winery.model.tosca.yaml.TAttributeDefinition;
-import org.eclipse.winery.model.tosca.yaml.TCapabilityAssignment;
-import org.eclipse.winery.model.tosca.yaml.TCapabilityDefinition;
-import org.eclipse.winery.model.tosca.yaml.TConstraintClause;
-import org.eclipse.winery.model.tosca.yaml.TDataType;
-import org.eclipse.winery.model.tosca.yaml.TEntityType;
-import org.eclipse.winery.model.tosca.yaml.TEntrySchema;
-import org.eclipse.winery.model.tosca.yaml.TGroupDefinition;
-import org.eclipse.winery.model.tosca.yaml.TGroupType;
-import org.eclipse.winery.model.tosca.yaml.TImplementation;
-import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
-import org.eclipse.winery.model.tosca.yaml.TInterfaceAssignment;
-import org.eclipse.winery.model.tosca.yaml.TInterfaceDefinition;
-import org.eclipse.winery.model.tosca.yaml.TInterfaceType;
-import org.eclipse.winery.model.tosca.yaml.TNodeFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.TNodeOrGroupType;
-import org.eclipse.winery.model.tosca.yaml.TNodeTemplate;
-import org.eclipse.winery.model.tosca.yaml.TNodeType;
-import org.eclipse.winery.model.tosca.yaml.TOperationDefinition;
-import org.eclipse.winery.model.tosca.yaml.TParameterDefinition;
-import org.eclipse.winery.model.tosca.yaml.TPolicyDefinition;
-import org.eclipse.winery.model.tosca.yaml.TPolicyType;
-import org.eclipse.winery.model.tosca.yaml.TPropertyAssignment;
-import org.eclipse.winery.model.tosca.yaml.TPropertyAssignmentOrDefinition;
-import org.eclipse.winery.model.tosca.yaml.TPropertyDefinition;
-import org.eclipse.winery.model.tosca.yaml.TPropertyFilterDefinition;
-import org.eclipse.winery.model.tosca.yaml.TRelationshipAssignment;
-import org.eclipse.winery.model.tosca.yaml.TRelationshipDefinition;
-import org.eclipse.winery.model.tosca.yaml.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.yaml.TRelationshipType;
-import org.eclipse.winery.model.tosca.yaml.TRepositoryDefinition;
-import org.eclipse.winery.model.tosca.yaml.TRequirementAssignment;
-import org.eclipse.winery.model.tosca.yaml.TRequirementDefinition;
-import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
-import org.eclipse.winery.model.tosca.yaml.TStatusValue;
-import org.eclipse.winery.model.tosca.yaml.TSubstitutionMappings;
-import org.eclipse.winery.model.tosca.yaml.TTopologyTemplateDefinition;
-import org.eclipse.winery.model.tosca.yaml.TVersion;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+import org.eclipse.winery.model.tosca.yaml.*;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.yaml.common.AbstractTest;
 import org.eclipse.winery.yaml.common.ReflectionUtil;
-import org.eclipse.winery.yaml.common.exception.Invalid;
-import org.eclipse.winery.yaml.common.exception.InvalidField;
-import org.eclipse.winery.yaml.common.exception.InvalidParentType;
-import org.eclipse.winery.yaml.common.exception.InvalidSyntax;
-import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
-import org.eclipse.winery.yaml.common.exception.InvalidToscaVersion;
-import org.eclipse.winery.yaml.common.exception.InvalidType;
-import org.eclipse.winery.yaml.common.exception.InvalidDefinition;
-import org.eclipse.winery.yaml.common.exception.InvalidTypeExtend;
-import org.eclipse.winery.yaml.common.exception.InvalidYamlSyntax;
-import org.eclipse.winery.yaml.common.exception.MultiException;
-import org.eclipse.winery.yaml.common.exception.Undefined;
-import org.eclipse.winery.yaml.common.exception.UndefinedDefinition;
-import org.eclipse.winery.yaml.common.exception.UndefinedField;
-import org.eclipse.winery.yaml.common.exception.UndefinedFile;
-import org.eclipse.winery.yaml.common.exception.UndefinedImport;
-import org.eclipse.winery.yaml.common.exception.UndefinedPrefix;
-import org.eclipse.winery.yaml.common.exception.UndefinedRequiredKeyname;
-import org.eclipse.winery.yaml.common.exception.UndefinedToscaVersion;
-import org.eclipse.winery.yaml.common.exception.UndefinedType;
-import org.eclipse.winery.yaml.common.exception.YAMLParserException;
-
-import org.eclipse.collections.api.tuple.Pair;
-import org.eclipse.collections.impl.tuple.Tuples;
+import org.eclipse.winery.yaml.common.exception.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -105,6 +31,13 @@ import org.opentest4j.MultipleFailuresError;
 import org.opentest4j.ValueWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.namespace.QName;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ReflectionTest extends AbstractTest {
     private static Logger logger = LoggerFactory.getLogger(ReflectionTest.class);
@@ -218,7 +151,7 @@ public class ReflectionTest extends AbstractTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
+    @CsvSource( {
         "valid-service_template, 'relationship_types.rlt1.interfaces.intf1.inputs.intf1.prt1.type = string'"
     })
     public void testSingleServiceTemplatesAssertValue(String fileName,
@@ -227,7 +160,7 @@ public class ReflectionTest extends AbstractTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
+    @CsvSource( {
         "valid-service_template, 'repositories.rp1 = TRepositoryDefinition'"
     })
     public void testSingleServiceTemplatesAssertTypeof(String fileName,
@@ -236,7 +169,7 @@ public class ReflectionTest extends AbstractTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
+    @CsvSource( {
         "invalid-yaml_syntax-missing_line_break, InvalidYamlSyntax"
     })
     public void testSingleServiceTemplatesException(String fileName,

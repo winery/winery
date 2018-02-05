@@ -15,8 +15,8 @@ package org.eclipse.winery.model.tosca;
 
 public interface HasName extends HasIdInIdOrNameField {
 
-	String getName();
+    String getName();
 
-	void setName(String value);
+    void setName(String value);
 
 }

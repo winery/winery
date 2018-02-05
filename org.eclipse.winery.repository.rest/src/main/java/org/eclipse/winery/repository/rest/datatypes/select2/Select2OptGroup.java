@@ -18,55 +18,55 @@ import java.util.TreeSet;
 
 public class Select2OptGroup implements Comparable<Select2OptGroup> {
 
-	private final String id;
-	private final String text;
-	private final SortedSet<Select2DataItem> children;
+    private final String id;
+    private final String text;
+    private final SortedSet<Select2DataItem> children;
 
 
-	public Select2OptGroup(String id, String text) {
-		this.text = text;
-		this.id = id;
-		this.children = new TreeSet<>();
-	}
+    public Select2OptGroup(String id, String text) {
+        this.text = text;
+        this.id = id;
+        this.children = new TreeSet<>();
+    }
 
-	public String getText() {
-		return this.text;
-	}
+    public String getText() {
+        return this.text;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
-	/**
-	 * Returns the internal SortedSet for data items.
-	 */
-	public SortedSet<Select2DataItem> getChildren() {
-		return this.children;
-	}
+    /**
+     * Returns the internal SortedSet for data items.
+     */
+    public SortedSet<Select2DataItem> getChildren() {
+        return this.children;
+    }
 
-	public void addItem(Select2DataItem item) {
-		this.children.add(item);
-	}
+    public void addItem(Select2DataItem item) {
+        this.children.add(item);
+    }
 
-	/**
-	 * Quick hack to test Select2OptGroups for equality. Only the text is
-	 * tested, not the contained children. This might cause issues later, but
-	 * currently not.
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof Select2OptGroup)) {
-			return false;
-		}
-		return this.text.equals(((Select2OptGroup) o).text);
-	}
+    /**
+     * Quick hack to test Select2OptGroups for equality. Only the text is
+     * tested, not the contained children. This might cause issues later, but
+     * currently not.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Select2OptGroup)) {
+            return false;
+        }
+        return this.text.equals(((Select2OptGroup) o).text);
+    }
 
-	/**
-	 * Quick hack to compare Select2OptGroups. Only the text is compared, not
-	 * the contained children. This might cause issues later, but currently not.
-	 */
-	@Override
-	public int compareTo(Select2OptGroup o) {
-		return this.getText().compareTo(o.getText());
-	}
+    /**
+     * Quick hack to compare Select2OptGroups. Only the text is compared, not
+     * the contained children. This might cause issues later, but currently not.
+     */
+    @Override
+    public int compareTo(Select2OptGroup o) {
+        return this.getText().compareTo(o.getText());
+    }
 }

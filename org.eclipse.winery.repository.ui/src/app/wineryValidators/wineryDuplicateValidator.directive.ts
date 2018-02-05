@@ -11,9 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Directive, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { AbstractControl, NG_VALIDATORS, Validator, ValidatorFn, Validators } from '@angular/forms';
-import { isNullOrUndefined } from 'util';
+import {Directive, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {AbstractControl, NG_VALIDATORS, Validator, ValidatorFn, Validators} from '@angular/forms';
+import {isNullOrUndefined} from 'util';
 
 export class WineryValidatorObject {
     list: Array<any>;
@@ -44,14 +44,14 @@ export class WineryValidatorObject {
             if (!isNullOrUndefined(compareObject.regEx)) {
                 no = !compareObject.regEx.test(name);
             }
-            return no ? { 'wineryDuplicateValidator': { name } } : null;
+            return no ? {'wineryDuplicateValidator': {name}} : null;
         };
     }
 }
 
 @Directive({
     selector: '[wineryDuplicateValidator]',
-    providers: [{ provide: NG_VALIDATORS, useExisting: WineryDuplicateValidatorDirective, multi: true }]
+    providers: [{provide: NG_VALIDATORS, useExisting: WineryDuplicateValidatorDirective, multi: true}]
 })
 export class WineryDuplicateValidatorDirective implements Validator, OnChanges {
 

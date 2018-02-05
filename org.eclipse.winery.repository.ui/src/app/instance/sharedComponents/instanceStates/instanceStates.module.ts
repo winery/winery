@@ -11,16 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { ModalModule, TabsModule, TypeaheadModule } from 'ngx-bootstrap';
-import { SelectModule } from 'ng2-select';
-import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
-import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
-import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
-import { InstanceStatesComponent } from './instanceStates.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {BrowserModule} from '@angular/platform-browser';
+import {ModalModule, TabsModule, TypeaheadModule} from 'ngx-bootstrap';
+import {SelectModule} from 'ng2-select';
+import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
+import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
+import {WineryTableModule} from '../../../wineryTableModule/wineryTable.module';
+import {InstanceStatesComponent} from './instanceStates.component';
 
 @NgModule({
     imports: [

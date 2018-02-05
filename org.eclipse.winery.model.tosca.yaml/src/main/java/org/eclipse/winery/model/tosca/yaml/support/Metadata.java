@@ -13,15 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml.support;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
 import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
+
+import java.util.*;
 
 public class Metadata implements Map<String, String> {
     private Map<String, String> value;

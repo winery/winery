@@ -11,33 +11,35 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--%>
-<%@tag description="input field for an id unique in the target namespace. Current implementation: Unique in the topology modeler" pageEncoding="UTF-8"%>
+<%@tag
+    description="input field for an id unique in the target namespace. Current implementation: Unique in the topology modeler"
+    pageEncoding="UTF-8" %>
 
-<%@attribute name="inputFieldId" required="true" description="The name and id of the input field"%>
+<%@attribute name="inputFieldId" required="true" description="The name and id of the input field" %>
 
 <div class="form-group" id="${inputFieldId}Group">
-	<label for="${inputFieldId}" class="control-label">Id:</label>
-	<input id="${inputFieldId}" class="form-control" name="${inputFieldId}" type="text" required="required" />
+    <label for="${inputFieldId}" class="control-label">Id:</label>
+    <input id="${inputFieldId}" class="form-control" name="${inputFieldId}" type="text" required="required"/>
 </div>
 
 <script>
-$("#${inputFieldId}").typing({
-	stop: function(evt, elem) {
-		// check for existinance in the current model
-		// TODO: global check using the backend
-		var isSuccess;
-		try {
-			var val = elem.val();
-			isSuccess = (val != "") && ($("#" + elem.val()).length == 0);
-		} catch(err) {
-			// all syntax errors are invalid inputs
-			isSuccess = false;
-		}
-		var newClass = (isSuccess? "has-success" : "has-error");
-		var div = elem.parent();
-		if (!div.hasClass(newClass)) {
-			div.removeClass("has-error").removeClass("has-success").addClass(newClass);
-		}
-	}
-});
+    $("#${inputFieldId}").typing({
+        stop: function (evt, elem) {
+            // check for existinance in the current model
+            // TODO: global check using the backend
+            var isSuccess;
+            try {
+                var val = elem.val();
+                isSuccess = (val != "") && ($("#" + elem.val()).length == 0);
+            } catch (err) {
+                // all syntax errors are invalid inputs
+                isSuccess = false;
+            }
+            var newClass = (isSuccess ? "has-success" : "has-error");
+            var div = elem.parent();
+            if (!div.hasClass(newClass)) {
+                div.removeClass("has-error").removeClass("has-success").addClass(newClass);
+            }
+        }
+    });
 </script>

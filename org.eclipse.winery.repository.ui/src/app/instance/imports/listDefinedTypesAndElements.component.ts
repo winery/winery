@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit } from '@angular/core';
-import { Response } from '@angular/http';
-import { ListDefinedTypesAndElementsService } from './listDefinedTypesAndElements.service';
-import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
-import { Router } from '@angular/router';
-import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
+import {Component, OnInit} from '@angular/core';
+import {Response} from '@angular/http';
+import {ListDefinedTypesAndElementsService} from './listDefinedTypesAndElements.service';
+import {WineryNotificationService} from '../../wineryNotificationModule/wineryNotification.service';
+import {Router} from '@angular/router';
+import {WineryTableColumn} from '../../wineryTableModule/wineryTable.component';
 
 @Component({
     templateUrl: 'listDefinedTypesAndElements.component.html',
@@ -33,7 +33,7 @@ export class ListDefinedTypesAndElementsComponent implements OnInit {
     title: string;
 
     readonly columns: Array<WineryTableColumn> = [
-        { title: 'Local Names', name: 'key' }
+        {title: 'Local Names', name: 'key'}
     ];
 
     constructor(private service: ListDefinedTypesAndElementsService, private notify: WineryNotificationService,

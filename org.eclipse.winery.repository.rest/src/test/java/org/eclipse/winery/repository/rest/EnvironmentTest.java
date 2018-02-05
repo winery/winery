@@ -13,22 +13,23 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
 public class EnvironmentTest {
 
-	@Test
-	public void environmentProvidesDataFromMinimalWineryProperties() throws Exception {
-		final Optional<FileBasedRepositoryConfiguration> filebasedRepositoryConfiguration = Environment
-			.getFilebasedRepositoryConfiguration();
-		Assert.assertTrue(filebasedRepositoryConfiguration.isPresent());
-		final Path repositoryPath = filebasedRepositoryConfiguration.get().getRepositoryPath().get();
-		Assert.assertEquals(Paths.get("/tmp/winery-repository"), repositoryPath);
-	}
+    @Test
+    public void environmentProvidesDataFromMinimalWineryProperties() throws Exception {
+        final Optional<FileBasedRepositoryConfiguration> filebasedRepositoryConfiguration = Environment
+            .getFilebasedRepositoryConfiguration();
+        Assert.assertTrue(filebasedRepositoryConfiguration.isPresent());
+        final Path repositoryPath = filebasedRepositoryConfiguration.get().getRepositoryPath().get();
+        Assert.assertEquals(Paths.get("/tmp/winery-repository"), repositoryPath);
+    }
 }

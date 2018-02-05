@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { AfterContentInit, AfterViewInit, Component, ContentChild, HostBinding, Input } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { WineryModalFooterComponent } from './winery.modal.footer.component';
-import { WineryModalHeaderComponent } from './winery.modal.header.component';
-import { ModalDirective } from 'ngx-bootstrap';
-import { WineryModalSize } from './wineryModalSize';
+import {AfterContentInit, AfterViewInit, Component, ContentChild, HostBinding, Input} from '@angular/core';
+import {isNullOrUndefined} from 'util';
+import {WineryModalFooterComponent} from './winery.modal.footer.component';
+import {WineryModalHeaderComponent} from './winery.modal.header.component';
+import {ModalDirective} from 'ngx-bootstrap';
+import {WineryModalSize} from './wineryModalSize';
 
 /**
  * This component provides a generic modal component for any kind of pop-ups.

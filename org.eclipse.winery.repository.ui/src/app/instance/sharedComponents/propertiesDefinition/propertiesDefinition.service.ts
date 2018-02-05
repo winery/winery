@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../configuration';
-import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
-import { SelectData } from '../../../wineryInterfaces/selectData';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../../../configuration';
+import {PropertiesDefinitionsResourceApiData} from './propertiesDefinitionsResourceApiData';
+import {SelectData} from '../../../wineryInterfaces/selectData';
 
 @Injectable()
 export class PropertiesDefinitionService {

@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../configuration';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../../../configuration';
 
 @Injectable()
 export class EditXMLService {
@@ -31,8 +31,8 @@ export class EditXMLService {
     }
 
     getXmlData(): Observable<string> {
-        const headers = new Headers({ 'Accept': 'application/xml' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/xml'});
+        const options = new RequestOptions({headers: headers});
 
         let getPath = this.path;
         if (!getPath.endsWith('properties') && !getPath.endsWith(('selfserviceportal/'))) {
@@ -44,8 +44,8 @@ export class EditXMLService {
     }
 
     saveXmlData(xmlData: String): Observable<Response> {
-        const headers = new Headers({ 'Content-Type': 'application/xml' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/xml'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.put(backendBaseURL + this.path, xmlData, options);
     }

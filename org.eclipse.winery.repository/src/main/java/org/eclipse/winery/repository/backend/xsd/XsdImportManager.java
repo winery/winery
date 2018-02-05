@@ -13,31 +13,31 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.xsd;
 
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.Namespace;
 
+import java.util.List;
+import java.util.Map;
+
 public interface XsdImportManager {
 
-	List<NamespaceAndDefinedLocalNames> getAllDeclaredElementsLocalNames();
+    List<NamespaceAndDefinedLocalNames> getAllDeclaredElementsLocalNames();
 
-	List<NamespaceAndDefinedLocalNames> getAllDefinedTypesLocalNames();
+    List<NamespaceAndDefinedLocalNames> getAllDefinedTypesLocalNames();
 
-	/**
-	 * Returns a mapping from localnames to XSD files, containing the defined local names for the given namespace
-	 *
-	 * @param namespace the namespace to search for
-	 * @param getTypes  true: get types, false: get elements
-	 */
-	Map<String, RepositoryFileReference> getMapFromLocalNameToXSD(Namespace namespace, final boolean getTypes);
+    /**
+     * Returns a mapping from localnames to XSD files, containing the defined local names for the given namespace
+     *
+     * @param namespace the namespace to search for
+     * @param getTypes  true: get types, false: get elements
+     */
+    Map<String, RepositoryFileReference> getMapFromLocalNameToXSD(Namespace namespace, final boolean getTypes);
 
-	/**
-	 * Determines the declared local names - either XSD elements or XSD types
-	 *
-	 * @param namespace the namespace to search for
-	 * @param getTypes  true: get types, false: get elements
-	 */
-	List<String> getAllDefinedLocalNames(Namespace namespace, final boolean getTypes);
+    /**
+     * Determines the declared local names - either XSD elements or XSD types
+     *
+     * @param namespace the namespace to search for
+     * @param getTypes  true: get types, false: get elements
+     */
+    List<String> getAllDefinedLocalNames(Namespace namespace, final boolean getTypes);
 }

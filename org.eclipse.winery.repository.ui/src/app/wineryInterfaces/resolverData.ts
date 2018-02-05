@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { ToscaTypes } from './enums';
+import {ToscaTypes} from './enums';
 
 export interface SectionResolverData {
     section: ToscaTypes;

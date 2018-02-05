@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { ToastOptions } from 'ng2-toastr';
+import {ToastOptions} from 'ng2-toastr';
 
 /**
  * this class can be used to override the default setting of ng2-toastr

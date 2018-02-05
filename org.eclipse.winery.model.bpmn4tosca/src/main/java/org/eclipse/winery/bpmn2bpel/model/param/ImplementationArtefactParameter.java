@@ -15,8 +15,8 @@ package org.eclipse.winery.bpmn2bpel.model.param;
 
 public class ImplementationArtefactParameter extends Parameter {
 
-	@Override
-	public ParamType getType() {
-		return ParamType.IA;
-	}
+    @Override
+    public ParamType getType() {
+        return ParamType.IA;
+    }
 }

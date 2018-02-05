@@ -18,12 +18,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class XsdDefinitionsApiData {
 
-	public ArrayNode xsdDefinitions;
+    public ArrayNode xsdDefinitions;
 
 
-	public XsdDefinitionsApiData() { }
+    public XsdDefinitionsApiData() {
+    }
 
-	public XsdDefinitionsApiData(ArrayNode xsdDefinitions) {
-		this.xsdDefinitions = xsdDefinitions;
-	}
+    public XsdDefinitionsApiData(ArrayNode xsdDefinitions) {
+        this.xsdDefinitions = xsdDefinitions;
+    }
 }

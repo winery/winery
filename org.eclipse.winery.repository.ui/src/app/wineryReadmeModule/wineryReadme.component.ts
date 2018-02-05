@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit } from '@angular/core';
-import { ReadmeService } from './wineryReadme.service';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { InstanceService } from '../instance/instance.service';
-import { ToscaTypes } from '../wineryInterfaces/enums';
+import {Component, OnInit} from '@angular/core';
+import {ReadmeService} from './wineryReadme.service';
+import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
+import {InstanceService} from '../instance/instance.service';
+import {ToscaTypes} from '../wineryInterfaces/enums';
 
 @Component({
     templateUrl: 'wineryReadme.component.html',

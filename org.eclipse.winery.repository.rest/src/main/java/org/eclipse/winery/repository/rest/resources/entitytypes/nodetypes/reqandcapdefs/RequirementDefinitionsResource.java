@@ -13,35 +13,34 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.reqandcapdefs;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.model.tosca.TRequirementDefinition;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.entitytypes.nodetypes.NodeTypeResource;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.xml.namespace.QName;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+
 public class RequirementDefinitionsResource extends RequirementOrCapabilityDefinitionsResource<RequirementDefinitionResource, TRequirementDefinition> {
 
-	public RequirementDefinitionsResource(NodeTypeResource res, List<TRequirementDefinition> defs) {
-		super(RequirementDefinitionResource.class, TRequirementDefinition.class, defs, res);
-	}
+    public RequirementDefinitionsResource(NodeTypeResource res, List<TRequirementDefinition> defs) {
+        super(RequirementDefinitionResource.class, TRequirementDefinition.class, defs, res);
+    }
 
-	@Override
-	public Collection<QName> getAllTypes() {
-		SortedSet<RequirementTypeId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(RequirementTypeId.class);
-		return BackendUtils.convertDefinitionsChildIdCollectionToQNameCollection(allDefinitionsChildIds);
-	}
+    @Override
+    public Collection<QName> getAllTypes() {
+        SortedSet<RequirementTypeId> allDefinitionsChildIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(RequirementTypeId.class);
+        return BackendUtils.convertDefinitionsChildIdCollectionToQNameCollection(allDefinitionsChildIds);
+    }
 
-	@Override
-	@Path("{id}/")
-	public RequirementDefinitionResource getEntityResource(@PathParam("id") String id) {
-		return this.getEntityResourceFromEncodedId(id);
-	}
+    @Override
+    @Path("{id}/")
+    public RequirementDefinitionResource getEntityResource(@PathParam("id") String id) {
+        return this.getEntityResourceFromEncodedId(id);
+    }
 }

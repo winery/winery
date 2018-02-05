@@ -13,17 +13,13 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.winery.model.tosca.yaml.TNodeTemplate;
 import org.eclipse.winery.model.tosca.yaml.TRepositoryDefinition;
 import org.eclipse.winery.yaml.common.validator.support.Parameter;
 import org.eclipse.winery.yaml.common.validator.support.Result;
+
+import java.nio.file.Path;
+import java.util.*;
 
 public class DefinitionsVisitor extends ImportVisitor {
     private Map<String, List<String>> nodeTemplates;

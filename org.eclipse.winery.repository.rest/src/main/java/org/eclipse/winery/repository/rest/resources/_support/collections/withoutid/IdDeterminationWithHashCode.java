@@ -18,20 +18,20 @@ import org.eclipse.winery.repository.rest.resources._support.collections.IIdDete
 
 public class IdDeterminationWithHashCode implements IIdDetermination<Object> {
 
-	public static final IdDeterminationWithHashCode INSTANCE = new IdDeterminationWithHashCode();
+    public static final IdDeterminationWithHashCode INSTANCE = new IdDeterminationWithHashCode();
 
-	@Override
-	public String getId(Object entity) {
-		// We assume that different Object serializations *always* have different hashCodes
-		int hash = BackendUtils.getXMLAsString(entity).hashCode();
-		return Integer.toString(hash);
-	}
+    @Override
+    public String getId(Object entity) {
+        // We assume that different Object serializations *always* have different hashCodes
+        int hash = BackendUtils.getXMLAsString(entity).hashCode();
+        return Integer.toString(hash);
+    }
 
-	/**
-	 * Static wrapper method for functions.tld
-	 */
-	public static String getIdStatically(Object entity) {
-		return IdDeterminationWithHashCode.INSTANCE.getId(entity);
-	}
+    /**
+     * Static wrapper method for functions.tld
+     */
+    public static String getIdStatically(Object entity) {
+        return IdDeterminationWithHashCode.INSTANCE.getId(entity);
+    }
 
 }

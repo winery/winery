@@ -11,16 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { PoliciesService, WineryPolicy } from './policies.service';
-import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
-import { ModalDirective } from 'ngx-bootstrap';
-import { isNullOrUndefined } from 'util';
-import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplicateValidator.directive';
-import { SelectItem } from 'ng2-select';
-import { EditXMLComponent } from '../../../sharedComponents/editXML/editXML.component';
-import { Response } from '@angular/http';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {PoliciesService, WineryPolicy} from './policies.service';
+import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
+import {WineryTableColumn} from '../../../../wineryTableModule/wineryTable.component';
+import {ModalDirective} from 'ngx-bootstrap';
+import {isNullOrUndefined} from 'util';
+import {WineryValidatorObject} from '../../../../wineryValidators/wineryDuplicateValidator.directive';
+import {SelectItem} from 'ng2-select';
+import {EditXMLComponent} from '../../../sharedComponents/editXML/editXML.component';
+import {Response} from '@angular/http';
 
 @Component({
     templateUrl: 'policies.component.html',
@@ -134,9 +134,9 @@ export class PoliciesComponent implements OnInit {
     removeConfirmed() {
         this.service.deletePolicy(this.selectedCell.id)
             .subscribe(
-            data => this.handleSaveDelete('deleted'),
-            error => this.handleError(error)
-        );
+                data => this.handleSaveDelete('deleted'),
+                error => this.handleError(error)
+            );
     }
 
     policyTypeSelected(data: SelectItem) {

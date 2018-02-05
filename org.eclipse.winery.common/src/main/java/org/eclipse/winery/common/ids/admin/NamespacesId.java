@@ -18,10 +18,10 @@ import org.eclipse.winery.common.ids.XmlId;
 
 public class NamespacesId extends AdminId {
 
-	private final static XmlId xmlId = new XmlId(IdNames.NAMESPACES, false);
+    private final static XmlId xmlId = new XmlId(IdNames.NAMESPACES, false);
 
 
-	public NamespacesId() {
-		super(NamespacesId.xmlId);
-	}
+    public NamespacesId() {
+        super(NamespacesId.xmlId);
+    }
 }

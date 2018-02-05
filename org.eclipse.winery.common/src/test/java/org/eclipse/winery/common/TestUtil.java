@@ -18,33 +18,33 @@ import org.junit.Test;
 
 public class TestUtil {
 
-	@Test
-	public void testNamespaceToJavaPackageFullURL() {
-		Assert.assertEquals("org.example.www.tosca.nodetypes", Util.namespaceToJavaPackage("http://www.example.org/tosca/nodetypes"));
-	}
+    @Test
+    public void testNamespaceToJavaPackageFullURL() {
+        Assert.assertEquals("org.example.www.tosca.nodetypes", Util.namespaceToJavaPackage("http://www.example.org/tosca/nodetypes"));
+    }
 
-	@Test
-	public void testNamespaceToJavaPackageURLWithHostOnly() {
-		Assert.assertEquals("org.example.www", Util.namespaceToJavaPackage("http://www.example.org/"));
-	}
+    @Test
+    public void testNamespaceToJavaPackageURLWithHostOnly() {
+        Assert.assertEquals("org.example.www", Util.namespaceToJavaPackage("http://www.example.org/"));
+    }
 
-	@Test
-	public void testNamespaceToJavaPackageURLWithHostOnlyAndNoFinalSlash() {
-		Assert.assertEquals("org.example.www", Util.namespaceToJavaPackage("http://www.example.org"));
-	}
+    @Test
+    public void testNamespaceToJavaPackageURLWithHostOnlyAndNoFinalSlash() {
+        Assert.assertEquals("org.example.www", Util.namespaceToJavaPackage("http://www.example.org"));
+    }
 
-	@Test
-	public void testNamespaceToJavaPackageURLWithNoHost() {
-		Assert.assertEquals("plainNCname", Util.namespaceToJavaPackage("plainNCname"));
-	}
+    @Test
+    public void testNamespaceToJavaPackageURLWithNoHost() {
+        Assert.assertEquals("plainNCname", Util.namespaceToJavaPackage("plainNCname"));
+    }
 
-	@Test
-	public void testNCNameFromURL() {
-		Assert.assertEquals("http___www.example.org", Util.makeNCName("http://www.example.org"));
-	}
+    @Test
+    public void testNCNameFromURL() {
+        Assert.assertEquals("http___www.example.org", Util.makeNCName("http://www.example.org"));
+    }
 
-	@Test
-	public void testNCNameFromNCName() {
-		Assert.assertEquals("NCName", Util.makeNCName("NCName"));
-	}
+    @Test
+    public void testNCNameFromNCName() {
+        Assert.assertEquals("NCName", Util.makeNCName("NCName"));
+    }
 }

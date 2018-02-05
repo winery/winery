@@ -14,23 +14,22 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import java.util.Objects;
 
 
 /**
  * <p>Java class for tDeploymentArtifact complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tDeploymentArtifact">
  *   &lt;complexContent>
@@ -70,8 +69,8 @@ public class TDeploymentArtifact extends TExtensibleElements {
         if (!(o instanceof TDeploymentArtifact)) return false;
         TDeploymentArtifact that = (TDeploymentArtifact) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(artifactType, that.artifactType) &&
-                Objects.equals(artifactRef, that.artifactRef);
+            Objects.equals(artifactType, that.artifactType) &&
+            Objects.equals(artifactRef, that.artifactRef);
     }
 
     @Override

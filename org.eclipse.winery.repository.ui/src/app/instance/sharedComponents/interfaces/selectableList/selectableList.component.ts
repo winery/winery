@@ -12,9 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { InterfacesApiData } from '../interfacesApiData';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {isNullOrUndefined} from 'util';
+import {InterfacesApiData} from '../interfacesApiData';
 
 @Component({
     selector: 'winery-selectable-list',

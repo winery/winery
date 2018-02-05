@@ -13,11 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.visitors.support;
 
-import java.nio.file.Path;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 
 import javax.xml.namespace.QName;
-
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
+import java.nio.file.Path;
 
 public class Parameter extends AbstractParameter<Parameter> {
     private final String namespace;

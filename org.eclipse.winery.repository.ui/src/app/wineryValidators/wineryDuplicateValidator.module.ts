@@ -11,9 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
-import { WineryDuplicateValidatorDirective } from './wineryDuplicateValidator.directive';
+import {WineryDuplicateValidatorDirective} from './wineryDuplicateValidator.directive';
 
 @NgModule({
     imports: [],

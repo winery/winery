@@ -12,13 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../configuration';
-import { InstanceService } from '../../instance.service';
-import { InheritanceApiData } from './inheritanceApiData';
-import { SelectData } from '../../../wineryInterfaces/selectData';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../../../configuration';
+import {InstanceService} from '../../instance.service';
+import {InheritanceApiData} from './inheritanceApiData';
+import {SelectData} from '../../../wineryInterfaces/selectData';
 
 @Injectable()
 export class InheritanceService {
@@ -31,16 +31,16 @@ export class InheritanceService {
     }
 
     getInheritanceData(): Observable<InheritanceApiData> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseURL + this.path + '/inheritance/', options)
             .map(res => res.json());
     }
 
     getAvailableSuperClasses(): Observable<SelectData[]> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseURL + '/' + this.path.split('/')[1] + '?grouped=angularSelect/', options)
             .map(res => res.json());
@@ -58,8 +58,8 @@ export class InheritanceService {
     }
 
     saveInheritanceData(inheritanceData: InheritanceApiData): Observable<any> {
-        const headers = new Headers({ 'Content-Type': 'application/json', 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json', 'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         // create a copy to not send unnecessary data to the server
         const copy = new InheritanceApiData();

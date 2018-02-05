@@ -11,16 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { GenerateArtifactApiData } from './generateArtifactApiData';
-import { InterfacesApiData } from './interfacesApiData';
-import { InstanceService } from '../../instance.service';
-import { backendBaseURL } from '../../../configuration';
-import { isNullOrUndefined } from 'util';
-import { Utils } from '../../../wineryUtils/utils';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {GenerateArtifactApiData} from './generateArtifactApiData';
+import {InterfacesApiData} from './interfacesApiData';
+import {InstanceService} from '../../instance.service';
+import {backendBaseURL} from '../../../configuration';
+import {isNullOrUndefined} from 'util';
+import {Utils} from '../../../wineryUtils/utils';
 
 @Injectable()
 export class InterfacesService {
@@ -47,15 +47,15 @@ export class InterfacesService {
     }
 
     save(interfacesData: InterfacesApiData[]): Observable<Response> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(this.path, JSON.stringify(interfacesData), options);
     }
 
     createImplementation(implementationName: string, implementationNamespace: string): Observable<any> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         this.setImplementationsUrl();
 
@@ -70,8 +70,8 @@ export class InterfacesService {
 
     createArtifactTemplate(implementationName: string, implementationNamespace: string,
                            generateArtifactApiData: GenerateArtifactApiData): Observable<Response> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         this.setImplementationsUrl();
 
@@ -95,8 +95,8 @@ export class InterfacesService {
     }
 
     private get(url: string): Observable<any> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(url, options);
     }

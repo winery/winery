@@ -16,35 +16,37 @@
 <%@attribute name="nodeTypes" required="true" type="java.util.Collection" %>
 <%@attribute name="relationshipTypes" required="true" type="java.util.Collection" %>
 
-<%@tag import="java.util.Collection"%>
-<%@tag import="javax.xml.namespace.QName"%>
-<%@tag import="org.eclipse.winery.model.tosca.utils.ModelUtilities"%>
-<%@tag import="org.eclipse.winery.common.Util"%>
-<%@tag import="org.eclipse.winery.model.tosca.TNodeType"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRelationshipType"%>
+<%@tag import="org.eclipse.winery.common.Util" %>
+<%@tag import="org.eclipse.winery.model.tosca.TNodeType" %>
+<%@tag import="org.eclipse.winery.model.tosca.TRelationshipType" %>
+<%@tag import="org.eclipse.winery.model.tosca.utils.ModelUtilities" %>
+<%@tag import="javax.xml.namespace.QName" %>
+<%@tag import="java.util.Collection" %>
 
 <style>
-<%
-	for (TNodeType nt: (Collection<TNodeType>) nodeTypes) {
-		String borderColor = ModelUtilities.getBorderColor(nt);
-		String cssName = Util.makeCSSName(nt.getTargetNamespace(), nt.getName());
-%>
-		div.NodeTemplateShape.<%=cssName%> {
-			border-color: <%=borderColor%>;
-		}
-<%
-	}
+    <%
+        for (TNodeType nt: (Collection<TNodeType>) nodeTypes) {
+            String borderColor = ModelUtilities.getBorderColor(nt);
+            String cssName = Util.makeCSSName(nt.getTargetNamespace(), nt.getName());
+    %>
+    div.NodeTemplateShape.<%=cssName%> {
+        border-color: <%=borderColor%>;
+    }
 
-	// relationship types CSS
-	for (TRelationshipType rt: (Collection<TRelationshipType>) relationshipTypes) {
-		String color = ModelUtilities.getColor(rt);
-		QName qname = new QName(rt.getTargetNamespace(), rt.getName());
-		String cssName = Util.makeCSSName(qname) + "_box";
-%>
-		div.<%=cssName%> {
-			background: <%=color%>;
-		}
-<%
-	}
-%>
+    <%
+        }
+    
+        // relationship types CSS
+        for (TRelationshipType rt: (Collection<TRelationshipType>) relationshipTypes) {
+            String color = ModelUtilities.getColor(rt);
+            QName qname = new QName(rt.getTargetNamespace(), rt.getName());
+            String cssName = Util.makeCSSName(qname) + "_box";
+    %>
+    div.<%=cssName%> {
+        background: <%=color%>;
+    }
+
+    <%
+        }
+    %>
 </style>

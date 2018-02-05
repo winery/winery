@@ -13,37 +13,36 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.policies;
 
-import java.util.List;
-
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
-
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withoutid.EntityWithoutIdCollectionResource;
 
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+import java.util.List;
+
 public class PoliciesResource extends EntityWithoutIdCollectionResource<PolicyResource, TPolicy> {
 
-	public PoliciesResource(List<TPolicy> list, IPersistable res) {
-		super(PolicyResource.class, TPolicy.class, list, res);
-	}
+    public PoliciesResource(List<TPolicy> list, IPersistable res) {
+        super(PolicyResource.class, TPolicy.class, list, res);
+    }
 
-	@PUT
-	public Response replaceAll(List<TPolicy> newList) {
-		this.list.clear();
-		for (TPolicy policy : newList) {
-			this.list.add(policy);
-		}
-		return RestUtils.persist(this.res);
-	}
+    @PUT
+    public Response replaceAll(List<TPolicy> newList) {
+        this.list.clear();
+        for (TPolicy policy : newList) {
+            this.list.add(policy);
+        }
+        return RestUtils.persist(this.res);
+    }
 
-	@Override
-	@Path("{id}/")
-	public PolicyResource getEntityResource(@PathParam("id") String id) {
-		return this.getEntityResourceFromEncodedId(id);
-	}
+    @Override
+    @Path("{id}/")
+    public PolicyResource getEntityResource(@PathParam("id") String id) {
+        return this.getEntityResourceFromEncodedId(id);
+    }
 
 }

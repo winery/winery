@@ -18,11 +18,11 @@ import org.eclipse.winery.common.ids.XmlId;
 
 public class ConstraintTypesId extends TypesId {
 
-	private final static XmlId xmlId = new XmlId(IdNames.CONSTRAINTTYPES, false);
+    private final static XmlId xmlId = new XmlId(IdNames.CONSTRAINTTYPES, false);
 
 
-	public ConstraintTypesId() {
-		super(ConstraintTypesId.xmlId);
-	}
+    public ConstraintTypesId() {
+        super(ConstraintTypesId.xmlId);
+    }
 
 }

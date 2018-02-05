@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../../configuration';
-import { RequirementOrCapability } from './requirementsOrCapabilitiesApiData';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../../../../configuration';
+import {RequirementOrCapability} from './requirementsOrCapabilitiesApiData';
 
 @Injectable()
 export class RequirementsOrCapabilitiesService {
@@ -42,8 +42,8 @@ export class RequirementsOrCapabilitiesService {
      * @returns {Observable<Response>}
      */
     sendPostRequest(reqOrCap: RequirementOrCapability): Observable<any> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(this.path, reqOrCap, options);
     }
@@ -54,8 +54,8 @@ export class RequirementsOrCapabilitiesService {
      * @returns {Observable<Response>}
      */
     deleteCapOrReqDef(id: any): Observable<any> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.delete(this.path + id + '/', options);
     }
 
@@ -67,8 +67,8 @@ export class RequirementsOrCapabilitiesService {
      * @returns {Observable<any>}
      */
     private sendJsonRequest(requestPath: string): Observable<any> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(requestPath, options)
             .map(res => res.json());

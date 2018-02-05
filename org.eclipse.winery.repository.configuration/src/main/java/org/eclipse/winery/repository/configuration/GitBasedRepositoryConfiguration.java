@@ -18,18 +18,18 @@ import java.util.Objects;
 
 public class GitBasedRepositoryConfiguration extends FileBasedRepositoryConfiguration {
 
-	private boolean autoCommit;
+    private boolean autoCommit;
 
-	public GitBasedRepositoryConfiguration(boolean autoCommit, FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
-		super(Objects.requireNonNull(fileBasedRepositoryConfiguration));
-		this.autoCommit = autoCommit;
-	}
+    public GitBasedRepositoryConfiguration(boolean autoCommit, FileBasedRepositoryConfiguration fileBasedRepositoryConfiguration) {
+        super(Objects.requireNonNull(fileBasedRepositoryConfiguration));
+        this.autoCommit = autoCommit;
+    }
 
-	public boolean isAutoCommit() {
-		return autoCommit;
-	}
+    public boolean isAutoCommit() {
+        return autoCommit;
+    }
 
-	public void setAutoCommit(boolean autoCommit) {
-		this.autoCommit = autoCommit;
-	}
+    public void setAutoCommit(boolean autoCommit) {
+        this.autoCommit = autoCommit;
+    }
 }

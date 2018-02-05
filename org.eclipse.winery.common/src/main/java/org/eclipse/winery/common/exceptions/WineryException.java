@@ -17,13 +17,13 @@ package org.eclipse.winery.common.exceptions;
  * Base exception for all exceptions
  */
 public abstract class WineryException extends Exception {
-	
-	public WineryException(String message, Throwable cause) {
-		super(message, cause);
-	}
 
-	public WineryException(String message) {
-		super(message);
-	}
+    public WineryException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public WineryException(String message) {
+        super(message);
+    }
 }
 

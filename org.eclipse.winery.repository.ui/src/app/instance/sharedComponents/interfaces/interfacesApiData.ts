@@ -11,9 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { InputParameters, OutputParameters } from '../../../wineryInterfaces/parameters';
-import { WineryComponent } from '../../../wineryInterfaces/wineryComponent';
-import { NodeOperation, PlanOperation, RelationshipOperation } from './targetInterface/operations';
+import {InputParameters, OutputParameters} from '../../../wineryInterfaces/parameters';
+import {WineryComponent} from '../../../wineryInterfaces/wineryComponent';
+import {NodeOperation, PlanOperation, RelationshipOperation} from './targetInterface/operations';
 
 export class InterfacesApiData {
     operation: InterfaceOperationApiData[] = [];

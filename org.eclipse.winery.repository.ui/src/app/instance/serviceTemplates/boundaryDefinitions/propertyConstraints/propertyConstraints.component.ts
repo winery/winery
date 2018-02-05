@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { PropertyConstraintsService } from './propertyConstraints.service';
-import { PropertyConstraintApiData } from './propertyConstraintApiData';
-import { ConstraintTypeApiData } from './constraintTypesApiData';
-import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplicateValidator.directive';
-import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {isNullOrUndefined} from 'util';
+import {PropertyConstraintsService} from './propertyConstraints.service';
+import {PropertyConstraintApiData} from './propertyConstraintApiData';
+import {ConstraintTypeApiData} from './constraintTypesApiData';
+import {WineryValidatorObject} from '../../../../wineryValidators/wineryDuplicateValidator.directive';
+import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
+import {ModalDirective} from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-boundary-properties',
@@ -35,9 +35,9 @@ export class PropertyConstraintsComponent implements OnInit {
     selectedCell: PropertyConstraintApiData;
     constraintTypes: ConstraintTypeApiData[] = [];
     columns: Array<any> = [
-        { title: 'Service Template Property', name: 'property', sort: true },
-        { title: 'Constraint Type', name: 'constraintType', sort: true },
-        { title: 'Constraint', name: 'fragments', sort: true }
+        {title: 'Service Template Property', name: 'property', sort: true},
+        {title: 'Constraint Type', name: 'constraintType', sort: true},
+        {title: 'Constraint', name: 'fragments', sort: true}
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;

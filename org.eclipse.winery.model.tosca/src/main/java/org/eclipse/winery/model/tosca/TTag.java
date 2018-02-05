@@ -14,21 +14,20 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.Objects;
 
 
 /**
  * <p>Java class for tTag complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tTag">
  *   &lt;complexContent>
@@ -57,7 +56,7 @@ public class TTag {
         this.name = builder.name;
         this.value = builder.value;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

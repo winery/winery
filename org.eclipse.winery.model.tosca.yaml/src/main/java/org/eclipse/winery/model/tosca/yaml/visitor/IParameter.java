@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml.visitor;
 
-import java.util.List;
-
 import org.eclipse.jdt.annotation.NonNull;
+
+import java.util.List;
 
 public interface IParameter<P> {
     String getKey();

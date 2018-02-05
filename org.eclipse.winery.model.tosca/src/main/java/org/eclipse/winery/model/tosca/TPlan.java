@@ -14,33 +14,25 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
 
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 
 /**
  * <p>Java class for tPlan complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tPlan">
  *   &lt;complexContent>
@@ -107,11 +99,11 @@ import org.w3c.dom.Element;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPlan", propOrder = {
-        "precondition",
-        "inputParameters",
-        "outputParameters",
-        "planModel",
-        "planModelReference"
+    "precondition",
+    "inputParameters",
+    "outputParameters",
+    "planModel",
+    "planModelReference"
 })
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class TPlan extends TExtensibleElements {
@@ -163,14 +155,14 @@ public class TPlan extends TExtensibleElements {
         if (!super.equals(o)) return false;
         TPlan tPlan = (TPlan) o;
         return Objects.equals(precondition, tPlan.precondition) &&
-                Objects.equals(inputParameters, tPlan.inputParameters) &&
-                Objects.equals(outputParameters, tPlan.outputParameters) &&
-                Objects.equals(planModel, tPlan.planModel) &&
-                Objects.equals(planModelReference, tPlan.planModelReference) &&
-                Objects.equals(id, tPlan.id) &&
-                Objects.equals(name, tPlan.name) &&
-                Objects.equals(planType, tPlan.planType) &&
-                Objects.equals(planLanguage, tPlan.planLanguage);
+            Objects.equals(inputParameters, tPlan.inputParameters) &&
+            Objects.equals(outputParameters, tPlan.outputParameters) &&
+            Objects.equals(planModel, tPlan.planModel) &&
+            Objects.equals(planModelReference, tPlan.planModelReference) &&
+            Objects.equals(id, tPlan.id) &&
+            Objects.equals(name, tPlan.name) &&
+            Objects.equals(planType, tPlan.planType) &&
+            Objects.equals(planLanguage, tPlan.planLanguage);
     }
 
     @Override
@@ -352,9 +344,9 @@ public class TPlan extends TExtensibleElements {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -370,7 +362,7 @@ public class TPlan extends TExtensibleElements {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "inputParameter"
+        "inputParameter"
     })
     public static class InputParameters {
 
@@ -379,20 +371,20 @@ public class TPlan extends TExtensibleElements {
 
         /**
          * Gets the value of the inputParameter property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the inputParameter property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getInputParameter().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TParameter }
@@ -409,9 +401,9 @@ public class TPlan extends TExtensibleElements {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -427,7 +419,7 @@ public class TPlan extends TExtensibleElements {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "outputParameter"
+        "outputParameter"
     })
     public static class OutputParameters {
 
@@ -436,20 +428,20 @@ public class TPlan extends TExtensibleElements {
 
         /**
          * Gets the value of the outputParameter property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the outputParameter property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getOutputParameter().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TParameter }
@@ -466,9 +458,9 @@ public class TPlan extends TExtensibleElements {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -483,7 +475,7 @@ public class TPlan extends TExtensibleElements {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "any"
+        "any"
     })
     public static class PlanModel {
 
@@ -513,9 +505,9 @@ public class TPlan extends TExtensibleElements {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>

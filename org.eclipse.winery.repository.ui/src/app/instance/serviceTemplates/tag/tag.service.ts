@@ -12,12 +12,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { TagsAPIData } from './tagsAPIData';
-import { backendBaseURL } from '../../../configuration';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {TagsAPIData} from './tagsAPIData';
+import {backendBaseURL} from '../../../configuration';
 
 @Injectable()
 export class TagService {
@@ -34,6 +34,7 @@ export class TagService {
         return this.http.get(this.path, options)
             .map(res => res.json());
     }
+
     removeTagData(data: TagsAPIData): Observable<Response> {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});

@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.parser;
 
-import java.net.URI;
-
 import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
+
+import java.net.URI;
 
 public abstract class Parser {
 

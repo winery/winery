@@ -14,47 +14,29 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
 
+import javax.xml.bind.annotation.*;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityTemplate", propOrder = {
     "properties",
     "propertyConstraints"
 })
-@XmlSeeAlso({
+@XmlSeeAlso( {
     TArtifactTemplate.class,
     TPolicyTemplate.class,
     TCapability.class,
@@ -180,14 +162,14 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
          * Instead of parsing the XML contained in TNodeType, this method is a convenience method to access this
          * information assumes the properties are key/value pairs (see WinerysPropertiesDefinition), all other cases are
          * return null.
-         *
+         * <p>
          * Returns a map of key/values of this template based on the information of WinerysPropertiesDefinition. In case
          * no value is set, the empty string is used. The map is implemented as {@link LinkedHashMap} to ensure that the
          * order of the elements is the same as in the XML. We return the type {@link LinkedHashMap}, because there is
          * no appropriate Java interface for "sorted" Maps
-         *
+         * <p>
          * In case the element is not of the form k/v, null is returned
-         *
+         * <p>
          * This method assumes that the any field is always populated.
          *
          * @return null if not k/v, a map of k/v properties otherwise
@@ -332,17 +314,17 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
 
         /**
          * Gets the value of the propertyConstraint property.
-         *
+         * <p>
          * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
          * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
          * method for the propertyConstraint property.
-         *
+         * <p>
          * <p> For example, to add a new item, do as follows:
          * <pre>
          *    getPropertyConstraint().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p> Objects of the following type(s) are allowed in the list {@link TPropertyConstraint }
          */
         @NonNull

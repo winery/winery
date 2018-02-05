@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../configuration';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../../../configuration';
 
 @Injectable()
 export class DocumentationService {
@@ -25,8 +25,8 @@ export class DocumentationService {
     }
 
     getDocumentationData(): Observable<string> {
-        const headers = new Headers({ 'Accept': 'text/plain' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'text/plain'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseURL + this.route.url, options)
             .map(res => res.text());

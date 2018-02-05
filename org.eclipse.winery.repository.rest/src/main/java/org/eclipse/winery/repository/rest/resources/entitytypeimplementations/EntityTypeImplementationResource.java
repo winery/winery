@@ -15,16 +15,15 @@ package org.eclipse.winery.repository.rest.resources.entitytypeimplementations;
 
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class EntityTypeImplementationResource extends AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeImplementationResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EntityTypeImplementationResource.class);
 
 
-	protected EntityTypeImplementationResource(DefinitionsChildId id) {
-		super(id);
-	}
+    protected EntityTypeImplementationResource(DefinitionsChildId id) {
+        super(id);
+    }
 }

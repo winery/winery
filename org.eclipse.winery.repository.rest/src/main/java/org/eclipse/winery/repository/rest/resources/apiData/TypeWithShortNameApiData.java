@@ -16,14 +16,14 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 public class TypeWithShortNameApiData {
 
-	public String shortName = "";
-	public String type = "";
+    public String shortName = "";
+    public String type = "";
 
-	public TypeWithShortNameApiData() {
-	}
+    public TypeWithShortNameApiData() {
+    }
 
-	public TypeWithShortNameApiData(String type, String shortName) {
-		this.type = type;
-		this.shortName = shortName;
-	}
+    public TypeWithShortNameApiData(String type, String shortName) {
+        this.type = type;
+        this.shortName = shortName;
+    }
 }

@@ -13,26 +13,28 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.policytypes;
 
-import java.util.Collection;
-
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TemplatesOfOneType;
 
+import java.util.Collection;
+
 public class TemplatesOfOnePolicyTypeResource extends TemplatesOfOneType {
 
-	private PolicyTypeId policyTypeId;
-	/**
-	 * Resource returns all templates/implementations of the given policy type
-	 * @param policyTypeId the Id of the policy type
-	 */
-	public TemplatesOfOnePolicyTypeResource(PolicyTypeId policyTypeId) {
-		this.policyTypeId = policyTypeId;
-	}
+    private PolicyTypeId policyTypeId;
 
-	@Override
-	public Collection<PolicyTemplateId> getAllImplementations() {
-		return RepositoryFactory.getRepository().getAllElementsReferencingGivenType(PolicyTemplateId.class, this.policyTypeId.getQName());
-	}
+    /**
+     * Resource returns all templates/implementations of the given policy type
+     *
+     * @param policyTypeId the Id of the policy type
+     */
+    public TemplatesOfOnePolicyTypeResource(PolicyTypeId policyTypeId) {
+        this.policyTypeId = policyTypeId;
+    }
+
+    @Override
+    public Collection<PolicyTemplateId> getAllImplementations() {
+        return RepositoryFactory.getRepository().getAllElementsReferencingGivenType(PolicyTemplateId.class, this.policyTypeId.getQName());
+    }
 }

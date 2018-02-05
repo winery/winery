@@ -1,5 +1,5 @@
 {
-  "isAbstract": "no",
-  "isFinal": "yes",
-  "derivedFrom": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab"
+    "isAbstract": "no",
+    "isFinal": "yes",
+    "derivedFrom": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab"
 }

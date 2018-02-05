@@ -17,11 +17,11 @@ import org.eclipse.winery.common.ids.admin.ConstraintTypesId;
 
 public class ConstraintTypesManager extends AbstractTypesManager {
 
-	public final static ConstraintTypesManager INSTANCE = new ConstraintTypesManager();
+    public final static ConstraintTypesManager INSTANCE = new ConstraintTypesManager();
 
 
-	private ConstraintTypesManager() {
-		super(new ConstraintTypesId());
-	}
+    private ConstraintTypesManager() {
+        super(new ConstraintTypesId());
+    }
 
 }

@@ -11,9 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Pipe, PipeTransform } from '@angular/core';
-import { ToscaTypes } from '../wineryInterfaces/enums';
-import { Utils } from '../wineryUtils/utils';
+import {Pipe, PipeTransform} from '@angular/core';
+import {ToscaTypes} from '../wineryInterfaces/enums';
+import {Utils} from '../wineryUtils/utils';
 
 @Pipe({
     name: 'toscaTypeToReadableName'

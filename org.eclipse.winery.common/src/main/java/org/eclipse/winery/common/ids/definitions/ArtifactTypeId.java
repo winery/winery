@@ -13,29 +13,28 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import java.util.Objects;
-
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
+import javax.xml.namespace.QName;
+import java.util.Objects;
+
 public class ArtifactTypeId extends EntityTypeId {
 
-	public ArtifactTypeId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public ArtifactTypeId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public ArtifactTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public ArtifactTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public ArtifactTypeId(QName qname) {
-		this(new Namespace(Objects.requireNonNull(qname).getNamespaceURI(), false), new XmlId(Objects.requireNonNull(qname).getLocalPart(), false));
-	}
+    public ArtifactTypeId(QName qname) {
+        this(new Namespace(Objects.requireNonNull(qname).getNamespaceURI(), false), new XmlId(Objects.requireNonNull(qname).getLocalPart(), false));
+    }
 
-	@Override
-	public String getGroup() {
-		return "ArtifactType";
-	}
+    @Override
+    public String getGroup() {
+        return "ArtifactType";
+    }
 }

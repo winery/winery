@@ -13,19 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-
 import org.eclipse.winery.bpmn2bpel.parser.ParseException;
 import org.eclipse.winery.bpmn2bpel.planwriter.PlanWriterException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 
 
 public class BPMN4Tosca2BpelTest {

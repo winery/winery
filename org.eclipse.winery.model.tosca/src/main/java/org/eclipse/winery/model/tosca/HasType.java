@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public interface HasType {
 
@@ -37,7 +37,7 @@ public interface HasType {
 
     /**
      * Calls setType(QName) with QName.valueOf(typeStr)
-     *
+     * <p>
      * Directly persists the resource
      *
      * @param typeStr a textual representation of a QName

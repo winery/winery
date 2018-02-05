@@ -13,23 +13,23 @@
  *******************************************************************************/
 package org.eclipse.winery.librarytests;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
-
-import org.apache.commons.lang3.time.DateUtils;
 
 /**
  * Date parsing test, when the system locale is not ENGLISH
  */
 public class DateTest {
 
-	public static void main(String[] args) throws ParseException {
-		// In case the following line is commented, this method throws a ParseException
-		Locale.setDefault(Locale.ENGLISH);
-		String modified = "Fri, 23 Mar 2012 11:04:56 GMT";
-		Date modifiedDate = DateUtils.parseDate(modified, org.eclipse.winery.repository.DateUtils.DEFAULT_PATTERNS);
-		System.out.println(modifiedDate);
-	}
+    public static void main(String[] args) throws ParseException {
+        // In case the following line is commented, this method throws a ParseException
+        Locale.setDefault(Locale.ENGLISH);
+        String modified = "Fri, 23 Mar 2012 11:04:56 GMT";
+        Date modifiedDate = DateUtils.parseDate(modified, org.eclipse.winery.repository.DateUtils.DEFAULT_PATTERNS);
+        System.out.println(modifiedDate);
+    }
 
 }

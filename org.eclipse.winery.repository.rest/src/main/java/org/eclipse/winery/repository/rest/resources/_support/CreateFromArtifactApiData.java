@@ -14,34 +14,33 @@
 
 package org.eclipse.winery.repository.rest.resources._support;
 
+import javax.xml.namespace.QName;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
-
 public class CreateFromArtifactApiData {
-	private Set<QName> artifactTypes = new HashSet<QName>();
-	private Set<QName> infrastructureNodeTypes = new HashSet<QName>();
-	
-	public CreateFromArtifactApiData(Set<QName> artifactTypes, Set<QName> infrastructureNodeTypes) {
-		this.artifactTypes = artifactTypes;
-		this.infrastructureNodeTypes = infrastructureNodeTypes;
-		
-	}
+    private Set<QName> artifactTypes = new HashSet<QName>();
+    private Set<QName> infrastructureNodeTypes = new HashSet<QName>();
 
-	public Set<QName> getArtifactTypes() {
-		return artifactTypes;
-	}
+    public CreateFromArtifactApiData(Set<QName> artifactTypes, Set<QName> infrastructureNodeTypes) {
+        this.artifactTypes = artifactTypes;
+        this.infrastructureNodeTypes = infrastructureNodeTypes;
 
-	public void setArtifactTypes(Set<QName> artifactTypes) {
-		this.artifactTypes = artifactTypes;
-	}
+    }
 
-	public Set<QName> getInfrastructureNodeTypes() {
-		return infrastructureNodeTypes;
-	}
+    public Set<QName> getArtifactTypes() {
+        return artifactTypes;
+    }
 
-	public void setInfrastructureNodeTypes(Set<QName> infrastructureNodeTypes) {
-		this.infrastructureNodeTypes = infrastructureNodeTypes;
-	}
+    public void setArtifactTypes(Set<QName> artifactTypes) {
+        this.artifactTypes = artifactTypes;
+    }
+
+    public Set<QName> getInfrastructureNodeTypes() {
+        return infrastructureNodeTypes;
+    }
+
+    public void setInfrastructureNodeTypes(Set<QName> infrastructureNodeTypes) {
+        this.infrastructureNodeTypes = infrastructureNodeTypes;
+    }
 }

@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { UrlEncodePipe } from './urlEncode.pipe';
-import { UrlDecodePipe } from './urlDecode.pipe';
-import { RemoveWhiteSpacesPipe } from './removeWhiteSpaces.pipe';
-import { ToscaTypeToCamelCase } from './toscaTypeToCamelCase.pipe';
-import { ToscaTypeToReadableNamePipe } from './toscaTypeToReadableName.pipe';
+import {NgModule} from '@angular/core';
+import {UrlEncodePipe} from './urlEncode.pipe';
+import {UrlDecodePipe} from './urlDecode.pipe';
+import {RemoveWhiteSpacesPipe} from './removeWhiteSpaces.pipe';
+import {ToscaTypeToCamelCase} from './toscaTypeToCamelCase.pipe';
+import {ToscaTypeToReadableNamePipe} from './toscaTypeToReadableName.pipe';
 
 @NgModule({
     imports: [],

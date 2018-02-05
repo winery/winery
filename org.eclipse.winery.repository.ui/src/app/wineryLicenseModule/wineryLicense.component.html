@@ -30,7 +30,7 @@
 
 <div *ngIf="isEditable">
     <div class="btn-group" dropdown style="margin-bottom: 2px;">
-        <button type="button" class="btn btn-default" >Choose a license: <span class="license-label">{{licenseType
+        <button type="button" class="btn btn-default">Choose a license: <span class="license-label">{{licenseType
             }}</span></button>
         <button type="button" dropdownToggle class="btn btn-default dropdown-toggle dropdown-toggle-split">
             <span class="caret"></span>
@@ -38,7 +38,8 @@
         </button>
         <ul *dropdownMenu class="dropdown-menu" role="menu">
             <li *ngFor="let item of options" role="presentation">
-                <button role="menuitem" class=" btn btn-link dropdown-item" (click)="dropdownAction(item)">{{ item }}</button>
+                <button role="menuitem" class=" btn btn-link dropdown-item" (click)="dropdownAction(item)">{{ item }}
+                </button>
             </li>
         </ul>
     </div>
@@ -47,7 +48,8 @@
         <button class="btn fa fa-floppy-o" aria-hidden="true" name="save" (click)="saveLicenseFile()"> Save</button>
         <button class="btn fa fa-ban" name="cancel" aria-hidden="true" (click)="cancelEdit()"> Cancel</button>
     </div>
-    <textarea style="width: 95%; height: 500px; resize: none; font-family: monospace" [(ngModel)]="licenseText"></textarea>
+    <textarea style="width: 95%; height: 500px; resize: none; font-family: monospace"
+              [(ngModel)]="licenseText"></textarea>
 
 </div>
 

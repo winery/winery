@@ -13,22 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
 import org.eclipse.winery.yaml.common.exception.InvalidToscaSyntax;
 import org.eclipse.winery.yaml.common.reader.yaml.Builder;
+
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FieldValidator {
     private Map<Class, Set<String>> declaredFields;

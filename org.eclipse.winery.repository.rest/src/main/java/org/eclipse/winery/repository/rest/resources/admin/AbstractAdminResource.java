@@ -13,38 +13,37 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.core.Response;
-
+import org.apache.commons.configuration.Configuration;
 import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.RestUtils;
 
-import org.apache.commons.configuration.Configuration;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.core.Response;
 
 /**
  * Instance of one admin resource
- *
+ * <p>
  * Offers a configuration object to store data
  */
 public abstract class AbstractAdminResource {
 
-	protected final Configuration configuration;
+    protected final Configuration configuration;
 
-	private final AdminId id;
+    private final AdminId id;
 
-	/**
-	 * Constructor used by child classes.
-	 * 
-	 * @param id the id of the element rendered by this resource
-	 */
-	protected AbstractAdminResource(AdminId id) {
-		this.id = id;
-		this.configuration = RepositoryFactory.getRepository().getConfiguration(id);
-	}
+    /**
+     * Constructor used by child classes.
+     *
+     * @param id the id of the element rendered by this resource
+     */
+    protected AbstractAdminResource(AdminId id) {
+        this.id = id;
+        this.configuration = RepositoryFactory.getRepository().getConfiguration(id);
+    }
 
-	@DELETE
-	public Response onDelete() {
-		return RestUtils.delete(this.id);
-	}
+    @DELETE
+    public Response onDelete() {
+        return RestUtils.delete(this.id);
+    }
 }

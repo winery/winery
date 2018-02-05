@@ -11,15 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
-import { Utils } from '../../wineryUtils/utils';
-import { ActivatedRoute, Params } from '@angular/router';
-import { backendBaseURL } from '../../configuration';
-import { Observable } from 'rxjs/Observable';
-import { Subscriber } from 'rxjs/Subscriber';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {WineryNotificationService} from '../../wineryNotificationModule/wineryNotification.service';
+import {isNullOrUndefined} from 'util';
+import {Utils} from '../../wineryUtils/utils';
+import {ActivatedRoute, Params} from '@angular/router';
+import {backendBaseURL} from '../../configuration';
+import {Observable} from 'rxjs/Observable';
+import {Subscriber} from 'rxjs/Subscriber';
 
 /**
  * This service provides OAuth login service. If the credentials are not set, it defaults
@@ -53,7 +53,7 @@ export class WineryOAuthService {
             if (!isNullOrUndefined(this.storage.getItem(StorageElements.accessToken))) {
                 this.getUserInformation();
             } else if (isNullOrUndefined(this.storage.getItem(StorageElements.state))) {
-                observer.next({ success: false });
+                observer.next({success: false});
                 observer.complete();
             } else {
                 const subscription = this.activatedRoute.queryParams
@@ -94,13 +94,13 @@ export class WineryOAuthService {
 
     getUserInformation() {
         if (isNullOrUndefined(this.storage.getItem(StorageElements.accessToken))) {
-            this.observer.next({ success: false });
+            this.observer.next({success: false});
             this.observer.complete();
             return;
         }
 
         const headers = new Headers();
-        const options = new RequestOptions({ headers: headers });
+        const options = new RequestOptions({headers: headers});
         headers.set('Accept', 'application/json');
 
         this.http.get('https://api.github.com/user?access_token=' + this.storage.getItem(StorageElements.accessToken), options)
@@ -115,7 +115,7 @@ export class WineryOAuthService {
         if (!isNullOrUndefined(params['code']) && !isNullOrUndefined(params['state'])) {
             if (params['state'] === this.storage.getItem(StorageElements.state)) {
                 const headers = new Headers();
-                const options = new RequestOptions({ headers: headers });
+                const options = new RequestOptions({headers: headers});
                 headers.set('Content-Type', 'application/json');
 
                 const payload = {
@@ -146,7 +146,7 @@ export class WineryOAuthService {
     private handleUserInformation(data: any) {
         this.storage.setItem(StorageElements.userName, data.name);
 
-        this.observer.next({ success: true, userName: data.name });
+        this.observer.next({success: true, userName: data.name});
         this.observer.complete();
     }
 

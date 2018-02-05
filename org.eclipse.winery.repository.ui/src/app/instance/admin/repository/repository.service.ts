@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { backendBaseURL } from '../../../configuration';
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {Http} from '@angular/http';
+import {backendBaseURL} from '../../../configuration';
+import {Observable} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class RepositoryService {

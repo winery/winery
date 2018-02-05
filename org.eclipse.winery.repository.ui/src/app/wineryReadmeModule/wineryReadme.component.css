@@ -12,11 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-.flash{
+.flash {
     background-color: #dbedff;
     padding: 16px;
     display: inline-block;
-    border: 1px solid rgba(27,31,35,0.15);
+    border: 1px solid rgba(27, 31, 35, 0.15);
     border-radius: 3px;
     font-size: larger;
 }

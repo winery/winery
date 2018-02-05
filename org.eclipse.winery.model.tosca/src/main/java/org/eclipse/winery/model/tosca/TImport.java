@@ -14,23 +14,18 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+
+import javax.xml.bind.annotation.*;
+import java.util.Objects;
 
 
 /**
  * <p>Java class for tImport complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tImport">
  *   &lt;complexContent>
@@ -75,8 +70,8 @@ public class TImport extends TExtensibleElements {
         if (!super.equals(o)) return false;
         TImport tImport = (TImport) o;
         return Objects.equals(namespace, tImport.namespace) &&
-                Objects.equals(location, tImport.location) &&
-                Objects.equals(importType, tImport.importType);
+            Objects.equals(location, tImport.location) &&
+            Objects.equals(importType, tImport.importType);
     }
 
     @Override

@@ -11,14 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { WineryUploaderComponent } from './wineryUploader.component';
-import { WineryUploaderService } from './wineryUploader.service';
-import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
-import { FileUploadModule } from 'ng2-file-upload';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
+import {NgModule} from '@angular/core';
+import {WineryUploaderComponent} from './wineryUploader.component';
+import {FileUploadModule} from 'ng2-file-upload';
+import {FormsModule} from '@angular/forms';
+import {BrowserModule} from '@angular/platform-browser';
+import {WineryLoaderModule} from '../wineryLoader/wineryLoader.module';
 
 @NgModule({
     imports: [
@@ -30,4 +28,5 @@ import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
     exports: [WineryUploaderComponent],
     declarations: [WineryUploaderComponent],
 })
-export class WineryUploaderModule { }
+export class WineryUploaderModule {
+}

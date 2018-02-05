@@ -70,7 +70,9 @@
             <div *ngIf="!isDeploymentArtifact">
                 <label class="control-label" for="interfaces">Interface Name</label>
                 <select [(ngModel)]="selectedInterface" id="interfaces" name="interfaces" class="form-control">
-                    <option *ngFor="let interfaceItem of interfacesList" [ngValue]="interfaceItem">{{interfaceItem.text}}</option>
+                    <option *ngFor="let interfaceItem of interfacesList" [ngValue]="interfaceItem">
+                        {{interfaceItem.text}}
+                    </option>
                 </select>
 
                 <label class="control-label" for="operations">Operations</label>
@@ -158,10 +160,12 @@
                 <tbody class="files">
                 <tr *ngFor="let file of filesList">
                     <td>
-                        <span class="preview"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}"><img src="{{file.thumbnailUrl}}"></a></span>
+                        <span class="preview"><a href="{{baseUrl + file.url}}" download="{{file.name}}"
+                                                 title="{{file.name}}"><img src="{{file.thumbnailUrl}}"></a></span>
                     </td>
                     <td>
-                        <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}">{{file.name}}</a></p>
+                        <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}">{{file.name}}</a>
+                        </p>
                     </td>
                     <td>
                         <span class="size">{{file.size / 1024 | number: '1.2-2'}} KB</span>

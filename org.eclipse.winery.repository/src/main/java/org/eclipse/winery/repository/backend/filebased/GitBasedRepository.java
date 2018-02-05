@@ -13,40 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
-
 import com.google.common.collect.Iterables;
 import com.google.common.eventbus.EventBus;
 import org.apache.tika.mime.MediaType;
-import org.eclipse.jgit.api.AddCommand;
-import org.eclipse.jgit.api.CleanCommand;
-import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.*;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
-import org.eclipse.jgit.api.RmCommand;
-import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Allows to reset repository to a certain commit id
@@ -118,7 +105,7 @@ public class GitBasedRepository extends FilebasedRepository {
      * @throws GitAPIException thrown when anything with adding or committing goes wrong.
      */
     public void addCommit(String message) throws GitAPIException {
-        addCommit(new String[]{"."}, message);
+        addCommit(new String[] {"."}, message);
     }
 
     public void addCommit(String[] patterns, String message) throws GitAPIException {

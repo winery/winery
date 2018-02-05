@@ -13,11 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml.tosca.datatypes;
 
-import java.util.Map;
-import java.util.Objects;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Map;
+import java.util.Objects;
 
 @XmlType(name = "Credential", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {
     "protocol",

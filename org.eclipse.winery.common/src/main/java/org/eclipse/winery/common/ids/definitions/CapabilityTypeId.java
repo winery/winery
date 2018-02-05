@@ -13,27 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
+import javax.xml.namespace.QName;
+
 public final class CapabilityTypeId extends EntityTypeId {
 
-	public CapabilityTypeId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public CapabilityTypeId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public CapabilityTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public CapabilityTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public CapabilityTypeId(QName qname) {
-		super(qname);
-	}
+    public CapabilityTypeId(QName qname) {
+        super(qname);
+    }
 
-	@Override
-	public String getGroup() {
-		return "CapabilityType";
-	}
+    @Override
+    public String getGroup() {
+        return "CapabilityType";
+    }
 }

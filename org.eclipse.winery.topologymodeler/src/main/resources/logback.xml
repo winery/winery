@@ -15,15 +15,15 @@
 
 <configuration>
 
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%line %method - %msg%n</pattern>
-		</encoder>
-	</appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%line %method - %msg%n</pattern>
+        </encoder>
+    </appender>
 
-	<logger name="org.eclipse.winery" level="DEBUG"/>
+    <logger name="org.eclipse.winery" level="DEBUG"/>
 
-	<root level="DEBUG">
-		<appender-ref ref="STDOUT" />
-	</root>
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
 </configuration>

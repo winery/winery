@@ -13,24 +13,23 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.interfaces;
 
-import java.util.List;
-
-import javax.ws.rs.Path;
-
 import org.eclipse.winery.model.tosca.TExportedInterface;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
 
+import javax.ws.rs.Path;
+import java.util.List;
+
 public class ExportedInterfaceResource extends EntityWithIdResource<TExportedInterface> {
 
-	public ExportedInterfaceResource(IIdDetermination<TExportedInterface> idDetermination, TExportedInterface o, int idx, List<TExportedInterface> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
+    public ExportedInterfaceResource(IIdDetermination<TExportedInterface> idDetermination, TExportedInterface o, int idx, List<TExportedInterface> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
 
-	@Path("exportedoperations/")
-	public ExportedOperationsResource getExportedOperationsResource() {
-		return new ExportedOperationsResource(this.o.getOperation(), this.res);
-	}
+    @Path("exportedoperations/")
+    public ExportedOperationsResource getExportedOperationsResource() {
+        return new ExportedOperationsResource(this.o.getOperation(), this.res);
+    }
 
 }

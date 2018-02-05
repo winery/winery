@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../configuration';
-import { WineryInstance, WineryTopologyTemplate } from '../wineryInterfaces/wineryComponent';
-import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
-import { ToscaTypes } from '../wineryInterfaces/enums';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../configuration';
+import {WineryInstance, WineryTopologyTemplate} from '../wineryInterfaces/wineryComponent';
+import {ToscaComponent} from '../wineryInterfaces/toscaComponent';
+import {ToscaTypes} from '../wineryInterfaces/enums';
 
 @Injectable()
 export class InstanceService {
@@ -112,15 +112,15 @@ export class InstanceService {
     }
 
     public getComponentData(): Observable<WineryInstance> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseURL + this.path + '/', options)
             .map(res => res.json());
     }
 
     public getTopologyTemplate(): Observable<WineryTopologyTemplate> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseURL + this.path + '/topologytemplate/', options)
             .map(res => res.json());
     }

@@ -18,21 +18,21 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptype
 
 public class RelationshipTypesVisualsApiData {
 
-	public String sourceArrowHead;
-	public String targetArrowHead;
-	public String dash;
-	public String color;
-	public String hoverColor;
+    public String sourceArrowHead;
+    public String targetArrowHead;
+    public String dash;
+    public String color;
+    public String hoverColor;
 
-	public RelationshipTypesVisualsApiData(VisualAppearanceResource visuals) {
-		this.sourceArrowHead = visuals.getSourceArrowHead();
-		this.targetArrowHead = visuals.getTargetArrowHead();
-		this.dash = visuals.getDash();
-		this.color = visuals.getColor();
-		this.hoverColor = visuals.getHoverColor();
-	}
+    public RelationshipTypesVisualsApiData(VisualAppearanceResource visuals) {
+        this.sourceArrowHead = visuals.getSourceArrowHead();
+        this.targetArrowHead = visuals.getTargetArrowHead();
+        this.dash = visuals.getDash();
+        this.color = visuals.getColor();
+        this.hoverColor = visuals.getHoverColor();
+    }
 
-	public RelationshipTypesVisualsApiData() {
+    public RelationshipTypesVisualsApiData() {
 
-	}
+    }
 }

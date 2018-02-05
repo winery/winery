@@ -11,13 +11,16 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--%>
-<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 
 <div>
-	<a class="btn btn-primary" id="newtab" style="cursor:pointer;" href="${it.location}" target="_blank" >Open Editor</a>
-	<a class="btn btn-info" href="topologytemplate/?view" target="_blank" >Open View</a>
-	<br>
-	<br>
-	<div id="loading" class="topologyTemplatePreviewSizing" style="position:absolute; background-color: white; z-index:5;">Loading preview...</div>
-	<iframe id="topologyTemplatePreview" class="topologyTemplatePreviewSizing" src="topologytemplate/?view=small" onload="$('#loading').hide(1000);"></iframe>
+    <a class="btn btn-primary" id="newtab" style="cursor:pointer;" href="${it.location}" target="_blank">Open Editor</a>
+    <a class="btn btn-info" href="topologytemplate/?view" target="_blank">Open View</a>
+    <br>
+    <br>
+    <div id="loading" class="topologyTemplatePreviewSizing"
+         style="position:absolute; background-color: white; z-index:5;">Loading preview...
+    </div>
+    <iframe id="topologyTemplatePreview" class="topologyTemplatePreviewSizing" src="topologytemplate/?view=small"
+            onload="$('#loading').hide(1000);"></iframe>
 </div>

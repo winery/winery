@@ -11,22 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { AdminRouterModule } from './adminRouter.module';
-import { LoggerComponent } from '../../instance/admin/logger/logger.component';
-import { NamespacesComponent } from '../../instance/admin/namespaces/namespaces.component';
-import { TypeWithShortNameComponent } from '../../instance/admin/typesWithShortName/typeWithShortName.component';
-import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
-import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
-import { RepositoryModule } from '../../instance/admin/repository/repository.module';
-import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
-import { CommonModule } from '@angular/common';
-import { WineryDuplicateValidatorModule } from '../../wineryValidators/wineryDuplicateValidator.module';
-import { WineryNamespaceSelectorModule } from '../../wineryNamespaceSelector/wineryNamespaceSelector.module';
-import { FormsModule } from '@angular/forms';
-import { ConsistencyCheckComponent } from '../../instance/admin/consistencyCheck/consistencyCheck.component';
-import { ProgressbarModule } from 'ngx-bootstrap';
-import { ErrorElementToLinkPipe } from '../../instance/admin/consistencyCheck/errorElementToLink.pipe';
+import {NgModule} from '@angular/core';
+import {AdminRouterModule} from './adminRouter.module';
+import {LoggerComponent} from '../../instance/admin/logger/logger.component';
+import {NamespacesComponent} from '../../instance/admin/namespaces/namespaces.component';
+import {TypeWithShortNameComponent} from '../../instance/admin/typesWithShortName/typeWithShortName.component';
+import {WineryModalModule} from '../../wineryModalModule/winery.modal.module';
+import {WineryTableModule} from '../../wineryTableModule/wineryTable.module';
+import {RepositoryModule} from '../../instance/admin/repository/repository.module';
+import {WineryLoaderModule} from '../../wineryLoader/wineryLoader.module';
+import {CommonModule} from '@angular/common';
+import {WineryDuplicateValidatorModule} from '../../wineryValidators/wineryDuplicateValidator.module';
+import {WineryNamespaceSelectorModule} from '../../wineryNamespaceSelector/wineryNamespaceSelector.module';
+import {FormsModule} from '@angular/forms';
+import {ConsistencyCheckComponent} from '../../instance/admin/consistencyCheck/consistencyCheck.component';
+import {ProgressbarModule} from 'ngx-bootstrap';
+import {ErrorElementToLinkPipe} from '../../instance/admin/consistencyCheck/errorElementToLink.pipe';
 
 @NgModule({
     imports: [

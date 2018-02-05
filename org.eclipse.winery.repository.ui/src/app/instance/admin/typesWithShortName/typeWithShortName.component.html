@@ -15,7 +15,7 @@
     <winery-loader></winery-loader>
 </div>
 <div *ngIf="!loading">
-        <winery-table [title]="title"
+    <winery-table [title]="title"
                   [columns]="columns"
                   [data]="types"
                   (addBtnClicked)="onAddClick()"
@@ -28,12 +28,13 @@
         </winery-modal-header>
         <winery-modal-body>
             <p *ngIf="elementToRemove != null" id="diagyesnomsg">
-                Do you want to delete the Element <span style="font-weight:bold;">{{ elementToRemove?.shortName }}</span>?
+                Do you want to delete the Element <span
+                style="font-weight:bold;">{{ elementToRemove?.shortName }}</span>?
             </p>
         </winery-modal-body>
         <winery-modal-footer (onOk)="deleteType();"
-                            [closeButtonLabel]="'No'"
-                            [okButtonLabel]="'Yes'">
+                             [closeButtonLabel]="'No'"
+                             [okButtonLabel]="'Yes'">
         </winery-modal-footer>
     </winery-modal>
 
@@ -55,7 +56,7 @@
                            [(ngModel)]="newTypeWithShortName.shortName"
                            [wineryDuplicateValidator]="validatorObjectShortName"/>
 
-                        <div *ngIf="shortName.errors && (shortName.dirty || shortName.touched)"
+                    <div *ngIf="shortName.errors && (shortName.dirty || shortName.touched)"
                          class="alert alert-danger">
                         <div [hidden]="!shortName.errors.wineryDuplicateValidator">
                             No duplicates allowed!
@@ -92,9 +93,9 @@
             </form>
         </winery-modal-body>
         <winery-modal-footer (onOk)="addType(shortName.value, type.value); addTypeForm.reset();"
-                            [closeButtonLabel]="'Cancel'"
-                            [okButtonLabel]="'Add'"
-                            [disableOkButton]="!addTypeForm?.form.valid">
+                             [closeButtonLabel]="'Cancel'"
+                             [okButtonLabel]="'Add'"
+                             [disableOkButton]="!addTypeForm?.form.valid">
         </winery-modal-footer>
     </winery-modal>
 </div>

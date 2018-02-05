@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { RepositoryService } from './repository.service';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { backendBaseURL } from '../../../configuration';
-import { ModalDirective } from 'ngx-bootstrap';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {RepositoryService} from './repository.service';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {backendBaseURL} from '../../../configuration';
+import {ModalDirective} from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-repository',

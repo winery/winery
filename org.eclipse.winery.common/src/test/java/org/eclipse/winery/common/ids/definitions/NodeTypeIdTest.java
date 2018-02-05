@@ -18,18 +18,18 @@ import org.junit.Test;
 
 public class NodeTypeIdTest {
 
-	@Test
-	public void equalityOfNodeTypeIds() {
-		NodeTypeId id1 = new NodeTypeId("ns1", "id1", false);
-		NodeTypeId id2 = new NodeTypeId("ns1", "id1", false);
-		Assert.assertEquals(id1, id2);
-	}
+    @Test
+    public void equalityOfNodeTypeIds() {
+        NodeTypeId id1 = new NodeTypeId("ns1", "id1", false);
+        NodeTypeId id2 = new NodeTypeId("ns1", "id1", false);
+        Assert.assertEquals(id1, id2);
+    }
 
-	@Test
-	public void twoDifferentIdTypesAreNotEqual() {
-		NodeTypeId id1 = new NodeTypeId("ns1", "id1", false);
-		RelationshipTypeId id2 = new RelationshipTypeId("ns1", "id1", false);
-		Assert.assertNotEquals(id1, id2);
-	}
+    @Test
+    public void twoDifferentIdTypesAreNotEqual() {
+        NodeTypeId id1 = new NodeTypeId("ns1", "id1", false);
+        RelationshipTypeId id2 = new RelationshipTypeId("ns1", "id1", false);
+        Assert.assertNotEquals(id1, id2);
+    }
 
 }

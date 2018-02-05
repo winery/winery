@@ -13,27 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
+import javax.xml.namespace.QName;
+
 public final class RequirementTypeId extends EntityTypeId {
 
-	public RequirementTypeId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public RequirementTypeId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public RequirementTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public RequirementTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public RequirementTypeId(QName qname) {
-		super(qname);
-	}
+    public RequirementTypeId(QName qname) {
+        super(qname);
+    }
 
-	@Override
-	public String getGroup() {
-		return "RequirementType";
-	}
+    @Override
+    public String getGroup() {
+        return "RequirementType";
+    }
 }

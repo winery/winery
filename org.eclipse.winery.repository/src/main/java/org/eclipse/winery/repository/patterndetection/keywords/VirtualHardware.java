@@ -9,7 +9,7 @@
 package org.eclipse.winery.repository.patterndetection.keywords;
 
 public enum VirtualHardware {
-	Openstack,
-	VSphere,
-	EC2
+    Openstack,
+    VSphere,
+    EC2
 }

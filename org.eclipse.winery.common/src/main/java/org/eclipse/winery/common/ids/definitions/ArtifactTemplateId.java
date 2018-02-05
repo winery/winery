@@ -13,27 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
+import javax.xml.namespace.QName;
+
 public class ArtifactTemplateId extends EntityTemplateId {
 
-	public ArtifactTemplateId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public ArtifactTemplateId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public ArtifactTemplateId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public ArtifactTemplateId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public ArtifactTemplateId(QName qname) {
-		super(qname);
-	}
+    public ArtifactTemplateId(QName qname) {
+        super(qname);
+    }
 
-	@Override
-	public String getGroup() {
-		return "ArtifactTemplate";
-	}
+    @Override
+    public String getGroup() {
+        return "ArtifactTemplate";
+    }
 }

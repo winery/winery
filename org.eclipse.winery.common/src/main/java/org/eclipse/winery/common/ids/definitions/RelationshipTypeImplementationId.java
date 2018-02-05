@@ -18,16 +18,16 @@ import org.eclipse.winery.common.ids.XmlId;
 
 public final class RelationshipTypeImplementationId extends EntityTypeImplementationId {
 
-	public RelationshipTypeImplementationId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public RelationshipTypeImplementationId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public RelationshipTypeImplementationId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public RelationshipTypeImplementationId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	@Override
-	public String getGroup() {
-		return "RelationshipTypeImplementation";
-	}
+    @Override
+    public String getGroup() {
+        return "RelationshipTypeImplementation";
+    }
 }

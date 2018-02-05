@@ -14,19 +14,19 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import java.util.List;
-
 import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+
+import java.util.List;
 
 public class CapabilityDefinitionsResourceApiData {
 
-	public List<TCapabilityDefinition> capabilityDefinitionsList;
+    public List<TCapabilityDefinition> capabilityDefinitionsList;
 
-	public CapabilityDefinitionsResourceApiData() {
-	}
+    public CapabilityDefinitionsResourceApiData() {
+    }
 
-	public CapabilityDefinitionsResourceApiData(List<TCapabilityDefinition> list) {
-		this.capabilityDefinitionsList = list;
-	}
+    public CapabilityDefinitionsResourceApiData(List<TCapabilityDefinition> list) {
+        this.capabilityDefinitionsList = list;
+    }
 }
 

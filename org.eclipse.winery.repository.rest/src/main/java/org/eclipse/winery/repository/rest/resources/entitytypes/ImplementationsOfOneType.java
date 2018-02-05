@@ -13,45 +13,45 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes;
 
+import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeId;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.eclipse.winery.common.ids.definitions.TopologyGraphElementEntityTypeId;
 
 /**
  * specifies the methods required by implementations.jsp
  */
 public abstract class ImplementationsOfOneType {
 
-	private final TopologyGraphElementEntityTypeId typeId;
+    private final TopologyGraphElementEntityTypeId typeId;
 
 
-	public ImplementationsOfOneType(TopologyGraphElementEntityTypeId typeId) {
-		this.typeId = typeId;
-	}
+    public ImplementationsOfOneType(TopologyGraphElementEntityTypeId typeId) {
+        this.typeId = typeId;
+    }
 
-	public TopologyGraphElementEntityTypeId getTypeId() {
-		return this.typeId;
-	}
+    public TopologyGraphElementEntityTypeId getTypeId() {
+        return this.typeId;
+    }
 
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public abstract Response getJSON();
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public abstract Response getJSON();
 
-	/**
-	 * @return a list of type implementations implementing the associated node type
-	 */
-	public abstract String getImplementationsTableData();
+    /**
+     * @return a list of type implementations implementing the associated node type
+     */
+    public abstract String getImplementationsTableData();
 
-	/**
-	 * The string used as URL part
-	 */
-	public abstract String getType();
+    /**
+     * The string used as URL part
+     */
+    public abstract String getType();
 
-	/**
-	 * The string displayed to the user
-	 */
-	public abstract String getTypeStr();
+    /**
+     * The string displayed to the user
+     */
+    public abstract String getTypeStr();
 }

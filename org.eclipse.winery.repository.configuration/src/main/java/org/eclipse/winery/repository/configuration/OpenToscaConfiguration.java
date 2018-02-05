@@ -15,23 +15,23 @@ package org.eclipse.winery.repository.configuration;
 
 public class OpenToscaConfiguration {
 
-	/**
-	 * @return true if the plan generator is available
-	 *
-	public boolean isPlanBuilderAvailable() {
-		// similar implementation as isContainerLocallyAvailable()
-		if (this.isPlanBuilderAvailable == null) {
-			String planBuilderURI = "http://localhost:1339/planbuilder";
-			this.isPlanBuilderAvailable = Utils.isResourceAvailable(planBuilderURI);
-		}
-		if (!this.isPlanBuilderAvailable) {
-			String containerPlanBuilderURI = "http://localhost:1337/containerapi/planbuilder";
-			this.isPlanBuilderAvailable = Utils.isResourceAvailable(containerPlanBuilderURI);
-		}
+    /**
+     * @return true if the plan generator is available
+     *
+    public boolean isPlanBuilderAvailable() {
+    // similar implementation as isContainerLocallyAvailable()
+    if (this.isPlanBuilderAvailable == null) {
+    String planBuilderURI = "http://localhost:1339/planbuilder";
+    this.isPlanBuilderAvailable = Utils.isResourceAvailable(planBuilderURI);
+    }
+    if (!this.isPlanBuilderAvailable) {
+    String containerPlanBuilderURI = "http://localhost:1337/containerapi/planbuilder";
+    this.isPlanBuilderAvailable = Utils.isResourceAvailable(containerPlanBuilderURI);
+    }
 
-		return this.isPlanBuilderAvailable;
-	}
-    */
+    return this.isPlanBuilderAvailable;
+    }
+     */
 	
 		/*
 	 * @return true iff the OpenTOSCA container is locally available
@@ -46,7 +46,6 @@ public class OpenToscaConfiguration {
 		return this.isContainerLocallyAvailable;
 	}
 	 */
-
 
 
 }

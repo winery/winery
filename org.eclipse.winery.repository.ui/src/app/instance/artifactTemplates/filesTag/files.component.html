@@ -25,13 +25,15 @@
 <div>
     <h5>Contained Files</h5>
     <table role="presentation">
-    <tbody class="files">
+        <tbody class="files">
         <tr *ngFor="let file of filesList">
             <td>
-                <span class="preview"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}"><img src="{{file.thumbnailUrl}}"></a></span>
+                <span class="preview"><a href="{{baseUrl + file.url}}" download="{{file.name}}"
+                                         title="{{file.name}}"><img src="{{file.thumbnailUrl}}"></a></span>
             </td>
             <td>
-                <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}">{{file.name}}</a></p>
+                <p class="name"><a href="{{baseUrl + file.url}}" download="{{file.name}}" title="{{file.name}}">{{file.name}}</a>
+                </p>
             </td>
             <td>
                 <span class="size">{{file.size / 1024 | number: '1.2-2'}} KB</span>
@@ -40,7 +42,7 @@
                 <button class="btn btn-sm btn-danger" (click)="deleteFile(file)">Delete</button>
             </td>
         </tr>
-    </tbody>
+        </tbody>
     </table>
 </div>
 

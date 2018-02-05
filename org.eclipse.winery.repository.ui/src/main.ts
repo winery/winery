@@ -12,11 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { environment } from './environments/environment';
+import {enableProdMode} from '@angular/core';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
+import {environment} from './environments/environment';
 
-import { WineryRepositoryModule } from './app/wineryRepository.module';
+import {WineryRepositoryModule} from './app/wineryRepository.module';
 
 if (environment.production) {
     enableProdMode();

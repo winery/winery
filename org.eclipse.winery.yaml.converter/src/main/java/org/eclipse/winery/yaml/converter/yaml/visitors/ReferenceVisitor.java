@@ -13,14 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.visitors;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.model.tosca.yaml.TArtifactType;
 import org.eclipse.winery.model.tosca.yaml.TEntityType;
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
@@ -32,6 +24,13 @@ import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionVisitor;
+
+import javax.xml.namespace.QName;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ReferenceVisitor extends ExceptionVisitor<ReferenceVisitor.Result, ReferenceVisitor.Parameter> {
     private final TServiceTemplate serviceTemplate;

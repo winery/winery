@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
-import { RequiredCapabilityTypeApiData } from './requiredCapabilityTypeApiData';
-import { backendBaseURL } from '../../../configuration';
-import { Router } from '@angular/router';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs';
+import {RequiredCapabilityTypeApiData} from './requiredCapabilityTypeApiData';
+import {backendBaseURL} from '../../../configuration';
+import {Router} from '@angular/router';
 
 @Injectable()
 export class RequiredCapabilityTypeService {

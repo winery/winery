@@ -14,21 +14,20 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.Objects;
 
 
 /**
  * <p>Java class for tParameter complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tParameter">
  *   &lt;complexContent>
@@ -66,8 +65,8 @@ public class TParameter {
         if (!(o instanceof TParameter)) return false;
         TParameter that = (TParameter) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(type, that.type) &&
-                required == that.required;
+            Objects.equals(type, that.type) &&
+            required == that.required;
     }
 
     @Override

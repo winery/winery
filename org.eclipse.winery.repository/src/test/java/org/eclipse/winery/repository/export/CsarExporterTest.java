@@ -13,39 +13,38 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 public class CsarExporterTest extends TestWithGitBackedRepository {
 
-	public ByteArrayInputStream createOutputAndInputStream(String commitId, DefinitionsChildId id) throws Exception {
-		setRevisionTo(commitId);
-		CsarExporter exporter = new CsarExporter();
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		exporter.writeCsar(RepositoryFactory.getRepository(), id, os);
-		return new ByteArrayInputStream(os.toByteArray());
-	}
+    public ByteArrayInputStream createOutputAndInputStream(String commitId, DefinitionsChildId id) throws Exception {
+        setRevisionTo(commitId);
+        CsarExporter exporter = new CsarExporter();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        exporter.writeCsar(RepositoryFactory.getRepository(), id, os);
+        return new ByteArrayInputStream(os.toByteArray());
+    }
 
-	@Test
-	public void csarIsValidZipForArtifactTemplateWithFilesAndSources() throws Exception {
-		try (InputStream inputStream = this.createOutputAndInputStream("origin/plain", new ArtifactTemplateId("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties", false)); ZipInputStream zis = new ZipInputStream(inputStream)) {
-			ZipEntry entry;
-			while ((entry = zis.getNextEntry()) != null) {
-				String name = entry.getName();
-				Assert.assertNotNull(name);
-				Assert.assertFalse("name contains backslashes", name.contains("\\"));
-			}
-		}
-	}
+    @Test
+    public void csarIsValidZipForArtifactTemplateWithFilesAndSources() throws Exception {
+        try (InputStream inputStream = this.createOutputAndInputStream("origin/plain", new ArtifactTemplateId("http://plain.winery.opentosca.org/artifacttemplates", "ArtifactTemplateWithFilesAndSources-ArtifactTypeWithoutProperties", false)); ZipInputStream zis = new ZipInputStream(inputStream)) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                String name = entry.getName();
+                Assert.assertNotNull(name);
+                Assert.assertFalse("name contains backslashes", name.contains("\\"));
+            }
+        }
+    }
 }

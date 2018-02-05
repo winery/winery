@@ -15,32 +15,32 @@ package org.eclipse.winery.bpmn2bpel.model;
 
 public abstract class Node {
 
-	private String id;
-	private String name;
-	private String type;
-	
-	public String getId() {
-		return id;
-	}
+    private String id;
+    private String name;
+    private String type;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
 }

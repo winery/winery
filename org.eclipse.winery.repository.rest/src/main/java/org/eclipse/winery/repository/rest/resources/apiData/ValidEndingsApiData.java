@@ -15,8 +15,8 @@
 package org.eclipse.winery.repository.rest.resources.apiData;
 
 public class ValidEndingsApiData {
-	public ValidEndingsApiDataSet validSource;
-	public ValidEndingsApiDataSet validTarget;
+    public ValidEndingsApiDataSet validSource;
+    public ValidEndingsApiDataSet validTarget;
 }
 
 

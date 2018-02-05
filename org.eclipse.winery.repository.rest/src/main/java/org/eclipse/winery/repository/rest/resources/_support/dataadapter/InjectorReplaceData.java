@@ -14,33 +14,32 @@
 
 package org.eclipse.winery.repository.rest.resources._support.dataadapter;
 
-import java.util.Map;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import java.util.Map;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "InjectorReplaceData")
 public class InjectorReplaceData {
 
-	@XmlJavaTypeAdapter(value = InjectionDataMapAdapter.class)
+    @XmlJavaTypeAdapter(value = InjectionDataMapAdapter.class)
     public Map<String, TTopologyTemplate> hostInjections;
 
-	@XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
-	public Map<String, TTopologyTemplate> connectionInjections;
+    @XmlJavaTypeAdapter(value = InjectionOptionsMapAdapter.class)
+    public Map<String, TTopologyTemplate> connectionInjections;
 
-	public void setHostInjections (Map<String, TTopologyTemplate> hostInjections) {
-		this.hostInjections = hostInjections;
-	}
+    public void setHostInjections(Map<String, TTopologyTemplate> hostInjections) {
+        this.hostInjections = hostInjections;
+    }
 
-	public void setConnectionInjections (Map<String, TTopologyTemplate> connectionInjections) {
-		this.connectionInjections = connectionInjections;
-	}
+    public void setConnectionInjections(Map<String, TTopologyTemplate> connectionInjections) {
+        this.connectionInjections = connectionInjections;
+    }
 
 }

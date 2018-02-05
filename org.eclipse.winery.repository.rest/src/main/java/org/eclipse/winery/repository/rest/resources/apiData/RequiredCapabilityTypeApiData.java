@@ -18,14 +18,14 @@ import javax.xml.namespace.QName;
 
 public class RequiredCapabilityTypeApiData {
 
-	public AvailableSuperclassesApiData capabilityTypeList;
-	public QName currentRequiredCapabilityType;
+    public AvailableSuperclassesApiData capabilityTypeList;
+    public QName currentRequiredCapabilityType;
 
-	public RequiredCapabilityTypeApiData() {
-	}
+    public RequiredCapabilityTypeApiData() {
+    }
 
-	public RequiredCapabilityTypeApiData(AvailableSuperclassesApiData capabilityTypeList, QName currentRequiredCapabilityType) {
-		this.capabilityTypeList = capabilityTypeList;
-		this.currentRequiredCapabilityType = currentRequiredCapabilityType;
-	}
+    public RequiredCapabilityTypeApiData(AvailableSuperclassesApiData capabilityTypeList, QName currentRequiredCapabilityType) {
+        this.capabilityTypeList = capabilityTypeList;
+        this.currentRequiredCapabilityType = currentRequiredCapabilityType;
+    }
 }

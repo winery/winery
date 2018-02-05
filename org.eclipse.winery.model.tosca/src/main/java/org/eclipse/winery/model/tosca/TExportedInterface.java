@@ -14,25 +14,19 @@
 
 package org.eclipse.winery.model.tosca;
 
+import org.eclipse.jdt.annotation.NonNull;
+
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.jdt.annotation.NonNull;
-
 
 /**
  * <p>Java class for tExportedInterface complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tExportedInterface">
  *   &lt;complexContent>
@@ -49,7 +43,7 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExportedInterface", propOrder = {
-        "operation"
+    "operation"
 })
 public class TExportedInterface {
 
@@ -65,7 +59,7 @@ public class TExportedInterface {
         if (!(o instanceof TExportedInterface)) return false;
         TExportedInterface that = (TExportedInterface) o;
         return Objects.equals(operation, that.operation) &&
-                Objects.equals(name, that.name);
+            Objects.equals(name, that.name);
     }
 
     @Override
@@ -75,20 +69,20 @@ public class TExportedInterface {
 
     /**
      * Gets the value of the operation property.
-     *
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the operation property.
-     *
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getOperation().add(newItem);
      * </pre>
-     *
-     *
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TExportedOperation }

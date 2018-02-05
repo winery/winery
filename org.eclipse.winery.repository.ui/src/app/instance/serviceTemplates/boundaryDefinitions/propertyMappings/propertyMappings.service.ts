@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../../configuration';
-import { ModalDirective } from 'ngx-bootstrap';
-import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import {Injectable, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../../../../configuration';
+import {ModalDirective} from 'ngx-bootstrap';
+import {PropertiesDefinitionsResourceApiData} from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
 
 export class Property {
     serviceTemplatePropertyRef: string;
@@ -45,16 +45,16 @@ export class PropertyMappingService {
     }
 
     getPropertyMappings(): Observable<PropertyMappingsApiData> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(this.path, options)
             .map(res => res.json());
     }
 
     addPropertyMapping(propertyMapping: Property) {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(this.path, JSON.stringify(propertyMapping), options);
     }
@@ -64,8 +64,8 @@ export class PropertyMappingService {
     }
 
     getPropertiesOfServiceTemplate(): Observable<string> {
-        const headers = new Headers({ 'Accept': 'application/xml' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/xml'});
+        const options = new RequestOptions({headers: headers});
 
         const newPath: string = this.path.replace('propertymappings', 'properties');
 
@@ -74,16 +74,16 @@ export class PropertyMappingService {
     }
 
     getTemplatesOfType(type: string): Observable<any> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseURL + '/' + type + '/', options)
             .map(res => res.json());
     }
 
     getTargetObjKVProperties(targetPath: string): Observable<PropertiesDefinitionsResourceApiData> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(backendBaseURL + '/' + targetPath + '/' + 'propertiesdefinition', options)
             .map(res => res.json());

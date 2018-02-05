@@ -13,13 +13,12 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.backend.consistencycheck;
 
-import java.util.Collections;
-import java.util.EnumSet;
-
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Collections;
+import java.util.EnumSet;
 
 public class ConsistencyCheckerTest {
 

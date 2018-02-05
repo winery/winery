@@ -14,21 +14,20 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.Objects;
 
 
 /**
  * <p>Java class for tPropertyConstraint complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tPropertyConstraint">
  *   &lt;complexContent>
@@ -42,7 +41,7 @@ import org.eclipse.jdt.annotation.NonNull;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPropertyConstraint")
 public class TPropertyConstraint
-        extends TConstraint {
+    extends TConstraint {
 
     @XmlAttribute(name = "property", required = true)
     protected String property;

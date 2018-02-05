@@ -11,23 +11,25 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--%>
-<%@tag description="Renders the list of requirements or capabilties" pageEncoding="UTF-8"%>
+<%@tag description="Renders the list of requirements or capabilties" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="nt" tagdir="/WEB-INF/tags/common/templates/nodetemplates/reqscaps" %>
 
-<%@attribute name="client" required="true" description="IWineryRepository" type="org.eclipse.winery.common.interfaces.IWineryRepository"%>
-<%@attribute name="list" required="false" type="java.util.List"%>
+<%@attribute name="client" required="true" description="IWineryRepository"
+             type="org.eclipse.winery.common.interfaces.IWineryRepository" %>
+<%@attribute name="list" required="false" type="java.util.List" %>
 <%@attribute name="repositoryURL" required="true" %>
-<%@attribute name="pathToImages" required="true" description="The path (URI path) to the image/ url, where xml.png is available. Has to end with '/'"%>
+<%@attribute name="pathToImages" required="true"
+             description="The path (URI path) to the image/ url, where xml.png is available. Has to end with '/'" %>
 
 <nt:reqsorcaps
-	headerLabel="Capabilities"
-	cssClassPrefix="capabilities"
-	list="${list}"
-	shortName="Cap"
-	TReqOrCapTypeClass="<%=org.eclipse.winery.model.tosca.TCapabilityType.class%>"
-	repositoryURL="${repositoryURL}"
-	typeURLFragment="capabilitytypes"
-	pathToImages="${pathToImages}"
-	client="${client}"
+    headerLabel="Capabilities"
+    cssClassPrefix="capabilities"
+    list="${list}"
+    shortName="Cap"
+    TReqOrCapTypeClass="<%=org.eclipse.winery.model.tosca.TCapabilityType.class%>"
+    repositoryURL="${repositoryURL}"
+    typeURLFragment="capabilitytypes"
+    pathToImages="${pathToImages}"
+    client="${client}"
 />

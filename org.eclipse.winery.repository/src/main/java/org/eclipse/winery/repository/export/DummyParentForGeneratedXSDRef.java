@@ -18,28 +18,28 @@ import org.eclipse.winery.common.ids.XmlId;
 
 public class DummyParentForGeneratedXSDRef extends GenericId {
 
-	protected DummyParentForGeneratedXSDRef() {
-		super(new XmlId("dummy", false));
-	}
+    protected DummyParentForGeneratedXSDRef() {
+        super(new XmlId("dummy", false));
+    }
 
-	@Override
-	public int compareTo(GenericId o) {
-		throw new IllegalStateException("Should never be called.");
-	}
+    @Override
+    public int compareTo(GenericId o) {
+        throw new IllegalStateException("Should never be called.");
+    }
 
-	@Override
-	public GenericId getParent() {
-		throw new IllegalStateException("Should never be called.");
-	}
+    @Override
+    public GenericId getParent() {
+        throw new IllegalStateException("Should never be called.");
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return (obj instanceof DummyParentForGeneratedXSDRef);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof DummyParentForGeneratedXSDRef);
+    }
 
-	@Override
-	public int hashCode() {
-		return 0;
-	}
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 
 }

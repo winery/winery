@@ -13,27 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
+import javax.xml.namespace.QName;
+
 public final class PolicyTemplateId extends EntityTemplateId {
 
-	public PolicyTemplateId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public PolicyTemplateId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public PolicyTemplateId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public PolicyTemplateId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public PolicyTemplateId(QName qname) {
-		super(qname);
-	}
+    public PolicyTemplateId(QName qname) {
+        super(qname);
+    }
 
-	@Override
-	public String getGroup() {
-		return "PolicyTemplate";
-	}
+    @Override
+    public String getGroup() {
+        return "PolicyTemplate";
+    }
 }

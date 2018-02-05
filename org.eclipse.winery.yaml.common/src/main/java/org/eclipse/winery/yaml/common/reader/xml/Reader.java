@@ -13,16 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.reader.xml;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
+import org.eclipse.winery.model.tosca.Definitions;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-
-import org.eclipse.winery.model.tosca.Definitions;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Path;
 
 public class Reader {
     private Unmarshaller unmarshaller;

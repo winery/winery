@@ -14,31 +14,30 @@
 
 package org.eclipse.winery.repository.rest.resources._support.dataadapter;
 
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-
 public class InjectionOptionsMapAdapter extends XmlAdapter<InjectionOptions, Map<String, List<TTopologyTemplate>>> {
 
-	@Override
-	public Map<String, List<TTopologyTemplate>> unmarshal(InjectionOptions injectionOptions) throws Exception {
-		Map<String, List<TTopologyTemplate>> mapInjections = new HashMap<>();
-		for (InjectionOption injection : injectionOptions.getInjectionOption()) {
-			mapInjections.put(injection.nodeID, injection.injectionOptions);
-		}
-		return mapInjections;
-	}
+    @Override
+    public Map<String, List<TTopologyTemplate>> unmarshal(InjectionOptions injectionOptions) throws Exception {
+        Map<String, List<TTopologyTemplate>> mapInjections = new HashMap<>();
+        for (InjectionOption injection : injectionOptions.getInjectionOption()) {
+            mapInjections.put(injection.nodeID, injection.injectionOptions);
+        }
+        return mapInjections;
+    }
 
-	@Override
-	public InjectionOptions marshal(Map<String, List<TTopologyTemplate>> mapInjectionOptions) throws Exception {
-		InjectionOptions injectionOptions = new InjectionOptions();
-		for (Map.Entry<String, List<TTopologyTemplate>> entry : mapInjectionOptions.entrySet()) {
-			injectionOptions.addInjectionOptions(new InjectionOption(entry.getKey(), entry.getValue()));
-		}
-		return injectionOptions;
-	}
+    @Override
+    public InjectionOptions marshal(Map<String, List<TTopologyTemplate>> mapInjectionOptions) throws Exception {
+        InjectionOptions injectionOptions = new InjectionOptions();
+        for (Map.Entry<String, List<TTopologyTemplate>> entry : mapInjectionOptions.entrySet()) {
+            injectionOptions.addInjectionOptions(new InjectionOption(entry.getKey(), entry.getValue()));
+        }
+        return injectionOptions;
+    }
 }

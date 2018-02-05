@@ -11,14 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Http, RequestOptionsArgs } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import {Injectable} from '@angular/core';
+import {Http, RequestOptionsArgs} from '@angular/http';
+import {Observable} from 'rxjs/Rx';
 import './rxjs-operators';
 
 @Injectable()
 export class HttpService {
-    constructor(private http: Http) {}
+    constructor(private http: Http) {
+    }
 
     public get(uri: string): Observable<any> {
         return this.getHttp('get', uri);

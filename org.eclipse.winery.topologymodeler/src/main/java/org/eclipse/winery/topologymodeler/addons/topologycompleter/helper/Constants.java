@@ -12,78 +12,78 @@
 
 package org.eclipse.winery.topologymodeler.addons.topologycompleter.helper;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.topologymodeler.addons.topologycompleter.topologycompletion.CompletionInterface;
+
+import javax.xml.namespace.QName;
 
 /**
  * This class contains several constants used by the completion add-on.
  */
 public class Constants {
 
-	/**
-	 * Constant for the QName of the "deferred" type.
-	 */
-	public static final QName DEFERRED_QNAME = new QName("http://www.opentosca.org", "deferred");
+    /**
+     * Constant for the QName of the "deferred" type.
+     */
+    public static final QName DEFERRED_QNAME = new QName("http://www.opentosca.org", "deferred");
 
-	/**
-	 * Constant for the QName of the "PlaceHolder" type.
-	 */
-	public static final QName PLACE_HOLDER_QNAME = new QName("http://www.opentosca.org", "PlaceHolder");
+    /**
+     * Constant for the QName of the "PlaceHolder" type.
+     */
+    public static final QName PLACE_HOLDER_QNAME = new QName("http://www.opentosca.org", "PlaceHolder");
 
-	/**
-	 * Contains possible types of expandable place holders.
-	 */
-	public enum PlaceHolders {
-		WEBSERVER, DATABASE, OPERATINGSYSTEM, CLOUDPROVIDER;
+    /**
+     * Contains possible types of expandable place holders.
+     */
+    public enum PlaceHolders {
+        WEBSERVER, DATABASE, OPERATINGSYSTEM, CLOUDPROVIDER;
 
-		/**
-		 * Overwritten toString() method to return formatted strings.
-		 */
-		public String toString() {
+        /**
+         * Overwritten toString() method to return formatted strings.
+         */
+        public String toString() {
 
-			switch (this) {
-				case WEBSERVER:
-					return "Webserver";
-				case DATABASE:
-					return "Database";
-				case OPERATINGSYSTEM:
-					return "OperatingSystem";
-				case CLOUDPROVIDER:
-					return "CloudProvider";
-				default:
-					return null;
-			}
-		}
-	}
+            switch (this) {
+                case WEBSERVER:
+                    return "Webserver";
+                case DATABASE:
+                    return "Database";
+                case OPERATINGSYSTEM:
+                    return "OperatingSystem";
+                case CLOUDPROVIDER:
+                    return "CloudProvider";
+                default:
+                    return null;
+            }
+        }
+    }
 
-	/**
-	 * The messages returned by the {@link CompletionInterface}
-	 */
-	public enum CompletionMessages {
-		TOPOLOGYCOMPLETE, USERINTERACTION, STEPBYSTEP, SUCCESS, USERTOPOLOGYSELECTION, FAILURE;
+    /**
+     * The messages returned by the {@link CompletionInterface}
+     */
+    public enum CompletionMessages {
+        TOPOLOGYCOMPLETE, USERINTERACTION, STEPBYSTEP, SUCCESS, USERTOPOLOGYSELECTION, FAILURE;
 
-		/**
-		 * Overwritten toString() method to return formatted strings.
-		 */
-		public String toString() {
+        /**
+         * Overwritten toString() method to return formatted strings.
+         */
+        public String toString() {
 
-			switch (this) {
-				case TOPOLOGYCOMPLETE:
-					return "topologyComplete";
-				case USERINTERACTION:
-					return "userInteraction";
-				case STEPBYSTEP:
-					return "stepByStep";
-				case SUCCESS:
-					return "success";
-				case USERTOPOLOGYSELECTION:
-					return "userTopologySelection";
-				case FAILURE:
-					return "failure";
-				default:
-					return null;
-			}
-		}
-	}
+            switch (this) {
+                case TOPOLOGYCOMPLETE:
+                    return "topologyComplete";
+                case USERINTERACTION:
+                    return "userInteraction";
+                case STEPBYSTEP:
+                    return "stepByStep";
+                case SUCCESS:
+                    return "success";
+                case USERTOPOLOGYSELECTION:
+                    return "userTopologySelection";
+                case FAILURE:
+                    return "failure";
+                default:
+                    return null;
+            }
+        }
+    }
 }

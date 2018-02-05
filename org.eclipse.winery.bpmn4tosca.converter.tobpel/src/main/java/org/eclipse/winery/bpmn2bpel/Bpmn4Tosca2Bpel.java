@@ -13,21 +13,20 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel;
 
+import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
+import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
+import org.eclipse.winery.bpmn2bpel.parser.ParseException;
+import org.eclipse.winery.bpmn2bpel.planwriter.BpelPlanArtefactWriter;
+import org.eclipse.winery.bpmn2bpel.planwriter.PlanWriterException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
-import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
-import org.eclipse.winery.bpmn2bpel.parser.ParseException;
-import org.eclipse.winery.bpmn2bpel.planwriter.BpelPlanArtefactWriter;
-import org.eclipse.winery.bpmn2bpel.planwriter.PlanWriterException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Bpmn4Tosca2Bpel {
 
@@ -49,7 +48,7 @@ public class Bpmn4Tosca2Bpel {
 	 * Transforms the given BPMN4Tosca Json management into a BPEL management plan that can be enacted with the OpenTosca runtime.
 	 * <p>
 	 * The created zip file contains the following files
-	 *
+	 * <p>
 	 * - bpel plan
 	 * - plan wsdl
 	 * - sevice invoker wsdl
@@ -57,10 +56,8 @@ public class Bpmn4Tosca2Bpel {
 	 * - deployment descriptor
 	 * generated BPEL plan, the corresponding WSDL files and a deployment descriptor.
 	 *
-	 *
 	 * @param srcBpmn4ToscaJsonFile
 	 * @param targetBPELArchive
-	 *
 	 * @throws ParseException
 	 * @throws PlanWriterException
 	 */

@@ -17,34 +17,34 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
 
 enum ValidEndingsTypeEnum {
-	EVERYTHING, NODETYPE, REQTYPE, CAPTYPE;
+    EVERYTHING, NODETYPE, REQTYPE, CAPTYPE;
 }
 
 public class ValidEndingsApiDataSet {
-	public ValidEndingsTypeEnum validEndingsSelectionType;
-	public Select2DataItem validDataSet;
+    public ValidEndingsTypeEnum validEndingsSelectionType;
+    public Select2DataItem validDataSet;
 
-	public ValidEndingsApiDataSet() {
-	}
+    public ValidEndingsApiDataSet() {
+    }
 
-	public ValidEndingsApiDataSet(String type, Select2DataItem validDataSet) {
-		switch (type) {
-			case "everything":
-				this.validEndingsSelectionType = ValidEndingsTypeEnum.EVERYTHING;
-				break;
-			case "nodeType":
-				this.validEndingsSelectionType = ValidEndingsTypeEnum.NODETYPE;
-				break;
-			case "reqType":
-				this.validEndingsSelectionType = ValidEndingsTypeEnum.REQTYPE;
-				break;
-			case "capType":
-				this.validEndingsSelectionType = ValidEndingsTypeEnum.CAPTYPE;
-				break;
-			default:
-				this.validEndingsSelectionType = ValidEndingsTypeEnum.EVERYTHING;
-				break;
-		}
-		this.validDataSet = validDataSet;
-	}
+    public ValidEndingsApiDataSet(String type, Select2DataItem validDataSet) {
+        switch (type) {
+            case "everything":
+                this.validEndingsSelectionType = ValidEndingsTypeEnum.EVERYTHING;
+                break;
+            case "nodeType":
+                this.validEndingsSelectionType = ValidEndingsTypeEnum.NODETYPE;
+                break;
+            case "reqType":
+                this.validEndingsSelectionType = ValidEndingsTypeEnum.REQTYPE;
+                break;
+            case "capType":
+                this.validEndingsSelectionType = ValidEndingsTypeEnum.CAPTYPE;
+                break;
+            default:
+                this.validEndingsSelectionType = ValidEndingsTypeEnum.EVERYTHING;
+                break;
+        }
+        this.validDataSet = validDataSet;
+    }
 }

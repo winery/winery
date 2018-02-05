@@ -11,21 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { SelfServicePortalComponent } from './selfServicePortal.component';
-import { SelfServiceDescriptionComponent } from './selfServicePortalDescription.component';
-import { HttpModule } from '@angular/http';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
-import { ImageUploadComponent } from './imageUpload.component';
-import { SelfServicePortalImagesComponent } from './selfServicePortalImages.component';
-import { SelfServicePortalOptionsComponent } from './selfServicePortalOptions.component';
-import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
-import { WineryUploaderModule } from '../../../wineryUploader/wineryUploader.module';
-import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
-import { WineryEditorModule } from '../../../wineryEditorModule/wineryEditor.module';
-import { WineryEditXMLModule } from '../../sharedComponents/editXML/editXML.module';
+import {NgModule} from '@angular/core';
+import {SelfServicePortalComponent} from './selfServicePortal.component';
+import {SelfServiceDescriptionComponent} from './selfServicePortalDescription.component';
+import {HttpModule} from '@angular/http';
+import {FormsModule} from '@angular/forms';
+import {BrowserModule} from '@angular/platform-browser';
+import {RouterModule} from '@angular/router';
+import {ImageUploadComponent} from './imageUpload.component';
+import {SelfServicePortalImagesComponent} from './selfServicePortalImages.component';
+import {SelfServicePortalOptionsComponent} from './selfServicePortalOptions.component';
+import {WineryTableModule} from '../../../wineryTableModule/wineryTable.module';
+import {WineryUploaderModule} from '../../../wineryUploader/wineryUploader.module';
+import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
+import {WineryEditorModule} from '../../../wineryEditorModule/wineryEditor.module';
+import {WineryEditXMLModule} from '../../sharedComponents/editXML/editXML.module';
 
 @NgModule({
     imports: [

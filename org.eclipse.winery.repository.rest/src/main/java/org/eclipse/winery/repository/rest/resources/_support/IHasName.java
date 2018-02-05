@@ -13,33 +13,29 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import io.swagger.annotations.ApiOperation;
+
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import io.swagger.annotations.ApiOperation;
 
 /**
  * Ensures that the AbstractComponentInstance has a getName method
  */
 public interface IHasName {
 
-	@GET
-	@Path("name")
-	// @formatter:off
-	@ApiOperation(value = "Returns the name of the element. " +
-	"Defaults to the ID of the element. " +
-	"Some other ComponentInstances either carry a name or an ID. ")
-	// @formatter:on
-	@Produces(MediaType.TEXT_PLAIN)
-	String getName();
+    @GET
+    @Path("name")
+    // @formatter:off
+    @ApiOperation(value = "Returns the name of the element. " +
+        "Defaults to the ID of the element. " +
+        "Some other ComponentInstances either carry a name or an ID. ")
+    // @formatter:on
+    @Produces(MediaType.TEXT_PLAIN)
+    String getName();
 
-	@PUT
-	@Path("name")
-	Response setName(@FormParam("value") String name);
+    @PUT
+    @Path("name")
+    Response setName(@FormParam("value") String name);
 
 }

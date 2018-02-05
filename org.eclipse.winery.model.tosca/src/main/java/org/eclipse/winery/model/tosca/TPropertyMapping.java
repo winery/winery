@@ -14,24 +14,18 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import org.eclipse.jdt.annotation.NonNull;
+
+import javax.xml.bind.annotation.*;
+import java.util.Objects;
 
 
 /**
  * <p>Java class for tPropertyMapping complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tPropertyMapping">
  *   &lt;complexContent>
@@ -68,8 +62,8 @@ public class TPropertyMapping {
         if (!(o instanceof TPropertyMapping)) return false;
         TPropertyMapping that = (TPropertyMapping) o;
         return Objects.equals(serviceTemplatePropertyRef, that.serviceTemplatePropertyRef) &&
-                Objects.equals(targetObjectRef, that.targetObjectRef) &&
-                Objects.equals(targetPropertyRef, that.targetPropertyRef);
+            Objects.equals(targetObjectRef, that.targetObjectRef) &&
+            Objects.equals(targetPropertyRef, that.targetPropertyRef);
     }
 
     @Override

@@ -13,27 +13,26 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
-import java.util.Optional;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.backend.ImportUtils;
-
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Optional;
+
 public class ImportUtilsTest extends TestWithGitBackedRepository {
 
-	@Test
-	public void getLocationForImportTest() throws Exception {
-		this.setRevisionTo("5fdcffa9ccd17743d5498cab0914081fc33606e9");
+    @Test
+    public void getLocationForImportTest() throws Exception {
+        this.setRevisionTo("5fdcffa9ccd17743d5498cab0914081fc33606e9");
 
-		XSDImportId id = new XSDImportId(
-			new Namespace("http://opentosca.org/nodetypes", false),
-			new XmlId("CloudProviderProperties", false));
-		Optional<String> importLocation = ImportUtils.getLocation(id);
+        XSDImportId id = new XSDImportId(
+            new Namespace("http://opentosca.org/nodetypes", false),
+            new XmlId("CloudProviderProperties", false));
+        Optional<String> importLocation = ImportUtils.getLocation(id);
 
-		Assert.assertEquals(true, importLocation.isPresent());
-	}
+        Assert.assertEquals(true, importLocation.isPresent());
+    }
 }

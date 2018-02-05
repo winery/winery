@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
-import { WineryNamespaceSelectorService } from './wineryNamespaceSelector.service';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { NamespaceWithPrefix } from '../wineryInterfaces/namespaceWithPrefix';
-import { StartNamespaces, ToscaTypes } from '../wineryInterfaces/enums';
-import { isNullOrUndefined } from 'util';
+import {Component, ElementRef, forwardRef, Input, OnInit, ViewChild} from '@angular/core';
+import {WineryNamespaceSelectorService} from './wineryNamespaceSelector.service';
+import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {NamespaceWithPrefix} from '../wineryInterfaces/namespaceWithPrefix';
+import {StartNamespaces, ToscaTypes} from '../wineryInterfaces/enums';
+import {isNullOrUndefined} from 'util';
 
 const noop = () => {
 };

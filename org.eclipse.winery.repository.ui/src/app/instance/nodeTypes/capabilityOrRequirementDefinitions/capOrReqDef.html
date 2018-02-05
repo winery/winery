@@ -100,7 +100,9 @@
     <winery-modal-header [title]="'Constraints'"></winery-modal-header>
     <winery-modal-body>
         <winery-loader *ngIf="loadingConstraints"></winery-loader>
-        <div id="noconstraintsexisting" *ngIf="noConstraintsExistingFlag && !loadingConstraints;  else elseBlock">No constraints defined</div>
+        <div id="noconstraintsexisting" *ngIf="noConstraintsExistingFlag && !loadingConstraints;  else elseBlock">No
+            constraints defined
+        </div>
         <ng-template #elseBlock>
             <ol id="constraintlist" *ngIf="!loadingConstraints">
                 <li *ngFor="let constraint of constraintList ;" style="margin-bottom: 5px;">

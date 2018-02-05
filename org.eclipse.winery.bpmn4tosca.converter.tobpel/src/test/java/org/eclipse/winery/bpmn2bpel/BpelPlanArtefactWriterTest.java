@@ -13,20 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
-
+import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
+import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
+import org.eclipse.winery.bpmn2bpel.parser.ParseException;
 import org.eclipse.winery.bpmn2bpel.planwriter.BpelPlanArtefactWriter;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
-import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
-import org.eclipse.winery.bpmn2bpel.parser.ParseException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 
 
 public class BpelPlanArtefactWriterTest {

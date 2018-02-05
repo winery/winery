@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { InterfaceOperationApiData } from '../../sharedComponents/interfaces/interfacesApiData';
+import {InterfaceOperationApiData} from '../../sharedComponents/interfaces/interfacesApiData';
 
 export class PlanModelReverence {
     reference = '';

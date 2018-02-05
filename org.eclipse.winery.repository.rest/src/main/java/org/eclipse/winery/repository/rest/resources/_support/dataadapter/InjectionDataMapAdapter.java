@@ -14,30 +14,29 @@
 
 package org.eclipse.winery.repository.rest.resources._support.dataadapter;
 
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-
 public class InjectionDataMapAdapter extends XmlAdapter<Injections, Map<String, TTopologyTemplate>> {
 
-	@Override
-	public Map<String, TTopologyTemplate> unmarshal(Injections injections) throws Exception {
-		Map<String, TTopologyTemplate> mapInjections = new HashMap<>();
-		for (Injection injection : injections.getInjections()) {
-			mapInjections.put(injection.nodeID, injection.injectedTopologyFragment);
-		}
-		return mapInjections;
-	}
+    @Override
+    public Map<String, TTopologyTemplate> unmarshal(Injections injections) throws Exception {
+        Map<String, TTopologyTemplate> mapInjections = new HashMap<>();
+        for (Injection injection : injections.getInjections()) {
+            mapInjections.put(injection.nodeID, injection.injectedTopologyFragment);
+        }
+        return mapInjections;
+    }
 
-	@Override
-	public Injections marshal(Map<String, TTopologyTemplate> mapInjections) throws Exception {
-		Injections injections = new Injections();
-		for (Map.Entry<String, TTopologyTemplate> entry : mapInjections.entrySet()) {
-			injections.addInjection(new Injection(entry.getKey(), entry.getValue()));
-		}
-		return injections;
-	}
+    @Override
+    public Injections marshal(Map<String, TTopologyTemplate> mapInjections) throws Exception {
+        Injections injections = new Injections();
+        for (Map.Entry<String, TTopologyTemplate> entry : mapInjections.entrySet()) {
+            injections.addInjection(new Injection(entry.getKey(), entry.getValue()));
+        }
+        return injections;
+    }
 }

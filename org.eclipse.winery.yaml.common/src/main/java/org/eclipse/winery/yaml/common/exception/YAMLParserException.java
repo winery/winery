@@ -13,14 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.exception;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.slf4j.helpers.MessageFormatter;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.slf4j.helpers.MessageFormatter;
 
 public abstract class YAMLParserException extends Exception {
     private List<Object> argArray;

@@ -14,28 +14,18 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
+
+import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDefinitions", propOrder = {
@@ -44,7 +34,7 @@ import org.w3c.dom.Element;
     "types",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation"
 })
-@XmlSeeAlso({
+@XmlSeeAlso( {
     Definitions.class
 })
 public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
@@ -54,7 +44,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     protected List<TImport> _import;
     @XmlElement(name = "Types")
     protected TDefinitions.Types types;
-    @XmlElements({
+    @XmlElements( {
         @XmlElement(name = "RelationshipType", type = TRelationshipType.class),
         @XmlElement(name = "RelationshipTypeImplementation", type = TRelationshipTypeImplementation.class),
         @XmlElement(name = "ArtifactTemplate", type = TArtifactTemplate.class),
@@ -135,20 +125,20 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
     /**
      * Gets the value of the import property.
-     *
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the import property.
-     *
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getImport().add(newItem);
      * </pre>
-     *
-     *
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TImport }
@@ -172,17 +162,17 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
     /**
      * Gets the value of the serviceTemplateOrNodeTypeOrNodeTypeImplementation property.
-     *
+     * <p>
      * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
      * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
      * method for the serviceTemplateOrNodeTypeOrNodeTypeImplementation property.
-     *
+     * <p>
      * <p> For example, to add a new item, do as follows:
      * <pre>
      *    getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(newItem);
      * </pre>
-     *
-     *
+     * <p>
+     * <p>
      * <p> Objects of the following type(s) are allowed in the list {@link TRelationshipType } {@link
      * TRelationshipTypeImplementation } {@link TArtifactTemplate } {@link TPolicyTemplate } {@link TServiceTemplate }
      * {@link TArtifactType } {@link TCapabilityType } {@link TNodeType } {@link TNodeTypeImplementation } {@link
@@ -324,20 +314,20 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         /**
          * Gets the value of the extension property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the extension property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getExtension().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TExtension }
@@ -362,20 +352,20 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         /**
          * Gets the value of the any property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the any property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getAny().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link Element }

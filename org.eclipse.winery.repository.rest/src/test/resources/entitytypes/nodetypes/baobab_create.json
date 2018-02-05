@@ -1,4 +1,4 @@
 {
-	"namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
-	"localname": "baobab"
+    "namespace": "http://winery.opentosca.org/test/nodetypes/fruits",
+    "localname": "baobab"
 }

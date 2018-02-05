@@ -17,8 +17,10 @@
     <label for="{{id}} + DisplayDiv">{{label}}</label>
     <div id="{{id}} + DisplayDiv" style="width:100%">
         <div class="col-md-2">
-            <a href="{{url}}" target="_blank"><img id="{{id}} + Img" [style.width]="imageWidth" src="{{url}}" alt="n/a" /></a>
+            <a href="{{url}}" target="_blank"><img id="{{id}} + Img" [style.width]="imageWidth" src="{{url}}"
+                                                   alt="n/a"/></a>
         </div>
-        <button class="btn btn-default btn-xs" type="button" (click)="uploader.show();">Upload...</button> or drop the image in this area.
+        <button class="btn btn-default btn-xs" type="button" (click)="uploader.show();">Upload...</button>
+        or drop the image in this area.
     </div>
 </div>

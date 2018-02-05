@@ -14,22 +14,21 @@
 
 package org.eclipse.winery.repository.rest.resources._support.dataadapter;
 
+import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-
 public class Injections {
 
-	@XmlElement
-	private List<Injection> injection = new ArrayList<>();
+    @XmlElement
+    private List<Injection> injection = new ArrayList<>();
 
-	public List<Injection> getInjections() {
-		return Collections.unmodifiableList(injection);
-	}
+    public List<Injection> getInjections() {
+        return Collections.unmodifiableList(injection);
+    }
 
-	public void addInjection (Injection in) {
-		injection.add(in);
-	}
+    public void addInjection(Injection in) {
+        injection.add(in);
+    }
 }

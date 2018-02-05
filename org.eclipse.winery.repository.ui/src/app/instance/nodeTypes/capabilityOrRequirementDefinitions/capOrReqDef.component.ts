@@ -11,21 +11,24 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { CapabilityOrRequirementDefinitionsService } from './capOrReqDef.service';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {isNullOrUndefined} from 'util';
+import {CapabilityOrRequirementDefinitionsService} from './capOrReqDef.service';
 import {
-    CapabilityOrRequirementDefinition, CapOrRegDefinitionsResourceApiData, CapOrReqDefinition, Constraint
+    CapabilityOrRequirementDefinition,
+    CapOrRegDefinitionsResourceApiData,
+    CapOrReqDefinition,
+    Constraint
 } from './capOrReqDefResourceApiData';
-import { CapOrRegDefinitionsTableData } from './CapOrReqDefTableData';
-import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
-import { Router } from '@angular/router';
-import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { TypeWithShortName } from '../../admin/typesWithShortName/typeWithShortName.service';
-import { SelectData } from '../../../wineryInterfaces/selectData';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
-import { SpinnerWithInfinityComponent } from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';
+import {CapOrRegDefinitionsTableData} from './CapOrReqDefTableData';
+import {NameAndQNameApiData, NameAndQNameApiDataList} from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
+import {Router} from '@angular/router';
+import {WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
+import {TypeWithShortName} from '../../admin/typesWithShortName/typeWithShortName.service';
+import {SelectData} from '../../../wineryInterfaces/selectData';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {ModalDirective} from 'ngx-bootstrap';
+import {SpinnerWithInfinityComponent} from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';
 
 @Component({
     selector: 'winery-instance-cap-or-req-definitions',
@@ -38,18 +41,18 @@ import { SpinnerWithInfinityComponent } from '../../../winerySpinnerWithInfinity
 export class CapOrReqDefComponent implements OnInit {
 
     columns: Array<WineryTableColumn> = [
-        { title: 'Name', name: 'name' },
-        { title: 'Type', name: 'type' },
-        { title: 'Lower Bound', name: 'lowerBound' },
-        { title: 'Upper Bound', name: 'upperBound' },
-        { title: 'Constraints', name: 'constraints', sort: false },
+        {title: 'Name', name: 'name'},
+        {title: 'Type', name: 'type'},
+        {title: 'Lower Bound', name: 'lowerBound'},
+        {title: 'Upper Bound', name: 'upperBound'},
+        {title: 'Constraints', name: 'constraints', sort: false},
     ];
 
     elementToRemove: CapOrRegDefinitionsTableData = null;
     loading = true;
     resourceApiData: CapOrRegDefinitionsResourceApiData = null;
     tableData: Array<CapOrRegDefinitionsTableData> = [];
-    capabilityTypesList: NameAndQNameApiDataList = { classes: null };
+    capabilityTypesList: NameAndQNameApiDataList = {classes: null};
     capOrReqDefToBeAdded: CapOrReqDefinition = null;
     noneSelected = true;
 

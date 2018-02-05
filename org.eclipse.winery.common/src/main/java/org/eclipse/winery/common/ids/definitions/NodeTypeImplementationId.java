@@ -18,15 +18,15 @@ import org.eclipse.winery.common.ids.XmlId;
 
 public final class NodeTypeImplementationId extends EntityTypeImplementationId {
 
-	public NodeTypeImplementationId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public NodeTypeImplementationId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public NodeTypeImplementationId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public NodeTypeImplementationId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public String getGroup() {
-		return "NodeTypeImplementation";
-	}
+    public String getGroup() {
+        return "NodeTypeImplementation";
+    }
 }

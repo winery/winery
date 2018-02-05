@@ -11,16 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
-import { CommonModule } from '@angular/common';
-import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
-import { FormsModule } from '@angular/forms';
-import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
-import { WineryUploaderModule } from '../../../wineryUploader/wineryUploader.module';
-import { SourceComponent } from './source.component';
-import { WineryEditorModule } from '../../../wineryEditorModule/wineryEditor.module';
-import { WineryDuplicateValidatorModule } from '../../../wineryValidators/wineryDuplicateValidator.module';
+import {CommonModule} from '@angular/common';
+import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
+import {FormsModule} from '@angular/forms';
+import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
+import {WineryUploaderModule} from '../../../wineryUploader/wineryUploader.module';
+import {SourceComponent} from './source.component';
+import {WineryEditorModule} from '../../../wineryEditorModule/wineryEditor.module';
+import {WineryDuplicateValidatorModule} from '../../../wineryValidators/wineryDuplicateValidator.module';
 
 @NgModule({
     imports: [
@@ -40,4 +40,5 @@ import { WineryDuplicateValidatorModule } from '../../../wineryValidators/winery
     ],
     providers: [],
 })
-export class WinerySourceModule { }
+export class WinerySourceModule {
+}

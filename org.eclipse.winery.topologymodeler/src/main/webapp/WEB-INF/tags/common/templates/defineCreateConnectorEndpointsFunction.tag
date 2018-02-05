@@ -11,32 +11,34 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--%>
-<%@tag description="Defines the javascript function createConnectorEndpoints globally. Quick hack to avoid huge hacking at the repository" pageEncoding="UTF-8"%>
+<%@tag
+    description="Defines the javascript function createConnectorEndpoints globally. Quick hack to avoid huge hacking at the repository"
+    pageEncoding="UTF-8" %>
 
-<%@tag import="java.util.Collection"%>
-<%@tag import="org.eclipse.winery.model.tosca.TRelationshipType"%>
-<%@tag import="org.eclipse.winery.common.Util"%>
+<%@tag import="org.eclipse.winery.common.Util" %>
+<%@tag import="org.eclipse.winery.model.tosca.TRelationshipType" %>
+<%@tag import="java.util.Collection" %>
 
 <%@attribute name="relationshipTypes" type="java.util.Collection" required="true" %>
 
 <script>
-function createConnectorEndpoints(nodeTemplateShapeSet) {
-<%
-	for (TRelationshipType relationshipType: (Collection<TRelationshipType>) relationshipTypes) {
-%>
-		nodeTemplateShapeSet.find(".<%=Util.makeCSSName(relationshipType.getTargetNamespace(), relationshipType.getName()) %>").each(function(i,e) {
-			var p = $(e).parent();
-			var grandparent = $(p).parent();
+    function createConnectorEndpoints(nodeTemplateShapeSet) {
+        <%
+            for (TRelationshipType relationshipType: (Collection<TRelationshipType>) relationshipTypes) {
+        %>
+        nodeTemplateShapeSet.find(".<%=Util.makeCSSName(relationshipType.getTargetNamespace(), relationshipType.getName()) %>").each(function (i, e) {
+            var p = $(e).parent();
+            var grandparent = $(p).parent();
 
-			jsPlumb.makeSource($(e), {
-				parent:grandparent,
-				anchor:"Continuous",
-				connectionType: "{<%=relationshipType.getTargetNamespace()%>}<%=relationshipType.getName()%>",
-				endpoint:"Blank"
-			});
-		});
-<%
-	}
-%>
-}
+            jsPlumb.makeSource($(e), {
+                parent: grandparent,
+                anchor: "Continuous",
+                connectionType: "{<%=relationshipType.getTargetNamespace()%>}<%=relationshipType.getName()%>",
+                endpoint: "Blank"
+            });
+        });
+        <%
+            }
+        %>
+    }
 </script>

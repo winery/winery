@@ -11,24 +11,24 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Response } from '@angular/http';
-import { isNullOrUndefined } from 'util';
-import { backendBaseURL } from '../../../configuration';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { ExistService } from '../../../wineryUtils/existService';
-import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import { InstanceService } from '../../instance.service';
-import { GenerateArtifactApiData } from './generateArtifactApiData';
-import { InterfacesService } from './interfaces.service';
-import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
-import { InputParameters, InterfaceParameter, OutputParameters } from '../../../wineryInterfaces/parameters';
-import { ModalDirective } from 'ngx-bootstrap';
-import { NgForm } from '@angular/forms';
-import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
-import { Utils } from '../../../wineryUtils/utils';
-import { SelectableListComponent } from './selectableList/selectableList.component';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Response} from '@angular/http';
+import {isNullOrUndefined} from 'util';
+import {backendBaseURL} from '../../../configuration';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {ExistService} from '../../../wineryUtils/existService';
+import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import {InstanceService} from '../../instance.service';
+import {GenerateArtifactApiData} from './generateArtifactApiData';
+import {InterfacesService} from './interfaces.service';
+import {InterfaceOperationApiData, InterfacesApiData} from './interfacesApiData';
+import {InputParameters, InterfaceParameter, OutputParameters} from '../../../wineryInterfaces/parameters';
+import {ModalDirective} from 'ngx-bootstrap';
+import {NgForm} from '@angular/forms';
+import {GenerateData} from '../../../wineryComponentExists/wineryComponentExists.component';
+import {ToscaTypes} from '../../../wineryInterfaces/enums';
+import {Utils} from '../../../wineryUtils/utils';
+import {SelectableListComponent} from './selectableList/selectableList.component';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -409,7 +409,7 @@ export class InterfacesComponent implements OnInit {
         }
         this.generating = false;
         this.generateImplModal.hide();
-        this.notify.success(message, 'Successfully created Artifact!', { enableHTML: true });
+        this.notify.success(message, 'Successfully created Artifact!', {enableHTML: true});
     }
 
     // endregion

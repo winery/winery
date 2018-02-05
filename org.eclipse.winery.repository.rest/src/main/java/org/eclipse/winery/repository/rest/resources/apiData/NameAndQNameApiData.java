@@ -14,19 +14,19 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 
+import javax.xml.namespace.QName;
+
 public class NameAndQNameApiData {
-	public String name;
-	public QName qName;
+    public String name;
+    public QName qName;
 
-	public NameAndQNameApiData() {
-	}
+    public NameAndQNameApiData() {
+    }
 
-	public NameAndQNameApiData(DefinitionsChildId id) {
-		this.name = id.getXmlId().getDecoded();
-		this.qName = id.getQName();
-	}
+    public NameAndQNameApiData(DefinitionsChildId id) {
+        this.name = id.getXmlId().getDecoded();
+        this.qName = id.getQName();
+    }
 }

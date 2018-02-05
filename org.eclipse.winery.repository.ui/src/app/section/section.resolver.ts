@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
-import { SectionResolverData } from '../wineryInterfaces/resolverData';
-import { Utils } from '../wineryUtils/utils';
-import { ToscaTypes } from '../wineryInterfaces/enums';
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
+import {SectionResolverData} from '../wineryInterfaces/resolverData';
+import {Utils} from '../wineryUtils/utils';
+import {ToscaTypes} from '../wineryInterfaces/enums';
 
 @Injectable()
 export class SectionResolver implements Resolve<SectionResolverData> {
@@ -27,6 +27,6 @@ export class SectionResolver implements Resolve<SectionResolverData> {
         const namespace = route.params['namespace'] ? decodeURIComponent(decodeURIComponent(route.params['namespace'])) : null;
         const xsdSchemaType: string = ToscaTypes.Imports ? decodeURIComponent(decodeURIComponent(route.params['xsdSchemaType'])) : null;
 
-        return { section: section, namespace: namespace, path: route.url[0].path, xsdSchemaType: xsdSchemaType };
+        return {section: section, namespace: namespace, path: route.url[0].path, xsdSchemaType: xsdSchemaType};
     }
 }

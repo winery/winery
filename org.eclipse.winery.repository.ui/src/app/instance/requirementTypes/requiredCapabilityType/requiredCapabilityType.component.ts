@@ -11,10 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit } from '@angular/core';
-import { RequiredCapabilityTypeService } from './requiredCapabilityType.service';
-import { RequiredCapabilityTypeApiData } from './requiredCapabilityTypeApiData';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import {Component, OnInit} from '@angular/core';
+import {RequiredCapabilityTypeService} from './requiredCapabilityType.service';
+import {RequiredCapabilityTypeApiData} from './requiredCapabilityTypeApiData';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
 
 @Component({
     templateUrl: 'requiredCapabilityType.component.html',

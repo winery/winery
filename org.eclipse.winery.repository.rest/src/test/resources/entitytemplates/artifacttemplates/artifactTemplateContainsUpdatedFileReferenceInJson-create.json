@@ -1,5 +1,5 @@
 {
-	"namespace": "http://opentosca.org/artifacttemplates",
-	"localname": "artifactTemplateContainsUpdatedFileReferenceInJson",
-	"type": "{http://winery.opentosca.org/test/artifacttypes}MiniArtifactType"
+    "namespace": "http://opentosca.org/artifacttemplates",
+    "localname": "artifactTemplateContainsUpdatedFileReferenceInJson",
+    "type": "{http://winery.opentosca.org/test/artifacttypes}MiniArtifactType"
 }

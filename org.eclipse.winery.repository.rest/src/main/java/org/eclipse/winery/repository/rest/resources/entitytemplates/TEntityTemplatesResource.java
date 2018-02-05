@@ -13,20 +13,20 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates;
 
-import java.util.List;
-
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdResource;
+
+import java.util.List;
 
 /**
  * This resource models the list of TEntityTemplates
  */
 public abstract class TEntityTemplatesResource<R extends EntityWithIdResource<T>, T extends TEntityTemplate> extends EntityWithIdCollectionResource<R, T> {
 
-	public TEntityTemplatesResource(Class<R> entityResourceTClazz, Class<T> entityTClazz, List<T> list, IPersistable res) {
-		super(entityResourceTClazz, entityTClazz, list, res);
-	}
+    public TEntityTemplatesResource(Class<R> entityResourceTClazz, Class<T> entityTClazz, List<T> list, IPersistable res) {
+        super(entityResourceTClazz, entityTClazz, list, res);
+    }
 
 }

@@ -11,8 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, DoCheck, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { isNullOrUndefined } from 'util';
+import {Component, DoCheck, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {isNullOrUndefined} from 'util';
 
 /**
  * This component provides an easy and fast way to use the ng2-table with further modifications

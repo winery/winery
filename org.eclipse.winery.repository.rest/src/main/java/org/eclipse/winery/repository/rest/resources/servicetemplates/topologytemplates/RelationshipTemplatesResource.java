@@ -13,29 +13,28 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
-import java.util.List;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.TEntityTemplatesResource;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import java.util.List;
+
 public class RelationshipTemplatesResource extends TEntityTemplatesResource<RelationshipTemplateResource, TRelationshipTemplate> {
 
-	public RelationshipTemplatesResource(List<TRelationshipTemplate> list, IPersistable res) {
-		super(RelationshipTemplateResource.class, TRelationshipTemplate.class, list, res);
-	}
+    public RelationshipTemplatesResource(List<TRelationshipTemplate> list, IPersistable res) {
+        super(RelationshipTemplateResource.class, TRelationshipTemplate.class, list, res);
+    }
 
-	@Override
-	public String getId(TRelationshipTemplate entity) {
-		return entity.getId();
-	}
+    @Override
+    public String getId(TRelationshipTemplate entity) {
+        return entity.getId();
+    }
 
-	@Override
-	@Path("{id}/")
-	public RelationshipTemplateResource getEntityResource(@PathParam("id") String id) {
-		return this.getEntityResourceFromEncodedId(id);
-	}
+    @Override
+    @Path("{id}/")
+    public RelationshipTemplateResource getEntityResource(@PathParam("id") String id) {
+        return this.getEntityResourceFromEncodedId(id);
+    }
 }

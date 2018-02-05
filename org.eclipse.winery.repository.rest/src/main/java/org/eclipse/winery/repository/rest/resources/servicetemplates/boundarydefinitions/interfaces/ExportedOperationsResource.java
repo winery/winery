@@ -14,29 +14,28 @@
 
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.interfaces;
 
-import java.util.List;
-
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.eclipse.winery.model.tosca.TExportedOperation;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import java.util.List;
+
 public class ExportedOperationsResource extends EntityWithIdCollectionResource<ExportedOperationResource, TExportedOperation> {
 
-	public ExportedOperationsResource(List<TExportedOperation> list, IPersistable res) {
-		super(ExportedOperationResource.class, TExportedOperation.class, list, res);
-	}
+    public ExportedOperationsResource(List<TExportedOperation> list, IPersistable res) {
+        super(ExportedOperationResource.class, TExportedOperation.class, list, res);
+    }
 
-	@Override
-	public String getId(TExportedOperation entity) {
-		return entity.getName();
-	}
+    @Override
+    public String getId(TExportedOperation entity) {
+        return entity.getName();
+    }
 
-	@Override
-	@Path("{id}/")
-	public ExportedOperationResource getEntityResource(@PathParam("id") String id) {
-		return this.getEntityResourceFromEncodedId(id);
-	}
+    @Override
+    @Path("{id}/")
+    public ExportedOperationResource getEntityResource(@PathParam("id") String id) {
+        return this.getEntityResourceFromEncodedId(id);
+    }
 }

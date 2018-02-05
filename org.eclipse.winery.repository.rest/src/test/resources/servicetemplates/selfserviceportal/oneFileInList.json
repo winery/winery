@@ -1,15 +1,15 @@
 {
-	"files": [
-		{
-			"name": "myFirstFile.txt",
-			"size": 15,
-			"url": "http://localhost:8080/winery/servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/selfserviceportal/files/myFirstFile.txt",
-			"deleteUrl": "http://localhost:8080/winery/servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/selfserviceportal/files/myFirstFile.txt",
-			"thumbnailUrl": "http://localhost:8080/winery/images/mime-types/txt.png",
-			"deleteType": "DELETE"
-		}
-	],
-	"paths": [
-		""
-	]
+    "files": [
+        {
+            "name": "myFirstFile.txt",
+            "size": 15,
+            "url": "http://localhost:8080/winery/servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/selfserviceportal/files/myFirstFile.txt",
+            "deleteUrl": "http://localhost:8080/winery/servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithOneFileInSelfServicePortal/selfserviceportal/files/myFirstFile.txt",
+            "thumbnailUrl": "http://localhost:8080/winery/images/mime-types/txt.png",
+            "deleteType": "DELETE"
+        }
+    ],
+    "paths": [
+        ""
+    ]
 }

@@ -11,19 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { InstanceService } from './instance.service';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { backendBaseURL } from '../configuration';
-import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
-import { ExistService } from '../wineryUtils/existService';
-import { isNullOrUndefined } from 'util';
-import { WineryInstance } from '../wineryInterfaces/wineryComponent';
-import { ToscaTypes } from '../wineryInterfaces/enums';
-import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
-import { Utils } from '../wineryUtils/utils';
+import {Component, OnDestroy} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {InstanceService} from './instance.service';
+import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
+import {backendBaseURL} from '../configuration';
+import {RemoveWhiteSpacesPipe} from '../wineryPipes/removeWhiteSpaces.pipe';
+import {ExistService} from '../wineryUtils/existService';
+import {isNullOrUndefined} from 'util';
+import {WineryInstance} from '../wineryInterfaces/wineryComponent';
+import {ToscaTypes} from '../wineryInterfaces/enums';
+import {ToscaComponent} from '../wineryInterfaces/toscaComponent';
+import {Utils} from '../wineryUtils/utils';
 
 @Component({
     templateUrl: 'instance.component.html',

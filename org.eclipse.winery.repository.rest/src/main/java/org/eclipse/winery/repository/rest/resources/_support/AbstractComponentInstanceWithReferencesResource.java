@@ -13,43 +13,42 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import java.io.IOException;
-
-import javax.ws.rs.WebApplicationException;
-
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.Definitions;
 
+import javax.ws.rs.WebApplicationException;
+import java.io.IOException;
+
 public abstract class AbstractComponentInstanceWithReferencesResource extends AbstractComponentInstanceResource {
 
-	protected AbstractComponentInstanceWithReferencesResource(DefinitionsChildId id) {
-		super(id);
-	}
+    protected AbstractComponentInstanceWithReferencesResource(DefinitionsChildId id) {
+        super(id);
+    }
 
-	@Override
-	public String getDefinitionsAsXMLString() {
-		try {
-			this.synchronizeReferences();
-		} catch (IOException e) {
-			throw new WebApplicationException(e);
-		}
-		return super.getDefinitionsAsXMLString();
-	}
+    @Override
+    public String getDefinitionsAsXMLString() {
+        try {
+            this.synchronizeReferences();
+        } catch (IOException e) {
+            throw new WebApplicationException(e);
+        }
+        return super.getDefinitionsAsXMLString();
+    }
 
-	@Override
-	public Definitions getDefinitions() {
-		try {
-			this.synchronizeReferences();
-		} catch (IOException e) {
-			throw new WebApplicationException(e);
-		}
-		return super.getDefinitions();
-	}
+    @Override
+    public Definitions getDefinitions() {
+        try {
+            this.synchronizeReferences();
+        } catch (IOException e) {
+            throw new WebApplicationException(e);
+        }
+        return super.getDefinitions();
+    }
 
-	/**
-	 * Synchronizes the artifact references with the files stored in the
-	 * repository
-	 */
-	protected abstract void synchronizeReferences() throws IOException;
+    /**
+     * Synchronizes the artifact references with the files stored in the
+     * repository
+     */
+    protected abstract void synchronizeReferences() throws IOException;
 
 }

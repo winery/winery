@@ -13,23 +13,17 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest.websockets;
 
-import java.io.IOException;
-
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerConfiguration;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyCheckerProgressListener;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyErrorLogger;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 
 @ServerEndpoint("/checkconsistency")
 public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressListener {

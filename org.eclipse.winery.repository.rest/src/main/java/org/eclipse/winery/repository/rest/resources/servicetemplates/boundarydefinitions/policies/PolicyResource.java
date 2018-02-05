@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.policies;
 
-import java.util.List;
-
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withoutid.EntityWithoutIdResource;
 
+import java.util.List;
+
 public class PolicyResource extends EntityWithoutIdResource<TPolicy> {
 
-	public PolicyResource(TPolicy o, int idx, List<TPolicy> list, IPersistable res) {
-		super(o, idx, list, res);
-	}
+    public PolicyResource(TPolicy o, int idx, List<TPolicy> list, IPersistable res) {
+        super(o, idx, list, res);
+    }
 
 }

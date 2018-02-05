@@ -11,19 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Response } from '@angular/http';
-import { isNullOrUndefined } from 'util';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import { InstanceService } from '../../instance.service';
-import { ImplementationAPIData } from './implementationAPIData';
-import { ImplementationService } from './implementations.service';
-import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
-import { ModalDirective } from 'ngx-bootstrap';
-import { Utils } from '../../../wineryUtils/utils';
-import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Response} from '@angular/http';
+import {isNullOrUndefined} from 'util';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import {InstanceService} from '../../instance.service';
+import {ImplementationAPIData} from './implementationAPIData';
+import {ImplementationService} from './implementations.service';
+import {ImplementationWithTypeAPIData} from './implementationWithTypeAPIData';
+import {ModalDirective} from 'ngx-bootstrap';
+import {Utils} from '../../../wineryUtils/utils';
+import {WineryRowData, WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
+import {ToscaTypes} from '../../../wineryInterfaces/enums';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -42,8 +42,8 @@ export class ImplementationsComponent implements OnInit {
     selectedNamespace: string;
     validatorObject: WineryValidatorObject;
     columns: Array<WineryTableColumn> = [
-        { title: 'Namespace', name: 'namespace', sort: true },
-        { title: 'Name', name: 'displayName', sort: true },
+        {title: 'Namespace', name: 'namespace', sort: true},
+        {title: 'Name', name: 'displayName', sort: true},
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;

@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
-import javax.xml.bind.annotation.XmlTransient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 public interface HasIdInIdOrNameField {
 

@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
-import { InstanceService } from '../../instance.service';
-import { Observable } from 'rxjs/Observable';
-import { backendBaseURL, hostURL } from '../../../configuration';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, URLSearchParams} from '@angular/http';
+import {InstanceService} from '../../instance.service';
+import {Observable} from 'rxjs/Observable';
+import {backendBaseURL, hostURL} from '../../../configuration';
 
 @Injectable()
 export class FilesService {
@@ -28,8 +28,8 @@ export class FilesService {
     }
 
     getFiles(): Observable<{ files: FilesApiData[], paths: string[] }> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(this.path, options)
             .map(res => res.json());
@@ -42,7 +42,7 @@ export class FilesService {
     delete(fileToRemove: FilesApiData) {
         const params = new URLSearchParams();
         params.set('path', fileToRemove.subDirectory);
-        const options = new RequestOptions({ params: params });
+        const options = new RequestOptions({params: params});
         return this.http.delete(hostURL + fileToRemove.deleteUrl, options);
     }
 }

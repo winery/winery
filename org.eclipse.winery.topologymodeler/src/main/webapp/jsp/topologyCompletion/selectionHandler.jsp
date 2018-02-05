@@ -13,15 +13,15 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--%>
 
 <%
-/**
- * This JSP file adds Node and RelationshipTemplates to a topology XML String using the JAXBHelper class.
- * After the java method has finished, the completed topology XML String is returned.
- */
+    /**
+     * This JSP file adds Node and RelationshipTemplates to a topology XML String using the JAXBHelper class.
+     * After the java method has finished, the completed topology XML String is returned.
+     */
 %>
-<%@page import="org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.JAXBHelper"%>
+<%@page import="org.eclipse.winery.topologymodeler.addons.topologycompleter.helper.JAXBHelper" %>
 
 <%
-	String topologyXML = JAXBHelper.addTemplatesToTopology(request.getParameter("topology"), request.getParameter("allChoices"), request.getParameter("selectedNodeTemplates"), request.getParameter("selectedRelationshipTemplates"));
+    String topologyXML = JAXBHelper.addTemplatesToTopology(request.getParameter("topology"), request.getParameter("allChoices"), request.getParameter("selectedNodeTemplates"), request.getParameter("selectedRelationshipTemplates"));
 %>
 
 <%=topologyXML%>

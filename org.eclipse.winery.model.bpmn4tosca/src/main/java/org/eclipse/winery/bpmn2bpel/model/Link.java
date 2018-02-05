@@ -17,12 +17,12 @@ import org.jgrapht.graph.DefaultEdge;
 
 public class Link extends DefaultEdge {
 
-	public Node getSource() {
-		return (Node) super.getSource();
-	}
+    public Node getSource() {
+        return (Node) super.getSource();
+    }
 
-	public Node getTarget() {
-		return (Node) super.getTarget();
-	}
+    public Node getTarget() {
+        return (Node) super.getTarget();
+    }
 
 }

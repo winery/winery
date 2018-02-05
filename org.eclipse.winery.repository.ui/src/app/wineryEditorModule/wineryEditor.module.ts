@@ -11,10 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { WineryEditorComponent } from './wineryEditor.component';
-import { FormsModule } from '@angular/forms';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {WineryEditorComponent} from './wineryEditor.component';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
     imports: [

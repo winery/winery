@@ -13,10 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.constants;
 
+import javax.xml.XMLConstants;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.xml.XMLConstants;
 
 /**
  * Defines namespace constants not available in Java7's XMLConstants
@@ -24,19 +23,19 @@ import javax.xml.XMLConstants;
 public class Namespaces {
 
     public static final String EXAMPLE_NAMESPACE_URI = "http://www.example.org";
-    
+
     public static final String TOSCA_NAMESPACE = "http://docs.oasis-open.org/tosca/ns/2011/12";
     public static final String TOSCA_WINERY_EXTENSIONS_NAMESPACE = "http://www.opentosca.org/winery/extensions/tosca/2013/02/12";
 
     public static final String USTUTT_EXTENSIONS_PREFIX = "http://extensions.opentosca.org/";
     public static final String USTUTT_ANNOTATIONS = USTUTT_EXTENSIONS_PREFIX + "annotations";
-    
+
     public static final String URI_BPMN20_MODEL = "http://www.omg.org/spec/BPMN/20100524/MODEL";
     public static final String URI_BPMN4TOSCA_20 = "http://www.opentosca.org/bpmn4tosca";
     public static final String URI_BPEL20_ABSTRACT = "http://docs.oasis-open.org/wsbpel/2.0/process/abstract";
     public static final String URI_BPEL20_EXECUTABLE = "http://docs.oasis-open.org/wsbpel/2.0/process/executable";
     public static final String URI_OPENTOSCA_NODETYPE = "http://www.opentosca.org/nodetypes";
-    
+
     // XML Schema namespace is defined at Java7's XMLConstants.W3C_XML_SCHEMA_NS_URI
     public static final String W3C_XML_SCHEMA_NS_URI = XMLConstants.W3C_XML_SCHEMA_NS_URI;
     public static final String W3C_NAMESPACE_URI = "http://www.w3.org/XML/1998/namespace";

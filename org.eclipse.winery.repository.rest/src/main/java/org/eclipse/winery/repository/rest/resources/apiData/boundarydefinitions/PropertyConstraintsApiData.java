@@ -17,41 +17,42 @@ package org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions
 import org.eclipse.winery.model.tosca.TPropertyConstraint;
 
 public class PropertyConstraintsApiData {
-	String property;
-	Object fragments;
-	String constraintType;
+    String property;
+    Object fragments;
+    String constraintType;
 
 
-	public PropertyConstraintsApiData() { }
+    public PropertyConstraintsApiData() {
+    }
 
-	public PropertyConstraintsApiData(TPropertyConstraint propertyConstraint) {
-		this.setProperty(propertyConstraint.getProperty());
-		this.setFragments(propertyConstraint.getAny());
-		this.setConstraintType(propertyConstraint.getConstraintType());
-	}
+    public PropertyConstraintsApiData(TPropertyConstraint propertyConstraint) {
+        this.setProperty(propertyConstraint.getProperty());
+        this.setFragments(propertyConstraint.getAny());
+        this.setConstraintType(propertyConstraint.getConstraintType());
+    }
 
-	public String getProperty() {
-		return property;
-	}
+    public String getProperty() {
+        return property;
+    }
 
-	public void setProperty(String property) {
-		this.property = property;
-	}
+    public void setProperty(String property) {
+        this.property = property;
+    }
 
-	public String getConstraintType() {
-		return constraintType;
-	}
+    public String getConstraintType() {
+        return constraintType;
+    }
 
-	public void setConstraintType(String constraintType) {
-		this.constraintType = constraintType;
-	}
+    public void setConstraintType(String constraintType) {
+        this.constraintType = constraintType;
+    }
 
-	public Object getFragments() {
-		return fragments;
-	}
+    public Object getFragments() {
+        return fragments;
+    }
 
-	public void setFragments(Object fragments) {
-		this.fragments = fragments;
-	}
+    public void setFragments(Object fragments) {
+        this.fragments = fragments;
+    }
 
 }

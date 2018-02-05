@@ -13,18 +13,17 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations;
 
+import io.swagger.annotations.Api;
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithTypeReferenceResource;
+
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithTypeReferenceResource;
-
-import io.swagger.annotations.Api;
-
 @Api(tags = "Node Type Implementations")
 public class NodeTypeImplementationsResource extends AbstractComponentsWithTypeReferenceResource<NodeTypeImplementationResource> {
-	@Path("{namespace}/{id}/")
-	public NodeTypeImplementationResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return this.getComponentInstaceResource(namespace, id, true);
-	}
+    @Path("{namespace}/{id}/")
+    public NodeTypeImplementationResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstaceResource(namespace, id, true);
+    }
 
 }

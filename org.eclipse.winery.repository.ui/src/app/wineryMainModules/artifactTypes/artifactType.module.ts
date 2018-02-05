@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { ArtifactTypeRouterModule } from './artifactTypeRouter.module';
-import { CommonModule } from '@angular/common';
-import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
-import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
+import {NgModule} from '@angular/core';
+import {ArtifactTypeRouterModule} from './artifactTypeRouter.module';
+import {CommonModule} from '@angular/common';
+import {WineryLicenseModule} from '../../wineryLicenseModule/wineryLicense.module';
+import {WineryReadmeModule} from '../../wineryReadmeModule/wineryReadme.module';
 
 @NgModule({
     imports: [

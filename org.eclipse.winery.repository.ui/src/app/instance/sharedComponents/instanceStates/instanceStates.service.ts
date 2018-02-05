@@ -12,12 +12,12 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../../configuration';
-import { InstanceStateApiData } from './InstanceStateApiData';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../../../configuration';
+import {InstanceStateApiData} from './InstanceStateApiData';
 
 @Injectable()
 export class InstanceStateService {
@@ -30,21 +30,21 @@ export class InstanceStateService {
     }
 
     getInstanceStates(): Observable<InstanceStateApiData[]> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.get(this.path, options)
             .map(res => res.json());
     }
 
     addPropertyData(newStateData: InstanceStateApiData): Observable<Response> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.post(this.path, JSON.stringify(newStateData), options);
     }
 
     deleteState(stateToRemove: InstanceStateApiData): Observable<Response> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.delete(this.path + stateToRemove.state, options);
     }

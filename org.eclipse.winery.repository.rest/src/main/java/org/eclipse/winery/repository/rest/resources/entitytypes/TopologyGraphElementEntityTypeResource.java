@@ -17,8 +17,8 @@ import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 
 public abstract class TopologyGraphElementEntityTypeResource extends EntityTypeResource {
 
-	protected TopologyGraphElementEntityTypeResource(DefinitionsChildId id) {
-		super(id);
-	}
+    protected TopologyGraphElementEntityTypeResource(DefinitionsChildId id) {
+        super(id);
+    }
 
 }

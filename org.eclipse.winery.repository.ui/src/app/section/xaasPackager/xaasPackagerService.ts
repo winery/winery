@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
-import { backendBaseURL } from '../../configuration';
-import { Router } from '@angular/router';
-import { NodeTypeData } from './xaasPackager.component';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs';
+import {backendBaseURL} from '../../configuration';
+import {Router} from '@angular/router';
+import {NodeTypeData} from './xaasPackager.component';
 
 @Injectable()
 export class PackagerService {

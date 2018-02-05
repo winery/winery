@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { RemoveWhiteSpacesPipe } from '../../wineryPipes/removeWhiteSpaces.pipe';
-import { ModalDirective } from 'ngx-bootstrap';
-import { ToscaComponent } from '../../wineryInterfaces/toscaComponent';
-import { ToscaTypes } from '../../wineryInterfaces/enums';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
+import {RemoveWhiteSpacesPipe} from '../../wineryPipes/removeWhiteSpaces.pipe';
+import {ModalDirective} from 'ngx-bootstrap';
+import {ToscaComponent} from '../../wineryInterfaces/toscaComponent';
+import {ToscaTypes} from '../../wineryInterfaces/enums';
 
 @Component({
     selector: 'winery-instance-header',

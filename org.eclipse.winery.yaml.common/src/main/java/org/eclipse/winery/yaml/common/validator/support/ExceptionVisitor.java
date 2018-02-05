@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator.support;
 
-import java.util.Objects;
-
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractVisitor;
 import org.eclipse.winery.yaml.common.exception.MultiException;
+
+import java.util.Objects;
 
 public abstract class ExceptionVisitor<R extends AbstractResult<R>, P extends AbstractParameter<P>> extends AbstractVisitor<R, P> {
     private MultiException exception;

@@ -19,11 +19,11 @@ import org.eclipse.winery.common.ids.elements.ToscaElementId;
 
 public abstract class DirectoryId extends ToscaElementId {
 
-	public DirectoryId(GenericId parent, String directoryId) {
-		super(parent, new XmlId(directoryId, false));
-	}
+    public DirectoryId(GenericId parent, String directoryId) {
+        super(parent, new XmlId(directoryId, false));
+    }
 
-	public DirectoryId(GenericId parent, String directoryId, boolean URLencoded) {
-		super(parent, new XmlId(directoryId, URLencoded));
-	}
+    public DirectoryId(GenericId parent, String directoryId, boolean URLencoded) {
+        super(parent, new XmlId(directoryId, URLencoded));
+    }
 }

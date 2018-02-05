@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit } from '@angular/core';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { ValidService } from './validSourcesAndTargets.service';
-import { ValidEndingsApiDataSet, ValidEndingsData, ValidEndingsSelectionEnum } from './validEndingsApiData';
-import { SelectData } from '../../../wineryInterfaces/selectData';
-import { isNullOrUndefined } from 'util';
-import { SelectItem } from 'ng2-select';
+import {Component, OnInit} from '@angular/core';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {ValidService} from './validSourcesAndTargets.service';
+import {ValidEndingsApiDataSet, ValidEndingsData, ValidEndingsSelectionEnum} from './validEndingsApiData';
+import {SelectData} from '../../../wineryInterfaces/selectData';
+import {isNullOrUndefined} from 'util';
+import {SelectItem} from 'ng2-select';
 
 @Component({
     selector: 'winery-valid-endings',

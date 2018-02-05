@@ -13,15 +13,14 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.backend.consistencycheck;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
+
+import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class ConsistencyErrorLogger {
 

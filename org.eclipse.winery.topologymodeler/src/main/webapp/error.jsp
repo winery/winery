@@ -12,7 +12,7 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--%>
 <%@page language="java" contentType="text/html; charset=utf-8"
-		pageEncoding="utf-8" isErrorPage="true" %>
+        pageEncoding="utf-8" isErrorPage="true" %>
 
 <%@ page import="org.slf4j.Logger" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
@@ -25,11 +25,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Winery Topologymodeler &ndash; Error Page</title>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <title>Winery Topologymodeler &ndash; Error Page</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
 </head>
 <body>
-<h3>Error: <%= exception.getMessage() %></h3>
+<h3>Error: <%= exception.getMessage() %>
+</h3>
 </body>
 </html>
 

@@ -14,21 +14,20 @@
 package org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal;
 
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
-
 import org.junit.Test;
 
 public class XMLTest extends AbstractResourceTest {
 
-	@Test
-	public void getXML() throws Exception {
-		this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
-		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/selfserviceportal/xml", "entitytypes/servicetemplates/selfserviceportal/getXML.xml");
-	}
+    @Test
+    public void getXML() throws Exception {
+        this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/selfserviceportal/xml", "entitytypes/servicetemplates/selfserviceportal/getXML.xml");
+    }
 
-	@Test
-	public void putXML() throws Exception {
-		this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
-		this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/selfserviceportal/", "entitytypes/servicetemplates/selfserviceportal/putXML.xml");
-		this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/selfserviceportal/xml", "entitytypes/servicetemplates/selfserviceportal/getAfterPut.xml");
-	}
+    @Test
+    public void putXML() throws Exception {
+        this.setRevisionTo("3fe0df76e98d46ead68295920e5d1cf1354bdea1");
+        this.assertPut("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/selfserviceportal/", "entitytypes/servicetemplates/selfserviceportal/putXML.xml");
+        this.assertGet("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/selfserviceportal/xml", "entitytypes/servicetemplates/selfserviceportal/getAfterPut.xml");
+    }
 }

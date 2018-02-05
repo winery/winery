@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
-import java.util.List;
-
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.TEntityTemplateResource;
 
+import java.util.List;
+
 public class RelationshipTemplateResource extends TEntityTemplateResource<TRelationshipTemplate> {
 
-	public RelationshipTemplateResource(IIdDetermination<TRelationshipTemplate> idDetermination, TRelationshipTemplate o, int idx, List<TRelationshipTemplate> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
+    public RelationshipTemplateResource(IIdDetermination<TRelationshipTemplate> idDetermination, TRelationshipTemplate o, int idx, List<TRelationshipTemplate> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
 }

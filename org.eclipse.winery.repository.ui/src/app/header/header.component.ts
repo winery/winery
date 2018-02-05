@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { ModalDirective } from 'ngx-bootstrap';
-import { ToscaTypes } from '../wineryInterfaces/enums';
-import { Utils } from '../wineryUtils/utils';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {ModalDirective} from 'ngx-bootstrap';
+import {ToscaTypes} from '../wineryInterfaces/enums';
+import {Utils} from '../wineryUtils/utils';
 
 @Component({
     selector: 'winery-header',

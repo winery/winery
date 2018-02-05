@@ -18,15 +18,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Class for testing getAny()
- *
+ * <p>
  * It has to be in src/main as src/test is not compiled during production, but
  * the jaxbcontext is initialized in src/test and cannot be updated in src/main
- *
+ * <p>
  * Included in {@link org.eclipse.winery.repository.JAXBSupport.initContext()}
  */
 @XmlRootElement(namespace = "http://test.winery.opentosca.org", name = "MockXmlElement")
 public class MockXMLElement {
 
-	@XmlElement(namespace = "http://test.winery.opentosca.org", name = "mock")
-	public String mock = "mock";
+    @XmlElement(namespace = "http://test.winery.opentosca.org", name = "mock")
+    public String mock = "mock";
 }

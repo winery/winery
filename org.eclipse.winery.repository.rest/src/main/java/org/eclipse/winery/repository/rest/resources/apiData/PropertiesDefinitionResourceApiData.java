@@ -19,28 +19,28 @@ import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 
 public class PropertiesDefinitionResourceApiData {
 
-	public TEntityType.PropertiesDefinition propertiesDefinition;
-	public WinerysPropertiesDefinition winerysPropertiesDefinition;
-	public PropertiesDefinitionEnum selectedValue;
+    public TEntityType.PropertiesDefinition propertiesDefinition;
+    public WinerysPropertiesDefinition winerysPropertiesDefinition;
+    public PropertiesDefinitionEnum selectedValue;
 
-	public PropertiesDefinitionResourceApiData() {
-	}
+    public PropertiesDefinitionResourceApiData() {
+    }
 
-	public PropertiesDefinitionResourceApiData(
-		TEntityType.PropertiesDefinition propertiesDefinition,
-		WinerysPropertiesDefinition winerysPropertiesDefinition
-	) {
-		this.propertiesDefinition = propertiesDefinition;
-		this.winerysPropertiesDefinition = winerysPropertiesDefinition;
+    public PropertiesDefinitionResourceApiData(
+        TEntityType.PropertiesDefinition propertiesDefinition,
+        WinerysPropertiesDefinition winerysPropertiesDefinition
+    ) {
+        this.propertiesDefinition = propertiesDefinition;
+        this.winerysPropertiesDefinition = winerysPropertiesDefinition;
 
-		if ((winerysPropertiesDefinition != null) && (winerysPropertiesDefinition.getIsDerivedFromXSD() == null)) {
-			this.selectedValue = PropertiesDefinitionEnum.Custom;
-		} else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getElement() != null)) {
-			this.selectedValue = PropertiesDefinitionEnum.Element;
-		} else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getType() != null)) {
-			this.selectedValue = PropertiesDefinitionEnum.Type;
-		} else {
-			this.selectedValue = PropertiesDefinitionEnum.None;
-		}
-	}
+        if ((winerysPropertiesDefinition != null) && (winerysPropertiesDefinition.getIsDerivedFromXSD() == null)) {
+            this.selectedValue = PropertiesDefinitionEnum.Custom;
+        } else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getElement() != null)) {
+            this.selectedValue = PropertiesDefinitionEnum.Element;
+        } else if ((this.propertiesDefinition != null) && (this.propertiesDefinition.getType() != null)) {
+            this.selectedValue = PropertiesDefinitionEnum.Type;
+        } else {
+            this.selectedValue = PropertiesDefinitionEnum.None;
+        }
+    }
 }

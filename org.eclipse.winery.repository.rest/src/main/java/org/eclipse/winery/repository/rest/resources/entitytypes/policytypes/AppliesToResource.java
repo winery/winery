@@ -17,14 +17,14 @@ import org.eclipse.winery.model.tosca.TPolicyType;
 
 public class AppliesToResource {
 
-	private final PolicyTypeResource policyTypeResource;
+    private final PolicyTypeResource policyTypeResource;
 
 
-	public AppliesToResource(PolicyTypeResource policyTypeResource) {
-		this.policyTypeResource = policyTypeResource;
-	}
+    public AppliesToResource(PolicyTypeResource policyTypeResource) {
+        this.policyTypeResource = policyTypeResource;
+    }
 
-	public TPolicyType getPolicyType() {
-		return this.policyTypeResource.getPolicyType();
-	}
+    public TPolicyType getPolicyType() {
+        return this.policyTypeResource.getPolicyType();
+    }
 }

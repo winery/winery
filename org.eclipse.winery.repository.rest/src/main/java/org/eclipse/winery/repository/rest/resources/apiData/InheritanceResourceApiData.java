@@ -18,20 +18,20 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentIn
 
 public class InheritanceResourceApiData {
 
-	public String isAbstract;
-	public String isFinal;
-	public String derivedFrom;
+    public String isAbstract;
+    public String isFinal;
+    public String derivedFrom;
 
-	public InheritanceResourceApiData() {
-	}
+    public InheritanceResourceApiData() {
+    }
 
-	public InheritanceResourceApiData(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
-		this.isAbstract = res.getTBoolean("getAbstract");
-		this.isFinal = res.getTBoolean("getFinal");
-		this.derivedFrom = res.getDerivedFrom() == null ? "(none)" : res.getDerivedFrom();
-	}
+    public InheritanceResourceApiData(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
+        this.isAbstract = res.getTBoolean("getAbstract");
+        this.isFinal = res.getTBoolean("getFinal");
+        this.derivedFrom = res.getDerivedFrom() == null ? "(none)" : res.getDerivedFrom();
+    }
 
-	public String toString() {
-		return "InheritanceResourceJson: { isAbstract: " + this.isAbstract + ", isFinal: " + this.isFinal + ", derivedFrom: " + this.derivedFrom + " }";
-	}
+    public String toString() {
+        return "InheritanceResourceJson: { isAbstract: " + this.isAbstract + ", isFinal: " + this.isFinal + ", derivedFrom: " + this.derivedFrom + " }";
+    }
 }

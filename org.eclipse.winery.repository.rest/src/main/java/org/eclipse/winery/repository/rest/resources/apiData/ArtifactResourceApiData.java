@@ -16,19 +16,19 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 public class ArtifactResourceApiData {
 
-	public String fileName;
-	public String content;
-	public String subDirectory;
+    public String fileName;
+    public String content;
+    public String subDirectory;
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-	
-	public void setSubDirectory(String subDirectory) {
-		this.subDirectory = subDirectory;
-	}
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void setSubDirectory(String subDirectory) {
+        this.subDirectory = subDirectory;
+    }
 }

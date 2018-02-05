@@ -12,15 +12,15 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FilesApiData, SourceService } from './source.service';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
-import { SourceApiData } from './sourceApiData';
-import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import { hostURL } from '../../../configuration';
-import { InstanceService } from '../../instance.service';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {FilesApiData, SourceService} from './source.service';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {WineryEditorComponent} from '../../../wineryEditorModule/wineryEditor.component';
+import {SourceApiData} from './sourceApiData';
+import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import {hostURL} from '../../../configuration';
+import {InstanceService} from '../../instance.service';
+import {ToscaTypes} from '../../../wineryInterfaces/enums';
 
 @Component({
     templateUrl: 'source.component.html',

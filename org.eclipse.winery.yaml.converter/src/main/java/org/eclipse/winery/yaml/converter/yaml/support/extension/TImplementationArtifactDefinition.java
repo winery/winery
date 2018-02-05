@@ -13,11 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.support.extension;
 
-import java.util.List;
+import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
 
 import javax.xml.namespace.QName;
-
-import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
+import java.util.List;
 
 public class TImplementationArtifactDefinition extends TArtifactDefinition {
     private String interfaceName;

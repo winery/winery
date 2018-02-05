@@ -14,9 +14,9 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData.converter;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
+
+import javax.xml.namespace.QName;
 
 public class QNameConverter implements Converter<QNameApiData, QName> {
 

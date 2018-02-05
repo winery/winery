@@ -19,11 +19,12 @@ import org.eclipse.winery.model.tosca.TServiceTemplate;
 
 public class PropertyMappingsApi {
 
-	public TBoundaryDefinitions.Properties.PropertyMappings propertyMappings;
+    public TBoundaryDefinitions.Properties.PropertyMappings propertyMappings;
 
-	public PropertyMappingsApi() { }
+    public PropertyMappingsApi() {
+    }
 
-	public PropertyMappingsApi(TServiceTemplate ste) {
-		this.propertyMappings = ste.getBoundaryDefinitions().getProperties().getPropertyMappings();
-	}
+    public PropertyMappingsApi(TServiceTemplate ste) {
+        this.propertyMappings = ste.getBoundaryDefinitions().getProperties().getPropertyMappings();
+    }
 }

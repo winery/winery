@@ -12,36 +12,37 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.librarytests;
+
 /**
  * This class is intended to demonstrate static resolution of overloaded methods
- *
+ * <p>
  * The output of this class is "Doing sth. with a followed by "Doing sth. with
  * b" even if the passed "theObject" is of type B
  */
 public class InheritanceIllustration {
 
-	private static class A {
-	}
+    private static class A {
+    }
 
-	private static class B extends A {
-	}
+    private static class B extends A {
+    }
 
-	private static class X {
+    private static class X {
 
-		public static void doSomething(A a) {
-			System.out.println("Doing sth. with a");
-		}
+        public static void doSomething(A a) {
+            System.out.println("Doing sth. with a");
+        }
 
-		public static void doSomething(B b) {
-			System.out.println("Doing sth. with b");
-		}
-	}
+        public static void doSomething(B b) {
+            System.out.println("Doing sth. with b");
+        }
+    }
 
 
-	public static void main(String[] args) {
-		A theObject = new B();
-		X.doSomething(theObject);
-		X.doSomething((B) theObject);
-	}
+    public static void main(String[] args) {
+        A theObject = new B();
+        X.doSomething(theObject);
+        X.doSomething((B) theObject);
+    }
 
 }

@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { backendBaseURL } from '../../configuration';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs/Observable';
+import {backendBaseURL} from '../../configuration';
 
 @Injectable()
 export class ListDefinedTypesAndElementsService {
@@ -27,8 +27,8 @@ export class ListDefinedTypesAndElementsService {
     }
 
     public getDeclarations(): Observable<string[]> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(this.path, options)
             .map(res => res.json());

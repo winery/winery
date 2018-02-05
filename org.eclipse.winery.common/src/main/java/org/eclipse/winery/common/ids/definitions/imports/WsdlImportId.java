@@ -19,13 +19,13 @@ import org.eclipse.winery.common.ids.XmlId;
 
 public class WsdlImportId extends GenericImportId {
 
-	public static final String WSDL_URI = "http://schemas.xmlsoap.org/wsdl/";
+    public static final String WSDL_URI = "http://schemas.xmlsoap.org/wsdl/";
 
-	public WsdlImportId(String ns, String id, boolean encoded) {
-		super(ns, id, encoded, WSDL_URI);
-	}
+    public WsdlImportId(String ns, String id, boolean encoded) {
+        super(ns, id, encoded, WSDL_URI);
+    }
 
-	public WsdlImportId(Namespace ns, XmlId id) {
-		super(ns, id, WSDL_URI);
-	}
+    public WsdlImportId(Namespace ns, XmlId id) {
+        super(ns, id, WSDL_URI);
+    }
 }

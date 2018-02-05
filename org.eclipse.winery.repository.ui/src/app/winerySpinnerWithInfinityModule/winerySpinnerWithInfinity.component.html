@@ -23,14 +23,18 @@
                        #name="ngModel"
                        pattern="(\d*|∞)"
                        ng-minlength=" 40px"
-                    >
-                <button class="btn btn-default" type="button"  *ngIf="withInfinity"(click)="addInfinite()" style=" height: 50px;">∞</button>
+                >
+                <button class="btn btn-default" type="button" *ngIf="withInfinity" (click)="addInfinite()"
+                        style=" height: 50px;">∞
+                </button>
                 <span style="display: inline-block; width: 40px; vertical-align: top;">
-                    <button class="btn btn-default glyphicon glyphicon-chevron-up" type="button" style=" height: 25px;" (click)="increment()"></button>
-                    <button class= "btn btn-default glyphicon glyphicon-chevron-down" type="button" style=" height: 25px;" (click)="decrement()"></button>
+                    <button class="btn btn-default glyphicon glyphicon-chevron-up" type="button" style=" height: 25px;"
+                            (click)="increment()"></button>
+                    <button class="btn btn-default glyphicon glyphicon-chevron-down" type="button"
+                            style=" height: 25px;" (click)="decrement()"></button>
                 </span>
             </div>
         </div>
     </div>
 </div>
-<div [hidden]="name.valid || name.pristine" class="alert alert-danger"> Number is required </div>
+<div [hidden]="name.valid || name.pristine" class="alert alert-danger"> Number is required</div>

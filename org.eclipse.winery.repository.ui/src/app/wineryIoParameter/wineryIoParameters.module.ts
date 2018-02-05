@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { WineryIoParameterComponent } from './wineryIoParameter.component';
-import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
-import { WineryTableModule } from '../wineryTableModule/wineryTable.module';
-import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplicateValidator.module';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {WineryIoParameterComponent} from './wineryIoParameter.component';
+import {WineryModalModule} from '../wineryModalModule/winery.modal.module';
+import {WineryTableModule} from '../wineryTableModule/wineryTable.module';
+import {WineryDuplicateValidatorModule} from '../wineryValidators/wineryDuplicateValidator.module';
 
 @NgModule({
     imports: [

@@ -13,19 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.importing;
 
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-
 public class ImportMetaInformation {
 
-	public final List<String> errors;
-	public Optional<ServiceTemplateId> entryServiceTemplate = Optional.empty();
+    public final List<String> errors;
+    public Optional<ServiceTemplateId> entryServiceTemplate = Optional.empty();
 
-	public ImportMetaInformation() {
-		this.errors = new ArrayList<>();
-	}
+    public ImportMetaInformation() {
+        this.errors = new ArrayList<>();
+    }
 
 }

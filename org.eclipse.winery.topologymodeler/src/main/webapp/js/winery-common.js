@@ -13,12 +13,12 @@
  *******************************************************************************/
 
 /**
-This .js file is shared between the Winery Repository and the Winery Topology Modeler
+ This .js file is shared between the Winery Repository and the Winery Topology Modeler
 
-This should be rewritten as AMD module. A start is made in winery-support-common.js.
+ This should be rewritten as AMD module. A start is made in winery-support-common.js.
 
-vConfirmYesNo is defined in jsp/shared/dialogs.jsp
-*/
+ vConfirmYesNo is defined in jsp/shared/dialogs.jsp
+ */
 
 /**
  * Highlights fields, which are required but not filled out by the user.
@@ -27,68 +27,68 @@ vConfirmYesNo is defined in jsp/shared/dialogs.jsp
  * @return true if a required field is not filled with a value
  */
 function highlightRequiredFields() {
-	var requiredFieldMissing = false;
-	// includes check input field attribute "required" of HTML5: http://www.w3.org/TR/html-markup/input.radio.html#input.radio.attrs.required
-	$("input.required:visible:enabled, input[required]:visible").each(function(){
-		if ($(this).val() == '') {
-			$(this).parent().addClass('has-warning');
-			requiredFieldMissing = true;
-		} else {
-			$(this).parent().removeClass('has-warning');
-		}
-	});
-	return requiredFieldMissing;
+    var requiredFieldMissing = false;
+    // includes check input field attribute "required" of HTML5: http://www.w3.org/TR/html-markup/input.radio.html#input.radio.attrs.required
+    $("input.required:visible:enabled, input[required]:visible").each(function () {
+        if ($(this).val() == '') {
+            $(this).parent().addClass('has-warning');
+            requiredFieldMissing = true;
+        } else {
+            $(this).parent().removeClass('has-warning');
+        }
+    });
+    return requiredFieldMissing;
 }
 
 function vPnotify(text, title, type) {
-	require(["pnotify"], function() {
-		var notice = $.pnotify({
-			title: title,
-			text: text,
-			type: type
-		});
-		notice.on("click", function(e) {
-			var target = $(e.target);
-			if (target.is(".ui-pnotify-closer *, .ui-pnotify-sticker *, a")) {
-				// buttons clicked - call their functionality
-				return true;
-			} else {
-				// click on text leads to display of a dialog showing the complete content
+    require(["pnotify"], function () {
+        var notice = $.pnotify({
+            title: title,
+            text: text,
+            type: type
+        });
+        notice.on("click", function (e) {
+            var target = $(e.target);
+            if (target.is(".ui-pnotify-closer *, .ui-pnotify-sticker *, a")) {
+                // buttons clicked - call their functionality
+                return true;
+            } else {
+                // click on text leads to display of a dialog showing the complete content
 
-				var textDiv;
-				if (target.is("div.ui-pnotify-text")) {
-					textDiv = target;
-				} else {
-					textDiv = target.closest("div.ui-pnotify-container").find("div.ui-pnotify-text");
-				}
+                var textDiv;
+                if (target.is("div.ui-pnotify-text")) {
+                    textDiv = target;
+                } else {
+                    textDiv = target.closest("div.ui-pnotify-container").find("div.ui-pnotify-text");
+                }
 
-				// put text into dialog and show it
-				$("#diagmessagetitle").text("Full notification");
-				$("#diagmessagemsg").html(textDiv.html());
-				$("#diagmessage").modal("show");
+                // put text into dialog and show it
+                $("#diagmessagetitle").text("Full notification");
+                $("#diagmessagemsg").html(textDiv.html());
+                $("#diagmessage").modal("show");
 
-				return false;
-			}
-		});
-	});
+                return false;
+            }
+        });
+    });
 }
 
 /**
  * @param title optional title
  */
 function vShowError(text, title) {
-	vPnotify(text, title, "error");
+    vPnotify(text, title, "error");
 }
 
 function vShowAJAXError(msg, jqXHR, errorThrown) {
-	vShowError(msg + "<br />" + errorThrown + "<br/>" + jqXHR.responseText);
+    vShowError(msg + "<br />" + errorThrown + "<br/>" + jqXHR.responseText);
 }
 
 /**
  * @param title optional title
  */
 function vShowNotification(text, title) {
-	vPnotify(text, title, "notification");
+    vPnotify(text, title, "notification");
 }
 
 
@@ -96,7 +96,7 @@ function vShowNotification(text, title) {
  * @param title optional title
  */
 function vShowSuccess(text, title) {
-	vPnotify(text, title, "success");
+    vPnotify(text, title, "success");
 }
 
 /**
@@ -109,26 +109,26 @@ function vShowSuccess(text, title) {
  * @param withoutConfirmation if given, the resource is deleted without any confirmation
  */
 function deleteResource(nameOfResource, url, onSuccess, onError, onStart, withoutConfirmation) {
-	var f = function() {
-		$.ajax({
-			url:  url,
-			type: 'DELETE',
-			async: true,
-			error: function(jqXHR, textStatus, errorThrown) {
-				vShowAJAXError("Could not delete " + nameOfResource, jqXHR, errorThrown);
-				if (onError) onError();
-			},
-			success: function(data, textStatus, jqXHR) {
-				vShowSuccess("Successfully deleted " + nameOfResource);
-				onSuccess(data, textStatus, jqXHR);
-			}
-		});
-	};
-	if (withoutConfirmation) {
-		f();
-	} else {
-		vConfirmYesNo("Do you really want to delete " + nameOfResource + "?", f);
-	}
+    var f = function () {
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            async: true,
+            error: function (jqXHR, textStatus, errorThrown) {
+                vShowAJAXError("Could not delete " + nameOfResource, jqXHR, errorThrown);
+                if (onError) onError();
+            },
+            success: function (data, textStatus, jqXHR) {
+                vShowSuccess("Successfully deleted " + nameOfResource);
+                onSuccess(data, textStatus, jqXHR);
+            }
+        });
+    };
+    if (withoutConfirmation) {
+        f();
+    } else {
+        vConfirmYesNo("Do you really want to delete " + nameOfResource + "?", f);
+    }
 }
 
 /**
@@ -145,66 +145,67 @@ function deleteResource(nameOfResource, url, onSuccess, onError, onStart, withou
  *
  */
 function vCreateTdClickFunction(url, keyName, valueName) {
-	var inputId = "thingedit" + Math.floor((Math.random()*100)+1); ;
-	keyName = keyName || "key";
-	valueName = valueName || "value";
+    var inputId = "thingedit" + Math.floor((Math.random() * 100) + 1);
+    ;
+    keyName = keyName || "key";
+    valueName = valueName || "value";
 
-	var f = function(e) {
-		var input = $("#" + inputId);
-		if (input.length != 0) {
-			// input field already there
-			return;
-		}
+    var f = function (e) {
+        var input = $("#" + inputId);
+        if (input.length != 0) {
+            // input field already there
+            return;
+        }
 
-		var td = $(this);
-		var oldPrefix = td.text();
-		var html =  "<input id='" + inputId + "' value='" + oldPrefix + "'></input>";
-		td.html(html);
+        var td = $(this);
+        var oldPrefix = td.text();
+        var html = "<input id='" + inputId + "' value='" + oldPrefix + "'></input>";
+        td.html(html);
 
-		// new field generated, has to be looked up
-		input = $("#" + inputId);
+        // new field generated, has to be looked up
+        input = $("#" + inputId);
 
-		input.keydown(function(e) {
-			if (e.keyCode == 27) {
-				// ESC key pressed
-				input.off("blur");
-				td.html(oldPrefix);
-			} else if (e.keyCode == 13) {
-				// enter key pressed
-				input.trigger("blur");
-			}
-		});
+        input.keydown(function (e) {
+            if (e.keyCode == 27) {
+                // ESC key pressed
+                input.off("blur");
+                td.html(oldPrefix);
+            } else if (e.keyCode == 13) {
+                // enter key pressed
+                input.trigger("blur");
+            }
+        });
 
-		input.focus();
+        input.focus();
 
-		input.on("blur", function() {
-			var newPrefix = input.val();
-			if (newPrefix == oldPrefix) {
-				td.html(newPrefix);
-			} else {
-				var namespace = td.next().text();
-				newPrefixEscaped = escape(newPrefix);
-				namespaceEscaped = escape(namespace);
-				var data = keyName + "=" + newPrefixEscaped + "&" + valueName + "=" + namespaceEscaped;
-				$.ajax({
-					url: url,
-					type: "POST",
-					async: false,
-					data: data,
-					error: function(jqXHR, textStatus, errorThrown) {
-						vShowAJAXError("Could not update data", jqXHR, errorThrown);
-						input.focus();
-					},
-					success: function(data, textSTatus, jqXHR) {
-						vShowSuccess("Successfully updated data");
-						td.html(newPrefix);
-					}
-				});
-			}
-		});
-	};
+        input.on("blur", function () {
+            var newPrefix = input.val();
+            if (newPrefix == oldPrefix) {
+                td.html(newPrefix);
+            } else {
+                var namespace = td.next().text();
+                newPrefixEscaped = escape(newPrefix);
+                namespaceEscaped = escape(namespace);
+                var data = keyName + "=" + newPrefixEscaped + "&" + valueName + "=" + namespaceEscaped;
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    async: false,
+                    data: data,
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        vShowAJAXError("Could not update data", jqXHR, errorThrown);
+                        input.focus();
+                    },
+                    success: function (data, textSTatus, jqXHR) {
+                        vShowSuccess("Successfully updated data");
+                        td.html(newPrefix);
+                    }
+                });
+            }
+        });
+    };
 
-	return f;
+    return f;
 }
 
 /**
@@ -215,12 +216,12 @@ function vCreateTdClickFunction(url, keyName, valueName) {
  * @return { namespace: namespace, localname: localname }
  */
 function getNamespaceAndLocalNameFromQName(qname) {
-	var i = qname.indexOf("}");
-	var res = {
-		namespace : qname.substr(1,i-1),
-		localname : qname.substr(i+1)
-	};
-	return res;
+    var i = qname.indexOf("}");
+    var res = {
+        namespace: qname.substr(1, i - 1),
+        localname: qname.substr(i + 1)
+    };
+    return res;
 }
 
 /**
@@ -230,10 +231,10 @@ function getNamespaceAndLocalNameFromQName(qname) {
  * returns wrong data if prefix wsa not found
  */
 function getQNameOutOfFullQName(fullQname, element) {
-	var nsAndId = getNamespaceAndLocalNameFromQName(fullQname);
-	var prefix = element.lookupPrefix(nsAndId.namespace);
-	var qname = prefix + ":" + nsAndId.localname;
-	return qname;
+    var nsAndId = getNamespaceAndLocalNameFromQName(fullQname);
+    var prefix = element.lookupPrefix(nsAndId.namespace);
+    var qname = prefix + ":" + nsAndId.localname;
+    return qname;
 }
 
 /**
@@ -243,24 +244,24 @@ function getQNameOutOfFullQName(fullQname, element) {
  * Currently not used anywhere
  */
 function getFullQNameOutOfQName(qname, element) {
-	var i = qname.indexOf(":");
-	var prefix = qname.substr(0,i-1);
-	var localname = qname.substr(i+1);
-	var namespace = element.lookupPrefix(prefix);
-	return "{" + namespace + "}" + localname;
+    var i = qname.indexOf(":");
+    var prefix = qname.substr(0, i - 1);
+    var localname = qname.substr(i + 1);
+    var namespace = element.lookupPrefix(prefix);
+    return "{" + namespace + "}" + localname;
 }
 
 function encodeID(id) {
-	// the URL sent to the server should be the encoded id
-	id = encodeURIComponent(id);
-	// therefore, we have to encode it twice
-	id = encodeURIComponent(id);
-	return id;
+    // the URL sent to the server should be the encoded id
+    id = encodeURIComponent(id);
+    // therefore, we have to encode it twice
+    id = encodeURIComponent(id);
+    return id;
 }
 
 // URLs from QName are provided by winery-support-common.js
 function makeArtifactTemplateURL(repoURL, namespace, id) {
-	return repoURL + "/artifacttemplates/" + encodeID(namespace) + "/" + encodeID(id) + "/";
+    return repoURL + "/artifacttemplates/" + encodeID(namespace) + "/" + encodeID(id) + "/";
 }
 
 if (!window.winery) window.winery = {};

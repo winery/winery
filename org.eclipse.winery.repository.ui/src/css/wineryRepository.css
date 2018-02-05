@@ -983,7 +983,7 @@ div.policiesContainer > div.content > div.policy > textarea.policy_xml {
     background: -o-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
     background: -ms-linear-gradient(top, #ffffff 0%, #e0e0e0 100%);
     background: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e0e0e0', GradientType=0 );
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e0e0e0', GradientType=0);
     background-repeat: repeat-x;
     border-color: #dbdbdb;
     border-color: #ccc;
@@ -998,6 +998,7 @@ div.policiesContainer > div.content > div.policy > textarea.policy_xml {
     background-color: #e0e0e0;
     background-position: 0 -15px;
 }
+
 .btn-default:active,
 .btn-default.active {
     background-color: #e0e0e0;

@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.reqscaps;
 
-import java.util.List;
-
 import org.eclipse.winery.model.tosca.TCapabilityRef;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.withoutid.EntityWithoutIdResource;
 
+import java.util.List;
+
 public class CapabilityResource extends EntityWithoutIdResource<TCapabilityRef> {
 
-	public CapabilityResource(TCapabilityRef o, int idx, List<TCapabilityRef> list, IPersistable res) {
-		super(o, idx, list, res);
-	}
+    public CapabilityResource(TCapabilityRef o, int idx, List<TCapabilityRef> list, IPersistable res) {
+        super(o, idx, list, res);
+    }
 
 }

@@ -13,27 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
+import javax.xml.namespace.QName;
+
 public final class PolicyTypeId extends EntityTypeId {
 
-	public PolicyTypeId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public PolicyTypeId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public PolicyTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public PolicyTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public PolicyTypeId(QName qname) {
-		super(qname);
-	}
+    public PolicyTypeId(QName qname) {
+        super(qname);
+    }
 
-	@Override
-	public String getGroup() {
-		return "PolicyType";
-	}
+    @Override
+    public String getGroup() {
+        return "PolicyType";
+    }
 }

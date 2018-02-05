@@ -13,32 +13,32 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
+
+import javax.xml.namespace.QName;
 
 /**
  * ArtifactTemplates, PolicyTemplates, and ServiceTemplates are
  * <em>directly nested</em> in a Definitions element. RelationshipTemplates and
  * NodeTemplates are not. When approaching an EntityTemplateId, it is a thing
  * directly nested in a Definitions element.
- *
+ * <p>
  * The others have {@link ToscaElementId} as parent
  */
 public abstract class EntityTemplateId extends DefinitionsChildId {
 
-	public EntityTemplateId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public EntityTemplateId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public EntityTemplateId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public EntityTemplateId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public EntityTemplateId(QName qname) {
-		super(qname);
-	}
+    public EntityTemplateId(QName qname) {
+        super(qname);
+    }
 
 }

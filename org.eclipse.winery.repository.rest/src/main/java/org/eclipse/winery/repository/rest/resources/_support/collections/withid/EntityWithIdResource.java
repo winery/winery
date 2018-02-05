@@ -13,19 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support.collections.withid;
 
-import java.util.List;
-
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
 import org.eclipse.winery.repository.rest.resources._support.collections.EntityResource;
 import org.eclipse.winery.repository.rest.resources._support.collections.IIdDetermination;
 
+import java.util.List;
+
 public class EntityWithIdResource<EntityT> extends EntityResource<EntityT> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public EntityWithIdResource(IIdDetermination<EntityT> idDetermination, EntityT o, int idx, List<EntityT> list, IPersistable res) {
-		super(idDetermination, o, idx, list, res);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public EntityWithIdResource(IIdDetermination<EntityT> idDetermination, EntityT o, int idx, List<EntityT> list, IPersistable res) {
+        super(idDetermination, o, idx, list, res);
+    }
 
 }

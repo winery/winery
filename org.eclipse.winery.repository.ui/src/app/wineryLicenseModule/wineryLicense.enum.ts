@@ -27,20 +27,20 @@ import * as MPL2 from './licenses/MPL-2.0';
 import * as Unlicense from './licenses/Unlicense';
 
 export enum LicenseEnum {
-    None       = 'None',
-    APL20      = 'Apache License 2.0',
-    GPL30      = 'GNU General Public License v3.0',
-    MIT        = 'MIT License',
+    None = 'None',
+    APL20 = 'Apache License 2.0',
+    GPL30 = 'GNU General Public License v3.0',
+    MIT = 'MIT License',
     BSD2Clause = 'BSD 2-clause "Simplified" License',
     BSD3Clause = 'BSD 3-clause "New" or "Revised" License',
-    EPL10      = 'Eclipse Public License 1.0',
-    EPL20      = 'Eclipse Public License 2.0',
-    AGPL30     = 'GNU Affero General Public License v3.0',
-    GPL20      = 'GNU General Public License v2.0',
-    LGPL21     = 'GNU Lesser General Public License v2.1',
-    LGPL30     = 'GNU Lesser General Public License v3.0',
-    MPL20      = 'Mozilla Public License 2.0',
-    Unlicense  = 'The Unlicense',
+    EPL10 = 'Eclipse Public License 1.0',
+    EPL20 = 'Eclipse Public License 2.0',
+    AGPL30 = 'GNU Affero General Public License v3.0',
+    GPL20 = 'GNU General Public License v2.0',
+    LGPL21 = 'GNU Lesser General Public License v2.1',
+    LGPL30 = 'GNU Lesser General Public License v3.0',
+    MPL20 = 'Mozilla Public License 2.0',
+    Unlicense = 'The Unlicense',
 }
 
 export class WineryLicense {

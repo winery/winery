@@ -16,9 +16,9 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 
 public class QNameWithTypeApiData extends QNameApiData {
 
-	/**
-	 * QName as string of the referenced type
-	 */
-	public String type;
+    /**
+     * QName as string of the referenced type
+     */
+    public String type;
 
 }

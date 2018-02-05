@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import { hostURL } from '../../../configuration';
-import { FilesApiData } from '../../artifactTemplates/filesTag/files.service.';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Observable} from 'rxjs/Observable';
+import {hostURL} from '../../../configuration';
+import {FilesApiData} from '../../artifactTemplates/filesTag/files.service.';
 
 @Injectable()
 export class WineryArtifactFilesService {
@@ -25,7 +25,7 @@ export class WineryArtifactFilesService {
     constructor(private http: Http) {
     }
 
-    getFiles(templateUrl: string): Observable<{files: FilesApiData[]}> {
+    getFiles(templateUrl: string): Observable<{ files: FilesApiData[] }> {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
 

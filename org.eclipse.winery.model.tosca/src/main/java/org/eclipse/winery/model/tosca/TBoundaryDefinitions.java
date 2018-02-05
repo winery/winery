@@ -14,25 +14,20 @@
 
 package org.eclipse.winery.model.tosca;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-
 
 /**
  * <p>Java class for tBoundaryDefinitions complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tBoundaryDefinitions">
  *   &lt;complexContent>
@@ -129,12 +124,12 @@ import org.eclipse.jdt.annotation.Nullable;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tBoundaryDefinitions", propOrder = {
-        "properties",
-        "propertyConstraints",
-        "requirements",
-        "capabilities",
-        "policies",
-        "interfaces"
+    "properties",
+    "propertyConstraints",
+    "requirements",
+    "capabilities",
+    "policies",
+    "interfaces"
 })
 public class TBoundaryDefinitions {
     @XmlElement(name = "Properties")
@@ -169,11 +164,11 @@ public class TBoundaryDefinitions {
         if (!(o instanceof TBoundaryDefinitions)) return false;
         TBoundaryDefinitions that = (TBoundaryDefinitions) o;
         return Objects.equals(properties, that.properties) &&
-                Objects.equals(propertyConstraints, that.propertyConstraints) &&
-                Objects.equals(requirements, that.requirements) &&
-                Objects.equals(capabilities, that.capabilities) &&
-                Objects.equals(policies, that.policies) &&
-                Objects.equals(interfaces, that.interfaces);
+            Objects.equals(propertyConstraints, that.propertyConstraints) &&
+            Objects.equals(requirements, that.requirements) &&
+            Objects.equals(capabilities, that.capabilities) &&
+            Objects.equals(policies, that.policies) &&
+            Objects.equals(interfaces, that.interfaces);
     }
 
     @Override
@@ -298,9 +293,9 @@ public class TBoundaryDefinitions {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -316,7 +311,7 @@ public class TBoundaryDefinitions {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "capability"
+        "capability"
     })
     public static class Capabilities {
 
@@ -325,20 +320,20 @@ public class TBoundaryDefinitions {
 
         /**
          * Gets the value of the capability property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the capability property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getCapability().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TCapabilityRef }
@@ -355,9 +350,9 @@ public class TBoundaryDefinitions {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -373,7 +368,7 @@ public class TBoundaryDefinitions {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "_interface"
+        "_interface"
     })
     public static class Interfaces {
 
@@ -382,20 +377,20 @@ public class TBoundaryDefinitions {
 
         /**
          * Gets the value of the interface property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the interface property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getInterface().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TExportedInterface }
@@ -412,9 +407,9 @@ public class TBoundaryDefinitions {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -430,7 +425,7 @@ public class TBoundaryDefinitions {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "policy"
+        "policy"
     })
     public static class Policies {
 
@@ -439,20 +434,20 @@ public class TBoundaryDefinitions {
 
         /**
          * Gets the value of the policy property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the policy property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getPolicy().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TPolicy }
@@ -469,9 +464,9 @@ public class TBoundaryDefinitions {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -498,8 +493,8 @@ public class TBoundaryDefinitions {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "any",
-            "propertyMappings"
+        "any",
+        "propertyMappings"
     })
     public static class Properties {
 
@@ -549,9 +544,9 @@ public class TBoundaryDefinitions {
 
         /**
          * <p>Java class for anonymous complex type.
-         *
+         * <p>
          * <p>The following schema fragment specifies the expected content contained within this class.
-         *
+         * <p>
          * <pre>
          * &lt;complexType>
          *   &lt;complexContent>
@@ -567,7 +562,7 @@ public class TBoundaryDefinitions {
          */
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "", propOrder = {
-                "propertyMapping"
+            "propertyMapping"
         })
         public static class PropertyMappings {
 
@@ -576,20 +571,20 @@ public class TBoundaryDefinitions {
 
             /**
              * Gets the value of the propertyMapping property.
-             *
+             * <p>
              * <p>
              * This accessor method returns a reference to the live list,
              * not a snapshot. Therefore any modification you make to the
              * returned list will be present inside the JAXB object.
              * This is why there is not a <CODE>set</CODE> method for the propertyMapping property.
-             *
+             * <p>
              * <p>
              * For example, to add a new item, do as follows:
              * <pre>
              *    getPropertyMapping().add(newItem);
              * </pre>
-             *
-             *
+             * <p>
+             * <p>
              * <p>
              * Objects of the following type(s) are allowed in the list
              * {@link TPropertyMapping }
@@ -607,9 +602,9 @@ public class TBoundaryDefinitions {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -625,7 +620,7 @@ public class TBoundaryDefinitions {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "propertyConstraint"
+        "propertyConstraint"
     })
     public static class PropertyConstraints {
 
@@ -634,20 +629,20 @@ public class TBoundaryDefinitions {
 
         /**
          * Gets the value of the propertyConstraint property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the propertyConstraint property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getPropertyConstraint().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TPropertyConstraint }
@@ -664,9 +659,9 @@ public class TBoundaryDefinitions {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -682,7 +677,7 @@ public class TBoundaryDefinitions {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "requirement"
+        "requirement"
     })
     public static class Requirements {
 
@@ -691,20 +686,20 @@ public class TBoundaryDefinitions {
 
         /**
          * Gets the value of the requirement property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the requirement property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getRequirement().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TRequirementRef }

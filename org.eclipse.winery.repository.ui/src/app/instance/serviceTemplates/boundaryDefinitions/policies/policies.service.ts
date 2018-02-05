@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { SelectItem } from 'ng2-select';
-import { WineryComponent } from '../../../../wineryInterfaces/wineryComponent';
-import { backendBaseURL } from '../../../../configuration';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
+import {SelectItem} from 'ng2-select';
+import {WineryComponent} from '../../../../wineryInterfaces/wineryComponent';
+import {backendBaseURL} from '../../../../configuration';
 
 @Injectable()
 export class PoliciesService {

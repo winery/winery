@@ -14,20 +14,20 @@
 package org.eclipse.winery.repository.rest.datatypes;
 
 public class LocalNameForAngular {
-	
-	private final String id;
-	private final String text;
 
-	public LocalNameForAngular(String id, String text) {
-		this.id = id;
-		this.text = text;
-	}
+    private final String id;
+    private final String text;
 
-	public String getId() {
-		return id;
-	}
+    public LocalNameForAngular(String id, String text) {
+        this.id = id;
+        this.text = text;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getId() {
+        return id;
+    }
+
+    public String getText() {
+        return text;
+    }
 }

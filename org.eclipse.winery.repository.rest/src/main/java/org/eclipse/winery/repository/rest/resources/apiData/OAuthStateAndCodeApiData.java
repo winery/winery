@@ -15,8 +15,8 @@
 package org.eclipse.winery.repository.rest.resources.apiData;
 
 public class OAuthStateAndCodeApiData {
-	
-	public String code;
-	public String state;
-	
+
+    public String code;
+    public String state;
+
 }

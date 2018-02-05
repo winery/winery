@@ -14,18 +14,10 @@
 
 package org.eclipse.winery.repository.rest.resources.servicetemplates.plans;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.annotations.ApiOperation;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.model.tosca.TPlan;
@@ -34,86 +26,92 @@ import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataParam;
-import io.swagger.annotations.ApiOperation;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.PUT;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class PlanFileResource {
 
-	private final PlanId planId;
-	private TPlan plan;
-	private ServiceTemplateResource res;
+    private final PlanId planId;
+    private TPlan plan;
+    private ServiceTemplateResource res;
 
 
-	public PlanFileResource(ServiceTemplateResource res, PlanId planId, TPlan plan) {
-		this.res = res;
-		this.planId = planId;
-		this.plan = plan;
-	}
+    public PlanFileResource(ServiceTemplateResource res, PlanId planId, TPlan plan) {
+        this.res = res;
+        this.planId = planId;
+        this.plan = plan;
+    }
 
-	/**
-	 * Extracts the file reference from plan's planModelReference
-	 */
-	private RepositoryFileReference getFileRef() {
-		String reference = this.plan.getPlanModelReference().getReference();
-		File f = new File(reference);
-		return new RepositoryFileReference(this.planId, f.getName());
-	}
+    /**
+     * Extracts the file reference from plan's planModelReference
+     */
+    private RepositoryFileReference getFileRef() {
+        String reference = this.plan.getPlanModelReference().getReference();
+        File f = new File(reference);
+        return new RepositoryFileReference(this.planId, f.getName());
+    }
 
-	@PUT
-	@Consumes({MediaType.MULTIPART_FORM_DATA})
-	@ApiOperation(value = "Resource currently works for BPMN4TOSCA plans only")
-	// @formatter:off
-	public Response onPutFile(
-		@FormDataParam("file") InputStream uploadedInputStream,
-		@FormDataParam("file") FormDataContentDisposition fileDetail,
-		@FormDataParam("file") FormDataBodyPart body
-	) {
-	// @formatter:on
+    @PUT
+    @Consumes( {MediaType.MULTIPART_FORM_DATA})
+    @ApiOperation(value = "Resource currently works for BPMN4TOSCA plans only")
+    // @formatter:off
+    public Response onPutFile(
+        @FormDataParam("file") InputStream uploadedInputStream,
+        @FormDataParam("file") FormDataContentDisposition fileDetail,
+        @FormDataParam("file") FormDataBodyPart body
+    ) {
+        // @formatter:on
 
-		String fileName = fileDetail.getFileName();
-		RepositoryFileReference ref = new RepositoryFileReference(this.planId, fileName);
-		RepositoryFileReference oldRef = this.getFileRef();
-		boolean persistanceNecessary;
-		if (ref.equals(oldRef)) {
-			// nothing todo, file will be replaced
-			persistanceNecessary = false;
-		} else {
-			// new filename sent
-			RestUtils.delete(oldRef);
-			PlansResource.setPlanModelReference(this.plan, this.planId, fileName);
-			persistanceNecessary = true;
-		}
+        String fileName = fileDetail.getFileName();
+        RepositoryFileReference ref = new RepositoryFileReference(this.planId, fileName);
+        RepositoryFileReference oldRef = this.getFileRef();
+        boolean persistanceNecessary;
+        if (ref.equals(oldRef)) {
+            // nothing todo, file will be replaced
+            persistanceNecessary = false;
+        } else {
+            // new filename sent
+            RestUtils.delete(oldRef);
+            PlansResource.setPlanModelReference(this.plan, this.planId, fileName);
+            persistanceNecessary = true;
+        }
 
-		// Really store it
-		try {
-			RepositoryFactory.getRepository().putContentToFile(ref, uploadedInputStream, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));
-		} catch (IOException e1) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
-		}
+        // Really store it
+        try {
+            RepositoryFactory.getRepository().putContentToFile(ref, uploadedInputStream, org.apache.tika.mime.MediaType.parse(body.getMediaType().toString()));
+        } catch (IOException e1) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not store plan. " + e1.getMessage()).build();
+        }
 
-		if (persistanceNecessary) {
-			return RestUtils.persist(this.res);
-		} else {
-			return Response.noContent().build();
-		}
-	}
+        if (persistanceNecessary) {
+            return RestUtils.persist(this.res);
+        } else {
+            return Response.noContent().build();
+        }
+    }
 
-	@PUT
-	@Consumes({MediaType.APPLICATION_JSON})
-	// @formatter:off
-	public Response onPutJSON(InputStream is) {
-		RepositoryFileReference ref = this.getFileRef();
-		return RestUtils.putContentToFile(ref, is, MediaTypes.MEDIATYPE_APPLICATION_JSON);
-	}
+    @PUT
+    @Consumes( {MediaType.APPLICATION_JSON})
+    // @formatter:off
+    public Response onPutJSON(InputStream is) {
+        RepositoryFileReference ref = this.getFileRef();
+        return RestUtils.putContentToFile(ref, is, MediaTypes.MEDIATYPE_APPLICATION_JSON);
+    }
 
-	/**
-	 * Returns the stored file.
-	 */
-	@GET
-	public Response getFile(@HeaderParam("If-Modified-Since") String modified) {
-		RepositoryFileReference ref = this.getFileRef();
-		return RestUtils.returnRepoPath(ref, modified);
-	}
+    /**
+     * Returns the stored file.
+     */
+    @GET
+    public Response getFile(@HeaderParam("If-Modified-Since") String modified) {
+        RepositoryFileReference ref = this.getFileRef();
+        return RestUtils.returnRepoPath(ref, modified);
+    }
 }

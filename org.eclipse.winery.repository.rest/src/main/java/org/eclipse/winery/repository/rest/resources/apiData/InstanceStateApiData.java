@@ -19,9 +19,9 @@ public class InstanceStateApiData {
     public String state;
 
     public InstanceStateApiData() {
-	}
+    }
 
-	public InstanceStateApiData(String state) {
+    public InstanceStateApiData(String state) {
         this.state = state;
     }
 

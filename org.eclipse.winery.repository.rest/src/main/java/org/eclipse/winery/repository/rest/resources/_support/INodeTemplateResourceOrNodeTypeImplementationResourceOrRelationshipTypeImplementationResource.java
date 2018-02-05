@@ -20,6 +20,6 @@ import org.eclipse.winery.common.ids.Namespace;
  */
 public interface INodeTemplateResourceOrNodeTypeImplementationResourceOrRelationshipTypeImplementationResource {
 
-	Namespace getNamespace();
+    Namespace getNamespace();
 
 }

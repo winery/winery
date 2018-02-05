@@ -13,27 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
+import javax.xml.namespace.QName;
+
 public final class ServiceTemplateId extends DefinitionsChildId {
 
-	public ServiceTemplateId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public ServiceTemplateId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public ServiceTemplateId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public ServiceTemplateId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public ServiceTemplateId(QName qname) {
-		super(qname);
-	}
+    public ServiceTemplateId(QName qname) {
+        super(qname);
+    }
 
-	@Override
-	public String getGroup() {
-		return "ServiceTemplate";
-	}
+    @Override
+    public String getGroup() {
+        return "ServiceTemplate";
+    }
 }

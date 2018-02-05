@@ -11,13 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { RequirementOrCapability } from './requirementsOrCapabilitiesApiData';
-import { RequirementsOrCapabilitiesService } from './requirementsOrCapabilities.service';
-import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
-import { ModalDirective } from 'ngx-bootstrap';
-import { WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {RequirementOrCapability} from './requirementsOrCapabilitiesApiData';
+import {RequirementsOrCapabilitiesService} from './requirementsOrCapabilities.service';
+import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
+import {isNullOrUndefined} from 'util';
+import {ModalDirective} from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-instance-requirements-or-capabilities',
@@ -35,8 +34,8 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
 
     columns: Array<any> = [
-        { title: 'Name', name: 'name', sort: true },
-        { title: 'Reference', name: 'ref', sort: true },
+        {title: 'Name', name: 'name', sort: true},
+        {title: 'Reference', name: 'ref', sort: true},
     ];
 
     reqOrCapToBeAdded: RequirementOrCapability;

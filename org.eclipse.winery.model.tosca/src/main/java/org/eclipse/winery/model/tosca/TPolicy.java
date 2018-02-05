@@ -14,23 +14,22 @@
 
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import java.util.Objects;
 
 
 /**
  * <p>Java class for tPolicy complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tPolicy">
  *   &lt;complexContent>
@@ -71,8 +70,8 @@ public class TPolicy extends TExtensibleElements {
         if (!super.equals(o)) return false;
         TPolicy tPolicy = (TPolicy) o;
         return Objects.equals(name, tPolicy.name) &&
-                Objects.equals(policyType, tPolicy.policyType) &&
-                Objects.equals(policyRef, tPolicy.policyRef);
+            Objects.equals(policyType, tPolicy.policyType) &&
+            Objects.equals(policyRef, tPolicy.policyRef);
     }
 
     @Override

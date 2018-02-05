@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.imports.wsdlimports;
 
+import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
+
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
-
 public class WsdlImportsResource extends AbstractComponentsWithoutTypeReferenceResource<WsdlImportResource> {
 
-	@Path("{namespace}/{id}/")
-	public WsdlImportResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return this.getComponentInstaceResource(namespace, id, true);
-	}
+    @Path("{namespace}/{id}/")
+    public WsdlImportResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstaceResource(namespace, id, true);
+    }
 
 }

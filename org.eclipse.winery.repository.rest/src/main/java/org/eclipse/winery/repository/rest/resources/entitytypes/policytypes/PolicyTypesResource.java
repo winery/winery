@@ -13,12 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.policytypes;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
+import io.swagger.annotations.Api;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithoutTypeReferenceResource;
 
-import io.swagger.annotations.Api;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 /**
  * Manages all policy types in all available namespaces.
@@ -26,9 +25,9 @@ import io.swagger.annotations.Api;
  */
 @Api(tags = "Policy Types")
 public class PolicyTypesResource extends AbstractComponentsWithoutTypeReferenceResource<PolicyTypeResource> {
-	@Path("{namespace}/{id}/")
-	public PolicyTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return this.getComponentInstaceResource(namespace, id, true);
-	}
+    @Path("{namespace}/{id}/")
+    public PolicyTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstaceResource(namespace, id, true);
+    }
 
 }

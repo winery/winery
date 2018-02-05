@@ -11,16 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-import { SelfServiceDescriptionComponent } from './selfServicePortalDescription.component';
-import { SelfServicePortalImagesComponent } from './selfServicePortalImages.component';
-import { SelfServicePortalOptionsComponent } from './selfServicePortalOptions.component';
-import { EditXMLComponent } from '../../sharedComponents/editXML/editXML.component';
-import { SourceComponent } from '../../sharedComponents/artifactSource/source.component';
+import {NgModule} from '@angular/core';
+import {RouterModule} from '@angular/router';
+import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+import {HttpModule} from '@angular/http';
+import {SelfServiceDescriptionComponent} from './selfServicePortalDescription.component';
+import {SelfServicePortalImagesComponent} from './selfServicePortalImages.component';
+import {SelfServicePortalOptionsComponent} from './selfServicePortalOptions.component';
+import {EditXMLComponent} from '../../sharedComponents/editXML/editXML.component';
+import {SourceComponent} from '../../sharedComponents/artifactSource/source.component';
 
 export const selfServiceRoutes = [
     {

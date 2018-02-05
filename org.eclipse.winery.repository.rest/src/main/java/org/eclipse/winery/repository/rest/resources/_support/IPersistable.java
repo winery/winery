@@ -21,7 +21,7 @@ import org.eclipse.winery.model.tosca.TDefinitions;
  */
 public interface IPersistable {
 
-	TDefinitions getDefinitions();
+    TDefinitions getDefinitions();
 
-	RepositoryFileReference getRepositoryFileReference();
+    RepositoryFileReference getRepositoryFileReference();
 }

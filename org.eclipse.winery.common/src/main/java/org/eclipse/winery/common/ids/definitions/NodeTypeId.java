@@ -13,27 +13,27 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
+import javax.xml.namespace.QName;
+
 public final class NodeTypeId extends TopologyGraphElementEntityTypeId {
 
-	public NodeTypeId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public NodeTypeId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public NodeTypeId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public NodeTypeId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 
-	public NodeTypeId(QName type) {
-		super(type);
-	}
+    public NodeTypeId(QName type) {
+        super(type);
+    }
 
-	@Override
-	public String getGroup() {
-		return "NodeType";
-	}
+    @Override
+    public String getGroup() {
+        return "NodeType";
+    }
 }

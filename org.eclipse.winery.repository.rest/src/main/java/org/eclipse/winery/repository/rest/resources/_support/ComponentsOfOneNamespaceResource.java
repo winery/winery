@@ -14,25 +14,25 @@
 
 package org.eclipse.winery.repository.rest.resources._support;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.core.Response;
-
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.repository.rest.RestUtils;
 
+import javax.ws.rs.DELETE;
+import javax.ws.rs.core.Response;
+
 public class ComponentsOfOneNamespaceResource {
 
-	private final Class<? extends AbstractComponentsResource> containerClass;
-	private final String namespace;
+    private final Class<? extends AbstractComponentsResource> containerClass;
+    private final String namespace;
 
-	public ComponentsOfOneNamespaceResource(Class<? extends AbstractComponentsResource> containerClass, String namespace) {
-		this.containerClass = containerClass;
-		this.namespace = namespace;
-	}
+    public ComponentsOfOneNamespaceResource(Class<? extends AbstractComponentsResource> containerClass, String namespace) {
+        this.containerClass = containerClass;
+        this.namespace = namespace;
+    }
 
-	@DELETE
-	public Response delete() {
-		Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.containerClass);
-		return RestUtils.delete(idClass, namespace);
-	}
+    @DELETE
+    public Response delete() {
+        Class<? extends DefinitionsChildId> idClass = RestUtils.getComponentIdClassForComponentContainer(this.containerClass);
+        return RestUtils.delete(idClass, namespace);
+    }
 }

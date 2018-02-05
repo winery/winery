@@ -19,7 +19,7 @@ import org.eclipse.winery.repository.rest.resources.imports.genericimports.Gener
 
 public class WsdlImportResource extends GenericImportResource {
 
-	public WsdlImportResource(GenericImportId id) {
-		super(id);
-	}
+    public WsdlImportResource(GenericImportId id) {
+        super(id);
+    }
 }

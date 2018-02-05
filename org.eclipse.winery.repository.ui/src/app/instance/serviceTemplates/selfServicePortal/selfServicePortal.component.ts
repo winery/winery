@@ -11,10 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, OnInit } from '@angular/core';
-import { SelfServicePortalService } from './selfServicePortal.service';
-import { ActivatedRoute } from '@angular/router';
-import { InstanceService } from '../../instance.service';
+import {Component, OnInit} from '@angular/core';
+import {SelfServicePortalService} from './selfServicePortal.service';
+import {ActivatedRoute} from '@angular/router';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     selector: 'winery-self-service-portal',

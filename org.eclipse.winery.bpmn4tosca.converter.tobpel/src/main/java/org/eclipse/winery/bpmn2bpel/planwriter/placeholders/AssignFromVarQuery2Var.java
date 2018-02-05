@@ -28,9 +28,4 @@ public interface AssignFromVarQuery2Var extends ActivityPlaceholder {
 	public static final String TO_SPEC_VARIABLE = "toVariable";
 
 
-
-
-
-
-
 }

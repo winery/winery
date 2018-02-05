@@ -1,15 +1,15 @@
 {
-	"files": [
-		{
-			"name": "text.txt",
-			"size": 0,
-			"url": "http://localhost:8080/winery/servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithFourPolicies/selfserviceportal/files/text.txt",
-			"deleteUrl": "http://localhost:8080/winery/servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithFourPolicies/selfserviceportal/files/text.txt",
-			"thumbnailUrl": "http://localhost:8080/winery/images/mime-types/txt.png",
-			"deleteType": "DELETE"
-		}
-	],
-	"paths": [
-		""
-	]
+    "files": [
+        {
+            "name": "text.txt",
+            "size": 0,
+            "url": "http://localhost:8080/winery/servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithFourPolicies/selfserviceportal/files/text.txt",
+            "deleteUrl": "http://localhost:8080/winery/servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithFourPolicies/selfserviceportal/files/text.txt",
+            "thumbnailUrl": "http://localhost:8080/winery/images/mime-types/txt.png",
+            "deleteType": "DELETE"
+        }
+    ],
+    "paths": [
+        ""
+    ]
 }

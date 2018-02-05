@@ -18,11 +18,11 @@ import org.eclipse.winery.common.ids.XmlId;
 
 public abstract class EntityTypeImplementationId extends DefinitionsChildId {
 
-	public EntityTypeImplementationId(Namespace namespace, XmlId xmlId) {
-		super(namespace, xmlId);
-	}
+    public EntityTypeImplementationId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
 
-	public EntityTypeImplementationId(String ns, String id, boolean URLencoded) {
-		super(ns, id, URLencoded);
-	}
+    public EntityTypeImplementationId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
 }

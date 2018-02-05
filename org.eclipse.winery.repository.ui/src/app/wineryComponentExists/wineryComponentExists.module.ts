@@ -11,15 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
-import { WineryComponentExistsComponent } from './wineryComponentExists.component';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { ExistService } from '../wineryUtils/existService';
-import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
-import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
+import {WineryComponentExistsComponent} from './wineryComponentExists.component';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {BrowserModule} from '@angular/platform-browser';
+import {ExistService} from '../wineryUtils/existService';
+import {WineryNamespaceSelectorModule} from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
+import {WineryPipesModule} from '../wineryPipes/wineryPipes.module';
 
 @NgModule({
     imports: [

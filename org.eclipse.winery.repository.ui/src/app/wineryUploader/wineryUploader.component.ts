@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { WineryUploaderService } from './wineryUploader.service';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { FileUploader } from 'ng2-file-upload';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {isNullOrUndefined} from 'util';
+import {WineryUploaderService} from './wineryUploader.service';
+import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
+import {FileUploader} from 'ng2-file-upload';
 
 /**
  * This component provides a modal popup with a <code>title</code> and optional progress bar <code>showProgress</code> for file uploads.

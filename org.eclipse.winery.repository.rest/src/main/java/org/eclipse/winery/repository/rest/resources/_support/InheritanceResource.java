@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
+import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceApiData;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -20,14 +22,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceApiData;
-
 /**
  * Class for managing inheritance properties: abstract, final, derivedFrom
- *
+ * <p>
  * The linking in the resources tree is different than the others. Here, there
  * is no additional Id generated.
- *
+ * <p>
  * We separated the code here to have the collection of valid super types in a
  * separate class. We think, this is less confusing than including this
  * functionality in
@@ -35,46 +35,46 @@ import org.eclipse.winery.repository.rest.resources.apiData.InheritanceResourceA
  */
 public class InheritanceResource {
 
-	private AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal managedResource;
+    private AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal managedResource;
 
-	public InheritanceResource(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
-		this.managedResource = res;
-	}
+    public InheritanceResource(AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal res) {
+        this.managedResource = res;
+    }
 
-	public String getDerivedFrom() {
-		return this.managedResource.getDerivedFrom();
-	}
+    public String getDerivedFrom() {
+        return this.managedResource.getDerivedFrom();
+    }
 
-	/**
-	 * Produces a JSON object containing all necessary data for displaying and editing the inheritance.
-	 *
-	 * @return JSON object in the format
-	 * {
-	 *    "isAbstract": "no",
-	 *    "isFinal": "yes",
-	 *    "derivedFrom": "[QName]"
-	 *  }
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public InheritanceResourceApiData getInheritanceManagementJSON() {
-		return new InheritanceResourceApiData(this.managedResource);
-	}
+    /**
+     * Produces a JSON object containing all necessary data for displaying and editing the inheritance.
+     *
+     * @return JSON object in the format
+     * {
+     * "isAbstract": "no",
+     * "isFinal": "yes",
+     * "derivedFrom": "[QName]"
+     * }
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public InheritanceResourceApiData getInheritanceManagementJSON() {
+        return new InheritanceResourceApiData(this.managedResource);
+    }
 
-	/**
-	 * Saves the inheritance management from a putted json object in the format:
-	 * {
-	 *   "isAbstract": "no",
-	 *   "isFinal": "yes",
-	 *   "derivedFrom": "[QName]"
-	 * }
-	 *
-	 * @param json Should at least contain values for abstract, final and QName.
-	 * @return Response
-	 */
-	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response saveInheritanceManagementFromJSON(InheritanceResourceApiData json) {
-		return this.managedResource.putInheritance(json);
-	}
+    /**
+     * Saves the inheritance management from a putted json object in the format:
+     * {
+     * "isAbstract": "no",
+     * "isFinal": "yes",
+     * "derivedFrom": "[QName]"
+     * }
+     *
+     * @param json Should at least contain values for abstract, final and QName.
+     * @return Response
+     */
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response saveInheritanceManagementFromJSON(InheritanceResourceApiData json) {
+        return this.managedResource.putInheritance(json);
+    }
 }

@@ -13,12 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
+import io.swagger.annotations.Api;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsWithTypeReferenceResource;
 
-import io.swagger.annotations.Api;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 /**
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate>
@@ -26,8 +25,8 @@ import io.swagger.annotations.Api;
  */
 @Api(tags = "Artifact Templates")
 public class ArtifactTemplatesResource extends AbstractComponentsWithTypeReferenceResource<ArtifactTemplateResource> {
-	@Path("{namespace}/{id}/")
-	public ArtifactTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return this.getComponentInstaceResource(namespace, id, true);
-	}
+    @Path("{namespace}/{id}/")
+    public ArtifactTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstaceResource(namespace, id, true);
+    }
 }

@@ -17,16 +17,16 @@ package org.eclipse.winery.repository.rest.resources.apiData;
 import org.eclipse.winery.model.tosca.TTag;
 
 public class TagsApiData {
-	public String id;
-	public String name;
-	public String value;
+    public String id;
+    public String name;
+    public String value;
 
-	public TagsApiData() {
-	}
+    public TagsApiData() {
+    }
 
-	public TagsApiData(String id, TTag data) {
-		this.id = id;
-		this.name = data.getName();
-		this.value = data.getValue();
-	}
+    public TagsApiData(String id, TTag data) {
+        this.id = id;
+        this.name = data.getName();
+        this.value = data.getValue();
+    }
 }

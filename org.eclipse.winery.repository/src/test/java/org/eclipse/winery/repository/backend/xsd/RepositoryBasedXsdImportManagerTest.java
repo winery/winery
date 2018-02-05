@@ -13,32 +13,31 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.xsd;
 
-import java.util.List;
-
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 public class RepositoryBasedXsdImportManagerTest extends TestWithGitBackedRepository {
 
-	@Test
-	public void getAllDeclaredElementsLocalNamesTest() throws Exception {
-		this.setRevisionTo("5fdcffa9ccd17743d5498cab0914081fc33606e9");
+    @Test
+    public void getAllDeclaredElementsLocalNamesTest() throws Exception {
+        this.setRevisionTo("5fdcffa9ccd17743d5498cab0914081fc33606e9");
 
-		RepositoryBasedXsdImportManager manager = (RepositoryBasedXsdImportManager) this.repository.getXsdImportManager();
-		List<NamespaceAndDefinedLocalNames> list = manager.getAllDeclaredElementsLocalNames();
+        RepositoryBasedXsdImportManager manager = (RepositoryBasedXsdImportManager) this.repository.getXsdImportManager();
+        List<NamespaceAndDefinedLocalNames> list = manager.getAllDeclaredElementsLocalNames();
 
-		Assert.assertEquals(1, list.size());
-	}
+        Assert.assertEquals(1, list.size());
+    }
 
-	@Test
-	public void getAllDefinedLocalNamesForElementsTest() throws Exception {
-		this.setRevisionTo("3465576f5b46079bb26f5c8e93663424440421a0");
+    @Test
+    public void getAllDefinedLocalNamesForElementsTest() throws Exception {
+        this.setRevisionTo("3465576f5b46079bb26f5c8e93663424440421a0");
 
-		RepositoryBasedXsdImportManager manager = (RepositoryBasedXsdImportManager) this.repository.getXsdImportManager();
-		List<NamespaceAndDefinedLocalNames> list = manager.getAllDefinedTypesLocalNames();
+        RepositoryBasedXsdImportManager manager = (RepositoryBasedXsdImportManager) this.repository.getXsdImportManager();
+        List<NamespaceAndDefinedLocalNames> list = manager.getAllDefinedTypesLocalNames();
 
-		Assert.assertEquals(1, list.size());
-	}
+        Assert.assertEquals(1, list.size());
+    }
 }

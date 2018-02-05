@@ -11,8 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { Component } from '@angular/core';
-import { ApplicationOption } from './selfServicePortal.service';
+import {Component} from '@angular/core';
+import {ApplicationOption} from './selfServicePortal.service';
 
 @Component({
     selector: 'winery-self-service-portal-options',
@@ -22,9 +22,9 @@ export class SelfServicePortalOptionsComponent {
 
     options: ApplicationOption[] = [];
     columns = [
-        { title: 'Name', name: 'name' },
-        { title: 'Icon', name: 'icon' },
-        { title: 'Plan Service Name', name: 'planServiceName' }
+        {title: 'Name', name: 'name'},
+        {title: 'Icon', name: 'icon'},
+        {title: 'Plan Service Name', name: 'planServiceName'}
     ];
 
     onRemoveClick(event: any) {

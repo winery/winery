@@ -18,14 +18,14 @@ import java.util.List;
 
 public class ArtifactResourcesApiData {
 
-	private List<String> artifactNames;
+    private List<String> artifactNames;
 
-	public List<String> getArtifactNames() {
-		return artifactNames;
-	}
+    public List<String> getArtifactNames() {
+        return artifactNames;
+    }
 
-	public void setArtifactNames(List<String> artifactNames) {
-		this.artifactNames = artifactNames;
-	}
+    public void setArtifactNames(List<String> artifactNames) {
+        this.artifactNames = artifactNames;
+    }
 
 }

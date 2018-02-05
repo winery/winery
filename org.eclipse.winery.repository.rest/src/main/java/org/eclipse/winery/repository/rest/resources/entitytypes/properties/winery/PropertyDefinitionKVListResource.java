@@ -13,13 +13,13 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.properties.winery;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.repository.rest.resources._support.collections.withid.EntityWithIdCollectionResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResource;
+
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 /**
  * Supports Winery's k/v properties introducing sub resources
@@ -27,19 +27,19 @@ import org.eclipse.winery.repository.rest.resources.entitytypes.EntityTypeResour
  */
 public class PropertyDefinitionKVListResource extends EntityWithIdCollectionResource<PropertyDefinitionKVResource, PropertyDefinitionKV> {
 
-	public PropertyDefinitionKVListResource(EntityTypeResource res, PropertyDefinitionKVList list) {
-		super(PropertyDefinitionKVResource.class, PropertyDefinitionKV.class, list, res);
-	}
+    public PropertyDefinitionKVListResource(EntityTypeResource res, PropertyDefinitionKVList list) {
+        super(PropertyDefinitionKVResource.class, PropertyDefinitionKV.class, list, res);
+    }
 
-	@Override
-	public String getId(PropertyDefinitionKV entity) {
-		return entity.getKey();
-	}
+    @Override
+    public String getId(PropertyDefinitionKV entity) {
+        return entity.getKey();
+    }
 
-	@Override
-	@Path("{id}/")
-	public PropertyDefinitionKVResource getEntityResource(@PathParam("id") String id) {
-		return this.getEntityResourceFromEncodedId(id);
-	}
+    @Override
+    @Path("{id}/")
+    public PropertyDefinitionKVResource getEntityResource(@PathParam("id") String id) {
+        return this.getEntityResourceFromEncodedId(id);
+    }
 
 }
