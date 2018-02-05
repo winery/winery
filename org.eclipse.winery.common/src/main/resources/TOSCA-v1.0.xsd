@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	Topology and Orchestration Specification for Cloud Applications Version 1.0
-	OASIS Standard
-	25 November 2013
-	Copyright (c) OASIS Open 2013. All rights reserved.
-	Source: http://docs.oasis-open.org/tosca/TOSCA/v1.0/os/schemas/
+ Topology and Orchestration Specification for Cloud Applications Version 1.0
+ OASIS Standard
+ 25 November 2013
+ Copyright (c) OASIS Open 2013. All rights reserved.
+ Source: http://docs.oasis-open.org/tosca/TOSCA/v1.0/os/schemas/
+
+ Includes following modifications by the University of Stuttgart:
+
+ - Added "name" at implementation artifacts.
+   This is necessary to identify a single implementation artifact in a list of implementation artifacts.
+   See https://github.com/eclipse/winery/issues/71 for a discussion.
+ - `processContents="lax"` was added to Properties at Boundary definitions.
 -->
 <xs:schema targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12" elementFormDefault="qualified"
            attributeFormDefault="unqualified" xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"

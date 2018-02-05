@@ -17,3 +17,6 @@ indent_size = 2
 
 [bower.json]
 indent_size = 2
+
+[TOSCA-v1.0.xsd]
+indent_size = 1
