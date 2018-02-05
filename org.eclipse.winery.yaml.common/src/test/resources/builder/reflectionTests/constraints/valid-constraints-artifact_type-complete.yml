@@ -1,0 +1,38 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains a valid artifact type with complete constraints field.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.2.1
+  exception: None
+  keyname: artifact_types.test.artifacttypes.at1.properties.p1.constraints
+  assert: |
+    0.equal = 2
+    1.greater_than = 1
+    2.less_than = 3
+    3.less_or_equal = 2 
+    4.in_range = [2,3]
+    5.valid_values = [a,b,c]
+    6.length = [1,3]
+    7.min_length = 1
+    8.max_length = 3
+    9.pattern = [a-zA-Z]+
+
+artifact_types:
+  test.artifacttypes.at1:
+    derived_from: tosca.artifacts.Root
+    properties:
+      p1:
+        type: string
+        constraints:
+          - equal: 2
+          - greater_than: 1
+          - less_than: 3
+          - less_or_equal: 2
+          - in_range: [ 2, 3 ]
+          - valid_values: [ a, b, c ]
+          - length: [1,3]
+          - min_length: 1
+          - max_length: 3
+          - pattern: "[a-zA-Z]+"
