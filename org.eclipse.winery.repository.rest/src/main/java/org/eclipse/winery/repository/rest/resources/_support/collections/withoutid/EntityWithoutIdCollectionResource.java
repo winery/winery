@@ -37,10 +37,6 @@ public abstract class EntityWithoutIdCollectionResource<EntityResourceT extends 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityWithoutIdCollectionResource.class);
 
-
-    /**
-     * {@inheritDoc}
-     */
     public EntityWithoutIdCollectionResource(Class<EntityResourceT> entityResourceTClazz, Class<EntityT> entityTClazz, List<EntityT> list, IPersistable res) {
         super(entityResourceTClazz, entityTClazz, list, res);
     }
