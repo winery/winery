@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.Map;
+import java.util.Objects;
 
 public class WineryCli {
 
@@ -70,7 +71,18 @@ public class WineryCli {
         boolean serviceTemplatesOnly = line.hasOption("so");
         boolean checkDocumentation = line.hasOption("cd");
         ConsistencyCheckerConfiguration configuration = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repository);
-        ConsistencyErrorLogger errors = ConsistencyChecker.checkCorruptionUsingCsarExport(configuration);
+        ConsistencyErrorLogger errors = ConsistencyChecker.checkCorruptionUsingCsarExport(configuration, new ConsistencyCheckerProgressListener() {
+            @Override
+            public void updateCheckerProgress(float progress) {
+                System.out.println(progress * 100 + "%");
+            }
+
+            @Override
+            public void detailedCheckerProgress(float progress, String checkingDefinition) {
+                updateCheckerProgress(progress);
+                System.out.println("\nNow checking " + checkingDefinition);
+            }
+        });
 
         System.out.println();
         if (errors.getErrorList().isEmpty()) {
@@ -83,14 +95,18 @@ public class WineryCli {
 
                 ElementErrorList elementErrorList = qName.getValue();
 
-                System.out.println("\tErrors:");
-                for (String error : elementErrorList.getErrors()) {
-                    System.out.println("\t\t" + error);
+                if (Objects.nonNull(elementErrorList.getErrors())) {
+                    System.out.println("\tErrors:");
+                    for (String error : elementErrorList.getErrors()) {
+                        System.out.println("\t\t" + error);
+                    }
                 }
 
-                System.out.println("\n\tWarnings:");
-                for (String error : elementErrorList.getWarnings()) {
-                    System.out.println("\t\t" + error);
+                if (Objects.nonNull(elementErrorList.getWarnings())) {
+                    System.out.println("\n\tWarnings:");
+                    for (String error : elementErrorList.getWarnings()) {
+                        System.out.println("\t\t" + error);
+                    }
                 }
 
                 System.out.println();
