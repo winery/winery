@@ -13,19 +13,17 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer.xml;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.yaml.common.writer.xml.support.AnonymousPropertiesList;
 import org.eclipse.winery.yaml.common.writer.xml.support.PropertiesList;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Writer {
     public void writeXML(TDefinitions definitions, Path filePath) throws JAXBException {

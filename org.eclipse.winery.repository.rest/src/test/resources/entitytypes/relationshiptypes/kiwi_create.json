@@ -1,4 +1,4 @@
 {
-  "localname":"kiwi",
-  "namespace":"http://winery.opentosca.org/test/relationshiptypes/fruits"
+    "localname": "kiwi",
+    "namespace": "http://winery.opentosca.org/test/relationshiptypes/fruits"
 }

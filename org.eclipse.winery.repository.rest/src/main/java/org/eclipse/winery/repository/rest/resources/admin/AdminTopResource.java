@@ -1,29 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import io.swagger.annotations.Api;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.consistencycheck.ConsistencyChecker;
@@ -37,78 +34,76 @@ import org.eclipse.winery.repository.rest.resources.admin.types.PlanLanguagesMan
 import org.eclipse.winery.repository.rest.resources.admin.types.PlanTypesManager;
 import org.eclipse.winery.repository.rest.resources.apiData.OAuthStateAndCodeApiData;
 
-import io.swagger.annotations.Api;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 @Api(tags = "Admin")
 public class AdminTopResource {
 
-	@Path("namespaces/")
-	public NamespacesResource getNamespacesResource() {
-		return new NamespacesResource();
-	}
+    @Path("namespaces/")
+    public NamespacesResource getNamespacesResource() {
+        return new NamespacesResource();
+    }
 
-	@Path("repository/")
-	public RepositoryAdminResource getRepositoryAdminResource() {
-		return new RepositoryAdminResource();
-	}
+    @Path("repository/")
+    public RepositoryAdminResource getRepositoryAdminResource() {
+        return new RepositoryAdminResource();
+    }
 
-	@Path("planlanguages/")
-	public PlanLanguagesManager getPlanLanguagesResource() {
-		return PlanLanguagesManager.INSTANCE;
-	}
+    @Path("planlanguages/")
+    public PlanLanguagesManager getPlanLanguagesResource() {
+        return PlanLanguagesManager.INSTANCE;
+    }
 
-	@Path("plantypes/")
-	public PlanTypesManager getPlanTypesResource() {
-		return PlanTypesManager.INSTANCE;
-	}
+    @Path("plantypes/")
+    public PlanTypesManager getPlanTypesResource() {
+        return PlanTypesManager.INSTANCE;
+    }
 
-	@Path("constrainttypes/")
-	public ConstraintTypesManager getConstraintTypesManager() {
-		return ConstraintTypesManager.INSTANCE;
-	}
+    @Path("constrainttypes/")
+    public ConstraintTypesManager getConstraintTypesManager() {
+        return ConstraintTypesManager.INSTANCE;
+    }
 
-	@GET
-	@Path("consistencycheck")
-	@Produces(MediaType.APPLICATION_JSON)
-	public ConsistencyErrorLogger checkConsistency(@QueryParam("serviceTemplatesOnly") boolean serviceTemplatesOnly, @QueryParam("checkDocumentation") boolean checkDocumentation) {
-		IRepository repo = RepositoryFactory.getRepository();
-		EnumSet<ConsistencyCheckerVerbosity> verbosity = EnumSet.of(ConsistencyCheckerVerbosity.NONE);
-		ConsistencyCheckerConfiguration config = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repo);
-		return ConsistencyChecker.checkCorruptionUsingCsarExport(config);
-	}
+    @GET
+    @Path("consistencycheck")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ConsistencyErrorLogger checkConsistency(@QueryParam("serviceTemplatesOnly") boolean serviceTemplatesOnly, @QueryParam("checkDocumentation") boolean checkDocumentation) {
+        IRepository repo = RepositoryFactory.getRepository();
+        EnumSet<ConsistencyCheckerVerbosity> verbosity = EnumSet.of(ConsistencyCheckerVerbosity.NONE);
+        ConsistencyCheckerConfiguration config = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repo);
+        return ConsistencyChecker.checkCorruptionUsingCsarExport(config);
+    }
 
-	@POST
-	@Path("githubaccesstoken")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getGitHubAccessToken(OAuthStateAndCodeApiData codeApiData) throws Exception {
-		HttpClient httpclient = HttpClients.createDefault();
-		HttpPost httppost = new HttpPost("https://github.com/login/oauth/access_token");
-		httppost.setHeader("Accept", "application/json");
+    @POST
+    @Path("githubaccesstoken")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getGitHubAccessToken(OAuthStateAndCodeApiData codeApiData) throws Exception {
+        HttpClient httpclient = HttpClients.createDefault();
+        HttpPost httppost = new HttpPost("https://github.com/login/oauth/access_token");
+        httppost.setHeader("Accept", "application/json");
 
-		List<NameValuePair> params = new ArrayList<>(4);
+        List<NameValuePair> params = new ArrayList<>(4);
 
-		// get configuration and fill with default values if no configuration exists
-		final GitHubConfiguration gitHubConfiguration = Environment.getGitHubConfiguration().orElse(new GitHubConfiguration("id", "secreat"));
+        // get configuration and fill with default values if no configuration exists
+        final GitHubConfiguration gitHubConfiguration = Environment.getGitHubConfiguration().orElse(new GitHubConfiguration("id", "secreat"));
 
-		params.add(new BasicNameValuePair("client_id", gitHubConfiguration.getGitHubClientId()));
-		params.add(new BasicNameValuePair("client_secret", gitHubConfiguration.getGitHubClientSecret()));
-		params.add(new BasicNameValuePair("code", codeApiData.code));
-		params.add(new BasicNameValuePair("state", codeApiData.state));
-		httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+        params.add(new BasicNameValuePair("client_id", gitHubConfiguration.getGitHubClientId()));
+        params.add(new BasicNameValuePair("client_secret", gitHubConfiguration.getGitHubClientSecret()));
+        params.add(new BasicNameValuePair("code", codeApiData.code));
+        params.add(new BasicNameValuePair("state", codeApiData.state));
+        httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
-		HttpResponse response = httpclient.execute(httppost);
+        HttpResponse response = httpclient.execute(httppost);
 
-		return Response
-			.status(response.getStatusLine().getStatusCode())
-			.entity(response.getEntity().getContent())
-			.build();
-	}
+        return Response
+            .status(response.getStatusLine().getStatusCode())
+            .entity(response.getEntity().getContent())
+            .build();
+    }
 }

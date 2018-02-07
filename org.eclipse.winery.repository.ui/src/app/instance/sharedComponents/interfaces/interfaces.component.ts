@@ -1,33 +1,34 @@
-/**
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/*******************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Niko Stadelmaier, Lukas Harzenetter - initial API and implementation
- *     Oliver Kopp - quick fix to enable IA generation
- */
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Response } from '@angular/http';
-import { isNullOrUndefined } from 'util';
-import { backendBaseURL } from '../../../configuration';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { ExistService } from '../../../wineryUtils/existService';
-import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import { InstanceService } from '../../instance.service';
-import { GenerateArtifactApiData } from './generateArtifactApiData';
-import { InterfacesService } from './interfaces.service';
-import { InterfaceOperationApiData, InterfacesApiData } from './interfacesApiData';
-import { InputParameters, InterfaceParameter, OutputParameters } from '../../../wineryInterfaces/parameters';
-import { ModalDirective } from 'ngx-bootstrap';
-import { NgForm } from '@angular/forms';
-import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
-import { Utils } from '../../../wineryUtils/utils';
-import { SelectableListComponent } from './selectableList/selectableList.component';
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Response} from '@angular/http';
+import {isNullOrUndefined} from 'util';
+import {backendBaseURL} from '../../../configuration';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {ExistService} from '../../../wineryUtils/existService';
+import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import {InstanceService} from '../../instance.service';
+import {GenerateArtifactApiData} from './generateArtifactApiData';
+import {InterfacesService} from './interfaces.service';
+import {InterfaceOperationApiData, InterfacesApiData} from './interfacesApiData';
+import {InputParameters, InterfaceParameter, OutputParameters} from '../../../wineryInterfaces/parameters';
+import {ModalDirective} from 'ngx-bootstrap';
+import {NgForm} from '@angular/forms';
+import {GenerateData} from '../../../wineryComponentExists/wineryComponentExists.component';
+import {ToscaTypes} from '../../../wineryInterfaces/enums';
+import {Utils} from '../../../wineryUtils/utils';
+import {SelectableListComponent} from './selectableList/selectableList.component';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -408,7 +409,7 @@ export class InterfacesComponent implements OnInit {
         }
         this.generating = false;
         this.generateImplModal.hide();
-        this.notify.success(message, 'Successfully created Artifact!', { enableHTML: true });
+        this.notify.success(message, 'Successfully created Artifact!', {enableHTML: true});
     }
 
     // endregion

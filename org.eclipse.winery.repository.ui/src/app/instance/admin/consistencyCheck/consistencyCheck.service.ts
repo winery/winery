@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { backendBaseURL, webSocketURL } from '../../../configuration';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { isNullOrUndefined } from 'util';
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
+import {backendBaseURL, webSocketURL} from '../../../configuration';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {isNullOrUndefined} from 'util';
 
 @Injectable()
 export class ConsistencyCheckService {
@@ -33,8 +33,8 @@ export class ConsistencyCheckService {
     }
 
     getConsistency(config: ConsistencyCheckConfiguration): Observable<any> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         let url = this.path + '?';
         if (config.serviceTemplatesOnly) {
@@ -73,7 +73,7 @@ export class ConsistencyCheckService {
                 const errorList = [];
 
                 for (const key of keys) {
-                    errorList.push({ key: key, value: data.errorList[key] });
+                    errorList.push({key: key, value: data.errorList[key]});
                 }
 
                 data.errorList = errorList;

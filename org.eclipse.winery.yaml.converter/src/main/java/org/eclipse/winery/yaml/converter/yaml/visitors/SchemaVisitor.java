@@ -13,23 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.visitors;
 
-import java.nio.file.Path;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.xml.namespace.QName;
-
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.winery.common.Util;
-import org.eclipse.winery.model.tosca.yaml.TDataType;
-import org.eclipse.winery.model.tosca.yaml.TEntityType;
-import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
-import org.eclipse.winery.model.tosca.yaml.TPropertyDefinition;
-import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
+import org.eclipse.winery.model.tosca.yaml.*;
 import org.eclipse.winery.model.tosca.yaml.support.TMapImportDefinition;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.exception.MultiException;
@@ -39,9 +25,11 @@ import org.eclipse.winery.yaml.common.writer.WriterUtils;
 import org.eclipse.winery.yaml.converter.yaml.support.SchemaBuilder;
 import org.eclipse.winery.yaml.converter.yaml.visitors.support.Parameter;
 import org.eclipse.winery.yaml.converter.yaml.visitors.support.Result;
-
-import org.eclipse.jdt.annotation.NonNull;
 import org.w3c.dom.Document;
+
+import javax.xml.namespace.QName;
+import java.nio.file.Path;
+import java.util.*;
 
 public class SchemaVisitor extends ExceptionVisitor<Result, Parameter> {
     private Map<QName, Map<String, QName>> propertyDefinition;

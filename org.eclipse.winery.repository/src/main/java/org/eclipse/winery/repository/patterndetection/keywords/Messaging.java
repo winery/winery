@@ -9,9 +9,9 @@
 package org.eclipse.winery.repository.patterndetection.keywords;
 
 public enum Messaging {
-	ActiveMQ,
-	RabbitMQ,
-	Mosquitto,
-	Topic
+    ActiveMQ,
+    RabbitMQ,
+    Mosquitto,
+    Topic
 }
 

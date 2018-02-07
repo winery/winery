@@ -13,11 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.xml.namespace.QName;
 
 public class Defaults {
     public static final String TOSCA_NORMATIVE_TYPES = "tosca_simple_yaml_1_1.yml";
@@ -81,7 +80,7 @@ public class Defaults {
         "tosca.policies.Scaling",
         "tosca.policies.Update",
         "tosca.policies.Performance"));
-    
+
     public static final List<String> TOSCA_NONNORMATIVE_NAMES = new ArrayList<>(Arrays.asList(
         "tosca.artifacts.Deployment.Image.Container.Docker", "Image.Container.Docker",
         "tosca.artifacts.Deployment.Image.VM.ISO", "Image.VM.ISO",

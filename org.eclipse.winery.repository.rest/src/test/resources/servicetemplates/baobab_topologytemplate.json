@@ -1,39 +1,39 @@
 {
-	"documentation": [
-	],
-	"any": [
-	],
-	"otherAttributes": {
-	},
-	"nodeTemplates": [
-		{
-			"id": "baobab",
-			"documentation": [
-			],
-			"any": [
-			],
-			"otherAttributes": {
-				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "678",
-				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "287"
-			},
-			"properties": {
-				"kvproperties": {
-					"Antioxidants": "",
-					"VitaminC": "",
-					"Potassium": "",
-					"Superfood": "",
-					"HarvestedAt": ""
-				}
-			},
-			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
-			"name": "baobab",
-			"minInstances": 1,
-			"maxInstances": "1",
-			"x": "678",
-			"y": "287"
-		}
-	],
-	"relationshipTemplates": [
-	]
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "nodeTemplates": [
+        {
+            "id": "baobab",
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "678",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "287"
+            },
+            "properties": {
+                "kvproperties": {
+                    "Antioxidants": "",
+                    "VitaminC": "",
+                    "Potassium": "",
+                    "Superfood": "",
+                    "HarvestedAt": ""
+                }
+            },
+            "type": "{http://winery.opentosca.org/test/nodetypes/fruits}baobab",
+            "name": "baobab",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "x": "678",
+            "y": "287"
+        }
+    ],
+    "relationshipTemplates": [
+    ]
 }

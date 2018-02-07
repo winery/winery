@@ -15,18 +15,16 @@ Currently, Winery is switching from plain Javascript library loading to [Require
 The file `src/main/webapp/WEB-INF/common-functions.tld` and the files in `src/main/webapp/WEB-INF/tags/common` are copied from the sister project `org.eclipse.winery.topologymodler` at `mvn generate-sources`.
 
 ## License
-Copyright (c) 2012-2014 University of Stuttgart.
+Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
 
-All rights reserved. This program and the accompanying materials
-are made available under the terms of the [Eclipse Public License v2.0]
-and the [Apache License v2.0] which both accompany this distribution,
-and are available at http://www.eclipse.org/legal/epl-v20.html
-and http://www.apache.org/licenses/LICENSE-2.0
+See the NOTICE file(s) distributed with this work for additional
+information regarding copyright ownership.
 
-Contributors:
-* Oliver Kopp - initial API and implementation
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+which is available at https://www.apache.org/licenses/LICENSE-2.0.
 
+SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 
- [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
- [Eclipse Public License v2.0]: http://www.eclipse.org/legal/epl-v20.html
  [RequireJS]: http://requirejs.org/

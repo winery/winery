@@ -9,9 +9,9 @@
 package org.eclipse.winery.repository.patterndetection.keywords;
 
 public enum Service {
-	AmazonBeanstalk,
-	Java,
-	Python,
-	Git,
-	Docker,
+    AmazonBeanstalk,
+    Java,
+    Python,
+    Git,
+    Docker,
 }

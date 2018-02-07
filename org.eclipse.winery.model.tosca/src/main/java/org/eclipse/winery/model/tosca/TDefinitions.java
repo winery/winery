@@ -1,33 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 University of Stuttgart
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
@@ -35,65 +20,13 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.w3c.dom.Element;
 
+import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-/**
- * <p>Java class for tDefinitions complex type.
- *
- * <p>The following schema fragment specifies the expected content contained within this class.
- *
- * <pre>
- * &lt;complexType name="tDefinitions">
- *   &lt;complexContent>
- *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtensibleElements">
- *       &lt;sequence>
- *         &lt;element name="Extensions" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;sequence>
- *                   &lt;element name="Extension" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtension"
- * maxOccurs="unbounded"/>
- *                 &lt;/sequence>
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *         &lt;element name="Import" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tImport" maxOccurs="unbounded"
- * minOccurs="0"/>
- *         &lt;element name="Types" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;sequence>
- *                   &lt;any processContents='lax' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
- *                 &lt;/sequence>
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *         &lt;choice maxOccurs="unbounded">
- *           &lt;element name="ServiceTemplate" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tServiceTemplate"/>
- *           &lt;element name="NodeType" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tNodeType"/>
- *           &lt;element name="NodeTypeImplementation" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tNodeTypeImplementation"/>
- *           &lt;element name="RelationshipType" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tRelationshipType"/>
- *           &lt;element name="RelationshipTypeImplementation" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tRelationshipTypeImplementation"/>
- *           &lt;element name="RequirementType" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tRequirementType"/>
- *           &lt;element name="CapabilityType" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tCapabilityType"/>
- *           &lt;element name="ArtifactType" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tArtifactType"/>
- *           &lt;element name="ArtifactTemplate" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tArtifactTemplate"/>
- *           &lt;element name="PolicyType" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tPolicyType"/>
- *           &lt;element name="PolicyTemplate" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tPolicyTemplate"/>
- *         &lt;/choice>
- *       &lt;/sequence>
- *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}ID" />
- *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="targetNamespace" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDefinitions", propOrder = {
     "extensions",
@@ -101,7 +34,7 @@ import org.w3c.dom.Element;
     "types",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation"
 })
-@XmlSeeAlso({
+@XmlSeeAlso( {
     Definitions.class
 })
 public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
@@ -111,7 +44,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
     protected List<TImport> _import;
     @XmlElement(name = "Types")
     protected TDefinitions.Types types;
-    @XmlElements({
+    @XmlElements( {
         @XmlElement(name = "RelationshipType", type = TRelationshipType.class),
         @XmlElement(name = "RelationshipTypeImplementation", type = TRelationshipTypeImplementation.class),
         @XmlElement(name = "ArtifactTemplate", type = TArtifactTemplate.class),
@@ -181,41 +114,31 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(element);
     }
 
-    /**
-     * Gets the value of the extensions property.
-     *
-     * @return possible object is {@link TDefinitions.Extensions }
-     */
     /*@Nullable*/
     public TDefinitions.Extensions getExtensions() {
         return extensions;
     }
 
-    /**
-     * Sets the value of the extensions property.
-     *
-     * @param value allowed object is {@link TDefinitions.Extensions }
-     */
     public void setExtensions(TDefinitions.Extensions value) {
         this.extensions = value;
     }
 
     /**
      * Gets the value of the import property.
-     *
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the import property.
-     *
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getImport().add(newItem);
      * </pre>
-     *
-     *
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TImport }
@@ -228,38 +151,28 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         return this._import;
     }
 
-    /**
-     * Gets the value of the types property.
-     *
-     * @return possible object is {@link TDefinitions.Types }
-     */
     /*@Nullable*/
     public TDefinitions.Types getTypes() {
         return types;
     }
 
-    /**
-     * Sets the value of the types property.
-     *
-     * @param value allowed object is {@link TDefinitions.Types }
-     */
     public void setTypes(TDefinitions.Types value) {
         this.types = value;
     }
 
     /**
      * Gets the value of the serviceTemplateOrNodeTypeOrNodeTypeImplementation property.
-     *
+     * <p>
      * <p> This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you
      * make to the returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE>
      * method for the serviceTemplateOrNodeTypeOrNodeTypeImplementation property.
-     *
+     * <p>
      * <p> For example, to add a new item, do as follows:
      * <pre>
      *    getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(newItem);
      * </pre>
-     *
-     *
+     * <p>
+     * <p>
      * <p> Objects of the following type(s) are allowed in the list {@link TRelationshipType } {@link
      * TRelationshipTypeImplementation } {@link TArtifactTemplate } {@link TPolicyTemplate } {@link TServiceTemplate }
      * {@link TArtifactType } {@link TCapabilityType } {@link TNodeType } {@link TNodeTypeImplementation } {@link
@@ -372,63 +285,24 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             .collect(Collectors.toList());
     }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     */
     @Nullable
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value allowed object is {@link String }
-     */
     public void setName(String value) {
         this.name = value;
     }
 
-    /**
-     * Gets the value of the targetNamespace property.
-     *
-     * @return possible object is {@link String }
-     */
     @NonNull
     public String getTargetNamespace() {
         return targetNamespace;
     }
 
-    /**
-     * Sets the value of the targetNamespace property.
-     *
-     * @param value allowed object is {@link String }
-     */
     public void setTargetNamespace(String value) {
         this.targetNamespace = value;
     }
 
-
-    /**
-     * <p>Java class for anonymous complex type.
-     *
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     *
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="Extension" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtension"
-     * maxOccurs="unbounded"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "extension"
@@ -440,20 +314,20 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         /**
          * Gets the value of the extension property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the extension property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getExtension().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TExtension }
@@ -467,24 +341,6 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         }
     }
 
-
-    /**
-     * <p>Java class for anonymous complex type.
-     *
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     *
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;any processContents='lax' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "any"
@@ -496,20 +352,20 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
 
         /**
          * Gets the value of the any property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the any property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getAny().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link Element }

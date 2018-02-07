@@ -1,13 +1,15 @@
-/*******************************************************************************
- * Copyright (c) 2014 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2014 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.datatypes.select2;
 
@@ -17,42 +19,42 @@ package org.eclipse.winery.repository.rest.datatypes.select2;
  */
 public class Select2DataItem implements Comparable<Select2DataItem> {
 
-	public String id;
-	public String text;
+    public String id;
+    public String text;
 
-	public Select2DataItem() {
+    public Select2DataItem() {
 
-	}
+    }
 
-	public Select2DataItem(String id, String text) {
-		this.id = id;
-		this.text = text;
-	}
+    public Select2DataItem(String id, String text) {
+        this.id = id;
+        this.text = text;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
-	public String getText() {
-		return this.text;
-	}
+    public String getText() {
+        return this.text;
+    }
 
-	/**
-	 * Sort order is based on text
-	 */
-	@Override
-	public int compareTo(Select2DataItem o) {
-		return this.getText().compareTo(o.getText());
-	}
+    /**
+     * Sort order is based on text
+     */
+    @Override
+    public int compareTo(Select2DataItem o) {
+        return this.getText().compareTo(o.getText());
+    }
 
-	/**
-	 * Equality is checked at id level
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof Select2DataItem)) {
-			return false;
-		}
-		return this.getId().equals(((Select2DataItem) o).getId());
-	}
+    /**
+     * Equality is checked at id level
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Select2DataItem)) {
+            return false;
+        }
+        return this.getId().equals(((Select2DataItem) o).getId());
+    }
 }

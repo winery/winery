@@ -1,109 +1,107 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *    Uwe Breitenbücher - initial API and implementation and/or initial documentation
- *    Oliver Kopp - improvements
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
 #palette {
-	min-height: 180px;
-	background: rgb(248, 248, 248);
-	width: 230px;
-	box-shadow: 2px 2px 7px rgb(156, 156, 156);
-	padding: 10px;
-	border: 1px solid #aeaeae;
-	position: fixed;
-	top: 50px;
-	left: 0px;
-	z-index: 100;
-	cursor: default;
-	border-radius: 0px 9px 9px 0px;
-	background-image: -ms-linear-gradient(left, #FFFFFF 0%, rgb(237, 242, 247) 100%);
-	background-image: -moz-linear-gradient(left, #FFFFFF 0%, rgb(237, 242, 247) 100%);
-	background-image: -o-linear-gradient(left, #FFFFFF 0%, rgb(237, 242, 247) 100%);
-	background-image: -webkit-gradient(linear, left, right, color-stop(0, #FFFFFF), color-stop(1, rgb(237, 242, 247)));
-	background-image: -webkit-linear-gradient(left, #FFFFFF 0%, rgb(237, 242, 247) 100%);
-	background-image: linear-gradient(to right, #FFFFFF 0%, rgb(237, 242, 247) 100%);
+    min-height: 180px;
+    background: rgb(248, 248, 248);
+    width: 230px;
+    box-shadow: 2px 2px 7px rgb(156, 156, 156);
+    padding: 10px;
+    border: 1px solid #aeaeae;
+    position: fixed;
+    top: 50px;
+    left: 0px;
+    z-index: 100;
+    cursor: default;
+    border-radius: 0px 9px 9px 0px;
+    background-image: -ms-linear-gradient(left, #FFFFFF 0%, rgb(237, 242, 247) 100%);
+    background-image: -moz-linear-gradient(left, #FFFFFF 0%, rgb(237, 242, 247) 100%);
+    background-image: -o-linear-gradient(left, #FFFFFF 0%, rgb(237, 242, 247) 100%);
+    background-image: -webkit-gradient(linear, left, right, color-stop(0, #FFFFFF), color-stop(1, rgb(237, 242, 247)));
+    background-image: -webkit-linear-gradient(left, #FFFFFF 0%, rgb(237, 242, 247) 100%);
+    background-image: linear-gradient(to right, #FFFFFF 0%, rgb(237, 242, 247) 100%);
 
-	overflow-x: hidden;
-	overflow-y: visible;
-	max-height: 90%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    max-height: 90%;
 
-	/* fix for bootstrap.css, which sets that to "border-box" */
-	box-sizing: content-box;
-	-webkit-box-sizing: content-box;
+    /* fix for bootstrap.css, which sets that to "border-box" */
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
 }
 
 #palette.shrunk {
-	width: 35px;
-	padding: 0px;
-	padding-left: 9px;
+    width: 35px;
+    padding: 0px;
+    padding-left: 9px;
 }
 
 #paletteLabel {
-	width: 0px;
-	background-color: blue;
-	top: 95px;
-	position: relative;
-	transform: rotate(270deg);
-	-o-transform: rotate(270deg);
-	-moz-transform: rotate(270deg);
-	-ms-transform: rotate(270deg);
-	-webkit-transform: rotate(270deg);
-	display: none;
-	left: 8px;
-	font-size: 12px;
-	color: rgb(143, 151, 170);
+    width: 0px;
+    background-color: blue;
+    top: 95px;
+    position: relative;
+    transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -moz-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    display: none;
+    left: 8px;
+    font-size: 12px;
+    color: rgb(143, 151, 170);
 }
 
 div.iconContainer {
-	width: 45px;
-	margin-left: 5px;
-	float: left;
-	height: 20px;
-	margin-top: 4px;
+    width: 45px;
+    margin-left: 5px;
+    float: left;
+    height: 20px;
+    margin-top: 4px;
 }
 
-
 div.paletteEntry {
-	height: 28px;
-	border-bottom: 1px solid rgb(200, 214, 228);
-	margin: 0px;
-	float: left;
-	width: 230px;
+    height: 28px;
+    border-bottom: 1px solid rgb(200, 214, 228);
+    margin: 0px;
+    float: left;
+    width: 230px;
 }
 
 div.paletteEntry:hover {
-	background: rgb(237, 242, 247);
+    background: rgb(237, 242, 247);
 }
-
 
 div.paletteEntry > div.iconContainer > img.icon {
-	height: 20px;
-	vertical-align: top;
+    height: 20px;
+    vertical-align: top;
 }
 
-
 div.paletteEntry > div.typeContainer {
-	margin: 4px 0px;
-	height: 20px;
-	display: table;
-	width: 180px;
-	font-size: 11px;
-	line-height: 20px;
+    margin: 4px 0px;
+    height: 20px;
+    display: table;
+    width: 180px;
+    font-size: 11px;
+    line-height: 20px;
 }
 
 div.paletteEntry > div.typeContainer > div.typeContainerMiddle {
-	display: table-cell;
-	vertical-align: middle;
-	width: 100%;
-	position: static;
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    position: static;
 }
 
 div.paletteEntry > div.typeContainer > div.typeContainerMiddle > div.typeContainerInner {

@@ -1,36 +1,30 @@
 /*******************************************************************************
- * Copyright (c) 2015-2017 University of Stuttgart.
- * Copyright (c) 2017 ZTE Corporation.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2015-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Sebastian Wagner - initial API and implementation
- *     Armin Hüneburg - fixed path handling
- *     ZTE - support of more gateways
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.planwriter;
-
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.winery.bpmn2bpel.model.Gateway;
-import org.eclipse.winery.bpmn2bpel.model.Link;
-import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
-import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
-import org.eclipse.winery.bpmn2bpel.model.Node;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.eclipse.winery.bpmn2bpel.model.*;
 import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.traverse.GraphIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BpelPlanArtefactWriter {
 
@@ -69,7 +63,7 @@ public class BpelPlanArtefactWriter {
 		Template planTemplate = Velocity.getTemplate(TEMPLATE_PATH + "bpel_management_plan_template.xml");
 		context.put("mngmtTaskList", managementTaskSeq);
 		StringWriter planWriter = new StringWriter();
-		planTemplate.merge( context, planWriter );
+		planTemplate.merge(context, planWriter);
 
 		String bpelProcessContent = planWriter.toString();
 
@@ -86,7 +80,7 @@ public class BpelPlanArtefactWriter {
 		Template wsdlTemplate = Velocity.getTemplate(TEMPLATE_PATH + "management_plan_wsdl_template.xml");
 
 		StringWriter wsdlWriter = new StringWriter();
-		wsdlTemplate.merge( context, wsdlWriter );
+		wsdlTemplate.merge(context, wsdlWriter);
 
 		String bpelProcessWSDL = wsdlWriter.toString();
 
@@ -102,7 +96,7 @@ public class BpelPlanArtefactWriter {
 		Template invokerWsdlTemplate = Velocity.getTemplate(TEMPLATE_PATH + "invoker.wsdl");
 
 		StringWriter wsdlWriter = new StringWriter();
-		invokerWsdlTemplate.merge( context, wsdlWriter );
+		invokerWsdlTemplate.merge(context, wsdlWriter);
 
 		return wsdlWriter.toString();
 	}
@@ -114,7 +108,7 @@ public class BpelPlanArtefactWriter {
 		Template invokerXsdTemplate = Velocity.getTemplate(TEMPLATE_PATH + "invoker.xsd");
 
 		StringWriter xsdWriter = new StringWriter();
-		invokerXsdTemplate.merge( context, xsdWriter );
+		invokerXsdTemplate.merge(context, xsdWriter);
 
 		return xsdWriter.toString();
 	}
@@ -126,7 +120,7 @@ public class BpelPlanArtefactWriter {
 		Template invokerXsdTemplate = Velocity.getTemplate(TEMPLATE_PATH + "deploy.xml");
 
 		StringWriter xsdWriter = new StringWriter();
-		invokerXsdTemplate.merge( context, xsdWriter );
+		invokerXsdTemplate.merge(context, xsdWriter);
 
 		return xsdWriter.toString();
 	}

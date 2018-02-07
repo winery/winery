@@ -1,15 +1,15 @@
 [
-  {
-	"operation": [
-	  {
-		"nodeOperation": {
-		  "nodeRef": "baobab",
-		  "interfaceName": "bananaInterface",
-		  "operationName": "peel"
-		},
-		"name": "baobab-nodetemplate-interface-peel"
-	  }
-	],
-	"name": "baobab-nodetemplate-interface"
-  }
+    {
+        "operation": [
+            {
+                "nodeOperation": {
+                    "nodeRef": "baobab",
+                    "interfaceName": "bananaInterface",
+                    "operationName": "peel"
+                },
+                "name": "baobab-nodetemplate-interface-peel"
+            }
+        ],
+        "name": "baobab-nodetemplate-interface"
+    }
 ]

@@ -1,20 +1,21 @@
-/**
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/*******************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
- *     Niko Stadelmaier - module refactoring
- */
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { isNullOrUndefined } from 'util';
-import { WineryUploaderService } from './wineryUploader.service';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { FileUploader } from 'ng2-file-upload';
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {isNullOrUndefined} from 'util';
+import {WineryUploaderService} from './wineryUploader.service';
+import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
+import {FileUploader} from 'ng2-file-upload';
 
 /**
  * This component provides a modal popup with a <code>title</code> and optional progress bar <code>showProgress</code> for file uploads.

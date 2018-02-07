@@ -1,0 +1,32 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: Valid interface type definition.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.6.5.1
+  exceptions: None
+  keyname: interface_types.test.interfacetypes.it1
+  assert-typeof: |
+    inputs.input1 = TPropertyDefinition
+  assert: |
+    derived_from = tosca.interfaces.Root
+    version = 1.0.0
+    description = description for it1
+    metadata.metaData1 = Metadata value
+    inputs.input1.type = string
+    operations.operation1.description = description for operation1     
+
+interface_types:
+  test.interfacetypes.it1:
+    derived_from: tosca.interfaces.Root
+    version: 1.0.0
+    description: description for it1
+    metadata:
+      metaData1: Metadata value
+    inputs:
+        input1:
+          type: string          
+    operation1:
+      description: description for operation1
+      

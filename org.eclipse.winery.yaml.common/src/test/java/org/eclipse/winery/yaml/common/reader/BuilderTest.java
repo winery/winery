@@ -13,16 +13,15 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.reader;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.eclipse.winery.yaml.common.AbstractTest;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class BuilderTest extends AbstractTest {
     @BeforeAll

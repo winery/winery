@@ -13,22 +13,21 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.xml;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.importing.CsarImporter;
 import org.eclipse.winery.yaml.common.Utils;
 import org.eclipse.winery.yaml.converter.Converter;
 import org.eclipse.winery.yaml.converter.xml.support.AbstractTestX2Y;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class Showcase extends AbstractTestX2Y {
     public Showcase() {

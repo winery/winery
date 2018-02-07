@@ -597,12 +597,18 @@ The static HTML API documentation is generated using [bootprint-openapi](https:/
 
 ## License
 
-Copyright (c) 2013-2017 University of Stuttgart.
+Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
 
-All rights reserved. Made available under the terms of the [Eclipse Public License v2.0] and the [Apache License v2.0] which both accompany this distribution.
+See the NOTICE file(s) distributed with this work for additional
+information regarding copyright ownership.
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+which is available at https://www.apache.org/licenses/LICENSE-2.0.
+
+SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 
  [Apache Maven]: https://maven.apache.org/
- [Apache License v2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
  [bower]: https://bower.io/
- [Eclipse Public License v2.0]: http://www.eclipse.org/legal/epl-v20.html
  [jsPlumb#165]: https://github.com/jsplumb/jsPlumb/issues/165

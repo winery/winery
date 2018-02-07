@@ -1,41 +1,41 @@
 {
-	"documentation": [
-	],
-	"any": [
-	],
-	"otherAttributes": {
-	},
-	"relationshipTemplates": [
-	],
-	"nodeTemplates": [
-		{
-			"id": "mango",
-			"documentation": [
-			],
-			"any": [
-			],
-			"otherAttributes": {
-				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
-				"x": "678",
-				"y": "287",
-				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "678",
-				"{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "287"
-			},
-			"properties": {
-				"kvproperties": {
-					"Antioxidants": "",
-					"VitaminC": "",
-					"Potassium": "",
-					"Superfood": "",
-					"HarvestedAt": ""
-				}
-			},
-			"type": "{http://winery.opentosca.org/test/nodetypes/fruits}mango",
-			"name": "Mango",
-			"minInstances": 1,
-			"maxInstances": "1",
-			"y": "287",
-			"x": "678"
-		}
-	]
+    "documentation": [
+    ],
+    "any": [
+    ],
+    "otherAttributes": {
+    },
+    "relationshipTemplates": [
+    ],
+    "nodeTemplates": [
+        {
+            "id": "mango",
+            "documentation": [
+            ],
+            "any": [
+            ],
+            "otherAttributes": {
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location": "undefined",
+                "x": "678",
+                "y": "287",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}x": "678",
+                "{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}y": "287"
+            },
+            "properties": {
+                "kvproperties": {
+                    "Antioxidants": "",
+                    "VitaminC": "",
+                    "Potassium": "",
+                    "Superfood": "",
+                    "HarvestedAt": ""
+                }
+            },
+            "type": "{http://winery.opentosca.org/test/nodetypes/fruits}mango",
+            "name": "Mango",
+            "minInstances": 1,
+            "maxInstances": "1",
+            "y": "287",
+            "x": "678"
+        }
+    ]
 }

@@ -1,10 +1,10 @@
 [
-  {
-	"id": "bananaInterface",
-	"text": "bananaInterface",
-	"operations": [
-	  "peel",
-	  "eat"
-	]
-  }
+    {
+        "id": "bananaInterface",
+        "text": "bananaInterface",
+        "operations": [
+            "peel",
+            "eat"
+        ]
+    }
 ]

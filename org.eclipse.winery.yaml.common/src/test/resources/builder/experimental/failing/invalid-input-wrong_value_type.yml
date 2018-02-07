@@ -1,0 +1,16 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains an invalid input.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.12
+  exception: InvalidType
+  keyname: topology_template.inputs.ipt1
+    
+topology_template:
+  inputs: 
+    ipt1: 
+      type: integer
+      value: value
+    

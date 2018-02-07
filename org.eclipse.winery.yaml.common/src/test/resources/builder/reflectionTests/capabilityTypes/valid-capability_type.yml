@@ -1,0 +1,39 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: Valid capability types definition.
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  exceptions: None
+  tosca.version: 1.1
+  reference: 3.6.7.1
+  keyname: capability_types.test.capabilities.ct1
+  assert-typeof: |
+    properties.prop1 = TPropertyDefinition
+    attributes.attr1 = TAttributeDefinition
+  assert: |
+    derived_from = tosca.capabilities.Endpoint
+    version = 1.0.0
+    description = Capability type description
+    properties.prop1.type = string
+    attributes.attr1.type = integer
+    valid_source_types = [nt1]           
+
+capability_types:
+  test.capabilities.ct1:
+    derived_from: tosca.capabilities.Endpoint
+    version: 1.0.0
+    description: Capability type description
+    properties:
+      prop1:
+        type: string        
+    attributes:
+      attr1:
+        type: integer        
+    valid_source_types: [nt1]
+
+node_types:
+  nt1:
+    derived_from: tosca.nodes.Root
+    capabilities:
+      cbt1:
+        type: ct1

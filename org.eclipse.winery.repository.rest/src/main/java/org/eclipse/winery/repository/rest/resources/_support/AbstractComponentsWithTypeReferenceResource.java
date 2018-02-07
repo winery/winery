@@ -1,26 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
- *     Nicole Keppler, Lukas Balzer - changes for angular frontend
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources._support;
 
-import java.io.IOException;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.model.tosca.Definitions;
@@ -32,7 +25,13 @@ import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.IOException;
 
 /**
  * This class does NOT inherit from TEntityTemplatesResource<ArtifactTemplate> as these templates are directly nested in
@@ -40,38 +39,38 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class AbstractComponentsWithTypeReferenceResource<T extends AbstractComponentInstanceResource> extends AbstractComponentsResource<T> {
 
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response onJsonPost(QNameWithTypeApiData jsonData) {
-		// only check for type parameter as namespace and name are checked in super.onPost
-		if (StringUtils.isEmpty(jsonData.type)) {
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
-		if (!creationResult.isSuccess()) {
-			return creationResult.getResponse();
-		}
-		if (creationResult.getStatus().equals(Status.CREATED)) {
-			final DefinitionsChildId id = (DefinitionsChildId) creationResult.getId();
-			final IRepository repository = RepositoryFactory.getRepository();
-			final Definitions definitions = repository.getDefinitions(id);
-			final TExtensibleElements element = definitions.getElement();
-			((HasType) element).setType(jsonData.type);
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response onJsonPost(QNameWithTypeApiData jsonData) {
+        // only check for type parameter as namespace and name are checked in super.onPost
+        if (StringUtils.isEmpty(jsonData.type)) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
+        if (!creationResult.isSuccess()) {
+            return creationResult.getResponse();
+        }
+        if (creationResult.getStatus().equals(Status.CREATED)) {
+            final DefinitionsChildId id = (DefinitionsChildId) creationResult.getId();
+            final IRepository repository = RepositoryFactory.getRepository();
+            final Definitions definitions = repository.getDefinitions(id);
+            final TExtensibleElements element = definitions.getElement();
+            ((HasType) element).setType(jsonData.type);
 
-			// This would be better implemented using inheritance,
-			// but this would lead to a huge overhead in the implementation (checking for the creation result etc),
-			// thus, we do the quick hack here
+            // This would be better implemented using inheritance,
+            // but this would lead to a huge overhead in the implementation (checking for the creation result etc),
+            // thus, we do the quick hack here
 
-			if (id instanceof EntityTemplateId) {
-				BackendUtils.initializeProperties(repository, (TEntityTemplate) element);
-			}
+            if (id instanceof EntityTemplateId) {
+                BackendUtils.initializeProperties(repository, (TEntityTemplate) element);
+            }
 
-			try {
-				BackendUtils.persist(id, definitions);
-			} catch (IOException e) {
-				throw new WebApplicationException(e);
-			}
-		}
-		return creationResult.getResponse();
-	}
+            try {
+                BackendUtils.persist(id, definitions);
+            } catch (IOException e) {
+                throw new WebApplicationException(e);
+            }
+        }
+        return creationResult.getResponse();
+    }
 }

@@ -13,11 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.support;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import javax.xml.bind.JAXBException;
-
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -25,8 +20,11 @@ import org.eclipse.winery.yaml.common.Utils;
 import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 import org.eclipse.winery.yaml.common.writer.WriterUtils;
 import org.eclipse.winery.yaml.converter.Converter;
-
 import org.junit.BeforeClass;
+
+import javax.xml.bind.JAXBException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public abstract class AbstractTestY2X {
 

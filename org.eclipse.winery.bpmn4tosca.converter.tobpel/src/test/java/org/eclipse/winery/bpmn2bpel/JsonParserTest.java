@@ -1,16 +1,25 @@
 /*******************************************************************************
- * Copyright (c) 2015-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2015-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Sebastian Wagner - initial API and implementation
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel;
 
+import org.eclipse.winery.bpmn2bpel.model.*;
+import org.eclipse.winery.bpmn2bpel.model.param.*;
+import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
+import org.eclipse.winery.bpmn2bpel.parser.ParseException;
+import org.junit.Test;
+
+import javax.xml.namespace.QName;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -18,28 +27,6 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.namespace.QName;
-
-import org.eclipse.winery.bpmn2bpel.model.EndTask;
-import org.eclipse.winery.bpmn2bpel.model.Link;
-import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
-import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
-import org.eclipse.winery.bpmn2bpel.model.Node;
-import org.eclipse.winery.bpmn2bpel.model.StartTask;
-import org.eclipse.winery.bpmn2bpel.model.Task;
-import org.eclipse.winery.bpmn2bpel.model.param.ConcatParameter;
-import org.eclipse.winery.bpmn2bpel.model.param.DeploymentArtefactParameter;
-import org.eclipse.winery.bpmn2bpel.model.param.ImplementationArtefactParameter;
-import org.eclipse.winery.bpmn2bpel.model.param.ParamType;
-import org.eclipse.winery.bpmn2bpel.model.param.Parameter;
-import org.eclipse.winery.bpmn2bpel.model.param.PlanParameter;
-import org.eclipse.winery.bpmn2bpel.model.param.StringParameter;
-import org.eclipse.winery.bpmn2bpel.model.param.TopologyParameter;
-import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
-import org.eclipse.winery.bpmn2bpel.parser.ParseException;
-
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -64,9 +51,9 @@ public class JsonParserTest {
 		assertEquals(expectedNodes.size(), actualNodes.size());
 
 
-		for (Iterator<Node> iterator = expectedNodes.iterator(); iterator.hasNext();) {
+		for (Iterator<Node> iterator = expectedNodes.iterator(); iterator.hasNext(); ) {
 			Node expectedNode = (Node) iterator.next();
-			Node actualNode =  getNodeById(expectedNode.getId(), actualNodes);
+			Node actualNode = getNodeById(expectedNode.getId(), actualNodes);
 			if (actualNode != null) {
 				assertNodes(expectedNode, actualNode);
 			} else {
@@ -117,9 +104,9 @@ public class JsonParserTest {
 
 		if (expected instanceof StartTask) {
 			assertStartTask((StartTask) expected, (StartTask) actual);
-		} else if(expected instanceof EndTask) {
+		} else if (expected instanceof EndTask) {
 			assertEndTask((EndTask) expected, (EndTask) actual);
-		} else if(expected instanceof ManagementTask) {
+		} else if (expected instanceof ManagementTask) {
 			assertMngmtTasks((ManagementTask) expected, (ManagementTask) actual);
 		} else {
 			fail("Task of type " + actual.getName() + " unknown");
@@ -144,7 +131,7 @@ public class JsonParserTest {
 	public static void assertParameters(List<Parameter> expected, List<Parameter> actual) {
 		assertEquals("Number of parameters", expected.size(), actual.size());
 
-		for (Iterator<Parameter> iterator = actual.iterator(); iterator.hasNext();) {
+		for (Iterator<Parameter> iterator = actual.iterator(); iterator.hasNext(); ) {
 			Parameter expectedParam = (Parameter) iterator.next();
 			Parameter actualParam = getParameterByName(expectedParam.getName(), actual);
 			if (actualParam != null) {
@@ -191,13 +178,13 @@ public class JsonParserTest {
 		createEC2Task.setNodeTemplateId(QName.valueOf("AmazonEC2NodeTemplate"));
 		createEC2Task.setInterfaceName("ec2Interface");
 		createEC2Task.setNodeOperation("CreateVM");
-		createEC2Task.addInputParameter(createParameter("Size", ParamType.STRING ,"t1.medium"));
-		createEC2Task.addInputParameter(createParameter("SSHUser", ParamType.PLAN ,"StartEvent.SSHUserInput"));
-		createEC2Task.addInputParameter(createParameter("SSHKey", ParamType.STRING ,"myKey"));
-		createEC2Task.addInputParameter(createParameter("ImageID", ParamType.TOPOLOGY ,"UbuntuVM.ImageID"));
-		createEC2Task.addInputParameter(createParameter("AccountUser", ParamType.STRING ,""));
-		createEC2Task.addInputParameter(createParameter("AccountPassword", ParamType.STRING ,""));
-		createEC2Task.addOutputParameter(createParameter("IPAddress", ParamType.TOPOLOGY ,"UbuntuVM.IPAddress"));
+		createEC2Task.addInputParameter(createParameter("Size", ParamType.STRING, "t1.medium"));
+		createEC2Task.addInputParameter(createParameter("SSHUser", ParamType.PLAN, "StartEvent.SSHUserInput"));
+		createEC2Task.addInputParameter(createParameter("SSHKey", ParamType.STRING, "myKey"));
+		createEC2Task.addInputParameter(createParameter("ImageID", ParamType.TOPOLOGY, "UbuntuVM.ImageID"));
+		createEC2Task.addInputParameter(createParameter("AccountUser", ParamType.STRING, ""));
+		createEC2Task.addInputParameter(createParameter("AccountPassword", ParamType.STRING, ""));
+		createEC2Task.addOutputParameter(createParameter("IPAddress", ParamType.TOPOLOGY, "UbuntuVM.IPAddress"));
 		flow.addVertex(createEC2Task);
 
 		ManagementTask runUbuntuTask = new ManagementTask();
@@ -206,14 +193,14 @@ public class JsonParserTest {
 		runUbuntuTask.setNodeTemplateId(QName.valueOf("UbuntuNodeTemplate"));
 		runUbuntuTask.setInterfaceName("ubunutuInterface");
 		runUbuntuTask.setNodeOperation("installUbuntu");
-		runUbuntuTask.addInputParameter(createParameter("script", ParamType.IA ,"{http://www.opentosca.org}ApacheWebserverInstallImplementation"));
-		runUbuntuTask.addOutputParameter(createParameter("result", ParamType.STRING ,""));
+		runUbuntuTask.addInputParameter(createParameter("script", ParamType.IA, "{http://www.opentosca.org}ApacheWebserverInstallImplementation"));
+		runUbuntuTask.addOutputParameter(createParameter("result", ParamType.STRING, ""));
 		flow.addVertex(runUbuntuTask);
 
 		EndTask endTask = new EndTask();
 		endTask.setId("element45");
 		endTask.setName("EndEvent");
-		endTask.addInputParameter(createParameter("AppURL", ParamType.CONCAT ,"http://,UbuntuVM.IPAddress,:8080/,PHPApplication.ID"));
+		endTask.addInputParameter(createParameter("AppURL", ParamType.CONCAT, "http://,UbuntuVM.IPAddress,:8080/,PHPApplication.ID"));
 		flow.addVertex(endTask);
 
 
@@ -230,26 +217,26 @@ public class JsonParserTest {
 
 		Parameter param = null;
 		switch (type) {
-		case CONCAT:
-			param = new ConcatParameter(); // TODO add concat operands
-			break;
-		case DA:
-			param = new DeploymentArtefactParameter();
-			break;
-		case IA:
-			param = new ImplementationArtefactParameter();
-			break;
-		case PLAN:
-			param = new PlanParameter(); // TODO add task name
-			break;
-		case STRING:
-			param = new StringParameter();
-			break;
-		case TOPOLOGY:
-			param = new TopologyParameter();
-			break;
-		default:
-			fail("Invalid paramet type: " + type);
+			case CONCAT:
+				param = new ConcatParameter(); // TODO add concat operands
+				break;
+			case DA:
+				param = new DeploymentArtefactParameter();
+				break;
+			case IA:
+				param = new ImplementationArtefactParameter();
+				break;
+			case PLAN:
+				param = new PlanParameter(); // TODO add task name
+				break;
+			case STRING:
+				param = new StringParameter();
+				break;
+			case TOPOLOGY:
+				param = new TopologyParameter();
+				break;
+			default:
+				fail("Invalid paramet type: " + type);
 		}
 
 		param.setName(name);

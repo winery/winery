@@ -1,107 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/*******************************************************************************
- * Copyright (c) 2012-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *    Oliver Kopp - initial API and implementation and bug fixes
- *******************************************************************************/
--->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-		 id="winery" version="3.0">
-	<display-name>Winery Repository</display-name>
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="winery" version="3.0">
+    <display-name>Winery Repository</display-name>
 
-	<servlet>
-		<servlet-name>SwaggerJerseyConfig</servlet-name>
-		<servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
-		<init-param>
-			<param-name>api.version</param-name>
-			<param-value>1.0.0</param-value>
-		</init-param>
-		<init-param>
-			<param-name>swagger.api.basepath</param-name>
-			<param-value>http://localhost:8080/winery</param-value>
-		</init-param>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
+    <servlet>
+        <servlet-name>SwaggerJerseyConfig</servlet-name>
+        <servlet-class>io.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
+        <init-param>
+            <param-name>api.version</param-name>
+            <param-value>1.0.0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>swagger.api.basepath</param-name>
+            <param-value>http://localhost:8080/winery</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
 
-	<filter>
-		<filter-name>CorsFilter</filter-name>
-		<filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
-		<init-param>
-			<param-name>cors.allowed.origins</param-name>
-			<param-value>*</param-value>
-		</init-param>
-		<init-param>
-			<param-name>cors.allowed.methods</param-name>
-			<param-value>GET,PUT,POST,DELETE,HEAD,OPTIONS</param-value>
-		</init-param>
-		<init-param>
-			<param-name>cors.exposed.headers</param-name>
-			<param-value>Location, Access-Control-Allow-Origin</param-value>
-		</init-param>
-		<init-param>
-			<param-name>cors.preflight.maxage</param-name>
-			<param-value>10</param-value>
-		</init-param>
-	</filter>
+    <filter>
+        <filter-name>CorsFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+        <init-param>
+            <param-name>cors.allowed.origins</param-name>
+            <param-value>*</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.allowed.methods</param-name>
+            <param-value>GET,PUT,POST,DELETE,HEAD,OPTIONS</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.exposed.headers</param-name>
+            <param-value>Location, Access-Control-Allow-Origin</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.preflight.maxage</param-name>
+            <param-value>10</param-value>
+        </init-param>
+    </filter>
 
-	<servlet>
-		<servlet-name>WineryResources</servlet-name>
-		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-		<init-param>
-			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>
-				io.swagger.jaxrs.json,
-				io.swagger.jaxrs.listing,
-				org.eclipse.winery.repository.rest.resources
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.feature.CanonicalizeURIPath</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.feature.NormalizeURI</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
-			<param-name>com.sun.jersey.config.feature.Redirect</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<init-param>
-			<param-name>jersey.config.server.wadl.disableWadl</param-name>
-			<param-value>true</param-value>
-		</init-param>
+    <servlet>
+        <servlet-name>WineryResources</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>
+                io.swagger.jaxrs.json,
+                io.swagger.jaxrs.listing,
+                org.eclipse.winery.repository.rest.resources
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.config.feature.CanonicalizeURIPath</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.config.feature.NormalizeURI</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.config.feature.Redirect</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.server.wadl.disableWadl</param-name>
+            <param-value>true</param-value>
+        </init-param>
 
-		<!-- enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html -->
-		<init-param>
-			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
-			<param-value>true</param-value>
-		</init-param>
-	</servlet>
+        <!-- enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html -->
+        <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
 
-	<filter-mapping>
-		<filter-name>CorsFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+    <filter-mapping>
+        <filter-name>CorsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
-	<servlet-mapping>
-		<servlet-name>WineryResources</servlet-name>
-		<url-pattern>/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>WineryResources</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
 
-	<listener>
-		<listener-class>org.eclipse.winery.repository.rest.Prefs</listener-class>
-	</listener>
+    <listener>
+        <listener-class>org.eclipse.winery.repository.rest.Prefs</listener-class>
+    </listener>
 
-	<session-config>
-		<tracking-mode>COOKIE</tracking-mode>
-	</session-config>
+    <session-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
 </web-app>

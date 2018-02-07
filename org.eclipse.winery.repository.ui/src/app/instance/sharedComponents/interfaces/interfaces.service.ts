@@ -1,21 +1,26 @@
-/**
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
- */
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { GenerateArtifactApiData } from './generateArtifactApiData';
-import { InterfacesApiData } from './interfacesApiData';
-import { InstanceService } from '../../instance.service';
-import { backendBaseURL } from '../../../configuration';
-import { isNullOrUndefined } from 'util';
-import { Utils } from '../../../wineryUtils/utils';
+/*******************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {GenerateArtifactApiData} from './generateArtifactApiData';
+import {InterfacesApiData} from './interfacesApiData';
+import {InstanceService} from '../../instance.service';
+import {backendBaseURL} from '../../../configuration';
+import {isNullOrUndefined} from 'util';
+import {Utils} from '../../../wineryUtils/utils';
 
 @Injectable()
 export class InterfacesService {
@@ -42,15 +47,15 @@ export class InterfacesService {
     }
 
     save(interfacesData: InterfacesApiData[]): Observable<Response> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(this.path, JSON.stringify(interfacesData), options);
     }
 
     createImplementation(implementationName: string, implementationNamespace: string): Observable<any> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         this.setImplementationsUrl();
 
@@ -65,8 +70,8 @@ export class InterfacesService {
 
     createArtifactTemplate(implementationName: string, implementationNamespace: string,
                            generateArtifactApiData: GenerateArtifactApiData): Observable<Response> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         this.setImplementationsUrl();
 
@@ -90,8 +95,8 @@ export class InterfacesService {
     }
 
     private get(url: string): Observable<any> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.get(url, options);
     }

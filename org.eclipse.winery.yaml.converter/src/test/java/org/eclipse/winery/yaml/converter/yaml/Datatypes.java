@@ -13,14 +13,13 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml;
 
-import java.nio.file.Paths;
-
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.yaml.converter.yaml.support.AbstractTestY2X;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.nio.file.Paths;
 
 public class Datatypes extends AbstractTestY2X {
     public Datatypes() {

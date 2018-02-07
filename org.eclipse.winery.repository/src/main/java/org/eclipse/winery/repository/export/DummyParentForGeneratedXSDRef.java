@@ -1,13 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
@@ -16,28 +18,28 @@ import org.eclipse.winery.common.ids.XmlId;
 
 public class DummyParentForGeneratedXSDRef extends GenericId {
 
-	protected DummyParentForGeneratedXSDRef() {
-		super(new XmlId("dummy", false));
-	}
+    protected DummyParentForGeneratedXSDRef() {
+        super(new XmlId("dummy", false));
+    }
 
-	@Override
-	public int compareTo(GenericId o) {
-		throw new IllegalStateException("Should never be called.");
-	}
+    @Override
+    public int compareTo(GenericId o) {
+        throw new IllegalStateException("Should never be called.");
+    }
 
-	@Override
-	public GenericId getParent() {
-		throw new IllegalStateException("Should never be called.");
-	}
+    @Override
+    public GenericId getParent() {
+        throw new IllegalStateException("Should never be called.");
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return (obj instanceof DummyParentForGeneratedXSDRef);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof DummyParentForGeneratedXSDRef);
+    }
 
-	@Override
-	public int hashCode() {
-		return 0;
-	}
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 
 }

@@ -13,13 +13,12 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer.xml.support;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement(name = "Properties")
 public class PropertiesList {

@@ -13,17 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter;
 
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFile;
 import org.eclipse.winery.model.csar.toscametafile.TOSCAMetaFileParser;
@@ -31,14 +20,24 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
 import org.eclipse.winery.yaml.common.Utils;
 import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 import org.eclipse.winery.yaml.converter.xml.X2YConverter;
 import org.eclipse.winery.yaml.converter.yaml.Y2XConverter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Converter {
     private static final Logger LOGGER = LoggerFactory.getLogger(Converter.class);
@@ -62,7 +61,7 @@ public class Converter {
         LOGGER.debug("Unzip path: {}", path);
 
         PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.{yml,yaml}");
-        MultiException exception = Arrays.stream(Optional.ofNullable(path.toFile().listFiles()).orElse(new File[]{}))
+        MultiException exception = Arrays.stream(Optional.ofNullable(path.toFile().listFiles()).orElse(new File[] {}))
             .map(File::toPath)
             .filter(file -> matcher.matches(file.getFileName()))
             .map(file -> {
@@ -113,6 +112,35 @@ public class Converter {
         Path path = Utils.getTmpDir(Paths.get(id.getQName().getLocalPart()));
         convertX2Y(repository.getDefinitions(id), path);
         return Utils.zipPath(path);
+    }
+
+    public String convertDefinitionsChildToYaml(DefinitionsChildId id) throws MultiException {
+        Path path = Utils.getTmpDir(Paths.get(id.getQName().getLocalPart()));
+        convertX2Y(repository.getDefinitions(id), path);
+        // convention: single file in root contains the YAML support
+        // TODO: Links in the YAML should be changed to real links into Winery
+        Optional<Path> rootYamlFile;
+        try {
+            return Files.find(path, 1, (filePath, basicFileAttributes) -> filePath.getFileName().toString().endsWith(".yml"))
+                .findAny()
+                .map(p -> {
+                    try {
+                        return new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
+                    } catch (IOException e) {
+                        LOGGER.debug("Could not read root file", e);
+                        return "Could not read root file";
+                    }
+                })
+                .orElseThrow(() -> {
+                    MultiException multiException = new MultiException();
+                    multiException.add(new WineryRepositoryException("Root YAML file not found."));
+                    return multiException;
+                });
+        } catch (IOException e) {
+            MultiException multiException = new MultiException();
+            multiException.add(new WineryRepositoryException("Root YAML file not found.", e));
+            throw multiException;
+        }
     }
 
     public Map<Path, TServiceTemplate> convertX2Y(Definitions definitions, Path outPath) throws MultiException {

@@ -1,25 +1,30 @@
-/**
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
- */
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Property, PropertyMappingsApiData, PropertyMappingService } from './propertyMappings.service';
-import { WineryRowData, WineryTableColumn } from '../../../../wineryTableModule/wineryTable.component';
-import { isNullOrUndefined } from 'util';
-import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
-import { ModalDirective } from 'ngx-bootstrap';
-import { NgForm } from '@angular/forms';
-import { InstanceService } from '../../../instance.service';
-import { WineryTemplate, WineryTopologyTemplate } from '../../../../wineryInterfaces/wineryComponent';
-import { ServiceTemplateTemplateTypes, ToscaTypes } from '../../../../wineryInterfaces/enums';
-import { Utils } from '../../../../wineryUtils/utils';
-import { SelectItem } from 'ng2-select';
-import { PropertiesDefinitionsResourceApiData } from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
-import { SelectData } from '../../../../wineryInterfaces/selectData';
+/*******************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Property, PropertyMappingsApiData, PropertyMappingService} from './propertyMappings.service';
+import {WineryRowData, WineryTableColumn} from '../../../../wineryTableModule/wineryTable.component';
+import {isNullOrUndefined} from 'util';
+import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
+import {ModalDirective} from 'ngx-bootstrap';
+import {NgForm} from '@angular/forms';
+import {InstanceService} from '../../../instance.service';
+import {WineryTemplate, WineryTopologyTemplate} from '../../../../wineryInterfaces/wineryComponent';
+import {ServiceTemplateTemplateTypes, ToscaTypes} from '../../../../wineryInterfaces/enums';
+import {Utils} from '../../../../wineryUtils/utils';
+import {SelectItem} from 'ng2-select';
+import {PropertiesDefinitionsResourceApiData} from '../../../sharedComponents/propertiesDefinition/propertiesDefinitionsResourceApiData';
+import {SelectData} from '../../../../wineryInterfaces/selectData';
 
 @Component({
     selector: 'winery-instance-boundary-property-mappings',
@@ -34,9 +39,9 @@ export class PropertyMappingsComponent implements OnInit {
     targetTypeSelected = false;
     apiData: PropertyMappingsApiData;
     columns: Array<WineryTableColumn> = [
-        { title: 'Service Template Property', name: 'serviceTemplatePropertyRef', sort: true },
-        { title: 'Target', name: 'targetObjectRef', sort: true },
-        { title: 'Target Property', name: 'targetPropertyRef', sort: true }
+        {title: 'Service Template Property', name: 'serviceTemplatePropertyRef', sort: true},
+        {title: 'Target', name: 'targetObjectRef', sort: true},
+        {title: 'Target Property', name: 'targetPropertyRef', sort: true}
     ];
     @ViewChild('addPropertyMappingModal') addPropertyMappingModal: ModalDirective;
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
@@ -46,7 +51,7 @@ export class PropertyMappingsComponent implements OnInit {
     @ViewChild('propertiesSelect') propertiesSelect: any;
     currentSelectedItem: Property = new Property();
     addOrUpdate = 'Add';
-    properties: { name: string, property: string } = { name: '', property: '' };
+    properties: { name: string, property: string } = {name: '', property: ''};
     xmlData: any;
     selectedProperty = '';
     templateList: Array<SelectData> = [];
@@ -56,7 +61,7 @@ export class PropertyMappingsComponent implements OnInit {
     targetProperties: Array<SelectData>;
     targetObject: WineryTemplate;
     targetPropertiesWrapperElement: string = null;
-    initialSelectProp: any = [{ id: '', text: '' }];
+    initialSelectProp: any = [{id: '', text: ''}];
 
     constructor(private service: PropertyMappingService,
                 private notify: WineryNotificationService,
@@ -171,7 +176,7 @@ export class PropertyMappingsComponent implements OnInit {
     handleGetProperties(propertiesDefinition: PropertiesDefinitionsResourceApiData) {
         if (!isNullOrUndefined(propertiesDefinition.winerysPropertiesDefinition)) {
             this.targetProperties = propertiesDefinition.winerysPropertiesDefinition.propertyDefinitionKVList.map(item => {
-                return { id: item.key, text: item.key };
+                return {id: item.key, text: item.key};
             });
             this.targetPropertiesWrapperElement = propertiesDefinition.winerysPropertiesDefinition.elementName;
             this.currentSelectedItem.targetPropertyRef = this.initialSelectProp[0].text;
@@ -250,7 +255,7 @@ export class PropertyMappingsComponent implements OnInit {
             this.selectedProperty = splittedProperty[splittedProperty.length - 2];
             this.targetObject = new WineryTemplate();
             this.addOrUpdate = 'Update';
-            this.radioBtnSelected({ target: { value: elementType } }, false);
+            this.radioBtnSelected({target: {value: elementType}}, false);
             this.addPropertyMappingModal.show();
         } else {
             this.notify.warning('Element not found in TopologyTemplate!');

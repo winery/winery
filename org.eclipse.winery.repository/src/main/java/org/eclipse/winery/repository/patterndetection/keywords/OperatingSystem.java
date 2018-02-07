@@ -9,8 +9,8 @@
 package org.eclipse.winery.repository.patterndetection.keywords;
 
 public enum OperatingSystem {
-	Ubuntu,
-	Linux,
-	Windows
+    Ubuntu,
+    Linux,
+    Windows
 
 }

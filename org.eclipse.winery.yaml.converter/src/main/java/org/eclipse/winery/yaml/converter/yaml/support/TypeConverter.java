@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.support;
 
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.yaml.common.Namespaces;
+
+import javax.xml.namespace.QName;
 
 public class TypeConverter {
     public static TypeConverter INSTANCE = new TypeConverter();

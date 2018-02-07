@@ -1,236 +1,309 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<!--
-/*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
- *
- * Contributors:
- *    Karoline Saatkamp - initial API and implementation and/or initial documentation
- *******************************************************************************/
--->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<winery:InjectorReplaceData xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:ns0="http://www.eclipse.org/winery/model/selfservice" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
-	<tosca:topologyTemplate>
-		<tosca:NodeTemplate name="PHP-5-WebApplication" id="PHP-5-WebApplication" type="ns2:PHP-5-WebApplication" winery:location="IAAS" winery:x="196" winery:y="9" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Requirements>
-				<tosca:Requirement name="ReqCanHostPHP-5-WebApplication" id="Req1" type="ns142:ReqCanHostPHP-5-WebApplication" xmlns:ns142="http://opentosca.org/requirementtypes"/>
-			</tosca:Requirements>
-		</tosca:NodeTemplate>
-		<tosca:NodeTemplate name="REST API" id="Java7" type="ns2:Java7" winery:location="Amazon/PaaS" winery:x="657" winery:y="35" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Requirements>
-				<tosca:Requirement name="ReqCanHostJava7" id="Req5" type="ns142:ReqCanHostJava7" xmlns:ns142="http://opentosca.org/requirementtypes"/>
-			</tosca:Requirements>
-		</tosca:NodeTemplate>
-		<tosca:NodeTemplate name="MySQL-DB" id="MySQL-DB" type="ns2:MySQL-DB" winery:location="Amazon/PaaS" winery:x="1045" winery:y="32" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Properties>
-				<ns2:MySQLDBProperties xmlns="http://opentosca.org/nodetypes" xmlns:split="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:ty="http://opentosca.org/nodetypes">
-					<ty:DBName/>
-					<ty:DBUser/>
-					<ty:DBPassword/>
-				</ns2:MySQLDBProperties>
-			</tosca:Properties>
-			<tosca:Requirements>
-				<tosca:Requirement name="ReqCanHostMySQL-DB" id="Req6" type="ns142:ReqCanHostMySQL-DB" xmlns:ns142="http://opentosca.org/requirementtypes"/>
-			</tosca:Requirements>
-		</tosca:NodeTemplate>
-		<tosca:NodeTemplate name="MySQL-DBMS-5.5" id="MySQL-DBMS-5_5" type="ns2:MySQL-DBMS-5.5" winery:location="Amazon/PaaS" winery:x="1042" winery:y="346" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Properties>
-				<ns2:MySQLDBMSProperties xmlns="http://opentosca.org/nodetypes" xmlns:split="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:ty="http://opentosca.org/nodetypes">
-					<ty:DBMSUser/>
-					<ty:DBMSPassword/>
-					<ty:DBMSPort/>
-				</ns2:MySQLDBMSProperties>
-			</tosca:Properties>
-			<tosca:Requirements>
-				<tosca:Requirement name="ReqCanHostMySQL-DBMS-5.5" id="Req8" type="ns142:ReqCanHostMySQL-DBMS-5.5" xmlns:ns142="http://opentosca.org/requirementtypes"/>
-			</tosca:Requirements>
-			<tosca:Capabilities>
-				<tosca:Capability name="CapCanHostMySQL-DB" id="Cap8" type="ns144:CapCanHostMySQL-DB" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-			</tosca:Capabilities>
-		</tosca:NodeTemplate>
-		<tosca:NodeTemplate name="Tomcat_7" id="Tomcat_7" type="ns2:Tomcat_7" winery:location="Amazon/PaaS" winery:x="616" winery:y="350" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Requirements>
-				<tosca:Requirement name="ReqCanHostTomcat_7" id="Req7" type="ns142:ReqCanHostTomcat_7" xmlns:ns142="http://opentosca.org/requirementtypes"/>
-			</tosca:Requirements>
-			<tosca:Capabilities>
-				<tosca:Capability name="CapCanHostJava7" id="Cap7" type="ns144:CapCanHostJava7" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-			</tosca:Capabilities>
-		</tosca:NodeTemplate>
-		<tosca:NodeTemplate name="PHP-5-Module" id="PHP-5-Module" type="ns2:PHP-5-Module" winery:location="IAAS" winery:x="190" winery:y="334" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Requirements>
-				<tosca:Requirement name="ReqCanHostPHP-5-Module" id="Req2" type="ns142:ReqCanHostPHP-5-Module" xmlns:ns142="http://opentosca.org/requirementtypes"/>
-			</tosca:Requirements>
-			<tosca:Capabilities>
-				<tosca:Capability name="CapCanHostPHP-5-WebApplication" id="Cap1" type="ns144:CapCanHostPHP-5-WebApplication" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-			</tosca:Capabilities>
-		</tosca:NodeTemplate>
-		<tosca:NodeTemplate name="Apache-2.4" id="Apache-2_4" type="ns2:Apache-2.4" winery:location="IAAS" winery:x="153" winery:y="742" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Requirements>
-				<tosca:Requirement name="ReqCanHostApache-2.4" id="Req3" type="ns142:ReqCanHostApache-2.4" xmlns:ns142="http://opentosca.org/requirementtypes"/>
-			</tosca:Requirements>
-			<tosca:Capabilities>
-				<tosca:Capability name="CapCanHostPHP-5-Module" id="Cap2" type="ns144:CapCanHostPHP-5-Module" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-			</tosca:Capabilities>
-		</tosca:NodeTemplate>
-		<tosca:RelationshipTemplate name="con_56" id="con_56" type="tbt:HostedOn" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="PHP-5-WebApplication"/>
-			<tosca:TargetElement ref="PHP-5-Module"/>
-		</tosca:RelationshipTemplate>
-		<tosca:RelationshipTemplate name="con_68" id="con_68" type="tbt:HostedOn" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="PHP-5-Module"/>
-			<tosca:TargetElement ref="Apache-2_4"/>
-		</tosca:RelationshipTemplate>
-		<tosca:RelationshipTemplate name="con_80" id="con_80" type="exnt:HostedOn" xmlns:exnt="http://example.com/NodeTypes">
-			<tosca:SourceElement ref="Java7"/>
-			<tosca:TargetElement ref="Tomcat_7"/>
-		</tosca:RelationshipTemplate>
-		<tosca:RelationshipTemplate name="con_92" id="con_92" type="tbt:HostedOn" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="MySQL-DB"/>
-			<tosca:TargetElement ref="MySQL-DBMS-5_5"/>
-		</tosca:RelationshipTemplate>
-		<tosca:RelationshipTemplate name="con_104" id="con_104" type="tbt:ConnectsTo" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="PHP-5-WebApplication"/>
-			<tosca:TargetElement ref="Java7"/>
-		</tosca:RelationshipTemplate>
-		<tosca:RelationshipTemplate name="con_116" id="con_116" type="tbt:ConnectsTo" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="Java7"/>
-			<tosca:TargetElement ref="MySQL-DB"/>
-		</tosca:RelationshipTemplate>
-		<tosca:NodeTemplate name="Ubuntu-14.04-VM-Amazon_PaaS" minInstances="1" maxInstances="1" id="Ubuntu-14_04-VM-Amazon_PaaS" type="ns2:Ubuntu-14.04-VM" winery:location="Amazon/PaaS" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Properties>
-				<ns2:VirtualMachineProperties xmlns="http://opentosca.org/nodetypes" xmlns:split="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:ty="http://opentosca.org/nodetypes">
-					<ty:VMIP/>
-					<ty:VMInstanceID/>
-					<ty:VMType/>
-					<ty:VMUserName/>
-					<ty:VMUserPassword/>
-					<ty:VMPrivateKey/>
-					<ty:VMPublicKey/>
-					<ty:VMKeyPairName/>
-				</ns2:VirtualMachineProperties>
-			</tosca:Properties>
-			<tosca:Requirements>
-				<tosca:Requirement name="ReqCanHostUbuntu-14.04-VM" id="Req4" type="ns142:ReqCanHostUbuntu-14.04-VM" xmlns:ns142="http://opentosca.org/requirementtypes"/>
-			</tosca:Requirements>
-			<tosca:Capabilities>
-				<tosca:Capability name="CapCanHostApache-2.4" id="Cap3" type="ns144:CapCanHostApache-2.4" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-				<tosca:Capability name="CapCanHostTomcat_7" id="Cap4" type="ns144:CapCanHostTomcat_7" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-				<tosca:Capability name="CapCanHostMySQL-DBMS-5.5" id="Cap5" type="ns144:CapCanHostMySQL-DBMS-5.5" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-			</tosca:Capabilities>
-		</tosca:NodeTemplate>
-		<tosca:RelationshipTemplate name="con_147-Amazon_PaaS" id="con_147-Amazon_PaaS" type="tbt:HostedOn" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="Tomcat_7"/>
-			<tosca:TargetElement ref="Ubuntu-14_04-VM-Amazon_PaaS"/>
-		</tosca:RelationshipTemplate>
-		<tosca:RelationshipTemplate name="con_159-Amazon_PaaS" id="con_159-Amazon_PaaS" type="tbt:HostedOn" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="MySQL-DBMS-5_5"/>
-			<tosca:TargetElement ref="Ubuntu-14_04-VM-Amazon_PaaS"/>
-		</tosca:RelationshipTemplate>
-		<tosca:NodeTemplate name="Ubuntu-14.04-VM-IAAS" minInstances="1" maxInstances="1" id="Ubuntu-14_04-VM-IAAS" type="ns2:Ubuntu-14.04-VM" winery:location="IAAS" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Properties>
-				<ns2:VirtualMachineProperties xmlns="http://opentosca.org/nodetypes" xmlns:split="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:ty="http://opentosca.org/nodetypes">
-					<ty:VMIP/>
-					<ty:VMInstanceID/>
-					<ty:VMType/>
-					<ty:VMUserName/>
-					<ty:VMUserPassword/>
-					<ty:VMPrivateKey/>
-					<ty:VMPublicKey/>
-					<ty:VMKeyPairName/>
-				</ns2:VirtualMachineProperties>
-			</tosca:Properties>
-			<tosca:Requirements>
-				<tosca:Requirement name="ReqCanHostUbuntu-14.04-VM" id="Req4" type="ns142:ReqCanHostUbuntu-14.04-VM" xmlns:ns142="http://opentosca.org/requirementtypes"/>
-			</tosca:Requirements>
-			<tosca:Capabilities>
-				<tosca:Capability name="CapCanHostApache-2.4" id="Cap3" type="ns144:CapCanHostApache-2.4" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-				<tosca:Capability name="CapCanHostTomcat_7" id="Cap4" type="ns144:CapCanHostTomcat_7" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-				<tosca:Capability name="CapCanHostMySQL-DBMS-5.5" id="Cap5" type="ns144:CapCanHostMySQL-DBMS-5.5" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-			</tosca:Capabilities>
-		</tosca:NodeTemplate>
-		<tosca:RelationshipTemplate name="con_135-IAAS" id="con_135-IAAS" type="tbt:HostedOn" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="Apache-2_4"/>
-			<tosca:TargetElement ref="Ubuntu-14_04-VM-IAAS"/>
-		</tosca:RelationshipTemplate>
-		<tosca:NodeTemplate name="OpenStack-Liberty-12-Amazon_PaaS" minInstances="1" maxInstances="1" id="OpenStack-Liberty-12-Amazon_PaaS" type="ns2:OpenStack-Liberty-12" winery:location="Amazon/PaaS" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Properties>
-				<ns2:CloudProviderProperties xmlns="http://opentosca.org/nodetypes" xmlns:split="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:ty="http://opentosca.org/nodetypes">
-					<ty:HypervisorEndpoint/>
-					<ty:HypervisorTenantID/>
-					<ty:HypervisorUserName/>
-					<ty:HypervisorUserPassword/>
-				</ns2:CloudProviderProperties>
-			</tosca:Properties>
-			<tosca:Capabilities>
-				<tosca:Capability name="CapCanHostUbuntu-14.04-VM" id="Cap654354356" type="ns144:CapCanHostUbuntu-14.04-VM" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-			</tosca:Capabilities>
-		</tosca:NodeTemplate>
-		<tosca:RelationshipTemplate name="con_124-Amazon_PaaS-Amazon_PaaS" id="con_124-Amazon_PaaS-Amazon_PaaS" type="tbt:HostedOn" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="Ubuntu-14_04-VM-Amazon_PaaS"/>
-			<tosca:TargetElement ref="OpenStack-Liberty-12-Amazon_PaaS"/>
-		</tosca:RelationshipTemplate>
-		<tosca:NodeTemplate name="OpenStack-Liberty-12-IAAS" minInstances="1" maxInstances="1" id="OpenStack-Liberty-12-IAAS" type="ns2:OpenStack-Liberty-12" winery:location="IAAS" xmlns:ns2="http://opentosca.org/nodetypes">
-			<tosca:Properties>
-				<ns2:CloudProviderProperties xmlns="http://opentosca.org/nodetypes" xmlns:split="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:ty="http://opentosca.org/nodetypes">
-					<ty:HypervisorEndpoint/>
-					<ty:HypervisorTenantID/>
-					<ty:HypervisorUserName/>
-					<ty:HypervisorUserPassword/>
-				</ns2:CloudProviderProperties>
-			</tosca:Properties>
-			<tosca:Capabilities>
-				<tosca:Capability name="CapCanHostUbuntu-14.04-VM" id="Cap654354356" type="ns144:CapCanHostUbuntu-14.04-VM" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-			</tosca:Capabilities>
-		</tosca:NodeTemplate>
-		<tosca:RelationshipTemplate name="con_124-IAAS-IAAS" id="con_124-IAAS-IAAS" type="tbt:HostedOn" xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
-			<tosca:SourceElement ref="Ubuntu-14_04-VM-IAAS"/>
-			<tosca:TargetElement ref="OpenStack-Liberty-12-IAAS"/>
-		</tosca:RelationshipTemplate>
-	</tosca:topologyTemplate>
-	<winery:replaceNodes>
-		<entry>
-			<key>Ubuntu-14_04-VM-IAAS</key>
-			<value>
-				<tosca:NodeTemplate name="OpenStack-Liberty-12" minInstances="1" maxInstances="1" id="openstack" type="ns2:OpenStack-Liberty-12" winery:location="IAAS" winery:x="762" winery:y="253" xmlns:ns2="http://opentosca.org/nodetypes">
-					<tosca:Properties>
-						<ns2:CloudProviderProperties xmlns="http://opentosca.org/nodetypes" xmlns:ty="http://opentosca.org/nodetypes">
-							<ty:HypervisorEndpoint/>
-							<ty:HypervisorTenantID/>
-							<ty:HypervisorUserName/>
-							<ty:HypervisorUserPassword/>
-						</ns2:CloudProviderProperties>
-					</tosca:Properties>
-					<tosca:Capabilities>
-						<tosca:Capability name="CapCanHostUbuntu-14.04-VM" id="CapCanHostUbuntu" type="ns144:CapCanHostUbuntu-14.04-VM" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-					</tosca:Capabilities>
-				</tosca:NodeTemplate>
-			</value>
-		</entry>
-		<entry>
-			<key>Java7</key>
-			<value>
-				<tosca:NodeTemplate name="AmazonBeanstalk" id="AmazonBeanstalk" type="ns2:AmazonBeanstalk" winery:location="Amazon/PaaS" winery:x="542" winery:y="105" xmlns:ns2="http://opentosca.org/nodetypes">
-					<tosca:Capabilities>
-						<tosca:Capability name="CapCanHostJava7" id="CapCanHostJava7" type="ns144:CapCanHostJava7" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-						<tosca:Capability name="CapCanHostPHP-5-WebApplication" id="CapCanHostPHPWebApp" type="ns144:CapCanHostPHP-5-WebApplication" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-					</tosca:Capabilities>
-				</tosca:NodeTemplate>
-			</value>
-		</entry>
-		<entry>
-			<key>MySQL-DB</key>
-			<value>
-				<tosca:NodeTemplate name="AmazonRDS" id="AmazonRDS" type="ns2:AmazonRDS" winery:location="Amazon/PaaS" winery:x="931" winery:y="340" xmlns:ns2="http://opentosca.org/nodetypes">
-					<tosca:Capabilities>
-						<tosca:Capability name="CapCanHostMySQL-DB" id="Cap1111" type="ns144:CapCanHostMySQL-DB" xmlns:ns144="http://opentosca.org/capabilitytypes"/>
-					</tosca:Capabilities>
-				</tosca:NodeTemplate>
-			</value>
-		</entry>
-	</winery:replaceNodes>
+<winery:InjectorReplaceData xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12"
+                            xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12">
+    <tosca:topologyTemplate>
+        <tosca:NodeTemplate name="PHP-5-WebApplication" id="PHP-5-WebApplication" type="ns2:PHP-5-WebApplication"
+                            winery:location="IAAS" winery:x="196" winery:y="9"
+                            xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Requirements>
+                <tosca:Requirement name="ReqCanHostPHP-5-WebApplication" id="Req1"
+                                   type="ns142:ReqCanHostPHP-5-WebApplication"
+                                   xmlns:ns142="http://opentosca.org/requirementtypes"/>
+            </tosca:Requirements>
+        </tosca:NodeTemplate>
+        <tosca:NodeTemplate name="REST API" id="Java7" type="ns2:Java7" winery:location="Amazon/PaaS" winery:x="657"
+                            winery:y="35" xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Requirements>
+                <tosca:Requirement name="ReqCanHostJava7" id="Req5" type="ns142:ReqCanHostJava7"
+                                   xmlns:ns142="http://opentosca.org/requirementtypes"/>
+            </tosca:Requirements>
+        </tosca:NodeTemplate>
+        <tosca:NodeTemplate name="MySQL-DB" id="MySQL-DB" type="ns2:MySQL-DB" winery:location="Amazon/PaaS"
+                            winery:x="1045" winery:y="32" xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Properties>
+                <ns2:MySQLDBProperties xmlns="http://opentosca.org/nodetypes"
+                                       xmlns:ty="http://opentosca.org/nodetypes">
+                    <ty:DBName/>
+                    <ty:DBUser/>
+                    <ty:DBPassword/>
+                </ns2:MySQLDBProperties>
+            </tosca:Properties>
+            <tosca:Requirements>
+                <tosca:Requirement name="ReqCanHostMySQL-DB" id="Req6" type="ns142:ReqCanHostMySQL-DB"
+                                   xmlns:ns142="http://opentosca.org/requirementtypes"/>
+            </tosca:Requirements>
+        </tosca:NodeTemplate>
+        <tosca:NodeTemplate name="MySQL-DBMS-5.5" id="MySQL-DBMS-5_5" type="ns2:MySQL-DBMS-5.5"
+                            winery:location="Amazon/PaaS" winery:x="1042" winery:y="346"
+                            xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Properties>
+                <ns2:MySQLDBMSProperties xmlns="http://opentosca.org/nodetypes"
+                                         xmlns:ty="http://opentosca.org/nodetypes">
+                    <ty:DBMSUser/>
+                    <ty:DBMSPassword/>
+                    <ty:DBMSPort/>
+                </ns2:MySQLDBMSProperties>
+            </tosca:Properties>
+            <tosca:Requirements>
+                <tosca:Requirement name="ReqCanHostMySQL-DBMS-5.5" id="Req8" type="ns142:ReqCanHostMySQL-DBMS-5.5"
+                                   xmlns:ns142="http://opentosca.org/requirementtypes"/>
+            </tosca:Requirements>
+            <tosca:Capabilities>
+                <tosca:Capability name="CapCanHostMySQL-DB" id="Cap8" type="ns144:CapCanHostMySQL-DB"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+            </tosca:Capabilities>
+        </tosca:NodeTemplate>
+        <tosca:NodeTemplate name="Tomcat_7" id="Tomcat_7" type="ns2:Tomcat_7" winery:location="Amazon/PaaS"
+                            winery:x="616" winery:y="350" xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Requirements>
+                <tosca:Requirement name="ReqCanHostTomcat_7" id="Req7" type="ns142:ReqCanHostTomcat_7"
+                                   xmlns:ns142="http://opentosca.org/requirementtypes"/>
+            </tosca:Requirements>
+            <tosca:Capabilities>
+                <tosca:Capability name="CapCanHostJava7" id="Cap7" type="ns144:CapCanHostJava7"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+            </tosca:Capabilities>
+        </tosca:NodeTemplate>
+        <tosca:NodeTemplate name="PHP-5-Module" id="PHP-5-Module" type="ns2:PHP-5-Module" winery:location="IAAS"
+                            winery:x="190" winery:y="334" xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Requirements>
+                <tosca:Requirement name="ReqCanHostPHP-5-Module" id="Req2" type="ns142:ReqCanHostPHP-5-Module"
+                                   xmlns:ns142="http://opentosca.org/requirementtypes"/>
+            </tosca:Requirements>
+            <tosca:Capabilities>
+                <tosca:Capability name="CapCanHostPHP-5-WebApplication" id="Cap1"
+                                  type="ns144:CapCanHostPHP-5-WebApplication"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+            </tosca:Capabilities>
+        </tosca:NodeTemplate>
+        <tosca:NodeTemplate name="Apache-2.4" id="Apache-2_4" type="ns2:Apache-2.4" winery:location="IAAS"
+                            winery:x="153" winery:y="742" xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Requirements>
+                <tosca:Requirement name="ReqCanHostApache-2.4" id="Req3" type="ns142:ReqCanHostApache-2.4"
+                                   xmlns:ns142="http://opentosca.org/requirementtypes"/>
+            </tosca:Requirements>
+            <tosca:Capabilities>
+                <tosca:Capability name="CapCanHostPHP-5-Module" id="Cap2" type="ns144:CapCanHostPHP-5-Module"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+            </tosca:Capabilities>
+        </tosca:NodeTemplate>
+        <tosca:RelationshipTemplate name="con_56" id="con_56" type="tbt:HostedOn"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="PHP-5-WebApplication"/>
+            <tosca:TargetElement ref="PHP-5-Module"/>
+        </tosca:RelationshipTemplate>
+        <tosca:RelationshipTemplate name="con_68" id="con_68" type="tbt:HostedOn"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="PHP-5-Module"/>
+            <tosca:TargetElement ref="Apache-2_4"/>
+        </tosca:RelationshipTemplate>
+        <tosca:RelationshipTemplate name="con_80" id="con_80" type="exnt:HostedOn"
+                                    xmlns:exnt="http://example.com/NodeTypes">
+            <tosca:SourceElement ref="Java7"/>
+            <tosca:TargetElement ref="Tomcat_7"/>
+        </tosca:RelationshipTemplate>
+        <tosca:RelationshipTemplate name="con_92" id="con_92" type="tbt:HostedOn"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="MySQL-DB"/>
+            <tosca:TargetElement ref="MySQL-DBMS-5_5"/>
+        </tosca:RelationshipTemplate>
+        <tosca:RelationshipTemplate name="con_104" id="con_104" type="tbt:ConnectsTo"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="PHP-5-WebApplication"/>
+            <tosca:TargetElement ref="Java7"/>
+        </tosca:RelationshipTemplate>
+        <tosca:RelationshipTemplate name="con_116" id="con_116" type="tbt:ConnectsTo"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="Java7"/>
+            <tosca:TargetElement ref="MySQL-DB"/>
+        </tosca:RelationshipTemplate>
+        <tosca:NodeTemplate name="Ubuntu-14.04-VM-Amazon_PaaS" minInstances="1" maxInstances="1"
+                            id="Ubuntu-14_04-VM-Amazon_PaaS" type="ns2:Ubuntu-14.04-VM" winery:location="Amazon/PaaS"
+                            xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Properties>
+                <ns2:VirtualMachineProperties xmlns="http://opentosca.org/nodetypes"
+                                              xmlns:ty="http://opentosca.org/nodetypes">
+                    <ty:VMIP/>
+                    <ty:VMInstanceID/>
+                    <ty:VMType/>
+                    <ty:VMUserName/>
+                    <ty:VMUserPassword/>
+                    <ty:VMPrivateKey/>
+                    <ty:VMPublicKey/>
+                    <ty:VMKeyPairName/>
+                </ns2:VirtualMachineProperties>
+            </tosca:Properties>
+            <tosca:Requirements>
+                <tosca:Requirement name="ReqCanHostUbuntu-14.04-VM" id="Req4" type="ns142:ReqCanHostUbuntu-14.04-VM"
+                                   xmlns:ns142="http://opentosca.org/requirementtypes"/>
+            </tosca:Requirements>
+            <tosca:Capabilities>
+                <tosca:Capability name="CapCanHostApache-2.4" id="Cap3" type="ns144:CapCanHostApache-2.4"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+                <tosca:Capability name="CapCanHostTomcat_7" id="Cap4" type="ns144:CapCanHostTomcat_7"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+                <tosca:Capability name="CapCanHostMySQL-DBMS-5.5" id="Cap5" type="ns144:CapCanHostMySQL-DBMS-5.5"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+            </tosca:Capabilities>
+        </tosca:NodeTemplate>
+        <tosca:RelationshipTemplate name="con_147-Amazon_PaaS" id="con_147-Amazon_PaaS" type="tbt:HostedOn"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="Tomcat_7"/>
+            <tosca:TargetElement ref="Ubuntu-14_04-VM-Amazon_PaaS"/>
+        </tosca:RelationshipTemplate>
+        <tosca:RelationshipTemplate name="con_159-Amazon_PaaS" id="con_159-Amazon_PaaS" type="tbt:HostedOn"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="MySQL-DBMS-5_5"/>
+            <tosca:TargetElement ref="Ubuntu-14_04-VM-Amazon_PaaS"/>
+        </tosca:RelationshipTemplate>
+        <tosca:NodeTemplate name="Ubuntu-14.04-VM-IAAS" minInstances="1" maxInstances="1" id="Ubuntu-14_04-VM-IAAS"
+                            type="ns2:Ubuntu-14.04-VM" winery:location="IAAS"
+                            xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Properties>
+                <ns2:VirtualMachineProperties xmlns="http://opentosca.org/nodetypes"
+                                              xmlns:ty="http://opentosca.org/nodetypes">
+                    <ty:VMIP/>
+                    <ty:VMInstanceID/>
+                    <ty:VMType/>
+                    <ty:VMUserName/>
+                    <ty:VMUserPassword/>
+                    <ty:VMPrivateKey/>
+                    <ty:VMPublicKey/>
+                    <ty:VMKeyPairName/>
+                </ns2:VirtualMachineProperties>
+            </tosca:Properties>
+            <tosca:Requirements>
+                <tosca:Requirement name="ReqCanHostUbuntu-14.04-VM" id="Req4" type="ns142:ReqCanHostUbuntu-14.04-VM"
+                                   xmlns:ns142="http://opentosca.org/requirementtypes"/>
+            </tosca:Requirements>
+            <tosca:Capabilities>
+                <tosca:Capability name="CapCanHostApache-2.4" id="Cap3" type="ns144:CapCanHostApache-2.4"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+                <tosca:Capability name="CapCanHostTomcat_7" id="Cap4" type="ns144:CapCanHostTomcat_7"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+                <tosca:Capability name="CapCanHostMySQL-DBMS-5.5" id="Cap5" type="ns144:CapCanHostMySQL-DBMS-5.5"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+            </tosca:Capabilities>
+        </tosca:NodeTemplate>
+        <tosca:RelationshipTemplate name="con_135-IAAS" id="con_135-IAAS" type="tbt:HostedOn"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="Apache-2_4"/>
+            <tosca:TargetElement ref="Ubuntu-14_04-VM-IAAS"/>
+        </tosca:RelationshipTemplate>
+        <tosca:NodeTemplate name="OpenStack-Liberty-12-Amazon_PaaS" minInstances="1" maxInstances="1"
+                            id="OpenStack-Liberty-12-Amazon_PaaS" type="ns2:OpenStack-Liberty-12"
+                            winery:location="Amazon/PaaS" xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Properties>
+                <ns2:CloudProviderProperties xmlns="http://opentosca.org/nodetypes"
+                                             xmlns:ty="http://opentosca.org/nodetypes">
+                    <ty:HypervisorEndpoint/>
+                    <ty:HypervisorTenantID/>
+                    <ty:HypervisorUserName/>
+                    <ty:HypervisorUserPassword/>
+                </ns2:CloudProviderProperties>
+            </tosca:Properties>
+            <tosca:Capabilities>
+                <tosca:Capability name="CapCanHostUbuntu-14.04-VM" id="Cap654354356"
+                                  type="ns144:CapCanHostUbuntu-14.04-VM"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+            </tosca:Capabilities>
+        </tosca:NodeTemplate>
+        <tosca:RelationshipTemplate name="con_124-Amazon_PaaS-Amazon_PaaS" id="con_124-Amazon_PaaS-Amazon_PaaS"
+                                    type="tbt:HostedOn"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="Ubuntu-14_04-VM-Amazon_PaaS"/>
+            <tosca:TargetElement ref="OpenStack-Liberty-12-Amazon_PaaS"/>
+        </tosca:RelationshipTemplate>
+        <tosca:NodeTemplate name="OpenStack-Liberty-12-IAAS" minInstances="1" maxInstances="1"
+                            id="OpenStack-Liberty-12-IAAS" type="ns2:OpenStack-Liberty-12" winery:location="IAAS"
+                            xmlns:ns2="http://opentosca.org/nodetypes">
+            <tosca:Properties>
+                <ns2:CloudProviderProperties xmlns="http://opentosca.org/nodetypes"
+                                             xmlns:ty="http://opentosca.org/nodetypes">
+                    <ty:HypervisorEndpoint/>
+                    <ty:HypervisorTenantID/>
+                    <ty:HypervisorUserName/>
+                    <ty:HypervisorUserPassword/>
+                </ns2:CloudProviderProperties>
+            </tosca:Properties>
+            <tosca:Capabilities>
+                <tosca:Capability name="CapCanHostUbuntu-14.04-VM" id="Cap654354356"
+                                  type="ns144:CapCanHostUbuntu-14.04-VM"
+                                  xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+            </tosca:Capabilities>
+        </tosca:NodeTemplate>
+        <tosca:RelationshipTemplate name="con_124-IAAS-IAAS" id="con_124-IAAS-IAAS" type="tbt:HostedOn"
+                                    xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes">
+            <tosca:SourceElement ref="Ubuntu-14_04-VM-IAAS"/>
+            <tosca:TargetElement ref="OpenStack-Liberty-12-IAAS"/>
+        </tosca:RelationshipTemplate>
+    </tosca:topologyTemplate>
+    <winery:replaceNodes>
+        <entry>
+            <key>Ubuntu-14_04-VM-IAAS</key>
+            <value>
+                <tosca:NodeTemplate name="OpenStack-Liberty-12" minInstances="1" maxInstances="1" id="openstack"
+                                    type="ns2:OpenStack-Liberty-12" winery:location="IAAS" winery:x="762" winery:y="253"
+                                    xmlns:ns2="http://opentosca.org/nodetypes">
+                    <tosca:Properties>
+                        <ns2:CloudProviderProperties xmlns="http://opentosca.org/nodetypes"
+                                                     xmlns:ty="http://opentosca.org/nodetypes">
+                            <ty:HypervisorEndpoint/>
+                            <ty:HypervisorTenantID/>
+                            <ty:HypervisorUserName/>
+                            <ty:HypervisorUserPassword/>
+                        </ns2:CloudProviderProperties>
+                    </tosca:Properties>
+                    <tosca:Capabilities>
+                        <tosca:Capability name="CapCanHostUbuntu-14.04-VM" id="CapCanHostUbuntu"
+                                          type="ns144:CapCanHostUbuntu-14.04-VM"
+                                          xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+                    </tosca:Capabilities>
+                </tosca:NodeTemplate>
+            </value>
+        </entry>
+        <entry>
+            <key>Java7</key>
+            <value>
+                <tosca:NodeTemplate name="AmazonBeanstalk" id="AmazonBeanstalk" type="ns2:AmazonBeanstalk"
+                                    winery:location="Amazon/PaaS" winery:x="542" winery:y="105"
+                                    xmlns:ns2="http://opentosca.org/nodetypes">
+                    <tosca:Capabilities>
+                        <tosca:Capability name="CapCanHostJava7" id="CapCanHostJava7" type="ns144:CapCanHostJava7"
+                                          xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+                        <tosca:Capability name="CapCanHostPHP-5-WebApplication" id="CapCanHostPHPWebApp"
+                                          type="ns144:CapCanHostPHP-5-WebApplication"
+                                          xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+                    </tosca:Capabilities>
+                </tosca:NodeTemplate>
+            </value>
+        </entry>
+        <entry>
+            <key>MySQL-DB</key>
+            <value>
+                <tosca:NodeTemplate name="AmazonRDS" id="AmazonRDS" type="ns2:AmazonRDS" winery:location="Amazon/PaaS"
+                                    winery:x="931" winery:y="340" xmlns:ns2="http://opentosca.org/nodetypes">
+                    <tosca:Capabilities>
+                        <tosca:Capability name="CapCanHostMySQL-DB" id="Cap1111" type="ns144:CapCanHostMySQL-DB"
+                                          xmlns:ns144="http://opentosca.org/capabilitytypes"/>
+                    </tosca:Capabilities>
+                </tosca:NodeTemplate>
+            </value>
+        </entry>
+    </winery:replaceNodes>
 </winery:InjectorReplaceData>

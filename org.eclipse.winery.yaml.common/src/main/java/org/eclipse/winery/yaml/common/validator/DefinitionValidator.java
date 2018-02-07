@@ -13,14 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.model.tosca.yaml.TArtifactDefinition;
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
@@ -31,6 +23,13 @@ import org.eclipse.winery.yaml.common.exception.UndefinedFile;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionVisitor;
 import org.eclipse.winery.yaml.common.validator.support.Parameter;
 import org.eclipse.winery.yaml.common.validator.support.Result;
+
+import javax.xml.namespace.QName;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class DefinitionValidator extends ExceptionVisitor<Result, Parameter> {
     public final Path path;

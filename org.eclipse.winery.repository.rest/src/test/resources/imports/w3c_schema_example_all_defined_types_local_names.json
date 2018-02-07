@@ -1,9 +1,9 @@
 [
-	"dectype",
-	"inttype",
-	"itemtype",
-	"orderidtype",
-	"shipordertype",
-	"shiptotype",
-	"stringtype"
+    "dectype",
+    "inttype",
+    "itemtype",
+    "orderidtype",
+    "shipordertype",
+    "shiptotype",
+    "stringtype"
 ]

@@ -11,21 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { SectionService } from '../section/section.service';
-import { SelectData } from '../wineryInterfaces/selectData';
-import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
-import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
-import { ToscaTypes } from '../wineryInterfaces/enums';
-import { Router } from '@angular/router';
-import { Response } from '@angular/http';
-import { NgForm } from '@angular/forms';
-import { Utils } from '../wineryUtils/utils';
-import { isNullOrUndefined } from 'util';
-import { SectionData } from '../section/sectionData';
-import { ModalDirective } from 'ngx-bootstrap';
-import { WineryNamespaceSelectorComponent } from '../wineryNamespaceSelector/wineryNamespaceSelector.component';
-import { InheritanceService } from '../instance/sharedComponents/inheritance/inheritance.service';
+import {ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {SectionService} from '../section/section.service';
+import {SelectData} from '../wineryInterfaces/selectData';
+import {WineryValidatorObject} from '../wineryValidators/wineryDuplicateValidator.directive';
+import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
+import {ToscaTypes} from '../wineryInterfaces/enums';
+import {Router} from '@angular/router';
+import {Response} from '@angular/http';
+import {NgForm} from '@angular/forms';
+import {Utils} from '../wineryUtils/utils';
+import {isNullOrUndefined} from 'util';
+import {SectionData} from '../section/sectionData';
+import {ModalDirective} from 'ngx-bootstrap';
+import {WineryNamespaceSelectorComponent} from '../wineryNamespaceSelector/wineryNamespaceSelector.component';
+import {InheritanceService} from '../instance/sharedComponents/inheritance/inheritance.service';
 
 @Component({
     selector: 'winery-add-component',

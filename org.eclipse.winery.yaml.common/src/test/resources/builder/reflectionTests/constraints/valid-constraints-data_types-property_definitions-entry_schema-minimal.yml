@@ -1,0 +1,24 @@
+tosca_definitions_version: tosca_simple_yaml_1_1
+
+metadata:
+  description: This test contains a valid data type with minimal constraints
+  targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
+  tosca.version: 1.1
+  reference: 3.5.2.1
+  exception: None
+  keyname: data_types.test.datatypes.dt1.properties.prop1.entry_schema.constraints
+  assert-typeof: |
+    0 = TConstraintClause
+  assert: |
+    0.greater_than = 0
+
+data_types:
+  test.datatypes.dt1:
+    derived_from: tosca.datatypes.Root
+    properties:
+      prop1:
+        type: integer
+        entry_schema:
+          type: integer
+          constraints:
+            - greater_than: 0

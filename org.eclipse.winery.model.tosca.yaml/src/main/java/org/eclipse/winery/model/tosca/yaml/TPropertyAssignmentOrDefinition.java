@@ -13,19 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
 import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
 import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
 import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tPropertyAssignmentOrDefinition", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {})
-@XmlSeeAlso({
+@XmlSeeAlso( {
     TPropertyAssignment.class,
     TPropertyDefinition.class
 })

@@ -1,53 +1,54 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *    Uwe Breitenbücher - initial API and implementation and/or initial documentation
- *    Oliver Kopp, Karoline Saatkamp - improvements
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
 /** This CSS is shared between the Winery Repository and the Winery Topology Modeler **/
 
 div.NodeTemplateShape {
-	font-family: arial, verdana;
-	font-size: 12px;
+    font-family: arial, verdana;
+    font-size: 12px;
 
-	border: 1px solid black;
-	border: 2px solid rgb(112, 152, 179);
-	border-radius: 12px;
-	width: 225px;
-	z-index:20;
-	position:absolute;
-	box-shadow: 5px 5px 17px #aaa;
-	background: #ffffff;
-	cursor: move;
+    border: 1px solid black;
+    border: 2px solid rgb(112, 152, 179);
+    border-radius: 12px;
+    width: 225px;
+    z-index: 20;
+    position: absolute;
+    box-shadow: 5px 5px 17px #aaa;
+    background: #ffffff;
+    cursor: move;
 
-	/* IE10 Consumer Preview */
-	background-image: -ms-linear-gradient(top, #FFFFFF 0%, #EBF2F7 100%);
+    /* IE10 Consumer Preview */
+    background-image: -ms-linear-gradient(top, #FFFFFF 0%, #EBF2F7 100%);
 
-	/* Mozilla Firefox */
-	background-image: -moz-linear-gradient(top, #FFFFFF 0%, #EBF2F7 100%);
+    /* Mozilla Firefox */
+    background-image: -moz-linear-gradient(top, #FFFFFF 0%, #EBF2F7 100%);
 
-	/* Opera */
-	background-image: -o-linear-gradient(top, #FFFFFF 0%, #EBF2F7 100%);
+    /* Opera */
+    background-image: -o-linear-gradient(top, #FFFFFF 0%, #EBF2F7 100%);
 
-	/* Webkit (Safari/Chrome 10) */
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #EBF2F7));
+    /* Webkit (Safari/Chrome 10) */
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #EBF2F7));
 
-	/* Webkit (Chrome 11+) */
-	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #EBF2F7 100%);
+    /* Webkit (Chrome 11+) */
+    background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #EBF2F7 100%);
 
-	/* W3C Markup, IE10 Release Preview */
-	background-image: linear-gradient(to bottom, #FFFFFF 0%, #EBF2F7 100%);
+    /* W3C Markup, IE10 Release Preview */
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, #EBF2F7 100%);
 }
 
 div.NodeTemplateShape > div.headerContainer {
-	height: 65px;
+    height: 65px;
 }
 
 div.NodeTemplateShape div.minMaxInstances {
@@ -62,350 +63,351 @@ div.NodeTemplateShape div.minMaxInstances span.maxInstances {
 }
 
 div.NodeTemplateShape > .headerContainer > img.icon {
-	float: left;
-	height: 55px;
-	margin: 10px 0px 10px 10px;
+    float: left;
+    height: 55px;
+    margin: 10px 0px 10px 10px;
 }
+
 div.NodeTemplateShape > .headerContainer > div.id {
-	position: absolute;
-	left: 90px;
-	top: 0px;
-	height: 16px;
-	width: 130px;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	text-decoration: underline;
-	display: none;
+    position: absolute;
+    left: 90px;
+    top: 0px;
+    height: 16px;
+    width: 130px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-decoration: underline;
+    display: none;
 }
+
 div.NodeTemplateShape > .headerContainer > div.name {
-	position: absolute;
-	left: 90px;
-	top: 20px;
-	height: 16px;
-	width: 130px;
-	text-overflow: ellipsis;
-	overflow: hidden;
+    position: absolute;
+    left: 90px;
+    top: 20px;
+    height: 16px;
+    width: 130px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
+
 div.NodeTemplateShape > .headerContainer > div.type {
-	position: absolute;
-	left: 90px;
-	top: 40px;
-	height: 16px;
-	width: 130px;
-	text-overflow: ellipsis;
-	overflow: hidden;
+    position: absolute;
+    left: 90px;
+    top: 40px;
+    height: 16px;
+    width: 130px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
+
 div.NodeTemplateShape > .headerContainer > div.type:before {
-	content: "(";
+    content: "(";
 }
+
 div.NodeTemplateShape > .headerContainer > div.type:after {
-	content: ")";
+    content: ")";
 }
 
 img.createAnnotation {
-	width: 20px;
-	position: absolute;
-	top: 5px;
-	right: 5px;
+    width: 20px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 
 a.KVPropertyValue {
-	overflow: hidden;
-	text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.NodeTemplateShape > div.targetLocationContainer {
-	border: 1px solid #aeaeae;
-	background: #ffffff;
-	margin: 7px;
-	width: 198px;
-	border-radius: 7px;
-	padding: 5px;
-	float: left;
-	overflow-x: hidden;
-	display: none;
+    border: 1px solid #aeaeae;
+    background: #ffffff;
+    margin: 7px;
+    width: 198px;
+    border-radius: 7px;
+    padding: 5px;
+    float: left;
+    overflow-x: hidden;
+    display: none;
 }
 
 div.NodeTemplateShape > div.targetLocationContainer > div.content > .thetargetlocation {
 }
 
 div.NodeTemplateShape > div.deploymentArtifactsContainer {
-	border: 1px solid #aeaeae;
-	background: #ffffff;
-	margin: 7px;
-	width: 198px;
-	border-radius: 7px;
-	padding: 5px;
-	float: left;
-	overflow-x: hidden;
-	display: none;
+    border: 1px solid #aeaeae;
+    background: #ffffff;
+    margin: 7px;
+    width: 198px;
+    border-radius: 7px;
+    padding: 5px;
+    float: left;
+    overflow-x: hidden;
+    display: none;
 }
 
 div.NodeTemplateShape > div.deploymentArtifactsContainer > div.header {
-	border-bottom: 1px solid #aeaeae;
-	float: left;
-	width: 198px;
-	padding: 5px;
-	margin-top: -5px;
-	margin-left: -5px;
-	margin-bottom: 6px;
-	background-image: -ms-linear-gradient(top, #FFFFFF 0%, rgb(209, 209, 209) 100%);
-	background-image: -moz-linear-gradient(top, #FFFFFF 0%, rgb(209, 209, 209) 100%);
-	background-image: -o-linear-gradient(top, #FFFFFF 0%, rgb(209, 209, 209) 100%);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, rgb(209, 209, 209)));
-	background-image: -webkit-linear-gradient(top, #FFFFFF 0%, rgb(209, 209, 209) 100%);
-	background-image: linear-gradient(to bottom, #FFFFFF 0%, rgb(209, 209, 209) 100%);
+    border-bottom: 1px solid #aeaeae;
+    float: left;
+    width: 198px;
+    padding: 5px;
+    margin-top: -5px;
+    margin-left: -5px;
+    margin-bottom: 6px;
+    background-image: -ms-linear-gradient(top, #FFFFFF 0%, rgb(209, 209, 209) 100%);
+    background-image: -moz-linear-gradient(top, #FFFFFF 0%, rgb(209, 209, 209) 100%);
+    background-image: -o-linear-gradient(top, #FFFFFF 0%, rgb(209, 209, 209) 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, rgb(209, 209, 209)));
+    background-image: -webkit-linear-gradient(top, #FFFFFF 0%, rgb(209, 209, 209) 100%);
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, rgb(209, 209, 209) 100%);
 }
 
 div.NodeTemplateShape > div.deploymentArtifactsContainer > div.content > div.deploymentArtifact {
-	background-color: #FFDADA;
-	height: 20px;
+    background-color: #FFDADA;
+    height: 20px;
 }
 
 /* indicates editing possibility */
 div.NodeTemplateShape > div.deploymentArtifactsContainer > div.content > div.deploymentArtifact:hover {
-	background-color: lightblue;
-	cursor: pointer;
+    background-color: lightblue;
+    cursor: pointer;
 }
 
 div.NodeTemplateShape > div.deploymentArtifactsContainer > div.content > div.deploymentArtifact > div {
-	height: 20px;
+    height: 20px;
 }
 
 div.NodeTemplateShape > div.deploymentArtifactsContainer > div.content > div.deploymentArtifact:first-child {
-	border-top: 0px;
+    border-top: 0px;
 }
 
 div.NodeTemplateShape > div.deploymentArtifactsContainer > div.content > div.addDA {
-	display: none;
+    display: none;
 }
 
 div.NodeTemplateShape > div.deploymentArtifactsContainer > div.content > div.addnewartifacttemplate {
-	display: none;
-	background-color: Silver;
-	text-align: center;
+    display: none;
+    background-color: Silver;
+    text-align: center;
 }
 
 div.NodeTemplateShape > div.propertiesContainer {
-	border: 1px solid #aeaeae;
-	background: #ffffff;
-	margin: 7px;
-	width: 198px;
-	border-radius: 7px;
-	padding: 5px;
-	float: left;
-	overflow-x: hidden;
-	display: none;
+    border: 1px solid #aeaeae;
+    background: #ffffff;
+    margin: 7px;
+    width: 198px;
+    border-radius: 7px;
+    padding: 5px;
+    float: left;
+    overflow-x: hidden;
+    display: none;
 }
 
 div.NodeTemplateShape > div.propertiesContainer > div.header {
-	background: rgb(241, 241, 241);
-	border-bottom: 1px solid #aeaeae;
-	float: left;
-	width: 198px;
-	padding: 5px;
-	margin-top: -5px;
-	margin-left: -5px;
-	margin-bottom: 6px;
+    background: rgb(241, 241, 241);
+    border-bottom: 1px solid #aeaeae;
+    float: left;
+    width: 198px;
+    padding: 5px;
+    margin-top: -5px;
+    margin-left: -5px;
+    margin-bottom: 6px;
 }
 
 div.NodeTemplateShape > div.propertiesContainer > div.header > a {
-	float: right;
-	height: 6px;
+    float: right;
+    height: 6px;
 }
 
 div.NodeTemplateShape > div.propertiesContainer > div.content > span.namespace {
-	display: none;
+    display: none;
 }
 
 div.NodeTemplateShape > div.propertiesContainer > div.content > span.elementName {
-	display: none;
+    display: none;
 }
 
 div.NodeTemplateShape > div.propertiesContainer > div.content table {
-	float: left;
+    float: left;
 }
 
 div.NodeTemplateShape div.reqorcap {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 div.NodeTemplateShape div.reqorcap.id {
 }
 
 div.NodeTemplateShape div.reqorcap.name {
-	overflow: hidden;
-	text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.NodeTemplateShape div.reqorcap.type {
-	overflow: hidden;
-	text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* indicates editing possibility */
 div.NodeTemplateShape div.reqorcap:hover {
-	background-color: lightgray;
+    background-color: lightgray;
 }
 
 div.NodeTemplateShape > div.requirementsContainer {
-	border: 1px solid #aeaeae;
-	background: #ffffff;
-	margin: 7px;
-	width: 198px;
-	border-radius: 7px;
-	padding: 5px;
-	float: left;
-	overflow-x: hidden;
-	display: none;
+    border: 1px solid #aeaeae;
+    background: #ffffff;
+    margin: 7px;
+    width: 198px;
+    border-radius: 7px;
+    padding: 5px;
+    float: left;
+    overflow-x: hidden;
+    display: none;
 }
 
 div.NodeTemplateShape > div.requirementsContainer > div.header {
-	background: rgb(241, 241, 241);
-	border-bottom: 1px solid #aeaeae;
-	float: left;
-	width: 198px;
-	padding: 5px;
-	margin-top: -5px;
-	margin-left: -5px;
-	margin-bottom: 6px;
+    background: rgb(241, 241, 241);
+    border-bottom: 1px solid #aeaeae;
+    float: left;
+    width: 198px;
+    padding: 5px;
+    margin-top: -5px;
+    margin-left: -5px;
+    margin-bottom: 6px;
 }
 
 div.NodeTemplateShape > div.requirementsContainer > div.content > div.reqorcap > div.propertiesContainer {
-	display: none;
+    display: none;
 }
 
-
 div.NodeTemplateShape > div.capabilitiesContainer {
-	border: 1px solid #aeaeae;
-	background: #ffffff;
-	margin: 7px;
-	width: 198px;
-	border-radius: 7px;
-	padding: 5px;
-	float: left;
-	overflow-x: hidden;
-	display: none;
+    border: 1px solid #aeaeae;
+    background: #ffffff;
+    margin: 7px;
+    width: 198px;
+    border-radius: 7px;
+    padding: 5px;
+    float: left;
+    overflow-x: hidden;
+    display: none;
 }
 
 div.NodeTemplateShape > div.capabilitiesContainer > div.header {
-	background: rgb(241, 241, 241);
-	border-bottom: 1px solid #aeaeae;
-	float: left;
-	width: 198px;
-	padding: 5px;
-	margin-top: -5px;
-	margin-left: -5px;
-	margin-bottom: 6px;
+    background: rgb(241, 241, 241);
+    border-bottom: 1px solid #aeaeae;
+    float: left;
+    width: 198px;
+    padding: 5px;
+    margin-top: -5px;
+    margin-left: -5px;
+    margin-bottom: 6px;
 }
 
 div.NodeTemplateShape > div.capabilitiesContainer > div.content > div.reqorcap > div.propertiesContainer {
-	display: none;
+    display: none;
 }
-
 
 /** Policies **/
 
 div.NodeTemplateShape > div.policiesContainer {
-	border: 1px solid #aeaeae;
-	background: #ffffff;
-	margin: 7px;
-	width: 198px;
-	border-radius: 7px;
-	padding: 5px;
-	float: left;
-	overflow-x: hidden;
-	display: none;
+    border: 1px solid #aeaeae;
+    background: #ffffff;
+    margin: 7px;
+    width: 198px;
+    border-radius: 7px;
+    padding: 5px;
+    float: left;
+    overflow-x: hidden;
+    display: none;
 }
 
 div.NodeTemplateShape > div.policiesContainer > div.header {
-	background: rgb(241, 241, 241);
-	border-bottom: 1px solid #aeaeae;
-	float: left;
-	width: 198px;
-	padding: 5px;
-	margin-top: -5px;
-	margin-left: -5px;
-	margin-bottom: 6px;
+    background: rgb(241, 241, 241);
+    border-bottom: 1px solid #aeaeae;
+    float: left;
+    width: 198px;
+    padding: 5px;
+    margin-top: -5px;
+    margin-left: -5px;
+    margin-bottom: 6px;
 }
 
 /* indicates editing possibility */
 div.NodeTemplateShape > div.policiesContainer > div.content > div.policy:hover {
-	background-color: lightgray;
+    background-color: lightgray;
 }
 
 div.NodeTemplateShape > div.policiesContainer > div.content > div.policy > div {
-	overflow: hidden;
-	text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.NodeTemplateShape > div.policiesContainer > div.content > div.policy > span {
-	display: none;
+    display: none;
 }
 
 div.NodeTemplateShape > div.policiesContainer > div.content > div.policy > textarea.policy_xml {
-	display: none;
+    display: none;
 }
 
-
-
 div.connectorBox {
-	height: 15px;
-	width: 15px;
-	float: left;
+    height: 15px;
+    width: 15px;
+    float: left;
 }
 
 div.connectorLabel {
-	height: 15px;
-	width: 125px;
-	overflow: hidden;
-	margin-left: 20px;
-	white-space: nowrap;
-	line-height: 16px;
-	overflow: hidden;
-	text-overflow: ellipsis;
+    height: 15px;
+    width: 125px;
+    overflow: hidden;
+    margin-left: 20px;
+    white-space: nowrap;
+    line-height: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.connectorEndpoint {
-	width: 140px;
-	cursor: pointer;
+    width: 140px;
+    cursor: pointer;
 }
 
 div.connectorEndpoint:hover {
-	background: rgb(237, 242, 247);
+    background: rgb(237, 242, 247);
 }
 
 div.endpointContainer {
-	background: #ffffff;
-	box-shadow: 2px 2px 19px #aaa;
-	border: 1px solid #aeaeae;
-	width: 150px;
-	position: absolute;
-	left: 212px;
-	padding: 5px;
-	z-index: 20;
-	display: none;
+    background: #ffffff;
+    box-shadow: 2px 2px 19px #aaa;
+    border: 1px solid #aeaeae;
+    width: 150px;
+    position: absolute;
+    left: 212px;
+    padding: 5px;
+    z-index: 20;
+    display: none;
 }
 
 ._jsPlumb_connector {
-	z-index: 15;
+    z-index: 15;
 }
 
 div#patternArea {
-	position: absolute;
-	z-index: 10000;
-	right: 0px;
-	top: 0px;
-	height: 100%;
-	width: 500px;
-	background: rgb(250, 250, 250);
-	padding: 5px;
+    position: absolute;
+    z-index: 10000;
+    right: 0px;
+    top: 0px;
+    height: 100%;
+    width: 500px;
+    background: rgb(250, 250, 250);
+    padding: 5px;
 }
 
 div.patternSuggestionContainer {
-	border: 2px solid #aeaeae;
-	padding: 5px 3px;
-	margin-bottom: 5px;
+    border: 2px solid #aeaeae;
+    padding: 5px 3px;
+    margin-bottom: 5px;
 }
 
 div.patternSuggestionContainer.focusedElement {
@@ -413,24 +415,24 @@ div.patternSuggestionContainer.focusedElement {
 }
 
 .pointer {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 div.relationshipTypeLabel {
-	/* z-index of arrow is 14, therefore we use 15 */
-	z-index: 15;
+    /* z-index of arrow is 14, therefore we use 15 */
+    z-index: 15;
 
-	cursor: default;
-	font-family: arial, verdana;
-	font-size: 12px;
+    cursor: default;
+    font-family: arial, verdana;
+    font-size: 12px;
 }
 
 .unselectable {
-	/* disable text selection - source: http://stackoverflow.com/a/4407335/873282 */
-	user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
+    /* disable text selection - source: http://stackoverflow.com/a/4407335/873282 */
+    user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
 }

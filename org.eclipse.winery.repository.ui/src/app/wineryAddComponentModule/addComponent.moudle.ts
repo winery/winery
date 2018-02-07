@@ -11,18 +11,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
-import { WineryAddComponent } from './addComponent.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { WineryModalModule } from '../wineryModalModule/winery.modal.module';
-import { WineryNotificationModule } from '../wineryNotificationModule/wineryNotification.module';
-import { WineryNamespaceSelectorModule } from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
-import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplicateValidator.module';
-import { RouterModule } from '@angular/router';
-import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
-import { SelectModule } from 'ng2-select';
+import {WineryAddComponent} from './addComponent.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+import {WineryModalModule} from '../wineryModalModule/winery.modal.module';
+import {WineryNotificationModule} from '../wineryNotificationModule/wineryNotification.module';
+import {WineryNamespaceSelectorModule} from '../wineryNamespaceSelector/wineryNamespaceSelector.module';
+import {WineryDuplicateValidatorModule} from '../wineryValidators/wineryDuplicateValidator.module';
+import {RouterModule} from '@angular/router';
+import {WineryLoaderModule} from '../wineryLoader/wineryLoader.module';
+import {SelectModule} from 'ng2-select';
 
 @NgModule({
     imports: [

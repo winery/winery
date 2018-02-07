@@ -38,7 +38,7 @@ package org.eclipse.winery.repository;
  *
  * @author Christopher Brown
  * @author Michael Becke
- *
+ * <p>
  * Shortened by Oliver Kopp to contain DEFAULT_PATTERNS and related artifacts only.
  * Moved to package org.eclipse.winery.repository.
  */
@@ -61,8 +61,8 @@ public final class DateUtils {
     public static final String PATTERN_ASCTIME = "EEE MMM d HH:mm:ss yyyy";
 
     public static final String[] DEFAULT_PATTERNS = new String[] {
-    	PATTERN_RFC1036,
-    	PATTERN_RFC1123,
+        PATTERN_RFC1036,
+        PATTERN_RFC1123,
         PATTERN_ASCTIME
     };
 

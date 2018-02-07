@@ -13,11 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.xml.support;
 
-import java.util.Optional;
+import org.eclipse.winery.yaml.common.Namespaces;
 
 import javax.xml.namespace.QName;
-
-import org.eclipse.winery.yaml.common.Namespaces;
+import java.util.Optional;
 
 public class TypeConverter {
     public static TypeConverter INSTANCE = new TypeConverter();

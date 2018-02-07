@@ -1,23 +1,25 @@
-/**
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/*******************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Lukas Harzenetter - initial API and implementation
- */
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
-import { isNullOrUndefined } from 'util';
-import { Utils } from '../../wineryUtils/utils';
-import { ActivatedRoute, Params } from '@angular/router';
-import { backendBaseURL } from '../../configuration';
-import { Observable } from 'rxjs/Observable';
-import { Subscriber } from 'rxjs/Subscriber';
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions} from '@angular/http';
+import {WineryNotificationService} from '../../wineryNotificationModule/wineryNotification.service';
+import {isNullOrUndefined} from 'util';
+import {Utils} from '../../wineryUtils/utils';
+import {ActivatedRoute, Params} from '@angular/router';
+import {backendBaseURL} from '../../configuration';
+import {Observable} from 'rxjs/Observable';
+import {Subscriber} from 'rxjs/Subscriber';
 
 /**
  * This service provides OAuth login service. If the credentials are not set, it defaults
@@ -51,7 +53,7 @@ export class WineryOAuthService {
             if (!isNullOrUndefined(this.storage.getItem(StorageElements.accessToken))) {
                 this.getUserInformation();
             } else if (isNullOrUndefined(this.storage.getItem(StorageElements.state))) {
-                observer.next({ success: false });
+                observer.next({success: false});
                 observer.complete();
             } else {
                 const subscription = this.activatedRoute.queryParams
@@ -92,13 +94,13 @@ export class WineryOAuthService {
 
     getUserInformation() {
         if (isNullOrUndefined(this.storage.getItem(StorageElements.accessToken))) {
-            this.observer.next({ success: false });
+            this.observer.next({success: false});
             this.observer.complete();
             return;
         }
 
         const headers = new Headers();
-        const options = new RequestOptions({ headers: headers });
+        const options = new RequestOptions({headers: headers});
         headers.set('Accept', 'application/json');
 
         this.http.get('https://api.github.com/user?access_token=' + this.storage.getItem(StorageElements.accessToken), options)
@@ -113,7 +115,7 @@ export class WineryOAuthService {
         if (!isNullOrUndefined(params['code']) && !isNullOrUndefined(params['state'])) {
             if (params['state'] === this.storage.getItem(StorageElements.state)) {
                 const headers = new Headers();
-                const options = new RequestOptions({ headers: headers });
+                const options = new RequestOptions({headers: headers});
                 headers.set('Content-Type', 'application/json');
 
                 const payload = {
@@ -144,7 +146,7 @@ export class WineryOAuthService {
     private handleUserInformation(data: any) {
         this.storage.setItem(StorageElements.userName, data.name);
 
-        this.observer.next({ success: true, userName: data.name });
+        this.observer.next({success: true, userName: data.name});
         this.observer.complete();
     }
 

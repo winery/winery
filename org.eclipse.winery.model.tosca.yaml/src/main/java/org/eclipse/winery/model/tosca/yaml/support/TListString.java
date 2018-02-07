@@ -13,17 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml.support;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.util.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TListString", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {

@@ -13,26 +13,14 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.validator;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.winery.model.tosca.yaml.TArtifactType;
-import org.eclipse.winery.model.tosca.yaml.TCapabilityType;
-import org.eclipse.winery.model.tosca.yaml.TDataType;
-import org.eclipse.winery.model.tosca.yaml.TGroupType;
-import org.eclipse.winery.model.tosca.yaml.TInterfaceType;
-import org.eclipse.winery.model.tosca.yaml.TNodeType;
-import org.eclipse.winery.model.tosca.yaml.TPolicyType;
-import org.eclipse.winery.model.tosca.yaml.TRelationshipType;
+import org.eclipse.winery.model.tosca.yaml.*;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.validator.support.Parameter;
 import org.eclipse.winery.yaml.common.validator.support.Result;
+
+import java.nio.file.Path;
+import java.util.*;
 
 public class TypeVisitor extends ImportVisitor {
     private Map<String, List<String>> artifactTypes;

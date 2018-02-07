@@ -1,49 +1,24 @@
-/*******************************************************************************
- * Copyright (c) 2012-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/********************************************************************************
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Oliver Kopp - initial API and implementation
- *     Nicole Keppler, Lukas Balzer - changes for angular frontend
- *     Armin Hüneburg - add initial git support
- *     Philipp Meyer - support for source directory
- *******************************************************************************/
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
 package org.eclipse.winery.repository.rest;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URI;
-import java.nio.file.attribute.FileTime;
-import java.security.AccessControlException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.Response.Status.Family;
-import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
-
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.header.ContentDisposition;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
@@ -55,14 +30,7 @@ import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
 import org.eclipse.winery.model.selfservice.Application;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.HasType;
-import org.eclipse.winery.model.tosca.TConstraint;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTag;
+import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -82,16 +50,27 @@ import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemp
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
+import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.converter.Converter;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.header.ContentDisposition;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URI;
+import java.nio.file.attribute.FileTime;
+import java.security.AccessControlException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
@@ -130,7 +109,7 @@ public class RestUtils {
 
     /**
      * Creates a (valid) XML ID (NCName) based on the passed name
-     *
+     * <p>
      * Valid NCNames: http://www.w3.org/TR/REC-xml-names/#NT-NCName / http://www.w3.org/TR/xml/#NT-Name
      * http://www.w3.org/TR/xml/#NT-Name
      */
@@ -140,10 +119,10 @@ public class RestUtils {
 
     /**
      * Creates a (valid) XML ID (NCName) based on the passed name
-     *
+     * <p>
      * Valid NCNames: http://www.w3.org/TR/REC-xml-names/#NT-NCName / http://www.w3.org/TR/xml/#NT-Name
      * http://www.w3.org/TR/xml/#NT-Name
-     *
+     * <p>
      * TODO: this method seems to be equal to {@link Util#makeNCName(java.lang.String)}. The methods should be merged
      * into one.
      */
@@ -183,17 +162,17 @@ public class RestUtils {
             output.close();
         };
         /*
-		 * this code is for offering a download action // Browser offers save as
-		 * // .tosca is more or less needed for debugging, only a CSAR makes
-		 * sense. // Therefore, we want to have the xml opened in the browser.
-		 * StringBuilder sb = new StringBuilder();
-		 * sb.append("attachment;filename=\"");
-		 * sb.append(resource.getXmlId().getEncoded()); sb.append(" - ");
-		 * sb.append(resource.getNamespace().getEncoded()); sb.append(".xml");
-		 * sb.append("\""); return Response.ok().header("Content-Disposition",
-		 * sb
-		 * .toString()).type(MediaType.APPLICATION_XML_TYPE).entity(so).build();
-		 */
+         * this code is for offering a download action // Browser offers save as
+         * // .tosca is more or less needed for debugging, only a CSAR makes
+         * sense. // Therefore, we want to have the xml opened in the browser.
+         * StringBuilder sb = new StringBuilder();
+         * sb.append("attachment;filename=\"");
+         * sb.append(resource.getXmlId().getEncoded()); sb.append(" - ");
+         * sb.append(resource.getNamespace().getEncoded()); sb.append(".xml");
+         * sb.append("\""); return Response.ok().header("Content-Disposition",
+         * sb
+         * .toString()).type(MediaType.APPLICATION_XML_TYPE).entity(so).build();
+         */
         return Response.ok().type(MediaType.APPLICATION_XML).entity(so).build();
     }
 
@@ -212,6 +191,16 @@ public class RestUtils {
         sb.append(org.eclipse.winery.repository.Constants.SUFFIX_CSAR);
         sb.append("\"");
         return Response.ok().header("Content-Disposition", sb.toString()).type(MimeTypes.MIMETYPE_ZIP).entity(so).build();
+    }
+
+    public static Response getYamlOfSelectedResource(DefinitionsChildId id) {
+        final Converter converter = new Converter();
+        try {
+            // MimeTypes.MIMETYPE_YAML not chosen, because firefox always demands download
+            return Response.ok(converter.convertDefinitionsChildToYaml(id)).type(MediaType.TEXT_PLAIN_TYPE).build();
+        } catch (MultiException e) {
+            throw new WebApplicationException(e);
+        }
     }
 
     public static Response getYamlCSARofSelectedResource(final AbstractComponentInstanceResource resource) {
@@ -342,9 +331,9 @@ public class RestUtils {
 
     /**
      * Converts the given object to XML.
-     *
+     * <p>
      * Used in cases the given element is not annotated with @XmlRoot
-     *
+     * <p>
      * We cannot use {@literal Class<? extends TExtensibleElements>} as, for instance, {@link TConstraint} does not
      * inherit from {@link TExtensibleElements}
      *
@@ -631,7 +620,7 @@ public class RestUtils {
 
     /**
      * Generates given TOSCA element and returns appropriate response code <br  />
-     *
+     * <p>
      * In the case of an existing resource, the other possible return code is 302. This code has no Status constant,
      * therefore we use Status.CONFLICT, which is also possible.
      *
@@ -686,9 +675,9 @@ public class RestUtils {
      * Sends the file if modified and "not modified" if not modified future work may put each file with a unique id in a
      * separate folder in tomcat * use that static URL for each file * if file is modified, URL of file changes * ->
      * client always fetches correct file
-     *
+     * <p>
      * additionally "Vary: Accept" header is added (enables caching of the response)
-     *
+     * <p>
      * method header for calling method public <code>Response getXY(@HeaderParam("If-Modified-Since") String modified)
      * {...}</code>
      *
@@ -702,7 +691,7 @@ public class RestUtils {
 
     /**
      * This is not repository specific, but we leave it close to the only caller
-     *
+     * <p>
      * If the passed ref is newer than the modified date (or the modified date is null), an OK response with an
      * inputstream pointing to the path is returned
      */

@@ -1,15 +1,19 @@
 tosca_definitions_version: tosca_simple_yaml_1_1
 
 metadata:
-  description: This test contains a valid service template (Not Complete)
+  description: Valid service template (Not Complete)
   targetNamespace: http://www.example.org/ns/simple/yaml/1.1/test
   tosca.version: 1.1
+  reference: 3.9.1
   exception: None
   assert-typeof: |
       repositories.rp1 = TRepositoryDefinition 
   assert: |
-    metadata.description = This test contains a valid service template (Not Complete)
+    metadata.description = Valid service template (Not Complete)
     metadata.targetNamespace = http://www.example.org/ns/simple/yaml/1.1/test
+    metadata.tosca.version = 1.1
+    metadata.reference = 3.9.1
+    metadata.exception = None
     description = Description of service template
     repositories.rp1.url = http://github.com/kleinech
     repositories.rp2.description = Repository description

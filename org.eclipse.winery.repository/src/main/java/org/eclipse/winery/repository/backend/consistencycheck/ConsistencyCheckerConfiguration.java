@@ -13,10 +13,10 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.backend.consistencycheck;
 
-import java.util.EnumSet;
-
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+
+import java.util.EnumSet;
 
 public class ConsistencyCheckerConfiguration {
 

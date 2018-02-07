@@ -1,31 +1,33 @@
-/**
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+/*******************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Niko Stadelmaier, Tino Stadelmaier - initial API and implementation
- */
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
-import { WineryArtifactService } from './artifact.service';
-import { isNullOrUndefined } from 'util';
-import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { NameAndQNameApiData, NameAndQNameApiDataList } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
-import { InstanceService } from '../../instance.service';
-import { InterfacesApiData } from '../interfaces/interfacesApiData';
-import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
-import { ModalDirective } from 'ngx-bootstrap';
-import { ArtifactApiData } from '../../../wineryInterfaces/wineryComponent';
-import { backendBaseURL, hostURL } from '../../../configuration';
-import { WineryArtifactFilesService } from './artifact.files.service.';
-import { Router } from '@angular/router';
-import { FilesApiData } from '../../artifactTemplates/filesTag/files.service.';
-import { GenerateData } from '../../../wineryComponentExists/wineryComponentExists.component';
-import { ToscaTypes } from '../../../wineryInterfaces/enums';
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
+import {WineryArtifactService} from './artifact.service';
+import {isNullOrUndefined} from 'util';
+import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {NameAndQNameApiData, NameAndQNameApiDataList} from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
+import {InstanceService} from '../../instance.service';
+import {InterfacesApiData} from '../interfaces/interfacesApiData';
+import {GenerateArtifactApiData} from '../interfaces/generateArtifactApiData';
+import {ModalDirective} from 'ngx-bootstrap';
+import {ArtifactApiData} from '../../../wineryInterfaces/wineryComponent';
+import {backendBaseURL, hostURL} from '../../../configuration';
+import {WineryArtifactFilesService} from './artifact.files.service.';
+import {Router} from '@angular/router';
+import {FilesApiData} from '../../artifactTemplates/filesTag/files.service.';
+import {GenerateData} from '../../../wineryComponentExists/wineryComponentExists.component';
+import {ToscaTypes} from '../../../wineryInterfaces/enums';
 
 @Component({
     selector: 'winery-artifact',
@@ -45,8 +47,8 @@ export class WineryArtifactComponent implements OnInit {
     newArtifact: GenerateArtifactApiData = new GenerateArtifactApiData();
     artifact: GenerateData = new GenerateData();
     artifactUrl: string;
-    artifactTypesList: NameAndQNameApiDataList = { 'classes': null };
-    artifactTemplatesList: NameAndQNameApiDataList = { 'classes': null };
+    artifactTypesList: NameAndQNameApiDataList = {'classes': null};
+    artifactTemplatesList: NameAndQNameApiDataList = {'classes': null};
     selectedInterface: InterfacesApiData;
     selectedOperation: string;
     selectedRadioButton = 'createArtifactTemplate';
@@ -59,10 +61,10 @@ export class WineryArtifactComponent implements OnInit {
     isDeploymentArtifact = false;
 
     commonColumns: WineryTableColumn[] = [
-        { title: 'Name', name: 'name' },
-        { title: 'Artifact Template', name: 'artifactRefLocalName' },
-        { title: 'Artifact Type', name: 'artifactTypeLocalName' },
-        { title: 'Specific Content', name: 'anyText' }
+        {title: 'Name', name: 'name'},
+        {title: 'Artifact Template', name: 'artifactRefLocalName'},
+        {title: 'Artifact Type', name: 'artifactTypeLocalName'},
+        {title: 'Specific Content', name: 'anyText'}
     ];
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
@@ -71,8 +73,8 @@ export class WineryArtifactComponent implements OnInit {
     @ViewChild('removeElementModal') removeElementModal: ModalDirective;
 
     private implementationArtifactColumns = [
-        { title: 'Interface Name', name: 'interfaceName' },
-        { title: 'Operation Name', name: 'operationName' }
+        {title: 'Interface Name', name: 'interfaceName'},
+        {title: 'Operation Name', name: 'operationName'}
     ];
 
     constructor(private service: WineryArtifactService,

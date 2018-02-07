@@ -1,15 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *    Oliver Kopp - initial API and implementation and/or initial documentation
- *    Yves Schubert - switch to bootstrap 3
- *    Karoline Saatkamp - add split functionality
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
 /**
@@ -19,14 +19,14 @@
  * @returns {{namespace: string, localName: string}}
  */
 function getQName(qnameStr) {
-	var pos = qnameStr.indexOf("}");
-	var namespace = qnameStr.substring(1, pos);
-	var localName = qnameStr.substring(pos+1);
-	var res = {
-			"namespace": namespace,
-			"localName": localName
-	};
-	return res;
+    var pos = qnameStr.indexOf("}");
+    var namespace = qnameStr.substring(1, pos);
+    var localName = qnameStr.substring(pos + 1);
+    var res = {
+        "namespace": namespace,
+        "localName": localName
+    };
+    return res;
 }
 
 /**
@@ -35,16 +35,16 @@ function getQName(qnameStr) {
  * @return { ns: namespace, id: id }
  */
 function getNSAndId(attributeName, xmlElement) {
-	var attributeValue = xmlElement.getAttribute(attributeName);
-	var i = attributeValue.indexOf(":");
-	var prefix = attributeValue.substring(0, i);
-	var localName = attributeValue.substring(i+1);
-	var ns = xmlElement.lookupNamespaceURI(prefix);
-	var res = {
-		ns : ns,
-		id: localName
-	};
-	return res;
+    var attributeValue = xmlElement.getAttribute(attributeName);
+    var i = attributeValue.indexOf(":");
+    var prefix = attributeValue.substring(0, i);
+    var localName = attributeValue.substring(i + 1);
+    var ns = xmlElement.lookupNamespaceURI(prefix);
+    var res = {
+        ns: ns,
+        id: localName
+    };
+    return res;
 }
 
 /**
@@ -54,9 +54,9 @@ function getNSAndId(attributeName, xmlElement) {
  * @param xmlElement used to resolve a namespace prefix to a full namespace URI
  */
 function addHref(el, pathComponent, attributeName, xmlElement) {
-	var nsAndId = getNSAndId(attributeName, xmlElement);
-	var loc = winery.uiURL + "/" + pathComponent + "/" + encodeID(nsAndId.ns) + "/" + encodeID(nsAndId.id);
-	el.attr("href", loc);
+    var nsAndId = getNSAndId(attributeName, xmlElement);
+    var loc = winery.uiURL + "/" + pathComponent + "/" + encodeID(nsAndId.ns) + "/" + encodeID(nsAndId.id);
+    el.attr("href", loc);
 }
 
 var currentlySelectedDeploymentArtifactDiv;
@@ -65,38 +65,38 @@ var currentlySelectedDeploymentArtifactDiv;
  * Sets global variables currentlySelectedNodeTemplate and currentlySelectedDeploymentArtifactDiv
  */
 function showDeploymentArtifactInformation(nodeTemplateId, deploymentArtifactName) {
-	currentlySelectedNodeTemplate = nodeTemplateId;
-	var daDiv = $("#" + nodeTemplateId).children("div.deploymentArtifactsContainer").children("div.content").children("div.deploymentArtifact").children("div.name:contains(" + deploymentArtifactName + ")").parent();
-	currentlySelectedDeploymentArtifactDiv = daDiv;
-	var xml = daDiv.children("textarea").val();
+    currentlySelectedNodeTemplate = nodeTemplateId;
+    var daDiv = $("#" + nodeTemplateId).children("div.deploymentArtifactsContainer").children("div.content").children("div.deploymentArtifact").children("div.name:contains(" + deploymentArtifactName + ")").parent();
+    currentlySelectedDeploymentArtifactDiv = daDiv;
+    var xml = daDiv.children("textarea").val();
 
-	// get values to display directly from the "UI" instead of parsing the XML and asking the server for appropriate names
-	var daArtifactTemplateName = daDiv.children("div.artifactTemplate").text();
-	var daArtifactTypeName = daDiv.children("div.artifactType").text();
+    // get values to display directly from the "UI" instead of parsing the XML and asking the server for appropriate names
+    var daArtifactTemplateName = daDiv.children("div.artifactTemplate").text();
+    var daArtifactTypeName = daDiv.children("div.artifactType").text();
 
-	// determine URLs
-	require(["winery-support-common"], function(wsc) {
-		xmlDoc = wsc.getDocument(xml);
-		da = xmlDoc.firstChild;
+    // determine URLs
+    require(["winery-support-common"], function (wsc) {
+        xmlDoc = wsc.getDocument(xml);
+        da = xmlDoc.firstChild;
 
-		$("#DAname").text(deploymentArtifactName);
+        $("#DAname").text(deploymentArtifactName);
 
-		$("#DAArtifactType").text(daArtifactTypeName);
-		addHref($("#DAArtifactType"), "artifacttypes", "artifactType", da);
+        $("#DAArtifactType").text(daArtifactTypeName);
+        addHref($("#DAArtifactType"), "artifacttypes", "artifactType", da);
 
-		var at = $("#DAArtifactTemplate");
-		if (daArtifactTemplateName != "") {
-			at.text(daArtifactTemplateName);
-			addHref(at, "artifacttemplates", "artifactRef", da);
-		} else {
-			at.text("No template associated");
-			at.removeAttr("href");
-		}
+        var at = $("#DAArtifactTemplate");
+        if (daArtifactTemplateName != "") {
+            at.text(daArtifactTemplateName);
+            addHref(at, "artifacttemplates", "artifactRef", da);
+        } else {
+            at.text("No template associated");
+            at.removeAttr("href");
+        }
 
-		$("#DAXML").val(xml);
+        $("#DAXML").val(xml);
 
-		$("#DeploymentArtifactInfo").modal("show");
-	});
+        $("#DeploymentArtifactInfo").modal("show");
+    });
 }
 
 /**
@@ -106,33 +106,33 @@ function showDeploymentArtifactInformation(nodeTemplateId, deploymentArtifactNam
  * @param xmlAsString
  */
 function addDeploymentArtifact(xmlAsDOM, xmlAsString) {
-	var da = xmlAsDOM.firstChild;
-	var daName = da.getAttribute("name");
+    var da = xmlAsDOM.firstChild;
+    var daName = da.getAttribute("name");
 
-	// we do NOT extract artifactType / artifactTemplate from the XML, but use the user input
-	// showDeploymentArtifactInformation will extract its data directly from the XML without querying some input at the other HTML elements
-	var daArtifactTemplateName = $("#artifactTemplateName").val();
-	var daArtifactTypeName = $("#artifactType option:selected").text();
+    // we do NOT extract artifactType / artifactTemplate from the XML, but use the user input
+    // showDeploymentArtifactInformation will extract its data directly from the XML without querying some input at the other HTML elements
+    var daArtifactTemplateName = $("#artifactTemplateName").val();
+    var daArtifactTypeName = $("#artifactType option:selected").text();
 
-	// add information to node template shape
-	var daData = {
-		nodeTemplateId : currentlySelectedNodeTemplate,
-		name : daName,
-		xml : xmlAsString,
-		artifactTypeName: daArtifactTypeName
-	};
-	if (daArtifactTemplateName != "") {
-		daData.artifactTemplateName = daArtifactTemplateName;
-	}
-	addDeploymentArtifactInfoToNodeTemplate(daData);
+    // add information to node template shape
+    var daData = {
+        nodeTemplateId: currentlySelectedNodeTemplate,
+        name: daName,
+        xml: xmlAsString,
+        artifactTypeName: daArtifactTypeName
+    };
+    if (daArtifactTemplateName != "") {
+        daData.artifactTemplateName = daArtifactTemplateName;
+    }
+    addDeploymentArtifactInfoToNodeTemplate(daData);
 }
 
 function addDeploymentArtifactInfoToNodeTemplate(daData) {
-	require(["tmpl"], function(tmpl){
-		var data = tmpl("tmpl-deploymentArtifact", daData);
-		var element = $("#" + currentlySelectedNodeTemplate).children(".deploymentArtifactsContainer").children(".content").children(".addDA:first");
-		element.before(data);
-	});
+    require(["tmpl"], function (tmpl) {
+        var data = tmpl("tmpl-deploymentArtifact", daData);
+        var element = $("#" + currentlySelectedNodeTemplate).children(".deploymentArtifactsContainer").children(".content").children(".addDA:first");
+        element.before(data);
+    });
 }
 
 /**
@@ -141,26 +141,26 @@ function addDeploymentArtifactInfoToNodeTemplate(daData) {
  * @param artifactInfo = {name, interfaceName (may be undefined), operationName  (may be undefined), artifactTemplate (QName, may be undefined), artifactType}
  */
 function artifactAddedSuccessfully(artifactInfo) {
-	var typeNsAndId = getNamespaceAndLocalNameFromQName(artifactInfo.artifactType);
-	var artifactTemplateNSAndId;
-	if (artifactInfo.artifactTemplate) {
-		artifactTemplateNSAndId = getNamespaceAndLocalNameFromQName(artifactInfo.artifactTemplate);
-	} else {
-		artifactTemplateNSAndId = undefined;
-	}
+    var typeNsAndId = getNamespaceAndLocalNameFromQName(artifactInfo.artifactType);
+    var artifactTemplateNSAndId;
+    if (artifactInfo.artifactTemplate) {
+        artifactTemplateNSAndId = getNamespaceAndLocalNameFromQName(artifactInfo.artifactTemplate);
+    } else {
+        artifactTemplateNSAndId = undefined;
+    }
 
-	var daData = {
-		nodeTemplateId : currentlySelectedNodeTemplate,
-		name : artifactInfo.name,
-		artifactTypeName: typeNsAndId.localname,
-		artifactTypeNSAndId: typeNsAndId,
-		artifactTemplateName: artifactInfo.artifactTemplateName,
-		artifactTemplateNSAndId: artifactTemplateNSAndId
-	};
-	require(["tmpl"], function(tmpl){
-		daData.xml = tmpl("tmpl-deploymentArtifactXML", daData);
-		addDeploymentArtifactInfoToNodeTemplate(daData);
-	});
+    var daData = {
+        nodeTemplateId: currentlySelectedNodeTemplate,
+        name: artifactInfo.name,
+        artifactTypeName: typeNsAndId.localname,
+        artifactTypeNSAndId: typeNsAndId,
+        artifactTemplateName: artifactInfo.artifactTemplateName,
+        artifactTemplateNSAndId: artifactTemplateNSAndId
+    };
+    require(["tmpl"], function (tmpl) {
+        daData.xml = tmpl("tmpl-deploymentArtifactXML", daData);
+        addDeploymentArtifactInfoToNodeTemplate(daData);
+    });
 }
 
 // variables used for creation of deployment artifacts
@@ -178,50 +178,50 @@ var currentlySelectedNodeTemplate;
  *
  */
 function updateArtifactTemplateCreationEnablement(value) {
-	// remove field highlights
-	// (currently, no intelligent removal and addition is made)
-	$("#artifactName").removeClass("highlight");
-	$("#artifactTemplateName").removeClass("highlight");
+    // remove field highlights
+    // (currently, no intelligent removal and addition is made)
+    $("#artifactName").removeClass("highlight");
+    $("#artifactTemplateName").removeClass("highlight");
 
-	if (value) {
-		// enable it
-		artifactTemplateAutoCreationEnabled = true;
-		$("#artifactTemplateName").removeAttr("disabled");
-		$("#artifactTemplateNS").removeAttr("disabled");
-		$("#createWithoutFilesBtn").attr("disabled", "disabled");
-		$("#createWithFilesBtn").removeAttr("disabled");
-	} else {
-		// disable it
-		artifactTemplateAutoCreationEnabled = false;
-		$("#artifactTemplateName").attr("disabled", "disabled");
-		$("#artifactTemplateNS").attr("disabled", "disabled");
-		$("#createWithoutFilesBtn").removeAttr("disabled");
-		$("#createWithFilesBtn").attr("disabled", "disabled");
-	}
+    if (value) {
+        // enable it
+        artifactTemplateAutoCreationEnabled = true;
+        $("#artifactTemplateName").removeAttr("disabled");
+        $("#artifactTemplateNS").removeAttr("disabled");
+        $("#createWithoutFilesBtn").attr("disabled", "disabled");
+        $("#createWithFilesBtn").removeAttr("disabled");
+    } else {
+        // disable it
+        artifactTemplateAutoCreationEnabled = false;
+        $("#artifactTemplateName").attr("disabled", "disabled");
+        $("#artifactTemplateNS").attr("disabled", "disabled");
+        $("#createWithoutFilesBtn").removeAttr("disabled");
+        $("#createWithFilesBtn").attr("disabled", "disabled");
+    }
 }
 
 function isShownNodeTemplateShapeChangeBoxes(shape) {
-	return (shape.find(".endpointContainer").is(":visible"));
+    return (shape.find(".endpointContainer").is(":visible"));
 }
 
 /**
  * @param shape jQuery object
  */
 function showNodeTemplateShapeChangeBoxes(shape) {
-	shape.find(".addDA").show();
-	shape.children(".endpointContainer").show();
-	shape.find(".addnewreqorcap").show();
-	shape.find(".addnewpolicy").show();
+    shape.find(".addDA").show();
+    shape.children(".endpointContainer").show();
+    shape.find(".addnewreqorcap").show();
+    shape.find(".addnewpolicy").show();
 }
 
 /**
  * @param shape jQuery object
  */
 function hideNodeTemplateShapeChangeBoxes(shape) {
-	shape.find(".addDA").hide();
-	shape.children(".endpointContainer").hide();
-	shape.find(".addnewreqorcap").hide();
-	shape.find(".addnewpolicy").hide();
+    shape.find(".addDA").hide();
+    shape.children(".endpointContainer").hide();
+    shape.find(".addnewreqorcap").hide();
+    shape.find(".addnewpolicy").hide();
 }
 
 // indicates if a connection is currently drawn
@@ -229,16 +229,16 @@ function hideNodeTemplateShapeChangeBoxes(shape) {
 var isInConnectionMode = false;
 
 function wineryMoveSelectedNodeTemplateShapes(dX, dY) {
-	var shapes = $("div.NodeTemplateShape.selected");
-	hideNodeTemplateShapeChangeBoxes(shapes);
-	shapes.each(function(i, nodeTemplate) {
-		nodeTemplate = $(nodeTemplate);
-		var offset = nodeTemplate.offset();
-		offset.left += dX;
-		offset.top += dY;
-		nodeTemplate.offset(offset);
-	});
-	jsPlumb.repaint(shapes);
+    var shapes = $("div.NodeTemplateShape.selected");
+    hideNodeTemplateShapeChangeBoxes(shapes);
+    shapes.each(function (i, nodeTemplate) {
+        nodeTemplate = $(nodeTemplate);
+        var offset = nodeTemplate.offset();
+        offset.left += dX;
+        offset.top += dY;
+        nodeTemplate.offset(offset);
+    });
+    jsPlumb.repaint(shapes);
 }
 
 
@@ -253,32 +253,32 @@ function wineryMoveSelectedNodeTemplateShapes(dX, dY) {
 
 winery = {};
 winery.events = {
-	_events : {},
+    _events: {},
 
-	/**
-	 * Registers a function
-	 *
-	 * @return the registered function
-	 */
-	register : function(eventName, f) {
-		if (!winery.events._events[eventName]) {
-			winery.events._events[eventName] = {};
-		}
-		winery.events._events[eventName][f] = f;
-		return f;
-	},
+    /**
+     * Registers a function
+     *
+     * @return the registered function
+     */
+    register: function (eventName, f) {
+        if (!winery.events._events[eventName]) {
+            winery.events._events[eventName] = {};
+        }
+        winery.events._events[eventName][f] = f;
+        return f;
+    },
 
-	/**
-	 * Fires all functions associated with the given event name
-	 */
-	fire : function(eventName) {
-		if (winery.events._events[eventName]) {
-			$.each(winery.events._events[eventName], function(index, value) {
-				value();
-			});
-		}
-		return true;
-	}
+    /**
+     * Fires all functions associated with the given event name
+     */
+    fire: function (eventName) {
+        if (winery.events._events[eventName]) {
+            $.each(winery.events._events[eventName], function (index, value) {
+                value();
+            });
+        }
+        return true;
+    }
 };
 
 /**
@@ -287,14 +287,12 @@ winery.events = {
  * For instance, when a modal dialog is opened or a input is selected, DEL should not delete node template shapes
  */
 function keyComboAllowed() {
-	return ((!$(document.activeElement).is("input")) && ($("div.modal:visible").size() == 0));
+    return ((!$(document.activeElement).is("input")) && ($("div.modal:visible").size() == 0));
 }
 
 function keyComboAllowedAndNodeTemplatesSelected() {
-	return (keyComboAllowed() && ($("div.NodeTemplateShape.selected").size() != 0));
+    return (keyComboAllowed() && ($("div.NodeTemplateShape.selected").size() != 0));
 }
-
-
 
 
 /* list of event names */

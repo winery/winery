@@ -9,7 +9,7 @@
 package org.eclipse.winery.repository.patterndetection.keywords;
 
 public enum Server {
-	Apache,
-	Tomcat,
-	JBoss
+    Apache,
+    Tomcat,
+    JBoss
 }

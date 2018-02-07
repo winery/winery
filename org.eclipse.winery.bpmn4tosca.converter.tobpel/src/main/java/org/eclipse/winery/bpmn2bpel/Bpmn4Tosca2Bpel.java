@@ -1,15 +1,25 @@
 /*******************************************************************************
- * Copyright (c) 2015-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2015-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Sebastian Wagner - initial API and implementation
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel;
+
+import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
+import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
+import org.eclipse.winery.bpmn2bpel.parser.ParseException;
+import org.eclipse.winery.bpmn2bpel.planwriter.BpelPlanArtefactWriter;
+import org.eclipse.winery.bpmn2bpel.planwriter.PlanWriterException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,15 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
-import org.eclipse.winery.bpmn2bpel.parser.Bpmn4JsonParser;
-import org.eclipse.winery.bpmn2bpel.parser.ParseException;
-import org.eclipse.winery.bpmn2bpel.planwriter.BpelPlanArtefactWriter;
-import org.eclipse.winery.bpmn2bpel.planwriter.PlanWriterException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Bpmn4Tosca2Bpel {
 
@@ -47,7 +48,7 @@ public class Bpmn4Tosca2Bpel {
 	 * Transforms the given BPMN4Tosca Json management into a BPEL management plan that can be enacted with the OpenTosca runtime.
 	 * <p>
 	 * The created zip file contains the following files
-	 *
+	 * <p>
 	 * - bpel plan
 	 * - plan wsdl
 	 * - sevice invoker wsdl
@@ -55,10 +56,8 @@ public class Bpmn4Tosca2Bpel {
 	 * - deployment descriptor
 	 * generated BPEL plan, the corresponding WSDL files and a deployment descriptor.
 	 *
-	 *
 	 * @param srcBpmn4ToscaJsonFile
 	 * @param targetBPELArchive
-	 *
 	 * @throws ParseException
 	 * @throws PlanWriterException
 	 */

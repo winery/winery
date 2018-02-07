@@ -13,62 +13,60 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import java.util.LinkedHashMap;
-
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.xml.namespace.QName;
+import java.util.LinkedHashMap;
+
 public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRepository {
 
-	@Test
-	public void initializePropertiesGeneratesCorrectKvProperties() throws Exception {
-		this.setRevisionTo("origin/plain");
-		
-		PolicyTemplateId policyTemplateId = new PolicyTemplateId("http://www.example.org", "policytemplate", false);
+    @Test
+    public void initializePropertiesGeneratesCorrectKvProperties() throws Exception {
+        this.setRevisionTo("origin/plain");
 
-		// create prepared policy template
-		final IRepository repository = RepositoryFactory.getRepository();
-		final Definitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repository, policyTemplateId);
-		final TPolicyTemplate policyTemplate = (TPolicyTemplate) definitions.getElement();
-		QName policyTypeQName = new QName("http://plain.winery.opentosca.org/policytypes", "PolicyTypeWithTwoKvProperties");
-		policyTemplate.setType(policyTypeQName);
+        PolicyTemplateId policyTemplateId = new PolicyTemplateId("http://www.example.org", "policytemplate", false);
 
-		BackendUtils.initializeProperties(repository, policyTemplate);
+        // create prepared policy template
+        final IRepository repository = RepositoryFactory.getRepository();
+        final Definitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repository, policyTemplateId);
+        final TPolicyTemplate policyTemplate = (TPolicyTemplate) definitions.getElement();
+        QName policyTypeQName = new QName("http://plain.winery.opentosca.org/policytypes", "PolicyTypeWithTwoKvProperties");
+        policyTemplate.setType(policyTypeQName);
 
-		Assert.assertNotNull(policyTemplate.getProperties());
+        BackendUtils.initializeProperties(repository, policyTemplate);
 
-		LinkedHashMap<String,String> kvProperties = policyTemplate.getProperties().getKVProperties();
-		LinkedHashMap<String,String> expectedPropertyKVS = new LinkedHashMap<>();
-		expectedPropertyKVS.put("key1", "");
-		expectedPropertyKVS.put("key2", "");
-		Assert.assertEquals(expectedPropertyKVS, kvProperties);
-	}
+        Assert.assertNotNull(policyTemplate.getProperties());
+
+        LinkedHashMap<String, String> kvProperties = policyTemplate.getProperties().getKVProperties();
+        LinkedHashMap<String, String> expectedPropertyKVS = new LinkedHashMap<>();
+        expectedPropertyKVS.put("key1", "");
+        expectedPropertyKVS.put("key2", "");
+        Assert.assertEquals(expectedPropertyKVS, kvProperties);
+    }
 
 
-	@Test
-	public void initializePropertiesDoesNothingInTheCaseOfXmlElemenetPropperties() throws Exception {
-		this.setRevisionTo("origin/plain");
-		
-		PolicyTemplateId policyTemplateId = new PolicyTemplateId("http://www.example.org", "policytemplate", false);
+    @Test
+    public void initializePropertiesDoesNothingInTheCaseOfXmlElemenetPropperties() throws Exception {
+        this.setRevisionTo("origin/plain");
 
-		// create prepared policy template
-		final IRepository repository = RepositoryFactory.getRepository();
-		final Definitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repository, policyTemplateId);
-		final TPolicyTemplate policyTemplate = (TPolicyTemplate) definitions.getElement();
-		QName policyTypeQName = new QName("http://plain.winery.opentosca.org/policytypes", "PolicyTypeWithXmlElementProperty");
-		policyTemplate.setType(policyTypeQName);
+        PolicyTemplateId policyTemplateId = new PolicyTemplateId("http://www.example.org", "policytemplate", false);
 
-		BackendUtils.initializeProperties(repository, policyTemplate);
+        // create prepared policy template
+        final IRepository repository = RepositoryFactory.getRepository();
+        final Definitions definitions = BackendUtils.createWrapperDefinitionsAndInitialEmptyElement(repository, policyTemplateId);
+        final TPolicyTemplate policyTemplate = (TPolicyTemplate) definitions.getElement();
+        QName policyTypeQName = new QName("http://plain.winery.opentosca.org/policytypes", "PolicyTypeWithXmlElementProperty");
+        policyTemplate.setType(policyTypeQName);
 
-		Assert.assertNull(policyTemplate.getProperties());
-	}
+        BackendUtils.initializeProperties(repository, policyTemplate);
+
+        Assert.assertNull(policyTemplate.getProperties());
+    }
 
 
 }

@@ -13,18 +13,17 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.support;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-
 import org.eclipse.winery.model.tosca.yaml.TPropertyAssignment;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.writer.xml.support.AnonymousPropertiesList;
 import org.eclipse.winery.yaml.common.writer.xml.support.PropertiesList;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AssignmentBuilder {
     private TypeConverter typeConverter;
@@ -81,7 +80,7 @@ public class AssignmentBuilder {
             }
             // Add complex (data_types) as AnonymousPropertyLists
             else if (entry.getValue() instanceof Map) {
-                @SuppressWarnings({"unchecked"})
+                @SuppressWarnings( {"unchecked"})
                 Map<String, Object> tmp = (Map<String, Object>) entry.getValue();
                 List<JAXBElement> elements = convertAssignment(tmp, this.propertyAssignmentBuildPlan.get(assignmentType));
                 AnonymousPropertiesList list = new AnonymousPropertiesList().setEntries(elements);

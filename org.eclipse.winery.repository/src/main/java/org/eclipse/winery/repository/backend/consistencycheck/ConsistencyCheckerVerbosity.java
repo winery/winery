@@ -14,8 +14,8 @@
 package org.eclipse.winery.repository.backend.consistencycheck;
 
 public enum ConsistencyCheckerVerbosity {
-	OUTPUT_NUMBER_OF_TOSCA_COMPONENTS,
-	OUTPUT_CURRENT_TOSCA_COMPONENT_ID,
-	OUTPUT_ERRORS,
-	NONE
+    OUTPUT_NUMBER_OF_TOSCA_COMPONENTS,
+    OUTPUT_CURRENT_TOSCA_COMPONENT_ID,
+    OUTPUT_ERRORS,
+    NONE
 }

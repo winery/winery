@@ -1,68 +1,44 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *     Oliver Kopp - initial API, implementation, maintenance
- *     Pascal Hirmer - support for instantiation of node templates and relationship templates
- *     Karoline Saatkamp - support for target location labels
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.utils;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
-import org.eclipse.winery.model.tosca.TCapability;
-import org.eclipse.winery.model.tosca.TCapabilityDefinition;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.TNodeTemplate.Capabilities;
 import org.eclipse.winery.model.tosca.TNodeTemplate.Requirements;
-import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate.SourceOrTargetElement;
-import org.eclipse.winery.model.tosca.TRelationshipType;
-import org.eclipse.winery.model.tosca.TRequirement;
-import org.eclipse.winery.model.tosca.TRequirementDefinition;
-import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.constants.QNames;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
 import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
-
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ModelUtilities {
 
@@ -81,7 +57,7 @@ public class ModelUtilities {
     /**
      * This is a special method for Winery. Winery allows to define a property by specifying name/value values. Instead
      * of parsing the XML contained in TNodeType, this method is a convenience method to access this information
-     *
+     * <p>
      * The return type "Properties" is used because of the key/value properties.
      *
      * @param template the node template to get the associated properties
@@ -97,7 +73,7 @@ public class ModelUtilities {
     /**
      * Generates a XSD when Winery's K/V properties are used. This method is put here instead of
      * WinerysPropertiesDefinitionResource to avoid generating the subresource
-     *
+     * <p>
      * public because of the usage by TOSCAEXportUtil
      *
      * @return empty Document, if Winery's Properties Definition is not fully filled (e.g., no wrapping element defined)
@@ -105,10 +81,10 @@ public class ModelUtilities {
     public static Document getWinerysPropertiesDefinitionXsdAsDocument(WinerysPropertiesDefinition wpd) {
         /*
          * This is a quick hack: an XML schema container is created for each
-		 * element. Smarter solution: create a hash from namespace to XML schema
-		 * element and re-use that for each new element
-		* Drawback of "smarter" solution: not a single XSD file any more
-		 */
+         * element. Smarter solution: create a hash from namespace to XML schema
+         * element and re-use that for each new element
+         * Drawback of "smarter" solution: not a single XSD file any more
+         */
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder;
         try {
@@ -224,7 +200,7 @@ public class ModelUtilities {
     /**
      * Special method to get the name of an extensible element as the TOSCA specification does not have a separate super
      * type for elements with a name
-     *
+     * <p>
      * {@link Util#instanceSupportsNameAttribute(java.lang.Class)} is related
      *
      * @param e the extensible element offering a name attribute (besides an id attribute)
@@ -245,7 +221,7 @@ public class ModelUtilities {
 
     /**
      * Returns the name of the given element. If the name does not exist or is empty, the id is returned
-     *
+     * <p>
      * {@see getName}
      *
      * @return the name if there is a name field, if not, the id is returned. In case there is a Name field,
@@ -368,10 +344,10 @@ public class ModelUtilities {
 
     /**
      * Returns the id of the given element
-     *
+     * <p>
      * The TOSCA specification does NOT always put an id field. In the case of EntityTypes and
      * EntityTypeImplementations, there is no id, but a name field
-     *
+     * <p>
      * This method abstracts from that fact.
      */
     public static String getId(TExtensibleElements ci) {

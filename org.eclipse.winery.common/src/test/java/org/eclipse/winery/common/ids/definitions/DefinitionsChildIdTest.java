@@ -24,7 +24,7 @@ public class DefinitionsChildIdTest {
         String otherStId = "myOtherDefinition";
         DefinitionsChildId serviceTemplate = new ServiceTemplateId("http://example.org/tosca/serviceTemplates", stId, false);
         DefinitionsChildId otherServiceTemplate = new ServiceTemplateId("http://example.org/tosca/serviceTemplates", otherStId, false);
-        
+
         Assert.assertEquals(stId.compareTo(otherStId), serviceTemplate.compareTo(otherServiceTemplate));
     }
 
@@ -37,7 +37,7 @@ public class DefinitionsChildIdTest {
 
         Assert.assertEquals(stNamespace.compareTo(otherNamespace), serviceTemplate.compareTo(otherServiceTemplate));
     }
-    
+
     @Test
     public void testCompareToDifferentSubClass() {
         DefinitionsChildId serviceTemplate = new ServiceTemplateId("http://example.org/tosca/serviceTemplates", "myDefinition", false);
@@ -45,12 +45,12 @@ public class DefinitionsChildIdTest {
 
         Assert.assertEquals("ServiceTemplate".compareTo("NodeType"), serviceTemplate.compareTo(nodeType));
     }
-    
+
     @Test
     public void testCompareToEqualDefinitionsChildId() {
         DefinitionsChildId policyTemplate = new PolicyTemplateId("http://example.org/tosca/policyTemplates", "myPolicyTemplate", false);
         DefinitionsChildId secondPolicyTemplate = new PolicyTemplateId("http://example.org/tosca/policyTemplates", "myPolicyTemplate", false);
-        
+
         Assert.assertEquals(0, policyTemplate.compareTo(secondPolicyTemplate));
     }
 }

@@ -1,20 +1,25 @@
-/**
- * Copyright (c) 2017 University of Stuttgart.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
- */
-import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
-import { Router } from '@angular/router';
-import { backendBaseURL } from '../../../configuration';
-import { Observable } from 'rxjs';
-import { GenerateArtifactApiData } from '../interfaces/generateArtifactApiData';
-import { InterfacesApiData } from '../interfaces/interfacesApiData';
-import { NameAndQNameApiData } from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
-import { ArtifactApiData } from '../../../wineryInterfaces/wineryComponent';
+/*******************************************************************************
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ *******************************************************************************/
+import {Injectable} from '@angular/core';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {Router} from '@angular/router';
+import {backendBaseURL} from '../../../configuration';
+import {Observable} from 'rxjs';
+import {GenerateArtifactApiData} from '../interfaces/generateArtifactApiData';
+import {InterfacesApiData} from '../interfaces/interfacesApiData';
+import {NameAndQNameApiData} from '../../../wineryQNameSelector/wineryNameAndQNameApiData';
+import {ArtifactApiData} from '../../../wineryInterfaces/wineryComponent';
 
 @Injectable()
 export class WineryArtifactService {
@@ -33,15 +38,15 @@ export class WineryArtifactService {
      * @returns {Observable<Response>}
      */
     deleteArtifact(artifactName: string): Observable<Response> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.delete(backendBaseURL + this.route.url + '/' + artifactName + '/', options);
     }
 
     createNewArtifact(artifact: GenerateArtifactApiData): Observable<Response> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Content-Type': 'application/json'});
+        const options = new RequestOptions({headers: headers});
 
         return this.http.post(backendBaseURL + this.route.url + '/', artifact, options);
 
@@ -67,8 +72,8 @@ export class WineryArtifactService {
      * @returns {Observable<any>}
      */
     private sendJsonRequest(requestPath: string = ''): Observable<any> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseURL + requestPath, options)
             .map(res => res.json());
     }

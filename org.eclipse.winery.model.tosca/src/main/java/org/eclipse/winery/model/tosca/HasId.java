@@ -1,26 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2017 University of Stuttgart
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *    Oliver Kopp - initial code contribution
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.model.tosca;
 
-import java.util.Objects;
+import io.github.adr.embedded.ADR;
+import org.eclipse.jdt.annotation.NonNull;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import io.github.adr.embedded.ADR;
-import org.eclipse.jdt.annotation.NonNull;
+import java.util.Objects;
 
 public abstract class HasId extends TExtensibleElements implements HasIdInIdOrNameField {
 

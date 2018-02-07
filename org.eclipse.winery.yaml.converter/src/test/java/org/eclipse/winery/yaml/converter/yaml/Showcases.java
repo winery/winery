@@ -13,14 +13,6 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
@@ -31,10 +23,17 @@ import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.common.writer.WriterUtils;
 import org.eclipse.winery.yaml.converter.Converter;
 import org.eclipse.winery.yaml.converter.yaml.support.AbstractTestY2X;
-
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class Showcases extends AbstractTestY2X {
 

@@ -1,38 +1,34 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 University of Stuttgart
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * and the Apache License 2.0 which both accompany this distribution,
- * and are available at http://www.eclipse.org/legal/epl-v20.html
- * and http://www.apache.org/licenses/LICENSE-2.0
+ * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
  *
- * Contributors:
- *    Oliver Kopp - initial code generation using vhudson-jaxb-ri-2.1-2
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
 package org.eclipse.winery.model.tosca;
 
+import org.eclipse.jdt.annotation.NonNull;
+
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.jdt.annotation.NonNull;
-
 
 /**
  * <p>Java class for tOperation complex type.
- *
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>
  * <pre>
  * &lt;complexType name="tOperation">
  *   &lt;complexContent>
@@ -72,8 +68,8 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tOperation", propOrder = {
-        "inputParameters",
-        "outputParameters"
+    "inputParameters",
+    "outputParameters"
 })
 public class TOperation extends TExtensibleElements {
     @XmlElement(name = "InputParameters")
@@ -102,8 +98,8 @@ public class TOperation extends TExtensibleElements {
         if (!super.equals(o)) return false;
         TOperation that = (TOperation) o;
         return Objects.equals(inputParameters, that.inputParameters) &&
-                Objects.equals(outputParameters, that.outputParameters) &&
-                Objects.equals(name, that.name);
+            Objects.equals(outputParameters, that.outputParameters) &&
+            Objects.equals(name, that.name);
     }
 
     @Override
@@ -170,9 +166,9 @@ public class TOperation extends TExtensibleElements {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -188,7 +184,7 @@ public class TOperation extends TExtensibleElements {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "inputParameter"
+        "inputParameter"
     })
     public static class InputParameters {
 
@@ -197,20 +193,20 @@ public class TOperation extends TExtensibleElements {
 
         /**
          * Gets the value of the inputParameter property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the inputParameter property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getInputParameter().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TParameter }
@@ -226,9 +222,9 @@ public class TOperation extends TExtensibleElements {
 
     /**
      * <p>Java class for anonymous complex type.
-     *
+     * <p>
      * <p>The following schema fragment specifies the expected content contained within this class.
-     *
+     * <p>
      * <pre>
      * &lt;complexType>
      *   &lt;complexContent>
@@ -244,7 +240,7 @@ public class TOperation extends TExtensibleElements {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
-            "outputParameter"
+        "outputParameter"
     })
     public static class OutputParameters {
 
@@ -253,20 +249,20 @@ public class TOperation extends TExtensibleElements {
 
         /**
          * Gets the value of the outputParameter property.
-         *
+         * <p>
          * <p>
          * This accessor method returns a reference to the live list,
          * not a snapshot. Therefore any modification you make to the
          * returned list will be present inside the JAXB object.
          * This is why there is not a <CODE>set</CODE> method for the outputParameter property.
-         *
+         * <p>
          * <p>
          * For example, to add a new item, do as follows:
          * <pre>
          *    getOutputParameter().add(newItem);
          * </pre>
-         *
-         *
+         * <p>
+         * <p>
          * <p>
          * Objects of the following type(s) are allowed in the list
          * {@link TParameter }
