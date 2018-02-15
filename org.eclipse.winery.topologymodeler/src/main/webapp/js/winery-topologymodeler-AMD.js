@@ -24,21 +24,26 @@ define(
         var TOSCA_WINERY_EXTENSIONS_NAMESPACE = "http://www.opentosca.org/winery/extensions/tosca/2013/02/12";
 
         var topologyTemplateURL;
-        var patternId;
+        var doubleEncodedTopologyTemplateURL;
+		var patternId;
 
-        return {
-            openChooseTopologyToImportDiag: openChooseTopologyToImportDiag,
-            importTopology: importTopology,
-            save: save,
-            split: split,
-            detectPattern: detectPattern,
-            visualizePatterns: visualizePatterns,
-            match: match,
-            setTopologyTemplateURL: function (url) {
-                topologyTemplateURL = url;
-            },
-            highlightPattern: highlightPattern,
-            getTopologyTemplateAsXML: getTopologyTemplateAsXML,
+		return {
+			openChooseTopologyToImportDiag: openChooseTopologyToImportDiag,
+			importTopology: importTopology,
+			save: save,
+			split: split,
+            resolve: resolve,
+			patternSelection: patternSelection,detectPattern: detectPattern,
+			visualizePatterns: visualizePatterns,
+			match: match,
+			setTopologyTemplateURL: function (url) {
+				topologyTemplateURL = url;
+			},
+            setDoubleEncodedTopologyTemplateURL: function (url) {
+                doubleEncodedTopologyTemplateURL =url;
+			},
+			highlightPattern: highlightPattern,
+			getTopologyTemplateAsXML: getTopologyTemplateAsXML,
 
             TOSCA_NAMESPACE: TOSCA_NAMESPACE,
             TOSCA_WINERY_EXTENSIONS_NAMESPACE: TOSCA_WINERY_EXTENSIONS_NAMESPACE
@@ -157,12 +162,29 @@ define(
             });
         }
 
+        function resolve() {
+            $.ajax({
+                url: topologyTemplateURL + 'resolve',
+                type: "POST",
+                success: function (data, textStatus, jqXHR) {
+                    vShowSuccess("Successfully resolved. The topology is reloading ...");
+                    window.location.reload(true);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $("#matchBtn").button("reset");
+                    vShowAJAXError("Could not resolve", jqXHR, errorThrown);
+                }
+            });
+        }
 
-        /**
-         * "detectPattern"
-         */
-        function detectPattern() {
-            $("#patterndetectionBtn").button("loading");
+		function patternSelection() {
+		    var patternSelectionToolURL= location.protocol + '//' + location.hostname + ':4200/#/solution-selection?sourceurl=' + doubleEncodedTopologyTemplateURL + 'compose';
+		    window.open(patternSelectionToolURL);
+        }
+        
+		
+		function detectPattern() {
+			$("#patterndetectionBtn").button("loading");
 
             $.ajax({
                 url: topologyTemplateURL + "patterndetection",

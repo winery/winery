@@ -12,28 +12,22 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources._support.dataadapter;
-
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
+package org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionAdapter;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class InjectionOption {
-    @XmlElement(name = "NodeID")
-    protected String nodeID;
+public class InjectionOptions {
+    @XmlElement
+    private List<InjectionOption> injectionOption = new ArrayList<>();
 
-    @XmlElementWrapper(name = "InjectionOptions")
-    @XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
-    protected List<TTopologyTemplate> injectionOptions;
-
-    public InjectionOption() {
+    public List<InjectionOption> getInjectionOption() {
+        return Collections.unmodifiableList(injectionOption);
     }
 
-    public InjectionOption(String nodeID, List<TTopologyTemplate> injectionOptions) {
-        this.nodeID = nodeID;
-        this.injectionOptions = injectionOptions;
+    public void addInjectionOptions(InjectionOption in) {
+        injectionOption.add(in);
     }
 }

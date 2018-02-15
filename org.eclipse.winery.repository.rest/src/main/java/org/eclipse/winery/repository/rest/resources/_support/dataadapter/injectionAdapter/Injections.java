@@ -12,26 +12,23 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources._support.dataadapter;
-
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
+package org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionAdapter;
 
 import javax.xml.bind.annotation.XmlElement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-//@XmlType
-public class Injection {
-    @XmlElement(name = "NodeID")
-    protected String nodeID;
-    @XmlElement(namespace = Namespaces.TOSCA_NAMESPACE, name = "TopologyTemplate")
-    protected TTopologyTemplate injectedTopologyFragment;
+public class Injections {
 
-    public Injection() {
+    @XmlElement
+    private List<Injection> injection = new ArrayList<>();
+
+    public List<Injection> getInjections() {
+        return Collections.unmodifiableList(injection);
     }
 
-    public Injection(String hostedNodeID, TTopologyTemplate injectedTopologyFragment) {
-        this.nodeID = hostedNodeID;
-        this.injectedTopologyFragment = injectedTopologyFragment;
+    public void addInjection(Injection in) {
+        injection.add(in);
     }
 }
-

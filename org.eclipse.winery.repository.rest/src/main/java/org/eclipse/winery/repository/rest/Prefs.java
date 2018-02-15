@@ -118,20 +118,20 @@ public class Prefs implements ServletContextListener {
         Prefs.LOGGER.debug("Initialized XML validation");
     }
 
-    private void initializeUrlConfigurationWithDefaultValues(ServletContext ctx) {
-        String basePath = ctx.getContextPath();
-        if (basePath.endsWith("/")) {
-            basePath = basePath.substring(0, basePath.length() - 1);
-        }
-        int pos = basePath.lastIndexOf("/");
-        if (pos <= 0) {
-            basePath = "/";
-        } else {
-            basePath = basePath.substring(0, pos);
-        }
-        Environment.getUrlConfiguration().setTopologyModelerUrl(basePath + "winery-topologymodeler");
-        Environment.getUrlConfiguration().setTopologyModelerUrl(basePath + "winery-workflowmodeler");
-    }
+	private void initializeUrlConfigurationWithDefaultValues(ServletContext ctx) {
+		String basePath = ctx.getContextPath();
+		if (basePath.endsWith("/")) {
+			basePath = basePath.substring(0, basePath.length() - 1);
+		}
+		int pos = basePath.lastIndexOf("/");
+		if (pos <= 0) {
+			basePath = "/";
+		} else {
+			basePath = basePath.substring(0, pos);
+		}
+		Environment.getUrlConfiguration().setTopologyModelerUrl(basePath + "winery-topologymodeler");
+		
+	}
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {

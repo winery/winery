@@ -25,8 +25,8 @@ import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjec
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
-import org.eclipse.winery.repository.rest.resources._support.dataadapter.InjectorReplaceData;
-import org.eclipse.winery.repository.rest.resources._support.dataadapter.InjectorReplaceOptions;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionAdapter.InjectorReplaceData;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionAdapter.InjectorReplaceOptions;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.BoundaryDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.plans.PlansResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;

@@ -106,7 +106,8 @@ Something went wrong in the repository: topology template not found.
     }
 
     String topologyTemplateURL = repositoryURL + "/servicetemplates/" + Util.DoubleURLencode(serviceTemplateQName) + "/topologytemplate/";
-    String serviceTemplateName = client.getName(new ServiceTemplateId(serviceTemplateQName));
+    String doubleEncodedTopologyTemplateURL = repositoryURL + "/servicetemplates/" + Util.DoubleURLencode(Util.URLencode(serviceTemplateQName.getNamespaceURI())) + "/" + Util.DoubleURLencode(Util.URLencode(serviceTemplateQName.getLocalPart())) + "/topologytemplate/";
+	String serviceTemplateName = client.getName(new ServiceTemplateId(serviceTemplateQName));
 %>
 <!DOCTYPE html>
 <html>
@@ -456,7 +457,9 @@ Something went wrong in the repository: topology template not found.
 
             <ul class="dropdown-menu" role="menu">
                 <li><a href="#" onclick="completeTopology();">Complete Topology</a></li>
-                <li><a id="exportCSARbtn" href="<%=topologyTemplateURL%>../?csar" target="_blank">Export CSAR</a></li>
+                <li><a href="#" onclick="require(['winery-topologymodeler-AMD'], function(wt) {wt.patternSelection();})">Pattern Selection</a></li>
+                <li><a id="resolveTopologyBtn" href="#" onclick="winery.events.fire(winery.events.name.command.RESOLVE);">Resolve Topology</a></li>
+				<li><a id="exportCSARbtn" href="<%=topologyTemplateURL%>../?csar" target="_blank">Export CSAR</a></li>
                 <li><a href="#" onclick="showAbout();">about</a></li>
             </ul>
         </div>
@@ -531,7 +534,7 @@ Something went wrong in the repository: topology template not found.
 
                         // Get saved position
                         // x and y are stored as attributes of other namespaces
-                        String left = ModelUtilities.getLeft(nodeTemplate);
+                        String left = ModelUtilities.getLeft(nodeTemplate).get().toString();
                         String top = ModelUtilities.getTop(nodeTemplate);
             %>
             <nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=relationshipTypes%>"
@@ -649,17 +652,18 @@ Something went wrong in the repository: topology template not found.
 
         }
 
-    </script>
-    <script>
-        require(["winery-topologymodeler-AMD"], function (wt) {
-            winery.events.register(winery.events.name.command.IMPORT_TOPOLOGY, wt.openChooseTopologyToImportDiag);
-            winery.events.register(winery.events.name.command.SAVE, wt.save);
-            winery.events.register(winery.events.name.command.SPLIT, wt.split);
-            winery.events.register(winery.events.name.command.MATCH, wt.match);
-            wt.setTopologyTemplateURL("<%=topologyTemplateURL%>");
-        });
-    </script>
-    <script>
+</script>
+<script>
+	require(["winery-topologymodeler-AMD"], function(wt) {
+		winery.events.register(winery.events.name.command.IMPORT_TOPOLOGY, wt.openChooseTopologyToImportDiag);
+        winery.events.register(winery.events.name.command.RESOLVE, wt.resolve);
+		winery.events.register(winery.events.name.command.SAVE, wt.save);
+		winery.events.register(winery.events.name.command.SPLIT, wt.split);
+		winery.events.register(winery.events.name.command.MATCH, wt.match);
+		wt.setTopologyTemplateURL("<%=topologyTemplateURL%>");
+	wt.setDoubleEncodedTopologyTemplateURL("<%=doubleEncodedTopologyTemplateURL%>");});
+</script>
+<script>
 
         // "mousedown" instead of "click" enables a more Visio-like behavior
         $(document).on("mousedown", "div.NodeTemplateShape", function (e) {

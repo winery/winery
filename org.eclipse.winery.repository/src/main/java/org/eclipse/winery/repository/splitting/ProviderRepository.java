@@ -14,17 +14,23 @@
 
 package org.eclipse.winery.repository.splitting;
 
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TDocumentation;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
 public class ProviderRepository {
 

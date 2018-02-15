@@ -280,12 +280,20 @@ public class ModelUtilities {
         return valid;
     }
 
-    /**
-     * @return null if no explicit left is set
-     */
-    public static String getLeft(TNodeTemplate nodeTemplate) {
+    public static Optional<Integer> getLeft(TNodeTemplate nodeTemplate) {
         Map<QName, String> otherAttributes = nodeTemplate.getOtherAttributes();
-        return otherAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"));
+        String x = otherAttributes.get(new QName(Namespaces.TOSCA_WINERY_EXTENSIONS_NAMESPACE, "x"));
+        if (x == null) {
+            return Optional.empty();
+        }
+        Float floatValue;
+        try {
+            floatValue = Float.parseFloat(x);
+        } catch (NumberFormatException e) {
+            LOGGER.debug("Could not parse x value", e);
+            return Optional.empty();    
+        }
+        return Optional.of(floatValue.intValue());
     }
 
     /**
