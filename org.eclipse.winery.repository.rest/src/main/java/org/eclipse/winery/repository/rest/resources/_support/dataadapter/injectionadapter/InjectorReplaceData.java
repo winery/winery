@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionAdapter;
+package org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter;
 
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 

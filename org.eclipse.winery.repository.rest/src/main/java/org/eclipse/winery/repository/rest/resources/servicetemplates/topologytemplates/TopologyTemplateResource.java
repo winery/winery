@@ -44,7 +44,7 @@ import org.eclipse.winery.repository.client.IWineryRepositoryClient;
 import org.eclipse.winery.repository.client.WineryRepositoryClientFactory;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeAdapter.CompositionData;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.repository.splitting.Splitting;
 
