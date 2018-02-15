@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -91,26 +91,26 @@ public class Util {
         }
     }
 
-	public static String URLencode(QName qname) {
+    public static String URLencode(QName qname) {
         String ns = Util.URLencode(qname.getNamespaceURI());
         String localName = Util.URLencode(qname.getLocalPart());
         return ns + "%2F" + localName;
     }
-    
-    public static String DoubleURLencode(String s) {
-		return Util.URLencode(Util.URLencode(s));
-	}
 
-	/**
-	 * Encodes the namespace and the localname of the given qname, separated by "/"
-	 *
-	 * @return <double encoded namespace>"/"<double encoded localname>
-	 */
-	public static String DoubleURLencode(QName qname) {
-		String ns = Util.DoubleURLencode(qname.getNamespaceURI());
-		String localName = Util.DoubleURLencode(qname.getLocalPart());
-		return ns + "/" + localName;
-	}
+    public static String DoubleURLencode(String s) {
+        return Util.URLencode(Util.URLencode(s));
+    }
+
+    /**
+     * Encodes the namespace and the localname of the given qname, separated by "/"
+     *
+     * @return <double encoded namespace>"/"<double encoded localname>
+     */
+    public static String DoubleURLencode(QName qname) {
+        String ns = Util.DoubleURLencode(qname.getNamespaceURI());
+        String localName = Util.DoubleURLencode(qname.getLocalPart());
+        return ns + "/" + localName;
+    }
 
     public static boolean isRelativeURI(String uri) {
         URI u;

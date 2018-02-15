@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,25 +25,25 @@ define(
 
         var topologyTemplateURL;
         var doubleEncodedTopologyTemplateURL;
-		var patternId;
+        var patternId;
 
-		return {
-			openChooseTopologyToImportDiag: openChooseTopologyToImportDiag,
-			importTopology: importTopology,
-			save: save,
-			split: split,
+        return {
+            openChooseTopologyToImportDiag: openChooseTopologyToImportDiag,
+            importTopology: importTopology,
+            save: save,
+            split: split,
             resolve: resolve,
-			patternSelection: patternSelection,detectPattern: detectPattern,
-			visualizePatterns: visualizePatterns,
-			match: match,
-			setTopologyTemplateURL: function (url) {
-				topologyTemplateURL = url;
-			},
+            patternSelection: patternSelection, detectPattern: detectPattern,
+            visualizePatterns: visualizePatterns,
+            match: match,
+            setTopologyTemplateURL: function (url) {
+                topologyTemplateURL = url;
+            },
             setDoubleEncodedTopologyTemplateURL: function (url) {
-                doubleEncodedTopologyTemplateURL =url;
-			},
-			highlightPattern: highlightPattern,
-			getTopologyTemplateAsXML: getTopologyTemplateAsXML,
+                doubleEncodedTopologyTemplateURL = url;
+            },
+            highlightPattern: highlightPattern,
+            getTopologyTemplateAsXML: getTopologyTemplateAsXML,
 
             TOSCA_NAMESPACE: TOSCA_NAMESPACE,
             TOSCA_WINERY_EXTENSIONS_NAMESPACE: TOSCA_WINERY_EXTENSIONS_NAMESPACE
@@ -177,14 +177,14 @@ define(
             });
         }
 
-		function patternSelection() {
-		    var patternSelectionToolURL= location.protocol + '//' + location.hostname + ':4200/#/solution-selection?sourceurl=' + doubleEncodedTopologyTemplateURL + 'compose';
-		    window.open(patternSelectionToolURL);
+        function patternSelection() {
+            var patternSelectionToolURL = location.protocol + '//' + location.hostname + ':4200/#/solution-selection?sourceurl=' + doubleEncodedTopologyTemplateURL + 'compose';
+            window.open(patternSelectionToolURL);
         }
-        
-		
-		function detectPattern() {
-			$("#patterndetectionBtn").button("loading");
+
+
+        function detectPattern() {
+            $("#patterndetectionBtn").button("loading");
 
             $.ajax({
                 url: topologyTemplateURL + "patterndetection",

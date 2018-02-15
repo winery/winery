@@ -19,6 +19,7 @@ import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

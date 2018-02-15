@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -118,20 +118,19 @@ public class Prefs implements ServletContextListener {
         Prefs.LOGGER.debug("Initialized XML validation");
     }
 
-	private void initializeUrlConfigurationWithDefaultValues(ServletContext ctx) {
-		String basePath = ctx.getContextPath();
-		if (basePath.endsWith("/")) {
-			basePath = basePath.substring(0, basePath.length() - 1);
-		}
-		int pos = basePath.lastIndexOf("/");
-		if (pos <= 0) {
-			basePath = "/";
-		} else {
-			basePath = basePath.substring(0, pos);
-		}
-		Environment.getUrlConfiguration().setTopologyModelerUrl(basePath + "winery-topologymodeler");
-		
-	}
+    private void initializeUrlConfigurationWithDefaultValues(ServletContext ctx) {
+        String basePath = ctx.getContextPath();
+        if (basePath.endsWith("/")) {
+            basePath = basePath.substring(0, basePath.length() - 1);
+        }
+        int pos = basePath.lastIndexOf("/");
+        if (pos <= 0) {
+            basePath = "/";
+        } else {
+            basePath = basePath.substring(0, pos);
+        }
+        Environment.getUrlConfiguration().setTopologyModelerUrl(basePath + "winery-topologymodeler");
+    }
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {

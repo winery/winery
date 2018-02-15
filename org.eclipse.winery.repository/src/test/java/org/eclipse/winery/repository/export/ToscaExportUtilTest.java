@@ -31,5 +31,4 @@ public class ToscaExportUtilTest {
         NullOutputStream out = new NullOutputStream();
         // exporter.exportTOSCA(TestToscaExporter.serviceTemplateId, out, conf);
     }
-
 }

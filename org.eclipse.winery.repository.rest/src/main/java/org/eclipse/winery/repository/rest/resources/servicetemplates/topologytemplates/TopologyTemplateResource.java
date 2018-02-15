@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -229,25 +229,25 @@ public class TopologyTemplateResource {
         return Response.ok(this.topologyTemplate).build();
     }
 
-	/**
-	 * Only works for relationship templates connecting node templates; and not capabilities
-	 */
-	@Path("merge/")
-	@Consumes(MediaType.TEXT_PLAIN)
-	@POST
-	public Response mergeWithOtherTopologyTemplate(String strOtherServiceTemplateQName) {
-		QName otherServiceTemplateQName = QName.valueOf(strOtherServiceTemplateQName);
-		ServiceTemplateId otherServiceTemplateId = new ServiceTemplateId(otherServiceTemplateQName);
-		ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.serviceTemplateRes.getId();
-				try {
-				BackendUtils.mergeServiceTemplateAinServiceTemplateB(otherServiceTemplateId, thisServiceTemplateId);
-				} catch (IOException e) {
-				LOGGER.debug("Could not merge", e);
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
-		} 
+    /**
+     * Only works for relationship templates connecting node templates; and not capabilities
+     */
+    @Path("merge/")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @POST
+    public Response mergeWithOtherTopologyTemplate(String strOtherServiceTemplateQName) {
+        QName otherServiceTemplateQName = QName.valueOf(strOtherServiceTemplateQName);
+        ServiceTemplateId otherServiceTemplateId = new ServiceTemplateId(otherServiceTemplateQName);
+        ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.serviceTemplateRes.getId();
+        try {
+            BackendUtils.mergeServiceTemplateAinServiceTemplateB(otherServiceTemplateId, thisServiceTemplateId);
+        } catch (IOException e) {
+            LOGGER.debug("Could not merge", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+        }
 
-			return Response.noContent().build();
-	}
+        return Response.noContent().build();
+    }
 
     @Path("nodetemplates/")
     public NodeTemplatesResource getNodeTemplatesResource() {
@@ -295,7 +295,7 @@ public class TopologyTemplateResource {
         "getTopologyTemplate(QName)} consumes this template</p>" +
         "<p>@return The XML representation of the topology template <em>without</em>" +
         "associated artifacts and without the parent service template </p>")
-    @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     // @formatter:on
     public Response getComponentInstanceXML() {
         return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate);
@@ -352,7 +352,7 @@ public class TopologyTemplateResource {
             e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
-       Response mergeResponse = this.mergeWithOtherTopologyTemplate(composedServiceTemplateId.getQName().toString());
+        Response mergeResponse = this.mergeWithOtherTopologyTemplate(composedServiceTemplateId.getQName().toString());
         if (mergeResponse.getStatus() == 500) {
             return mergeResponse;
         }
@@ -363,12 +363,12 @@ public class TopologyTemplateResource {
         LOGGER.debug("URI of the composed Service Template {}", url.toString());
         return Response.created(url).build();
     }
-    
+
     @POST
     @Path("resolve/")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response resolve (@Context UriInfo uriInfo) {
-	    Splitting splitting = new Splitting();
+    public Response resolve(@Context UriInfo uriInfo) {
+        Splitting splitting = new Splitting();
         try {
             splitting.resolveTopologyTemplate((ServiceTemplateId) this.serviceTemplateRes.getId());
             return Response.ok().build();
@@ -376,5 +376,4 @@ public class TopologyTemplateResource {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
-
 }
