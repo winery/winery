@@ -13,17 +13,39 @@
  *******************************************************************************/
 package org.eclipse.winery.bpmn2bpel.parser;
 
+import java.net.URI;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.bpmn2bpel.model.ConditionBranch;
+import org.eclipse.winery.bpmn2bpel.model.EndTask;
+import org.eclipse.winery.bpmn2bpel.model.ManagementFlow;
+import org.eclipse.winery.bpmn2bpel.model.ManagementTask;
+import org.eclipse.winery.bpmn2bpel.model.Node;
+import org.eclipse.winery.bpmn2bpel.model.OrGatewayMerge;
+import org.eclipse.winery.bpmn2bpel.model.OrGatewaySplit;
+import org.eclipse.winery.bpmn2bpel.model.StartTask;
+import org.eclipse.winery.bpmn2bpel.model.Task;
+import org.eclipse.winery.bpmn2bpel.model.param.ConcatParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.DeploymentArtefactParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.ImplementationArtefactParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.Parameter;
+import org.eclipse.winery.bpmn2bpel.model.param.PlanParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.StringParameter;
+import org.eclipse.winery.bpmn2bpel.model.param.TopologyParameter;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.eclipse.winery.bpmn2bpel.model.*;
-import org.eclipse.winery.bpmn2bpel.model.param.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.xml.namespace.QName;
-import java.net.URI;
-import java.util.*;
 
 /**
  * TODO describe expected JSON format here

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,6 +24,7 @@ define(
         var TOSCA_WINERY_EXTENSIONS_NAMESPACE = "http://www.opentosca.org/winery/extensions/tosca/2013/02/12";
 
         var topologyTemplateURL;
+        var doubleEncodedTopologyTemplateURL;
         var patternId;
 
         return {
@@ -31,11 +32,15 @@ define(
             importTopology: importTopology,
             save: save,
             split: split,
-            detectPattern: detectPattern,
+            resolve: resolve,
+            patternSelection: patternSelection, detectPattern: detectPattern,
             visualizePatterns: visualizePatterns,
             match: match,
             setTopologyTemplateURL: function (url) {
                 topologyTemplateURL = url;
+            },
+            setDoubleEncodedTopologyTemplateURL: function (url) {
+                doubleEncodedTopologyTemplateURL = url;
             },
             highlightPattern: highlightPattern,
             getTopologyTemplateAsXML: getTopologyTemplateAsXML,
@@ -157,10 +162,27 @@ define(
             });
         }
 
+        function resolve() {
+            $.ajax({
+                url: topologyTemplateURL + 'resolve',
+                type: "POST",
+                success: function (data, textStatus, jqXHR) {
+                    vShowSuccess("Successfully resolved. The topology is reloading ...");
+                    window.location.reload(true);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $("#matchBtn").button("reset");
+                    vShowAJAXError("Could not resolve", jqXHR, errorThrown);
+                }
+            });
+        }
 
-        /**
-         * "detectPattern"
-         */
+        function patternSelection() {
+            var patternSelectionToolURL = location.protocol + '//' + location.hostname + ':4200/#/solution-selection?sourceurl=' + doubleEncodedTopologyTemplateURL + 'compose';
+            window.open(patternSelectionToolURL);
+        }
+
+
         function detectPattern() {
             $("#patterndetectionBtn").button("loading");
 

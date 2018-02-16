@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -89,6 +89,12 @@ public class Util {
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException();
         }
+    }
+
+    public static String URLencode(QName qname) {
+        String ns = Util.URLencode(qname.getNamespaceURI());
+        String localName = Util.URLencode(qname.getLocalPart());
+        return ns + "%2F" + localName;
     }
 
     public static String DoubleURLencode(String s) {
