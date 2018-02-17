@@ -563,7 +563,8 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((PolicyTemplateId) id);
         } else if (id instanceof GenericImportId || id instanceof PolicyTypeId || id instanceof CapabilityTypeId) {
             // in case of imports, policy types, and capability types, there are no other ids referenced
-            referencedDefinitionsChildIds = Collections.emptyList();
+            // Collections.emptyList() cannot be used as we add elements later on in the case of inheritance
+            referencedDefinitionsChildIds = new ArrayList();
         } else {
             throw new IllegalStateException("Unhandled id class " + id.getClass());
         }
@@ -574,7 +575,8 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         if (id instanceof HasInheritanceId) {
             Optional<DefinitionsChildId> parentId = this.getDefinitionsChildIdOfParent((HasInheritanceId) id);
             if (parentId.isPresent()) {
-                referencedDefinitionsChildIds.addAll(this.getReferencedDefinitionsChildIds(parentId.get()));
+                // add the parent id itself. The referenced definitions are included by recursion
+                referencedDefinitionsChildIds.add(parentId.get());
             }
         }
 
