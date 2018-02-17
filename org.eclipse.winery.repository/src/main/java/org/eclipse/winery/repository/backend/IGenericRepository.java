@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -180,7 +180,9 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
      * <p>
      * The generated Ids are linked as child to the id associated to the given reference
      * <p>
-     * Required for getting plans nested in a service template: plans are nested below the PlansOfOneServiceTemplateId
+     * Required for
+     * - getting plans nested in a service template: plans are nested below the PlansOfOneServiceTemplateId
+     * - exporting service templates
      *
      * @param ref     a reference to the TOSCA element to be checked. The path belonging to this element is checked.
      * @param idClass the class of the Id
@@ -227,13 +229,11 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
     }
 
     /**
-     * This is a helper method. Since we currently rely on default implementations, we have to expose this helper method
-     * in the interface.
-     * <p>
-     * There is now the equivalent id class for AbstractComponentInstanceResourceWithNameDerivedFromAbstractFinal,
-     * therefore we take the super type and hope that the caller knows what he does.
+     * Determines the id of the parent in the inheritance hierarchy (if exists).
+     *
+     * @return the id of the parent class
      */
-    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIdOfParentForAnAbstractComponentsWithTypeReferenceResource(DefinitionsChildId id) {
+    default Optional<DefinitionsChildId> getDefinitionsChildIdOfParent(HasInheritanceId id) {
         final HasInheritance element = (HasInheritance) this.getDefinitions(id).getElement();
         final HasType derivedFrom = element.getDerivedFrom();
         QName derivedFromType = null;
@@ -242,7 +242,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         }
 
         if (derivedFromType == null) {
-            return Collections.emptySet();
+            return Optional.empty();
         } else {
             // Instantiate an id with the same class as the current id
             DefinitionsChildId parentId;
@@ -260,9 +260,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                 throw new IllegalStateException("Could not instantiate id for parent", e);
             }
 
-            Collection<DefinitionsChildId> result = new ArrayList<>(1);
-            result.add(parentId);
-            return result;
+            return Optional.of(parentId);
         }
     }
 
@@ -356,7 +354,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         }
 
         // inheritance
-        // ids.addAll(this.getReferencedDefinitionsChildIdOfParentForAnAbstractComponentsWithTypeReferenceResource(id));
+        // ids.addAll(this.getDefinitionsChildIdOfParent(id));
 
         return ids;
     }
@@ -528,8 +526,17 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         return ids;
     }
 
+    /**
+     * Determines all referencedDefinitionsChildIds
+     *
+     * @param id The id to start crawling from
+     * @return a list referenced DefinitionChildIds
+     * @throws IllegalStateException in case an id is passed, which is not handled in the body
+     */
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(DefinitionsChildId id) throws RepositoryCorruptException {
         Collection<DefinitionsChildId> referencedDefinitionsChildIds;
+
+        // First of all, handle the concrete types
         if (id instanceof ServiceTemplateId) {
             referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ServiceTemplateId) id);
         } else if (id instanceof NodeTypeId) {
@@ -554,6 +561,17 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         } else {
             throw new IllegalStateException("Unhandled id class " + id.getClass());
         }
+
+        // Then, handle the super classes, which support inheritance
+        // Currently, it is EntityType and EntityTypeImplementation only
+        // Since the latter does not exist in the TOSCA MetaModel, we just handle EntityType here
+        if (id instanceof HasInheritanceId) {
+            Optional<DefinitionsChildId> parentId = this.getDefinitionsChildIdOfParent((HasInheritanceId) id);
+            if (parentId.isPresent()) {
+                referencedDefinitionsChildIds.addAll(this.getReferencedDefinitionsChildIds(parentId.get()));
+            }
+        }
+
         return referencedDefinitionsChildIds;
     }
 

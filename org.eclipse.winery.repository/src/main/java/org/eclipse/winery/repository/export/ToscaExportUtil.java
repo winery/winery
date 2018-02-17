@@ -265,10 +265,8 @@ public class ToscaExportUtil {
      * @param id the id to search its children for referenced elements
      */
     private Collection<DefinitionsChildId> getReferencedDefinitionsChildIdsAndPrepareForExport(IRepository repository, DefinitionsChildId id) throws RepositoryCorruptException, IOException {
-        Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(id);
-
-        // first of all, handle the concrete elements
-
+        // prepareForExport adds the contained files to the CSAR, not the referenced ones.
+        // These are added later
         if (id instanceof ServiceTemplateId) {
             this.prepareForExport(repository, (ServiceTemplateId) id);
         } else if (id instanceof RelationshipTypeId) {
@@ -279,17 +277,7 @@ public class ToscaExportUtil {
             this.prepareForExport(repository, (ArtifactTemplateId) id);
         }
 
-        // Then, handle the super classes, which support inheritance
-        // Currently, it is EntityType and EntityTypeImplementation only
-        // Since the latter does not exist in the TOSCA MetaModel, we just handle EntityType here
-        if (id instanceof EntityTypeId || id instanceof EntityTypeImplementationId) {
-            Collection<DefinitionsChildId> additionalRefs = repository.getReferencedDefinitionsChildIdOfParentForAnAbstractComponentsWithTypeReferenceResource(id);
-            // the original referenceDefinitionsChildIds could be unmodifiable
-            // we just create a new one...
-            referencedDefinitionsChildIds = new ArrayList<>(referencedDefinitionsChildIds);
-            // ...and add the new reference
-            referencedDefinitionsChildIds.addAll(additionalRefs);
-        }
+        Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(id);
 
         return referencedDefinitionsChildIds;
     }

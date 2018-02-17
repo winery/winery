@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,6 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+
 package org.eclipse.winery.common.ids.definitions;
 
 import org.eclipse.winery.common.ids.Namespace;
@@ -18,17 +19,16 @@ import org.eclipse.winery.common.ids.XmlId;
 
 import javax.xml.namespace.QName;
 
-public abstract class EntityTypeImplementationId extends HasInheritanceId {
-
-    public EntityTypeImplementationId(Namespace namespace, XmlId xmlId) {
+public abstract class HasInheritanceId extends DefinitionsChildId {
+    public HasInheritanceId(Namespace namespace, XmlId xmlId) {
         super(namespace, xmlId);
     }
 
-    public EntityTypeImplementationId(String ns, String id, boolean URLencoded) {
+    public HasInheritanceId(String ns, String id, boolean URLencoded) {
         super(ns, id, URLencoded);
     }
 
-    public EntityTypeImplementationId(QName qname) {
+    public HasInheritanceId(QName qname) {
         super(qname);
     }
 }
