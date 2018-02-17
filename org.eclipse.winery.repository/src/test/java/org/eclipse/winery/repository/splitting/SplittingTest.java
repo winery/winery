@@ -40,10 +40,6 @@ public class SplittingTest extends TestWithGitBackedRepository {
     private TTopologyTemplate topologyTemplate;
     private TTopologyTemplate topologyTemplate2;
 
-    public SplittingTest() throws Exception {
-        super();
-    }
-
     @Before
     public void initialize() throws Exception {
         ServiceTemplateId id = new ServiceTemplateId("http://www.example.org", "ST", false);

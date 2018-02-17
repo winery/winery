@@ -514,6 +514,12 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
                             QName type = pol.getPolicyType();
                             PolicyTypeId ctId = new PolicyTypeId(type);
                             ids.add(ctId);
+
+                            QName template = pol.getPolicyRef();
+                            if (template != null) {
+                                PolicyTemplateId policyTemplateId = new PolicyTemplateId(template);
+                                ids.add(policyTemplateId);
+                            }
                         }
                     }
                 } else {

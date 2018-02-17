@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,6 +14,7 @@
 package org.eclipse.winery.repository.export;
 
 import org.apache.commons.io.output.NullOutputStream;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Ignore("not finished - CSARExporterTest is currently the way to go")
-public class ToscaExportUtilTest {
+public class ToscaExportUtilTest extends TestWithGitBackedRepository {
 
     @Test
     public void exportTOSCA() throws Exception {

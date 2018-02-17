@@ -38,9 +38,9 @@ public abstract class TestWithGitBackedRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestWithGitBackedRepository.class);
 
-    public Git git;
+    public final IRepository repository;
 
-    public IRepository repository;
+    public final Git git;
 
     /**
      * Initializes the git repository from https://github.com/winery/test-repository into %TEMP%/test-repository
