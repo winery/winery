@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,9 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.backend.consistencycheck;
 
+/**
+ * This interface is used by the consistency checker to output updates on the status. Implementations may log something our output something to the console.
+ */
 public interface ConsistencyCheckerProgressListener {
 
     /**
@@ -20,7 +23,7 @@ public interface ConsistencyCheckerProgressListener {
      *
      * @param progress The current progress between 0 and 1
      */
-    default public void updateCheckerProgress(float progress) {
+    default void updateProgress(float progress) {
         // don't do anything as the default implementation
     }
 
@@ -31,7 +34,7 @@ public interface ConsistencyCheckerProgressListener {
      * @param progress           The current progress between 0 and 1
      * @param checkingDefinition The readable definition's id currently under investigation
      */
-    default public void detailedCheckerProgress(float progress, String checkingDefinition) {
+    default void updateProgress(float progress, String checkingDefinition) {
         // don't do anything as the default implementation
     }
 }

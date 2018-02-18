@@ -68,7 +68,7 @@ public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressList
      * Publishes the current checking progress to the client in JSON format.
      */
     @Override
-    public void updateCheckerProgress(float progress) {
+    public void updateProgress(float progress) {
         this.session.getAsyncRemote().sendText("{\"progress\":" + progress + "}");
     }
 
@@ -76,7 +76,7 @@ public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressList
      * Publishes the detailed checking progress to the customer in JSON format.
      */
     @Override
-    public void detailedCheckerProgress(float progress, String checkingDefinition) {
+    public void updateProgress(float progress, String checkingDefinition) {
         this.session.getAsyncRemote().sendText("{"
             + "\"progress\":" + progress + ","
             + "\"currentlyChecking\":\"" + checkingDefinition + "\""

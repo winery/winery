@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -73,13 +73,13 @@ public class WineryCli {
         ConsistencyCheckerConfiguration configuration = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repository);
         ConsistencyErrorLogger errors = ConsistencyChecker.checkCorruptionUsingCsarExport(configuration, new ConsistencyCheckerProgressListener() {
             @Override
-            public void updateCheckerProgress(float progress) {
+            public void updateProgress(float progress) {
                 System.out.println(progress * 100 + "%");
             }
 
             @Override
-            public void detailedCheckerProgress(float progress, String checkingDefinition) {
-                updateCheckerProgress(progress);
+            public void updateProgress(float progress, String checkingDefinition) {
+                updateProgress(progress);
                 System.out.println("\nNow checking " + checkingDefinition);
             }
         });

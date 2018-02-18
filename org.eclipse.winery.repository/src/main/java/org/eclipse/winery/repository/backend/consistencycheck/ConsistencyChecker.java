@@ -356,9 +356,9 @@ public class ConsistencyChecker {
             for (DefinitionsChildId id : allDefinitionsChildIds) {
                 float progress = ++elementsChecked / allDefinitionsChildIds.size();
                 if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
-                    progressListener.detailedCheckerProgress(progress, id.toReadableString());
+                    progressListener.updateProgress(progress, id.toReadableString());
                 } else {
-                    progressListener.updateCheckerProgress(progress);
+                    progressListener.updateProgress(progress);
                 }
 
                 checkId(errorLogger, configuration.getVerbosity(), id);
