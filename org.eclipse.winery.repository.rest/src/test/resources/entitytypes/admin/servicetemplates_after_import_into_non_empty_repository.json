@@ -1,0 +1,104 @@
+[
+    {
+        "namespace": "http://opentosca.org/servicetemplates",
+        "id": "AAInjectorTest",
+        "name": "AAInjectorTest",
+        "qName": "{http://opentosca.org/servicetemplates}AAInjectorTest"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier",
+        "id": "DASpecificationTest",
+        "name": "DASpecificationTest",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/daspecifier}DASpecificationTest"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/ponyuniverse/driverinjection",
+        "id": "DriverInjectionTest",
+        "name": "DriverInjectionTest",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/driverinjection}DriverInjectionTest"
+    },
+    {
+        "namespace": "http://www.opentosca.org/providers/EquipmentProvider",
+        "id": "EquipmentProvider",
+        "name": "EquipmentProvider",
+        "qName": "{http://www.opentosca.org/providers/EquipmentProvider}EquipmentProvider"
+    },
+    {
+        "namespace": "http://www.opentosca.org/providers/FoodProvider",
+        "id": "FoodProvider",
+        "name": "FoodProvider",
+        "qName": "{http://www.opentosca.org/providers/FoodProvider}FoodProvider"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/ponyuniverse/injector",
+        "id": "FoodandHouseInjectionTest",
+        "name": "FoodandHouseInjectionTest",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/injector}FoodandHouseInjectionTest"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/ponyuniverse/injector",
+        "id": "FoodandHouseInjectionTest-matched",
+        "name": "FoodandHouseInjectionTest-matched",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/injector}FoodandHouseInjectionTest-matched"
+    },
+    {
+        "namespace": "http://www.opentosca.org/providers/PastureProvider",
+        "id": "PastureProvider",
+        "name": "PastureProvider",
+        "qName": "{http://www.opentosca.org/providers/PastureProvider}PastureProvider"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/ponyuniverse/splittingservicetemplate",
+        "id": "SplittingServiceTemplateTest",
+        "name": "SplittingServiceTemplateTest",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/splittingservicetemplate}SplittingServiceTemplateTest"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/ponyuniverse/splittingservicetemplate",
+        "id": "SplittingServiceTemplateTest-0",
+        "name": "SplittingServiceTemplateTest-0",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/splittingservicetemplate}SplittingServiceTemplateTest-0"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/ponyuniverse/splittingservicetemplate",
+        "id": "SplittingServiceTemplateTest-1",
+        "name": "SplittingServiceTemplateTest-1",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/splittingservicetemplate}SplittingServiceTemplateTest-1"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/ponyuniverse/splittingservicetemplate",
+        "id": "SplittingServiceTemplateTest-2",
+        "name": "SplittingServiceTemplateTest-2",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/ponyuniverse/splittingservicetemplate}SplittingServiceTemplateTest-2"
+    },
+    {
+        "namespace": "http://www.opentosca.org/providers/StallProvider",
+        "id": "StallProvider",
+        "name": "StallProvider",
+        "qName": "{http://www.opentosca.org/providers/StallProvider}StallProvider"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/xaaspackager",
+        "id": "XaasPackagerTest",
+        "name": "XaasPackagerTest",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/xaaspackager}XaasPackagerTest"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/fruits",
+        "id": "baobab_serviceTemplate",
+        "name": "baobab_serviceTemplate",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/fruits}baobab_serviceTemplate"
+    },
+    {
+        "namespace": "http://winery.opentosca.org/test/servicetemplates/fruits",
+        "id": "farm",
+        "name": "farm",
+        "qName": "{http://winery.opentosca.org/test/servicetemplates/fruits}farm"
+    },
+    {
+        "namespace": "http://www.example.org",
+        "id": "uploadTest",
+        "name": "uploadTest",
+        "qName": "{http://www.example.org}uploadTest"
+    }
+]

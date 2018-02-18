@@ -1,0 +1,8 @@
+[
+    {
+        "namespace": "http://www.example.org",
+        "id": "uploadTest",
+        "name": "uploadTest",
+        "qName": "{http://www.example.org}uploadTest"
+    }
+]
