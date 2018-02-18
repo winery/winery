@@ -80,9 +80,6 @@ public class ConsistencyChecker {
         if (configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_NUMBER_OF_TOSCA_COMPONENTS)) {
             System.out.format("Number of TOSCA definitions to check: %d\n", allDefinitionsChildIds.size());
         }
-        if (!configuration.getVerbosity().contains(ConsistencyCheckerVerbosity.OUTPUT_CURRENT_TOSCA_COMPONENT_ID)) {
-            System.out.print("Checking ");
-        }
 
         ConsistencyErrorLogger errorLogger = checkAllDefinitions(allDefinitionsChildIds, configuration, progressListener);
 

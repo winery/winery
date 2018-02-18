@@ -13,6 +13,8 @@
  ********************************************************************************/
 package org.eclipse.winery.cli;
 
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.cli.*;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -71,18 +73,22 @@ public class WineryCli {
         boolean serviceTemplatesOnly = line.hasOption("so");
         boolean checkDocumentation = line.hasOption("cd");
         ConsistencyCheckerConfiguration configuration = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repository);
+
+        ProgressBar progressBar = new ProgressBar("Check", 100, ProgressBarStyle.ASCII);
+        progressBar.start();
         ConsistencyErrorLogger errors = ConsistencyChecker.checkCorruptionUsingCsarExport(configuration, new ConsistencyCheckerProgressListener() {
             @Override
             public void updateProgress(float progress) {
-                System.out.println(progress * 100 + "%");
+                progressBar.stepTo((long) (progress * 100));
             }
 
             @Override
             public void updateProgress(float progress, String checkingDefinition) {
-                updateProgress(progress);
-                System.out.println("\nNow checking " + checkingDefinition);
+                progressBar.setExtraMessage("Now checking " + checkingDefinition);
+                progressBar.stepTo((long) (progress * 100));
             }
         });
+        progressBar.stop();
 
         System.out.println();
         if (errors.getErrorList().isEmpty()) {
