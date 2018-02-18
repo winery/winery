@@ -65,6 +65,9 @@ public class ToscaDocumentBuilderFactory {
         this.plainFactory.setValidating(false);
     }
 
+    /**
+     * @throws IllegalStateException in case the document builder could not be created
+     */
     public DocumentBuilder getSchemaAwareToscaDocumentBuilder() {
         DocumentBuilder db;
         try {
@@ -75,6 +78,9 @@ public class ToscaDocumentBuilderFactory {
         return db;
     }
 
+    /**
+     * @throws IllegalStateException in case the document builder could not be created
+     */
     public DocumentBuilder getPlainToscaDocumentBuilder() {
         DocumentBuilder db;
         try {
