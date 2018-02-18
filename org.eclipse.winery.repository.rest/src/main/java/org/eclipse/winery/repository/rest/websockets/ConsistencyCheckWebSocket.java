@@ -55,7 +55,7 @@ public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressList
 
         ConsistencyCheckerConfiguration config = mapper.readValue(message, ConsistencyCheckerConfiguration.class);
 
-        ConsistencyErrorLogger errorList = ConsistencyChecker.checkCorruptionUsingCsarExport(config, this);
+        ConsistencyErrorLogger errorList = ConsistencyChecker.checkCorruption(config, this);
 
         // Transform object to JSON and send it.
         this.session.getBasicRemote().sendText(mapper.writeValueAsString(errorList));

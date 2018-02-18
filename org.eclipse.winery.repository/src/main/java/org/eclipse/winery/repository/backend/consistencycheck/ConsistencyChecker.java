@@ -65,14 +65,14 @@ public class ConsistencyChecker {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsistencyChecker.class);
     private static final String ARTEFACT_BE = "artefact";
 
-    public static ConsistencyErrorLogger checkCorruptionUsingCsarExport(ConsistencyCheckerConfiguration configuration) {
+    public static ConsistencyErrorLogger checkCorruption(ConsistencyCheckerConfiguration configuration) {
         ConsistencyCheckerProgressListener listener = new ConsistencyCheckerProgressListener() {
         };
-        return checkCorruptionUsingCsarExport(configuration, listener);
+        return checkCorruption(configuration, listener);
     }
 
-    public static ConsistencyErrorLogger checkCorruptionUsingCsarExport(ConsistencyCheckerConfiguration configuration,
-                                                                        ConsistencyCheckerProgressListener progressListener) {
+    public static ConsistencyErrorLogger checkCorruption(ConsistencyCheckerConfiguration configuration,
+                                                         ConsistencyCheckerProgressListener progressListener) {
         Set<DefinitionsChildId> allDefinitionsChildIds = configuration.getRepository().getAllDefinitionsChildIds();
         if (configuration.isServiceTemplatesOnly()) {
             allDefinitionsChildIds = allDefinitionsChildIds.stream().filter(id -> id instanceof ServiceTemplateId).collect(Collectors.toSet());
@@ -312,7 +312,7 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void checkCsar(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
+    private static void checkCsar(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
         CsarExporter exporter = new CsarExporter();
         final OutputStream outputStream;
         try {

@@ -76,7 +76,7 @@ public class WineryCli {
 
         ProgressBar progressBar = new ProgressBar("Check", 100, ProgressBarStyle.ASCII);
         progressBar.start();
-        ConsistencyErrorLogger errors = ConsistencyChecker.checkCorruptionUsingCsarExport(configuration, new ConsistencyCheckerProgressListener() {
+        ConsistencyErrorLogger errors = ConsistencyChecker.checkCorruption(configuration, new ConsistencyCheckerProgressListener() {
             @Override
             public void updateProgress(float progress) {
                 progressBar.stepTo((long) (progress * 100));
