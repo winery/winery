@@ -66,7 +66,7 @@ import org.xml.sax.SAXException;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplateResource.class);	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplateResource.class);
 
 	public ServiceTemplateResource(ServiceTemplateId id) {
 		super(id);
@@ -289,15 +289,15 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 		LOGGER.debug("URI of the old and new service template {}", url.toString());
 		return Response.created(url).build();
 	}
-	
+
 	/**
-     * @return resource managing abstract, final, derivedFrom
-     */
-  @Path("inheritance/")
-  public ExtendedInheritanceResource getInheritanceManagement() {
-    return new ExtendedInheritanceResource(this);
-  }
-	
+	 * @return resource managing abstract, final, derivedFrom
+	 */
+	@Path("inheritance/")
+	public ExtendedInheritanceResource getInheritanceManagement() {
+		return new ExtendedInheritanceResource(this);
+	}
+
 	public TServiceTemplate getServiceTemplate() {
 		return (TServiceTemplate) this.getElement();
 	}
