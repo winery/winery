@@ -21,6 +21,8 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.net.URL;
@@ -49,15 +51,20 @@ public class ToscaDocumentBuilderFactory {
         // we do XSD validation
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema;
-        URL resource = this.getClass().getResource("/TOSCA-v1.0.xsd");
+        URL xmlXsdUrl = this.getClass().getResource("/xml.xsd");
+        URL toscaV10XsdUrl = this.getClass().getResource("/TOSCA-v1.0.xsd");
         try {
             // takes a few seconds to load
-            schema = schemaFactory.newSchema(resource);
+            // we have xml.xsd locally, which should enable offline validation
+            schema = schemaFactory.newSchema(new Source[]{
+                new StreamSource(xmlXsdUrl.toString()),
+                new StreamSource(toscaV10XsdUrl.toString())
+            });
             this.schemaAwareFactory.setSchema(schema);
         } catch (SAXException e) {
-            // TODO: load xml.xsd in offline mode
-            ToscaDocumentBuilderFactory.LOGGER.error("Schema could not be initialized", e);
-            ToscaDocumentBuilderFactory.LOGGER.debug("We continue nevertheless to enable offline usage");
+            // This should never happen. If it happens, then xml.xsd might not be available online.
+            LOGGER.error("Schema could not be initialized", e);
+            LOGGER.debug("We continue nevertheless to enable offline usage");
         }
 
         this.plainFactory = DocumentBuilderFactory.newInstance();
@@ -65,6 +72,9 @@ public class ToscaDocumentBuilderFactory {
         this.plainFactory.setValidating(false);
     }
 
+    /**
+     * @throws IllegalStateException in case the document builder could not be created
+     */
     public DocumentBuilder getSchemaAwareToscaDocumentBuilder() {
         DocumentBuilder db;
         try {
@@ -75,6 +85,9 @@ public class ToscaDocumentBuilderFactory {
         return db;
     }
 
+    /**
+     * @throws IllegalStateException in case the document builder could not be created
+     */
     public DocumentBuilder getPlainToscaDocumentBuilder() {
         DocumentBuilder db;
         try {

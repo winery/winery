@@ -1,5 +1,5 @@
 <%--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -106,6 +106,7 @@ Something went wrong in the repository: topology template not found.
     }
 
     String topologyTemplateURL = repositoryURL + "/servicetemplates/" + Util.DoubleURLencode(serviceTemplateQName) + "/topologytemplate/";
+    String doubleEncodedTopologyTemplateURL = repositoryURL + "/servicetemplates/" + Util.DoubleURLencode(Util.URLencode(serviceTemplateQName.getNamespaceURI())) + "/" + Util.DoubleURLencode(Util.URLencode(serviceTemplateQName.getLocalPart())) + "/topologytemplate/";
     String serviceTemplateName = client.getName(new ServiceTemplateId(serviceTemplateQName));
 %>
 <!DOCTYPE html>
@@ -456,6 +457,11 @@ Something went wrong in the repository: topology template not found.
 
             <ul class="dropdown-menu" role="menu">
                 <li><a href="#" onclick="completeTopology();">Complete Topology</a></li>
+                <li><a href="#"
+                       onclick="require(['winery-topologymodeler-AMD'], function(wt) {wt.patternSelection();})">Pattern
+                    Selection</a></li>
+                <li><a id="resolveTopologyBtn" href="#"
+                       onclick="winery.events.fire(winery.events.name.command.RESOLVE);">Resolve Topology</a></li>
                 <li><a id="exportCSARbtn" href="<%=topologyTemplateURL%>../?csar" target="_blank">Export CSAR</a></li>
                 <li><a href="#" onclick="showAbout();">about</a></li>
             </ul>
@@ -531,7 +537,7 @@ Something went wrong in the repository: topology template not found.
 
                         // Get saved position
                         // x and y are stored as attributes of other namespaces
-                        String left = ModelUtilities.getLeft(nodeTemplate);
+                        String left = ModelUtilities.getLeft(nodeTemplate).get().toString();
                         String top = ModelUtilities.getTop(nodeTemplate);
             %>
             <nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=relationshipTypes%>"
@@ -653,10 +659,12 @@ Something went wrong in the repository: topology template not found.
     <script>
         require(["winery-topologymodeler-AMD"], function (wt) {
             winery.events.register(winery.events.name.command.IMPORT_TOPOLOGY, wt.openChooseTopologyToImportDiag);
+            winery.events.register(winery.events.name.command.RESOLVE, wt.resolve);
             winery.events.register(winery.events.name.command.SAVE, wt.save);
             winery.events.register(winery.events.name.command.SPLIT, wt.split);
             winery.events.register(winery.events.name.command.MATCH, wt.match);
             wt.setTopologyTemplateURL("<%=topologyTemplateURL%>");
+            wt.setDoubleEncodedTopologyTemplateURL("<%=doubleEncodedTopologyTemplateURL%>");
         });
     </script>
     <script>
@@ -1453,6 +1461,7 @@ Something went wrong in the repository: topology template not found.
 	</tr>
 {% } %}
 
+    
     </script>
     <!-- The template to display files available for download -->
     <script id="template-download" type="text/x-tmpl">
@@ -1485,6 +1494,7 @@ Something went wrong in the repository: topology template not found.
 	</tr>
 {% } %}
 
+    
     </script>
 
 </div>
@@ -1496,6 +1506,7 @@ Something went wrong in the repository: topology template not found.
 		<div class="col-xs-4 overflowhidden artifactTemplate">{% if (o.artifactTemplateName) { %}{%=o.artifactTemplateName%}{% } %}</div>
 		<div class="col-xs-4 overflowhidden artifactType">{%=o.artifactTypeName%}</div>
 	</div>
+
 
 </script>
 
@@ -1510,11 +1521,13 @@ Something went wrong in the repository: topology template not found.
 		{% } %}
 		xmlns:tosca="<%=org.eclipse.winery.model.tosca.constants.Namespaces.TOSCA_NAMESPACE%>" />
 
+
 </script>
 
 <%-- param: value, selected (optional), text --%>
 <script type="text/x-tmpl" id="tmpl-option">
 <option value="{%=o.value%}"{% if (o.selected) { %} selected="selected"{% } %}>{%=o.text%}</option>
+
 
 </script>
 

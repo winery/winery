@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,11 +13,25 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource.Builder;
-import com.sun.jersey.api.view.Viewable;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
@@ -30,17 +44,17 @@ import org.eclipse.winery.repository.client.IWineryRepositoryClient;
 import org.eclipse.winery.repository.client.WineryRepositoryClientFactory;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
-import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplatesResource;
 import org.eclipse.winery.repository.splitting.Splitting;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.api.view.Viewable;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.xml.namespace.QName;
-import java.net.URI;
-import java.util.*;
 
 public class TopologyTemplateResource {
 
@@ -224,63 +238,15 @@ public class TopologyTemplateResource {
     public Response mergeWithOtherTopologyTemplate(String strOtherServiceTemplateQName) {
         QName otherServiceTemplateQName = QName.valueOf(strOtherServiceTemplateQName);
         ServiceTemplateId otherServiceTemplateId = new ServiceTemplateId(otherServiceTemplateQName);
-        ServiceTemplateResource otherServiceTemplateResource = (ServiceTemplateResource) ServiceTemplatesResource.getComponentInstaceResource(otherServiceTemplateId);
-        Optional<Integer> shiftLeft = this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
-            .filter(x -> x instanceof TNodeTemplate)
-            .map(x -> (TNodeTemplate) x)
-            .max(Comparator.comparingInt(n -> Integer.valueOf(ModelUtilities.getLeft(n))))
-            .map(n -> Integer.valueOf(ModelUtilities.getLeft(n)));
-        if (!shiftLeft.isPresent()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("No node templates in existing in topology to merge").build();
-        } else {
-            Map<String, String> idMapping = new HashMap<>();
-
-            // collect existing node template ids
-            this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TNodeTemplate)
-                .map(x -> (TNodeTemplate) x)
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId()));
-
-            // collect existing node template ids
-            this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TRelationshipTemplate)
-                .map(x -> (TRelationshipTemplate) x)
-                // the existing ids are left unchanged
-                .forEach(x -> idMapping.put(x.getId(), x.getId()));
-
-            // patch the ids of node templates and add them
-            otherServiceTemplateResource.getServiceTemplate().getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TNodeTemplate)
-                .map(x -> (TNodeTemplate) x)
-                .forEach(nt -> {
-                    String newId = nt.getId();
-                    while (idMapping.containsKey(newId)) {
-                        newId = newId + "-new";
-                    }
-                    idMapping.put(nt.getId(), newId);
-                    nt.setId(newId);
-                    int newLeft = Integer.valueOf(ModelUtilities.getLeft((TNodeTemplate) nt)) + shiftLeft.get();
-                    ((TNodeTemplate) nt).setX(Integer.toString(newLeft));
-                    this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(nt);
-                });
-
-            // patch the ids of relationship templates and add them
-            otherServiceTemplateResource.getServiceTemplate().getTopologyTemplate().getNodeTemplateOrRelationshipTemplate().stream()
-                .filter(x -> x instanceof TRelationshipTemplate)
-                .map(x -> (TRelationshipTemplate) x)
-                .forEach(rt -> {
-                    String newId = rt.getId();
-                    while (idMapping.containsKey(newId)) {
-                        newId = newId + "-new";
-                    }
-                    idMapping.put(rt.getId(), newId);
-                    rt.setId(newId);
-                    this.topologyTemplate.getNodeTemplateOrRelationshipTemplate().add(rt);
-                });
-
-            return RestUtils.persist(this.serviceTemplateRes);
+        ServiceTemplateId thisServiceTemplateId = (ServiceTemplateId) this.serviceTemplateRes.getId();
+        try {
+            BackendUtils.mergeServiceTemplateAinServiceTemplateB(otherServiceTemplateId, thisServiceTemplateId);
+        } catch (IOException e) {
+            LOGGER.debug("Could not merge", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
+
+        return Response.noContent().build();
     }
 
     @Path("nodetemplates/")
@@ -329,7 +295,7 @@ public class TopologyTemplateResource {
         "getTopologyTemplate(QName)} consumes this template</p>" +
         "<p>@return The XML representation of the topology template <em>without</em>" +
         "associated artifacts and without the parent service template </p>")
-    @Produces( {MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     // @formatter:on
     public Response getComponentInstanceXML() {
         return RestUtils.getXML(TTopologyTemplate.class, this.topologyTemplate);
@@ -365,4 +331,49 @@ public class TopologyTemplateResource {
         return Response.created(url).build();
     }
 
+    @POST
+    @Path("compose/")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.APPLICATION_JSON})
+    public Response composeServiceTemplates(CompositionData compositionData, @Context UriInfo uriInfo) {
+        Splitting splitting = new Splitting();
+        String newComposedSolutionServiceTemplateId = compositionData.getTargetid();
+        List<ServiceTemplateId> compositionServiceTemplateIDs = new ArrayList<>();
+        compositionData.getCspath().stream().forEach(entry -> {
+            QName qName = QName.valueOf(entry);
+            compositionServiceTemplateIDs.add(new ServiceTemplateId(qName.getNamespaceURI(), qName.getLocalPart(), false));
+        });
+
+        ServiceTemplateId composedServiceTemplateId;
+
+        try {
+            composedServiceTemplateId = splitting.composeServiceTemplates(newComposedSolutionServiceTemplateId, compositionServiceTemplateIDs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+        Response mergeResponse = this.mergeWithOtherTopologyTemplate(composedServiceTemplateId.getQName().toString());
+        if (mergeResponse.getStatus() == 500) {
+            return mergeResponse;
+        }
+        URI url = uriInfo.getBaseUri().resolve(RestUtils.getAbsoluteURL(serviceTemplateRes.getId()));
+        String location = url.toString();
+        location = location + "topologytemplate?edit";
+        url = RestUtils.createURI(location);
+        LOGGER.debug("URI of the composed Service Template {}", url.toString());
+        return Response.created(url).build();
+    }
+
+    @POST
+    @Path("resolve/")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response resolve(@Context UriInfo uriInfo) {
+        Splitting splitting = new Splitting();
+        try {
+            splitting.resolveTopologyTemplate((ServiceTemplateId) this.serviceTemplateRes.getId());
+            return Response.ok().build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
 }

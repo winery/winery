@@ -19,6 +19,7 @@ import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,10 +39,6 @@ public class SplittingTest extends TestWithGitBackedRepository {
     private Splitting splitting = new Splitting();
     private TTopologyTemplate topologyTemplate;
     private TTopologyTemplate topologyTemplate2;
-
-    public SplittingTest() throws Exception {
-        super();
-    }
 
     @Before
     public void initialize() throws Exception {

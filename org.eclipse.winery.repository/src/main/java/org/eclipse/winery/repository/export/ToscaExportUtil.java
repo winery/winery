@@ -142,9 +142,8 @@ public class ToscaExportUtil {
             throw new RepositoryCorruptException(error);
         }
 
-        // getReferencedDefinitionsChildIds has to be called before the definitions is read,
-        // because that method has the side effect to put the references into the definitions file.
-        Collection<DefinitionsChildId> referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIdsAndPrepareForExport(repository, tcId);
+        this.getPrepareForExport(repository, tcId);
+
         Definitions entryDefinitions = repository.getDefinitions(tcId);
 
         // BEGIN: Definitions modification
@@ -181,6 +180,8 @@ public class ToscaExportUtil {
                 this.putRefAsReferencedItemInCsar(ref);
             }
         }
+
+        Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(tcId);
 
         // adjust imports: add imports of definitions to it
         Collection<TImport> imports = new ArrayList<>();
@@ -255,20 +256,11 @@ public class ToscaExportUtil {
     }
 
     /**
-     * This method is intended to be used by exportTOSCA. However, org.eclipse.winery.repository.client requires an XML
-     * representation of a component instances without a surrounding definitions element.
-     * <p>
-     * We name this method differently to prevent wrong calling due to inheritance.
-     * <p>
-     * SIDE EFFECT: This also prepares for export
-     *
-     * @param id the id to search its children for referenced elements
+     * Prepares the given id for export. Mostly, the contained files are added to the CSAR.
      */
-    private Collection<DefinitionsChildId> getReferencedDefinitionsChildIdsAndPrepareForExport(IRepository repository, DefinitionsChildId id) throws RepositoryCorruptException, IOException {
-        Collection<DefinitionsChildId> referencedDefinitionsChildIds = repository.getReferencedDefinitionsChildIds(id);
-
-        // first of all, handle the concrete elements
-
+    private void getPrepareForExport(IRepository repository, DefinitionsChildId id) throws RepositoryCorruptException, IOException {
+        // prepareForExport adds the contained files to the CSAR, not the referenced ones.
+        // These are added later
         if (id instanceof ServiceTemplateId) {
             this.prepareForExport(repository, (ServiceTemplateId) id);
         } else if (id instanceof RelationshipTypeId) {
@@ -278,20 +270,6 @@ public class ToscaExportUtil {
         } else if (id instanceof ArtifactTemplateId) {
             this.prepareForExport(repository, (ArtifactTemplateId) id);
         }
-
-        // Then, handle the super classes, which support inheritance
-        // Currently, it is EntityType and EntityTypeImplementation only
-        // Since the latter does not exist in the TOSCA MetaModel, we just handle EntityType here
-        if (id instanceof EntityTypeId || id instanceof EntityTypeImplementationId) {
-            Collection<DefinitionsChildId> additionalRefs = repository.getReferencedDefinitionsChildIdOfParentForAnAbstractComponentsWithTypeReferenceResource(id);
-            // the original referenceDefinitionsChildIds could be unmodifiable
-            // we just create a new one...
-            referencedDefinitionsChildIds = new ArrayList<>(referencedDefinitionsChildIds);
-            // ...and add the new reference
-            referencedDefinitionsChildIds.addAll(additionalRefs);
-        }
-
-        return referencedDefinitionsChildIds;
     }
 
     /**

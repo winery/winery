@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,12 +12,23 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-package org.eclipse.winery.repository.patterndetection.keywords;
+package org.eclipse.winery.common.ids.definitions;
 
-public enum Service {
-    AmazonBeanstalk,
-    Java,
-    Python,
-    Git,
-    Docker,
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.XmlId;
+
+import javax.xml.namespace.QName;
+
+public abstract class HasInheritanceId extends DefinitionsChildId {
+    public HasInheritanceId(Namespace namespace, XmlId xmlId) {
+        super(namespace, xmlId);
+    }
+
+    public HasInheritanceId(String ns, String id, boolean URLencoded) {
+        super(ns, id, URLencoded);
+    }
+
+    public HasInheritanceId(QName qname) {
+        super(qname);
+    }
 }

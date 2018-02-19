@@ -76,7 +76,7 @@ public class AdminTopResource {
         IRepository repo = RepositoryFactory.getRepository();
         EnumSet<ConsistencyCheckerVerbosity> verbosity = EnumSet.of(ConsistencyCheckerVerbosity.NONE);
         ConsistencyCheckerConfiguration config = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repo);
-        return ConsistencyChecker.checkCorruptionUsingCsarExport(config);
+        return ConsistencyChecker.checkCorruption(config);
     }
 
     @POST

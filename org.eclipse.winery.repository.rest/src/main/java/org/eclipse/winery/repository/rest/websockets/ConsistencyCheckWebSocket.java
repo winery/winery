@@ -55,7 +55,7 @@ public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressList
 
         ConsistencyCheckerConfiguration config = mapper.readValue(message, ConsistencyCheckerConfiguration.class);
 
-        ConsistencyErrorLogger errorList = ConsistencyChecker.checkCorruptionUsingCsarExport(config, this);
+        ConsistencyErrorLogger errorList = ConsistencyChecker.checkCorruption(config, this);
 
         // Transform object to JSON and send it.
         this.session.getBasicRemote().sendText(mapper.writeValueAsString(errorList));
@@ -68,7 +68,7 @@ public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressList
      * Publishes the current checking progress to the client in JSON format.
      */
     @Override
-    public void updateCheckerProgress(float progress) {
+    public void updateProgress(float progress) {
         this.session.getAsyncRemote().sendText("{\"progress\":" + progress + "}");
     }
 
@@ -76,7 +76,7 @@ public class ConsistencyCheckWebSocket implements ConsistencyCheckerProgressList
      * Publishes the detailed checking progress to the customer in JSON format.
      */
     @Override
-    public void detailedCheckerProgress(float progress, String checkingDefinition) {
+    public void updateProgress(float progress, String checkingDefinition) {
         this.session.getAsyncRemote().sendText("{"
             + "\"progress\":" + progress + ","
             + "\"currentlyChecking\":\"" + checkingDefinition + "\""

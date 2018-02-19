@@ -13,3 +13,4 @@ release.properties
 target/
 node_modules/
 winery-debug.log
+**/gen/**

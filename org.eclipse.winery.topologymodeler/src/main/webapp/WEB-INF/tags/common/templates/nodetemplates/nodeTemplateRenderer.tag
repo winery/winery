@@ -13,6 +13,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--%>
 <%@tag language="java" pageEncoding="UTF-8"
        description="This tag is used for both real nodeTemplate node rendering and rendering of a 'template' used to create a nodeTemplateShape. The latter is called by palette.jsp. Therefore, this tag has to be more general." %>
+
 <%-- Parameters --%>
 
 <%-- template and palette --%>
@@ -120,13 +121,9 @@
                 }
             %></span>
         </div>
-        <div class="id nodetemplate"><%=visualElementId%>
-        </div>
-        <div class="name nodetemplate"><%=name%>
-        </div>
-        <div
-            class="type nodetemplate"><%=Util.qname2hrefWithName(uiURL, TNodeType.class, nodeTypeQName, nodeType.getName())%>
-        </div>
+        <div class="id nodetemplate"><%=visualElementId%></div>
+        <div class="name nodetemplate"><%=name%></div>
+        <div class="type nodetemplate"><%=Util.qname2hrefWithName(uiURL, TNodeType.class, nodeTypeQName, nodeType.getName())%></div>
         <span class="typeQName hidden"><%=nodeTypeQName%></span>
         <span class="typeNamespace hidden"><%=nodeTypeQName.getNamespaceURI()%></span>
     </div>

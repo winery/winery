@@ -30,6 +30,11 @@ public class ConsistencyErrorLogger {
 
     private Map<QName, ElementErrorList> errorList = new HashMap<>();
 
+    /**
+     * Use this only in exceptional cases. Please use the other methods to provide a {@link DefinitionsChildId}
+     *
+     * @param message The message to log.
+     */
     public void error(String message) {
         ElementErrorList element = this.errorList.get(CONFIG_Q_NAME);
 

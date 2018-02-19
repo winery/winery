@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -130,7 +130,6 @@ public class Prefs implements ServletContextListener {
             basePath = basePath.substring(0, pos);
         }
         Environment.getUrlConfiguration().setTopologyModelerUrl(basePath + "winery-topologymodeler");
-        Environment.getUrlConfiguration().setTopologyModelerUrl(basePath + "winery-workflowmodeler");
     }
 
     @Override

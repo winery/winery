@@ -38,17 +38,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Api(tags = "Service Templates")
 public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeReferenceResource<ServiceTemplateResource> {
-
-    @GET
-    @Path("createfromartifact")
-    @Produces(MediaType.APPLICATION_JSON)
-    public CreateFromArtifactApiData getCreateFromArtifactData() {
-        Set<QName> artifactTypes = new HashSet<QName>();
-        Set<QName> infrastructureNodeTypes = new HashSet<QName>();
-        Collection<AbstractComponentInstanceResource> templates = this.getAll();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplatesResource.class);
+	@GET
+	@Path("createfromartifact")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CreateFromArtifactApiData getCreateFromArtifactData() {
+		Set<QName> artifactTypes = new HashSet<QName>();
+		Set<QName> infrastructureNodeTypes = new HashSet<QName>();
+		Collection<AbstractComponentInstanceResource> templates = this.getAll();
 
         for (AbstractComponentInstanceResource resource : templates) {
             if (resource instanceof ServiceTemplateResource) {
@@ -215,5 +217,4 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
     public ServiceTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
         return this.getComponentInstaceResource(namespace, id, true);
     }
-
 }

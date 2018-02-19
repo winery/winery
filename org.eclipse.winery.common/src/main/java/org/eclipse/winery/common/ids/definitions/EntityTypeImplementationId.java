@@ -16,7 +16,9 @@ package org.eclipse.winery.common.ids.definitions;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
-public abstract class EntityTypeImplementationId extends DefinitionsChildId {
+import javax.xml.namespace.QName;
+
+public abstract class EntityTypeImplementationId extends HasInheritanceId {
 
     public EntityTypeImplementationId(Namespace namespace, XmlId xmlId) {
         super(namespace, xmlId);
@@ -24,5 +26,9 @@ public abstract class EntityTypeImplementationId extends DefinitionsChildId {
 
     public EntityTypeImplementationId(String ns, String id, boolean URLencoded) {
         super(ns, id, URLencoded);
+    }
+
+    public EntityTypeImplementationId(QName qname) {
+        super(qname);
     }
 }

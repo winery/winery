@@ -13,11 +13,33 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.*;
+import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
@@ -26,31 +48,21 @@ import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources._support.ExtendedInheritanceResource;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
-import org.eclipse.winery.repository.rest.resources._support.dataadapter.InjectorReplaceData;
-import org.eclipse.winery.repository.rest.resources._support.dataadapter.InjectorReplaceOptions;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceData;
+import org.eclipse.winery.repository.rest.resources._support.dataadapter.injectionadapter.InjectorReplaceOptions;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.BoundaryDefinitionsResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.plans.PlansResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.selfserviceportal.SelfServicePortalResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.topologytemplates.TopologyTemplateResource;
 import org.eclipse.winery.repository.splitting.Splitting;
 import org.eclipse.winery.repository.splitting.SplittingException;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.net.URI;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 public class ServiceTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IHasName {
 
@@ -281,10 +293,10 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 	/**
      * @return resource managing abstract, final, derivedFrom
      */
-    @Path("inheritance/")
-    public ExtendedInheritanceResource getInheritanceManagement() {
-        return new ExtendedInheritanceResource(this);
-    }
+  @Path("inheritance/")
+  public ExtendedInheritanceResource getInheritanceManagement() {
+    return new ExtendedInheritanceResource(this);
+  }
 	
 	public TServiceTemplate getServiceTemplate() {
 		return (TServiceTemplate) this.getElement();

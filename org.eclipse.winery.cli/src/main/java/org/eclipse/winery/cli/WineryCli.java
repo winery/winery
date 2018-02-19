@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,8 @@
  ********************************************************************************/
 package org.eclipse.winery.cli;
 
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.cli.*;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -71,18 +73,22 @@ public class WineryCli {
         boolean serviceTemplatesOnly = line.hasOption("so");
         boolean checkDocumentation = line.hasOption("cd");
         ConsistencyCheckerConfiguration configuration = new ConsistencyCheckerConfiguration(serviceTemplatesOnly, checkDocumentation, verbosity, repository);
-        ConsistencyErrorLogger errors = ConsistencyChecker.checkCorruptionUsingCsarExport(configuration, new ConsistencyCheckerProgressListener() {
+
+        ProgressBar progressBar = new ProgressBar("Check", 100, ProgressBarStyle.ASCII);
+        progressBar.start();
+        ConsistencyErrorLogger errors = ConsistencyChecker.checkCorruption(configuration, new ConsistencyCheckerProgressListener() {
             @Override
-            public void updateCheckerProgress(float progress) {
-                System.out.println(progress * 100 + "%");
+            public void updateProgress(float progress) {
+                progressBar.stepTo((long) (progress * 100));
             }
 
             @Override
-            public void detailedCheckerProgress(float progress, String checkingDefinition) {
-                updateCheckerProgress(progress);
-                System.out.println("\nNow checking " + checkingDefinition);
+            public void updateProgress(float progress, String checkingDefinition) {
+                progressBar.setExtraMessage("Now checking " + checkingDefinition);
+                progressBar.stepTo((long) (progress * 100));
             }
         });
+        progressBar.stop();
 
         System.out.println();
         if (errors.getErrorList().isEmpty()) {
