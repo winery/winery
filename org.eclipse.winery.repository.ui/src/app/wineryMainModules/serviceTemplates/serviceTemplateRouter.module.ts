@@ -26,6 +26,7 @@ import {SelfServicePortalComponent} from '../../instance/serviceTemplates/selfSe
 import {selfServiceRoutes} from '../../instance/serviceTemplates/selfServicePortal/selfServicePortalRouter.module';
 import {TagComponent} from '../../instance/serviceTemplates/tag/tag.component';
 import {DocumentationComponent} from '../../instance/sharedComponents/documentation/documentation.component';
+import {InheritanceComponent} from '../../instance/sharedComponents/inheritance/inheritance.component';
 import {ToscaTypes} from '../../wineryInterfaces/enums';
 import {WineryReadmeComponent} from '../../wineryReadmeModule/wineryReadme.component';
 import {WineryLicenseComponent} from '../../wineryLicenseModule/wineryLicense.component';
@@ -51,6 +52,7 @@ const serviceTemplateRoutes: Routes = [
                 // 'app/instance/serviceTemplates/selfServicePortal/selfServicePortalRouter.module#SelfServiceRoutingModule'
                 children: selfServiceRoutes
             },
+            {path: 'inheritance', component: InheritanceComponent},
             {
                 path: 'boundarydefinitions',
                 component: BoundaryDefinitionsComponent,
