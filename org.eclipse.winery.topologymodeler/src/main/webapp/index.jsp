@@ -26,6 +26,7 @@
 <%@page import="java.util.Collection" %>
 <%@page import="java.util.LinkedList" %>
 <%@page import="java.util.List" %>
+<%@ page import="java.util.Optional" %>
 
 <%-- nc.. = non-common .. --%>
 <%@taglib prefix="ncnt" tagdir="/WEB-INF/tags/templates/nodetemplates" %>
@@ -537,7 +538,13 @@ Something went wrong in the repository: topology template not found.
 
                         // Get saved position
                         // x and y are stored as attributes of other namespaces
-                        String left = ModelUtilities.getLeft(nodeTemplate).get().toString();
+                        Optional<Integer> leftOptional = ModelUtilities.getLeft(nodeTemplate);
+                        String left;
+                        if (leftOptional.isPresent()) {
+                            left = leftOptional.get().toString();
+                        } else {
+                            left = "0";
+                        }
                         String top = ModelUtilities.getTop(nodeTemplate);
             %>
             <nt:nodeTemplateRenderer client="<%=client%>" relationshipTypes="<%=relationshipTypes%>"
