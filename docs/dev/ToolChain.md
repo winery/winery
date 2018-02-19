@@ -55,6 +55,8 @@ Email your supervisor your GitHub username.
 
   1. Create a new branch for each topic (fix a bug, add functionality) and name it accordingly.
      - Thesis: `thesis/SHORT-THESIS-TITLE`. Replace `SHORT-THESIS-TITLE` with something meaningful
+     - EnPro: prefix `fix`, `feature`, `wip` (see below) with `enpro/`
+     - StuPro: prefix `fix`, `feature`, `wip` (see below) with `stupro/`
      - Bugfix: `fix/issue-NNN` or `fix/SHORT-TITLE` if fixing an issue with a number or give it a title
      - Feature: `feature/issue-NNN` or `feature/SHORT-TITLE`
      - WIP: `wip/SHORT-TITLE` for work in progress without issue and you know won't be finished soon
