@@ -14,42 +14,25 @@
 
 package org.eclipse.winery.repository.splitting;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.stream.Collectors;
-
-import javax.xml.namespace.QName;
-
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.TCapability;
-import org.eclipse.winery.model.tosca.TCapabilityType;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipType;
-import org.eclipse.winery.model.tosca.TRequirement;
-import org.eclipse.winery.model.tosca.TRequirementType;
-import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.driverspecificationandinjection.DASpecification;
 import org.eclipse.winery.repository.driverspecificationandinjection.DriverInjection;
-
-import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Splitting {
 
@@ -88,6 +71,9 @@ public class Splitting {
         repository.forceDelete(splitServiceTemplateId);
         repository.flagAsExisting(splitServiceTemplateId);
         TServiceTemplate splitServiceTemplate = new TServiceTemplate();
+        splitServiceTemplate.setName(splitServiceTemplateId.getXmlId().getDecoded());
+        splitServiceTemplate.setId(splitServiceTemplate.getName());
+        splitServiceTemplate.setTargetNamespace(id.getNamespace().getDecoded());
         TTopologyTemplate splitTopologyTemplate = split(serviceTemplate.getTopologyTemplate());
         splitServiceTemplate.setTopologyTemplate(splitTopologyTemplate);
 
@@ -102,6 +88,9 @@ public class Splitting {
         repository.forceDelete(matchedServiceTemplateId);
         repository.flagAsExisting(matchedServiceTemplateId);
         TServiceTemplate matchedServiceTemplate = new TServiceTemplate();
+        matchedServiceTemplate.setName(matchedServiceTemplateId.getXmlId().getDecoded());
+        matchedServiceTemplate.setId(matchedServiceTemplate.getName());
+        matchedServiceTemplate.setTargetNamespace(id.getNamespace().getDecoded());
         TTopologyTemplate matchedTopologyTemplate = hostMatchingWithDefaultHostSelection(splitTopologyTemplate);
         matchedServiceTemplate.setTopologyTemplate(matchedTopologyTemplate);
         LOGGER.debug("Persisting...");
@@ -176,6 +165,9 @@ public class Splitting {
         RepositoryFactory.getRepository().flagAsExisting(matchedServiceTemplateId);
         repository.flagAsExisting(matchedServiceTemplateId);
         TServiceTemplate matchedServiceTemplate = new TServiceTemplate();
+        matchedServiceTemplate.setName(matchedServiceTemplateId.getXmlId().getDecoded());
+        matchedServiceTemplate.setId(matchedServiceTemplate.getName());
+        matchedServiceTemplate.setTargetNamespace(id.getNamespace().getDecoded());
         matchedServiceTemplate.setTopologyTemplate(daSpecifiedTopology);
         LOGGER.debug("Persisting...");
         repository.setElement(matchedServiceTemplateId, matchedServiceTemplate);
@@ -203,6 +195,9 @@ public class Splitting {
         repository.forceDelete(composedServiceTemplateId);
         repository.flagAsExisting(composedServiceTemplateId);
         TServiceTemplate composedServiceTemplate = new TServiceTemplate();
+        composedServiceTemplate.setName(composedServiceTemplateId.getXmlId().getDecoded());
+        composedServiceTemplate.setId(composedServiceTemplate.getName());
+        composedServiceTemplate.setTargetNamespace(solutionNamespace);
         TTopologyTemplate composedTopologyTemplate = new TTopologyTemplate();
         composedServiceTemplate.setTopologyTemplate(composedTopologyTemplate);
         repository.setElement(composedServiceTemplateId, composedServiceTemplate);
