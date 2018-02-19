@@ -45,7 +45,7 @@ export class InstanceService {
                     'Inheritance', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.ServiceTemplate:
-                subMenu = ['README', 'LICENSE', 'Topology Template', 'Plans', 'Selfservice Portal',
+                subMenu = ['README', 'LICENSE', 'Topology Template', 'Plans', 'Selfservice Portal', 'Inheritance',
                     'Boundary Definitions', 'Tags', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.RelationshipType:
