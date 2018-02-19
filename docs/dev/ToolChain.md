@@ -54,6 +54,10 @@ Email your supervisor your GitHub username.
 ### Steps for working on a topic
 
   1. Create a new branch for each topic (fix a bug, add functionality) and name it accordingly.
+     - Thesis: `thesis/SHORT-THESIS-TITLE`. Replace `SHORT-THESIS-TITLE` with something meaningful
+     - Bugfix: `fix/issue-NNN` or `fix/SHORT-TITLE` if fixing an issue with a number or give it a title
+     - Feature: `feature/issue-NNN` or `feature/SHORT-TITLE`
+     - WIP: `wip/SHORT-TITLE` for work in progress without issue and you know won't be finished soon
   2. Sync with latest changes on origin (especially master branch): `git fetch origin`.
   3. Create branch based on `upstream/master` and make it known publicly:
      - `git checkout upstream/master`
