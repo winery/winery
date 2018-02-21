@@ -130,6 +130,7 @@ public class Prefs implements ServletContextListener {
             basePath = basePath.substring(0, pos);
         }
         Environment.getUrlConfiguration().setTopologyModelerUrl(basePath + "winery-topologymodeler");
+        Environment.getUrlConfiguration().setRepositoryUiUrl(basePath + "#");
     }
 
     @Override

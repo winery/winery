@@ -27,6 +27,7 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.documentation.DocumentationResource;
@@ -52,6 +53,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 /**
  * Resource for a component (
@@ -229,6 +231,24 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         } else {
             return RestUtils.getCSARofSelectedResource(this);
         }
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public Response redirectToAngularUi(
+        @QueryParam(value = "csar") String csar,
+        @QueryParam(value = "yaml") String yaml,
+        @Context UriInfo uriInfo) {
+        // in case there is an URL requested directly via the browser UI, the accept cannot be put at the link.
+        // thus, there is the hack with ?csar and ?yaml
+        // the hack is implemented at getDefinitionsAsResponse
+        if ((csar != null) || (yaml != null)) {
+            return this.getDefinitionsAsResponse(csar, yaml, uriInfo);
+        }
+        String repositoryUiUrl = Environment.getUrlConfiguration().getRepositoryUiUrl();
+        String uri = uriInfo.getAbsolutePath().toString();
+        String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environment.getUrlConfiguration().getRepositoryApiUrl(), repositoryUiUrl);
+        return Response.temporaryRedirect(URI.create(uiUrl)).build();
     }
 
     @GET

@@ -14,15 +14,14 @@
 
 package org.eclipse.winery.repository.configuration;
 
-import java.util.Objects;
-
 import org.apache.commons.configuration2.Configuration;
+
+import java.util.Objects;
 
 public class UrlConfiguration {
 
     private String repositoryApiUrl = "http://localhost:8080/winery";
-
-    private String repositoryUiUrl = "http://localhost:8080/#/";
+    private String repositoryUiUrl = "http://localhost:8080/#";
     private String bpmn4ToscaModelerUrl = "http://localhost:8080/winery-workflowmodeler";
     private String topologyModelerUrl = "http://localhost:8080/winery-topoloymodeler";
 
@@ -31,6 +30,7 @@ public class UrlConfiguration {
 
     public UrlConfiguration(Configuration configuration) {
         this.setBpmn4ToscaModelerUrl(configuration.getString(Environment.KEY_URL_BPMN4TOSCA_MODELER, null));
+        this.setRepositoryUiUrl(configuration.getString(Environment.KEY_URL_REPOSITORY_UI, null));
         this.setTopologyModelerUrl(configuration.getString(Environment.KEY_URL_TOPOLOGY_MODELER, null));
     }
 
