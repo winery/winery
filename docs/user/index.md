@@ -6,6 +6,7 @@
 - [Quickstart](#quickstart)
 - [Features](#features)
 - [Miscellaneous notes](#miscellaneous-notes)
+- [Related work](#related-work)
 - [License](#license)
 
 <!-- tocstop -->
@@ -68,6 +69,10 @@ The name of the wrapper element is `properties`.
 <!--
 Implementation hint: This is implemented in `PropertiesDefinitionComponent.onCustomKeyValuePairSelected` (TS) and `org.eclipse.winery.model.tosca.TEntityType.getWinerysPropertiesDefinition` (Java).
 -->
+
+## Related Work
+
+- [tosca-parser by the OpenStack project](https://github.com/openstack/tosca-parser) - parses TOSCA YAML files using Pyhton
 
 ## License
 
