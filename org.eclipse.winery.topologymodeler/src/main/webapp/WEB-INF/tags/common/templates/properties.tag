@@ -58,8 +58,8 @@
             }
         %></textarea>
         <%-- We have to do use $(this).parent().parent().parent().attr('id') instead of <%=visualElementId%> as on drag'n'drop from the palette, this binding is NOT changed, but the Id changes --> the user does NOT want to edit the properties from the palette entry, but from the node template --%>
-        <button class="btn btn-default" onclick="editPropertiesXML($(this).parent().parent().parent().attr('id'));"><img
-            src="${pathToImages}xml.png"></img>View
+        <button class="btn btn-default" onclick="editPropertiesXML($(this).parent().parent().parent().attr('id'));">
+            <img src="${pathToImages}xml.png"></img>View
         </button>
         <%
         } else {
@@ -95,8 +95,7 @@
             %>
             <tr class="KVProperty">
                 <td><span class="<%= key %> KVPropertyKey"><%= key %></span></td>
-                <td><a class="KVPropertyValue" href="#" data-type="text" data-title="Enter <%= key %>"><%=value %>
-                </a></td>
+                <td><a class="KVPropertyValue" href="#" data-type="text" data-title="Enter <%= key %>"><%=value %></a></td>
             </tr>
             <%
                     }
