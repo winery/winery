@@ -21,11 +21,11 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
     1. Open the Settings (by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>)
     3. Go to "Editor > Code Style"
     3. Click "Manage..." (right of "Scheme:")
-    4. Click "Import..."
-    4. Choose "CheckStyle Configuration"
-    5. Navigate to  `checkstyle.xml`. It is located inside the winery git repository under the root folder.
+    4. Click "Import Scheme"
+    4. Choose "IntelliJ IDEA code style XML"
+    5. Navigate to  `intellij-idea-code-style.xml`. It is located in `docs/dev/config/IntelliJ IDEA`
     6. Press "OK"
-    6. You will see a message "CheckStyle configuration settings were imported to ... scheme".
+    6. You will see a message "Winery configuration settings were imported".
     7. Press "OK"
     8. Press "Close"
     9. Press "OK"
