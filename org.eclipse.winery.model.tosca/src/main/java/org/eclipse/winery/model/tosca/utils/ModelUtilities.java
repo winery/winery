@@ -201,7 +201,7 @@ public class ModelUtilities {
      * Special method to get the name of an extensible element as the TOSCA specification does not have a separate super
      * type for elements with a name
      * <p>
-     * {@link Util#instanceSupportsNameAttribute(java.lang.Class)} is related
+     * @see Util#instanceSupportsNameAttribute(java.lang.Class) is related
      *
      * @param e the extensible element offering a name attribute (besides an id attribute)
      * @return the name of the extensible element
@@ -222,7 +222,7 @@ public class ModelUtilities {
     /**
      * Returns the name of the given element. If the name does not exist or is empty, the id is returned
      * <p>
-     * {@see getName}
+     * {@link #getName}
      *
      * @return the name if there is a name field, if not, the id is returned. In case there is a Name field,
      */

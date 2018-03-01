@@ -13,30 +13,108 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.xerces.impl.dv.XSSimpleType;
-import org.apache.xerces.impl.xs.XSImplementationImpl;
-import org.apache.xerces.xs.*;
-import org.eclipse.jdt.annotation.NonNull;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.admin.AdminId;
-import org.eclipse.winery.common.ids.definitions.*;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.*;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
+import org.eclipse.winery.model.tosca.HasTargetNamespace;
+import org.eclipse.winery.model.tosca.TArtifactReference;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TArtifactType;
+import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
+import org.eclipse.winery.model.tosca.TImport;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TPlan;
+import org.eclipse.winery.model.tosca.TPlans;
+import org.eclipse.winery.model.tosca.TPolicyTemplate;
+import org.eclipse.winery.model.tosca.TPolicyType;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
@@ -53,6 +131,26 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.xerces.impl.dv.XSSimpleType;
+import org.apache.xerces.impl.xs.XSImplementationImpl;
+import org.apache.xerces.xs.XSComplexTypeDefinition;
+import org.apache.xerces.xs.XSElementDeclaration;
+import org.apache.xerces.xs.XSImplementation;
+import org.apache.xerces.xs.XSLoader;
+import org.apache.xerces.xs.XSModel;
+import org.apache.xerces.xs.XSModelGroup;
+import org.apache.xerces.xs.XSObjectList;
+import org.apache.xerces.xs.XSParticle;
+import org.apache.xerces.xs.XSTerm;
+import org.apache.xerces.xs.XSTypeDefinition;
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Document;
@@ -61,24 +159,6 @@ import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.ParseException;
-import java.util.*;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 
@@ -964,7 +1044,7 @@ public class BackendUtils {
     }
 
     /**
-     * Tests if a path matches a glob pattern. {@see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>}
+     * Tests if a path matches a glob pattern. @see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia</a>
      *
      * @param glob Glob pattern to test the path against.
      * @param path Path that should match the glob pattern.

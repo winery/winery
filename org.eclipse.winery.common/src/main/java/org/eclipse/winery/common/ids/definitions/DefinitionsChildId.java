@@ -13,15 +13,16 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
-
-import javax.xml.namespace.QName;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Identifies a definitions child. Each component is required to be identified
@@ -34,7 +35,7 @@ import java.util.Objects;
  * Components are elements, which may appear directly nested in TDefinitions:
  * <ul>
  * <li>ServiceTemplates,</li>
- * <li>EntityTypes,</li
+ * <li>EntityTypes,</li>
  * <li>EntityTypeImplementations,</li>
  * <li>EntityTemplates</li>
  * </ul>
@@ -64,7 +65,7 @@ public abstract class DefinitionsChildId extends GenericId {
     }
 
     /**
-     * Creates a new id based on strings. This constructor is required for {@link org.eclipse.winery.repository.resources.AbstractComponentsResource}
+     * Creates a new id based on strings. This constructor is required for @see org.eclipse.winery.repository.resources.AbstractComponentsResource
      *
      * @param ns         the namespace to be used
      * @param id         the id to be used

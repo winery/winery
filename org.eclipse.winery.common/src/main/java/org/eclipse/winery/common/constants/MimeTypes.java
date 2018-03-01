@@ -14,7 +14,7 @@
 package org.eclipse.winery.common.constants;
 
 /**
- * See also {@link org.eclipse.winery.repository.backend.constants.MediaTypes}
+ * see org.eclipse.winery.repository.backend.constants.MediaTypes
  */
 public class MimeTypes {
 
