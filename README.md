@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://opensource.org/licenses/EPL-2.0)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Feclipse%2Fwinery.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Feclipse%2Fwinery?ref=badge_shield)
 
 Winery is a Web-based environment to graphically model TOSCA topologies and plans managing these topologies.
 It is an Eclipse project and thus support is available through its project page <https://eclipse.org/winery>.
@@ -65,3 +66,6 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   [SmartOrchestra]: http://smartorchestra.de/en/
   [SePiA.Pro]: http://projekt-sepiapro.de/en/
   [TerrificJS]: http://terrifically.org/
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Feclipse%2Fwinery.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Feclipse%2Fwinery?ref=badge_large)
