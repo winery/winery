@@ -14,32 +14,21 @@
 
 package org.eclipse.winery.repository.client;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
-import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.beans.NamespaceIdOptionalName;
-import org.eclipse.winery.common.constants.MimeTypes;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.IdUtil;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
-import org.eclipse.winery.common.interfaces.QNameWithName;
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -53,13 +42,38 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
-import java.util.*;
+
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.beans.NamespaceIdOptionalName;
+import org.eclipse.winery.common.constants.MimeTypes;
+import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.IdUtil;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.interfaces.QNameAlreadyExistsException;
+import org.eclipse.winery.common.interfaces.QNameWithName;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TDefinitions;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.client.urlconnection.HttpURLConnectionFactory;
+import com.sun.jersey.client.urlconnection.URLConnectionClientHandler;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 public final class WineryRepositoryClient implements IWineryRepositoryClient {
 
@@ -91,7 +105,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
     // schema aware document builder
     private final DocumentBuilder toscaDocumentBuilder;
 
-
     // taken from http://stackoverflow.com/a/15253142/873282
     private static class ConnectionFactory implements HttpURLConnectionFactory {
 
@@ -107,7 +120,6 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
             return (HttpURLConnection) url.openConnection(this.proxy);
         }
     }
-
 
     /**
      * Creates the client without the use of any proxy
@@ -427,6 +439,13 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         return res;
     }
 
+    private static WebResource getTopologyTemplateWebResource(WebResource base, QName serviceTemplate, String parentPath, String elementPath) {
+        String nsEncoded = Util.DoubleURLencode(serviceTemplate.getNamespaceURI());
+        String idEncoded = Util.DoubleURLencode(serviceTemplate.getLocalPart());
+        WebResource res = base.path(parentPath).path(nsEncoded).path(idEncoded).path(elementPath);
+        return res;
+    }
+
     @Override
     public Collection<QNameWithName> getListOfAllInstances(Class<? extends DefinitionsChildId> clazz) {
         // inspired by getQNameListOfAllTypes
@@ -578,6 +597,35 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
         // we try all repositories until the first hit
         for (WebResource wr : this.repositoryResources) {
             WebResource r = WineryRepositoryClient.getTopologyTemplateWebResource(wr, serviceTemplate);
+            ClientResponse response = r.accept(MediaType.TEXT_XML).get(ClientResponse.class);
+            if (response.getClientResponseStatus() == ClientResponse.Status.OK) {
+                TTopologyTemplate topologyTemplate;
+                Document doc = this.parseAndValidateTOSCAXML(response.getEntityInputStream());
+                if (doc == null) {
+                    // no valid document
+                    return null;
+                }
+                try {
+                    topologyTemplate = WineryRepositoryClient.createUnmarshaller().unmarshal(doc.getDocumentElement(), TTopologyTemplate.class).getValue();
+                } catch (JAXBException e) {
+                    LOGGER.debug("Could not parse topology, returning null", e);
+                    return null;
+                }
+                // first hit: immediately stop and return result
+                return topologyTemplate;
+            }
+        }
+        // nothing found
+        return null;
+    }
+
+    @Override
+    public TTopologyTemplate getTopologyTemplate(QName serviceTemplate, String parentPath, String elementPath) {
+        /* code copied from org.eclipse.winery.repository.client.WineryRepositoryClient.getTopologyTemplate(javax.xml.namespace.QName) and adapted to use "getTopologyTemplateWebResource" with four parameters */
+
+        // we try all repositories until the first hit
+        for (WebResource wr : this.repositoryResources) {
+            WebResource r = WineryRepositoryClient.getTopologyTemplateWebResource(wr, serviceTemplate, parentPath, elementPath);
             ClientResponse response = r.accept(MediaType.TEXT_XML).get(ClientResponse.class);
             if (response.getClientResponseStatus() == ClientResponse.Status.OK) {
                 TTopologyTemplate topologyTemplate;
