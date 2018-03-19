@@ -14,16 +14,20 @@
 
 package org.eclipse.winery.repository.patterndetection.model;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
 import org.eclipse.winery.model.tosca.TNodeTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
 
 public class AbstractTopology {
 
@@ -74,8 +78,8 @@ public class AbstractTopology {
         // necessary list to avoid duplicate adding of node templates
         allNodes = new ArrayList<>();
 
-        List<TNodeTemplate> tNodeTemplateList = ModelUtilities.getAllNodeTemplates(tTopologyTemplate);
-        List<TRelationshipTemplate> tRelationshipTemplateList = ModelUtilities.getAllRelationshipTemplates(tTopologyTemplate);
+        List<TNodeTemplate> tNodeTemplateList = tTopologyTemplate.getNodeTemplates();
+        List<TRelationshipTemplate> tRelationshipTemplateList = tTopologyTemplate.getRelationshipTemplates();
 
         // check for each NodeTemplate if it occurs in the list of labeled NodeTemplates
         all:
