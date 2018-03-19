@@ -123,7 +123,8 @@ Something went wrong in the repository: topology template not found.
     }
 
     String topologyTemplateURL = repositoryURL + parentPath + Util.DoubleURLencode(serviceTemplateQName) + elementPath;
-    String doubleEncodedTopologyTemplateURL = repositoryURL + parentPath + Util.DoubleURLencode(Util.URLencode(serviceTemplateQName.getNamespaceURI())) + "/" + Util.DoubleURLencode(Util.URLencode(serviceTemplateQName.getLocalPart())) + elementPath;
+    String doubleEncodedTopologyTemplateURL = repositoryURL + parentPath + Util.DoubleURLencode(serviceTemplateQName.getNamespaceURI()) + "/" + Util.DoubleURLencode(serviceTemplateQName.getLocalPart()) + elementPath;
+    String tripleEncodedTopologyTemplateURL = repositoryURL + parentPath + Util.DoubleURLencode(Util.URLencode(serviceTemplateQName.getNamespaceURI())) + "/" + Util.DoubleURLencode(Util.URLencode(serviceTemplateQName.getLocalPart())) + elementPath;
     String serviceTemplateName = client.getName(elementId);
 %>
 <!DOCTYPE html>
@@ -688,6 +689,7 @@ Something went wrong in the repository: topology template not found.
             winery.events.register(winery.events.name.command.MATCH, wt.match);
             wt.setTopologyTemplateURL("<%=topologyTemplateURL%>");
             wt.setDoubleEncodedTopologyTemplateURL("<%=doubleEncodedTopologyTemplateURL%>");
+            wt.setTripleEncodedTopologyTemplateURL("<%=tripleEncodedTopologyTemplateURL%>");
         });
     </script>
     <script>

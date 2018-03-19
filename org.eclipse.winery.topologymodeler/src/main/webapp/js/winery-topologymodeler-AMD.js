@@ -25,6 +25,7 @@ define(
 
         var topologyTemplateURL;
         var doubleEncodedTopologyTemplateURL;
+        var tripleEncodedTopologyTemplateURL;
         var patternId;
 
         return {
@@ -41,6 +42,9 @@ define(
             },
             setDoubleEncodedTopologyTemplateURL: function (url) {
                 doubleEncodedTopologyTemplateURL = url;
+            },
+            setTripleEncodedTopologyTemplateURL: function (url) {
+                tripleEncodedTopologyTemplateURL = url;
             },
             highlightPattern: highlightPattern,
             getTopologyTemplateAsXML: getTopologyTemplateAsXML,
@@ -178,7 +182,7 @@ define(
         }
 
         function patternSelection() {
-            var patternSelectionToolURL = location.protocol + '//' + location.hostname + ':4200/#/solution-selection?sourceurl=' + doubleEncodedTopologyTemplateURL + 'compose';
+            var patternSelectionToolURL = location.protocol + '//' + location.hostname + ':4200/#/solution-selection?sourceurl=' + tripleEncodedTopologyTemplateURL + 'compose';
             window.open(patternSelectionToolURL);
         }
 
