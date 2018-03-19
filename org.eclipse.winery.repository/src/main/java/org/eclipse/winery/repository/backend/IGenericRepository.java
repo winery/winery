@@ -1,4 +1,4 @@
-/*******************************************************************************
+/********************************************************************************
  * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -10,31 +10,81 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
+ ********************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.apache.tika.mime.MediaType;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.*;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
-import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
-
-import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.attribute.FileTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.ComplianceRule;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.HasInheritanceId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasInheritance;
+import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
+import org.eclipse.winery.model.tosca.TCapability;
+import org.eclipse.winery.model.tosca.TCapabilityDefinition;
+import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.TDeploymentArtifact;
+import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TImplementationArtifact;
+import org.eclipse.winery.model.tosca.TImplementationArtifacts;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TPolicy;
+import org.eclipse.winery.model.tosca.TPolicyTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.TRequirement;
+import org.eclipse.winery.model.tosca.TRequirementDefinition;
+import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
+import org.eclipse.winery.repository.exceptions.WineryRepositoryException;
+
+import org.apache.tika.mime.MediaType;
 
 /**
  * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.common.ids}
@@ -123,7 +173,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
     /**
      * Returns the size of the file referenced by ref
      *
-     * @param ref a refernce to the file stored in the repository
+     * @param ref a reference to the file stored in the repository
      * @return the size in bytes
      * @throws IOException if something goes wrong
      */
@@ -532,6 +582,71 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         return ids;
     }
 
+    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(ComplianceRule id) {
+        // We have to use a HashSet to ensure that no duplicate ids are added
+        // E.g., there may be multiple relationship templates having the same type
+        Collection<DefinitionsChildId> ids = new HashSet<>();
+
+        TComplianceRule complianceRule = this.getElement(id);
+
+        //TODO to extra method
+        //TODO extend to required Structure
+        if (complianceRule.getIdentifier() != null) {
+            for (TEntityTemplate entityTemplate : complianceRule.getIdentifier().getNodeTemplateOrRelationshipTemplate()) {
+                QName qname = entityTemplate.getType();
+                if (entityTemplate instanceof TNodeTemplate) {
+                    ids.add(new NodeTypeId(qname));
+                    TNodeTemplate n = (TNodeTemplate) entityTemplate;
+
+                    // crawl through deployment artifacts
+                    TDeploymentArtifacts deploymentArtifacts = n.getDeploymentArtifacts();
+                    if (deploymentArtifacts != null) {
+                        List<TDeploymentArtifact> das = deploymentArtifacts.getDeploymentArtifact();
+                        for (TDeploymentArtifact da : das) {
+                            ids.add(new ArtifactTypeId(da.getArtifactType()));
+                            if ((qname = da.getArtifactRef()) != null) {
+                                ids.add(new ArtifactTemplateId(qname));
+                            }
+                        }
+                    }
+
+                    // crawl through reqs/caps
+                    TNodeTemplate.Requirements requirements = n.getRequirements();
+                    if (requirements != null) {
+                        for (TRequirement req : requirements.getRequirement()) {
+                            QName type = req.getType();
+                            RequirementTypeId rtId = new RequirementTypeId(type);
+                            ids.add(rtId);
+                        }
+                    }
+                    TNodeTemplate.Capabilities capabilities = n.getCapabilities();
+                    if (capabilities != null) {
+                        for (TCapability cap : capabilities.getCapability()) {
+                            QName type = cap.getType();
+                            CapabilityTypeId ctId = new CapabilityTypeId(type);
+                            ids.add(ctId);
+                        }
+                    }
+
+                    // crawl through policies
+                    org.eclipse.winery.model.tosca.TNodeTemplate.Policies policies = n.getPolicies();
+                    if (policies != null) {
+                        for (TPolicy pol : policies.getPolicy()) {
+                            QName type = pol.getPolicyType();
+                            PolicyTypeId ctId = new PolicyTypeId(type);
+                            ids.add(ctId);
+                        }
+                    }
+                } else {
+                    assert (entityTemplate instanceof TRelationshipTemplate);
+                    ids.add(new RelationshipTypeId(qname));
+                }
+            }
+        }
+
+        return ids;
+    }
+    
     /**
      * Determines all referencedDefinitionsChildIds
      *
@@ -565,6 +680,8 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
             // in case of imports, policy types, and capability types, there are no other ids referenced
             // Collections.emptyList() cannot be used as we add elements later on in the case of inheritance
             referencedDefinitionsChildIds = new ArrayList();
+        } else if (id instanceof ComplianceRule) {
+            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ComplianceRule) id);
         } else {
             throw new IllegalStateException("Unhandled id class " + id.getClass());
         }

@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+/********************************************************************************
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,7 +10,7 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
+ ********************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -545,6 +545,41 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         return res;
     }
 
+    public Collection<? extends DefinitionsChildId> getAllIdsInNamespace(Class<? extends DefinitionsChildId> clazz, Namespace namespace) {
+        Collection<DefinitionsChildId> result = new HashSet<>();
+        String rootPathFragment = Util.getRootPathFragment(clazz);
+        Path dir = this.repositoryRoot.resolve(rootPathFragment);
+        dir = dir.resolve(namespace.getEncoded());
+        if (Files.exists(dir) && Files.isDirectory(dir)) {
+
+            DirectoryStream<Path> directoryStream = null;
+            try {
+                directoryStream = Files.newDirectoryStream(dir);
+
+                for (Path path : directoryStream) {
+                    Constructor<? extends DefinitionsChildId> constructor = null;
+
+                    constructor = clazz.getConstructor(String.class, String.class, boolean.class);
+
+                    DefinitionsChildId definitionsChildId = constructor.newInstance(namespace.getDecoded(), path.getFileName().toString(), false);
+                    result.add(definitionsChildId);
+                }
+                directoryStream.close();
+            } catch (IOException e) {
+                FilebasedRepository.LOGGER.debug("Cannot close ds", e);
+            } catch (NoSuchMethodException e) {
+                FilebasedRepository.LOGGER.debug("Cannot find constructor", e);
+            } catch (InstantiationException e) {
+                FilebasedRepository.LOGGER.debug("Cannot instantiate object", e);
+            } catch (IllegalAccessException e) {
+                FilebasedRepository.LOGGER.debug("IllegalAccessException", e);
+            } catch (InvocationTargetException e) {
+                FilebasedRepository.LOGGER.debug("InvocationTargetException", e);
+            }
+        }
+        return result;
+    }
+
     @Override
     public void doDump(OutputStream out) throws IOException {
         final ZipOutputStream zout = new ZipOutputStream(out);
@@ -587,14 +622,27 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
     public void doClear() {
         try {
             DirectoryStream.Filter<Path> noGitDirFilter = entry -> !(entry.getFileName().toString().equals(".git"));
+            
+            try (DirectoryStream<Path> ds = Files.newDirectoryStream(this.repositoryRoot, noGitDirFilter)) {
+                for (Path p : ds) {
+                    FileUtils.forceDelete(p);
+                }
+            }
+        } catch (IOException e) {
+            FilebasedRepository.LOGGER.error(e.getMessage());
+        }
+    }
 
-            DirectoryStream<Path> ds = Files.newDirectoryStream(this.repositoryRoot, noGitDirFilter);
+    /**
+     * Removes the repository completely, even with the .git directory
+     */
+    public void forceClear() {
+        try (DirectoryStream<Path> ds = Files.newDirectoryStream(this.repositoryRoot)) {
             for (Path p : ds) {
                 FileUtils.forceDelete(p);
             }
         } catch (IOException e) {
             FilebasedRepository.LOGGER.error(e.getMessage());
-            e.printStackTrace();
         }
     }
 

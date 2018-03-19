@@ -312,6 +312,8 @@ public class RestUtils {
         String location;
         if (type.contains("ServiceTemplate")) {
             location = "servicetemplates";
+        } else if (type.contains("ComplianceRule")) {
+            location = "compliancerules";
         } else {
             if (type.contains("TypeImplementation")) {
                 location = "entitytypeimplementations";

@@ -30,6 +30,7 @@ import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
+import org.eclipse.winery.repository.rest.resources.compliancerules.ComplianceRuleResource;
 import org.eclipse.winery.repository.rest.resources.documentation.DocumentationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.relationshiptypeimplementations.RelationshipTypeImplementationResource;
@@ -465,6 +466,12 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
             if (tags == null) {
                 tags = new TTags();
                 ((RelationshipTypeImplementationResource) this).getRTI().setTags(tags);
+            }
+        } else if (this.element instanceof TComplianceRule) {
+            tags = ((TComplianceRule) this.element).getTags();
+            if (tags == null) {
+                tags = new TTags();
+                ((ComplianceRuleResource) this).getCompliancerule().setTags(tags);
             }
         } else {
             throw new IllegalStateException("tags was called on a resource not supporting tags");

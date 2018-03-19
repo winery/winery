@@ -81,6 +81,7 @@
         <module>org.eclipse.winery.repository.rest</module>
         <module>org.eclipse.winery.repository.ui</module>
         <module>org.eclipse.winery.topologymodeler</module>
+        <module>org.eclipse.winery.compliance</module>
         <module>org.eclipse.winery.workflowmodeler</module>
         <module>org.eclipse.winery.generators.ia</module>
         <module>org.eclipse.winery.highlevelrestapi</module>

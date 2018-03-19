@@ -1,4 +1,4 @@
-/*******************************************************************************
+/********************************************************************************
  * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -10,7 +10,8 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
+ ********************************************************************************/
+
 package org.eclipse.winery.common;
 
 import java.io.ByteArrayOutputStream;
@@ -51,6 +52,7 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdUtil;
 import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ComplianceRule;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
@@ -516,6 +518,8 @@ public class Util {
      */
     public static boolean instanceSupportsNameAttribute(Class<? extends DefinitionsChildId> idClass) {
         if (ServiceTemplateId.class.isAssignableFrom(idClass)) {
+            return true;
+        } else if (ComplianceRule.class.isAssignableFrom(idClass)) {
             return true;
         } else if ((EntityTypeId.class.isAssignableFrom(idClass)) || (EntityTypeImplementationId.class.isAssignableFrom(idClass))) {
             // name is available, but no id attribute

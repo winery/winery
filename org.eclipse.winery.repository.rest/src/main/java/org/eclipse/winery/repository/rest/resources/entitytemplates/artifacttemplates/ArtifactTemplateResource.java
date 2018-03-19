@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+/********************************************************************************
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -67,7 +67,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
     }
 
     private TArtifactTemplate getTArtifactTemplate() {
-        return (TArtifactTemplate) this.element;
+        return (TArtifactTemplate) this.getElement();
     }
 
     @Override

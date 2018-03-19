@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+/********************************************************************************
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,14 +10,15 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../configuration';
-import {WineryInstance, WineryTopologyTemplate} from '../wineryInterfaces/wineryComponent';
-import {ToscaComponent} from '../wineryInterfaces/toscaComponent';
-import {ToscaTypes} from '../wineryInterfaces/enums';
+ ********************************************************************************/
+
+import { Injectable } from '@angular/core';
+import { Headers, Http, RequestOptions } from '@angular/http';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../configuration';
+import { WineryInstance, WineryTopologyTemplate } from '../wineryInterfaces/wineryComponent';
+import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
+import { ToscaTypes } from '../wineryInterfaces/enums';
 
 @Injectable()
 export class InstanceService {
@@ -46,7 +47,7 @@ export class InstanceService {
                 break;
             case ToscaTypes.ServiceTemplate:
                 subMenu = ['README', 'LICENSE', 'Topology Template', 'Plans', 'Selfservice Portal',
-                    'Boundary Definitions', 'Tags', 'Documentation', 'XML'];
+                    'Boundary Definitions', 'Tags', 'Documentation', 'XML', 'Constraint Checking'];
                 break;
             case ToscaTypes.RelationshipType:
                 subMenu = ['README', 'LICENSE', 'Visual Appearance', 'Instance States', 'Source Interfaces', 'Target Interfaces',
@@ -79,6 +80,9 @@ export class InstanceService {
                 break;
             case ToscaTypes.Imports:
                 subMenu = ['All Declared Elements Local Names', 'All Defined Types Local Names'];
+                break;
+            case ToscaTypes.ComplianceRule:
+                subMenu = ['README', 'LICENSE', 'Identifier', 'Required Structure', 'Tags', 'Documentation', 'XML'];
                 break;
             default: // assume Admin
                 subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Consistency Check', 'Log'];

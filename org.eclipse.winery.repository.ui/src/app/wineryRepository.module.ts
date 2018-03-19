@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -44,6 +44,7 @@ import {RelationshipTypeImplementationModule} from './wineryMainModules/relation
 import {PolicyTemplateModule} from './wineryMainModules/policyTemplates/policyTemplate.module';
 import {ImportModule} from './wineryMainModules/imports/imports.module';
 import {WineryGitLogComponent} from './wineryGitLog/wineryGitLog.component';
+import {ComplianceRuleModule} from './wineryMainModules/compliancerules/compliancerule.module';
 
 @NgModule({
     imports: [
@@ -70,6 +71,7 @@ import {WineryGitLogComponent} from './wineryGitLog/wineryGitLog.component';
         RelationshipTypeImplementationModule,
         PolicyTemplateModule,
         ImportModule,
+        ComplianceRuleModule,
 
         WineryRepositoryRoutingModule,
     ],

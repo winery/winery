@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013-2016 Contributors to the Eclipse Foundation
+/********************************************************************************
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,7 +10,8 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
+ ********************************************************************************/
+
 package org.eclipse.winery.common.interfaces;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.ComplianceRule;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
@@ -38,6 +40,7 @@ import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TArtifactType;
 import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TNodeType;
@@ -116,6 +119,10 @@ public interface IWineryRepositoryCommon {
     default TPolicyType getElement(PolicyTypeId id) {
         return (TPolicyType) this.getDefinitions(id).getElement();
     }
+
+	default TComplianceRule getElement(ComplianceRule id) {
+		return (TComplianceRule) this.getDefinitions(id).getElement();
+	}
 
     /**
      * Deletes the TOSCA element <b>and all sub elements</b> referenced by the given id from the repository
