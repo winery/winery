@@ -75,6 +75,10 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         super(id);
     }
 
+    public TServiceTemplate getServiceTemplate() {
+        return (TServiceTemplate) this.getElement();
+    }
+
     /**
      * sub-resources
      **/
@@ -292,9 +296,6 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         ServiceTemplateComplianceRuleRuleChecker checker = new ServiceTemplateComplianceRuleRuleChecker(this.getServiceTemplate());
         ServiceTemplateCheckingResult serviceTemplateCheckingResult = checker.checkComplianceRules();
         return Response.ok().entity(serviceTemplateCheckingResult).build();
-    }
-    public TServiceTemplate getServiceTemplate() {
-        return (TServiceTemplate) this.getElement();
     }
 
     @Override
