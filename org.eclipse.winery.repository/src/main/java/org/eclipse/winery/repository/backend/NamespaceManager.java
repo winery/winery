@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,17 +13,25 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import java.util.Collection;
-
 import org.eclipse.winery.common.ids.Namespace;
+
+import java.util.Collection;
 
 public interface NamespaceManager {
 
+    /**
+     * SIDEFFECT: URI is added to list of known namespaces if it did not exist
+     * before
+     */
     default String getPrefix(Namespace namespace) {
         String ns = namespace.getDecoded();
         return this.getPrefix(ns);
     }
 
+    /**
+     * SIDEFFECT: URI is added to list of known namespaces if it did not exist
+     * before
+     */
     String getPrefix(String namespace);
 
     boolean hasPrefix(String namespace);

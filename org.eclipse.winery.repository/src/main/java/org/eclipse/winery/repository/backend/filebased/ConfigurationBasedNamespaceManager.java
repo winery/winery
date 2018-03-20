@@ -13,16 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend.filebased;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Set;
-
+import org.apache.commons.configuration.Configuration;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 
-import org.apache.commons.configuration.Configuration;
+import java.util.*;
 
 public class ConfigurationBasedNamespaceManager implements NamespaceManager {
 
@@ -50,6 +45,7 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
         String prefix = configuration.getString(namespace);
         if (prefix == null) {
             prefix = this.generatePrefix(namespace);
+            this.configuration.setProperty(namespace, prefix);
         }
         return prefix;
     }
