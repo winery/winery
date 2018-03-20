@@ -73,6 +73,7 @@ Implementation hint: This is implemented in `PropertiesDefinitionComponent.onCus
 ## Related Work
 
 - [tosca-parser by the OpenStack project](https://github.com/openstack/tosca-parser) - parses TOSCA YAML files using Pyhton
+- [TOSCA .Net Analyzer](https://github.com/QualiSystems/Toscana) - .NET libary for working with TOSCA YAML files
 
 ## License
 
