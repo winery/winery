@@ -54,7 +54,7 @@ public abstract class DefinitionsChildId extends GenericId {
         RelationshipTypeImplementationId.class,
         RequirementTypeId.class,
         ServiceTemplateId.class,
-        ComplianceRule.class
+        ComplianceRuleId.class
     );
 
     private final Namespace namespace;

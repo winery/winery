@@ -39,7 +39,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.ComplianceRule;
+import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.HasInheritanceId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
@@ -582,7 +582,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         return ids;
     }
 
-    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(ComplianceRule id) {
+    default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(ComplianceRuleId id) {
         // We have to use a HashSet to ensure that no duplicate ids are added
         // E.g., there may be multiple relationship templates having the same type
         Collection<DefinitionsChildId> ids = new HashSet<>();
@@ -680,8 +680,8 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
             // in case of imports, policy types, and capability types, there are no other ids referenced
             // Collections.emptyList() cannot be used as we add elements later on in the case of inheritance
             referencedDefinitionsChildIds = new ArrayList();
-        } else if (id instanceof ComplianceRule) {
-            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ComplianceRule) id);
+        } else if (id instanceof ComplianceRuleId) {
+            referencedDefinitionsChildIds = this.getReferencedDefinitionsChildIds((ComplianceRuleId) id);
         } else {
             throw new IllegalStateException("Unhandled id class " + id.getClass());
         }

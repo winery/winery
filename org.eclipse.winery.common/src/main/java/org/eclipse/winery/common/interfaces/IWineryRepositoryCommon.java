@@ -26,7 +26,7 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.ComplianceRule;
+import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
@@ -120,7 +120,7 @@ public interface IWineryRepositoryCommon {
         return (TPolicyType) this.getDefinitions(id).getElement();
     }
 
-	default TComplianceRule getElement(ComplianceRule id) {
+	default TComplianceRule getElement(ComplianceRuleId id) {
 		return (TComplianceRule) this.getDefinitions(id).getElement();
 	}
 

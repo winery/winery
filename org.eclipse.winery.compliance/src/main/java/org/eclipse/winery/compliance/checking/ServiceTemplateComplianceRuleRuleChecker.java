@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.ComplianceRule;
+import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.compliance.model.TOSCANode;
 import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
@@ -47,13 +47,13 @@ public class ServiceTemplateComplianceRuleRuleChecker {
     public ServiceTemplateCheckingResult checkComplianceRules() {
         StringBuilder checkingResult = new StringBuilder("Rulechecking result for servicetemplate " + serviceTemplate.getIdFromIdOrNameField() + System.lineSeparator());
         ServiceTemplateCheckingResult result = new ServiceTemplateCheckingResult();
-        List<ComplianceRule> ruleIds = getRuleIds(serviceTemplate);
+        List<ComplianceRuleId> ruleIds = getRuleIds(serviceTemplate);
         if (ruleIds.isEmpty()) {
             checkingResult.append("No rules defined");
         } else {
             IRepository repository = RepositoryFactory.getRepository();
 
-            for (ComplianceRule ruleId : ruleIds) {
+            for (ComplianceRuleId ruleId : ruleIds) {
                 TComplianceRule tComplianceRule = repository.getElement(ruleId);
 
                 ComplianceRuleChecker checker = new ComplianceRuleChecker(tComplianceRule, serviceTemplate.getTopologyTemplate());
@@ -83,14 +83,14 @@ public class ServiceTemplateComplianceRuleRuleChecker {
         return result;
     }
 
-    public List<ComplianceRule> getRuleIds(TServiceTemplate serviceTemplate) {
-        ArrayList<ComplianceRule> complianceRules = Lists.newArrayList();
+    public List<ComplianceRuleId> getRuleIds(TServiceTemplate serviceTemplate) {
+        ArrayList<ComplianceRuleId> complianceRules = Lists.newArrayList();
         Namespace namespace = new Namespace(serviceTemplate.getTargetNamespace(), false);
-        Collection<Namespace> componentsNamespaces = RepositoryFactory.getRepository().getComponentsNamespaces(ComplianceRule.class);
+        Collection<Namespace> componentsNamespaces = RepositoryFactory.getRepository().getComponentsNamespaces(ComplianceRuleId.class);
         List<Namespace> relevantNamespaces = componentsNamespaces.stream().filter(ns -> namespace.getDecoded().startsWith(ns.getDecoded())).collect(Collectors.toList());
 
         for (Namespace space : relevantNamespaces) {
-            complianceRules.addAll((Collection<? extends ComplianceRule>) ((FilebasedRepository) RepositoryFactory.getRepository()).getAllIdsInNamespace(ComplianceRule.class, space));
+            complianceRules.addAll((Collection<? extends ComplianceRuleId>) ((FilebasedRepository) RepositoryFactory.getRepository()).getAllIdsInNamespace(ComplianceRuleId.class, space));
         }
         return complianceRules;
     }

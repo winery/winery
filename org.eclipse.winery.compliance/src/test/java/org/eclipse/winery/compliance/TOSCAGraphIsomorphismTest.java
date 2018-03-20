@@ -29,7 +29,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ComplianceRule;
+import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
@@ -104,7 +104,7 @@ public class TOSCAGraphIsomorphismTest {
 		rule.setName("test");
 		rule.setTargetNamespace(TEST_TARGET_NAMESPACE);
 
-		ComplianceRule id = new ComplianceRule(new QName(TEST_TARGET_NAMESPACE, "test"));
+		ComplianceRuleId id = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE, "test"));
 		try {
 			BackendUtils.persist(id, rule);
 		} catch (IOException e) {
@@ -220,9 +220,9 @@ public class TOSCAGraphIsomorphismTest {
 		HashMap<DefinitionsChildId, TExtensibleElements> allEntities = new HashMap<>();
 
 		TServiceTemplate tServiceTemplate = createTServiceTemplate("ServiceTemplateTestId", TEST_TARGET_NAMESPACE);
-		ComplianceRule crId1 = new ComplianceRule(new QName(TEST_TARGET_NAMESPACE, "test1"));
-		ComplianceRule crId2 = new ComplianceRule(new QName(TEST_TARGET_NAMESPACE, "test2"));
-		ComplianceRule crId3 = new ComplianceRule(new QName(TEST_TARGET_NAMESPACE, "test3"));
+		ComplianceRuleId crId1 = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE, "test1"));
+		ComplianceRuleId crId2 = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE, "test2"));
+		ComplianceRuleId crId3 = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE, "test3"));
 
 		//create NodeType
 		NodeTypeId nodeTypeIdA = createNodeTypeId("IDA");
@@ -575,10 +575,10 @@ public class TOSCAGraphIsomorphismTest {
 		TServiceTemplate tServiceTemplate = createTServiceTemplate("ServiceTemplateTestId", TEST_TARGET_NAMESPACE + dirABC + dirBCD);
 		allEntities.put(stId, tServiceTemplate);
 
-		ComplianceRule crId1 = new ComplianceRule(new QName(TEST_TARGET_NAMESPACE, "test1"));
-		ComplianceRule crId2 = new ComplianceRule(new QName(TEST_TARGET_NAMESPACE + dirABC, "test2"));
-		ComplianceRule crId3 = new ComplianceRule(new QName(TEST_TARGET_NAMESPACE + dirABC, "test3"));
-		ComplianceRule crId4 = new ComplianceRule(new QName(TEST_TARGET_NAMESPACE + dirBCD, "test4"));
+		ComplianceRuleId crId1 = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE, "test1"));
+		ComplianceRuleId crId2 = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE + dirABC, "test2"));
+		ComplianceRuleId crId3 = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE + dirABC, "test3"));
+		ComplianceRuleId crId4 = new ComplianceRuleId(new QName(TEST_TARGET_NAMESPACE + dirBCD, "test4"));
 
 		TComplianceRule ruleOne = createTComplianceRule(crId1);
 		allEntities.put(crId1, ruleOne);
@@ -595,7 +595,7 @@ public class TOSCAGraphIsomorphismTest {
 		persist(allEntities);
 
 		ServiceTemplateComplianceRuleRuleChecker checker = new ServiceTemplateComplianceRuleRuleChecker(tServiceTemplate);
-		List<ComplianceRule> ruleIds = checker.getRuleIds(tServiceTemplate);
+		List<ComplianceRuleId> ruleIds = checker.getRuleIds(tServiceTemplate);
 
 		assertTrue(ruleIds.stream().filter(id -> id.equals(crId1)).findFirst().isPresent());
 		assertTrue(ruleIds.stream().filter(id -> id.equals(crId2)).findFirst().isPresent());

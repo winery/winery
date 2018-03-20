@@ -18,17 +18,17 @@ import javax.xml.namespace.QName;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
-public class ComplianceRule extends EntityTemplateId {
+public class ComplianceRuleId extends EntityTemplateId {
 
-	public ComplianceRule(Namespace namespace, XmlId xmlId) {
+	public ComplianceRuleId(Namespace namespace, XmlId xmlId) {
 		super(namespace, xmlId);
 	}
 
-	public ComplianceRule(String ns, String id, boolean URLencoded) {
+	public ComplianceRuleId(String ns, String id, boolean URLencoded) {
 		super(ns, id, URLencoded);
 	}
 
-	public ComplianceRule(QName qname) {
+	public ComplianceRuleId(QName qname) {
 		super(qname);
 	}
 

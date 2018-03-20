@@ -52,7 +52,7 @@ import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.IdUtil;
 import org.eclipse.winery.common.ids.admin.AdminId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ComplianceRule;
+import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
 import org.eclipse.winery.common.ids.definitions.EntityTypeId;
@@ -519,7 +519,7 @@ public class Util {
     public static boolean instanceSupportsNameAttribute(Class<? extends DefinitionsChildId> idClass) {
         if (ServiceTemplateId.class.isAssignableFrom(idClass)) {
             return true;
-        } else if (ComplianceRule.class.isAssignableFrom(idClass)) {
+        } else if (ComplianceRuleId.class.isAssignableFrom(idClass)) {
             return true;
         } else if ((EntityTypeId.class.isAssignableFrom(idClass)) || (EntityTypeImplementationId.class.isAssignableFrom(idClass))) {
             // name is available, but no id attribute

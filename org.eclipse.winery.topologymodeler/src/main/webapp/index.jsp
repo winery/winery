@@ -28,7 +28,7 @@
 <%@page import="java.util.List" %>
 <%@ page import="java.util.Optional" %>
 <%@ page import="org.eclipse.winery.common.ids.GenericId" %>
-<%@ page import="org.eclipse.winery.common.ids.definitions.ComplianceRule" %>
+<%@ page import="org.eclipse.winery.common.ids.definitions.ComplianceRuleId" %>
 
 <%-- nc.. = non-common .. --%>
 <%@taglib prefix="ncnt" tagdir="/WEB-INF/tags/templates/nodetemplates" %>
@@ -107,7 +107,7 @@ The repository is not available.
     if (request.getParameterMap().containsKey("parentPath") && request.getParameterMap().containsKey("elementPath")) {
         parentPath =  "/" + request.getParameter("parentPath") + "/";
         elementPath = "/" + request.getParameter("elementPath") + "/";
-        elementId = new ComplianceRule(serviceTemplateQName);
+        elementId = new ComplianceRuleId(serviceTemplateQName);
         topologyTemplate = client.getTopologyTemplate(serviceTemplateQName, parentPath, elementPath);
     } else {
         parentPath = "/servicetemplates/";

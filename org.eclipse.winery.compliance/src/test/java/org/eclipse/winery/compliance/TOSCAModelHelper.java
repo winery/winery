@@ -17,7 +17,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.winery.common.ids.definitions.ComplianceRule;
+import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -144,7 +144,7 @@ public class TOSCAModelHelper {
 //		return tTags;
 //	}
 
-	public static TComplianceRule createTComplianceRule(ComplianceRule id) {
+	public static TComplianceRule createTComplianceRule(ComplianceRuleId id) {
 		return createTComplianceRule(id.getQName().getLocalPart(), id.getQName().getNamespaceURI());
 	}
 
