@@ -13,7 +13,6 @@
  ********************************************************************************/
 package org.eclipse.winery.compliance.checking;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +83,7 @@ public class ServiceTemplateComplianceRuleRuleChecker {
     }
 
     public List<ComplianceRuleId> getRuleIds(TServiceTemplate serviceTemplate) {
-        ArrayList<ComplianceRuleId> complianceRules = Lists.newArrayList();
+        List<ComplianceRuleId> complianceRules = Lists.newArrayList();
         Namespace namespace = new Namespace(serviceTemplate.getTargetNamespace(), false);
         Collection<Namespace> componentsNamespaces = RepositoryFactory.getRepository().getComponentsNamespaces(ComplianceRuleId.class);
         List<Namespace> relevantNamespaces = componentsNamespaces.stream().filter(ns -> namespace.getDecoded().startsWith(ns.getDecoded())).collect(Collectors.toList());
