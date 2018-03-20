@@ -24,82 +24,82 @@ import org.eclipse.winery.common.ids.definitions.ComplianceRule;
 import org.eclipse.winery.compliance.model.TOSCANode;
 import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 
 import com.google.common.collect.Lists;
 import org.eclipse.jdt.annotation.NonNull;
 import org.jgrapht.GraphMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceTemplateComplianceRuleRuleChecker {
 
-	private TServiceTemplate serviceTemplate;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTemplateComplianceRuleRuleChecker.class);
 
-	public ServiceTemplateComplianceRuleRuleChecker(@NonNull TServiceTemplate serviceTemplate) {
-		this.serviceTemplate = serviceTemplate;
-	}
+    private TServiceTemplate serviceTemplate;
 
-	public ServiceTemplateCheckingResult checkComplianceRules() {
-		StringBuilder checkingResult = new StringBuilder("Rulechecking result for servicetemplate " + serviceTemplate.getIdFromIdOrNameField() + System.lineSeparator());
-		ServiceTemplateCheckingResult result = new ServiceTemplateCheckingResult();
-		List<ComplianceRule> ruleIds = getRuleIds(serviceTemplate);
-		for (ComplianceRule ruleId : ruleIds) {
-			//get Rule
+    public ServiceTemplateComplianceRuleRuleChecker(@NonNull TServiceTemplate serviceTemplate) {
+        this.serviceTemplate = serviceTemplate;
+    }
 
-//			if (!RepositoryFactory.getRepository().exists(ruleId)) {
-//				result.getException().add(ruleId.getQName());
-//				checkingResult.append(ruleId.getQName().toString() + ": could not be found!");
-//			} else {
+    public ServiceTemplateCheckingResult checkComplianceRules() {
+        StringBuilder checkingResult = new StringBuilder("Rulechecking result for servicetemplate " + serviceTemplate.getIdFromIdOrNameField() + System.lineSeparator());
+        ServiceTemplateCheckingResult result = new ServiceTemplateCheckingResult();
+        List<ComplianceRule> ruleIds = getRuleIds(serviceTemplate);
+        if (ruleIds.isEmpty()) {
+            checkingResult.append("No rules defined");
+        } else {
+            IRepository repository = RepositoryFactory.getRepository();
 
-			TComplianceRule tComplianceRule = RepositoryFactory.getRepository().getElement(ruleId);
-			ComplianceRuleChecker checker = new ComplianceRuleChecker(tComplianceRule, serviceTemplate.getTopologyTemplate());
-			List<GraphMapping> graphMappings = null;
-			try {
-				graphMappings = checker.checkComplianceRule();
-				if (graphMappings.size() > 0) {
-					result.getUnsatisfied().add(ruleId.getQName());
-					checkingResult.append(ruleId.getQName().toString() + " violated:");
-					checkingResult.append(System.lineSeparator());
-					for (GraphMapping mapping : graphMappings) {
-						Map<TOSCANode, TOSCANode> resultMap = checker.getSubGraphMappingAsMap(mapping, checker.getIdentifierGraph());
-						checkingResult.append(System.lineSeparator());
-						checkingResult.append(resultMap.values().stream().map(node -> node.getNodeTemplate().getIdFromIdOrNameField()).collect(Collectors.joining(";", "NodeTemplateIds: ", "")));
-					}
-				} else {
-					result.getSatisfied().add(ruleId.getQName());
-					checkingResult.append(ruleId.getQName().toString() + " satisfied");
-				}
-			} catch (ComplianceCheckingException e) {
-				result.getException().add(ruleId.getQName());
-				checkingResult.append(ruleId.getQName().toString() + ": Exception during checking:");
-				checkingResult.append(System.lineSeparator());
-				checkingResult.append(e.getMessage());
-				checkingResult.append(System.lineSeparator());
-//					e.printStackTrace();
-			}
-		}
-//		}
-		System.out.println(checkingResult.toString());
-		return result;
-	}
+            for (ComplianceRule ruleId : ruleIds) {
+                TComplianceRule tComplianceRule = repository.getElement(ruleId);
 
-	public List<ComplianceRule> getRuleIds(TServiceTemplate serviceTemplate) {
-		ArrayList<ComplianceRule> complianceRules = Lists.newArrayList();
-		Namespace namespace = new Namespace(serviceTemplate.getTargetNamespace(), false);
-		Collection<Namespace> componentsNamespaces = RepositoryFactory.getRepository().getComponentsNamespaces(ComplianceRule.class);
-		List<Namespace> relevantNamespaces = componentsNamespaces.stream().filter(ns -> namespace.getDecoded().startsWith(ns.getDecoded())).collect(Collectors.toList());
+                ComplianceRuleChecker checker = new ComplianceRuleChecker(tComplianceRule, serviceTemplate.getTopologyTemplate());
+                List<GraphMapping> graphMappings;
+                try {
+                    graphMappings = checker.checkComplianceRule();
+                    if (graphMappings.size() > 0) {
+                        result.getUnsatisfied().add(ruleId.getQName());
+                        checkingResult.append(ruleId.getQName().toString() + " violated:");
+                        checkingResult.append(System.lineSeparator());
+                        for (GraphMapping mapping : graphMappings) {
+                            Map<TOSCANode, TOSCANode> resultMap = checker.getSubGraphMappingAsMap(mapping, checker.getIdentifierGraph());
+                            checkingResult.append(System.lineSeparator());
+                            checkingResult.append(resultMap.values().stream().map(node -> node.getNodeTemplate().getIdFromIdOrNameField()).collect(Collectors.joining(";", "NodeTemplateIds: ", "")));
+                        }
+                    } else {
+                        result.getSatisfied().add(ruleId.getQName());
+                        checkingResult.append(ruleId.getQName().toString() + " satisfied");
+                    }
+                } catch (ComplianceCheckingException e) {
+                    result.getException().add(ruleId.getQName());
+                    LOGGER.debug("Could not check compliance at rule " + ruleId.getQName().toString(), e);
+                }
+            }
+        }
+        LOGGER.debug(checkingResult.toString());
+        return result;
+    }
 
-		for (Namespace space : relevantNamespaces) {
-			complianceRules.addAll((Collection<? extends ComplianceRule>) ((FilebasedRepository) RepositoryFactory.getRepository()).getAllIdsInNamespace(ComplianceRule.class, space));
-		}
-		return complianceRules;
-	}
+    public List<ComplianceRule> getRuleIds(TServiceTemplate serviceTemplate) {
+        ArrayList<ComplianceRule> complianceRules = Lists.newArrayList();
+        Namespace namespace = new Namespace(serviceTemplate.getTargetNamespace(), false);
+        Collection<Namespace> componentsNamespaces = RepositoryFactory.getRepository().getComponentsNamespaces(ComplianceRule.class);
+        List<Namespace> relevantNamespaces = componentsNamespaces.stream().filter(ns -> namespace.getDecoded().startsWith(ns.getDecoded())).collect(Collectors.toList());
 
-	public TServiceTemplate getServiceTemplate() {
-		return serviceTemplate;
-	}
+        for (Namespace space : relevantNamespaces) {
+            complianceRules.addAll((Collection<? extends ComplianceRule>) ((FilebasedRepository) RepositoryFactory.getRepository()).getAllIdsInNamespace(ComplianceRule.class, space));
+        }
+        return complianceRules;
+    }
 
-	public void setServiceTemplate(TServiceTemplate serviceTemplate) {
-		this.serviceTemplate = serviceTemplate;
-	}
+    public TServiceTemplate getServiceTemplate() {
+        return serviceTemplate;
+    }
+
+    public void setServiceTemplate(TServiceTemplate serviceTemplate) {
+        this.serviceTemplate = serviceTemplate;
+    }
 }
