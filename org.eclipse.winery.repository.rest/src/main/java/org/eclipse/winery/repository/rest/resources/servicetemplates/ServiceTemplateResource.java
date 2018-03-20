@@ -289,10 +289,10 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         return Response.created(url).build();
     }
 
-    @Path("checking/")
+    @Path("constraintchecking/")
     @Produces(MediaType.APPLICATION_XML)
     @POST
-    public Response compliancechecking(@Context UriInfo uriInfo) {
+    public Response complianceChecking(@Context UriInfo uriInfo) {
         ServiceTemplateComplianceRuleRuleChecker checker = new ServiceTemplateComplianceRuleRuleChecker(this.getServiceTemplate());
         ServiceTemplateCheckingResult serviceTemplateCheckingResult = checker.checkComplianceRules();
         return Response.ok().entity(serviceTemplateCheckingResult).build();

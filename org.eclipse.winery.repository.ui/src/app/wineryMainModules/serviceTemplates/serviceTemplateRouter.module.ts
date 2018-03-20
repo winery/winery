@@ -59,11 +59,11 @@ const serviceTemplateRoutes: Routes = [
                 // 'app/instance/serviceTemplates/boundaryDefinitions/boundaryDefinitions.module#BoundaryDefinitionsModule'
                 children: boundaryDefinitionsRoutes
             },
+            {path: 'constraintchecking', component: ConstraintCheckingComponent},
             {path: 'tags', component: TagComponent},
             {path: 'documentation', component: DocumentationComponent},
             {path: 'xml', component: EditXMLComponent},
-            {path: '', redirectTo: 'readme', pathMatch: 'full'},
-            {path: 'checking', component: ConstraintCheckingComponent}
+            {path: '', redirectTo: 'readme', pathMatch: 'full'}
         ]
     }
 ];
