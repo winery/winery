@@ -18,7 +18,7 @@ import { ConstraintCheckingService } from './constraintChecking.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
 
 @Component({
-    templateUrl: 'constraintchecking.component.html',
+    templateUrl: 'constraintChecking.component.html',
     providers: [ConstraintCheckingService]
 })
 export class ConstraintCheckingComponent implements OnInit {

@@ -32,7 +32,7 @@ import { DocumentationModule } from '../../instance/sharedComponents/documentati
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
 import { WinerySourceModule } from '../../instance/sharedComponents/artifactSource/source.module';
-import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintchecking/constraintChecking.component';
+import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintChecking/constraintChecking.component';
 import { WineryEditorModule } from '../../wineryEditorModule/wineryEditor.module';
 
 @NgModule({
