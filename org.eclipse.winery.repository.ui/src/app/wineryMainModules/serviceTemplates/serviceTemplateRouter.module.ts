@@ -29,7 +29,7 @@ import { DocumentationComponent } from '../../instance/sharedComponents/document
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
-import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintchecking/constraintChecking.component';
+import { ConstraintCheckingComponent } from '../../instance/serviceTemplates/constraintChecking/constraintChecking.component';
 
 const toscaType = ToscaTypes.ServiceTemplate;
 

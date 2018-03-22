@@ -44,7 +44,7 @@ import {RelationshipTypeImplementationModule} from './wineryMainModules/relation
 import {PolicyTemplateModule} from './wineryMainModules/policyTemplates/policyTemplate.module';
 import {ImportModule} from './wineryMainModules/imports/imports.module';
 import {WineryGitLogComponent} from './wineryGitLog/wineryGitLog.component';
-import {ComplianceRuleModule} from './wineryMainModules/compliancerules/compliancerule.module';
+import {ComplianceRuleModule} from './wineryMainModules/complianceRules/complianceRule.module';
 
 @NgModule({
     imports: [
