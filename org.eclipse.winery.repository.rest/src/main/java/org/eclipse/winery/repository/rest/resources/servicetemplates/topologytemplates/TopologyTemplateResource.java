@@ -26,7 +26,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -40,8 +39,6 @@ import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.client.IWineryRepositoryClient;
-import org.eclipse.winery.repository.client.WineryRepositoryClientFactory;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.dataadapter.composeadapter.CompositionData;
@@ -50,7 +47,6 @@ import org.eclipse.winery.repository.splitting.Splitting;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource.Builder;
-import com.sun.jersey.api.view.Viewable;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -71,55 +67,6 @@ public class TopologyTemplateResource {
     public TopologyTemplateResource(ServiceTemplateResource parent) {
         this.topologyTemplate = parent.getServiceTemplate().getTopologyTemplate();
         this.serviceTemplateRes = parent;
-    }
-
-    public static class DataForJSP {
-
-        private String location;
-        private TTopologyTemplate topologyTemplate;
-        private URI repositoryURI;
-        private String additonalCSS;
-        private Boolean autoLayoutOnLoad;
-        private String additionalScript;
-
-
-        public DataForJSP(String location, URI repositoryURI, TTopologyTemplate topologyTemplate, String additonalCSS, String additionalScript, Boolean autoLayoutOnLoad) {
-            this.location = location;
-            this.repositoryURI = repositoryURI;
-            this.topologyTemplate = topologyTemplate;
-            this.additonalCSS = additonalCSS;
-            this.additionalScript = additionalScript;
-            this.autoLayoutOnLoad = autoLayoutOnLoad;
-        }
-
-        public String getLocation() {
-            return this.location;
-        }
-
-        public TTopologyTemplate getTopologyTemplate() {
-            return this.topologyTemplate;
-        }
-
-        public String getAdditonalCSS() {
-            return this.additonalCSS;
-        }
-
-        public String getAdditionalScript() {
-            return this.additionalScript;
-        }
-
-        public Boolean getAutoLayoutOnLoad() {
-            return this.autoLayoutOnLoad;
-        }
-
-        public IWineryRepositoryClient getClient() {
-            // Quick hack
-            // IWineryRepository is not implemented by Prefs.INSTANCE.getRepository()
-            // Therefore, we have to generate a real WineryRepositoryClient even if that causes more http load
-            IWineryRepositoryClient client = WineryRepositoryClientFactory.getWineryRepositoryClient();
-            client.addRepository(this.repositoryURI.toString());
-            return client;
-        }
     }
 
     @GET
@@ -147,35 +94,10 @@ public class TopologyTemplateResource {
         location = location + "&id=";
         location = location + serviceTemplate.getXmlId().getEncoded();
         if (edit == null) {
-            String additionalCSS = null;
-            Boolean autoLayoutOnLoadBoolean = false;
-            if (view == null) {
-                // integration in Winery
-                // currently not maintained: Winery includes ?view as iframe
-                JSPName = "/jsp/servicetemplates/topologytemplates/topologytemplate.jsp";
-            } else {
-                // view only mode
-                // fullscreen: additionalCSS and script possible
-                if (!"".equals(view)) {
-                    // view with additional CSS
-                    URI cssURI = URI.create(view);
-                    if (cssURI.isAbsolute()) {
-                        additionalCSS = view;
-                    } else {
-                        // relative URLs starts at "/css/topologyrendering/"
-                        additionalCSS = uriInfo.getBaseUri().resolve("css/topologytemplaterendering/").resolve(view).toString();
-                        if (!additionalCSS.endsWith(".css")) {
-                            additionalCSS += ".css";
-                        }
-                    }
-                }
-                if (autoLayoutOnLoad != null) {
-                    autoLayoutOnLoadBoolean = true;
-                }
-                JSPName = "/jsp/servicetemplates/topologytemplates/topologytemplateview.jsp";
-            }
-            Viewable viewable = new Viewable(JSPName, new DataForJSP(location, repositoryURI, this.topologyTemplate, additionalCSS, script, autoLayoutOnLoadBoolean));
-            res = Response.ok().header(HttpHeaders.VARY, HttpHeaders.ACCEPT).entity(viewable).build();
+            // TODO: Render-only mode
+            // currently also the edit mode
+            URI uri = RestUtils.createURI(location);
+            res = Response.seeOther(uri).build();
         } else {
             // edit mode
             URI uri = RestUtils.createURI(location);
