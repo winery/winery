@@ -12,8 +12,6 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { InstanceService } from '../../instance.service';
-import { backendBaseURL } from '../../../configuration';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
 import { ConstraintCheckingService } from './constraintChecking.service';
@@ -42,7 +40,6 @@ export class ConstraintCheckingComponent implements OnInit {
         this.service.getCheckingResult().subscribe(data => this.handleXmlData(data),
             error => this.handleError(error));
     }
-
 
     private handleXmlData(xml: string) {
         this.loading = false;
