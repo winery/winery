@@ -25,6 +25,7 @@ import {FilesComponent} from '../../instance/artifactTemplates/filesTag/files.co
 import {SourceComponent} from '../../instance/sharedComponents/artifactSource/source.component';
 import {WineryReadmeComponent} from '../../wineryReadmeModule/wineryReadme.component';
 import {WineryLicenseComponent} from '../../wineryLicenseModule/wineryLicense.component';
+import {PropertyConstraintsComponent} from '../../instance/serviceTemplates/boundaryDefinitions/propertyConstraints/propertyConstraints.component';
 
 const toscaType = ToscaTypes.ArtifactTemplate;
 
@@ -41,6 +42,7 @@ const artifactTemplateRoutes: Routes = [
             {path: 'files', component: FilesComponent},
             {path: 'source', component: SourceComponent},
             {path: 'properties', component: PropertiesComponent},
+            {path: 'propertyconstraints', component: PropertyConstraintsComponent},
             {path: 'documentation', component: DocumentationComponent},
             {path: 'xml', component: EditXMLComponent},
             {path: '', redirectTo: 'readme', pathMatch: 'full'}

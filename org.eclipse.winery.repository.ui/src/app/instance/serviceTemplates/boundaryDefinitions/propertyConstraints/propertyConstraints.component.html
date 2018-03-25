@@ -70,6 +70,15 @@
                         Type is required!
                     </div>
                 </div>
+                <label class="control-label" for="constraint">Constraint</label>
+                <!--<input #constraintInput="ngModel"-->
+                       <!--id="constraint"-->
+                       <!--class="form-control"-->
+                       <!--type="text"-->
+                       <!--name="constraint"-->
+                       <!--[(ngModel)]="newConstraint.fragments"-->
+                <!--/>-->
+                <winery-editor #propertyConstraintEditor id="constraint"></winery-editor>
             </div>
         </form>
     </winery-modal-body>

@@ -13,7 +13,11 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytemplates.policytemplates;
 
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+
 import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.repository.rest.RestUtils;
@@ -21,15 +25,14 @@ import org.eclipse.winery.repository.rest.resources._support.AbstractComponentIn
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.PropertyConstraintsResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.core.Response;
 
 public final class PolicyTemplateResource extends AbstractComponentInstanceResource implements IEntityTemplateResource<TPolicyTemplate>, IHasName {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PolicyTemplateResource.class);
-
 
     /**
      * Constructor has to be public because of test cases
@@ -71,4 +74,13 @@ public final class PolicyTemplateResource extends AbstractComponentInstanceResou
         return RestUtils.persist(this);
     }
 
+    @Path("propertyconstraints/")
+    public PropertyConstraintsResource getPropertyConstraints() {
+        TEntityTemplate.PropertyConstraints constraints = this.getPolicyTemplate().getPropertyConstraints();
+        if (constraints == null) {
+            constraints = new TEntityTemplate.PropertyConstraints();
+            this.getPolicyTemplate().setPropertyConstraints(constraints);
+        }
+        return new PropertyConstraintsResource(constraints, this);
+    }
 }

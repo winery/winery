@@ -23,6 +23,7 @@ import {ToscaTypes} from '../../wineryInterfaces/enums';
 import {PropertiesComponent} from '../../instance/sharedComponents/properties/properties.component';
 import {WineryReadmeComponent} from '../../wineryReadmeModule/wineryReadme.component';
 import {WineryLicenseComponent} from '../../wineryLicenseModule/wineryLicense.component';
+import {PropertyConstraintsComponent} from '../../instance/serviceTemplates/boundaryDefinitions/propertyConstraints/propertyConstraints.component';
 
 const toscaType = ToscaTypes.PolicyTemplate;
 
@@ -37,6 +38,7 @@ const policyTemplateRoutes: Routes = [
             {path: 'readme', component: WineryReadmeComponent},
             {path: 'license', component: WineryLicenseComponent},
             {path: 'properties', component: PropertiesComponent},
+            {path: 'propertyconstraints', component: PropertyConstraintsComponent},
             {path: 'documentation', component: DocumentationComponent},
             {path: 'xml', component: EditXMLComponent},
             {path: '', redirectTo: 'readme', pathMatch: 'full'}

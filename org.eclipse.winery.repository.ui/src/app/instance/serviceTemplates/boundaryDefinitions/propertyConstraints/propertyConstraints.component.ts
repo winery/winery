@@ -19,6 +19,7 @@ import {ConstraintTypeApiData} from './constraintTypesApiData';
 import {WineryValidatorObject} from '../../../../wineryValidators/wineryDuplicateValidator.directive';
 import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
 import {ModalDirective} from 'ngx-bootstrap';
+import {WineryEditorComponent} from '../../../../wineryEditorModule/wineryEditor.component';
 
 @Component({
     selector: 'winery-instance-boundary-properties',
@@ -41,6 +42,7 @@ export class PropertyConstraintsComponent implements OnInit {
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('propertyConstraintEditor') propertyConstraintEditor: WineryEditorComponent;
     validatorObject: WineryValidatorObject;
 
     constructor(private service: PropertyConstraintsService,
@@ -67,6 +69,8 @@ export class PropertyConstraintsComponent implements OnInit {
 
     addNewConstraint() {
         this.addLoad();
+        this.newConstraint.fragments = this.propertyConstraintEditor.getData();
+        console.log(this.newConstraint);
         this.service.postConstraint(this.newConstraint).subscribe(
             data => this.handlePostResponse(data),
             error => this.handleError(error)
@@ -128,9 +132,9 @@ export class PropertyConstraintsComponent implements OnInit {
 
     private handleData(data: PropertyConstraintApiData[]) {
         this.propertyConstraints = data;
-        for (let i = 0; i < data.length; i++) {
-            this.propertyConstraints[i].fragments = '[Not implemented yet]';
-        }
+        // for (let i = 0; i < data.length; i++) {
+        //     this.propertyConstraints[i].fragments = '[Not implemented yet]';
+        // }
 
         this.decreaseLoad();
     }

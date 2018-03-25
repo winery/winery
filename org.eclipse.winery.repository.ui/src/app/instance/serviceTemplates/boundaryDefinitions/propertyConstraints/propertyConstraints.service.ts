@@ -38,7 +38,7 @@ export class PropertyConstraintsService {
     postConstraint(data: PropertyConstraintApiData): Observable<Response> {
         const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
-        data.fragments = null;
+        // data.fragments = null;
         return this.http.post(this.path, JSON.stringify(data), options);
     }
 

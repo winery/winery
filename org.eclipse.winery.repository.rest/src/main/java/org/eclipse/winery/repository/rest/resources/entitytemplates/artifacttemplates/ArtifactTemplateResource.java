@@ -19,6 +19,7 @@ import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.HasType;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -31,6 +32,8 @@ import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourcesApiData;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
+import org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions.PropertyConstraintsResource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,6 +170,16 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
             // we enforce the query parameter to be extensible to other queries
             return Response.status(Status.BAD_REQUEST).entity("You have to pass the query parameter referenceCount or type").build();
         }
+    }
+
+    @Path("propertyconstraints/")
+    public PropertyConstraintsResource getPropertyConstraints() {
+        TEntityTemplate.PropertyConstraints constraints = this.getTArtifactTemplate().getPropertyConstraints();
+        if (constraints == null) {
+            constraints = new TEntityTemplate.PropertyConstraints();
+            this.getTArtifactTemplate().setPropertyConstraints(constraints);
+        }
+        return new PropertyConstraintsResource(constraints, this);
     }
 
     /* not yet implemented */
