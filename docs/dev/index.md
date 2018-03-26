@@ -545,6 +545,11 @@ Deployment Artifacts (DAs) may be attached at
 * NodeType
 * NodeTemplate
 
+## More readings
+
+- [How to test the repository](howtoTestRepository.md)
+- [Handling of Properties](property-handling.md)
+
 ## Example repository
 
 An example repository is available at <files.opentosca.org/third-party/v2.0.0/winery-repository.zip>.
