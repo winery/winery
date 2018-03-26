@@ -577,7 +577,8 @@ HEAD is now at 5017713 Initial documentation
 
 ## Recommended programming literature
 
-* Joshua Bloch. Effective Java, 2nd edition. Addison-Wesley
+* Simon Harrer et al. [Java by Comparison](http://java.by-comparison.com/). The Pgramatic Programmers, 2018.
+* Joshua Bloch. [Effective Java, 3rd edition](https://www.safaribooksonline.com/library/view/effective-java-third/9780134686097/). Addison-Wesley Professional, 2017.
 
 ## Abbreviations
 
