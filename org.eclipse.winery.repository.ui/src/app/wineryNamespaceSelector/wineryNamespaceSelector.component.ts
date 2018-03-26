@@ -67,6 +67,7 @@ const customInputControl: any = {
 @Component({
     selector: 'winery-namespace-selector',
     templateUrl: './wineryNamespaceSelector.component.html',
+    styleUrls: ['./wineryNamespaceSelector.component.css'],
     providers: [
         WineryNamespaceSelectorService,
         customInputControl
@@ -80,6 +81,7 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
     @Input() useStartNamespace = true;
 
     loading = true;
+    isCollapsed = true;
     allNamespaces: NamespaceWithPrefix[] = [];
 
     @ViewChild('namespaceInput') namespaceInput: ElementRef;
@@ -146,6 +148,12 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
 
     registerOnTouched(fn: any) {
         this.onTouchedCallback = fn;
+    }
+
+    collapsed(event: any): void {
+    }
+
+    expanded(event: any): void {
     }
 
     // endregion
