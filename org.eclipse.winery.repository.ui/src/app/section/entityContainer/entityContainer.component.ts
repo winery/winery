@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {backendBaseURL} from '../../configuration';
+import {backendBaseURL, topologyModelerURL} from '../../configuration';
 import {SectionData} from '../sectionData';
 import {ExistService} from '../../wineryUtils/existService';
 import {ModalDirective} from 'ngx-bootstrap';
@@ -98,9 +98,9 @@ export class EntityContainerComponent implements OnInit {
     editComponent(event: MouseEvent) {
         event.stopPropagation();
         if (this.toscaType === ToscaTypes.ServiceTemplate && event.ctrlKey) {
-            const topologyModeler = backendBaseURL + '-topologymodeler/'
+            const topologyModeler = topologyModelerURL
                 + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
-                + '&uiURL=' + encodeURIComponent(window.location.origin)
+                + '&uiURL=' + encodeURIComponent(window.location.origin + window.location.pathname)
                 + '&ns=' + encodeURIComponent(this.data.namespace)
                 + '&id=' + this.data.id;
             window.open(topologyModeler, '_blank');
