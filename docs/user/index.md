@@ -45,7 +45,7 @@ On Windows:
 2. `cd c:\winery-repository`
 2. `git config --global core.longpaths true` to enable long paths. Works perfectly on Windows.
 3. `git clone https://github.com/winery/test-repository.git .` to clone the [test repository](https://github.com/winery/test-repository).
-4. `git remote add tosca-definitions https://github.com/OpenTOSCA/tosca-definitions/` to make the [tosca-definitions](https://github.com/OpenTOSCA/tosca-definitions/) known
+4. Uni Stuttgart developers: `git remote add tosca-definitions-internal https://github.com/OpenTOSCA/tosca-definitions-internal/` to make the [tosca-definitions-ustutt](https://github.com/OpenTOSCA/tosca-definitions-internal/) known.
 5. `git fetch tosca-definitions` - to fetch the tosca-definitions repository
 6. `git checkout black` - to switch to the main branch of the test repository
 
