@@ -1,0 +1,172 @@
+/********************************************************************************
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+
+/*div.container {
+    width: 220px;
+    font-size: small;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: box-shadow 0.3s cubic-bezier(.25, .8, .25, 1);
+    cursor: pointer;
+    z-index: 501;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+
+    -ms-user-select: none;
+    user-select: none;
+    background-color: rgb(230, 225, 220) !important;
+    border: 1px solid;
+}*/
+
+div.container {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 2;
+    width: 225px;
+    font-size: small;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    background: #ffffff;
+    cursor: move;
+    border: 2px solid black;
+    border-radius: 1em;
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, #EBF2F7 100%);
+}
+
+/*div.container:hover {
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
+}*/
+
+div.container:hover {
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
+}
+
+img {
+    max-width: 50px;
+    max-height: 50px;
+    margin-top: 0.1em;
+    border-radius: 10%;
+}
+
+.padding-top--2px {
+    padding-top: 2px;
+}
+
+.icon-styling {
+
+    color: rgba(200, 200, 200, 1);
+}
+
+[draggable=true] {
+    cursor: move;
+}
+
+a {
+    font-size: small;
+    line-height: 25%
+}
+
+.hidden {
+    display: none;
+}
+
+accordion-group {
+    margin-top: .25em;
+}
+
+p {
+    line-height: 22%
+}
+
+/*div.selected {
+    background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.30) 10px, rgba(255, 255, 255, 0.7) 10px, rgba(255, 255, 255, 0.7) 20px);
+    height: 52px;
+    margin: -1px;
+}
+
+div.unselected {
+    background: linear-gradient(70deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 23%, rgba(222, 222, 222, 0.7) 83%, rgba(222, 222, 222, 0.8) 100%);
+    height: 52px;
+    margin: -1px;
+}*/
+div.selected {
+    background: rgb(216, 238, 255);
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, #FFD391 100%);
+    border-radius: 12px;
+    margin: 0;
+}
+
+div.unselected {
+    margin: 0;
+}
+
+.node-template-header {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.container rounded {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.endpointContainer {
+    padding: 0 !important;
+    margin: 0;
+}
+
+div.connectorEndpoint {
+    cursor: pointer;
+}
+
+div.connectorEndpoint:hover {
+    cursor: pointer;
+    background: #ffffff;
+}
+
+div.connectorBox {
+    height: 15px;
+    width: 30px;
+}
+
+div.connectorLabel {
+    height: 15px;
+    line-height: 16px;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+button.btn.btn-sm.btn-outline-secondary {
+    /*  background-color: rgba(255,255,255,0.8);*/
+    background-color: rgba(237, 234, 230, 1) !important;
+    color: #000 !important;
+    cursor: copy;
+    padding: 0;
+    border-radius: .4em;
+    width: 215px;
+    text-align: left;
+}
+
+button.btn.btn-sm.btn-outline-secondary:hover, button.btn.btn-sm.btn-outline-secondary:focus {
+    background-color: rgba(255, 255, 255, 1) !important;
+    color: #212121 !important;
+}
+
+.relationship-button {
+    border: 1px solid;
+    width: 100%;
+}
+

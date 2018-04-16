@@ -13,7 +13,7 @@
  *******************************************************************************/
 import {Component, OnInit} from '@angular/core';
 import {InstanceService} from '../../instance.service';
-import {backendBaseURL} from '../../../configuration';
+import {backendBaseURL, topologyModelerURL} from '../../../configuration';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
 @Component({
@@ -29,11 +29,12 @@ export class TopologyTemplateComponent implements OnInit {
     }
 
     ngOnInit() {
-        const uiURL = encodeURIComponent(window.location.origin);
+        const uiURL = encodeURIComponent(window.location.origin + window.location.pathname);
+
         this.templateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
             backendBaseURL + this.sharedData.path + '/topologytemplate/?view&uiURL=' + uiURL
         );
-        this.editorUrl = backendBaseURL + '-topologymodeler/'
+        this.editorUrl = topologyModelerURL
             + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
             + '&uiURL=' + uiURL
             + '&ns=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)

@@ -1,0 +1,101 @@
+/********************************************************************************
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+ * which is available at https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+ ********************************************************************************/
+.toscatype-table {
+    width: 210px;
+    table-layout: fixed;
+}
+
+table {
+    border: 0px;
+}
+
+th {
+    background-color: #CFD8DC;
+    color: #000;
+    text-align: center;
+}
+
+th, td {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+tr {
+    cursor: pointer;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.toscatype-table-td div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+    width: auto;
+    max-width: 100%;
+    -webkit-transition: max-width linear 1ms;
+    transition: max-width linear 1ms;
+}
+
+.cell-with-comment {
+    position: relative;
+}
+
+.cell-comment {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    border: 1px;
+    border-radius: .4em;
+    background-color: #efefef;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #424242;
+    padding: 3px;
+    color: #000000;
+    width: auto;
+    left: 2em;
+    top: 2em;
+}
+
+.cell-with-comment:hover span.cell-comment {
+    display: block;
+}
+
+.button-wrapper {
+    margin: 10px 0px 5px 0px;
+    display: flex;
+    justify-content: center;
+}
+
+.toscatype-table-td:hover div:before {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    content: "";
+    height: 100%;
+    display: block;
+    left: 0;
+    top: 0;
+    width: 100%;
+    position: absolute;
+    z-index: -1; /* stack below truncated text */
+    -webkit-user-select: all; /* Chrome all / Safari all */
+    -moz-user-select: all; /* Firefox all */
+    -ms-user-select: all; /* IE 10+ */
+    user-select: all;
+}
