@@ -368,7 +368,7 @@ export class EntitiesModalComponent implements OnInit, AfterViewInit, OnChanges 
         if (this.deploymentArtifactOrPolicyModalData.modalTemplateRef) {
             const artifactRef = this.deploymentArtifactOrPolicyModalData.modalTemplateRef;
             const url = hostURL
-                + '/#/artifacttemplates/'
+                + '/artifacttemplates/'
                 + encodeURIComponent(encodeURIComponent(this.getNamespace(artifactRef)))
                 + '/' + this.getLocalName(artifactRef);
             window.open(url, '_blank');

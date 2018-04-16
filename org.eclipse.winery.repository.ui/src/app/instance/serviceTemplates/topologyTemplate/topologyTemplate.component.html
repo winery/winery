@@ -16,6 +16,9 @@
     <button [disabled]="!(sharedData?.versions?.length > 1)" class="btn btn-info" (click)="compareToModal.show()">
         Compare to...
     </button>
+    <div style="float: right">
+        <a [href]="oldEditorUrl" target="_blank" class="btn btn-light">Open Old Editor</a>
+    </div>
 </div>
 <div>
     <p class="help-block">
