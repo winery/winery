@@ -63,6 +63,8 @@
     <properties>
         <github.global.server>github</github.global.server>
         <main.basedir>${project.basedir}</main.basedir>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <modules>
         <module>org.eclipse.winery.model.bpmn4tosca</module>
