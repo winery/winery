@@ -22,7 +22,6 @@
 		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>org.eclipse.winery.compliance</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.winery</groupId>
