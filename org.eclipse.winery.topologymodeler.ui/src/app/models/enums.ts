@@ -28,7 +28,6 @@ export enum urlElement {
     CapabilityTypeURL = '/capabilitytypes/',
     RelationshipTypeURL = '/relationshiptypes/',
     ReadMe = '/readme',
-    Selector = '/#',
     ServiceTemplates = '/servicetemplates/',
     Winery = '/winery',
     TopologyTemplate = '/topologytemplate/'

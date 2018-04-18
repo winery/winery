@@ -70,32 +70,32 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
     }
 
     clickArtifactRef(artifactRef: string) {
-        const url = hostURL
-            + '/#/artifacttemplates/'
+        const url = this.backendService.configuration.uiURL
+            + 'artifacttemplates/'
             + encodeURIComponent(encodeURIComponent(this.getNamespace(artifactRef)))
             + '/' + this.getLocalName(artifactRef);
         window.open(url, '_blank');
     }
 
     clickArtifactType(artifactType: string) {
-        const url = hostURL
-            + '/#/artifacttypes/'
+        const url = this.backendService.configuration.uiURL
+            + 'artifacttypes/'
             + encodeURIComponent(encodeURIComponent(this.getNamespace(artifactType)))
             + '/' + this.getLocalName(artifactType);
         window.open(url, '_blank');
     }
 
     clickPolicyRef(policyRef: string) {
-        const url = hostURL
-            + '/#/policytemplates/'
+        const url = this.backendService.configuration.uiURL
+            + 'policytemplates/'
             + encodeURIComponent(encodeURIComponent(this.getNamespace(policyRef)))
             + '/' + this.getLocalName(policyRef);
         window.open(url, '_blank');
     }
 
     clickPolicyType(policyType: string) {
-        const url = hostURL
-            + '/#/policytypes/'
+        const url = this.backendService.configuration.uiURL
+            + 'policytypes/'
             + encodeURIComponent(encodeURIComponent(this.getNamespace(policyType)))
             + '/' + this.getLocalName(policyType);
         window.open(url, '_blank');
@@ -163,7 +163,7 @@ export class ToscatypeTableComponent implements OnInit, OnChanges {
             clickedDefinition = definitionType.CapabilityDefinitions;
         }
         const url = this.backendService.configuration.uiURL
-            + urlElement.Selector + urlElement.NodeTypeURL
+            + urlElement.NodeTypeURL
             + encodeURIComponent(encodeURIComponent(this.getNamespace(this.currentNodeData.nodeTemplate.type)))
             + '/' + this.getLocalName(this.currentNodeData.nodeTemplate.type) + clickedDefinition;
         window.open(url, '_blank');

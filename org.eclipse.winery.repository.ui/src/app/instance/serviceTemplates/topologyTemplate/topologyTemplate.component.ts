@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {InstanceService} from '../../instance.service';
-import {backendBaseURL, topologyModelerURL} from '../../../configuration';
-import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
-import {WineryVersion} from '../../../wineryInterfaces/wineryVersion';
-import {ModalDirective} from 'ngx-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { InstanceService } from '../../instance.service';
+import { backendBaseURL, oldTopologyModelerURL, topologyModelerURL } from '../../../configuration';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { WineryVersion } from '../../../wineryInterfaces/wineryVersion';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     templateUrl: 'topologyTemplate.component.html'
@@ -26,6 +26,7 @@ export class TopologyTemplateComponent implements OnInit {
     loading = true;
     templateUrl: SafeResourceUrl;
     editorUrl: string;
+    oldEditorUrl: string;
 
     selectedVersion: WineryVersion;
 
@@ -35,16 +36,19 @@ export class TopologyTemplateComponent implements OnInit {
     }
 
     ngOnInit() {
-        const uiURL = encodeURIComponent(window.location.origin + window.location.pathname);
+        const uiURL = encodeURIComponent(window.location.origin + window.location.pathname + '#/');
 
         this.templateUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
             backendBaseURL + this.sharedData.path + '/topologytemplate/?view&uiURL=' + uiURL
         );
-        this.editorUrl = topologyModelerURL
-            + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
+
+        const editorConfig = '?repositoryURL=' + encodeURIComponent(backendBaseURL)
             + '&uiURL=' + uiURL
             + '&ns=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
             + '&id=' + this.sharedData.toscaComponent.localName;
+
+        this.editorUrl = topologyModelerURL + editorConfig;
+        this.oldEditorUrl = oldTopologyModelerURL + editorConfig;
     }
 
     versionSelected(version: WineryVersion) {

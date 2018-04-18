@@ -79,17 +79,6 @@
                 <executions>
                     <execution>
                         <phase>compile</phase>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v7.9.0</nodeVersion>
-                            <npmVersion>4.2.0</npmVersion>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <phase>compile</phase>
                         <id>install angular app</id>
                         <goals>
                             <goal>npm</goal>
