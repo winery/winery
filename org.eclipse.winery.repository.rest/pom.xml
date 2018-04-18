@@ -302,11 +302,6 @@
             <artifactId>jetty-test-helper</artifactId>
             <version>4.2</version>
         </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-servlet</artifactId>
-            <version>1.19.3</version>
-        </dependency>
 
         <!-- no review, but approval is required for test-only dependencies: http://wiki.eclipse.org/Development_Resources/IP/Test_and_Build_Dependencies -->
         <dependency>
