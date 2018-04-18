@@ -17,6 +17,7 @@
 <winery-topology-renderer *ngIf="loaded?.loadedData"
                           [entityTypes]="this.entityTypes"
                           [relationshipTypes]="relationshipTypes"
+                          [differencesData]="topologyDifferences"
                           [nodeTemplates]="nodeTemplates"
                           [relationshipTemplates]="relationshipTemplates"
                           (generatedReduxState)="onReduxReady()">
@@ -24,7 +25,8 @@
 
 <div *ngIf="loaded?.generatedReduxState">
     <div *ngIf="!hideNavBarState">
-        <winery-palette-component style="width:200px;float:left;margin-top:50px"
+        <winery-palette-component *ngIf="!topologyDifferences"
+                                  style="width:200px;float:left;margin-top:50px"
                                   [entityTypes]="this.entityTypes">
         </winery-palette-component>
     </div>

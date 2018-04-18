@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -48,7 +48,7 @@ export class ImplementationsComponent implements OnInit {
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
 
-    constructor(private sharedData: InstanceService,
+    constructor(public sharedData: InstanceService,
                 private service: ImplementationService,
                 private notificationService: WineryNotificationService) {
     }

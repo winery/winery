@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,7 +11,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FilesApiData, SourceService} from './source.service';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
@@ -60,7 +59,7 @@ export class SourceComponent implements OnInit {
 
     constructor(private service: SourceService,
                 private notify: WineryNotificationService,
-                private sharedData: InstanceService) {
+                public sharedData: InstanceService) {
         this.srcPath = this.service.getSourcePath + 'zip';
         this.enableCopyToFiles = this.sharedData.toscaComponent.toscaType !== ToscaTypes.ServiceTemplate;
     }

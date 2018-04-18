@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -275,6 +275,19 @@ public class TRequirementDefinition extends TExtensibleElements {
                 constraint = new ArrayList<TConstraint>();
             }
             return this.constraint;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Constraints that = (Constraints) o;
+            return Objects.equals(constraint, that.constraint);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(constraint);
         }
     }
 

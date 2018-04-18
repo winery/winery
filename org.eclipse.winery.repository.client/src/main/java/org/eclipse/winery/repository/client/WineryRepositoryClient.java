@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2016 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -745,6 +745,11 @@ public final class WineryRepositoryClient implements IWineryRepositoryClient {
                 LOGGER.debug(String.format("Error %d when renaming DefinitionsChildId %s to %s at %s", response.getStatus(), oldId.toString(), newId.toString(), wr.getURI().toString()));
             }
         }
+    }
+
+    @Override
+    public void duplicate(DefinitionsChildId from, DefinitionsChildId newId) throws IOException {
+        throw new IllegalStateException("not yet implemented");
     }
 
     @Override

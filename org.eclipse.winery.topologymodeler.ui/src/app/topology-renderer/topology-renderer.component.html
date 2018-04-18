@@ -16,6 +16,15 @@
         [hideNavBarState]="hideNavBarState">
     </winery-navbar>
     <winery-canvas [entityTypes]="this.entityTypes"
-                   [relationshipTypes]="relationshipTypes">
+                   [relationshipTypes]="relationshipTypes" [diffMode]="diffMode">
     </winery-canvas>
+
+    <div *ngIf="diffMode" style="position: fixed; right: 0;" class="sidebar-root">
+        <h5 [style.margin.px]="15">Diff Legend</h5>
+        <ul>
+            <li>Green elements -> added</li>
+            <li>Yellow elements -> changed</li>
+            <li>Red elements -> removed</li>
+        </ul>
+    </div>
 </div>

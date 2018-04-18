@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,6 +16,7 @@ import {PropertiesService} from './properties.service';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
 import {isNullOrUndefined} from 'util';
 import {WineryEditorComponent} from '../../../wineryEditorModule/wineryEditor.component';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     selector: 'winery-properties',
@@ -38,7 +39,8 @@ export class PropertiesComponent implements OnInit {
     loading = true;
     @ViewChild('propertiesEditor') propertiesEditor: WineryEditorComponent;
 
-    constructor(private service: PropertiesService, private notify: WineryNotificationService) {
+    constructor(private service: PropertiesService, private notify: WineryNotificationService,
+                public sharedData: InstanceService) {
     }
 
     ngOnInit() {

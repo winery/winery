@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -46,7 +46,7 @@ public abstract class AbstractComponentsWithTypeReferenceResource<T extends Abst
         if (StringUtils.isEmpty(jsonData.type)) {
             return Response.status(Status.BAD_REQUEST).build();
         }
-        ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
+        ResourceResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
         if (!creationResult.isSuccess()) {
             return creationResult.getResponse();
         }

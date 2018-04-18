@@ -21,6 +21,9 @@ import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.version.ToscaDiff;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.BackendUtils;
@@ -29,7 +32,9 @@ import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.RestUtils;
-import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.NewVersionApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.RenameApiData;
 import org.eclipse.winery.repository.rest.resources.compliancerules.ComplianceRuleResource;
 import org.eclipse.winery.repository.rest.resources.documentation.DocumentationResource;
 import org.eclipse.winery.repository.rest.resources.entitytypeimplementations.nodetypeimplementations.NodeTypeImplementationResource;
@@ -55,6 +60,8 @@ import javax.xml.parsers.DocumentBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Resource for a component (
@@ -165,6 +172,20 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
         return this.getId().hashCode();
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createNewVersion(NewVersionApiData newVersionApiData, @QueryParam("release") String release, @QueryParam("freeze") String freeze) {
+        if (Objects.nonNull(freeze)) {
+            return RestUtils.freezeVersion(this.id).getResponse();
+        } else if (Objects.nonNull(release)) {
+            return RestUtils.releaseVersion(this.id);
+        } else {
+            String newId = VersionUtils.getNameWithoutVersion(this.id) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + newVersionApiData.version.toString();
+            DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(this.id.getClass(), this.id.getNamespace().getDecoded(), newId, false);
+            return RestUtils.addNewVersion(this.id, newComponent, newVersionApiData.componentsToUpdate);
+        }
+    }
+
     @GET
     @Path("id")
     public String getTOSCAId() {
@@ -174,22 +195,23 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     @POST
     @Path("localName")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putId(QNameApiData data) {
+    public Response putId(RenameApiData data) {
         DefinitionsChildId newId;
-        if (data.namespace == null) {
-            newId = BackendUtils.getDefinitionsChildId(this.getId().getClass(), this.getId().getNamespace().getDecoded(), data.localname, false);
+        newId = BackendUtils.getDefinitionsChildId(this.getId().getClass(), this.getId().getNamespace().getDecoded(), data.localname, false);
+
+        if (data.renameAllComponents) {
+            return RestUtils.renameAllVersionsOfOneDefinition(this.getId(), newId);
         } else {
-            newId = BackendUtils.getDefinitionsChildId(this.getId().getClass(), data.namespace, this.getId().getXmlId().toString(), false);
+            return RestUtils.rename(this.getId(), newId).getResponse();
         }
-        return RestUtils.rename(this.getId(), newId);
     }
 
     @POST
     @Path("namespace")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putNamespace(QNameApiData data) {
+    public Response putNamespace(RenameApiData data) {
         DefinitionsChildId newId = BackendUtils.getDefinitionsChildId(this.getId().getClass(), data.namespace, this.getId().getXmlId().getDecoded(), false);
-        return RestUtils.rename(this.getId(), newId);
+        return RestUtils.rename(this.getId(), newId).getResponse();
     }
 
     @GET
@@ -208,7 +230,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
      * @param csar used because plan generator's GET request lands here
      */
     @GET
-    @Produces( {MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    @Produces({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     public Response getDefinitionsAsResponse(
         @QueryParam(value = "csar") String csar,
         @QueryParam(value = "yaml") String yaml,
@@ -260,13 +282,35 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Definitions getElementAsJson() {
+    public Object getElementAsJson(@QueryParam("versions") String versions, @QueryParam("subComponents") String subComponents,
+                                   @QueryParam("compareTo") String compareTo, @QueryParam("asChangeLog") String asChangeLog) {
         final IRepository repository = RepositoryFactory.getRepository();
         if (!repository.exists(this.id)) {
             throw new NotFoundException();
         }
         try {
-            return BackendUtils.getDefinitionsHavingCorrectImports(repository, this.id);
+            if (Objects.nonNull(versions)) {
+                return BackendUtils.getAllVersionsOfOneDefinition(this.id);
+            } else if (Objects.nonNull(subComponents)) {
+                return repository.getReferencedDefinitionsChildIds(this.id)
+                    .stream()
+                    .map(item -> new QNameWithTypeApiData(
+                        item.getXmlId().getDecoded(),
+                        item.getNamespace().getDecoded(),
+                        item.getGroup())
+                    )
+                    .collect(Collectors.toList());
+            } else if (Objects.nonNull(compareTo)) {
+                WineryVersion version = VersionUtils.getVersion(compareTo);
+                ToscaDiff compare = BackendUtils.compare(this.id, version);
+                if (Objects.nonNull(asChangeLog)) {
+                    return compare.getChangeLog();
+                } else {
+                    return compare;
+                }
+            } else {
+                return BackendUtils.getDefinitionsHavingCorrectImports(repository, this.id);
+            }
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
@@ -365,7 +409,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     }
 
     @PUT
-    @Consumes( {MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+    @Consumes({MimeTypes.MIMETYPE_TOSCA_DEFINITIONS, MediaType.APPLICATION_XML, MediaType.TEXT_XML})
     public Response updateDefinitions(InputStream requestBodyStream) {
         Unmarshaller u;
         Definitions defs;

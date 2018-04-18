@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -71,8 +71,7 @@ export class SourceService {
     copySourcesToFiles() {
         const headers = new Headers({'Accept': 'application/json', 'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
-        const data = {};
-        return this.http.post(this.parentPath, data, options)
+        return this.http.post(this.getSourcePath, {}, options)
             .map(res => res.ok);
     }
 

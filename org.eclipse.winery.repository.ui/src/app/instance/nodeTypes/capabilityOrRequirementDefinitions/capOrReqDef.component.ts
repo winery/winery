@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,6 +29,7 @@ import {SelectData} from '../../../wineryInterfaces/selectData';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
 import {ModalDirective} from 'ngx-bootstrap';
 import {SpinnerWithInfinityComponent} from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     selector: 'winery-instance-cap-or-req-definitions',
@@ -88,7 +89,8 @@ export class CapOrReqDefComponent implements OnInit {
     @ViewChild('upperBoundSpinner') upperBoundSpinner: SpinnerWithInfinityComponent;
     @ViewChild('editor') editor: any;
 
-    constructor(private service: CapabilityOrRequirementDefinitionsService,
+    constructor(public sharedData: InstanceService,
+                private service: CapabilityOrRequirementDefinitionsService,
                 private notify: WineryNotificationService,
                 private router: Router) {
         this.capOrReqDefToBeAdded = new CapOrReqDefinition();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
 import {WineryArtifactService} from './artifact.service';
 import {isNullOrUndefined} from 'util';
@@ -28,6 +28,7 @@ import {Router} from '@angular/router';
 import {FilesApiData} from '../../artifactTemplates/filesTag/files.service.';
 import {GenerateData} from '../../../wineryComponentExists/wineryComponentExists.component';
 import {ToscaTypes} from '../../../wineryInterfaces/enums';
+import {WineryVersion} from '../../../wineryInterfaces/wineryVersion';
 
 @Component({
     selector: 'winery-artifact',
@@ -78,7 +79,7 @@ export class WineryArtifactComponent implements OnInit {
     ];
 
     constructor(private service: WineryArtifactService,
-                private sharedData: InstanceService,
+                public sharedData: InstanceService,
                 private notify: WineryNotificationService,
                 private fileService: WineryArtifactFilesService,
                 private router: Router) {
@@ -100,6 +101,7 @@ export class WineryArtifactComponent implements OnInit {
             this.getInterfacesOfAssociatedType();
         }
 
+        this.name = this.isDeploymentArtifact ? 'Deployment' : 'Implementation';
     }
 
     onAddClick() {
@@ -110,8 +112,8 @@ export class WineryArtifactComponent implements OnInit {
         } else {
             this.artifact.namespace = this.sharedData.toscaComponent.namespace;
         }
-        const deployment = this.isDeploymentArtifact ? 'Deployment' : '';
-        this.artifact.name = this.sharedData.toscaComponent.localName + deployment + 'Artifact';
+        const deployment = this.isDeploymentArtifact ? 'Deployment' : 'Implementation';
+        this.artifact.name = this.sharedData.toscaComponent.localName.replace('_', '-') + '-' + deployment + 'Artifact';
         this.artifact.toscaType = ToscaTypes.ArtifactTemplate;
         this.addArtifactModal.show();
     }
@@ -167,9 +169,10 @@ export class WineryArtifactComponent implements OnInit {
         }
 
         if (this.selectedRadioButton === 'createArtifactTemplate') {
+            const version = new WineryVersion('', 1, 1);
             this.newArtifact.autoCreateArtifactTemplate = 'true';
-            this.newArtifact.artifactTemplateName = this.artifact.name ? this.artifact.name : '';
-            this.newArtifact.artifactTemplateNamespace = this.artifact.namespace ? this.artifact.namespace : '';
+            this.newArtifact.artifactTemplateName = this.artifact.name + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+            this.newArtifact.artifactTemplateNamespace = this.artifact.namespace;
             this.makeArtifactUrl();
         } else if (this.selectedRadioButton === 'linkArtifactTemplate') {
             this.newArtifact.autoCreateArtifactTemplate = '';

@@ -32,6 +32,8 @@ import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.repository.Constants;
@@ -221,6 +223,15 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
     @Override
     public void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException {
+        this.duplicate(oldId, newId, true);
+    }
+
+    @Override
+    public void duplicate(DefinitionsChildId from, DefinitionsChildId newId) throws IOException {
+        this.duplicate(from, newId, false);
+    }
+
+    private void duplicate(DefinitionsChildId oldId, DefinitionsChildId newId, boolean moveOnly) throws IOException {
         Objects.requireNonNull(oldId);
         Objects.requireNonNull(newId);
 
@@ -240,7 +251,11 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
         File oldDir = this.id2AbsolutePath(oldRef.getParent()).toFile();
         File newDir = this.id2AbsolutePath(newRef.getParent()).toFile();
 
-        org.apache.commons.io.FileUtils.moveDirectory(oldDir, newDir);
+        if (moveOnly) {
+            org.apache.commons.io.FileUtils.moveDirectory(oldDir, newDir);
+        } else {
+            org.apache.commons.io.FileUtils.copyDirectory(oldDir, newDir);
+        }
 
         // Update definitions and store it
 
@@ -329,6 +344,14 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
 
     @Override
     public <T extends DefinitionsChildId> SortedSet<T> getAllDefinitionsChildIds(Class<T> idClass) {
+        return getDefinitionsChildIds(idClass, false);
+    }
+
+    public <T extends DefinitionsChildId> SortedSet<T> getStableDefinitionsChildIdsOnly(Class<T> idClass) {
+        return getDefinitionsChildIds(idClass, true);
+    }
+
+    private <T extends DefinitionsChildId> SortedSet<T> getDefinitionsChildIds(Class<T> idClass, boolean omitDevelopmentVersions) {
         SortedSet<T> res = new TreeSet<>();
         String rootPathFragment = Util.getRootPathFragment(idClass);
         Path dir = this.repositoryRoot.resolve(rootPathFragment);
@@ -348,6 +371,13 @@ public class FilebasedRepository extends AbstractRepository implements IReposito
                 try (DirectoryStream<Path> idDS = Files.newDirectoryStream(nsP, onhdf)) {
                     for (Path idP : idDS) {
                         XmlId xmlId = new XmlId(idP.getFileName().toString(), true);
+                        if (omitDevelopmentVersions) {
+                            WineryVersion version = VersionUtils.getVersion(xmlId.getDecoded());
+
+                            if (version.toString().length() > 0 && version.getWorkInProgressVersion() > 0) {
+                                continue;
+                            }
+                        }
                         Constructor<T> constructor;
                         try {
                             constructor = idClass.getConstructor(Namespace.class, XmlId.class);

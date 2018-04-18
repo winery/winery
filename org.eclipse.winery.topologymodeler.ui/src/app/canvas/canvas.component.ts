@@ -16,7 +16,7 @@ import {
     QueryList, Renderer2, ViewChild, ViewChildren
 } from '@angular/core';
 import { JsPlumbService } from '../services/jsPlumbService';
-import { TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
+import { EntityType, TNodeTemplate, TRelationshipTemplate } from '../models/ttopology-template';
 import { LayoutDirective } from '../layout/layout.directive';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
@@ -46,6 +46,7 @@ import { QName } from '../models/qname';
 import { ImportTopologyModalData } from '../models/importTopologyModalData';
 import { ImportTopologyService } from '../services/import-topology.service';
 import { ReqCapService } from '../services/req-cap.service';
+import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 
 @Component({
     selector: 'winery-canvas',
@@ -65,6 +66,8 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
     @ViewChild('importTopologyModal') importTopologyModal: ModalDirective;
     @Input() entityTypes: EntityTypesModel;
     @Input() relationshipTypes: Array<any> = [];
+    @Input() diffMode = false;
+
     allNodeTemplates: Array<TNodeTemplate> = [];
     allRelationshipTemplates: Array<TRelationshipTemplate> = [];
     navbarButtonsState: ButtonsStateModel;
@@ -695,6 +698,8 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 // check which propertyType is defined by checking with the defined capability types from the
                 // repository if any is defined with at least one element it's a KV property, sets default values if
                 // there aren't any in the node template
+                // check which propertyType is defined by checking with the defined capability types from the repository
+                // if any is defined with at least one element it's a KV property, sets default values if there aren't any in the node template
                 if (cap.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0) {
                     this.capabilities.propertyType = 'KV';
                     this.showDefaultProperties = true;
@@ -1146,19 +1151,23 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
     paintRelationship(newRelationship: TRelationshipTemplate) {
         const allJsPlumbRelationships = this.newJsPlumbInstance.getAllConnections();
         if (!allJsPlumbRelationships.some(rel => rel.id === newRelationship.id)) {
-            const type = newRelationship.type.substring(newRelationship.type.indexOf('}') + 1);
+            const labelString = (isNullOrUndefined(newRelationship.state) ? '' : newRelationship.state + '<br>')
+                + newRelationship.type.substring(newRelationship.type.indexOf('}') + 1);
+
+            const border = isNullOrUndefined(newRelationship.state)
+                ? '#fafafa' : VersionUtils.getElementColorByDiffState(newRelationship.state);
             const conn = this.newJsPlumbInstance.connect({
                 source: newRelationship.sourceElement.ref,
                 target: newRelationship.targetElement.ref,
                 overlays: [['Arrow', { width: 15, length: 15, location: 1, id: 'arrow', direction: 1 }],
                     ['Label', {
-                        label: type,
+                        label: labelString,
                         id: 'label',
                         labelStyle: {
                             font: '11px Roboto, sans-serif',
                             color: '#212121',
                             fill: '#efefef',
-                            borderStyle: '#fafafa',
+                            borderStyle: border,
                             borderWidth: 1,
                             padding: '3px'
                         }
@@ -1166,6 +1175,13 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 ],
             });
             setTimeout(() => this.handleRelSideBar(conn, newRelationship), 1);
+
+            if (!isNullOrUndefined(newRelationship.state)) {
+                setTimeout(() => {
+                    conn.addType(newRelationship.state.toString().toLowerCase());
+                    this.revalidateContainer();
+                }, 1);
+            }
         }
     }
 
@@ -1479,7 +1495,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
      * Registers relationship (connection) types in JSPlumb (Color, strokewidth etc.)
      * @param relType
      */
-    assignRelTypes(relType: any): void {
+    assignRelTypes(relType: EntityType): void {
         if (!this.allRelationshipTypesColors.some(con => con.type === relType.id)) {
             this.allRelationshipTypesColors.push({
                 type: relType.id,
@@ -1491,7 +1507,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                         stroke: relType.color,
                         strokeWidth: 2
                     },
-                    hoverPaintStyle: { stroke: 'red', strokeWidth: 5 }
+                    hoverPaintStyle: { stroke: relType.color, strokeWidth: 5 }
                 });
         }
         const allJsPlumbConnections = this.newJsPlumbInstance.getAllConnections();
@@ -1510,13 +1526,29 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
      */
     ngOnInit() {
         this.layoutDirective.setJsPlumbInstance(this.newJsPlumbInstance);
-        this.newJsPlumbInstance.registerConnectionType('marked', {
-            paintStyle: {
-                strokeWidth: 5
+        this.newJsPlumbInstance.registerConnectionTypes({
+            marked: {
+                paintStyle: {
+                    strokeWidth: 5
+                }
+            },
+            added: {
+                paintStyle: {
+                    stroke: VersionUtils.getElementColorByDiffState(DifferenceStates.ADDED)
+                }
+            },
+            removed: {
+                paintStyle: {
+                    stroke: VersionUtils.getElementColorByDiffState(DifferenceStates.REMOVED)
+                }
+            },
+            changed: {
+                paintStyle: {
+                    stroke: VersionUtils.getElementColorByDiffState(DifferenceStates.CHANGED)
+                }
             }
         });
         this.differ = this.differs.find([]).create(null);
-        console.log(this.entityTypes);
     }
 
     /*
@@ -1537,7 +1569,9 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
      */
     ngDoCheck() {
         const relationshipTypesChanges = this.differ.diff(this.relationshipTypes);
-        if (relationshipTypesChanges) {
+        // TODO: instead of fetching all relationship visuals one by one, do it similar to nodeTypes -> this check will
+        // be obsolete
+        if (relationshipTypesChanges && !this.diffMode) {
             relationshipTypesChanges.forEachAddedItem(r => this.assignRelTypes(r.currentValue));
         }
     }
@@ -1630,6 +1664,9 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
         } else if (this.allRelationshipTemplates.length === 0) {
             const con = this.newJsPlumbInstance.connect({ source: 'dummy1', target: 'dummy2' });
             con.setVisible(false);
+        }
+        if (this.diffMode) {
+            this.layoutTopology();
         }
     }
 
@@ -1944,5 +1981,10 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
         } else if (this.endTime - this.startTime >= this.draggingThreshold) {
             this.longPress = true;
         }
+    }
+
+    private layoutTopology() {
+        this.layoutDirective.layoutNodes(this.nodeChildrenArray, this.allRelationshipTemplates);
+        this.ngRedux.dispatch(this.topologyRendererActions.executeLayout());
     }
 }

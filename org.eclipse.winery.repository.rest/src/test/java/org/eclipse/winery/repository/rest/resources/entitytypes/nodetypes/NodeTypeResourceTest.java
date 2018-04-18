@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,7 +24,7 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
     @Test
     public void baobabInitialExistsUsingResource() throws Exception {
         this.setRevisionTo("5b5ad1106a3a428020b6bc5d2f154841acb5f779"); // repository containing boabab fruit only
-        NodeTypeResource nodeTypeResource = (NodeTypeResource) NodeTypesResource.getComponentInstaceResource(TestIds.ID_FRUIT_BAOBAB);
+        NodeTypeResource nodeTypeResource = (NodeTypeResource) NodeTypesResource.getComponentInstanceResource(TestIds.ID_FRUIT_BAOBAB);
         String testXml = BackendUtils.getXMLAsString(nodeTypeResource.getNodeType());
         String controlXml = this.readFromClasspath("entitytypes/nodetypes/baobab_initial.xml");
         org.hamcrest.MatcherAssert.assertThat(testXml, CompareMatcher.isIdenticalTo(controlXml).ignoreWhitespace());
@@ -159,11 +159,16 @@ public class NodeTypeResourceTest extends AbstractResourceTest {
         this.assertGet("nodetypes/allvisualappearancedata", "entitytypes/nodetypes/test.visualappearances.json");
     }
 
-
     @Test
     public void nodeTypeWithTwoKVPropertiesCorrectJson() throws Exception {
         this.setRevisionTo("origin/plain");
         this.assertGet("nodetypes/http%253A%252F%252Fplain.winery.opentosca.org%252Fnodetypes/NodeTypeWithTwoKVProperties/", "entitytypes/nodetypes/NodeTypeWithTwoKVProperties.json");
     }
 
+    @Test
+    public void getNodeTypeVersions() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("nodetypes/http%253A%252F%252Fopentosca.org%252Fnodetypes/NodeTypeWith5Versions_0.3.4-w3?versions",
+            "entitytypes/nodetypes/nodeTypeWith5Versions.json");
+    }
 }

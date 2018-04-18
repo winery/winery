@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -280,6 +280,33 @@ public class TRelationshipTemplate extends TEntityTemplate {
             public void setConstraintType(String value) {
                 this.constraintType = value;
             }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                RelationshipConstraint that = (RelationshipConstraint) o;
+                return Objects.equals(any, that.any) &&
+                    Objects.equals(constraintType, that.constraintType);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(any, constraintType);
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            RelationshipConstraints that = (RelationshipConstraints) o;
+            return Objects.equals(relationshipConstraint, that.relationshipConstraint);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(relationshipConstraint);
         }
     }
 
@@ -300,6 +327,19 @@ public class TRelationshipTemplate extends TEntityTemplate {
 
         public void setRef(RelationshipSourceOrTarget value) {
             this.ref = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            SourceOrTargetElement that = (SourceOrTargetElement) o;
+            return Objects.equals(ref, that.ref);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(ref);
         }
     }
 

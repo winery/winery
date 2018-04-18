@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,6 +29,7 @@ import {GenerateData} from '../../../wineryComponentExists/wineryComponentExists
 import {ToscaTypes} from '../../../wineryInterfaces/enums';
 import {Utils} from '../../../wineryUtils/utils';
 import {SelectableListComponent} from './selectableList/selectableList.component';
+import {WineryVersion} from '../../../wineryInterfaces/wineryVersion';
 
 @Component({
     selector: 'winery-instance-interfaces',
@@ -72,7 +73,7 @@ export class InterfacesComponent implements OnInit {
     artifactTemplate: GenerateData = new GenerateData();
 
     constructor(private service: InterfacesService, private notify: WineryNotificationService,
-                private sharedData: InstanceService, private existService: ExistService) {
+                public sharedData: InstanceService, private existService: ExistService) {
     }
 
     ngOnInit() {
@@ -188,8 +189,10 @@ export class InterfacesComponent implements OnInit {
 
     // region ########## Generate Implementation ##########
     showGenerateImplementationModal(): void {
-        this.artifactTemplate.name =
-            this.sharedData.toscaComponent.localName + '_' + this.selectedInterface.name.replace(/\W/g, '_') + '_IA';
+        this.artifactTemplate.name = this.sharedData.toscaComponent.localNameWithoutVersion
+            + '-' + this.sharedData.currentVersion.toString()
+            + '-' + this.selectedInterface.name.replace(/\W/g, '-')
+            + '-IA';
 
         let artifactTemplateNamespace = '';
         if (this.sharedData.toscaComponent.namespace.includes('nodetypes')) {
@@ -219,11 +222,13 @@ export class InterfacesComponent implements OnInit {
         this.generateArtifactApiData.autoCreateArtifactTemplate = 'yes';
         this.generateArtifactApiData.interfaceName = this.selectedInterface.name;
 
-        // enable autogenreation of the implementation artifact
+        // enable auto generation of the implementation artifact
         // currently works for node types only, not for relationship types
         this.generateArtifactApiData.autoGenerateIA = 'yes';
 
-        this.implementation.name = this.sharedData.toscaComponent.localName + '_impl';
+        this.implementation.name = this.sharedData.toscaComponent.localNameWithoutVersion
+            + '-' + this.sharedData.currentVersion.toString()
+            + '-Implementation';
 
         let implementationNamespace = '';
         if (this.sharedData.toscaComponent.namespace.includes('nodetypes')) {
@@ -241,6 +246,7 @@ export class InterfacesComponent implements OnInit {
 
     generateImplementationArtifact(): void {
         this.generating = true;
+        this.generateArtifactApiData.artifactTemplate += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.artifactTemplate.version.toString();
         this.generateArtifactApiData.artifactName = this.generateArtifactApiData.artifactTemplateName;
         if (this.toscaType !== ToscaTypes.NodeType) {
             delete this.generateArtifactApiData.autoGenerateIA;
@@ -342,6 +348,7 @@ export class InterfacesComponent implements OnInit {
         // If there is a generation of implementations in progress, generate those now.
         if (this.generating) {
             if (this.implementation.createComponent) {
+                this.implementation.name += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.implementation.version.toString();
                 this.service.createImplementation(this.implementation.name, this.implementation.namespace)
                     .subscribe(
                         data => this.handleGeneratedImplementation(data),

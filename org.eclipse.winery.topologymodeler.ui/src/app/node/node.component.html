@@ -23,6 +23,9 @@
      (mouseup)="mouseUpHandler($event)"
      [@onCreateNodeTemplateAnimation]='visibilityState'
      [class.removeZIndex]="removeZIndex">
+    <div *ngIf="nodeTemplate.state" style="margin-bottom: 4px; padding-left: 4px;">
+        {{ nodeTemplate.state }}
+    </div>
     <div class="row rounded col-sm-12 node-template-header"
          (click)="openSidebar($event); closeConnectorEndpoints($event)">
         <div class="col-sm-1" style="padding: 0;">

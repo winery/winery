@@ -340,6 +340,19 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
             }
             return this.extension;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Extensions that = (Extensions) o;
+            return Objects.equals(extension, that.extension);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(extension);
+        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -378,6 +391,19 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
                 any = new ArrayList<Object>();
             }
             return this.any;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Types types = (Types) o;
+            return Objects.equals(any, types.any);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(any);
         }
     }
 

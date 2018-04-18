@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -19,6 +19,7 @@
     <winery-table
         [title]="title"
         [columns]="columns"
+        [disableButtons]="!sharedData.currentVersion?.editable"
         [data]="requirementsOrCapabilitiesList"
         (cellSelected)="onCellSelected($event)"
         (addBtnClicked)="onAddClick()"
@@ -30,10 +31,7 @@
 
 <winery-modal bsModal #addReqOrCapModal="bs-modal" [modalRef]="addReqOrCapModal">
     <winery-modal-header [title]="addOrChange + singleItem">
-
     </winery-modal-header>
-
-
     <winery-modal-body>
         <form #addReqOrCapForm="ngForm" id="addReqOrCapForm">
             <div class="form-group">
@@ -82,9 +80,7 @@
                 </div>
             </div>
         </form>
-
     </winery-modal-body>
-
     <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" data-dismiss="modal" (click)="cancelBtnClicked()">Cancel</button>
         <button *ngIf="!edit" type="button" [disabled]="!addReqOrCapForm?.form.valid"

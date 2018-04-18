@@ -12,6 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { ServiceTemplateTemplateTypes, ToscaTypes } from '../wineryInterfaces/enums';
+import { isNullOrUndefined } from 'util';
 
 export class Utils {
 
@@ -216,6 +217,15 @@ export class Utils {
             namespace: qname.substr(1, i - 1),
             localName: qname.substr(i + 1)
         };
+    }
+
+    public static getNameWithoutVersion(name: string): string {
+        const res = name.match(/_([^_]*)-w([0-9]+)(-wip([0-9]+))?$/);
+        if (isNullOrUndefined(res)) {
+            return name;
+        } else {
+            return name.substr(0, res.index);
+        }
     }
 }
 

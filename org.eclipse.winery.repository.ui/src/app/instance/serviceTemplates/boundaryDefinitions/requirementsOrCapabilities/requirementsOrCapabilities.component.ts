@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,6 +17,7 @@ import {RequirementsOrCapabilitiesService} from './requirementsOrCapabilities.se
 import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
 import {isNullOrUndefined} from 'util';
 import {ModalDirective} from 'ngx-bootstrap';
+import {InstanceService} from '../../../instance.service';
 
 @Component({
     selector: 'winery-instance-requirements-or-capabilities',
@@ -46,7 +47,8 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
     addOrChange: string;
 
     constructor(private service: RequirementsOrCapabilitiesService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                public sharedData: InstanceService) {
         this.reqOrCapToBeAdded = new RequirementOrCapability();
     }
 

@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -13,7 +13,11 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div *ngIf="!loading; else loadingIcon">
     <div class="right">
-        <button [disabled]="properties === null" class="btn btn-primary" (click)="save()">Save</button>
+        <button [disabled]="!sharedData?.currentVersion?.editable || properties === null"
+                class="btn btn-primary"
+                (click)="save()">
+            Save
+        </button>
     </div>
     <div *ngIf="propertyKeys?.length > 0; else elseBlock">
         <table>

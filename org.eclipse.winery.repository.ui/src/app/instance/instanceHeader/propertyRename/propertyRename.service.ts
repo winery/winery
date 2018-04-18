@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,17 +36,19 @@ export class PropertyRenameService {
         this.toscaComponent = toscaComponent;
     }
 
-    setPropertyValue(value: string): Observable<Response> {
+    setPropertyValue(value: string, renameAllComponents: boolean): Observable<Response> {
         const headers = new Headers({'Content-Type': 'application/json'});
         const options = new RequestOptions({headers: headers});
         let payload;
         if (this.propertyName === 'localName') {
             payload = {
-                localname: value
+                localname: value,
+                renameAllComponents: renameAllComponents
             };
         } else {
             payload = {
-                namespace: value
+                namespace: value,
+                renameAllComponents: renameAllComponents
             };
         }
         return this.http.post(backendBaseURL + this.toscaComponent.path + '/' + this.propertyName, payload, options);

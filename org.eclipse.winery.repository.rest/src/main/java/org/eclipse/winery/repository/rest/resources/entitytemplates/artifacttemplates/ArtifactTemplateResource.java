@@ -14,7 +14,6 @@
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
 import io.swagger.annotations.ApiParam;
-import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.constants.MimeTypes;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.model.tosca.HasType;
@@ -24,23 +23,20 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
-import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceWithReferencesResource;
 import org.eclipse.winery.repository.rest.resources._support.IHasName;
-import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourcesApiData;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.IEntityTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.PropertiesResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * Models an Artifact Template with its artifact references
@@ -54,8 +50,6 @@ import java.util.List;
  */
 
 public class ArtifactTemplateResource extends AbstractComponentInstanceWithReferencesResource implements IEntityTemplateResource<TArtifactTemplate>, IHasName {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ArtifactTemplateResource.class);
 
     private final ArtifactTemplateFilesDirectoryId filesDirectoryId;
     private final ArtifactTemplateSourceDirectoryId sourceDirectoryId;
@@ -95,28 +89,6 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
         BackendUtils.synchronizeReferences((ArtifactTemplateId) this.id);
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response copySourceToFilesResource(@ApiParam(value = "if data contains a non-empty array than only the files" +
-        " whose names are included are copied ", required = true) ArtifactResourcesApiData data) {
-        List<String> artifactList = data.getArtifactNames();
-        DirectoryId sourceDir = new ArtifactTemplateSourceDirectoryId((ArtifactTemplateId) this.id);
-        FilesResource filesResource = getFilesResource();
-        for (RepositoryFileReference ref : RepositoryFactory.getRepository().getContainedFiles(sourceDir)) {
-            if (artifactList == null || artifactList.contains(ref.getFileName())) {
-                try (InputStream inputStream = RepositoryFactory.getRepository().newInputStream(ref)) {
-                    String fileName = ref.getFileName();
-                    String subDirectory = ref.getSubDirectory().map(s -> s.toString()).orElse("");
-                    filesResource.putFile(fileName, subDirectory, inputStream);
-                } catch (IOException e) {
-                    LOGGER.debug("The artifact source " + ref.getFileName() + " could not be copied to the files directory.", e);
-                    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-                }
-            }
-        }
-        return Response.status(Status.CREATED).build();
-    }
-
     @Path("files/")
     public FilesResource getFilesResource() {
         return new FilesResource(this.filesDirectoryId);
@@ -131,7 +103,7 @@ public class ArtifactTemplateResource extends AbstractComponentInstanceWithRefer
 
     @Path("source/")
     public FilesResource getSrcResource() {
-        return new FilesResource(this.sourceDirectoryId);
+        return new FilesResource(this.sourceDirectoryId, getFilesResource());
     }
 
     @GET

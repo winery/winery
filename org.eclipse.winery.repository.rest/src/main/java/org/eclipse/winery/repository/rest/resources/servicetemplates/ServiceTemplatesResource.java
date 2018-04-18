@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -214,7 +214,7 @@ public class ServiceTemplatesResource extends AbstractComponentsWithoutTypeRefer
     }
 
     @Path("{namespace}/{id}/")
-    public ServiceTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-        return this.getComponentInstaceResource(namespace, id, true);
+    public ServiceTemplateResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstanceResource(namespace, id, true);
     }
 }

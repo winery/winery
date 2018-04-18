@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -73,7 +73,7 @@ export class PlansComponent implements OnInit {
     @ViewChild('confirmDeleteModal') confirmDeleteModal: any;
 
     constructor(private notify: WineryNotificationService,
-                private sharedData: InstanceService,
+                public sharedData: InstanceService,
                 private service: PlansService) {
     }
 

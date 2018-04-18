@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,6 +23,7 @@ import {WineryDuplicateValidatorModule} from '../wineryValidators/wineryDuplicat
 import {RouterModule} from '@angular/router';
 import {WineryLoaderModule} from '../wineryLoader/wineryLoader.module';
 import {SelectModule} from 'ng2-select';
+import {AlertModule} from 'ngx-bootstrap';
 
 @NgModule({
     imports: [
@@ -30,6 +31,7 @@ import {SelectModule} from 'ng2-select';
         FormsModule,
         RouterModule,
         SelectModule,
+        AlertModule.forRoot(),
         WineryModalModule,
         WineryLoaderModule,
         WineryNotificationModule,

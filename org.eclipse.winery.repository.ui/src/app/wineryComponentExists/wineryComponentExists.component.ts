@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,6 +17,7 @@ import {isNullOrUndefined} from 'util';
 import {ModalDirective} from 'ngx-bootstrap';
 import {backendBaseURL} from '../configuration';
 import {ToscaTypes} from '../wineryInterfaces/enums';
+import {WineryVersion} from '../wineryInterfaces/wineryVersion';
 
 /**
  * This component is for checking whether a given component already exists in the repository and displays it
@@ -41,7 +42,7 @@ export class WineryComponentExistsComponent implements OnInit {
     @Input() generateData: GenerateData;
     @Input() modalRef: ModalDirective;
 
-    tosca: ToscaTypes;
+    private version = new WineryVersion('', 1, 1);
 
     constructor(private existService: ExistService) {
     }
@@ -58,7 +59,12 @@ export class WineryComponentExistsComponent implements OnInit {
             this.generateData.url = backendBaseURL + '/'
                 + this.generateData.toscaType + '/'
                 + encodeURIComponent(encodeURIComponent(this.generateData.namespace)) + '/'
-                + this.generateData.name + '/';
+                + this.generateData.name;
+
+            this.generateData.url += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.version.toString();
+            this.generateData.version = this.version;
+
+            this.generateData.url += '/';
         }
 
         if (!this.generateData.namespace.endsWith('/')) {
@@ -69,7 +75,6 @@ export class WineryComponentExistsComponent implements OnInit {
                 );
         }
     }
-
 }
 
 export class GenerateData {
@@ -78,4 +83,5 @@ export class GenerateData {
     namespace: string;
     name: string;
     url: string;
+    version: WineryVersion;
 }

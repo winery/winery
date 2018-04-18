@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,7 @@
  *******************************************************************************/
 import {Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Response} from '@angular/http';
 import {Subscription} from 'rxjs';
 import {InstanceService} from './instance.service';
 import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
@@ -24,6 +25,7 @@ import {WineryInstance} from '../wineryInterfaces/wineryComponent';
 import {ToscaTypes} from '../wineryInterfaces/enums';
 import {ToscaComponent} from '../wineryInterfaces/toscaComponent';
 import {Utils} from '../wineryUtils/utils';
+import {WineryVersion} from '../wineryInterfaces/wineryVersion';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -36,10 +38,15 @@ export class InstanceComponent implements OnDestroy {
 
     availableTabs: string[];
     toscaComponent: ToscaComponent;
+    versions: WineryVersion[];
     typeUrl: string;
     typeId: string;
     typeOf: string;
     imageUrl: string;
+    newVersionAvailable: boolean;
+    editable = true;
+    loadingVersions = true;
+    loadingData = true;
 
     routeSub: Subscription;
 
@@ -50,6 +57,8 @@ export class InstanceComponent implements OnDestroy {
         this.routeSub = this.route
             .data
             .subscribe(data => {
+                    this.newVersionAvailable = false;
+                    this.editable = !this.editable;
                     this.toscaComponent = data['resolveData'] ? data['resolveData'] : new ToscaComponent(ToscaTypes.Admin, '', '');
 
                     this.service.setSharedData(this.toscaComponent);
@@ -69,11 +78,29 @@ export class InstanceComponent implements OnDestroy {
                             .subscribe(
                                 compData => this.handleComponentData(compData)
                             );
+                        this.getVersionInfo();
+                    } else {
+                        this.loadingVersions = false;
+                        this.loadingData = false;
+                        this.editable = this.toscaComponent.toscaType === ToscaTypes.Admin;
                     }
 
                     this.availableTabs = this.service.getSubMenuByResource();
                 },
                 error => this.handleError(error)
+            );
+    }
+
+    private getVersionInfo() {
+        this.service.getVersions()
+            .subscribe(
+                versions => this.handleVersions(versions),
+                (error: Response) => {
+                    if (error.status === 500) {
+                        // needed because the git client sometimes throws an exception reading the repository: java.io.EOFException: Short read of block
+                        this.getVersionInfo();
+                    }
+                }
             );
     }
 
@@ -106,6 +133,20 @@ export class InstanceComponent implements OnDestroy {
             } else {
                 this.typeUrl = null;
             }
+        }
+
+        this.loadingData = false;
+    }
+
+    private handleVersions(versions: WineryVersion[]) {
+        this.versions = this.service.versions = versions;
+        this.loadingVersions = false;
+
+        const version = this.versions.find(v => v.currentVersion);
+        if (!isNullOrUndefined(version)) {
+            this.service.currentVersion = version;
+            this.newVersionAvailable = !version.latestVersion;
+            this.editable = version.editable;
         }
     }
 

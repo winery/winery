@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,6 +16,7 @@ import {Response} from '@angular/http';
 import {EditXMLService} from './editXML.service';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
 import {WineryEditorComponent} from '../../../wineryEditorModule/wineryEditor.component';
+import {InstanceService} from '../../instance.service';
 
 declare var requirejs: any;
 
@@ -39,7 +40,8 @@ export class EditXMLComponent implements OnInit {
     // Set height to 500 px
     height = 500;
 
-    constructor(private service: EditXMLService,
+    constructor(public sharedData: InstanceService,
+                private service: EditXMLService,
                 private notify: WineryNotificationService) {
     }
 

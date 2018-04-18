@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -41,7 +41,8 @@ public interface HasIdInIdOrNameField {
     default void setId(String id) {
         if (this instanceof HasId) {
             ((HasId) this).setId(id);
-        } else {
+        }
+        if (this instanceof HasName) {
             ((HasName) this).setName(id);
         }
     }

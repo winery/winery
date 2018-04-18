@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,7 +14,9 @@
 package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates;
 
 import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
+
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -47,15 +49,21 @@ public class ArtifactTemplateResourceTest extends AbstractResourceTest {
     @Test
     public void copySourcesToFilesWithoutSelection() throws Exception {
         this.setRevisionTo("62c0749a622b11474f865e3aa06ccff4c380efd8");
-        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/", "entitytemplates/artifacttemplates/copySourcesToFiles_without_selection.json");
+        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source/", "entitytemplates/artifacttemplates/copySourcesToFiles_without_selection.json");
         this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/", "entitytemplates/artifacttemplates/copySourcesToFiles_without_selection_response.json");
     }
 
     @Test
     public void copySourcesToFilesWithSelection() throws Exception {
         this.setRevisionTo("62c0749a622b11474f865e3aa06ccff4c380efd8");
-        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection.json");
+        this.assertPost("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/source/", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection.json");
         this.assertGet("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection_response.json");
+    }
+
+    @Test
+    public void copyFilesToSource() throws Exception {
+        this.setRevisionTo("62c0749a622b11474f865e3aa06ccff4c380efd8");
+        this.assertPostExpectBadRequestResponse("artifacttemplates/http%253A%252F%252Fopentosca.org%252Fartifacttemplates/MyTinyTest/files/", "entitytemplates/artifacttemplates/copySourcesToFiles_with_selection.json");
     }
 
     @Test

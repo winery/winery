@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,9 +14,11 @@
 import {isNullOrUndefined} from 'util';
 import {ToscaTypes} from './enums';
 import {backendBaseURL} from '../configuration';
+import {Utils} from '../wineryUtils/utils';
 
 export class ToscaComponent {
 
+    readonly localNameWithoutVersion: string;
     readonly path: string;
     readonly xmlPath: string;
     readonly yamlPath: string;
@@ -37,6 +39,9 @@ export class ToscaComponent {
                 this.xmlCsarPath = this.xmlPath + '/?csar';
                 this.yamlCsarPath = this.xmlPath + '/?yaml&csar';
             }
+        }
+        if (!isNullOrUndefined(this.localName)) {
+            this.localNameWithoutVersion = Utils.getNameWithoutVersion(this.localName);
         }
     }
 

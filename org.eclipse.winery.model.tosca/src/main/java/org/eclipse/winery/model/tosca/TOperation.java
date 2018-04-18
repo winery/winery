@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -218,6 +218,19 @@ public class TOperation extends TExtensibleElements {
             }
             return this.inputParameter;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            InputParameters that = (InputParameters) o;
+            return Objects.equals(inputParameter, that.inputParameter);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(inputParameter);
+        }
     }
 
     /**
@@ -273,6 +286,19 @@ public class TOperation extends TExtensibleElements {
                 outputParameter = new ArrayList<TParameter>();
             }
             return this.outputParameter;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            OutputParameters that = (OutputParameters) o;
+            return Objects.equals(outputParameter, that.outputParameter);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(outputParameter);
         }
     }
 

@@ -11,20 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import { TNodeTemplate, Visuals } from './ttopology-template';
+import { TNodeTemplate, TRelationshipTemplate, Visuals } from './ttopology-template';
 import { QName } from './qname';
 import { isNullOrUndefined } from 'util';
+import { DifferenceStates, VersionUtils } from './ToscaDiff';
 
 export class Utils {
 
-    public static createTNodeTemplateFromObject(node: TNodeTemplate, nodeVisuals: Visuals[], givenColor?: string): TNodeTemplate {
+    static createTNodeTemplateFromObject(node: TNodeTemplate, nodeVisuals: Visuals[], state?: DifferenceStates): TNodeTemplate {
         let color;
         let imageUrl;
         for (const visual of nodeVisuals) {
             const qName = new QName(visual.nodeTypeId);
             const localName = qName.localName;
             if (localName === new QName(node.type).localName) {
-                color = isNullOrUndefined(givenColor) ? visual.color : givenColor;
+                color = isNullOrUndefined(state) ? visual.color : VersionUtils.getElementColorByDiffState(state);
                 imageUrl = visual.imageUrl;
                 if (imageUrl) {
                     imageUrl = imageUrl.replace('appearance', 'visualappearance');
@@ -76,7 +77,22 @@ export class Utils {
             node.capabilities,
             node.requirements,
             node.deploymentArtifacts,
-            node.policies
+            node.policies,
+            state
+        );
+    }
+
+    static createTRelationshipTemplateFromObject(relationship: TRelationshipTemplate, state?: DifferenceStates) {
+        return new TRelationshipTemplate(
+            relationship.sourceElement,
+            relationship.targetElement,
+            relationship.name,
+            `${relationship.sourceElement.ref}_${relationship.type.substring(relationship.type.indexOf('}') + 1)}_${relationship.targetElement.ref}`,
+            relationship.type,
+            relationship.documentation,
+            relationship.any,
+            relationship.otherAttributes,
+            state
         );
     }
 }

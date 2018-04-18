@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -358,6 +358,19 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         public QName getTypeAsQName() {
             return this.getType();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            DerivedFrom that = (DerivedFrom) o;
+            return Objects.equals(typeRef, that.typeRef);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(typeRef);
+        }
     }
 
 
@@ -422,6 +435,20 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
          */
         public void setType(QName value) {
             this.type = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PropertiesDefinition that = (PropertiesDefinition) o;
+            return Objects.equals(element, that.element) &&
+                Objects.equals(type, that.type);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(element, type);
         }
     }
 

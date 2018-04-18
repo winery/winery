@@ -11,7 +11,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
@@ -19,12 +18,15 @@ import { backendBaseURL } from '../configuration';
 import { WineryInstance, WineryTopologyTemplate } from '../wineryInterfaces/wineryComponent';
 import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
 import { ToscaTypes } from '../wineryInterfaces/enums';
+import {WineryVersion} from '../wineryInterfaces/wineryVersion';
 
 @Injectable()
 export class InstanceService {
 
     toscaComponent: ToscaComponent;
     topologyTemplate: WineryTopologyTemplate = null;
+    versions: WineryVersion[];
+    currentVersion: WineryVersion;
     path: string;
 
     constructor(private http: Http) {
@@ -127,5 +129,22 @@ export class InstanceService {
         const options = new RequestOptions({headers: headers});
         return this.http.get(backendBaseURL + this.path + '/topologytemplate/', options)
             .map(res => res.json());
+    }
+
+    public getVersions(): Observable<WineryVersion[]> {
+        const headers = new Headers({'Accept': 'application/json'});
+        const options = new RequestOptions({headers: headers});
+        return this.http.get(backendBaseURL + this.path + '/?versions', options)
+            .map(res => res.json()
+                // create instances of class {@link WineryVersion}
+                    .map((obj: any) => new WineryVersion(
+                        obj.componentVersion,
+                        obj.wineryVersion,
+                        obj.workInProgressVersion,
+                        obj.currentVersion,
+                        obj.latestVersion,
+                        obj.releasable,
+                        obj.editable))
+            );
     }
 }

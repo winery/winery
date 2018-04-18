@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,22 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {backendBaseURL, topologyModelerURL} from '../../configuration';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {backendBaseURL} from '../../configuration';
 import {SectionData} from '../sectionData';
-import {ExistService} from '../../wineryUtils/existService';
-import {ModalDirective} from 'ngx-bootstrap';
-import {Router} from '@angular/router';
-import {EntityContainerService} from './entityContainer.service';
 import {ToscaTypes} from '../../wineryInterfaces/enums';
-import {WineryNotificationService} from '../../wineryNotificationModule/wineryNotification.service';
+import {Router} from '@angular/router';
+import {ExistService} from '../../wineryUtils/existService';
+import {isNullOrUndefined} from 'util';
+import {EntityService} from './entity.service';
 
 @Component({
     selector: 'winery-entity-container',
     templateUrl: './entityContainer.component.html',
     styleUrls: ['./entityContainer.component.css'],
     providers: [
-        EntityContainerService
+        EntityService
     ]
 })
 export class EntityContainerComponent implements OnInit {
@@ -34,25 +33,26 @@ export class EntityContainerComponent implements OnInit {
     @Input() data: SectionData;
     @Input() toscaType: ToscaTypes;
     @Input() xsdSchemaType: string;
+    @Input() maxWidth = 500;
     @Output() deleted = new EventEmitter<string>();
-
-    @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
+    @Output() showingChildren = new EventEmitter<number>();
 
     imageUrl: string;
-    backendLink: string;
-    editButtonToolTip = 'Edit.';
-    showButtons = true;
+    element: SectionData;
+    showVersions = false;
+    treeHeight: number;
 
-    constructor(private existService: ExistService, private router: Router,
-                private service: EntityContainerService, private notify: WineryNotificationService) {
+    differences: DifferencesData;
+
+    constructor(private existService: ExistService, private router: Router, private service: EntityService) {
     }
 
-    ngOnInit(): void {
-        this.backendLink = backendBaseURL + '/' + this.toscaType + '/'
-            + encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/' + this.data.id;
-
-        if (this.toscaType === ToscaTypes.NodeType && this.data.id) {
-            const img = this.backendLink + '/visualappearance/50x50';
+    ngOnInit() {
+        if (this.toscaType === ToscaTypes.NodeType && this.data.versionInstances) {
+            const img = backendBaseURL + '/' + this.toscaType
+                + '/' + encodeURIComponent(encodeURIComponent(this.data.versionInstances[0].namespace))
+                + '/' + this.data.versionInstances[0].id
+                + '/visualappearance/50x50';
 
             this.existService.check(img)
                 .subscribe(
@@ -65,67 +65,118 @@ export class EntityContainerComponent implements OnInit {
                 );
         }
 
-        if (this.toscaType === ToscaTypes.ServiceTemplate) {
-            this.editButtonToolTip += ' Hold CTRL to directly edit the topology template.';
-        }
-
-        this.showButtons = this.toscaType !== ToscaTypes.Imports;
-    }
-
-    onClick() {
-        let url = '/' + this.toscaType + '/';
-        if (this.toscaType === ToscaTypes.Imports) {
-            url += encodeURIComponent(encodeURIComponent(this.xsdSchemaType))
-                + '/' + encodeURIComponent(encodeURIComponent(this.data.namespace));
+        if (!isNullOrUndefined(this.data.versionInstances)) {
+            this.element = this.data.versionInstances[0];
         } else {
-            url += encodeURIComponent(encodeURIComponent(this.data.namespace));
+            this.element = this.data;
         }
-        if (this.data.id) {
-            url += '/' + this.data.id;
+
+        if (this.data.versionInstances) {
+            this.calculateTreeHeight();
         }
-        this.router.navigateByUrl(url);
     }
 
-    exportComponent(event: MouseEvent) {
-        event.stopPropagation();
+    onClick(event: MouseEvent) {
         if (event.ctrlKey) {
-            window.open(this.backendLink + '?definitions', '_blank');
+            let url = '/' + this.toscaType + '/';
+            let lastElement = this.data.versionInstances[this.data.versionInstances.length - 1];
+
+            if (lastElement.hasChildren) {
+                lastElement = lastElement.versionInstances[lastElement.versionInstances.length - 1];
+            }
+
+            if (this.toscaType === ToscaTypes.Imports) {
+                url += encodeURIComponent(encodeURIComponent(this.xsdSchemaType))
+                    + '/' + encodeURIComponent(encodeURIComponent(lastElement.namespace));
+            } else {
+                url += encodeURIComponent(encodeURIComponent(lastElement.namespace));
+            }
+
+            if (lastElement.id) {
+                url += '/' + lastElement.id;
+            }
+
+            this.router.navigateByUrl(url);
         } else {
-            window.open(this.backendLink + '?csar', '_blank');
+            this.showVersions = !this.showVersions;
+            if (this.showVersions) {
+                this.showingChildren.emit(this.data.versionInstances.length);
+            } else {
+                this.calculateTreeHeight();
+                this.showingChildren.emit(0);
+            }
         }
     }
 
-    editComponent(event: MouseEvent) {
-        event.stopPropagation();
-        if (this.toscaType === ToscaTypes.ServiceTemplate && event.ctrlKey) {
-            const topologyModeler = topologyModelerURL
-                + '?repositoryURL=' + encodeURIComponent(backendBaseURL)
-                + '&uiURL=' + encodeURIComponent(window.location.origin + window.location.pathname)
-                + '&ns=' + encodeURIComponent(this.data.namespace)
-                + '&id=' + this.data.id;
-            window.open(topologyModeler, '_blank');
-        } else {
-            this.router.navigateByUrl('/' + this.toscaType + '/' +
-                encodeURIComponent(encodeURIComponent(this.data.namespace)) + '/'
-                + this.data.id);
+    getContainerStyle(): string {
+        if (this.showVersions) {
+            if (this.maxWidth === 440) {
+                return 'inlineRootContainer';
+            }
+            return 'rootContainer';
         }
     }
 
-    showRemoveDialog(event: MouseEvent) {
-        this.confirmDeleteModal.show();
-        event.stopPropagation();
+    onShowingGrandChildren($event: number) {
+        this.calculateTreeHeight($event);
     }
 
-    deleteConfirmed() {
-        this.service.deleteComponent(this.backendLink, this.data.id)
-            .subscribe(
-                data => this.success(),
-                error => this.notify.error('Error deleting ' + this.data.id)
-            );
+    private calculateTreeHeight(children = 0) {
+        let offset = 139;
+        let childrenCount = this.data.versionInstances.length - 1;
+        if (children > 0) {
+            childrenCount += children - 1;
+            offset = offset * 2 + 15;
+        }
+        if (!isNullOrUndefined(this.differences)) {
+            offset += 205;
+        }
+        this.treeHeight = (childrenCount * 126) + offset;
     }
 
-    private success() {
-        this.notify.success('Successfully deleted ' + this.data.id);
-        this.deleted.emit(this.data.id);
+    isLastElementInList(item: SectionData) {
+        return this.data.versionInstances.indexOf(item) < this.data.versionInstances.length - 1;
     }
+
+    hasDifferences(item: SectionData): boolean {
+        return isNullOrUndefined(this.differences) ? false : this.differences.base === item;
+    }
+
+    showOrHideDifferences(item: SectionData) {
+        if (!this.hasDifferences(item)) {
+            this.differences = new DifferencesData();
+            this.differences.base = item;
+
+            const successorIndex = this.data.versionInstances.indexOf(item) + 1;
+            let successor = this.data.versionInstances[successorIndex];
+            if (successor.hasChildren) {
+                successor = successor.versionInstances[successor.versionInstances.length - 1];
+            }
+            if (item.hasChildren) {
+                item = item.versionInstances[item.versionInstances.length - 1];
+            }
+
+            this.service.getChangeLog(this.toscaType, item, successor)
+                .subscribe(
+                    data => {
+                        if (data.length > 0) {
+                            this.differences.diff = data;
+                        } else {
+                            this.differences.diff = 'No differences between those versions';
+                        }
+                    }
+                );
+            this.calculateTreeHeight();
+        }
+    }
+
+    closeDiffView() {
+        this.differences = null;
+        this.calculateTreeHeight();
+    }
+}
+
+export class DifferencesData {
+    base: SectionData;
+    diff: string;
 }
