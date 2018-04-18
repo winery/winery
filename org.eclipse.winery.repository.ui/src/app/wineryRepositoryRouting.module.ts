@@ -11,17 +11,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {NotFoundComponent} from './404/notFound.component';
-import {OtherComponent} from './other/other.component';
-import {SectionResolver} from './section/section.resolver';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { NotFoundComponent } from './404/notFound.component';
+import { OtherComponent } from './other/other.component';
+import { SectionResolver } from './section/section.resolver';
 
 const appRoutes: Routes = [
-    {path: 'other', component: OtherComponent},
-    {path: 'notfound', component: NotFoundComponent},
-    {path: '', redirectTo: '/servicetemplates', pathMatch: 'full'},
-    {path: '**', component: NotFoundComponent},
+    { path: 'other', component: OtherComponent },
+    { path: 'notfound', component: NotFoundComponent },
+    { path: '', redirectTo: '/servicetemplates', pathMatch: 'full' },
+    { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({

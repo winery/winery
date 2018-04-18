@@ -12,17 +12,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class ConstraintCheckingService {
 
     private path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
         this.path = this.route.url;
         if (this.path.endsWith('xml')) {
@@ -31,14 +31,14 @@ export class ConstraintCheckingService {
     }
 
     getCheckingResult(): Observable<string> {
-        const headers = new Headers({ 'Accept': 'application/xml' });
+        const headers = new HttpHeaders({ 'Accept': 'application/xml' });
+        const requestUrl = backendBaseURL + this.path + '/';
 
-        const options = new RequestOptions({ headers: headers });
-
-        const getPath = this.path;
-        const requestUrl = backendBaseURL + getPath + '/';
-
-        return this.http.post(requestUrl, options)
-            .map(res => res.text());
+        return this.http
+            .post(
+                requestUrl,
+                {},
+                { headers: headers, responseType: 'text' }
+            );
     }
 }

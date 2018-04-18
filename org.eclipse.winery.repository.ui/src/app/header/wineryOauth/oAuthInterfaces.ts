@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,22 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import { NgModule } from '@angular/core';
 
-import { DocumentationComponent } from './documentation.component';
-import { CommonModule } from '@angular/common';
-import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
-import { FormsModule } from '@angular/forms';
+export enum StorageElements {
+    state = 'state',
+    accessToken = 'accessToken',
+    tokenType = 'tokenType',
+    userName = 'name'
+}
 
-@NgModule({
-    imports: [
-        CommonModule,
-        FormsModule,
-        WineryLoaderModule,
-    ],
-    exports: [DocumentationComponent],
-    declarations: [DocumentationComponent],
-    providers: [],
-})
-export class DocumentationModule {
+export interface Token {
+    access_token: string;
+    token_type: string;
+    scope: string;
+}
+
+export interface LoginData {
+    success: boolean;
+    userName?: string;
+    message?: string;
 }

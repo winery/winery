@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, Input, OnInit} from '@angular/core';
-import {ExistService} from '../wineryUtils/existService';
-import {isNullOrUndefined} from 'util';
-import {ModalDirective} from 'ngx-bootstrap';
-import {backendBaseURL} from '../configuration';
-import {ToscaTypes} from '../wineryInterfaces/enums';
-import {WineryVersion} from '../wineryInterfaces/wineryVersion';
+import { Component, Input, OnInit } from '@angular/core';
+import { ExistService } from '../wineryUtils/existService';
+import { isNullOrUndefined } from 'util';
+import { ModalDirective } from 'ngx-bootstrap';
+import { backendBaseURL } from '../configuration';
+import { ToscaTypes } from '../wineryInterfaces/enums';
+import { WineryVersion } from '../wineryInterfaces/wineryVersion';
 
 /**
  * This component is for checking whether a given component already exists in the repository and displays it
@@ -70,8 +70,8 @@ export class WineryComponentExistsComponent implements OnInit {
         if (!this.generateData.namespace.endsWith('/')) {
             this.existService.check(this.generateData.url)
                 .subscribe(
-                    data => this.generateData.createComponent = false,
-                    error => this.generateData.createComponent = true
+                    () => this.generateData.createComponent = false,
+                    () => this.generateData.createComponent = true
                 );
         }
     }

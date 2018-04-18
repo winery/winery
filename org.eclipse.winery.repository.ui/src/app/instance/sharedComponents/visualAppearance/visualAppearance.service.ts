@@ -11,16 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {backendBaseURL} from '../../../configuration';
-import {Router} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../configuration';
+import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class VisualAppearanceService {
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
     }
 
@@ -33,16 +33,17 @@ export class VisualAppearanceService {
     }
 
     getData() {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.route.url + '/', options)
-            .map(res => res.json());
+        return this.http.get(backendBaseURL + this.route.url + '/');
     }
 
-    saveVisuals(data: any): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.put(backendBaseURL + this.route.url + '/', JSON.stringify(data), options);
+    saveVisuals(data: any): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http
+            .put(
+                backendBaseURL + this.route.url + '/',
+                data,
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 
     get path(): string {

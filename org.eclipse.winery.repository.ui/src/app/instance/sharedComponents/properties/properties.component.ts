@@ -11,12 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {PropertiesService} from './properties.service';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {isNullOrUndefined} from 'util';
-import {WineryEditorComponent} from '../../../wineryEditorModule/wineryEditor.component';
-import {InstanceService} from '../../instance.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { PropertiesService } from './properties.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { isNullOrUndefined } from 'util';
+import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-properties',
@@ -54,7 +55,7 @@ export class PropertiesComponent implements OnInit {
         }
         this.service.saveProperties(this.properties, this.isXMLData)
             .subscribe(
-                data => this.handleSave(),
+                () => this.handleSave(),
                 error => this.handleError(error)
             );
     }
@@ -63,7 +64,7 @@ export class PropertiesComponent implements OnInit {
         this.service.getProperties()
             .subscribe(
                 data => this.handleProperties(data),
-                error => this.loading = false
+                error => this.handleError(error)
             );
     }
 
@@ -81,18 +82,15 @@ export class PropertiesComponent implements OnInit {
             this.isXMLData = false;
             if (!isNullOrUndefined(data.properties)) {
                 this.propertyKeys = Object.keys(data.properties);
-                // this.propertyKeys.sort();
             }
             if (this.propertyKeys.length > 0) {
                 this.properties = data.properties;
-                console.log('this.properties: ', this.properties);
-                console.log('this.propertykeys: ', this.propertyKeys);
             }
         }
     }
 
-    private handleError(error: any) {
+    private handleError(error: HttpErrorResponse) {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,19 +12,19 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
 import { FileUploader } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 import { isNullOrUndefined } from 'util';
 import { backendBaseURL } from '../configuration';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class SectionService {
 
     private path: string;
-    private fileUploader: FileUploader;
+    private readonly fileUploader: FileUploader;
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
         this.fileUploader = new FileUploader({ url: backendBaseURL + '/' });
     }
 
@@ -33,20 +33,17 @@ export class SectionService {
     }
 
     getSectionData(resourceType?: string): Observable<any> {
-        const headers = new Headers({ 'Accept': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+        const headers = new HttpHeaders({ 'Accept': 'application/json' });
 
         if (isNullOrUndefined(resourceType)) {
             resourceType = this.path;
         }
 
-        return this.http.get(backendBaseURL + resourceType + '/?includeVersions=true', options)
-            .map(res => res.json());
+        return this.http.get(backendBaseURL + resourceType + '/?includeVersions=true', { headers: headers });
     }
 
-    createComponent(newComponentName: string, newComponentNamespace: string, newComponentSelectedType: string) {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
+    createComponent(newComponentName: string, newComponentNamespace: string, newComponentSelectedType: string): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
         const saveObject: any = { localname: newComponentName, namespace: newComponentNamespace };
 
@@ -54,7 +51,9 @@ export class SectionService {
             saveObject.type = newComponentSelectedType;
         }
 
-        return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(saveObject), options);
+        return this.http.post(backendBaseURL + this.path + '/',
+            JSON.stringify(saveObject),
+            { headers: headers, observe: 'response', responseType: 'text' });
     }
 
     setPath(path: string) {

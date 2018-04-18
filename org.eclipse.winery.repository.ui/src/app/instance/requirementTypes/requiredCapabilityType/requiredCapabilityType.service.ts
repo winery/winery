@@ -11,38 +11,42 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {Observable} from 'rxjs';
-import {RequiredCapabilityTypeApiData} from './requiredCapabilityTypeApiData';
-import {backendBaseURL} from '../../../configuration';
-import {Router} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { RequiredCapabilityTypeApiData } from './requiredCapabilityTypeApiData';
+import { backendBaseURL } from '../../../configuration';
+import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class RequiredCapabilityTypeService {
 
     path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
         this.path = backendBaseURL + this.route.url + '/';
     }
 
     getRequiredCapabilityTypeData(): Observable<RequiredCapabilityTypeApiData> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.get(this.path, options)
-            .map(res => res.json());
+        return this.http.get<RequiredCapabilityTypeApiData>(this.path);
     }
 
-    save(requiredCapabilityType: string): Observable<any> {
-        const headers = new Headers({'Content-Type': 'text/plain'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.put(this.path, requiredCapabilityType, options);
+    save(requiredCapabilityType: string): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'text/plain' });
+        return this.http
+            .put(
+                this.path,
+                requiredCapabilityType,
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 
-    delete(): Observable<any> {
-        return this.http.delete(this.path);
+    delete(): Observable<HttpResponse<string>> {
+        return this.http
+            .delete(
+                this.path,
+                { observe: 'response', responseType: 'text' }
+            );
     }
 }

@@ -11,14 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {isNullOrUndefined} from 'util';
-import {PropertyConstraintsService} from './propertyConstraints.service';
-import {PropertyConstraintApiData} from './propertyConstraintApiData';
-import {ConstraintTypeApiData} from './constraintTypesApiData';
-import {WineryValidatorObject} from '../../../../wineryValidators/wineryDuplicateValidator.directive';
-import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
-import {ModalDirective} from 'ngx-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { isNullOrUndefined } from 'util';
+import { PropertyConstraintsService } from './propertyConstraints.service';
+import { PropertyConstraintApiData } from './propertyConstraintApiData';
+import { ConstraintTypeApiData } from './constraintTypesApiData';
+import { WineryValidatorObject } from '../../../../wineryValidators/wineryDuplicateValidator.directive';
+import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
+import { ModalDirective } from 'ngx-bootstrap';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-boundary-properties',
@@ -35,9 +36,9 @@ export class PropertyConstraintsComponent implements OnInit {
     selectedCell: PropertyConstraintApiData;
     constraintTypes: ConstraintTypeApiData[] = [];
     columns: Array<any> = [
-        {title: 'Service Template Property', name: 'property', sort: true},
-        {title: 'Constraint Type', name: 'constraintType', sort: true},
-        {title: 'Constraint', name: 'fragments', sort: true}
+        { title: 'Service Template Property', name: 'property', sort: true },
+        { title: 'Constraint Type', name: 'constraintType', sort: true },
+        { title: 'Constraint', name: 'fragments', sort: true }
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
@@ -106,7 +107,7 @@ export class PropertyConstraintsComponent implements OnInit {
         );
     }
 
-    handlePostResponse(data: any) {
+    handlePostResponse(data: HttpResponse<string>) {
         this.decreaseLoad();
         if (data.ok) {
             this.getConstraints();
@@ -116,7 +117,7 @@ export class PropertyConstraintsComponent implements OnInit {
         }
     }
 
-    handleDeleteResponse(data: any) {
+    handleDeleteResponse(data: HttpResponse<string>) {
         this.decreaseLoad();
         if (data.ok) {
             this.getConstraints();
@@ -140,9 +141,9 @@ export class PropertyConstraintsComponent implements OnInit {
         this.decreaseLoad();
     }
 
-    private handleError(error: any): void {
+    private handleError(error: HttpErrorResponse): void {
         this.decreaseLoad();
-        this.notify.error('Action caused an error:\n', error);
+        this.notify.error(error.message);
     }
 
     private addLoad() {

@@ -11,24 +11,25 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {GenerateArtifactApiData} from './generateArtifactApiData';
-import {InterfacesApiData} from './interfacesApiData';
-import {InstanceService} from '../../instance.service';
-import {backendBaseURL} from '../../../configuration';
-import {isNullOrUndefined} from 'util';
-import {Utils} from '../../../wineryUtils/utils';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { GenerateArtifactApiData } from './generateArtifactApiData';
+import { InterfacesApiData } from './interfacesApiData';
+import { InstanceService } from '../../instance.service';
+import { backendBaseURL } from '../../../configuration';
+import { isNullOrUndefined } from 'util';
+import { Utils } from '../../../wineryUtils/utils';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class InterfacesService {
 
-    private path: string;
+    private readonly path: string;
     private implementationsUrl: string;
+    private readonly header = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router, private sharedData: InstanceService) {
         this.path = backendBaseURL + this.route.url + '/';
         this.setImplementationsUrl();
@@ -36,56 +37,55 @@ export class InterfacesService {
 
     getInterfaces(url?: string, relationshipInterfaces = false): Observable<InterfacesApiData[]> {
         if (isNullOrUndefined(url)) {
-            return this.get(this.path + '/?noId=true')
-                .map(res => res.json());
+            return this.get<InterfacesApiData[]>(this.path + '/?noId=true');
         } else if (relationshipInterfaces) {
             return this.getRelationshipInterfaces(url);
         } else {
-            return this.get(backendBaseURL + url + '/interfaces/')
-                .map(res => res.json());
+            return this.get<InterfacesApiData[]>(backendBaseURL + url + '/interfaces/');
         }
     }
 
-    save(interfacesData: InterfacesApiData[]): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.post(this.path, JSON.stringify(interfacesData), options);
+    save(interfacesData: InterfacesApiData[]): Observable<HttpResponse<string>> {
+        return this.http
+            .post(
+                this.path,
+                interfacesData,
+                { headers: this.header, observe: 'response', responseType: 'text' }
+            );
     }
 
-    createImplementation(implementationName: string, implementationNamespace: string): Observable<any> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
+    createImplementation(implementationName: string, implementationNamespace: string): Observable<HttpResponse<string>> {
         this.setImplementationsUrl();
-
-        return this.http.post(backendBaseURL + '/' + this.implementationsUrl,
-            JSON.stringify({
-                localname: implementationName,
-                namespace: implementationNamespace,
-                type: '{' + this.sharedData.toscaComponent.namespace + '}' + this.sharedData.toscaComponent.localName
-            }),
-            options);
+        return this.http
+            .post(
+                backendBaseURL + '/' + this.implementationsUrl,
+                JSON.stringify({
+                    localname: implementationName,
+                    namespace: implementationNamespace,
+                    type: '{' + this.sharedData.toscaComponent.namespace + '}' + this.sharedData.toscaComponent.localName
+                }),
+                { headers: this.header, observe: 'response', responseType: 'text' }
+            );
     }
 
     createArtifactTemplate(implementationName: string, implementationNamespace: string,
-                           generateArtifactApiData: GenerateArtifactApiData): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
+                           generateArtifactApiData: GenerateArtifactApiData): Observable<HttpResponse<string>> {
         this.setImplementationsUrl();
-
-        return this.http.post(backendBaseURL + '/' + this.implementationsUrl
-            + encodeURIComponent(encodeURIComponent(implementationNamespace)) + '/'
-            + implementationName + '/implementationartifacts/',
-            JSON.stringify(generateArtifactApiData), options);
+        const url = backendBaseURL + '/' + this.implementationsUrl + encodeURIComponent(encodeURIComponent(implementationNamespace)) + '/'
+            + implementationName + '/implementationartifacts/';
+        return this.http
+            .post(
+                url,
+                generateArtifactApiData,
+                { headers: this.header, observe: 'response', responseType: 'text' }
+            );
     }
 
     getRelationshipInterfaces(url: string): Observable<InterfacesApiData[]> {
         return Observable
             .forkJoin(
-                this.get(backendBaseURL + url + '/targetinterfaces/').map(res => res.json()),
-                this.get(backendBaseURL + url + '/sourceinterfaces/').map(res => res.json())
+                this.get<InterfacesApiData[]>(backendBaseURL + url + '/targetinterfaces/'),
+                this.get<InterfacesApiData[]>(backendBaseURL + url + '/sourceinterfaces/')
             ).map(res => {
                 for (const i of res[1]) {
                     res[0].push(i);
@@ -94,11 +94,8 @@ export class InterfacesService {
             });
     }
 
-    private get(url: string): Observable<any> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.get(url, options);
+    private get<T>(url: string): Observable<T> {
+        return this.http.get<T>(url);
     }
 
     /**

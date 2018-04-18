@@ -12,10 +12,10 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
 import { ConstraintCheckingService } from './constraintChecking.service';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'constraintChecking.component.html',
@@ -46,8 +46,8 @@ export class ConstraintCheckingComponent implements OnInit {
         this.checkingResult = xml;
     }
 
-    private handleError(error: string): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.notification.error(error);
+        this.notification.error(error.message);
     }
 }

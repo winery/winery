@@ -27,3 +27,9 @@ export class RelationshipOperation extends TargetInterfaceOperation {
 export class PlanOperation {
     planRef = '';
 }
+
+export enum CurrentSelectedEnum {
+    nodeTemplate = 'nodetypes',
+    relationshipTemplate = 'relationshiptypes',
+    plan = 'plan'
+}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,12 +20,12 @@ import { SectionService } from './section.service';
 import { SectionData } from './sectionData';
 import { backendBaseURL } from '../configuration';
 import { ModalDirective } from 'ngx-bootstrap';
-import { Response } from '@angular/http';
 import { ToscaTypes } from '../wineryInterfaces/enums';
 import { WineryUploaderComponent } from '../wineryUploader/wineryUploader.component';
 import { WineryAddComponent } from '../wineryAddComponentModule/addComponent.component';
 import { isNullOrUndefined } from 'util';
 import { Utils } from '../wineryUtils/utils';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -219,8 +219,8 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.loading = false;
     }
 
-    private handleError(error: Response): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.notify.error(error.toString());
+        this.notify.error(error.message);
     }
 }

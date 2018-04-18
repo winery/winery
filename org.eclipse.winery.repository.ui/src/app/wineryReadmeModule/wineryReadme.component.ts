@@ -16,6 +16,7 @@ import {ReadmeService} from './wineryReadme.service';
 import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
 import {InstanceService} from '../instance/instance.service';
 import {ToscaTypes} from '../wineryInterfaces/enums';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'wineryReadme.component.html',
@@ -44,13 +45,13 @@ export class WineryReadmeComponent implements OnInit {
                 this.readmeContent = data;
                 this.initialReadmeContent = data;
             },
-            error => this.handleMissingReadme()
+            () => this.handleMissingReadme()
         );
     }
 
     saveReadmeFile() {
         this.service.save(this.readmeContent).subscribe(
-            data => this.handleSave(),
+            () => this.handleSave(),
             error => this.handleError(error)
         );
     }
@@ -60,9 +61,9 @@ export class WineryReadmeComponent implements OnInit {
         this.readmeContent = this.initialReadmeContent;
     }
 
-    private handleError(error: any) {
+    private handleError(error: HttpErrorResponse) {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 
     private handleMissingReadme() {

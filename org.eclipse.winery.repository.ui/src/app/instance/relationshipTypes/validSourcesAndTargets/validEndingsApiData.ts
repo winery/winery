@@ -13,9 +13,11 @@
  *******************************************************************************/
 import {SelectData} from '../../../wineryInterfaces/selectData';
 
-export class ValidEndingsData {
-    validSource: ValidEndingsApiDataSet = new ValidEndingsApiDataSet();
-    validTarget: ValidEndingsApiDataSet = new ValidEndingsApiDataSet();
+export enum ValidEndingsSelectionEnum {
+    EVERYTHING = 'EVERYTHING',
+    NODETYPE = 'NODETYPE',
+    REQTYPE = 'REQUIREMENTTYPE',
+    CAPTYPE = 'CAPABILITYTYPE'
 }
 
 export class ValidEndingsApiDataSet {
@@ -23,9 +25,7 @@ export class ValidEndingsApiDataSet {
     validDataSet: SelectData = new SelectData();
 }
 
-export enum ValidEndingsSelectionEnum {
-    EVERYTHING = 'EVERYTHING',
-    NODETYPE = 'NODETYPE',
-    REQTYPE = 'REQUIREMENTTYPE',
-    CAPTYPE = 'CAPABILITYTYPE'
+export class ValidEndingsData {
+    validSource: ValidEndingsApiDataSet = new ValidEndingsApiDataSet();
+    validTarget: ValidEndingsApiDataSet = new ValidEndingsApiDataSet();
 }

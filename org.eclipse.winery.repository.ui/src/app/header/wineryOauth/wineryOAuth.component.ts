@@ -11,8 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit} from '@angular/core';
-import {LoginData, WineryOAuthService} from './wineryOAuth.service';
+import { Component, OnInit } from '@angular/core';
+import { WineryOAuthService } from './wineryOAuth.service';
+import { LoginData } from './oAuthInterfaces';
 
 /**
  * This component adds support for a OAuth login. For now, it only allows to login using GitHub.

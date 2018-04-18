@@ -11,42 +11,42 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Observable} from 'rxjs/Rx';
-import {QNameWithTypeApiData} from '../wineryInterfaces/qNameWithTypeApiData';
-import {backendBaseURL} from '../configuration';
-import {InstanceService} from '../instance/instance.service';
-import {WineryVersion} from '../wineryInterfaces/wineryVersion';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
+import { QNameWithTypeApiData } from '../wineryInterfaces/qNameWithTypeApiData';
+import { backendBaseURL } from '../configuration';
+import { InstanceService } from '../instance/instance.service';
+import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class WineryAddVersionService {
 
-    constructor(private sharedData: InstanceService, private http: Http) {
+    constructor(private sharedData: InstanceService, private http: HttpClient) {
     }
 
     public getReferencedDefinitions(): Observable<QNameWithTypeApiData[]> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.sharedData.path + '?subComponents', options)
-            .map(res => res.json()
-                .map((element: any) => new QNameWithTypeApiData(element.localname, element.namespace, element.type))
-            );
+        return this.http.get<QNameWithTypeApiData[]>(backendBaseURL + this.sharedData.path + '?subComponents');
     }
 
-    addNewVersion(newVersion: WineryVersion, updateReferencedDefinitions: QNameWithTypeApiData[]): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.post(backendBaseURL + this.sharedData.path, JSON.stringify({
+    addNewVersion(newVersion: WineryVersion, updateReferencedDefinitions: QNameWithTypeApiData[]): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.post(
+            backendBaseURL + this.sharedData.path,
+            JSON.stringify({
                 version: newVersion,
                 componentsToUpdate: updateReferencedDefinitions
             }),
-            options);
+            { headers: headers, observe: 'response', responseType: 'text' });
     }
 
-    freezeOrRelease(type: string): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.post(backendBaseURL + this.sharedData.path + '?' + type + '=true', '{}', options);
+    freezeOrRelease(type: string): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+        return this.http.post(
+            backendBaseURL + this.sharedData.path + '?' + type + '=true',
+            '{}',
+            { headers: headers, observe: 'response', responseType: 'text' }
+        );
     }
 }

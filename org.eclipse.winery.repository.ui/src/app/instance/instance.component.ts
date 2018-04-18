@@ -11,21 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnDestroy} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Response} from '@angular/http';
-import {Subscription} from 'rxjs';
-import {InstanceService} from './instance.service';
-import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
-import {backendBaseURL} from '../configuration';
-import {RemoveWhiteSpacesPipe} from '../wineryPipes/removeWhiteSpaces.pipe';
-import {ExistService} from '../wineryUtils/existService';
-import {isNullOrUndefined} from 'util';
-import {WineryInstance} from '../wineryInterfaces/wineryComponent';
-import {ToscaTypes} from '../wineryInterfaces/enums';
-import {ToscaComponent} from '../wineryInterfaces/toscaComponent';
-import {Utils} from '../wineryUtils/utils';
-import {WineryVersion} from '../wineryInterfaces/wineryVersion';
+import { Component, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Response } from '@angular/http';
+import { Subscription } from 'rxjs';
+import { InstanceService } from './instance.service';
+import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { backendBaseURL } from '../configuration';
+import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
+import { ExistService } from '../wineryUtils/existService';
+import { isNullOrUndefined } from 'util';
+import { WineryInstance } from '../wineryInterfaces/wineryComponent';
+import { ToscaTypes } from '../wineryInterfaces/enums';
+import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
+import { Utils } from '../wineryUtils/utils';
+import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -97,7 +98,8 @@ export class InstanceComponent implements OnDestroy {
                 versions => this.handleVersions(versions),
                 (error: Response) => {
                     if (error.status === 500) {
-                        // needed because the git client sometimes throws an exception reading the repository: java.io.EOFException: Short read of block
+                        // needed because the git client sometimes throws an exception reading the repository:
+                        // java.io.EOFException: Short read of block
                         this.getVersionInfo();
                     }
                 }
@@ -138,7 +140,21 @@ export class InstanceComponent implements OnDestroy {
         this.loadingData = false;
     }
 
-    private handleVersions(versions: WineryVersion[]) {
+    private handleVersions(list: WineryVersion[]) {
+        // create instances of class {@link WineryVersion}
+        const versions: WineryVersion[] = [];
+        for (const obj of list) {
+            versions.push(
+                new WineryVersion(
+                    obj.componentVersion,
+                    obj.wineryVersion,
+                    obj.workInProgressVersion,
+                    obj.currentVersion,
+                    obj.latestVersion,
+                    obj.releasable,
+                    obj.editable)
+            );
+        }
         this.versions = this.service.versions = versions;
         this.loadingVersions = false;
 
@@ -155,8 +171,8 @@ export class InstanceComponent implements OnDestroy {
         this.router.navigate(['/' + this.toscaComponent.toscaType]);
     }
 
-    private handleError(error: any) {
-        this.notify.error(error.toString(), 'Error');
+    private handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message, 'Error');
     }
 
     ngOnDestroy(): void {

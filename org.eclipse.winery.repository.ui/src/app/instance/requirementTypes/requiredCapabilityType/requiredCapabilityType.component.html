@@ -25,6 +25,7 @@
     <winery-qname-selector
         [displayList]="requiredCapTypeData.capabilityTypeList"
         [selectedValue]="requiredCapTypeData.currentRequiredCapabilityType"
+        [toscaType]="toscaType"
         (selectedValueChanged)="changedCapType($event)">
     </winery-qname-selector>
 </div>

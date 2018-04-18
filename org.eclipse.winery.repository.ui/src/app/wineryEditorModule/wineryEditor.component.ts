@@ -18,12 +18,6 @@ import {isNullOrUndefined} from 'util';
 const noop = () => {
 };
 
-export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => WineryEditorComponent),
-    multi: true
-};
-
 declare var System: any;
 
 /**
@@ -53,7 +47,13 @@ declare var System: any;
 @Component({
     selector: 'winery-editor',
     templateUrl: 'wineryEditor.component.html',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR]
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => WineryEditorComponent),
+            multi: true
+        }
+    ]
 })
 export class WineryEditorComponent implements ControlValueAccessor, OnInit {
 

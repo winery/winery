@@ -17,6 +17,7 @@ import {WineryNotificationService} from '../wineryNotificationModule/wineryNotif
 import {InstanceService} from '../instance/instance.service';
 import {ToscaTypes} from '../wineryInterfaces/enums';
 import {LicenseEnum, WineryLicense} from './wineryLicense.enum';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'wineryLicense.component.html',
@@ -69,9 +70,9 @@ export class WineryLicenseComponent implements OnInit {
         this.isEditable = false;
     }
 
-    private handleError(error: any) {
+    private handleError(error: HttpErrorResponse) {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 
     private handleMissingLicense() {

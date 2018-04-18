@@ -11,14 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {TagService} from './tag.service';
-import {TagsAPIData} from './tagsAPIData';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {isNullOrUndefined} from 'util';
-import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import {ModalDirective} from 'ngx-bootstrap';
-import {InstanceService} from '../../instance.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { TagService } from './tag.service';
+import { TagsAPIData } from './tagsAPIData';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { isNullOrUndefined } from 'util';
+import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import { ModalDirective } from 'ngx-bootstrap';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-tag',
@@ -33,9 +34,9 @@ export class TagComponent implements OnInit {
     validatorObject: WineryValidatorObject;
 
     columns: Array<any> = [
-        {title: 'id', name: 'id', sort: true},
-        {title: 'name', name: 'name', sort: true},
-        {title: 'value', name: 'value', sort: true},
+        { title: 'id', name: 'id', sort: true },
+        { title: 'name', name: 'name', sort: true },
+        { title: 'value', name: 'value', sort: true },
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
@@ -105,8 +106,8 @@ export class TagComponent implements OnInit {
         this.loading = false;
     }
 
-    private handleError(error: any): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.noteService.error('Action caused an error:\n', error);
+        this.noteService.error(error.message);
     }
 }

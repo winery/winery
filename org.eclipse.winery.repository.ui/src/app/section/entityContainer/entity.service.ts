@@ -11,28 +11,29 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Http, Response} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import {SectionData} from '../sectionData';
-import {ToscaTypes} from '../../wineryInterfaces/enums';
-import {backendBaseURL} from '../../configuration';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { SectionData } from '../sectionData';
+import { ToscaTypes } from '../../wineryInterfaces/enums';
+import { backendBaseURL } from '../../configuration';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class EntityService {
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
-    deleteComponent(url: string, id: string): Observable<Response> {
-        return this.http.delete(url + '/');
+    deleteComponent(url: string): Observable<HttpResponse<string>> {
+        return this.http.delete<string>(url + '/', { observe: 'response' });
     }
 
     getChangeLog(toscaType: ToscaTypes, base: SectionData, working: SectionData): Observable<string> {
         return this.http.get(backendBaseURL + '/' + toscaType + '/'
             + encodeURIComponent(encodeURIComponent(working.namespace)) + '/'
             + working.id
-            + '?compareTo=' + base.id + '&asChangeLog=true')
-            .map(res => res.text());
+            + '?compareTo=' + base.id + '&asChangeLog=true',
+            { responseType: 'text' }
+        );
     }
 }
