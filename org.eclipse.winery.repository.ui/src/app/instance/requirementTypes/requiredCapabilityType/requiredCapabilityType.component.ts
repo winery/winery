@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,6 +15,7 @@ import {Component, OnInit} from '@angular/core';
 import {RequiredCapabilityTypeService} from './requiredCapabilityType.service';
 import {RequiredCapabilityTypeApiData} from './requiredCapabilityTypeApiData';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     templateUrl: 'requiredCapabilityType.component.html',
@@ -28,7 +29,9 @@ export class RequiredCapabilityTypeComponent implements OnInit {
     selectedCapType: string;
     requiredCapTypeData: RequiredCapabilityTypeApiData;
 
-    constructor(private notify: WineryNotificationService, private service: RequiredCapabilityTypeService) {
+    constructor(private notify: WineryNotificationService,
+                private service: RequiredCapabilityTypeService,
+                public sharedData: InstanceService) {
     }
 
     ngOnInit() {

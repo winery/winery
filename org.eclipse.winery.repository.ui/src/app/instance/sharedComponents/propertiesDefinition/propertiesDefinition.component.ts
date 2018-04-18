@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -59,7 +59,7 @@ export class PropertiesDefinitionComponent implements OnInit {
     @ViewChild('addModal') addModal: ModalDirective;
     @ViewChild('nameInputForm') nameInputForm: ElementRef;
 
-    constructor(private sharedData: InstanceService, private service: PropertiesDefinitionService,
+    constructor(public sharedData: InstanceService, private service: PropertiesDefinitionService,
                 private notify: WineryNotificationService) {
     }
 

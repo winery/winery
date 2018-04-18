@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.entitytypes.relationshiptypes;
 
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
 import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TRelationshipType;
@@ -23,6 +24,7 @@ import org.eclipse.winery.model.tosca.TRelationshipType.ValidTarget;
 import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.select2.Select2DataItem;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.ValidEndingsApiDataSet;
 import org.eclipse.winery.repository.rest.resources.entitytypes.InstanceStatesResource;
@@ -35,19 +37,21 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
+import java.util.List;
 
 public class RelationshipTypeResource extends TopologyGraphElementEntityTypeResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RelationshipTypeResource.class);
 
-
     public RelationshipTypeResource(RelationshipTypeId id) {
         super(id);
     }
 
+    @GET
     @Path("implementations/")
-    public ImplementationsOfOneRelationshipTypeResource getImplementations() {
-        return new ImplementationsOfOneRelationshipTypeResource((RelationshipTypeId) this.id);
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<QNameApiData> getImplementations() {
+        return RestUtils.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, this.id.getQName());
     }
 
     @Path("visualappearance/")

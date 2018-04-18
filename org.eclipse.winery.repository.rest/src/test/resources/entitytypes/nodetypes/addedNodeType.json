@@ -1,0 +1,33 @@
+{
+    "documentation": [
+
+    ],
+    "any": [
+
+    ],
+    "otherAttributes": {
+
+    },
+    "id": "winery-defs-for_tosca1-myLittleExample_1.0.0-w1-1",
+    "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
+        {
+            "documentation": [
+
+            ],
+            "any": [
+
+            ],
+            "otherAttributes": {
+
+            },
+            "name": "myLittleExample_1.0.0-w1-1",
+            "targetNamespace": "http://example.org/tosca/",
+            "final": "NO",
+            "abstract": "NO"
+        }
+    ],
+    "targetNamespace": "http://example.org/tosca/",
+    "import": [
+
+    ]
+}

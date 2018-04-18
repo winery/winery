@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,10 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {InstanceService} from '../../instance.service';
 import {backendBaseURL, topologyModelerURL} from '../../../configuration';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {WineryVersion} from '../../../wineryInterfaces/wineryVersion';
+import {ModalDirective} from 'ngx-bootstrap';
 
 @Component({
     templateUrl: 'topologyTemplate.component.html'
@@ -25,7 +27,11 @@ export class TopologyTemplateComponent implements OnInit {
     templateUrl: SafeResourceUrl;
     editorUrl: string;
 
-    constructor(private sanitizer: DomSanitizer, private sharedData: InstanceService) {
+    selectedVersion: WineryVersion;
+
+    @ViewChild('compareToModal') compareToModal: ModalDirective;
+
+    constructor(private sanitizer: DomSanitizer, public sharedData: InstanceService) {
     }
 
     ngOnInit() {
@@ -39,5 +45,21 @@ export class TopologyTemplateComponent implements OnInit {
             + '&uiURL=' + uiURL
             + '&ns=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
             + '&id=' + this.sharedData.toscaComponent.localName;
+    }
+
+    versionSelected(version: WineryVersion) {
+        this.selectedVersion = version;
+    }
+
+    onCompare() {
+        let compareUrl = this.editorUrl + '&compareTo='
+            + this.sharedData.toscaComponent.localNameWithoutVersion;
+
+        if (this.selectedVersion.toString().length > 0) {
+            compareUrl += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR
+                + this.selectedVersion.toString();
+        }
+
+        window.open(compareUrl, '_blank');
     }
 }

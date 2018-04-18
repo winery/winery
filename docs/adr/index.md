@@ -22,6 +22,8 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0015](0015-copy-source-to-files.md) - Offer copying files from the source to the files folder
 - [ADR-0016](0016-reflection-test-for-tosca-yaml-builder.md) - Reflection test for TOSCA YAML builder
 - [ADR-0017](0017-modify-jax-b-generated-classes.md) - Modify JAX-B generated classes
+- [ADR-0018](0018-use-p2-maven-plugin-for-update-site-generation.md) - Use p2-maven-plugin for Eclipse update-site generation 
+- [ADR-0019](0019-publish-maven-artifacts-to-github.md) - Publish Maven artifacts to GitHub
 
 <!-- adrlogstop -->
 

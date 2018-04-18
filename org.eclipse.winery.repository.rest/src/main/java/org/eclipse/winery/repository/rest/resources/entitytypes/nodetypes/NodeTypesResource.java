@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,9 +35,10 @@ import java.util.stream.Collectors;
  */
 @Api(tags = "Node Types")
 public class NodeTypesResource extends AbstractComponentsWithoutTypeReferenceResource<NodeTypeResource> {
+
     @Path("{namespace}/{id}/")
-    public NodeTypeResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-        return this.getComponentInstaceResource(namespace, id, true);
+    public NodeTypeResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstanceResource(namespace, id, true);
     }
 
     @GET
@@ -47,7 +48,7 @@ public class NodeTypesResource extends AbstractComponentsWithoutTypeReferenceRes
         SortedSet<NodeTypeId> allNodeTypeIds = RepositoryFactory.getRepository().getAllDefinitionsChildIds(NodeTypeId.class);
         return allNodeTypeIds.stream()
             .map(id -> {
-                NodeTypeResource res = (NodeTypeResource) AbstractComponentsResource.getComponentInstaceResource(id);
+                NodeTypeResource res = (NodeTypeResource) AbstractComponentsResource.getComponentInstanceResource(id);
                 return res.getVisualAppearanceResource().getJsonData();
             })
             .collect(Collectors.toList());

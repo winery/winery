@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.common.ids.definitions;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 
@@ -24,6 +26,10 @@ public final class NodeTypeImplementationId extends EntityTypeImplementationId {
 
     public NodeTypeImplementationId(String ns, String id, boolean URLencoded) {
         super(ns, id, URLencoded);
+    }
+
+    public NodeTypeImplementationId(QName type) {
+        super(type);
     }
 
     public String getGroup() {

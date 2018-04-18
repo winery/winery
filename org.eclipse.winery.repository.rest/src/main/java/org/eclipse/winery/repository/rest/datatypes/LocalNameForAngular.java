@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,14 +13,25 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.datatypes;
 
+import org.eclipse.winery.model.tosca.Definitions;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LocalNameForAngular {
 
     private final String id;
     private final String text;
+    private final Definitions full;
 
     public LocalNameForAngular(String id, String text) {
+        this(id, text, null);
+    }
+
+    public LocalNameForAngular(String id, String text, Definitions full) {
         this.id = id;
         this.text = text;
+        this.full = full;
     }
 
     public String getId() {
@@ -29,5 +40,9 @@ public class LocalNameForAngular {
 
     public String getText() {
         return text;
+    }
+
+    public Definitions getFull() {
+        return full;
     }
 }

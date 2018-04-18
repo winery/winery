@@ -18,6 +18,7 @@ import {WineryNotificationService} from '../../../wineryNotificationModule/winer
 import {isNullOrUndefined} from 'util';
 import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import {ModalDirective} from 'ngx-bootstrap';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     selector: 'winery-instance-tag',
@@ -40,7 +41,8 @@ export class TagComponent implements OnInit {
     @ViewChild('addModal') addModal: ModalDirective;
 
     public constructor(private service: TagService,
-                       private noteService: WineryNotificationService) {
+                       private noteService: WineryNotificationService,
+                       public sharedData: InstanceService) {
     }
 
     ngOnInit(): void {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -15,6 +15,7 @@ import {Component, OnInit} from '@angular/core';
 import {SelfServiceApiData, SelfServicePortalService} from './selfServicePortal.service';
 import {isNullOrUndefined} from 'util';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     selector: 'winery-self-service-portal-description',
@@ -26,7 +27,8 @@ export class SelfServiceDescriptionComponent implements OnInit {
     loading = true;
 
     constructor(private service: SelfServicePortalService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                public sharedData: InstanceService) {
 
     }
 

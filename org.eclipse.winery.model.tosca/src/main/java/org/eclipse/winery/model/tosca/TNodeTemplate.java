@@ -239,6 +239,19 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
             }
             return this.capability;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Capabilities that = (Capabilities) o;
+            return Objects.equals(capability, that.capability);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(capability);
+        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -277,6 +290,19 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
             }
             return this.policy;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Policies policies = (Policies) o;
+            return Objects.equals(policy, policies.policy);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(policy);
+        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -314,6 +340,19 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
                 requirement = new ArrayList<TRequirement>();
             }
             return this.requirement;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Requirements that = (Requirements) o;
+            return Objects.equals(requirement, that.requirement);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(requirement);
         }
     }
 

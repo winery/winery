@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,21 +19,21 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.net.URI;
 
-public class ResourceCreationResult {
+public class ResourceResult {
 
     private Status status = null;
     private URI uri = null;
     private GenericId id = null;
+    private String message = null;
 
-
-    public ResourceCreationResult() {
+    public ResourceResult() {
     }
 
-    public ResourceCreationResult(Status status) {
+    public ResourceResult(Status status) {
         this.setStatus(status);
     }
 
-    public ResourceCreationResult(Status status, URI uri, GenericId id) {
+    public ResourceResult(Status status, URI uri, GenericId id) {
         this.setStatus(status);
         this.setId(id);
         this.setUri(uri);
@@ -64,7 +64,11 @@ public class ResourceCreationResult {
     }
 
     public boolean isSuccess() {
-        return this.getStatus() == Status.CREATED;
+        return this.getStatus() == Status.CREATED || this.getStatus() == Status.OK;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /**
@@ -75,10 +79,10 @@ public class ResourceCreationResult {
     public Response getResponse() {
         Response res;
         if (this.getUri() == null) {
-            res = Response.status(this.getStatus()).build();
+            res = Response.status(this.getStatus()).entity(message).build();
         } else {
             assert (this.getStatus().equals(Status.CREATED));
-            res = Response.created(this.getUri()).build();
+            res = Response.created(this.getUri()).entity(this.getUri().toString()).build();
         }
         return res;
     }

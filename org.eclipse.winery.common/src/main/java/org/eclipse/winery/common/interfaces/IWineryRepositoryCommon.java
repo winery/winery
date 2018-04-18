@@ -137,7 +137,18 @@ public interface IWineryRepositoryCommon {
      * @param oldId the old id
      * @param newId the new id
      */
-    void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException;
+    default void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException {
+        this.duplicate(oldId, newId);
+        this.forceDelete(oldId);
+    }
+
+    /**
+     * Copies a definition and renames it to the newId.
+     *
+     * @param from  the source id
+     * @param newId the destination id
+     */
+    void duplicate(DefinitionsChildId from, DefinitionsChildId newId) throws IOException;
 
     /**
      * Deletes all definition children nested in the given namespace

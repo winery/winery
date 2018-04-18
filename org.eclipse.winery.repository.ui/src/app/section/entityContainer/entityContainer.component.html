@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -11,40 +11,59 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
-     class="entityContainer {{ toscaType | toscaTypeToCamelCase }}"
-     (click)="onClick()">
-    <div class="left">
-        <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
-    </div>
-    <div class="center">
-        <div class="informationContainer">
-            <div *ngIf="data.id" class="name">{{ data.id }}</div>
-            <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
+<div *ngIf="data.hasChildren; else singleElement" [ngClass]="getContainerStyle()">
+    <div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
+         class="entityContainer {{ (toscaType | toscaTypeToCamelCase) + 'Container'}}"
+         tooltip="Hold CTRL to directly get to the latest version."
+         (click)="onClick($event)">
+        <div class="left">
+            <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
         </div>
-        <div *ngIf="!data.id" class="badge numberOfComponentInstances">{{ data.count }}</div>
-        <div *ngIf="data.id && showButtons" class="buttonContainer">
-            <a class="exportButton" (click)="exportComponent($event)"
-               tooltip="Export CSAR. Hold CTRL to export XML."></a>
-            <a class="editButton" (click)="editComponent($event)"
-               tooltip="{{editButtonToolTip}}"></a>
-            <a class="deleteButton" (click)="showRemoveDialog($event)" tooltip="Delete"></a>
+        <div class="center" [style.width.px]="maxWidth">
+            <div class="informationContainer">
+                <div *ngIf="data.id" class="name">{{ data.name }}</div>
+                <div [ngClass]="{'name': !data.id, 'namespace': data.id}">{{ data.namespace }}</div>
+            </div>
         </div>
+        <div class="right"></div>
     </div>
-    <div class="right">
+
+    <div *ngIf="showVersions" class="tree" [style.height.px]="treeHeight">
+        <div *ngFor="let item of data.versionInstances">
+            <div class="treeBranch">
+            </div>
+            <winery-entity-container [data]="item"
+                                     [toscaType]="toscaType"
+                                     [maxWidth]="maxWidth - 60"
+                                     (showingChildren)="onShowingGrandChildren($event)"
+                                     (deleted)="deleted.emit($event)">
+            </winery-entity-container>
+            <div *ngIf="isLastElementInList(item)" class="differencesContainer">
+                <div *ngIf="hasDifferences(item); else showDiff">
+                    <div *ngIf="differences.diff; else showLoader">
+                        <div (click)="closeDiffView()" class="cursorpointer">
+                            <i class="fa fa-close"></i> Close diff view
+                        </div>
+                        <code class="differences" [style.width.px]="maxWidth">{{ differences.diff }}</code>
+                    </div>
+                    <ng-template #showLoader>
+                        <winery-loader></winery-loader>
+                    </ng-template>
+                </div>
+                <ng-template #showDiff>
+                    <div class="cursorpointer" (click)="showOrHideDifferences(item)">
+                        <i class="fa fa-plus-circle"></i>&nbsp;Differences
+                    </div>
+                </ng-template>
+            </div>
+        </div>
     </div>
 </div>
-
-<winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <winery-modal-header [title]="'Delete Property'">
-    </winery-modal-header>
-    <winery-modal-body>
-        <p>
-            Do you want to delete <span style="font-weight:bold;">{{ data.id }}</span>?
-        </p>
-    </winery-modal-body>
-    <winery-modal-footer (onOk)="deleteConfirmed()"
-                         [closeButtonLabel]="'Cancel'"
-                         [okButtonLabel]="'Delete'">
-    </winery-modal-footer>
-</winery-modal>
+<ng-template #singleElement>
+    <winery-entity [data]="element"
+                   [toscaType]="toscaType"
+                   [xsdSchemaType]="xsdSchemaType"
+                   [maxWidth]="maxWidth"
+                   (deleted)="deleted.emit($event)">
+    </winery-entity>
+</ng-template>

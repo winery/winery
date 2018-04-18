@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,6 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.kvproperties;
+
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -55,7 +57,16 @@ public class PropertyDefinitionKV {
     }
 
     @Override
-    public int hashCode() {
-        return this.key.hashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PropertyDefinitionKV that = (PropertyDefinitionKV) o;
+        return Objects.equals(key, that.key) &&
+            Objects.equals(type, that.type);
     }
+
+    @Override
+	public int hashCode() {
+		return this.key.hashCode();
+	}
 }

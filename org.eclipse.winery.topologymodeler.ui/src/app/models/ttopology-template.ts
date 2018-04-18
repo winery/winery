@@ -11,6 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
+import { DifferenceStates, VersionUtils } from './ToscaDiff';
 
 export class AbstractTTemplate {
     constructor(public documentation?: any,
@@ -31,6 +32,7 @@ export class TTopologyTemplate extends AbstractTTemplate {
  * This is the datamodel for node Templates
  */
 export class TNodeTemplate extends AbstractTTemplate {
+
     constructor(public properties: any,
                 public id: string,
                 public type: string,
@@ -47,7 +49,8 @@ export class TNodeTemplate extends AbstractTTemplate {
                 public capabilities?: any,
                 public requirements?: any,
                 public deploymentArtifacts?: any,
-                public policies?: any) {
+                public policies?: any,
+                private _state?: DifferenceStates) {
         super(documentation, any, otherAttributes);
     }
 
@@ -104,6 +107,15 @@ export class TNodeTemplate extends AbstractTTemplate {
         }
         return nodeTemplate;
     }
+
+    public get state(): DifferenceStates {
+        return this._state;
+    }
+
+    public set state(value: DifferenceStates) {
+        this._state = value;
+        this.color = VersionUtils.getElementColorByDiffState(value);
+    }
 }
 
 /**
@@ -138,7 +150,8 @@ export class TRelationshipTemplate extends AbstractTTemplate {
                 public type?: string,
                 documentation?: any,
                 any?: any,
-                otherAttributes?: any) {
+                otherAttributes?: any,
+                public state?: DifferenceStates) {
         super(documentation, any, otherAttributes);
     }
 

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,7 +11,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import {ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, ViewChild} from '@angular/core';
 import {SectionService} from '../section/section.service';
 import {SelectData} from '../wineryInterfaces/selectData';
 import {WineryValidatorObject} from '../wineryValidators/wineryDuplicateValidator.directive';
@@ -19,13 +19,15 @@ import {WineryNotificationService} from '../wineryNotificationModule/wineryNotif
 import {ToscaTypes} from '../wineryInterfaces/enums';
 import {Router} from '@angular/router';
 import {Response} from '@angular/http';
-import {NgForm} from '@angular/forms';
+import {AbstractControl, NgForm, ValidatorFn} from '@angular/forms';
 import {Utils} from '../wineryUtils/utils';
 import {isNullOrUndefined} from 'util';
 import {SectionData} from '../section/sectionData';
 import {ModalDirective} from 'ngx-bootstrap';
 import {WineryNamespaceSelectorComponent} from '../wineryNamespaceSelector/wineryNamespaceSelector.component';
 import {InheritanceService} from '../instance/sharedComponents/inheritance/inheritance.service';
+import {WineryVersion} from '../wineryInterfaces/wineryVersion';
+import {AddComponentValidation} from './addComponentValidation';
 
 @Component({
     selector: 'winery-add-component',
@@ -36,7 +38,7 @@ import {InheritanceService} from '../instance/sharedComponents/inheritance/inher
     ]
 })
 
-export class WineryAddComponent implements OnInit {
+export class WineryAddComponent {
 
     loading: boolean;
 
@@ -46,10 +48,17 @@ export class WineryAddComponent implements OnInit {
     @Input() inheritFrom: string;
 
     addModalType: string;
+    typeRequired = false;
+
     newComponentNamespace: string;
     newComponentName: string;
+    newComponentFinalName: string;
     newComponentSelectedType: SelectData = new SelectData();
+    newComponentVersion: WineryVersion = new WineryVersion('', 1, 1);
+
     validatorObject: WineryValidatorObject;
+    validation: AddComponentValidation;
+
     types: SelectData[];
 
     @ViewChild('addComponentForm') addComponentForm: NgForm;
@@ -64,9 +73,6 @@ export class WineryAddComponent implements OnInit {
                 private router: Router) {
     }
 
-    ngOnInit() {
-    }
-
     onAdd() {
         const typesUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaType);
         this.addModalType = Utils.getToscaTypeNameFromToscaType(this.toscaType);
@@ -76,12 +82,14 @@ export class WineryAddComponent implements OnInit {
 
         if (!isNullOrUndefined(typesUrl)) {
             this.loading = true;
+            this.typeRequired = true;
             this.sectionService.getSectionData('/' + typesUrl + '?grouped=angularSelect')
                 .subscribe(
                     data => this.handleTypes(data),
                     error => this.handleError(error)
                 );
         } else {
+            this.typeRequired = false;
             this.showModal();
         }
     }
@@ -89,7 +97,11 @@ export class WineryAddComponent implements OnInit {
     addComponent() {
         this.loading = true;
         const compType = this.newComponentSelectedType ? this.newComponentSelectedType.id : null;
-        this.sectionService.createComponent(this.newComponentName, this.newComponentNamespace, compType)
+
+        this.newComponentVersion.wineryVersion = 1;
+        this.newComponentVersion.workInProgressVersion = 1;
+
+        this.sectionService.createComponent(this.newComponentFinalName, this.newComponentNamespace, compType)
             .subscribe(
                 data => this.handleSaveSuccess(),
                 error => this.handleError(error)
@@ -100,6 +112,50 @@ export class WineryAddComponent implements OnInit {
         this.newComponentSelectedType = event;
     }
 
+    validateComponentName(compareObject: WineryValidatorObject): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: any } => {
+            this.validation = new AddComponentValidation();
+            this.newComponentFinalName = this.newComponentName;
+
+            if (this.typeRequired && isNullOrUndefined(this.newComponentSelectedType)) {
+                this.validation.noTypeAvailable = true;
+                return {noTypeAvailable: true};
+            }
+
+            if (!isNullOrUndefined(this.newComponentFinalName) && this.newComponentFinalName.length > 0) {
+                this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
+                const duplicate = this.componentData.find((component) => component.name.toLowerCase() === this.newComponentFinalName.toLowerCase());
+
+                if (!isNullOrUndefined(duplicate)) {
+                    const namespace = this.newComponentNamespace.endsWith('/') ? this.newComponentNamespace.slice(0, -1) : this.newComponentNamespace;
+
+                    if (duplicate.namespace === namespace) {
+                        if (duplicate.name === this.newComponentFinalName) {
+                            this.validation.noDuplicatesAllowed = true;
+                            return {noDuplicatesAllowed: true};
+                        } else {
+                            this.validation.differentCaseDuplicateWarning = true;
+                        }
+                    } else {
+                        this.validation.differentNamespaceDuplicateWarning = true;
+                    }
+                }
+            }
+
+            if (this.newComponentVersion.componentVersion) {
+                this.validation.noUnderscoresAllowed = this.newComponentVersion.componentVersion.includes('_');
+                if (this.validation.noUnderscoresAllowed) {
+                    return {noUnderscoresAllowed: true};
+                }
+            }
+
+            this.validation.noVersionProvidedWarning = isNullOrUndefined(this.newComponentVersion.componentVersion)
+                || this.newComponentVersion.componentVersion.length === 0;
+
+            return null;
+        };
+    }
+
     private handleTypes(types: SelectData[]): void {
         this.loading = false;
         this.types = types.length > 0 ? types : null;
@@ -107,7 +163,12 @@ export class WineryAddComponent implements OnInit {
     }
 
     private showModal() {
+        this.newComponentVersion = new WineryVersion('', 1, 1);
+        this.newComponentName = '';
+        this.newComponentFinalName = '';
+
         this.validatorObject = new WineryValidatorObject(this.componentData, 'id');
+        this.validatorObject.validate = (compareObject: WineryValidatorObject) => this.validateComponentName(compareObject);
 
         // This is needed for the modal to correctly display the selected namespace
         if (!this.useStartNamespace) {
@@ -131,7 +192,7 @@ export class WineryAddComponent implements OnInit {
         this.newComponentName = this.newComponentName.replace(/\s/g, '-');
         const url = '/' + this.toscaType + '/'
             + encodeURIComponent(encodeURIComponent(this.newComponentNamespace)) + '/'
-            + this.newComponentName;
+            + this.newComponentFinalName;
 
         if (isNullOrUndefined(this.inheritFrom)) {
             this.notify.success('Successfully saved component ' + this.newComponentName);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,7 +17,6 @@ import org.eclipse.winery.common.ids.Namespace;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class NamespaceAndDefinedLocalNamesForAngular {
 
@@ -25,16 +24,12 @@ public class NamespaceAndDefinedLocalNamesForAngular {
     private final String text;
     private final List<LocalNameForAngular> localNamesForAngular;
 
-    public NamespaceAndDefinedLocalNamesForAngular(final Namespace namespace, final List<String> localNamesForAngular) {
+    public NamespaceAndDefinedLocalNamesForAngular(final Namespace namespace, final List<LocalNameForAngular> localNamesForAngular) {
         Objects.requireNonNull(namespace);
         Objects.requireNonNull(localNamesForAngular);
         this.id = namespace.getEncoded();
         this.text = namespace.getDecoded();
-        this.localNamesForAngular = localNamesForAngular.stream().map(localName -> {
-            final String id = "{" + namespace.getDecoded() + "}" + localName;
-            final String value = localName;
-            return new LocalNameForAngular(id, value);
-        }).collect(Collectors.toList());
+        this.localNamesForAngular = localNamesForAngular;
     }
 
     public String getId() {

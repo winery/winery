@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,13 +34,13 @@ public class GenericImportsResource extends AbstractComponentsWithoutTypeReferen
     }
 
     @Override
-    public GenericImportResource getComponentInstaceResource(String namespace, String id, boolean encoded) {
+    public GenericImportResource getComponentInstanceResource(String namespace, String id, boolean encoded) {
         GenericImportId iId = new GenericImportId(namespace, id, encoded, this.type);
         return new GenericImportResource(iId);
     }
 
     @Path("{namespace}/{id}/")
-    public GenericImportResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-        return this.getComponentInstaceResource(namespace, id, true);
+    public GenericImportResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstanceResource(namespace, id, true);
     }
 }

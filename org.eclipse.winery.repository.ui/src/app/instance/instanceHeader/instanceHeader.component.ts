@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,6 +17,8 @@ import {RemoveWhiteSpacesPipe} from '../../wineryPipes/removeWhiteSpaces.pipe';
 import {ModalDirective} from 'ngx-bootstrap';
 import {ToscaComponent} from '../../wineryInterfaces/toscaComponent';
 import {ToscaTypes} from '../../wineryInterfaces/enums';
+import {WineryVersion} from '../../wineryInterfaces/wineryVersion';
+import {InstanceService} from '../instance.service';
 
 @Component({
     selector: 'winery-instance-header',
@@ -32,6 +34,7 @@ import {ToscaTypes} from '../../wineryInterfaces/enums';
 export class InstanceHeaderComponent implements OnInit {
 
     @Input() toscaComponent: ToscaComponent;
+    @Input() versions: WineryVersion[];
     @Input() typeUrl: string;
     @Input() typeId: string;
     @Input() typeOf: string;
@@ -45,7 +48,7 @@ export class InstanceHeaderComponent implements OnInit {
     selectedTab: string;
     showManagementButtons = true;
 
-    constructor(private router: Router) {
+    constructor(private router: Router, public sharedData: InstanceService) {
     }
 
     ngOnInit(): void {

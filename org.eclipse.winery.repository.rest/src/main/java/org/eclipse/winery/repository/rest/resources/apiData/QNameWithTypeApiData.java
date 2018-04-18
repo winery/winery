@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,4 +21,12 @@ public class QNameWithTypeApiData extends QNameApiData {
      */
     public String type;
 
+    public QNameWithTypeApiData() {
+    }
+
+    public QNameWithTypeApiData(String localname, String namespace, String type) {
+        this.localname = localname;
+        this.namespace = namespace;
+        this.type = type;
+    }
 }

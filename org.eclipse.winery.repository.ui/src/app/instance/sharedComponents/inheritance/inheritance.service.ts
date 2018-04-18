@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,7 +11,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import {Observable} from 'rxjs';
@@ -42,7 +41,7 @@ export class InheritanceService {
         const headers = new Headers({'Accept': 'application/json'});
         const options = new RequestOptions({headers: headers});
 
-        return this.http.get(backendBaseURL + '/' + this.path.split('/')[1] + '?grouped=angularSelect/', options)
+        return this.http.get(backendBaseURL + '/' + this.sharedData.toscaComponent.toscaType + '?grouped=angularSelect&dev=true/', options)
             .map(res => res.json());
     }
 

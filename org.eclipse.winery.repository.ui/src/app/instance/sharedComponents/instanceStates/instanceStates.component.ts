@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -18,6 +18,7 @@ import {Response} from '@angular/http';
 import {isNullOrUndefined} from 'util';
 import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
 import {ModalDirective} from 'ngx-bootstrap';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     templateUrl: 'instanceStates.component.html',
@@ -37,7 +38,8 @@ export class InstanceStatesComponent implements OnInit {
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
 
-    constructor(private service: InstanceStateService, private notify: WineryNotificationService) {
+    constructor(public sharedData: InstanceService,
+                private service: InstanceStateService, private notify: WineryNotificationService) {
     }
 
     ngOnInit() {

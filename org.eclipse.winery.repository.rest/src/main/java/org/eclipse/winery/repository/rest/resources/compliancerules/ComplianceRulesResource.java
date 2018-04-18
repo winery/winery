@@ -25,7 +25,7 @@ import io.swagger.annotations.Api;
 public class ComplianceRulesResource extends AbstractComponentsWithoutTypeReferenceResource<ComplianceRuleResource> {
 
 	@Path("{namespace}/{id}/")
-	public ComplianceRuleResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-		return this.getComponentInstaceResource(namespace, id, true);
+	public ComplianceRuleResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+		return this.getComponentInstanceResource(namespace, id, true);
 	}
 }

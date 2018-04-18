@@ -23,6 +23,7 @@ import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
+import org.eclipse.winery.common.version.VersionUtils;
 
 /**
  * Identifies a definitions child. Each component is required to be identified
@@ -140,7 +141,10 @@ public abstract class DefinitionsChildId extends GenericId {
             int res = this.getClass().getName().compareTo(o1.getClass().getName());
             if (res == 0) {
                 DefinitionsChildId o = (DefinitionsChildId) o1;
-                res = this.getXmlId().compareTo(o.getXmlId());
+                res = VersionUtils.getNameWithoutVersion(this).compareTo(VersionUtils.getNameWithoutVersion(o));
+                if (res == 0) {
+                    res = VersionUtils.getVersion(this).compareTo(VersionUtils.getVersion(o));
+                }
                 if (res == 0) {
                     res = this.getNamespace().compareTo(o.getNamespace());
                 }

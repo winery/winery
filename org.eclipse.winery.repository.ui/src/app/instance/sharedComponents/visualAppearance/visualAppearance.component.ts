@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,6 +17,7 @@ import {WineryNotificationService} from '../../../wineryNotificationModule/winer
 import {isNullOrUndefined} from 'util';
 import {RelationshipTypesVisualsApiData} from './relationshipTypesVisualsApiData';
 import {NodeTypesVisualsApiData} from './nodeTypesVisualsApiData';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     templateUrl: 'visualAppearance.component.html',
@@ -34,7 +35,8 @@ export class VisualAppearanceComponent implements OnInit {
     img50Path: string;
     isNodeType = true;
 
-    constructor(private service: VisualAppearanceService,
+    constructor(public sharedData: InstanceService,
+                private service: VisualAppearanceService,
                 private notify: WineryNotificationService) {
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 import java.util.Objects;
-
 
 /**
  * <p>Java class for tImplementationArtifact complex type.
@@ -50,7 +49,8 @@ import java.util.Objects;
 @XmlSeeAlso( {
     org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact.class
 })
-public class TImplementationArtifact extends TExtensibleElements {
+public class TImplementationArtifact extends TExtensibleElements implements HasName {
+
     @XmlAttribute(name = "name")
     protected String name;
     @XmlAttribute(name = "interfaceName")
@@ -102,6 +102,7 @@ public class TImplementationArtifact extends TExtensibleElements {
      * @return possible object is {@link String }
      */
     @Nullable
+    @Override
     public String getName() {
         return name;
     }
@@ -111,6 +112,7 @@ public class TImplementationArtifact extends TExtensibleElements {
      *
      * @param value allowed object is {@link String }
      */
+    @Override
     public void setName(String value) {
         this.name = value;
     }

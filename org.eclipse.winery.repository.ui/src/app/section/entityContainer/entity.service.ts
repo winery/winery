@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,14 +14,25 @@
 import {Injectable} from '@angular/core';
 import {Http, Response} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
+import {SectionData} from '../sectionData';
+import {ToscaTypes} from '../../wineryInterfaces/enums';
+import {backendBaseURL} from '../../configuration';
 
 @Injectable()
-export class EntityContainerService {
+export class EntityService {
 
     constructor(private http: Http) {
     }
 
     deleteComponent(url: string, id: string): Observable<Response> {
         return this.http.delete(url + '/');
+    }
+
+    getChangeLog(toscaType: ToscaTypes, base: SectionData, working: SectionData): Observable<string> {
+        return this.http.get(backendBaseURL + '/' + toscaType + '/'
+            + encodeURIComponent(encodeURIComponent(working.namespace)) + '/'
+            + working.id
+            + '?compareTo=' + base.id + '&asChangeLog=true')
+            .map(res => res.text());
     }
 }

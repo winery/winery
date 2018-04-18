@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -11,10 +11,19 @@
   ~
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<div class="mainContentContainer {{ toscaComponent.toscaType | toscaTypeToCamelCase}}">
+<alert *ngIf="newVersionAvailable" [type]="'info'" [dismissible]="true">
+    <i class="fa fa-info-circle" aria-hidden="true"></i>
+    <span>&nbsp;&nbsp;There is a new version available for this component!</span>
+</alert>
+<alert *ngIf="!editable" [type]="'warning'" [dismissible]="true">
+    <i class="fa fa-ban"></i>
+    <span>&nbsp;&nbsp;You cannot edit this version! To edit this component, add a new version.</span>
+</alert>
+<div *ngIf="!(loadingVersions || loadingData); else loader" class="mainContentContainer {{ toscaComponent.toscaType | toscaTypeToCamelCase}}">
     <winery-instance-header
         [imageUrl]="imageUrl"
         [toscaComponent]="toscaComponent"
+        [versions]="versions"
         [typeOf]="typeOf"
         [typeUrl]="typeUrl"
         [typeId]="typeId"
@@ -26,3 +35,6 @@
     </div>
     <div class="bottom"></div>
 </div>
+<ng-template #loader>
+    <winery-loader></winery-loader>
+</ng-template>

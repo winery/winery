@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,7 +21,8 @@ import {RouterModule} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {PropertyRenameComponent} from './instanceHeader/propertyRename/propertyRename.component';
 import {FormsModule} from '@angular/forms';
-import {BsDropdownModule} from 'ngx-bootstrap';
+import {AlertModule, BsDropdownModule} from 'ngx-bootstrap';
+import {WineryAddVersionModule} from '../wineryVersionModule/wineryVersion.module';
 
 @NgModule({
     imports: [
@@ -31,6 +32,8 @@ import {BsDropdownModule} from 'ngx-bootstrap';
         WineryModalModule,
         WineryPipesModule,
         FormsModule,
+        WineryAddVersionModule,
+        AlertModule.forRoot(),
         BsDropdownModule.forRoot()
     ],
     exports: [InstanceComponent],

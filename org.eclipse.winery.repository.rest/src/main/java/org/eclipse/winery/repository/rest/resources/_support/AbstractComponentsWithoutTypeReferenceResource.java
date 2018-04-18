@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,7 +32,7 @@ public abstract class AbstractComponentsWithoutTypeReferenceResource<T extends A
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response onJsonPost(QNameApiData jsonData) {
-        ResourceCreationResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
+        ResourceResult creationResult = super.onPost(jsonData.namespace, jsonData.localname);
         return creationResult.getResponse();
     }
 }
