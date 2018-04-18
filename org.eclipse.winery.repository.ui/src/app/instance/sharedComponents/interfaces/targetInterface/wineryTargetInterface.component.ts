@@ -13,7 +13,7 @@
  *******************************************************************************/
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {InterfaceOperationApiData, InterfacesApiData} from '../interfacesApiData';
-import {NodeOperation, PlanOperation, RelationshipOperation} from './operations';
+import { CurrentSelectedEnum, NodeOperation, PlanOperation, RelationshipOperation } from './operations';
 import {InstanceService} from '../../../instance.service';
 import {isNullOrUndefined} from 'util';
 import {WineryTemplate} from '../../../../wineryInterfaces/wineryComponent';
@@ -284,10 +284,4 @@ export class WineryTargetInterfaceComponent implements OnInit, OnChanges {
         }
     }
 
-}
-
-enum CurrentSelectedEnum {
-    nodeTemplate = 'nodetypes',
-    relationshipTemplate = 'relationshiptypes',
-    plan = 'plan'
 }

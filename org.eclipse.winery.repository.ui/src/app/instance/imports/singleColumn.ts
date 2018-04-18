@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,25 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-export class TargetInterfaceOperation {
-    interfaceName = '';
-    operationName = '';
-}
 
-export class NodeOperation extends TargetInterfaceOperation {
-    nodeRef = '';
-}
-
-export class RelationshipOperation extends TargetInterfaceOperation {
-    relationshipRef = '';
-}
-
-export class PlanOperation {
-    planRef = '';
-}
-
-export enum CurrentSelectedEnum {
-    nodeTemplate = 'nodetypes',
-    relationshipTemplate = 'relationshiptypes',
-    plan = 'plan'
+class SingleColumn {
+    constructor(public readonly key: string) {
+    }
 }

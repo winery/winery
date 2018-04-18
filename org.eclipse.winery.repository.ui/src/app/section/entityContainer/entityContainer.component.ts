@@ -19,6 +19,7 @@ import {Router} from '@angular/router';
 import {ExistService} from '../../wineryUtils/existService';
 import {isNullOrUndefined} from 'util';
 import {EntityService} from './entity.service';
+import { DifferencesData } from './differencesData';
 
 @Component({
     selector: 'winery-entity-container',
@@ -174,9 +175,4 @@ export class EntityContainerComponent implements OnInit {
         this.differences = null;
         this.calculateTreeHeight();
     }
-}
-
-export class DifferencesData {
-    base: SectionData;
-    diff: string;
 }

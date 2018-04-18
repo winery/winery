@@ -23,12 +23,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 const noop = () => {
 };
 
-const customInputControl: any = {
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => WineryNamespaceSelectorComponent),
-    multi: true,
-};
-
 /**
  * This component only wraps the namespace chooser. It gets the whole list from the backend and
  * provides typeahead for selecting a namespace. This component can be used with the <code>ngModel</code> directive.
@@ -71,7 +65,11 @@ const customInputControl: any = {
     styleUrls: ['./wineryNamespaceSelector.component.css'],
     providers: [
         WineryNamespaceSelectorService,
-        customInputControl
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => WineryNamespaceSelectorComponent),
+            multi: true,
+        }
     ]
 })
 export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAccessor {

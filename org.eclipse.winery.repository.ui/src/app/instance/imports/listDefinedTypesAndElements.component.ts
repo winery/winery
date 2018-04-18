@@ -73,8 +73,3 @@ export class ListDefinedTypesAndElementsComponent implements OnInit {
         this.notify.error(error.message);
     }
 }
-
-class SingleColumn {
-    constructor(public readonly key: string) {
-    }
-}

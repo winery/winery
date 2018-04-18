@@ -12,6 +12,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
+export class DataInfo {
+    dashSelected: boolean;
+    targetArrowHeadSelected: boolean;
+    sourceArrowHeadSelected: boolean;
+
+    public constructor() {
+        this.sourceArrowHeadSelected = false;
+        this.targetArrowHeadSelected = false;
+        this.dashSelected = false;
+    }
+}
+
 export class RelationshipTypesVisualsApiData {
     sourceArrowHead: string;
     targetArrowHead: string;
@@ -29,17 +41,5 @@ export class RelationshipTypesVisualsApiData {
         if (create) {
             this.boolData = new DataInfo();
         }
-    }
-}
-
-export class DataInfo {
-    dashSelected: boolean;
-    targetArrowHeadSelected: boolean;
-    sourceArrowHeadSelected: boolean;
-
-    public constructor() {
-        this.sourceArrowHeadSelected = false;
-        this.targetArrowHeadSelected = false;
-        this.dashSelected = false;
     }
 }

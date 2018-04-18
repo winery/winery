@@ -20,6 +20,7 @@ import { backendBaseURL } from '../../configuration';
 import { Observable } from 'rxjs/Observable';
 import { Subscriber } from 'rxjs/Subscriber';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LoginData, StorageElements, Token } from './oAuthInterfaces';
 
 /**
  * This service provides OAuth login service. If the credentials are not set, it defaults
@@ -162,21 +163,3 @@ export class WineryOAuthService {
 
 }
 
-enum StorageElements {
-    state = 'state',
-    accessToken = 'accessToken',
-    tokenType = 'tokenType',
-    userName = 'name'
-}
-
-interface Token {
-    access_token: string;
-    token_type: string;
-    scope: string;
-}
-
-export interface LoginData {
-    success: boolean;
-    userName?: string;
-    message?: string;
-}

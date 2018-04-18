@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,25 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-export class TargetInterfaceOperation {
-    interfaceName = '';
-    operationName = '';
+
+export enum StorageElements {
+    state = 'state',
+    accessToken = 'accessToken',
+    tokenType = 'tokenType',
+    userName = 'name'
 }
 
-export class NodeOperation extends TargetInterfaceOperation {
-    nodeRef = '';
+export interface Token {
+    access_token: string;
+    token_type: string;
+    scope: string;
 }
 
-export class RelationshipOperation extends TargetInterfaceOperation {
-    relationshipRef = '';
-}
-
-export class PlanOperation {
-    planRef = '';
-}
-
-export enum CurrentSelectedEnum {
-    nodeTemplate = 'nodetypes',
-    relationshipTemplate = 'relationshiptypes',
-    plan = 'plan'
+export interface LoginData {
+    success: boolean;
+    userName?: string;
+    message?: string;
 }
