@@ -12,46 +12,43 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {InstanceService} from '../../instance.service';
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../../configuration';
-import {ValidEndingsData} from './validEndingsApiData';
-import {isNullOrUndefined} from 'util';
-import {SelectData} from '../../../wineryInterfaces/selectData';
+import { InstanceService } from '../../instance.service';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../configuration';
+import { ValidEndingsData } from './validEndingsApiData';
+import { isNullOrUndefined } from 'util';
+import { SelectData } from '../../../wineryInterfaces/selectData';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class ValidService {
 
     private path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
         this.path = backendBaseURL + this.sharedData.path + '/validsourcesandtargets/';
     }
 
     getValidEndingsData(): Observable<ValidEndingsData> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(this.path, options)
-            .map(res => res.json());
+        return this.http.get<ValidEndingsData>(this.path);
     }
 
     getSelectorData(resourceType?: string): Observable<SelectData[]> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
         if (isNullOrUndefined(resourceType)) {
             resourceType = this.path;
         }
-        return this.http.get(backendBaseURL + resourceType + '/', options)
-            .map(res => res.json());
+        return this.http.get<SelectData[]>(backendBaseURL + resourceType + '/');
     }
 
-    saveValidEndings(validEndingsData: ValidEndingsData): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.put(this.path, JSON.stringify(validEndingsData), options);
+    saveValidEndings(validEndingsData: ValidEndingsData): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http
+            .put(
+                this.path,
+                validEndingsData,
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 }

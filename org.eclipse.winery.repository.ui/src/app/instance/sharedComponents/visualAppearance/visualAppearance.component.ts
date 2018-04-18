@@ -11,13 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit} from '@angular/core';
-import {VisualAppearanceService} from './visualAppearance.service';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {isNullOrUndefined} from 'util';
-import {RelationshipTypesVisualsApiData} from './relationshipTypesVisualsApiData';
-import {NodeTypesVisualsApiData} from './nodeTypesVisualsApiData';
-import {InstanceService} from '../../instance.service';
+import { Component, OnInit } from '@angular/core';
+import { VisualAppearanceService } from './visualAppearance.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { isNullOrUndefined } from 'util';
+import { RelationshipTypesVisualsApiData } from './relationshipTypesVisualsApiData';
+import { NodeTypesVisualsApiData } from './nodeTypesVisualsApiData';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'visualAppearance.component.html',
@@ -169,14 +170,14 @@ export class VisualAppearanceComponent implements OnInit {
         this.relationshipData.hoverColor = color;
     }
 
-    private handleResponse(response: any) {
+    private handleResponse(response: HttpResponse<string>) {
         this.loading = false;
         this.notify.success('Successfully saved visual data!');
     }
 
-    private handleError(error: any): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 
 }

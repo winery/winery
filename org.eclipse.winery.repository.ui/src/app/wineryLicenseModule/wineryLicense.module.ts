@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {WineryLicenseComponent} from './wineryLicense.component';
-import {WineryPipesModule} from '../wineryPipes/wineryPipes.module';
-import {CommonModule} from '@angular/common';
-import {BrowserModule} from '@angular/platform-browser';
-import {BsDropdownModule} from 'ngx-bootstrap';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { WineryLicenseComponent } from './wineryLicense.component';
+import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
+import { BsDropdownModule } from 'ngx-bootstrap';
 
 @NgModule({
     imports: [

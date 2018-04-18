@@ -11,19 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../../../configuration';
-import {RequirementOrCapability} from './requirementsOrCapabilitiesApiData';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../../configuration';
+import { RequirementOrCapability } from './requirementsOrCapabilitiesApiData';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class RequirementsOrCapabilitiesService {
 
     private path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
         this.path = backendBaseURL + this.route.url + '/';
     }
@@ -33,45 +33,35 @@ export class RequirementsOrCapabilitiesService {
      * @returns {Observable<RequirementOrCapability[]>}
      */
     getRequirementsOrCapabilities(): Observable<RequirementOrCapability[]> {
-        return this.sendJsonRequest(this.path);
+        return this.http.get<RequirementOrCapability[]>(this.path);
     }
 
     /**
      * Method to add a new requirement or capability.
      * @param reqOrCap
-     * @returns {Observable<Response>}
+     * @returns {Observable<HttpResponse<string>>}
      */
-    sendPostRequest(reqOrCap: RequirementOrCapability): Observable<any> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+    sendPostRequest(reqOrCap: RequirementOrCapability): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-        return this.http.post(this.path, reqOrCap, options);
+        return this.http
+            .post(
+                this.path,
+                reqOrCap,
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 
     /**
      * Method to delete a requirement or capability.
      * @param id
-     * @returns {Observable<Response>}
+     * @returns {Observable<HttpResponse<string>>}
      */
-    deleteCapOrReqDef(id: any): Observable<any> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.delete(this.path + id + '/', options);
+    deleteCapOrReqDef(id: string): Observable<HttpResponse<string>> {
+        return this.http
+            .delete(
+                this.path + id + '/',
+                { observe: 'response', responseType: 'text' }
+            );
     }
-
-    /**
-     * Private method for DRY principle. It is used to get all kinds of data
-     * for the specified sub path.
-     *
-     * @param requestPath string The path which is specific for each request.
-     * @returns {Observable<any>}
-     */
-    private sendJsonRequest(requestPath: string): Observable<any> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.get(requestPath, options)
-            .map(res => res.json());
-    }
-
 }

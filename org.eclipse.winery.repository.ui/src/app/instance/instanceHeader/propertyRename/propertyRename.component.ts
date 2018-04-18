@@ -12,16 +12,16 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {PropertyRenameService} from './propertyRename.service';
-import {ToscaComponent} from '../../../wineryInterfaces/toscaComponent';
-import {NgForm} from '@angular/forms';
-import {ToscaTypes} from '../../../wineryInterfaces/enums';
-import {ModalDirective} from 'ngx-bootstrap';
-import {Router} from '@angular/router';
-import {Response} from '@angular/http';
-import {InstanceService} from '../../instance.service';
+import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { PropertyRenameService } from './propertyRename.service';
+import { ToscaComponent } from '../../../wineryInterfaces/toscaComponent';
+import { NgForm } from '@angular/forms';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { ModalDirective } from 'ngx-bootstrap';
+import { Router } from '@angular/router';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 /**
  * This adds a an editable field to the html that manipulates either the namespace or the id/name of a ToscaComponent
@@ -110,14 +110,14 @@ export class PropertyRenameComponent implements OnInit, OnChanges {
         }
     }
 
-    private handleUpdateValue(data: Response) {
+    private handleUpdateValue(data: HttpResponse<string>) {
         this.notify.success('Renamed ' + this.propertyName + ' to ' + this.propertyValue);
-        const sliceFrom = data.text().indexOf(this.toscaComponent.toscaType);
-        this.router.navigate([decodeURIComponent(data.text().slice(sliceFrom))]);
+        const sliceFrom = data.body.indexOf(this.toscaComponent.toscaType);
+        this.router.navigate([decodeURIComponent(data.body.slice(sliceFrom))]);
     }
 
-    private handleError(error: Response): void {
-        this.notify.error(error.text());
+    private handleError(error: HttpErrorResponse): void {
+        this.notify.error(error.message);
     }
 
 }

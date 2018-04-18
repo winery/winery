@@ -11,14 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit} from '@angular/core';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {ValidService} from './validSourcesAndTargets.service';
-import {ValidEndingsApiDataSet, ValidEndingsData, ValidEndingsSelectionEnum} from './validEndingsApiData';
-import {SelectData} from '../../../wineryInterfaces/selectData';
-import {isNullOrUndefined} from 'util';
-import {SelectItem} from 'ng2-select';
-import {InstanceService} from '../../instance.service';
+import { Component, OnInit } from '@angular/core';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { ValidService } from './validSourcesAndTargets.service';
+import { ValidEndingsApiDataSet, ValidEndingsData, ValidEndingsSelectionEnum } from './validEndingsApiData';
+import { SelectData } from '../../../wineryInterfaces/selectData';
+import { isNullOrUndefined } from 'util';
+import { SelectItem } from 'ng2-select';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-valid-endings',
@@ -91,11 +92,11 @@ export class ValidSourcesAndTargetsComponent implements OnInit {
     }
 
     public onSelectedTrgValueChanged(event: SelectItem) {
-        this.validEndingsData.validTarget.validDataSet = {id: event.id, text: event.text};
+        this.validEndingsData.validTarget.validDataSet = { id: event.id, text: event.text };
     }
 
     public onSelectedSrcValueChanged(event: SelectItem) {
-        this.validEndingsData.validSource.validDataSet = {id: event.id, text: event.text};
+        this.validEndingsData.validSource.validDataSet = { id: event.id, text: event.text };
     }
 
     public onValidSourceSelected(event: ValidEndingsSelectionEnum) {
@@ -172,9 +173,9 @@ export class ValidSourcesAndTargetsComponent implements OnInit {
         return types.length > 0 ? types : null;
     }
 
-    private handleError(error: any): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.notify.error(error, 'Error');
+        this.notify.error(error.message);
     }
 
     private handleResponse() {

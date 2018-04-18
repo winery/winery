@@ -18,6 +18,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {NamespaceWithPrefix} from '../wineryInterfaces/namespaceWithPrefix';
 import {StartNamespaces, ToscaTypes} from '../wineryInterfaces/enums';
 import {isNullOrUndefined} from 'util';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const noop = () => {
 };
@@ -103,7 +104,10 @@ export class WineryNamespaceSelectorComponent implements OnInit, ControlValueAcc
                     this.allNamespaces = data;
                     this.loading = false;
                 },
-                error => this.notify.error(error.toString())
+                (error: HttpErrorResponse) => {
+                    this.notify.error(error.message);
+                    this.loading = false;
+                }
             );
     }
 

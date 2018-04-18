@@ -11,23 +11,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {InstanceService} from '../../instance.service';
-import {PropertiesDefinitionService} from './propertiesDefinition.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { InstanceService } from '../../instance.service';
+import { PropertiesDefinitionService } from './propertiesDefinition.service';
 import {
-    PropertiesDefinition,
-    PropertiesDefinitionEnum,
-    PropertiesDefinitionKVElement,
-    PropertiesDefinitionsResourceApiData,
+    PropertiesDefinition, PropertiesDefinitionEnum, PropertiesDefinitionKVElement, PropertiesDefinitionsResourceApiData,
     WinerysPropertiesDefinition
 } from './propertiesDefinitionsResourceApiData';
-import {SelectData} from '../../../wineryInterfaces/selectData';
-import {isNullOrUndefined} from 'util';
-import {Response} from '@angular/http';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import {WineryRowData, WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
-import {ModalDirective} from 'ngx-bootstrap';
+import { SelectData } from '../../../wineryInterfaces/selectData';
+import { isNullOrUndefined } from 'util';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
+import { ModalDirective } from 'ngx-bootstrap';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'propertiesDefinition.component.html',
@@ -49,8 +46,8 @@ export class PropertiesDefinitionComponent implements OnInit {
     selectedCell: WineryRowData;
     elementToRemove: any = null;
     columns: Array<WineryTableColumn> = [
-        {title: 'Name', name: 'key', sort: true},
-        {title: 'Type', name: 'type', sort: true},
+        { title: 'Name', name: 'key', sort: true },
+        { title: 'Type', name: 'type', sort: true },
     ];
     newProperty: PropertiesDefinitionKVElement = new PropertiesDefinitionKVElement();
 
@@ -328,7 +325,7 @@ export class PropertiesDefinitionComponent implements OnInit {
         this.handleSuccess(data);
     }
 
-    private handleSave(data: Response) {
+    private handleSave(data: HttpResponse<string>) {
         this.handleSuccess(data, 'change');
         this.getPropertiesDefinitionsResourceApiData();
     }
@@ -351,8 +348,9 @@ export class PropertiesDefinitionComponent implements OnInit {
      *
      * @param error
      */
-    private handleError(error: any): void {
-        this.notify.error(error.toString(), 'Error');
+    private handleError(error: HttpErrorResponse): void {
+        this.loading = false;
+        this.notify.error(error.message, 'Error');
     }
 
     // endregion

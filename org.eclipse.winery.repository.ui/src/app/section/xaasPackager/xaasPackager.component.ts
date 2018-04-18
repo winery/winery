@@ -17,6 +17,7 @@ import {WineryNotificationService} from '../../wineryNotificationModule/wineryNo
 import {ModalDirective} from 'ngx-bootstrap';
 import {isNull, isNullOrUndefined} from 'util';
 import {SelectItem} from 'ng2-select';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-xaas-packager',
@@ -85,7 +86,7 @@ export class XaasPackagerComponent implements DoCheck {
             formData.append('infrastructureNodeType', this.selectedInfracstuctureNodeType);
         }
 
-        this.service.createTempalteFromArtifact(formData).subscribe(
+        this.service.createTemplateFromArtifact(formData).subscribe(
             data => this.notify.success('Service Template successfully created!'),
             error => this.handleError(error)
         );
@@ -95,7 +96,7 @@ export class XaasPackagerComponent implements DoCheck {
     }
 
     public onCreateFromArtifact() {
-        this.service.getNodetypes().subscribe(
+        this.service.getNodeTypes().subscribe(
             data => this.nodeTypes = data.map(
                 obj => {
                     if (!isNullOrUndefined(obj.qName)) {
@@ -105,7 +106,7 @@ export class XaasPackagerComponent implements DoCheck {
             error => this.handleError(error)
         );
 
-        this.service.getArtifactTpesAndInfrastructureNodetypes().subscribe(
+        this.service.getArtifactTypesAndInfrastructureNodeTypes().subscribe(
             data => this.handleArtifactTypeAndInfrastructureNodetypesData(data),
             error => this.handleError(error)
         );
@@ -169,8 +170,8 @@ export class XaasPackagerComponent implements DoCheck {
         this.infrastructureNodetypes = data.infrastructureNodeTypes;
     }
 
-    private handleError(error: any) {
-        this.notify.error(error);
+    private handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message);
     }
 }
 

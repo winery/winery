@@ -11,11 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit} from '@angular/core';
-import {RequiredCapabilityTypeService} from './requiredCapabilityType.service';
-import {RequiredCapabilityTypeApiData} from './requiredCapabilityTypeApiData';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {InstanceService} from '../../instance.service';
+import { Component, OnInit } from '@angular/core';
+import { RequiredCapabilityTypeService } from './requiredCapabilityType.service';
+import { RequiredCapabilityTypeApiData } from './requiredCapabilityTypeApiData';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
 
 @Component({
     templateUrl: 'requiredCapabilityType.component.html',
@@ -28,6 +30,7 @@ export class RequiredCapabilityTypeComponent implements OnInit {
     loading = true;
     selectedCapType: string;
     requiredCapTypeData: RequiredCapabilityTypeApiData;
+    readonly toscaType = ToscaTypes.CapabilityType;
 
     constructor(private notify: WineryNotificationService,
                 private service: RequiredCapabilityTypeService,
@@ -51,13 +54,13 @@ export class RequiredCapabilityTypeComponent implements OnInit {
             this.service.delete()
                 .subscribe(
                     () => this.notify.success('Successfully removed required Capability-Type!'),
-                    error => this.notify.error(error)
+                    (error: HttpErrorResponse) => this.notify.error(error.message)
                 );
         } else {
             this.service.save(this.selectedCapType)
                 .subscribe(
                     () => this.notify.success('Successfully saved required Capability-Type!'),
-                    error => this.notify.error(error)
+                    (error: HttpErrorResponse) => this.notify.error(error.message)
                 );
         }
     }

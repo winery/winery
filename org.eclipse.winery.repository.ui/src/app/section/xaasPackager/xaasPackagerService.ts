@@ -11,50 +11,34 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../configuration';
-import {Router} from '@angular/router';
-import {NodeTypeData} from './xaasPackager.component';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../configuration';
+import { Router } from '@angular/router';
+import { NodeTypeData } from './xaasPackager.component';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class PackagerService {
-    private path: string;
 
-    constructor(private http: Http,
+    private readonly headers = new HttpHeaders({ 'Accept': 'application/json' });
+    private readonly path: string;
+
+    constructor(private http: HttpClient,
                 private router: Router) {
-        this.path = decodeURIComponent(this.router.url);
+        this.path = backendBaseURL + decodeURIComponent(this.router.url);
     }
 
-    getNodetypes(): Observable<NodeTypeData[]> {
-        return this.sendJsonRequest('/nodetypes');
+    getNodeTypes(): Observable<NodeTypeData[]> {
+        return this.http.get<NodeTypeData[]>(backendBaseURL + '/nodetypes', { headers: this.headers });
     }
 
-    getArtifactTpesAndInfrastructureNodetypes(): Observable<ArtifactTypesAndInfrastructureNodetypes> {
-        return this.sendJsonRequest(this.path + '/createfromartifact');
+    getArtifactTypesAndInfrastructureNodeTypes(): Observable<ArtifactTypesAndInfrastructureNodetypes> {
+        return this.http.get<ArtifactTypesAndInfrastructureNodetypes>(this.path + '/createfromartifact', { headers: this.headers });
     }
 
-    createTempalteFromArtifact(formData: FormData): Observable<string> {
-        const headers = new Headers();
-        headers.append('Accept', 'application/json');
-        const options = new RequestOptions({headers: headers});
-        return this.http.post(backendBaseURL + this.path, formData, options)
-            .map(res => res.text());
-    }
-
-    /**
-     * Private method for DRY principle. It is used to get all kinds of data
-     * for the specified sub path.
-     *
-     * @param requestPath string The path which is specific for each request.
-     * @returns {Observable<any>}
-     */
-    private sendJsonRequest(requestPath: string = ''): Observable<any> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + requestPath, options)
-            .map(res => res.json());
+    createTemplateFromArtifact(formData: FormData): Observable<string> {
+        return this.http.post(this.path, formData, { headers: this.headers, responseType: 'text' });
     }
 }
 

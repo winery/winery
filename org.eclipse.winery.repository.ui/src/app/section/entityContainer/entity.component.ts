@@ -11,15 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {backendBaseURL, topologyModelerURL} from '../../configuration';
-import {SectionData} from '../sectionData';
-import {ExistService} from '../../wineryUtils/existService';
-import {ModalDirective} from 'ngx-bootstrap';
-import {Router} from '@angular/router';
-import {EntityService} from './entity.service';
-import {ToscaTypes} from '../../wineryInterfaces/enums';
-import {WineryNotificationService} from '../../wineryNotificationModule/wineryNotification.service';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { backendBaseURL, topologyModelerURL } from '../../configuration';
+import { SectionData } from '../sectionData';
+import { ExistService } from '../../wineryUtils/existService';
+import { ModalDirective } from 'ngx-bootstrap';
+import { Router } from '@angular/router';
+import { EntityService } from './entity.service';
+import { ToscaTypes } from '../../wineryInterfaces/enums';
+import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
 
 @Component({
     selector: 'winery-entity',
@@ -127,7 +127,7 @@ export class EntityComponent implements OnInit {
     }
 
     deleteConfirmed() {
-        this.service.deleteComponent(this.backendLink, this.data.id)
+        this.service.deleteComponent(this.backendLink)
             .subscribe(
                 data => this.success(),
                 error => this.notify.error('Error deleting ' + this.data.id)

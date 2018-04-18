@@ -11,41 +11,39 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../../configuration';
-import {InstanceService} from '../../instance.service';
-import {InheritanceApiData} from './inheritanceApiData';
-import {SelectData} from '../../../wineryInterfaces/selectData';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../configuration';
+import { InstanceService } from '../../instance.service';
+import { InheritanceApiData } from './inheritanceApiData';
+import { SelectData } from '../../../wineryInterfaces/selectData';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class InheritanceService {
 
     private path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
         this.path = this.sharedData.path;
     }
 
     getInheritanceData(): Observable<InheritanceApiData> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.get(backendBaseURL + this.path + '/inheritance/', options)
-            .map(res => res.json());
+        return this.http
+            .get<InheritanceApiData>(
+                backendBaseURL + this.path + '/inheritance/',
+            );
     }
 
     getAvailableSuperClasses(): Observable<SelectData[]> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.get(backendBaseURL + '/' + this.sharedData.toscaComponent.toscaType + '?grouped=angularSelect&dev=true/', options)
-            .map(res => res.json());
+        return this.http
+            .get<SelectData[]>(
+                backendBaseURL + '/' + this.sharedData.toscaComponent.toscaType + '?grouped=angularSelect&dev=true/'
+            );
     }
 
-    saveInheritanceFromString(url: string, inheritFrom: string): Observable<any> {
+    saveInheritanceFromString(url: string, inheritFrom: string): Observable<HttpResponse<string>> {
         const inheritanceData = new InheritanceApiData();
         inheritanceData.isAbstract = 'no';
         inheritanceData.isFinal = 'no';
@@ -56,16 +54,19 @@ export class InheritanceService {
         return this.saveInheritanceData(inheritanceData);
     }
 
-    saveInheritanceData(inheritanceData: InheritanceApiData): Observable<any> {
-        const headers = new Headers({'Content-Type': 'application/json', 'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
+    saveInheritanceData(inheritanceData: InheritanceApiData): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
         // create a copy to not send unnecessary data to the server
         const copy = new InheritanceApiData();
         copy.derivedFrom = inheritanceData.derivedFrom;
         copy.isAbstract = inheritanceData.isAbstract;
         copy.isFinal = inheritanceData.isFinal;
 
-        return this.http.put(backendBaseURL + this.path + '/inheritance/', JSON.stringify(copy), options);
+        return this.http
+            .put(
+                backendBaseURL + this.path + '/inheritance/',
+                JSON.stringify(copy),
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 }

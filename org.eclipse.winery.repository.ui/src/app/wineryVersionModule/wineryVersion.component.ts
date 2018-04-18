@@ -11,21 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-import {Component, Input, ViewChild} from '@angular/core';
-import {InstanceService} from '../instance/instance.service';
-import {ModalDirective} from 'ngx-bootstrap';
-import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
-import {WineryVersionTypesEnum} from '../wineryInterfaces/enums';
-import {WineryVersion} from '../wineryInterfaces/wineryVersion';
-import {WineryValidatorObject} from '../wineryValidators/wineryDuplicateValidator.directive';
-import {AbstractControl, ValidatorFn} from '@angular/forms';
-import {QNameWithTypeApiData} from '../wineryInterfaces/qNameWithTypeApiData';
-import {WineryAddVersionService} from './wineryVersion.service';
-import {Response} from '@angular/http';
-import {Router} from '@angular/router';
-import {ReferencedDefinitionsComponent} from './referencedDefinitions/referencedDefinitions.component';
-import {WineryVersionActions, WineryVersionModalConfig} from './wineryVersionModalConfig';
-import {isNullOrUndefined} from 'util';
+import { Component, Input, ViewChild } from '@angular/core';
+import { InstanceService } from '../instance/instance.service';
+import { ModalDirective } from 'ngx-bootstrap';
+import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { WineryVersionTypesEnum } from '../wineryInterfaces/enums';
+import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { QNameWithTypeApiData } from '../wineryInterfaces/qNameWithTypeApiData';
+import { WineryAddVersionService } from './wineryVersion.service';
+import { Router } from '@angular/router';
+import { ReferencedDefinitionsComponent } from './referencedDefinitions/referencedDefinitions.component';
+import { WineryVersionActions, WineryVersionModalConfig } from './wineryVersionModalConfig';
+import { isNullOrUndefined } from 'util';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-version',
@@ -117,8 +117,8 @@ export class WineryVersionComponent {
         this.referencedDefinitions = data;
     }
 
-    private handleError(error: any) {
-        this.notify.error(error.toString(), 'Error');
+    private handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message, 'Error');
     }
 
     private onShowModal() {
@@ -200,7 +200,7 @@ export class WineryVersionComponent {
 
         this.service.addNewVersion(this.newVersion, this.referencedDefsComponent.updateReferencedDefinitions)
             .subscribe(
-                data => this.onSuccess(data),
+                () => this.onSuccess(),
                 error => this.handleError(error),
             );
     }
@@ -211,9 +211,11 @@ export class WineryVersionComponent {
         this.router.routeReuseStrategy.shouldReuseRoute = function () {
             return false;
         };
-        this.service.freezeOrRelease('freeze').subscribe(
-            data => this.onSuccess(data, 'froze'),
-            error => this.handleError(error));
+        this.service.freezeOrRelease('freeze')
+            .subscribe(
+                () => this.onSuccess('froze'),
+                error => this.handleError(error)
+            );
     }
 
     private releaseVersion() {
@@ -221,8 +223,10 @@ export class WineryVersionComponent {
         this.newVersion.workInProgressVersion = 0;
 
         this.service.freezeOrRelease('release')
-            .subscribe(data => this.onSuccess(data),
-                error => this.handleError(error));
+            .subscribe(
+                () => this.onSuccess(),
+                error => this.handleError(error)
+            );
     }
 
     private validateComponentVersion(): ValidatorFn {
@@ -230,13 +234,13 @@ export class WineryVersionComponent {
             const duplicate = this.sharedData.versions.find(value => value.componentVersion === this.newVersion.componentVersion);
             if (!isNullOrUndefined(duplicate)) {
                 this.modalConfig.valid = false;
-                return {duplicateFound: true};
+                return { duplicateFound: true };
             } else if (this.newVersion.componentVersion.indexOf(' ') >= 0) {
                 this.modalConfig.valid = false;
-                return {componentVersionMustNotContainWhitespaces: true};
+                return { componentVersionMustNotContainWhitespaces: true };
             } else if (this.newVersion.componentVersion.includes('_')) {
                 this.modalConfig.valid = false;
-                return {noUnderscoresAllowed: true};
+                return { noUnderscoresAllowed: true };
             } else {
                 this.modalConfig.valid = true;
                 return null;
@@ -244,7 +248,7 @@ export class WineryVersionComponent {
         };
     }
 
-    private onSuccess(data: Response, action = 'added') {
+    private onSuccess(action = 'added') {
         const newLocalName = this.sharedData.toscaComponent.localNameWithoutVersion
             + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newVersion.toString();
 

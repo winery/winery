@@ -534,7 +534,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @PUT
     @Path("LICENSE")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
     public Response putLicense(String data) {
         RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("LICENSE"));
         return RestUtils.putContentToFile(ref, data, MediaType.TEXT_PLAIN_TYPE);
@@ -550,7 +550,7 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
 
     @PUT
     @Path("README.md")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
     public Response putFile(String data) {
         RepositoryFileReference ref = new RepositoryFileReference(this.id, Util.URLdecode("README.md"));
         return RestUtils.putContentToFile(ref, data, MediaType.TEXT_PLAIN_TYPE);

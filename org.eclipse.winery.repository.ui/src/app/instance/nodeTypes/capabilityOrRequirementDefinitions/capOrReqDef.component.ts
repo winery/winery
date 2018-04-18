@@ -30,6 +30,7 @@ import {WineryNotificationService} from '../../../wineryNotificationModule/winer
 import {ModalDirective} from 'ngx-bootstrap';
 import {SpinnerWithInfinityComponent} from '../../../winerySpinnerWithInfinityModule/winerySpinnerWithInfinity.component';
 import {InstanceService} from '../../instance.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-cap-or-req-definitions',
@@ -510,9 +511,9 @@ export class CapOrReqDefComponent implements OnInit {
      *
      * @param error notification to be shown
      */
-    private handleError(error: any): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 
     // endregion
