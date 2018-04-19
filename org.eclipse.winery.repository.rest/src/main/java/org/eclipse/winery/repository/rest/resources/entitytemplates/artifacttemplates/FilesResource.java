@@ -146,6 +146,7 @@ public class FilesResource {
     @GET
     @Path("/{fileName}")
     public Response getFile(@PathParam("fileName") String fileName, @HeaderParam("If-Modified-Since") String modified, @QueryParam("path") String path) {
+        path = Objects.isNull(path) ? "" : path;
         RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
         return RestUtils.returnRepoPath(ref, modified);
     }
@@ -153,6 +154,7 @@ public class FilesResource {
     @DELETE
     @Path("/{fileName}")
     public Response deleteFile(@PathParam("fileName") String fileName, @QueryParam("path") String path) {
+        path = Objects.isNull(path) ? "" : path;
         RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
         return RestUtils.delete(ref);
     }
