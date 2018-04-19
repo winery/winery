@@ -176,7 +176,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         this.setRevisionTo("origin/plain");
         DefinitionsChildId id = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWith5Versions_0.3.4-w3", false);
 
-        WineryVersion version = BackendUtils.getVersionWithAllFlags(id);
+        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(id);
 
         Assert.assertFalse(version.isReleasable());
         Assert.assertFalse(version.isEditable());
@@ -189,7 +189,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         this.setRevisionTo("d920a1a37e3e1c3be32bf282a4d240d83811fdb1");
         DefinitionsChildId id = new NodeTypeId("http://plain.winery.opentosca.org/nodetypes", "NodeTypeWithImplementation_1.0-w1-wip1", false);
 
-        WineryVersion version = BackendUtils.getVersionWithAllFlags(id);
+        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(id);
 
         Assert.assertTrue(version.isReleasable());
         Assert.assertTrue(version.isCurrentVersion());
@@ -208,7 +208,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.releaseVersion(id);
 
         int finalVersionCount = BackendUtils.getAllVersionsOfOneDefinition(releasedId).size();
-        WineryVersion version = BackendUtils.getVersionWithAllFlags(releasedId);
+        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(releasedId);
 
         Assert.assertEquals(201, response.getStatus());
         Assert.assertEquals(formerVersionCount + 1, finalVersionCount);
@@ -230,7 +230,7 @@ public class RestUtilsWithGitBackendTest extends TestWithGitBackedRepository {
         Response response = RestUtils.releaseVersion(id);
 
         int finalVersionCount = BackendUtils.getAllVersionsOfOneDefinition(releasedId).size();
-        WineryVersion version = BackendUtils.getVersionWithAllFlags(releasedId);
+        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(releasedId);
 
         Assert.assertEquals(201, response.getStatus());
         Assert.assertEquals(formerVersionCount + 1, finalVersionCount);

@@ -893,7 +893,7 @@ public class RestUtils {
 
     public static Response releaseVersion(DefinitionsChildId releasableComponent) {
         ResourceResult result = new ResourceResult();
-        WineryVersion version = BackendUtils.getVersionWithAllFlags(releasableComponent);
+        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(releasableComponent);
 
         if (version.isReleasable()) {
             if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {

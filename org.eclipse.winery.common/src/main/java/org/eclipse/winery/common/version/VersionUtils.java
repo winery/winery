@@ -39,6 +39,11 @@ import de.danielbechler.diff.identity.IdentityStrategy;
 import de.danielbechler.diff.node.DiffNode;
 import io.github.adr.embedded.ADR;
 
+/**
+ * Utility class for working with versions.
+ *
+ * TODO: DefinitionsChildId specific parts should go into into the DefinitionsChildId to have a true object-oriented thinking
+ */
 public class VersionUtils {
 
     public static final Pattern VERSION_PATTERN = Pattern.compile("_([^_]*)-w([0-9]+)(-wip([0-9]+))?$");

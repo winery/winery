@@ -1409,12 +1409,16 @@ public class BackendUtils {
         return getVersionsList(id, new WineryVersion[1]);
     }
 
-    public static WineryVersion getVersionWithAllFlags(DefinitionsChildId id) {
+    public static WineryVersion getCurrentVersionWithAllFlags(DefinitionsChildId id) {
         WineryVersion[] currentVersionWithFlags = new WineryVersion[1];
         getVersionsList(id, currentVersionWithFlags);
         return currentVersionWithFlags[0];
     }
 
+    /**
+     * @param current returns the current version in element [0] of this variable. Has to be non-null.
+     * @return a list of available versions
+     */
     private static List<WineryVersion> getVersionsList(DefinitionsChildId id, final WineryVersion[] current) {
         List<WineryVersion> versionList = getOtherVersionDefinitionsFromDefinition(id)
             .stream()
