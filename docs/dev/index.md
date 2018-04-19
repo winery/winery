@@ -462,6 +462,7 @@ I get strange errors:
     `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already`,
     `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already. Could not load [org.apache.xerces.util.XMLGrammarPoolImpl].`, or
     `java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already. Could not load [javax.xml.validation.Schema].`
+    `java.lang.AbstractMethodError: javax.ws.rs.core.UriBuilder.uri(Ljava/lang/String;)Ljavax/ws/rs/core/UriBuilder;`
 
 Solution 1:
 
