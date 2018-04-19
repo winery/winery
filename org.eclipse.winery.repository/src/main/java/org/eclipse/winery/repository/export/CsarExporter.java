@@ -402,6 +402,8 @@ public class CsarExporter {
     /**
      * Adds all self service meta data to the targetDir
      *
+     * @param repository the repository to work from
+     * @param entryId the service template to export for
      * @param targetDir the directory in the CSAR where to put the content to
      * @param refMap    is used later to create the CSAR
      */
