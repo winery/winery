@@ -34,7 +34,7 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
     2. Go to Editor > Copyright  > Copyright Profiles
     3. Click the green plus
     4. Name "Winery"
-    5. Copyrigh text from [CodeHeaders](../../CodeHeaders.md)
+    5. Copyright text from [CodeHeaders](../../CodeHeaders.md)
     6. Go to Editor > Copyright > Formatting
     7. Adjust copyright formatting settings
        - Change to `Use block comments` with `Prefix each line`
