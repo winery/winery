@@ -5,40 +5,41 @@ must be saved in a TOSCA compliant way.
 
 Forces:
 - TOSCA compliant
+- The version identifier must be detectable in the XML file
 
 
-## Considered Alternatives
+## Considered Options
 
-* *Version in the name*
-* *Version in the namespace*
-* *Save Version externally*
-* *[...]* <!-- numbers of alternatives can vary -->
+* Version in the name
+* Version in the namespace
+* Save version externally
 
 ## Decision Outcome
 
-* Chosen Alternative: *versions in the name*
+* Chosen Option: version in the name/id because it is compliant to the TOSCA specification and shows the version 
+  directly in the XML file.
 * Easiest and best fit regarding compliance
 
-## Pros and Cons of the Alternatives <!-- optional -->
+## Pros and Cons of the Options
 
-### *Version in the name*
+### Version in the name
 
-* `+` *Consistent to the TOSCA specification*
-* `+` *Even from outside of the winery, definitions can be detected in the specific version on first sight*
-* `o` *Requires deep copy of all files and definitions on creating a new version*
-* `-` *Introduces naming conventions to the naming of components: '_' are not allowed anymore*
+* Good, because it is consistent to the TOSCA specification
+* Good, because even from outside of the winery, definitions can be detected in the specific version on first sight
+* Good and bad, because it requires a deep copy of all files and definitions on creating a new version*
+* Bad, because Introduces naming conventions to the naming of components: '_' are not allowed anymore*
 
-### *Version in the namespace*
+### Version in the namespace
 
-* `+` Easy and well established method in XML
-* `+` Definition’s name/id stays intact
-* `-` Implies that all elements in the corresponding namespace have the same version
-* `-` Used to specify the version of the XML’s vocabulary only
+* Good, because it is easy and well established method in XML
+* Good, because the definition’s name/id stays intact
+* Bad, because it implies that all elements in the corresponding namespace have the same version
+* Bad, because it is usually used to specify the version of the XML’s vocabulary only
 
-### *Save Version externally*
+### Save version externally
 
-* `+` Less disk space required
-* `-` Version is not detectable in the XML
+* Good, because it requires less disk space than
+* Bad, because the version is not detectable in the XML
 
 
 ## License

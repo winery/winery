@@ -1,24 +1,24 @@
 # Version Identifier
 
-The version identifier must be defined with it's parts and meanings.
-
-Forces:
+The version identifier must be defined with its parts and meanings.
 
 The version must support three parts:
 1. The part of which specifies the version of the modeled component
-2. A management version specifying the tosca version
-3. A work-in-progress (wip) version to clearly identify development steps
+2. A management version specifying the TOSCA version (`w`)
+3. A work-in-progress (`wip`) version to clearly identify development steps
 
-## Considered Alternatives
+## Considered Options
 
-* *Debian like schema*
-* *Fedora like schme*
-* *OpenSUSE like schema*
+* Debian like schema
+* Fedora like schema
+* OpenSUSE like schema
 
 ## Decision Outcome
 
-* Chosen Alternative: *Debian like schema*
-* wip version is always smaller than the actual release: `example_1.0-w2-wip4 < example_1.0-w2`
+Chosen Option: Debian like schema because it supports "pre-versions" such as the required `wip` version
+
+Positive Consequences:
+  * `wip` version is always smaller than the actual release: `example_1.0-w2-wip4 < example_1.0-w2`
 
 ## License
 
