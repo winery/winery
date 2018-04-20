@@ -13,15 +13,16 @@
  ********************************************************************************/
 package org.eclipse.winery.repository;
 
-import de.danielbechler.diff.node.DiffNode;
+import java.util.Map;
+
 import org.eclipse.winery.common.ids.definitions.NodeTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.version.ToscaDiff;
+import org.eclipse.winery.common.version.VersionState;
 import org.eclipse.winery.common.version.VersionUtils;
+
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Map;
 
 /**
  * This test class resides in the repository in order to make use of the git backed test suite.
@@ -40,17 +41,17 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff id = diffNode.getChildrenMap().get("id");
         ToscaDiff topology = diffNode.getChildrenMap().get("topologyTemplate");
 
-        Assert.assertEquals(DiffNode.State.CHANGED, diffNode.getState());
+        Assert.assertEquals(VersionState.CHANGED, diffNode.getState());
 
-        Assert.assertEquals(DiffNode.State.CHANGED, name.getState());
+        Assert.assertEquals(VersionState.CHANGED, name.getState());
         Assert.assertEquals("ServiceTemplateWithFourPolicies_-w1-wip1", name.getNewValue());
         Assert.assertEquals("ServiceTemplateWithFourPolicies", name.getOldValue());
 
-        Assert.assertEquals(DiffNode.State.CHANGED, name.getState());
+        Assert.assertEquals(VersionState.CHANGED, name.getState());
         Assert.assertEquals("ServiceTemplateWithFourPolicies_-w1-wip1", id.getNewValue());
         Assert.assertEquals("ServiceTemplateWithFourPolicies", id.getOldValue());
 
-        Assert.assertEquals(DiffNode.State.CHANGED, topology.getState());
+        Assert.assertEquals(VersionState.CHANGED, topology.getState());
         Assert.assertEquals(2, topology.getChildren().size());
     }
 
@@ -63,7 +64,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals(DiffNode.State.UNTOUCHED, diffNode.getState());
+        Assert.assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
 
     @Test
@@ -78,7 +79,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion).getTopologyTemplate().getRelationshipTemplate("con_129"),
             repository.getElement(newVersion).getTopologyTemplate().getRelationshipTemplate("con_129"));
 
-        Assert.assertEquals(DiffNode.State.UNTOUCHED, diffNode.getState());
+        Assert.assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
 
     @Test
@@ -92,7 +93,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals(DiffNode.State.UNTOUCHED, diffNode.getState());
+        Assert.assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
 
     @Test
@@ -106,7 +107,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals(DiffNode.State.UNTOUCHED, diffNode.getState());
+        Assert.assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
 
     @Test
@@ -124,13 +125,13 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff element1 = nodeTemplateDiff.get("0");
         ToscaDiff element2 = nodeTemplateDiff.get("1");
 
-        Assert.assertEquals(DiffNode.State.CHANGED, diffNode.getState());
+        Assert.assertEquals(VersionState.CHANGED, diffNode.getState());
 
         Assert.assertEquals("NodeTypeWithXmlElementProperty", element1.getElement());
-        Assert.assertEquals(DiffNode.State.ADDED, element1.getState());
+        Assert.assertEquals(VersionState.ADDED, element1.getState());
 
         Assert.assertEquals("NodeTypeWithOneReqCapPairWithoutProperties", element2.getElement());
-        Assert.assertEquals(DiffNode.State.REMOVED, element2.getState());
+        Assert.assertEquals(VersionState.REMOVED, element2.getState());
     }
 
     @Test
@@ -149,12 +150,12 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff element2 = nodeTemplateDiff.get("1");
 
         Assert.assertEquals("NodeTypeWithOneReqCapPairWithoutProperties", element1.getElement());
-        Assert.assertEquals(DiffNode.State.ADDED, element1.getState());
+        Assert.assertEquals(VersionState.ADDED, element1.getState());
 
         Assert.assertEquals("NodeTypeWithXmlElementProperty", element2.getElement());
-        Assert.assertEquals(DiffNode.State.REMOVED, element2.getState());
+        Assert.assertEquals(VersionState.REMOVED, element2.getState());
 
-        Assert.assertEquals(DiffNode.State.CHANGED, diffNode.getState());
+        Assert.assertEquals(VersionState.CHANGED, diffNode.getState());
     }
 
     @Test
@@ -172,7 +173,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff element1 = nodeTemplateDiff.get("2");
 
         Assert.assertEquals("NodeTypeWithTwoKVProperties", element1.getElement());
-        Assert.assertEquals(DiffNode.State.CHANGED, element1.getState());
+        Assert.assertEquals(VersionState.CHANGED, element1.getState());
     }
 
     @Test
@@ -253,29 +254,40 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
                 "  changed from \"ServiceTemplateMinimalExampleWithAllPropertyVariants\" to \"ServiceTemplateMinimalExampleWithAllPropertyVariants_-w1-wip1\"\n" +
                 "- topologyTemplate/nodeTemplates/NodeTypeWithoutProperties/otherAttributes/{{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location}\n" +
                 "  changed from \"undefined\" to \"\"\n" +
-                "- topologyTemplate/nodeTemplates/NodeTypeWithoutProperties/type/prefix\n" +
-                "  changed from \"nodetypes\" to \"nodetypes1\"\n" +
-                "- topologyTemplate/nodeTemplates/NodeTypeWithoutProperties/typeAsQName/prefix\n" +
-                "  changed from \"nodetypes\" to \"nodetypes1\"\n" +
                 "- topologyTemplate/nodeTemplates/NodeTypeWithXmlElementProperty/otherAttributes/{{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location}\n" +
                 "  changed from \"undefined\" to \"\"\n" +
-                "- topologyTemplate/nodeTemplates/NodeTypeWithXmlElementProperty/type/prefix\n" +
-                "  changed from \"nodetypes\" to \"nodetypes1\"\n" +
-                "- topologyTemplate/nodeTemplates/NodeTypeWithXmlElementProperty/typeAsQName/prefix\n" +
-                "  changed from \"nodetypes\" to \"nodetypes1\"\n" +
                 "- topologyTemplate/nodeTemplates/NodeTypeWithTwoKVProperties/otherAttributes/{{http://www.opentosca.org/winery/extensions/tosca/2013/02/12}location}\n" +
                 "  changed from \"undefined\" to \"\"\n" +
                 "- topologyTemplate/nodeTemplates/NodeTypeWithTwoKVProperties/properties/KVProperties/{key1}\n" +
                 "  changed from \"value\" to \"testValue\"\n" +
-                "- topologyTemplate/nodeTemplates/NodeTypeWithTwoKVProperties/type/prefix\n" +
-                "  changed from \"nodetypes\" to \"nodetypes1\"\n" +
-                "- topologyTemplate/nodeTemplates/NodeTypeWithTwoKVProperties/typeAsQName/prefix\n" +
-                "  changed from \"nodetypes\" to \"nodetypes1\"\n" +
                 "\n" +
                 "### Removed\n" +
                 "- topologyTemplate/relationshipTemplates/con_16\n" +
                 "- topologyTemplate/relationshipTemplates/con_28\n" +
                 "- topologyTemplate/relationshipTemplates/con_40",
+            toscaDiff.getChangeLog());
+    }
+
+    @Test
+    public void ensureRelationshipTemplatesAreNotChangedWhenSourceOrTargetElementIsChanged() throws Exception {
+        this.setRevisionTo("origin/plain");
+
+        ServiceTemplateId oldVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
+            "ServiceTemplateWithTwoNodeTemplates_-w2-wip1", false);
+        ServiceTemplateId newVersion = new ServiceTemplateId("http://plain.winery.opentosca.org/servicetemplates",
+            "ServiceTemplateWithTwoNodeTemplates_-w2-wip2", false);
+
+        ToscaDiff toscaDiff = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
+
+        Assert.assertEquals("## Changes from version -w2-wip1 to -w2-wip2\n" +
+                "\n" +
+                "### Changed\n" +
+                "- id\n" +
+                "  changed from \"ServiceTemplateWithTwoNodeTemplates_-w2-wip1\" to \"ServiceTemplateWithTwoNodeTemplates_-w2-wip2\"\n" +
+                "- name\n" +
+                "  changed from \"ServiceTemplateWithTwoNodeTemplates_-w2-wip1\" to \"ServiceTemplateWithTwoNodeTemplates_-w2-wip2\"\n" +
+                "- topologyTemplate/nodeTemplates/NodeTypeWithTwoKVProperties/properties/KVProperties/{key1}\n" +
+                "  changed from \"\" to \"MyKeyElement\"",
             toscaDiff.getChangeLog());
     }
 }

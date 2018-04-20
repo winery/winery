@@ -43,7 +43,7 @@ public class WineryVersion implements Comparable<WineryVersion> {
         this.workInProgressVersion = Math.abs(workInProgressVersion);
         this.latestVersion = false;
         this.releasable = false;
-        this.editable = !this.isVersionedInWinery();
+        this.editable = false;
     }
 
     public String getComponentVersion() {

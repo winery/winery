@@ -33,6 +33,7 @@ import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 
 import de.danielbechler.diff.ObjectDifferBuilder;
 import de.danielbechler.diff.identity.IdentityStrategy;
@@ -47,6 +48,8 @@ import io.github.adr.embedded.ADR;
 public class VersionUtils {
 
     public static final Pattern VERSION_PATTERN = Pattern.compile("_([^_]*)-w([0-9]+)(-wip([0-9]+))?$");
+
+    private static String REFERENCING_OBJECT = "referencingObject";
 
     public static WineryVersion getVersion(DefinitionsChildId id) {
         return getVersion(id.getXmlId().getDecoded());
@@ -143,14 +146,24 @@ public class VersionUtils {
 
         DiffNode diffNode = ObjectDifferBuilder
             .startBuilding()
+            .categories()
+            // In the scope of winery, a source or target element will not be changed, because relationship templates will be removed if
+            // either one of the source or target element is removed. Therefore, to avoid changed relationships, if one of the source or
+            // target element was changed, we ignore referencing elements.
+            .ofType(TRelationshipTemplate.SourceOrTargetElement.class)
+            .toBe(REFERENCING_OBJECT)
+            .and()
             .inclusion()
             .exclude()
             .propertyName("nodeTemplateOrRelationshipTemplate")
             .propertyName("fakeJacksonType")
-            // Otherwise, it crashes if a policy with a XML content is contained somehow: java.util.Collections$EmptyEnumeration
+            // Ignore 'any', otherwise, it crashes if a policy with a XML content is contained somehow: java.util.Collections$EmptyEnumeration
             // at nodeTemplate/policies/policy/any/[content]/parentNode/identifiers
             .propertyName("any")
             .propertyName("internalAny")
+            // ignore changes of the namespace prefix 
+            .propertyName("prefix")
+            .category(REFERENCING_OBJECT)
             .and()
             .identity()
             // to provide a proper identification of elements in lists, use the custom identity strategy
