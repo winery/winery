@@ -13,6 +13,32 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest.websockets;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Stream;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.rest.datatypes.GitData;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
+
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,24 +46,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.eventbus.Subscribe;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.eclipse.winery.repository.rest.datatypes.GitData;
-import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.Stream;
 
 @ServerEndpoint(value = "/git")
 public class GitWebSocket {

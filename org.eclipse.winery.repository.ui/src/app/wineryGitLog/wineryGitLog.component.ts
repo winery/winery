@@ -11,13 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
-import {ModalDirective} from 'ngx-bootstrap';
-import {Router} from '@angular/router';
-import {webSocketURL} from '../configuration';
-import {GitChange, GitData, GitResponseData} from './GitLogApiData';
-import {isNullOrUndefined} from 'util';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { ModalDirective } from 'ngx-bootstrap';
+import { Router } from '@angular/router';
+import { webSocketURL } from '../configuration';
+import { GitChange, GitData, GitResponseData } from './GitLogApiData';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-gitlog',
@@ -68,7 +68,10 @@ export class WineryGitLogComponent implements OnInit {
                 this.router.navigate(['/']);
             }
 
-            this.lfsAvailable = !isNullOrUndefined(data.lfsAvailable) && data.lfsAvailable;
+            if (!isNullOrUndefined(data.lfsAvailable)) {
+                this.lfsAvailable = data.lfsAvailable;
+            }
+
             this.commitMsg = '';
             this.selectedFile = null;
         };
@@ -84,7 +87,7 @@ export class WineryGitLogComponent implements OnInit {
         } else if (this.commitMsg === '') {
             this.notify.error('Please enter a valid commit message!');
         } else {
-            this.webSocket.send(JSON.stringify({commitMessage: this.commitMsg}));
+            this.webSocket.send(JSON.stringify({ commitMessage: this.commitMsg }));
         }
     }
 

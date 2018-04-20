@@ -17,8 +17,12 @@
             <span (click)="onExpand()"></span>
             <h3>{{files?.length}}</h3>
             <div id="wineryGitLogLfsIndicator">LFS:
-                <div id="lfsAvailable" *ngIf="lfsAvailable">available</div>
-                <div id="lfsNA" *ngIf="!lfsAvailable">not available</div>
+                <div id="lfsAvailable" *ngIf="lfsAvailable; else lsfNotAvailable">
+                    available
+                </div>
+                <ng-template #lsfNotAvailable>
+                    <div id="lfsNA">not available</div>
+                </ng-template>
             </div>
         </div>
         <textarea id="wineryGitLogDiffs" wrap="soft"
