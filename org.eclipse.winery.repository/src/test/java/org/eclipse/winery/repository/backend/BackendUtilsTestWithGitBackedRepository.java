@@ -155,7 +155,8 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         List<WineryVersion> versions = BackendUtils.getAllVersionsOfOneDefinition(policyTemplateId);
 
-        Assert.assertFalse(versions.get(0).isEditable());
+        // For continence, we accept editing already existing components
+        Assert.assertTrue(versions.get(0).isEditable());
     }
 
     @Test

@@ -47,7 +47,7 @@ import io.github.adr.embedded.ADR;
  */
 public class VersionUtils {
 
-    public static final Pattern VERSION_PATTERN = Pattern.compile("_([^_]*)-w([0-9]+)(-wip([0-9]+))?$");
+    private static final Pattern VERSION_PATTERN = Pattern.compile("_([^_]*)-w([0-9]+)(-wip([0-9]+))?$");
 
     private static String REFERENCING_OBJECT = "referencingObject";
 
