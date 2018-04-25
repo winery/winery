@@ -48,7 +48,17 @@
                             </div>
                         </div>
                         <br>
-                        <label for="newComponentVersion">Component version</label>
+                        <label for="newComponentVersion">
+                            Component version
+                        </label>
+                        <ng-template #versionExplanation>
+                            The component version specifies the components' external version. For example, Tomcat in version 8 has a
+                            component version 8.<br>
+                            The management version (winery & wip) is automatically set to 1. For example the final id for Tomcat with component
+                            version 8 is: <code style="color: black">Tomcat_8-w1-wip1</code>.<br>
+                            The final name is displayed below in the 'Final name' field.
+                        </ng-template>
+                        <i class="fa fa-question-circle" [tooltip]="versionExplanation" containerClass="versionTooltip"></i>
                         <input type="text"
                                id="newComponentVersion"
                                name="newComponentVersion"
@@ -71,7 +81,7 @@
                         </div>
                         <br>
                         <label for="finalName">Final name</label>
-                        <input class="form-control" id="finalName" [value]="newComponentFinalName" readonly>
+                        <code class="form-control" id="finalName">{{ newComponentFinalName }}</code>
                     </div>
                     <br>
                     <div class="form-group" *ngIf="types">
