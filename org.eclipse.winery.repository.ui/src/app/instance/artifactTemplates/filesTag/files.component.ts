@@ -38,7 +38,7 @@ export class FilesComponent implements OnInit {
     @ViewChild('removeElementModal') removeElementModal: any;
     fileToRemove: FilesApiData;
 
-    constructor(private service: FilesService, private sharedData: InstanceService, private notify: WineryNotificationService) {
+    constructor(private service: FilesService, public sharedData: InstanceService, private notify: WineryNotificationService) {
         this.filesPath = backendBaseURL + this.sharedData.path + '/files/zip';
     }
 

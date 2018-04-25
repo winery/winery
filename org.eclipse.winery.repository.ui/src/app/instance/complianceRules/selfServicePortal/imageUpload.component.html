@@ -13,7 +13,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
  -->
-<winery-uploader #uploader [title]="'Upload Image'" [uploadUrl]="url"></winery-uploader>
+<winery-uploader #uploader [title]="'Upload Image'" [uploadUrl]="url" [isEditable]="sharedData?.currentVersion?.editable"></winery-uploader>
 
 <div id="{{id}} + FormGroup" class="form-group">
     <label for="{{id}} + DisplayDiv">{{label}}</label>

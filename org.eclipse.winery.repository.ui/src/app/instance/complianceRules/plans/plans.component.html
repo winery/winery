@@ -84,6 +84,7 @@
                                  (onFileDropped)="onFileDropped($event);"
                                  [uploadImmediately]="false"
                                  [uploadMethod]="'PUT'"
+                                 [isEditable]="sharedData?.currentVersion?.editable"
                                  (onSuccess)="getPlanTypesData()"
                                  (onError)="handleError($event)">
                 </winery-uploader>

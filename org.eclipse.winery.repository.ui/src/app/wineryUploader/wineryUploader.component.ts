@@ -72,13 +72,13 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
     @Input() uploadImmediately = true;
     @Input() uploadMethod = 'POST';
     @Input() allowMultipleFiles = false;
+    @Input() isEditable: boolean;
 
     @Output() onFileDropped = new EventEmitter();
     @Output() onSuccess = new EventEmitter();
     @Output() onError = new EventEmitter();
 
     constructor(public service: WineryUploaderService,
-                public sharedData: InstanceService,
                 private notify: WineryNotificationService) {
     }
 
@@ -96,7 +96,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
     }
 
     dropFile(event?: any) {
-        if (!isNullOrUndefined(this.sharedData.currentVersion) && this.sharedData.currentVersion.latestVersion) {
+        if (!isNullOrUndefined(this.isEditable)) {
             if (!isNullOrUndefined(event) && isNullOrUndefined(this.service.uploader.queue[0])) {
                 this.fileOver = event;
             } else {

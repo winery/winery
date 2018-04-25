@@ -77,6 +77,7 @@
     <winery-modal-header [title]="'Add CSAR'"></winery-modal-header>
     <winery-modal-body>
         <winery-uploader [modalRef]="addCsarModal" [uploadUrl]="fileUploadUrl" #fileUploader
+                         [isEditable]="true"
                          (onSuccess)="getSectionsData()"></winery-uploader>
         <div class="checkbox">
             <label>
@@ -94,6 +95,7 @@
     <winery-modal-header [title]="'Add YAML'"></winery-modal-header>
     <winery-modal-body>
         <winery-uploader [modalRef]="addYamlModal" [uploadUrl]="fileUploadUrl + 'yaml/'"
+                         [isEditable]="true"
                          (onSuccess)="getSectionsData()"></winery-uploader>
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">

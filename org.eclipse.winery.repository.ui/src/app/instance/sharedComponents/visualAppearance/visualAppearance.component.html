@@ -42,6 +42,7 @@
         <winery-uploader #uploader16 id="uploader16"
                          [uploadUrl]="img16Path"
                          [uploadMethod]="'PUT'"
+                         [isEditable]="sharedData?.currentVersion?.editable"
                          (onSuccess)="onUploadSuccess()">
         </winery-uploader>
         <br/>
@@ -51,6 +52,7 @@
             <winery-uploader #uploader50 id="uploader50"
                              [uploadUrl]="img50Path"
                              [uploadMethod]="'PUT'"
+                             [isEditable]="sharedData?.currentVersion?.editable"
                              (onSuccess)="onUploadSuccess()">
             </winery-uploader>
             <br/>

@@ -18,7 +18,7 @@
 </div>
 
 <div>
-    <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true">
+    <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true" [isEditable]="sharedData?.currentVersion?.editable">
     </winery-uploader>
 </div>
 <br>

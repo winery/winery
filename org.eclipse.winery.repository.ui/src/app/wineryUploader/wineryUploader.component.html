@@ -20,10 +20,10 @@
 </div>
 <ng-template #elseBlock>
     <input *ngIf="allowMultipleFiles; else singleFile" type="file" ng2FileSelect [uploader]="service.uploader"
-           [disabled]="!sharedData?.currentVersion?.editable"
+           [disabled]="!isEditable"
            (change)="dropFile()" multiple/>
     <ng-template #singleFile>
-        <input type="file" ng2FileSelect [disabled]="!sharedData?.currentVersion?.editable"
+        <input type="file" ng2FileSelect [disabled]="!isEditable"
                [uploader]="service.uploader" (change)="dropFile()"/>
     </ng-template>
     <br>
