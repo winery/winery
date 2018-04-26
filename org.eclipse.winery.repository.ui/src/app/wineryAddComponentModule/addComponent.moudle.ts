@@ -23,7 +23,7 @@ import { WineryDuplicateValidatorModule } from '../wineryValidators/wineryDuplic
 import { RouterModule } from '@angular/router';
 import { WineryLoaderModule } from '../wineryLoader/wineryLoader.module';
 import { SelectModule } from 'ng2-select';
-import { AlertModule, TooltipModule } from 'ngx-bootstrap';
+import { AlertModule } from 'ngx-bootstrap';
 
 @NgModule({
     imports: [
@@ -32,7 +32,6 @@ import { AlertModule, TooltipModule } from 'ngx-bootstrap';
         RouterModule,
         SelectModule,
         AlertModule.forRoot(),
-        TooltipModule,
         WineryModalModule,
         WineryLoaderModule,
         WineryNotificationModule,

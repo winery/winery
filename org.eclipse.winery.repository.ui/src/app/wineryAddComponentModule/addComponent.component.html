@@ -51,14 +51,6 @@
                         <label for="newComponentVersion">
                             Component version
                         </label>
-                        <ng-template #versionExplanation>
-                            The component version specifies the components' external version. For example, Tomcat in version 8 has a
-                            component version 8.<br>
-                            The management version (winery & wip) is automatically set to 1. For example the final id for Tomcat with component
-                            version 8 is: <code style="color: black">Tomcat_8-w1-wip1</code>.<br>
-                            The final name is displayed below in the 'Final name' field.
-                        </ng-template>
-                        <i class="fa fa-question-circle" [tooltip]="versionExplanation" containerClass="versionTooltip"></i>
                         <input type="text"
                                id="newComponentVersion"
                                name="newComponentVersion"
@@ -72,6 +64,13 @@
                                 You haven't provided a version!
                             </div>
                         </div>
+                        <p class="help-block">
+                            The <b>component version</b> specifies the components' external version. For example, Tomcat in version 8 has a
+                            component version 8. In contrast to the component version (which is optional), the <b>management version</b> is
+                            mandatory. It consists of a <b>winery version</b> and a <b>work in progress (wip)</b> version. Both management
+                            versions are set automatically with their initial values of 1. The generated name is displayed in the 'Final name'
+                            field. For example, the final id for Tomcat in version 8 is: <code>Tomcat_8-w1-wip1</code>.
+                        </p>
                         <div *ngIf="(validation?.noUnderscoresAllowed)
                                     && (newVersion.dirty || newVersion.touched)"
                              class="alert alert-danger">
@@ -83,7 +82,6 @@
                         <label for="finalName">Final name</label>
                         <code class="form-control" id="finalName">{{ newComponentFinalName }}</code>
                     </div>
-                    <br>
                     <div class="form-group" *ngIf="types">
                         <label for="typeSelect" class="control-label">Type</label>
                         <ng-select id="typeSelect" [items]="types" (selected)="typeSelected($event)"
