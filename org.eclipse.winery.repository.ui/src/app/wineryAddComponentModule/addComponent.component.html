@@ -65,11 +65,15 @@
                             </div>
                         </div>
                         <p class="help-block">
-                            The <b>component version</b> specifies the components' external version. For example, Tomcat in version 8 has a
-                            component version 8. In contrast to the component version (which is optional), the <b>management version</b> is
-                            mandatory. It consists of a <b>winery version</b> and a <b>work in progress (wip)</b> version. Both management
-                            versions are set automatically with their initial values of 1. The generated name is displayed in the 'Final name'
-                            field. For example, the final id for Tomcat in version 8 is: <code>Tomcat_8-w1-wip1</code>.
+                            The <b>component version</b> specifies the components' external version defined by the creator of the software.
+                            For example, Apache Tomcat in version 8.5.1 has a component version <code>8.5.1</code>. Winery adds management
+                            to the software which is versioned independently of the softwares' version. The version inside Winery is called
+                            <b>management version</b> and is mandatory. It consists of a <b>winery version</b> and a <b>work in progress
+                            (wip)</b> version. The winery version identifies the internal version. When working on the TOSCA definition, a
+                            wip version is appended until the TOSCA definition is stable and released in the current winery version. Upon
+                            the creation of a new component, both management versions are set automatically with their initial values of 1.
+                            The generated name is displayed in the 'Final name' field. For example, the final id for Tomcat in version 8.5.1
+                            is: <code>Tomcat_8.5.1-w1-wip1</code>.
                         </p>
                         <div *ngIf="(validation?.noUnderscoresAllowed)
                                     && (newVersion.dirty || newVersion.touched)"
