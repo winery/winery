@@ -19,21 +19,21 @@
     </button>
     <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
         <li *ngFor="let version of versions" role="menuitem">
-            <a class="dropdown-item" (click)="onVersionSelected(version)">
+            <a class="dropdown-item pointer" (click)="onVersionSelected(version)">
                 {{ version.toReadableString() }}
             </a>
         </li>
         <li class="divider dropdown-divider"></li>
         <li>
-            <a class="dropdow-item" (click)="onAddNewVersion()">
+            <a class="dropdow-item pointer" (click)="onAddNewVersion()">
                 <i class="fa fa-plus-circle flash-action" aria-hidden="true" style="color: #79D858"></i><span>&nbsp;&nbsp;Add a new version</span>
             </a>
-            <a *ngIf="sharedData.currentVersion.releasable"
+            <a *ngIf="sharedData.currentVersion.releasable" class="pointer"
                (click)="onReleaseVersion()">
                 <i class="fa fa-file-archive-o"
                    aria-hidden="true"></i><span>&nbsp;&nbsp;Release management version</span>
             </a>
-            <a *ngIf="(sharedData.currentVersion.editable && sharedData.currentVersion.wineryVersion > 0)"
+            <a *ngIf="(sharedData.currentVersion.editable && sharedData.currentVersion.wineryVersion > 0)" class="pointer"
                (click)="onCommitVersion()">
                 <i class="fa fa-snowflake-o" aria-hidden="true"></i><span>&nbsp;&nbsp;Freeze beta version</span>
             </a>
