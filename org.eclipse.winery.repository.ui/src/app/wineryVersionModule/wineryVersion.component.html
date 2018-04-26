@@ -53,14 +53,14 @@
             <ng-template #modalContent>
                 <div *ngIf="modalConfig?.action === versionActions.AddNewVersion">
                     <h4>
-                        Which version do you want to update?
+                        What kind of version do you want to add?
                     </h4>
                     <div class="form-group">
                         <input id="componentVersion" type="radio" name="versionToUpdate"
                                (click)="componentVersionSelected()">
                         <label for="componentVersion" (click)="componentVersionSelected()">Component version</label>
                         <span class="versionExample">
-                            updates component to
+                            creates
                             <code>
                                 {{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newComponentVersion.toString() }}
                             </code>
@@ -69,7 +69,7 @@
                         <input id="wineryVersion" type="radio" name="versionType" (click)="wineryVersionSelected()">
                         <label for="wineryVersion" (click)="wineryVersionSelected()">Winery version</label>
                         <span class="versionExample">
-                            updates component to:
+                            creates
                             <code>
                                 {{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newWineryVersion.toString() }}
                             </code>
@@ -78,7 +78,7 @@
                         <input id="wipVersion" type="radio" name="versionType" (click)="wipVersionSelected()">
                         <label for="wipVersion" (click)="wipVersionSelected()">WIP version</label>
                         <span class="versionExample">
-                            updates component to
+                            creates
                             <code>
                                 {{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newWIPVersion.toString() }}
                             </code>
