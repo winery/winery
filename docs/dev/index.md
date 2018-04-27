@@ -4,7 +4,7 @@ This document provides (i) guides about development and (ii) design ideas of Win
 
 Other sources of information:
 
-- [Angular UI](angular-ui) - documentation recarding the user interface, which is written in Angular
+- [Angular Apps](angular-ui) - documentation how to develop the angular applications
 - [ADR](../adr) - list of [architectural decision records](https://adr.github.io) showing which design decisions were taken during development of Winery
 - [CodeHeaders](CodeHeaders) - documentation about required code headers
 - [Encoding](Encoding) - information about how percent-encoding is used at Winery
