@@ -19,21 +19,22 @@
     </button>
     <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" role="menu">
         <li *ngFor="let version of versions" role="menuitem">
-            <a class="dropdown-item" (click)="onVersionSelected(version)">
+            <a class="dropdown-item pointer" (click)="onVersionSelected(version)">
                 {{ version.toReadableString() }}
             </a>
         </li>
         <li class="divider dropdown-divider"></li>
         <li>
-            <a class="dropdow-item" (click)="onAddNewVersion()">
-                <i class="fa fa-plus-circle flash-action" aria-hidden="true" style="color: #79D858"></i><span>&nbsp;&nbsp;Add a new version</span>
+            <a class="dropdow-item pointer" (click)="onAddNewVersion()">
+                <i class="fa fa-plus-circle flash-action" aria-hidden="true"
+                   style="color: #79D858"></i><span>&nbsp;&nbsp;Add a new version</span>
             </a>
-            <a *ngIf="sharedData.currentVersion.releasable"
+            <a *ngIf="sharedData.currentVersion.releasable" class="pointer"
                (click)="onReleaseVersion()">
                 <i class="fa fa-file-archive-o"
                    aria-hidden="true"></i><span>&nbsp;&nbsp;Release management version</span>
             </a>
-            <a *ngIf="(sharedData.currentVersion.editable && sharedData.currentVersion.wineryVersion > 0)"
+            <a *ngIf="(sharedData.currentVersion.editable && sharedData.currentVersion.wineryVersion > 0)" class="pointer"
                (click)="onCommitVersion()">
                 <i class="fa fa-snowflake-o" aria-hidden="true"></i><span>&nbsp;&nbsp;Freeze beta version</span>
             </a>
@@ -52,51 +53,64 @@
             <ng-template #modalContent>
                 <div *ngIf="modalConfig?.action === versionActions.AddNewVersion">
                     <h4>
-                        Which version do you want to update?
+                        What kind of version do you want to add?
                     </h4>
                     <div class="form-group">
                         <input id="componentVersion" type="radio" name="versionToUpdate"
                                (click)="componentVersionSelected()">
                         <label for="componentVersion" (click)="componentVersionSelected()">Component version</label>
-                        <span class="versionExample">updates for instance <code>Tomcat_7.0</code> to <code>Tomcat_8.5</code></span>
+                        <span class="versionExample">
+                            creates
+                            <code>
+                                {{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newComponentVersion.toString() }}
+                            </code>
+                        </span>
                         <br>
                         <input id="wineryVersion" type="radio" name="versionType" (click)="wineryVersionSelected()">
-                        <label for="wineryVersion" (click)="wineryVersionSelected()">Management version</label>
-                        <span
-                            class="versionExample">updates for instance <code>Tomcat_7.0-w1</code> to <code>Tomcat_7.0-w2</code></span>
+                        <label for="wineryVersion" (click)="wineryVersionSelected()">Winery version</label>
+                        <span class="versionExample">
+                            creates
+                            <code>
+                                {{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newWineryVersion.toString() }}
+                            </code>
+                        </span>
                         <br>
                         <input id="wipVersion" type="radio" name="versionType" (click)="wipVersionSelected()">
-                        <label for="wipVersion" (click)="wipVersionSelected()">Beta version</label>
-                        <span
-                            class="versionExample">updates for instance <code>Tomcat_7.0-w1-wip1</code> to <code>Tomcat_7.0-w1-wip2</code></span>
+                        <label for="wipVersion" (click)="wipVersionSelected()">WIP version</label>
+                        <span class="versionExample">
+                            creates
+                            <code>
+                                {{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newWIPVersion.toString() }}
+                            </code>
+                        </span>
                         <br><br>
                     </div>
                     <div *ngIf="currentSelected" class="form-group">
                         <div *ngIf="currentSelected === versionTypes.ComponentVersion">
                             <label for="newComponentVersion" class="control-label">New component version</label>
                             <input class="form-control" id="newComponentVersion"
-                                   [(ngModel)]="newVersion.componentVersion"
+                                   [(ngModel)]="newComponentVersion.componentVersion"
                                    name="newComponentVersion"
                                    [wineryDuplicateValidator]="validatorObject"
-                                   #newComponentVersion="ngModel"
-                                   type="text" required>
-                            <div *ngIf="newComponentVersion.errors"
+                                   #newComponentVersionInput="ngModel"
+                                   type="text">
+                            <div *ngIf="newComponentVersionInput.errors"
                                  class="alert alert-danger">
-                                <div [hidden]="!newComponentVersion.errors?.duplicateFound">
+                                <div [hidden]="!newComponentVersionInput.errors?.duplicateFound">
                                     There is already a component with the specified version.
                                 </div>
-                                <div [hidden]="!newComponentVersion.errors?.componentVersionMustNotContainWhitespaces">
+                                <div [hidden]="!newComponentVersionInput.errors?.componentVersionMustNotContainWhitespaces">
                                     Version cannot contain whitespaces!
                                 </div>
-                                <div [hidden]="!newComponentVersion.errors?.noUnderscoresAllowed">
+                                <div [hidden]="!newComponentVersionInput.errors?.noUnderscoresAllowed">
                                     Underscores are not allowed in the version!<br>Please replace them with dashes.
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div *ngIf="newVersion && newVersion.toString().length > 0">
-                        New definition's name: <code>{{ sharedData.toscaComponent.localNameWithoutVersion + '_' +
-                        newVersion.toString() }}</code>
+                        New definition's id:
+                        <code>{{ sharedData.toscaComponent.localNameWithoutVersion + '_' + newVersion.toString() }}</code>
                     </div>
                 </div>
 

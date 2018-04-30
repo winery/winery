@@ -157,3 +157,7 @@ div.orionxmleditordiv {
 .right {
     float: right;
 }
+
+.pointer {
+    cursor: pointer;
+}

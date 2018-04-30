@@ -41,7 +41,10 @@ export class WineryVersionComponent {
 
     modalConfig: WineryVersionModalConfig;
     currentSelected: WineryVersionTypesEnum;
-    newVersion = new WineryVersion('', 0, 0);
+    newVersion: WineryVersion;
+    newComponentVersion = new WineryVersion('', 0, 0);
+    newWineryVersion = new WineryVersion('', 0, 0);
+    newWIPVersion = new WineryVersion('', 0, 0);
     releasedName: string;
 
     readonly versionTypes = WineryVersionTypesEnum;
@@ -63,8 +66,11 @@ export class WineryVersionComponent {
 
     onAddNewVersion() {
         this.onShowModal();
+        this.generateNewVersions();
+
         this.currentSelected = null;
         this.newVersion = new WineryVersion('', 0, 0);
+
         this.modalConfig.action = WineryVersionActions.AddNewVersion;
         this.modalConfig.title = 'Add a new version';
         this.modalConfig.okButtonLabel = 'Add';
@@ -134,20 +140,20 @@ export class WineryVersionComponent {
     }
 
     componentVersionSelected() {
-        this.getNewVersion();
+        this.newVersion = this.newComponentVersion;
         this.modalConfig.valid = true;
         this.currentSelected = WineryVersionTypesEnum.ComponentVersion;
         this.validatorObject.validate = (obj: WineryValidatorObject) => this.validateComponentVersion();
     }
 
     wineryVersionSelected() {
-        this.getNewVersion();
+        this.newVersion = this.newWineryVersion;
         this.modalConfig.valid = true;
         this.currentSelected = WineryVersionTypesEnum.WineryVersion;
     }
 
     wipVersionSelected() {
-        this.getNewVersion();
+        this.newVersion = this.newWIPVersion;
         this.modalConfig.valid = true;
         this.currentSelected = WineryVersionTypesEnum.WipVersion;
     }
@@ -166,7 +172,7 @@ export class WineryVersionComponent {
         }
     }
 
-    private getNewVersion() {
+    private generateNewVersions() {
         let oldVersion = this.sharedData.currentVersion;
         if (!oldVersion.releasable) {
             this.sharedData.versions.forEach(version => {
@@ -179,20 +185,18 @@ export class WineryVersionComponent {
             });
         }
 
-        if (this.currentSelected === WineryVersionTypesEnum.WipVersion) {
-            this.newVersion.componentVersion = oldVersion.componentVersion;
-            this.newVersion.wineryVersion = oldVersion.wineryVersion > 0 ?
-                oldVersion.workInProgressVersion > 0 ? oldVersion.wineryVersion : oldVersion.wineryVersion + 1
-                : 1;
-            this.newVersion.workInProgressVersion = oldVersion.workInProgressVersion + 1;
-        } else if (this.currentSelected === WineryVersionTypesEnum.WineryVersion) {
-            this.newVersion.componentVersion = oldVersion.componentVersion;
-            this.newVersion.wineryVersion = oldVersion.wineryVersion + 1;
-            this.newVersion.workInProgressVersion = 1;
-        } else if (this.currentSelected === WineryVersionTypesEnum.ComponentVersion) {
-            this.newVersion.wineryVersion = 1;
-            this.newVersion.workInProgressVersion = 1;
-        }
+        // generate new WIP version
+        const wineryVersion = oldVersion.wineryVersion > 0 ?
+            oldVersion.workInProgressVersion > 0 ? oldVersion.wineryVersion : oldVersion.wineryVersion + 1
+            : 1;
+        const wipVersion = oldVersion.workInProgressVersion + 1;
+        this.newWIPVersion = new WineryVersion(oldVersion.componentVersion, wineryVersion, wipVersion);
+
+        // generate new Winery version
+        this.newWineryVersion = new WineryVersion(oldVersion.componentVersion, oldVersion.wineryVersion + 1, 1);
+
+        // generate new Component version
+        this.newComponentVersion = new WineryVersion('', 1, 1);
     }
 
     private addComponent() {
@@ -231,7 +235,9 @@ export class WineryVersionComponent {
 
     private validateComponentVersion(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } => {
-            const duplicate = this.sharedData.versions.find(value => value.componentVersion === this.newVersion.componentVersion);
+            const duplicate = this.sharedData.versions.find(value => {
+                return value.componentVersion === this.newVersion.componentVersion && value.wineryVersion > 0;
+            });
             if (!isNullOrUndefined(duplicate)) {
                 this.modalConfig.valid = false;
                 return { duplicateFound: true };
