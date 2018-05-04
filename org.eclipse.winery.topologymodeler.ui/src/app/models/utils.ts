@@ -61,7 +61,7 @@ export class Utils {
         }
 
         return new TNodeTemplate(
-            properties,
+            properties ? properties : {},
             node.id,
             node.type,
             node.name,
@@ -69,25 +69,25 @@ export class Utils {
             node.maxInstances,
             color,
             imageUrl,
-            node.documentation,
-            node.any,
+            node.documentation ? node.documentation : [],
+            node.any ? node.any : [],
             otherAttributes,
             node.x,
             node.y,
-            node.capabilities,
-            node.requirements,
-            node.deploymentArtifacts,
-            node.policies,
+            node.capabilities ? node.capabilities : {},
+            node.requirements ? node.requirements : {},
+            node.deploymentArtifacts ? node.deploymentArtifacts : {},
+            node.policies ? node.policies : {},
             state
         );
     }
 
-    static createTRelationshipTemplateFromObject(relationship: TRelationshipTemplate, state?: DifferenceStates) {
+    static createTRelationshipTemplateFromObject(relationship: TRelationshipTemplate, relIdCount: number, state?: DifferenceStates) {
         return new TRelationshipTemplate(
             relationship.sourceElement,
             relationship.targetElement,
             relationship.name,
-            `${relationship.sourceElement.ref}_${relationship.type.substring(relationship.type.indexOf('}') + 1)}_${relationship.targetElement.ref}`,
+            'con_' + relIdCount.toString(),
             relationship.type,
             relationship.documentation,
             relationship.any,

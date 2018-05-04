@@ -31,6 +31,8 @@ export class TopologyRendererActions {
     static EXECUTE_ALIGN_H = 'EXECUTE_ALIGN_H';
     static EXECUTE_ALIGN_V = 'EXECUTE_ALIGN_V';
     static IMPORT_TOPOLOGY = 'IMPORT_TOPOLOGY';
+    static SPLIT_TOPOLOGY = 'SPLIT_TOPOLOGY';
+    static MATCH_TOPOLOGY = 'MATCH_TOPOLOGY';
 
     togglePolicies(): Action {
         return { type: TopologyRendererActions.TOGGLE_POLICIES };
@@ -74,5 +76,13 @@ export class TopologyRendererActions {
 
     importTopology(): Action {
         return { type: TopologyRendererActions.IMPORT_TOPOLOGY };
+    }
+
+    splitTopology(): Action {
+        return { type: TopologyRendererActions.SPLIT_TOPOLOGY };
+    }
+
+    matchTopology(): Action {
+        return { type: TopologyRendererActions.MATCH_TOPOLOGY };
     }
 }

@@ -69,7 +69,10 @@ export class WineryComponent implements OnInit {
      * inside the Redux store of this application.
      */
     ngOnInit() {
-
+        // Grouped NodeTypes
+        this.backendService.groupedNodeTypes$.subscribe(JSON => {
+            this.initEntityType(JSON, 'groupedNodeTypes');
+        });
         // Artifact Templates
         this.backendService.artifactTemplates$.subscribe(JSON => {
             this.initEntityType(JSON, 'artifactTemplates');
@@ -117,11 +120,6 @@ export class WineryComponent implements OnInit {
         // PolicyTemplates
         this.backendService.policyTemplates$.subscribe(JSON => {
             this.initEntityType(JSON, 'policyTemplates');
-        });
-        // Grouped NodeTypes
-        this.backendService.groupedNodeTypes$.subscribe(JSON => {
-            this.initEntityType(JSON, 'groupedNodeTypes');
-
         });
         // Relationship Types
         this.backendService.relationshipTypes$.subscribe(JSON => {
@@ -260,10 +258,12 @@ export class WineryComponent implements OnInit {
         }
         // init relationship templates
         if (relationshipTemplateArray.length > 0) {
+            let relIdCount = 1;
             relationshipTemplateArray.forEach(relationship => {
                 this.relationshipTemplates.push(
-                    Utils.createTRelationshipTemplateFromObject(relationship)
+                    Utils.createTRelationshipTemplateFromObject(relationship, relIdCount)
                 );
+                relIdCount += 1;
             });
         }
     }

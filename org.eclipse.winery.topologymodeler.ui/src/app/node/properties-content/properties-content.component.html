@@ -11,8 +11,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
-
-<table *ngIf="propertyDefinitionType == 'KV'" class="table table-border--grey table-sm body-table">
+<div *ngIf="!currentNodeData.propertyDefinitionType" style="display: flex; justify-content: center; align-items: center">
+    <i class="fa fa-3x fa-refresh fa-spin" style="max-width: 50%;"></i>
+</div>
+<table *ngIf="currentNodeData.propertyDefinitionType == 'KV'" class="table table-border--grey table-sm body-table">
     <tr>
         <th>
             Key
@@ -36,7 +38,7 @@
     </tr>
 </table>
 
-<div *ngIf="propertyDefinitionType == 'XML'">
+<div *ngIf="currentNodeData.propertyDefinitionType == 'XML'">
     <textarea
         style="width:100%; overflow-y: scroll;"
         rows="6"
@@ -47,5 +49,5 @@
             </textarea>
 </div>
 
-<div *ngIf="propertyDefinitionType == 'NONE'" style="color: dimgray; text-align: center">
+<div *ngIf="currentNodeData.propertyDefinitionType == 'NONE'" style="color: dimgray; text-align: center">
     <span>No properties defined <br> at the NodeType.</span></div>
