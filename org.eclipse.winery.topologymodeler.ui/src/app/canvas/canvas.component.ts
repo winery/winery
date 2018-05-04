@@ -46,6 +46,7 @@ import { QName } from '../models/qname';
 import { ImportTopologyModalData } from '../models/importTopologyModalData';
 import { ImportTopologyService } from '../services/import-topology.service';
 import { ReqCapService } from '../services/req-cap.service';
+import { SplitMatchTopologyService } from '../services/split-match-topology.service';
 import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
 
 @Component({
@@ -131,13 +132,6 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
     duplicateId = false;
 
     private longPressing: boolean;
-    private timeout: any;
-    duration: 300;
-
-    @HostListener('mouseup')
-    onMouseUp() {
-        this.endPress();
-    }
 
     constructor(private jsPlumbService: JsPlumbService,
                 private eref: ElementRef,
@@ -153,6 +147,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 private backendService: BackendService,
                 private importTopologyService: ImportTopologyService,
                 private existsService: ExistsService,
+                private splitMatchService: SplitMatchTopologyService,
                 private reqCapService: ReqCapService) {
         this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
         this.newJsPlumbInstance.setContainer('container');
@@ -178,34 +173,29 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
         this.importTopologyData = new ImportTopologyModalData();
     }
 
+    /**
+     * Needed for the optimal user experience when dragging a selection box.
+     * Upon detecting a long mouse down the navbar and the palette fade out for maximum dragging space.
+     * Resets the values.
+     */
+    @HostListener('mouseup')
+    onMouseUp() {
+        this.longPressing = false;
+    }
+
+    /**
+     * Needed for the optimal user experience when dragging a selection box.
+     * Upon detecting a long mouse down the navbar and the palette fade out for maximum dragging space.
+     * Sets the values upon detecting a long mouse down press.
+     */
     @HostListener('mousedown', ['$event'])
     onMouseDown(event) {
         // don't do right/middle clicks
         if (event.which !== 1) {
             return;
         }
-
         this.longPressing = false;
-
-        this.timeout = setTimeout(() => {
-            this.longPressing = true;
-            this.loop(event);
-        }, this.duration);
-
-        this.loop(event);
-    }
-
-    loop(event) {
-        if (this.longPressing) {
-            this.timeout = setTimeout(() => {
-                this.loop(event);
-            }, 50);
-        }
-    }
-
-    endPress() {
-        clearTimeout(this.timeout);
-        this.longPressing = false;
+        setTimeout(() => this.longPressing = true, 250);
     }
 
     /**
@@ -942,9 +932,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
             const difference = storeRelationshipsLength - localRelationshipsCopyLength;
             if (difference === 1) {
                 this.handleNewRelationship(currentRelationships);
-            } else if (difference < 0) {
-                this.handleDeletedRelationships(currentRelationships);
-            } else if (difference > 0) {
+            } else if (difference > 0 || difference < 0) {
                 this.allRelationshipTemplates = currentRelationships;
             }
         } else if (storeRelationshipsLength !== 0 && localRelationshipsCopyLength !== 0) {
@@ -960,26 +948,6 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
         const newRel = currentRelationships[currentRelationships.length - 1];
         this.allRelationshipTemplates.push(newRel);
         this.manageRelationships(newRel);
-    }
-
-    /**
-     * Handler for deleted relations, removes it from the internal representation
-     * @param currentRelationships  List of all displayed relations.
-     */
-    handleDeletedRelationships(currentRelationships: Array<TRelationshipTemplate>): void {
-        this.allRelationshipTemplates.forEach(rel => {
-            if (!currentRelationships.some(con => con.id === rel.id)) {
-                const deletedRel = rel.id;
-                let deletedRelIndex;
-                this.allRelationshipTemplates.some((con, index) => {
-                    if (con.id === deletedRel) {
-                        deletedRelIndex = index;
-                        return true;
-                    }
-                });
-                this.allRelationshipTemplates.splice(deletedRelIndex, 1);
-            }
-        });
     }
 
     /**
@@ -1010,6 +978,8 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
             const alignmentButtonAlignH = this.navbarButtonsState.buttonsState.alignHButton;
             const alignmentButtonAlignV = this.navbarButtonsState.buttonsState.alignVButton;
             const importTopologyButton = this.navbarButtonsState.buttonsState.importTopologyButton;
+            const splitTopologyButton = this.navbarButtonsState.buttonsState.splitTopologyButton;
+            const matchTopologyButton = this.navbarButtonsState.buttonsState.matchTopologyButton;
             let selectedNodes;
             if (alignmentButtonLayout) {
                 this.layoutDirective.layoutNodes(this.nodeChildrenArray, this.allRelationshipTemplates);
@@ -1043,6 +1013,10 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 }
                 this.ngRedux.dispatch(this.topologyRendererActions.importTopology());
                 this.importTopologyModal.show();
+            } else if (splitTopologyButton) {
+                this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions);
+            } else if (matchTopologyButton) {
+                this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions);
             }
             setTimeout(() => {
                 if (selectedNodes === true) {
@@ -1083,7 +1057,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
             }
         });
         this.importTopologyService.importTopologyTemplate(selectedTopologyTemplate,
-            this.entityTypes.nodeVisuals, this.allNodeTemplates);
+            this.entityTypes.nodeVisuals, this.allNodeTemplates, this.allRelationshipTemplates);
         this.importTopologyData.selectedTopologyTemplateId = null;
         this.importTopologyModal.hide();
     }
@@ -1940,7 +1914,12 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 const currentSourceIdValid = this.allNodeTemplates.some(node => node.id === sourceElement);
                 if (sourceElement && currentTypeValid && currentSourceIdValid) {
                     const targetElement = info.targetId;
-                    const relationshipId = `${sourceElement}_${this.currentType}_${targetElement}`;
+                    let lastRelId = 'con_0';
+                    if (this.allRelationshipTemplates.length > 0) {
+                        lastRelId = this.allRelationshipTemplates[this.allRelationshipTemplates.length - 1].id;
+                    }
+                    const newRelCount = parseInt(lastRelId.substring(lastRelId.indexOf('_') + 1), 10) + 1;
+                    const relationshipId = 'con_' + newRelCount.toString();
                     const relTypeExists = this.allRelationshipTemplates.some(rel => rel.id === relationshipId);
                     if (relTypeExists === false && sourceElement !== targetElement) {
                         const newRelationship = new TRelationshipTemplate(

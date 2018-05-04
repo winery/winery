@@ -44,6 +44,7 @@ import { EntitiesModalService } from './canvas/entities-modal/entities-modal.ser
 import { ImportTopologyService } from './services/import-topology.service';
 import { NodeRelationshipTemplatesGeneratorService } from './services/node-relationship-templates-generator.service';
 import { ReqCapService } from './services/req-cap.service';
+import { SplitMatchTopologyService } from './services/split-match-topology.service';
 
 @NgModule({
     declarations: [
@@ -81,7 +82,8 @@ import { ReqCapService } from './services/req-cap.service';
         EntitiesModalService,
         ImportTopologyService,
         ReqCapService,
-        NodeRelationshipTemplatesGeneratorService
+        NodeRelationshipTemplatesGeneratorService,
+        SplitMatchTopologyService
     ],
     bootstrap: [WineryComponent]
 })

@@ -99,6 +99,26 @@
                 [style.background-color]="getStyle(navbarButtonsState.buttonsState.targetLocationsButton)">
                 Target Locations
             </button>
+            <button class="btn btn-sm align-middle dark-button-style" type="button" style="margin-left: 4px">Print View
+            </button>
+            <button
+                class="btn btn-sm align-middle dark-button-style"
+                type="button"
+                id="split"
+                (click)="toggleButton($event)"
+                [style.background-color]="getStyle(navbarButtonsState.buttonsState.splitTopologyButton)"
+                [disabled]="splittingOngoing">
+                {{splittingOngoing? 'Splitting...' : 'Split'}}
+            </button>
+            <button
+                class="btn btn-sm align-middle dark-button-style"
+                type="button"
+                id="match"
+                (click)="toggleButton($event)"
+                [style.background-color]="getStyle(navbarButtonsState.buttonsState.matchTopologyButton)"
+                [disabled]="matchingOngoing">
+                {{matchingOngoing? 'Matching...' : 'Match'}}
+            </button>
             <button
                 class="btn btn-sm align-middle dark-button-style"
                 type="button"
@@ -108,8 +128,6 @@
                 Import Topology
             </button>
         </div>
-        <button class="btn btn-sm align-middle dark-button-style" type="button" style="margin-left: 4px">Print View
-        </button>
         <div class="btn-group" style="margin-left: 4px" dropdown>
             <button dropdownToggle type="button" class="btn btn-sm dark-button-style align-middle dropdown-toggle">
                 Other <span class="caret"></span>

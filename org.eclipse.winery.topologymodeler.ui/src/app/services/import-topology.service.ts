@@ -59,12 +59,13 @@ export class ImportTopologyService {
      * @param nodeVisuals   the node visuals
      * @param allNodeTemplates   the node templates already present in the service template
      */
-    importTopologyTemplate(serviceTemplate: any, nodeVisuals: Visuals[], allNodeTemplates: Array<TNodeTemplate>): void {
+    importTopologyTemplate(serviceTemplate: any, nodeVisuals: Visuals[], allNodeTemplates: Array<TNodeTemplate>,
+    allRelationshipTemplates: Array<TRelationshipTemplate>): void {
         // ServiceTemplate / TopologyTemplate
         this.requestServiceTemplate(serviceTemplate).subscribe(data => {
             // add JSON to Promise, WineryComponent will subscribe to its Observable
             const nodeAndRelationshipTemplates = this.nodeRelationshipTemplatesGeneratorService.generateNodeAndRelationshipTemplates(
-                data['nodeTemplates'], data['relationshipTemplates'], nodeVisuals);
+                data['nodeTemplates'], data['relationshipTemplates'], nodeVisuals, allRelationshipTemplates);
             this.assignUniqueIds(allNodeTemplates, nodeAndRelationshipTemplates[0], nodeAndRelationshipTemplates[1]);
             nodeAndRelationshipTemplates[0].forEach(nodeTemplate => {
                 this.ngRedux.dispatch(this.actions.saveNodeTemplate(nodeTemplate));
@@ -109,10 +110,8 @@ export class ImportTopologyService {
                             importedRelationshipTemplates.forEach(relTemplate => {
                                 if (importedNodeTemplate.id === relTemplate.sourceElement.ref) {
                                     relTemplate.sourceElement.ref = newNodeId;
-                                    relTemplate.id = `${relTemplate.sourceElement.ref}_${relTemplate.type}_${relTemplate.targetElement.ref}`;
                                 } else if (importedNodeTemplate.id === relTemplate.targetElement.ref) {
                                     relTemplate.targetElement.ref = newNodeId;
-                                    relTemplate.id = `${relTemplate.sourceElement.ref}_${relTemplate.type}_${relTemplate.targetElement.ref}`;
                                 }
                             });
                             importedNodeTemplate.id = newNodeId;

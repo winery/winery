@@ -21,8 +21,9 @@ import { Subject } from 'rxjs/Subject';
 import { isNullOrUndefined } from 'util';
 import { EntityType, TTopologyTemplate, Visuals } from '../models/ttopology-template';
 import { QNameWithTypeApiData } from '../models/generateArtifactApiData';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { WineryAlertService } from '../winery-alert/winery-alert.service';
+import { urlElement } from '../models/enums';
 import { ToscaDiff } from '../models/ToscaDiff';
 
 /**
@@ -424,6 +425,26 @@ export class BackendService {
                 headers: headers, responseType: 'text', observe: 'response'
             });
         }
+    }
+
+    /**
+     * Splits the template.
+     * @returns {Observable<any>}
+     */
+    splitTopology(): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+        const url = this.topologyTemplateURL + urlElement.TopologyTemplate + 'split';
+        return this.http.post(url + '/', {}, { headers: headers,  observe: 'response', responseType: 'text' });
+    }
+
+    /**
+     * Matches the template.
+     * @returns {Observable<any>}
+     */
+    matchTopology(): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+        const url = this.topologyTemplateURL + urlElement.TopologyTemplate + 'match';
+        return this.http.post(url + '/', {}, { headers: headers,  observe: 'response', responseType: 'text' });
     }
 
     /**
