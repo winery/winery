@@ -1,18 +1,5 @@
 # Eclipse Winery User Guide
 
-<!-- toc -->
-
-- [Overview](#overview)
-- [Quickstart](#quickstart)
-- [Features](#features)
-- [Miscellaneous notes](#miscellaneous-notes)
-- [Related work](#related-work)
-- [License](#license)
-
-<!-- tocstop -->
-
-## Overview
-
 Eclipse Winery is a Web-based environment to graphically model [OASIS TOSCA](../tosca/) topologies and plans managing these topologies.
 It is an Eclipse project and thus support is available through its project page <https://projects.eclipse.org/projects/soa.winery>.
 Winery is also part of the OpenTOSCA ecosystem where more information is available at <http://www.opentosca.org>.
@@ -36,22 +23,8 @@ This part is currently in development and not part of the opensourced code of Wi
 The repository stores TOSCA models and allows managing their content. For instance, node types, policy types, and artifact templates are managed by the repository.
 The repository is also responsible for importing and  exporting CSARs, the exchange format of TOSCA files and related artifacts.
 
-
-## Quickstart
-
-On Windows:
-
-1. `mkdir c:\winery-repository`
-2. `cd c:\winery-repository`
-2. `git config --global core.longpaths true` to enable long paths. Works perfectly on Windows.
-3. `git clone https://github.com/winery/test-repository.git .` to clone the [test repository](https://github.com/winery/test-repository).
-4. Uni Stuttgart developers: `git remote add tosca-definitions-internal https://github.com/OpenTOSCA/tosca-definitions-internal/` to make the [tosca-definitions-ustutt](https://github.com/OpenTOSCA/tosca-definitions-internal/) known.
-5. `git fetch tosca-definitions` - to fetch the tosca-definitions repository
-6. `git checkout black` - to switch to the main branch of the test repository
-
-Now you are at the [test repository](https://github.com/winery/test-repository) containing testing types.
-If you do `git checkout master`, you are seeing the [OpenTOSCA TOSCA Definitions repository](https://github.com/OpenTOSCA/tosca-definitions/).
-
+- [Quickstart](quickstart.md)
+- [Modeling Guide](modeling-guide.md) - Guide how to use Winery
 
 ## Features
 
@@ -59,16 +32,13 @@ If you do `git checkout master`, you are seeing the [OpenTOSCA TOSCA Definitions
 - [TopologyCompletion](TopologyCompletion) - topology completion with a [Tutorial](TopologyCompletionTutorial)
 - [XaaSPackager](XaaSPackager) - Enables reusing modeled topologies as templates for single applications
 
-## Miscellaneous notes
+## Background Literature
 
-Properties of a Template can be either full XML or key/value based.
-If key/value based, a wrapper XML element is required.
-Since QNames have to be unique, Winery proposes as namespace the namespace of the template appended by `propertiesdefinition/winery`.
-The name of the wrapper element is `properties`.
+[BBKL14] Breitenbücher, Uwe; Binz, Tobias; Kopp, Oliver; Leymann, Frank: Vinothek - A Self-Service Portal for TOSCA. In: Herzberg, Nico (Hrsg); Kunze, Matthias (Hrsg): Proceedings of the 6th Central-European Workshop on Services and their Composition (ZEUS 2014).
 
-<!--
-Implementation hint: This is implemented in `PropertiesDefinitionComponent.onCustomKeyValuePairSelected` (TS) and `org.eclipse.winery.model.tosca.TEntityType.getWinerysPropertiesDefinition` (Java).
--->
+[KBBL12] Kopp, Oliver; Binz, Tobias; Breitenbücher, Uwe; Leymann, Frank: BPMN4TOSCA: A Domain-Specific Language to Model Management Plans for Composite Applications. In: Mendling, Jan (Hrsg); Weidlich, Matthias (Hrsg): 4th International Workshop on the Business Process Model and Notation, 2012
+
+More readings at <https://www.opentosca.org>.
 
 ## Related Work
 

@@ -2,56 +2,20 @@
 
 <!-- toc -->
 
-- [GitHub - Start](#github---start)
-  * [Steps to get write access to the repositories](#steps-to-get-write-access-to-the-repositories)
-  * [Steps to initialize the repository](#steps-to-initialize-the-repository)
-  * [Steps for working on a topic](#steps-for-working-on-a-topic)
+- [Steps for working on a topic](#steps-for-working-on-a-topic)
 - [GitHub - Prepare Final Pull Request](#github---prepare-final-pull-request)
 - [GitHub - Create Final Pull Request](#github---create-final-pull-request)
 - [GitHub - Change Final Pull Request](#github---change-final-pull-request)
 - [GitHub - After Pull Request Got Merged](#github---after-pull-request-got-merged)
 - [Excursus: Git](#excursus-git)
-- [License](#license)
 
 <!-- tocstop -->
 
 This presents the tool chain used for creating and updating a pull request on GitHub.
 
-For setup the IDE, please go to the [DevGuide](./).
+For the general setup, please go to [ToolChain-initialization](ToolChain-initialization.md).
 
-## GitHub - Start
-
-To contribute to Eclipse Winery development you need a GitHub account and access to <https://github.com/opentosca/winery>.
-Email your supervisor your GitHub username.
-
-- In case you did not choose an account name, use `flastname` as pattern:
-  `f` is the lower-case first letter of your firstname and
-  `lastname` is the lower-case lastname.
-- Due to open source development, your email adress will get public.
-  In case, you don't have a public email adress, we recommend to create one or use your student email adress.
-  In case you want to create a longer-lasting one, please use the GitHub username.
-  Example: `flastname@gmail.com`.
-
-### Steps to get write access to the repositories
-
-1. Email your supervisor your GitHub username and your development email address.
-2. Your supervisor adds you to the team "developers" at <https://github.com/opentosca> and <https://github.com/winery>.
-3. You will receive two emails from GitHub asking for your confirmation.
-4. Open the link <https://github.com/orgs/winery/invitation>.
-5. Open the link <https://github.com/orgs/OpenTOSCA/invitation>.
-
-### Steps to initialize the repository
-
-  1. Clone <https://github.com/opentosca/winery> (it automatically becomes the `origin`).
-     - We recommend that git repositories reside in `c:\git-repositories`.
-     - Use [ConEmu](https://conemu.github.io/) as program for all your shells: `choco install conemu`.
-       Install [chocolatey](https://chocolatey.org/) to use the `choco` command.
-     - Execute `git clone https://github.com/OpenTOSCA/winery.git` in `c:\git-repositories`.
-  2. Change into the newly created directory `winery`: `cd winery`.
-  3. Add `upstream` as second remote: `git remote add upstream https://github.com/eclipse/winery.git`
-  4. Fetch everything from `upstream`: `git fetch upstream`
-
-### Steps for working on a topic
+## Steps for working on a topic
 
   1. Create a new branch for each topic (fix a bug, add functionality) and name it accordingly.
      - Thesis: `thesis/SHORT-THESIS-TITLE`. Replace `SHORT-THESIS-TITLE` with something meaningful
