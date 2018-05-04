@@ -1,6 +1,6 @@
 # Eclipse Winery Angular Apps
 
-tODO: generisch für beide apps
+TODO: generisch für beide apps
 
 ## Prerequisites
 1. Install [git](https://git-scm.com)
