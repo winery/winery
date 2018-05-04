@@ -12,17 +12,22 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { isNullOrUndefined } from 'util';
+import { BackendService } from '../../services/backend.service';
 
 @Component({
     selector: 'winery-properties',
     templateUrl: './properties.component.html',
     styleUrls: ['./properties.component.css']
 })
-export class PropertiesComponent {
+export class PropertiesComponent implements OnInit {
     @Input() currentNodeData: any;
 
     constructor() {
+    }
+
+    ngOnInit() {
     }
 
 }

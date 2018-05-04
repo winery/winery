@@ -28,5 +28,7 @@ export interface ButtonsStateModel {
         alignHButton?: boolean;
         alignVButton?: boolean;
         importTopologyButton?: boolean;
+        splitTopologyButton?: boolean;
+        matchTopologyButton?: boolean;
     };
 }

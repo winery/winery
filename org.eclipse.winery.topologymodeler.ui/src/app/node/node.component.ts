@@ -13,8 +13,19 @@
  ********************************************************************************/
 
 import {
-    AfterViewInit, Component, ComponentRef, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffers, NgZone,
-    OnDestroy, OnInit, Output, Renderer2
+    AfterViewInit,
+    Component,
+    ComponentRef,
+    DoCheck,
+    ElementRef,
+    EventEmitter,
+    Input,
+    KeyValueDiffers,
+    NgZone,
+    OnDestroy,
+    OnInit,
+    Output,
+    Renderer2
 } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { ButtonsStateModel } from '../models/buttonsState.model';
@@ -26,6 +37,7 @@ import { TNodeTemplate } from '../models/ttopology-template';
 import { QName } from '../models/qname';
 import { urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
+import { isNullOrUndefined } from 'util';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -35,12 +47,12 @@ import { BackendService } from '../services/backend.service';
     templateUrl: './node.component.html',
     styleUrls: ['./node.component.css'],
     animations: [trigger('onCreateNodeTemplateAnimation', [
-        state('hidden', style({ opacity: 0, transform: 'translateX(0)' })),
-        state('visible', style({ opacity: 1, transform: 'scale' })),
+        state('hidden', style({opacity: 0, transform: 'translateX(0)'})),
+        state('visible', style({opacity: 1, transform: 'scale'})),
         transition('hidden => visible', animate('300ms', keyframes([
-            style({ opacity: 0, transform: 'scale(0.2)', offset: 0 }),
-            style({ opacity: 0.3, transform: 'scale(1.1)', offset: 0.7 }),
-            style({ opacity: 1, transform: 'scale(1.0)', offset: 1.0 })
+            style({opacity: 0, transform: 'scale(0.2)', offset: 0}),
+            style({opacity: 0.3, transform: 'scale(1.1)', offset: 0.7}),
+            style({opacity: 1, transform: 'scale(1.0)', offset: 1.0})
         ]))),
     ]),
     ]
@@ -53,6 +65,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     connectorEndpointVisible = false;
     startTime;
     endTime;
+    groupedNodeTypes: any;
     longpress = false;
     makeSelectionVisible = false;
     setFlash = false;
@@ -62,6 +75,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     policyTemplates: any;
     artifactTypes: any;
     removeZIndex: any;
+    propertyDefinitionType: string;
     @Input() entityTypes: any;
     @Input() dragSource: string;
     @Input() navbarButtonsState: ButtonsStateModel;
@@ -125,10 +139,40 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     }
 
     /**
+     * This function determines which kind of properties the nodeType embodies.
+     * We have 3 possibilities: none, XML element, or Key value pairs.
+     * @param {string} type
+     */
+    findOutPropertyDefinitionTypeForProperties(type: string, groupedNodeTypes: any): string {
+        for (const nameSpace of groupedNodeTypes) {
+            for (const nodeTypeVar of nameSpace.children) {
+                if (nodeTypeVar.id === type) {
+                    // if PropertiesDefinition doesn't exist then it must be of type NONE
+                    if (isNullOrUndefined(nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition)) {
+                        return 'NONE';
+                    } else {
+                        // if no XML element inside PropertiesDefinition then it must be of type Key Value
+                        if (!nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
+                            return 'KV';
+                        } else {
+                            // else we have XML
+                            return 'XML';
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Angular lifecycle event.
      */
     ngOnInit() {
         this.differ = this.differs.find([]).create(null);
+        this.backendService.requestGroupedNodeTypes().subscribe((groupedNodeTypes) => {
+            this.groupedNodeTypes = groupedNodeTypes;
+            this.propertyDefinitionType = this.findOutPropertyDefinitionTypeForProperties(this.nodeTemplate.type, groupedNodeTypes);
+        });
     }
 
     /**
@@ -144,7 +188,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      * Triggered when opening a modal to send node data to the canvas for handling the addition of modal data.
      */
     sendToggleAction(nodeData: any): void {
-        const currentNodeData = { ...this.nodeTemplate, ...nodeData };
+        const currentNodeData = {...this.nodeTemplate, ...nodeData};
         this.sendNodeData.emit(currentNodeData);
     }
 

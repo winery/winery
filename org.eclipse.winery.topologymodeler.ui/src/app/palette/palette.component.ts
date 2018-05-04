@@ -77,7 +77,7 @@ export class PaletteComponent implements OnInit, OnDestroy {
     // All Node Types grouped by their namespaces
     allNodeTemplates: TNodeTemplate[] = [];
     readonly newNodePositionOffsetX = 108;
-    readonly newNodePositionOffsetY = 30;
+    readonly newNodePositionOffsetY = 60;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
                 private actions: WineryActions,
@@ -150,16 +150,16 @@ export class PaletteComponent implements OnInit, OnDestroy {
             1,
             1,
             newIdTypeColorProperties.color,
-            undefined,
-            undefined,
-            undefined,
+            '',
+            [],
+            [],
             {},
             x,
             y,
-            undefined,
-            undefined,
-            undefined,
-            undefined
+            {},
+            {},
+            {},
+            {}
         );
         this.ngRedux.dispatch(this.actions.saveNodeTemplate(newNode));
     }
@@ -262,11 +262,13 @@ export class PaletteComponent implements OnInit, OnDestroy {
             if (nodeType.name === name) {
                 // if any is defined with at least one element it's a KV property, sets default values if there aren't
                 // any in the node template
-                if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0) {
-                    const properties = {
-                        kvproperties: this.setKVProperties(nodeType)
-                    };
-                    return properties;
+                if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any) {
+                    if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].any.length > 0) {
+                        const properties = {
+                            kvproperties: this.setKVProperties(nodeType)
+                        };
+                        return properties;
+                    }
                     // if propertiesDefinition is defined it's a XML property
                 } else if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition) {
                     if (nodeType.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
