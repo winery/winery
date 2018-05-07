@@ -63,10 +63,13 @@ This is required by the Eclipse process for checking for intellectual property (
 
 **Before commencing these steps, check with your supervisor**
 
-* Check [CONTRIBUTING.md](https://github.com/eclipse/winery/blob/master/CONTRIBUTING.md) and carefully read the instructions
-* <http://wiki.eclipse.org/Development_Resources/Contributing_via_Git> 🡒 Create an account **WITH THE SAME EMAIL THEN USED FOR THE COMMITS** (can also be checked in [gitk])
+### Formal Requirements
+
+* <http://wiki.eclipse.org/Development_Resources/Contributing_via_Git> 🡒 Create an account **WITH THE SAME EMAIL AS USED FOR THE COMMITS** (can also be checked in [gitk])
 * Sign the Contributor Agreement electronically
-* Steps to prepare Pull Request:
+
+### Git Steps: Ensure that a single commit is created
+
   1. `git fetch upstream` - fetches all updates from https://github.com/eclipse/winery ("upstream") to the local git storage
   2. `git merge upstream/master` - merges all updates from upstream to the local branch
   3. (Resolve merge conflicts) - required if there are conflicting changes
