@@ -93,11 +93,11 @@ public class ConsistencyChecker {
     }
 
     public static void checkDocumentation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
-        checkFileExistance(errorLogger, configuration, id, "README.md");
-        checkFileExistance(errorLogger, configuration, id, "LICENSE");
+        checkFileExistence(errorLogger, configuration, id, "README.md");
+        checkFileExistence(errorLogger, configuration, id, "LICENSE");
     }
 
-    public static void checkFileExistance(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id, String filename) {
+    public static void checkFileExistence(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id, String filename) {
         RepositoryFileReference repositoryFileReference = new RepositoryFileReference(id, filename);
         if (!configuration.getRepository().exists(repositoryFileReference)) {
             printAndAddWarning(errorLogger, configuration.getVerbosity(), id, filename + " does not exist.");
