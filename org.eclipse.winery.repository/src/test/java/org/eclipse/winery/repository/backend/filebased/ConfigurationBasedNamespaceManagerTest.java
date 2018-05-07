@@ -64,4 +64,16 @@ public class ConfigurationBasedNamespaceManagerTest {
         Assert.assertEquals("otntyexample1", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example/example"));
     }
 
+    @Test
+    public void xmlNullNamespaceHasPrefix() {
+        // the XML null namespace is the empty string
+        Assert.assertEquals("null", this.configurationBasedNamespaceManager.getPrefix(""));
+    }
+
+    @Test
+    public void nullNamespaceHasPrefix() {
+        Assert.assertEquals("null", this.configurationBasedNamespaceManager.getPrefix((String) null));
+    }
+
+
 }

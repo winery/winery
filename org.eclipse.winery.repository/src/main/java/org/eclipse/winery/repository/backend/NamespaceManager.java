@@ -14,12 +14,15 @@
 package org.eclipse.winery.repository.backend;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import org.eclipse.winery.common.ids.Namespace;
 
 public interface NamespaceManager {
 
     default String getPrefix(Namespace namespace) {
+        Objects.requireNonNull(namespace);
+
         String ns = namespace.getDecoded();
         return this.getPrefix(ns);
     }
@@ -40,7 +43,7 @@ public interface NamespaceManager {
     void removePermanentPrefix(String namespace);
 
     /**
-     * Permanently stores a prefix
+     * Permanently stores a prefix. No action, if namespace or prefix are null or empty.
      */
     void setPermanentPrefix(String namespace, String prefix);
 

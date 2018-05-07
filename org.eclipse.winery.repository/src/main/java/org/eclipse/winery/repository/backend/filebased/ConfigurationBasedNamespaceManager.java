@@ -51,12 +51,15 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
 
     @Override
     public String getPrefix(String namespace) {
-        Objects.requireNonNull(namespace);
+        if (namespace == null) {
+            namespace = "";
+        }
+
         // configuration stores the permanent mapping
         // this has precedence
         String prefix = configuration.getString(namespace);
-        if (prefix == null) {
-            // in case no permanent mapping is found, check the in-memory ones
+        if (prefix == null || prefix.isEmpty()) {
+            // in case no permanent mapping is found - or the prefix is invalid, check the in-memory ones
             prefix = this.namespaceToPrefixMap.get(namespace);
             if (prefix == null) {
                 prefix = this.generatePrefix(namespace);
@@ -80,6 +83,12 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
 
     @Override
     public void setPermanentPrefix(String namespace, String prefix) {
+        if (Objects.isNull(namespace) || Objects.isNull(prefix)) {
+            return;
+        }
+        if (namespace.isEmpty() || prefix.isEmpty()) {
+            return;
+        }
         if (!this.getAllPermanentPrefixes().contains(prefix)) {
             this.configuration.setProperty(namespace, prefix);
             // ensure that in-memory mapping also does not have the key any more
@@ -151,6 +160,9 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
 
             if (result.isEmpty()) {
                 if (prefix.isEmpty()) {
+                    if ((round == 0) && namespace.isEmpty()) {
+                        return "null";
+                    }
                     prefix = "ns";
                 }
                 return String.format("%s%s%d", prefix, mid, round);
@@ -169,6 +181,7 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
      */
     private String generatePrefix(String namespace) {
         Objects.requireNonNull(namespace);
+
         String prefix;
         Set<String> allPrefixes = new HashSet<>();
         allPrefixes.addAll(this.getAllPermanentPrefixes());
