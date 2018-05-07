@@ -26,7 +26,7 @@ public class PolicyTypeResourceTest extends AbstractResourceTest {
 
     @Test
     public void getInstanceXml() throws Exception {
-        this.setRevisionTo("c25aa724201824fce6eddcc7c35a666c6e015880");
+        this.setRevisionTo("origin/fruits");
         this.assertGet(replacePathStringEncoding(INSTANCE_URL), INSTANCE_XML_PATH);
     }
 

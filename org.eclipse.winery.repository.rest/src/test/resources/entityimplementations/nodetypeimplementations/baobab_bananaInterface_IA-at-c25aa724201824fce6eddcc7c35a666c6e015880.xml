@@ -11,9 +11,9 @@
                             nodeType="ns6:baobab"
                             targetNamespace="http://winery.opentosca.org/test/nodetypeimplementations/fruits">
         <ImplementationArtifacts>
-            <ImplementationArtifact xmlns:fruits="http://winery.opentosca.org/test/artifacttypes/fruits"
-                                    xmlns:fruits1="http://winery.opentosca.org/test/artifacttemplates/fruits"
-                                    artifactRef="fruits1:baobab_bananaInterface_IA" artifactType="fruits:WAR"
+            <ImplementationArtifact xmlns:atyfruits="http://winery.opentosca.org/test/artifacttypes/fruits"
+                                    xmlns:atefruits="http://winery.opentosca.org/test/artifacttemplates/fruits"
+                                    artifactRef="atefruits:baobab_bananaInterface_IA" artifactType="atyfruits:WAR"
                                     interfaceName="bananaInterface" name="baobab_bananaInterface_IA"/>
         </ImplementationArtifacts>
     </NodeTypeImplementation>
