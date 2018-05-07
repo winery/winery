@@ -234,7 +234,7 @@ public class VisualAppearanceResource extends GenericVisualAppearanceResource {
     /* * * color * * */
 
     public String getColor() {
-        return RestUtils.getColorAndSetDefaultIfNotExisting(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_COLOR, this.otherAttributes, this.res);
+        return RestUtils.getColor(this.getId().getParent().getXmlId().getDecoded(), QNames.QNAME_COLOR, this.otherAttributes, this.res);
     }
 
     public String getHoverColor() {
