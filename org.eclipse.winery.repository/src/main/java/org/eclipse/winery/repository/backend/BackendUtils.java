@@ -1257,6 +1257,9 @@ public class BackendUtils {
     }
 
     public static void mergeServiceTemplateAinServiceTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB) throws IOException {
+        Objects.requireNonNull(serviceTemplateIdA);
+        Objects.requireNonNull(serviceTemplateIdB);
+
         IRepository repository = RepositoryFactory.getRepository();
         TTopologyTemplate topologyTemplateA = repository.getElement(serviceTemplateIdA).getTopologyTemplate();
         TServiceTemplate serviceTemplateB = repository.getElement(serviceTemplateIdB);
