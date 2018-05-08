@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+/********************************************************************************
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,8 +10,9 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
-import {ServiceTemplateTemplateTypes, ToscaTypes} from '../wineryInterfaces/enums';
+ ********************************************************************************/
+import { ServiceTemplateTemplateTypes, ToscaTypes } from '../wineryInterfaces/enums';
+import { isNullOrUndefined } from 'util';
 
 export class Utils {
 
@@ -70,6 +71,8 @@ export class Utils {
             case ToscaTypes.Imports:
             case ToscaTypes.Imports.toString().slice(0, -1):
                 return ToscaTypes.Imports;
+            case ToscaTypes.ComplianceRule:
+                return ToscaTypes.ComplianceRule;
             default:
                 return ToscaTypes.Admin;
         }
@@ -114,6 +117,9 @@ export class Utils {
                 break;
             case ToscaTypes.Imports:
                 type = 'XSD Import';
+                break;
+            case ToscaTypes.ComplianceRule:
+                type = 'Constraint Rule';
                 break;
             default:
                 type = 'Admin';
@@ -211,6 +217,15 @@ export class Utils {
             namespace: qname.substr(1, i - 1),
             localName: qname.substr(i + 1)
         };
+    }
+
+    public static getNameWithoutVersion(name: string): string {
+        const res = name.match(/_([^_]*)-w([0-9]+)(-wip([0-9]+))?$/);
+        if (isNullOrUndefined(res)) {
+            return name;
+        } else {
+            return name.substr(0, res.index);
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -13,6 +13,12 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div>
     <a [href]="editorUrl" target="_blank" class="btn btn-primary">Open Editor</a>
+    <button [disabled]="!(sharedData?.versions?.length > 1)" class="btn btn-info" (click)="compareToModal.show()">
+        Compare to...
+    </button>
+    <div style="float: right">
+        <a [href]="oldEditorUrl" target="_blank" class="btn btn-light">Open Old Editor</a>
+    </div>
 </div>
 <div>
     <p class="help-block">
@@ -20,3 +26,20 @@
         Please open the editor.
     </p>
 </div>
+
+<winery-modal bsModal #compareToModal="bs-modal" [modalRef]="compareToModal">
+    <winery-modal-header [title]="'Compare version'"></winery-modal-header>
+    <winery-modal-body>
+        <h4>Select the version you want to compare with the current</h4>
+        <div *ngFor="let version of sharedData.versions">
+            <div *ngIf="!version.currentVersion">
+                <input name="versionList" type="radio" (click)="versionSelected(version)"
+                       id="{{ version.toReadableString() }}">
+                <label for="{{ version.toReadableString() }}">{{ version.toReadableString() }}</label>
+                <br>
+            </div>
+        </div>
+    </winery-modal-body>
+    <winery-modal-footer [okButtonLabel]="'Compare'" [disableOkButton]="!selectedVersion" (onOk)="onCompare()">
+    </winery-modal-footer>
+</winery-modal>

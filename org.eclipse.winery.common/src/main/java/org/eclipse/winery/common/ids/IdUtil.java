@@ -93,7 +93,7 @@ public class IdUtil {
      * Returns the fragment of the URL path belonging to the id
      * <p>
      * For instance, an Id of type ServiceTemplateId has
-     * <code>servicetemplates/{double encoded ns}/{double encoded name}/</encode>
+     * <code>servicetemplates/{double encoded ns}/{double encoded name}/</code>
      *
      * @param id the element to return the path fragment for
      * @return the path fragment to be used inside an URL

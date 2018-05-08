@@ -11,19 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {SectionResolverData} from '../wineryInterfaces/resolverData';
-import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
-import {SectionService} from './section.service';
-import {SectionData} from './sectionData';
-import {backendBaseURL} from '../configuration';
-import {ModalDirective} from 'ngx-bootstrap';
-import {Response} from '@angular/http';
-import {ToscaTypes} from '../wineryInterfaces/enums';
-import {WineryUploaderComponent} from '../wineryUploader/wineryUploader.component';
-import {WineryAddComponent} from '../wineryAddComponentModule/addComponent.component';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { SectionResolverData } from '../wineryInterfaces/resolverData';
+import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { SectionService } from './section.service';
+import { SectionData } from './sectionData';
+import { backendBaseURL } from '../configuration';
+import { ModalDirective } from 'ngx-bootstrap';
+import { ToscaTypes } from '../wineryInterfaces/enums';
+import { WineryUploaderComponent } from '../wineryUploader/wineryUploader.component';
+import { WineryAddComponent } from '../wineryAddComponentModule/addComponent.component';
+import { isNullOrUndefined } from 'util';
+import { Utils } from '../wineryUtils/utils';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const showAll = 'Show all Items';
 const showGrouped = 'Group by Namespace';
@@ -50,6 +52,7 @@ export class SectionComponent implements OnInit, OnDestroy {
     showNamespace = 'all';
     changeViewButtonTitle = showGrouped;
     componentData: SectionData[];
+    allElements: SectionData[];
     elementToRemove: SectionData;
     overwriteValue = false;
 
@@ -111,10 +114,13 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     getSectionsData() {
+        this.loading = true;
         let url = '/' + this.toscaType;
+
         if (this.toscaType === ToscaTypes.Imports) {
             url += '/' + encodeURIComponent(encodeURIComponent(this.importXsdSchemaType));
         }
+
         this.service.getSectionData(url)
             .subscribe(
                 res => this.handleData(res),
@@ -126,14 +132,10 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.currentPage = page;
     }
 
-    onRemoveElement() {
-    }
-
     overwriteValueChanged() {
-
         this.fileUploader.getUploader().setOptions({
             url: this.fileUploadUrl,
-            additionalParameter: {'overwrite': this.overwriteValue}
+            additionalParameter: { 'overwrite': this.overwriteValue }
         });
     }
 
@@ -156,7 +158,51 @@ export class SectionComponent implements OnInit, OnDestroy {
     }
 
     private handleData(resources: SectionData[]) {
-        this.componentData = resources;
+        this.allElements = resources;
+        this.componentData = [];
+
+        resources.forEach(item => {
+            const container = new SectionData();
+            container.createContainerCopy(item);
+
+            if (this.componentData.length === 0) {
+                this.componentData.push(container);
+                return;
+            }
+
+            // works because the elements are ordered, and find() or some() would be taking much more time here
+            const lastIndex = this.componentData.length - 1;
+            const lastElement = this.componentData[lastIndex];
+
+            if (lastElement.namespace === item.namespace
+                && Utils.getNameWithoutVersion(lastElement.id) === container.id) {
+
+                const index = lastElement.versionInstances.length - 1;
+                const last = lastElement.versionInstances[index];
+
+                if (last.version.componentVersion === container.version.componentVersion &&
+                    last.version.wineryVersion === container.version.wineryVersion) {
+                    if (isNullOrUndefined(last.versionInstances)) {
+                        const copy = (new SectionData()).createCopy(last);
+                        last.hasChildren = true;
+                        const wip = last.id.match(/(-wip[0-9]*$)/);
+                        if (!isNullOrUndefined(wip)) {
+                            last.id = last.id.substr(0, wip.index);
+                            last.name = last.name.substr(0, wip.index);
+                        }
+                        last.versionInstances = [copy, item];
+                    } else {
+                        last.versionInstances.push(item);
+                    }
+                } else {
+                    lastElement.versionInstances.push(item);
+                }
+
+                lastElement.hasChildren = true;
+            } else {
+                this.componentData.push(container);
+            }
+        });
 
         if (!this.showSpecificNamespaceOnly() && (this.componentData.length > 50)) {
             this.showNamespace = 'group';
@@ -173,9 +219,8 @@ export class SectionComponent implements OnInit, OnDestroy {
         this.loading = false;
     }
 
-    private handleError(error: Response): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.notify.error(error.toString());
+        this.notify.error(error.message);
     }
-
 }

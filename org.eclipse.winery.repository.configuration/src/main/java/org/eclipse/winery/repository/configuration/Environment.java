@@ -28,6 +28,7 @@ import java.util.Optional;
 
 public class Environment {
 
+    static final String KEY_URL_REPOSITORY_UI = "repositoryui";
     static final String KEY_URL_TOPOLOGY_MODELER = "topologymodeler";
     static final String KEY_URL_BPMN4TOSCA_MODELER = "bpmn4toscamodelerBaseURI";
 

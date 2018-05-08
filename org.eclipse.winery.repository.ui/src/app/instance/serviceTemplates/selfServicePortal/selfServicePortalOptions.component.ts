@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,7 @@
  *******************************************************************************/
 import {Component} from '@angular/core';
 import {ApplicationOption} from './selfServicePortal.service';
+import {InstanceService} from '../../instance.service';
 
 @Component({
     selector: 'winery-self-service-portal-options',
@@ -26,6 +27,9 @@ export class SelfServicePortalOptionsComponent {
         {title: 'Icon', name: 'icon'},
         {title: 'Plan Service Name', name: 'planServiceName'}
     ];
+
+    constructor(public sharedData: InstanceService) {
+    }
 
     onRemoveClick(event: any) {
     }

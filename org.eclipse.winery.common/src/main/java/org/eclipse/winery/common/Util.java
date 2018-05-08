@@ -1,4 +1,4 @@
-/*******************************************************************************
+/********************************************************************************
  * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -10,27 +10,25 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
+ ********************************************************************************/
+
 package org.eclipse.winery.common;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.taglibs.standard.functions.Functions;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.IdUtil;
-import org.eclipse.winery.common.ids.admin.AdminId;
-import org.eclipse.winery.common.ids.definitions.*;
-import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
-import org.eclipse.winery.common.ids.definitions.imports.WsdlImportId;
-import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
-import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.TEntityType;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
+import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Objects;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -40,19 +38,42 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.namespace.QName;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayOutputStream;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.IdUtil;
+import org.eclipse.winery.common.ids.admin.AdminId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.imports.GenericImportId;
+import org.eclipse.winery.common.ids.definitions.imports.WsdlImportId;
+import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
+import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.taglibs.standard.functions.Functions;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 public class Util {
 
@@ -104,7 +125,7 @@ public class Util {
     /**
      * Encodes the namespace and the localname of the given qname, separated by "/"
      *
-     * @return <double encoded namespace>"/"<double encoded localname>
+     * @return &lt;double encoded namespace&gt;"/"&lt;double encoded localname&gt;
      */
     public static String DoubleURLencode(QName qname) {
         String ns = Util.DoubleURLencode(qname.getNamespaceURI());
@@ -125,7 +146,7 @@ public class Util {
     }
 
     /**
-     * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(org.eclipse.winery.common.ids.GenericId)
+     * Do <em>not</em> use this for creating URLs. Use {@link Util#getUrlPath(org.eclipse.winery.common.ids.GenericId)}
      * instead.
      *
      * @return the path starting from the root element to the current element. Separated by "/", URLencoded, but
@@ -302,8 +323,8 @@ public class Util {
     /**
      * Just calls @link{qname2href}
      * <p>
-     * Introduced because of JSP error "The method qname2href(String, Class<? extends TExtensibleElements>, QName) in
-     * the type Util is not applicable for the arguments (String, Class<TNodeType>, QName, String)"
+     * Introduced because of JSP error "The method qname2href(String, Class&lt;? extends TExtensibleElements&gt;, QName) in
+     * the type Util is not applicable for the arguments (String, Class&lt;TNodeType&gt;, QName, String)"
      */
     public static String qname2hrefWithName(String repositoryUiUrl, Class<? extends TExtensibleElements> element, QName qname, String name) {
         return Util.qname2href(repositoryUiUrl, element, qname, name);
@@ -429,8 +450,7 @@ public class Util {
     }
 
     /**
-     * Method similar to {@link org.eclipse.winery.repository.Utils#getXMLAsString(java.lang.Class, java.lang.Object,
-     * boolean)}.
+     * Method similar to @see org.eclipse.winery.repository.Utils#getXMLAsString(java.lang.Class, java.lang.Object, boolean)}.
      * <p>
      * Differences: <ul> <li>XML processing instruction is not included in the header</li> <li>JAXBcontext is created at
      * each call</li> </ul>
@@ -490,8 +510,7 @@ public class Util {
      * Determines whether the instance belonging to the given id supports the "name" attribute. This cannot be done
      * using the super class as the TOSCA specification treats that differently in the case of EntityTemplates
      * <p>
-     * NOTE: The respective subclasses of AbstractComponentInstanceResource have to implement {@link
-     * org.eclipse.winery.repository.resources.IHasName}
+     * NOTE: The respective subclasses of AbstractComponentInstanceResource have to implement @see org.eclipse.winery.repository.resources.IHasName
      *
      * @param idClass the class of the to test
      * @return true if the TOSCA model class belonging to the given id supports the method "getName()" in addition to
@@ -499,6 +518,8 @@ public class Util {
      */
     public static boolean instanceSupportsNameAttribute(Class<? extends DefinitionsChildId> idClass) {
         if (ServiceTemplateId.class.isAssignableFrom(idClass)) {
+            return true;
+        } else if (ComplianceRuleId.class.isAssignableFrom(idClass)) {
             return true;
         } else if ((EntityTypeId.class.isAssignableFrom(idClass)) || (EntityTypeImplementationId.class.isAssignableFrom(idClass))) {
             // name is available, but no id attribute
@@ -534,7 +555,7 @@ public class Util {
     }
 
     /**
-     * @see {@link Util#makeCSSName(java.lang.String, java.lang.String)}
+     * See also {@link Util#makeCSSName(java.lang.String, java.lang.String)}
      */
     public static String makeCSSName(QName qname) {
         return Util.makeCSSName(qname.getNamespaceURI(), qname.getLocalPart());
@@ -596,7 +617,7 @@ public class Util {
      * <p>
      * This function should be consistent with org.eclipse.winery.common.Util.cleanName(String)
      * <p>
-     * TODO: This method seems to be equal to {@link org.eclipse.winery.repository.Utils.createXMLidAsString(String)}.
+     * TODO: This method seems to be equal to org.eclipse.winery.repository.Utils.createXMLidAsString(String).
      * These methods should be merged.
      */
     public static String makeNCName(String text) {

@@ -53,6 +53,7 @@
 <%@tag import="java.util.Collections" %>
 <%@tag import="java.util.List" %>
 <%@tag import="java.util.UUID" %>
+<%@ tag import="java.util.Objects" %>
 
 <%@taglib prefix="nt" tagdir="/WEB-INF/tags/common/templates/nodetemplates" %>
 <%@taglib prefix="ntrq" tagdir="/WEB-INF/tags/common/templates/nodetemplates/reqscaps" %>
@@ -67,8 +68,8 @@
         // we are in palette mode
         // --> we render a template to be inserted in the drawing area by drag'n'drop
         paletteMode = true;
-        assert(nodeType != null);
-        assert(nodeTypeQName != null);
+        Objects.requireNonNull (nodeType);
+        Objects.requireNonNull (nodeTypeQName);
 
         // these values are only pseudo values, they get all overwritten in drop function of palette.jsp
         visualElementId = UUID.randomUUID().toString();

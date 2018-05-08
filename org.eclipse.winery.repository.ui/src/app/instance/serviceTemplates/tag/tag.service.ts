@@ -12,39 +12,41 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {TagsAPIData} from './tagsAPIData';
-import {backendBaseURL} from '../../../configuration';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { TagsAPIData } from './tagsAPIData';
+import { backendBaseURL } from '../../../configuration';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class TagService {
     private path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
         this.path = backendBaseURL + this.route.url + '/';
     }
 
     getTagsData(): Observable<TagsAPIData[]> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(this.path, options)
-            .map(res => res.json());
+        return this.http.get<TagsAPIData[]>(this.path);
     }
 
-    removeTagData(data: TagsAPIData): Observable<Response> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.delete(this.path + '/' + data.id + '/', options);
+    removeTagData(data: TagsAPIData): Observable<HttpResponse<string>> {
+        return this.http
+            .delete(
+                this.path + '/' + data.id + '/',
+                { observe: 'response', responseType: 'text' }
+            );
     }
 
     postTag(tagsApiData: TagsAPIData): Observable<string> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.post(this.path, JSON.stringify(tagsApiData), options)
-            .map(res => res.text());
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http
+            .post(
+                this.path,
+                tagsApiData,
+                { responseType: 'text' }
+            );
     }
 }

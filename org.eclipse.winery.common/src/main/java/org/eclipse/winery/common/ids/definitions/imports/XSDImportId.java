@@ -21,7 +21,7 @@ import javax.xml.XMLConstants;
 /**
  * Models an import of type XML Schema Definition
  * <p>
- * Required for a special treatment in {@link org.eclipse.winery.repository.Utils#getAllXSDefinitionsForTypeAheadSelection(short)}
+ * Required for a special treatment in @see org.eclipse.winery.repository.Utils#getAllXSDefinitionsForTypeAheadSelection(short)
  */
 public class XSDImportId extends GenericImportId {
 

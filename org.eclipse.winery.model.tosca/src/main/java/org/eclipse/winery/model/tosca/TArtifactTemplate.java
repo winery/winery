@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -183,6 +183,19 @@ public class TArtifactTemplate
                 artifactReference = new ArrayList<TArtifactReference>();
             }
             return this.artifactReference;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ArtifactReferences that = (ArtifactReferences) o;
+            return Objects.equals(artifactReference, that.artifactReference);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(artifactReference);
         }
     }
 

@@ -22,8 +22,10 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0015](0015-copy-source-to-files.md) - Offer copying files from the source to the files folder
 - [ADR-0016](0016-reflection-test-for-tosca-yaml-builder.md) - Reflection test for TOSCA YAML builder
 - [ADR-0017](0017-modify-jax-b-generated-classes.md) - Modify JAX-B generated classes
+- [ADR-0018](0018-version-identifier.md) - Version Identifiers in TOSCA
+- [ADR-0019](0019-version-in-the-name.md) - Version Identifier in the Name
 
 <!-- adrlogstop -->
 
-[template.md](template) contains the template.
+[template.md](template.md) contains the template.
 More information on MADR is available at <https://adr.github.io/madr/>.

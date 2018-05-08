@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -80,7 +80,7 @@ import java.util.Objects;
     "plan"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TExportedOperation {
+public class TExportedOperation implements HasName {
 
     @XmlElement(name = "NodeOperation")
     protected TExportedOperation.NodeOperation nodeOperation;
@@ -172,6 +172,7 @@ public class TExportedOperation {
      * @return possible object is {@link String }
      */
     @NonNull
+    @Override
     public String getName() {
         return name;
     }
@@ -181,6 +182,7 @@ public class TExportedOperation {
      *
      * @param value allowed object is {@link String }
      */
+    @Override
     public void setName(String value) {
         this.name = value;
     }

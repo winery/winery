@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -19,6 +19,10 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TTopologyElementInstanceStates;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.configuration.FileBasedRepositoryConfiguration;
@@ -36,7 +40,7 @@ import java.nio.file.Paths;
  */
 public abstract class TestWithGitBackedRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestWithGitBackedRepository.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(TestWithGitBackedRepository.class);
 
     public final IRepository repository;
 
@@ -93,5 +97,16 @@ public abstract class TestWithGitBackedRepository {
             .setMode(ResetCommand.ResetType.HARD)
             .setRef(ref)
             .call();
+    }
+
+    protected void makeSomeChanges(NodeTypeId id) throws Exception {
+        IRepository repo = RepositoryFactory.getRepository();
+        TNodeType element = repo.getElement(id);
+        TTopologyElementInstanceStates states = new TTopologyElementInstanceStates();
+        TTopologyElementInstanceStates.InstanceState instanceState = new TTopologyElementInstanceStates.InstanceState();
+        instanceState.setState("mySuperExtraStateWhichNobodyWouldHaveGuessed");
+        states.getInstanceState().add(instanceState);
+        element.setInstanceStates(states);
+        BackendUtils.persist(id, element);
     }
 }

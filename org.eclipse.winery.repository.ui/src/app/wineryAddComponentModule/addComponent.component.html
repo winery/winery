@@ -1,58 +1,118 @@
-<!--
-/********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
- * which is available at https://www.apache.org/licenses/LICENSE-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
--->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <winery-modal bsModal #addModal="bs-modal" [modalRef]="addModal">
-    <winery-modal-header [title]="'Add new ' + addModalType"></winery-modal-header>
+    <winery-modal-header [title]="'Add a new ' + addModalType"></winery-modal-header>
     <winery-modal-body>
         <form #addComponentForm="ngForm">
             <div *ngIf="!loading; else showLoader">
-                <div class="form-group">
-                    <label for="componentName" class="control-label">Name</label>
-                    <input type="text"
-                           class="form-control"
-                           id="componentName"
-                           name="componentName"
-                           #newName="ngModel"
-                           [(ngModel)]="newComponentName"
-                           required
-                           [wineryDuplicateValidator]="validatorObject">
-                    <div *ngIf="newName.errors && (newName.dirty || newName.touched)"
-                         class="alert alert-danger">
-                        <div [hidden]="!newName.errors.wineryDuplicateValidator">
-                            No duplicates allowed!
+                <div *ngIf="!validation?.noTypeAvailable; else showNoTypeAvailable">
+                    <div class="form-group">
+                        <label for="componentName" class="control-label">Name</label>
+                        <input type="text"
+                               class="form-control"
+                               id="componentName"
+                               name="componentName"
+                               #newName="ngModel"
+                               [(ngModel)]="newComponentName"
+                               required
+                               [wineryDuplicateValidator]="validatorObject">
+                        <div *ngIf="(newName.errors || validation?.noDuplicatesAllowed)
+                                && (newName.dirty || newName.touched)"
+                             class="alert alert-danger">
+                            <div [hidden]="!validation?.noDuplicatesAllowed">
+                                No duplicates allowed!
+                            </div>
+                            <div [hidden]="!newName?.errors?.required">
+                                Name is required!
+                            </div>
                         </div>
-                        <div [hidden]="!newName.errors.required">
-                            Name is required!
+                        <div *ngIf="validation?.differentNamespaceDuplicateWarning
+                                    || validation?.differentCaseDuplicateWarning"
+                             class="alert alert-warning">
+                            <div [hidden]="!validation.differentCaseDuplicateWarning">
+                                There is a duplicate with a different case!
+                            </div>
+                            <div [hidden]="!validation.differentNamespaceDuplicateWarning">
+                                There is a duplicate in another namespace!
+                            </div>
                         </div>
+                        <br>
+                        <label for="newComponentVersion">
+                            Component version
+                        </label>
+                        <i class="fa fa-question-circle" tooltip="click me" (click)="showHelp()"></i>
+                        <input type="text"
+                               id="newComponentVersion"
+                               name="newComponentVersion"
+                               class="form-control"
+                               #newVersion="ngModel"
+                               [wineryDuplicateValidator]="validatorObject"
+                               [(ngModel)]="newComponentVersion.componentVersion">
+                        <div *ngIf="(newName.dirty || newName.touched) && validation?.noVersionProvidedWarning"
+                             class="alert alert-warning">
+                            <div>
+                                You haven't provided a version!
+                            </div>
+                        </div>
+                        <p *ngIf="!hideHelp" class="help-block">
+                            The <b>component version</b> specifies the components' external version defined by the creator of the software
+                            (e.g., Apache Tomcat 8.5.1 has a component version <code>8.5.1</code>). Winery adds management to the software
+                            which is versioned independently of the softwares' version. The version inside Winery is called <b>management
+                            version</b> and is mandatory. It consists of a <b>winery version</b> and a <b>work in progress (wip)</b>
+                            version. Upon the creation of a new component, both management versions are set automatically with their initial
+                            values of 1. The generated name is displayed in the 'Final name' field (e.g., the final id for Apache Tomcat
+                            8.5.1 is <code>Tomcat_8.5.1-w1-wip1</code>).<br><br>
+                            When developing a TOSCA definition, a the wip version is appended until the TOSCA definition is stable. To test
+                            a TOSCA definition, the wip version can be committed. After a version was committed, a new version must be added
+                            to apply further changes. Thus, a new wip version must be added (e.g., <code>Tomcat_8.5.1-w1-wip1</code>
+                            followed by <code>Tomcat_8.5.1-w1-wip2</code> released as <code>Tomcat_8.5.1-w1</code> must be followed by
+                            <code>Tomcat_8.5.1-w2-wip1</code> to enable changes). Thereby, different component versions do not affect each
+                            other (e.g., <code>Tomcat_8.5.1-w2-wip1</code> can be created while <code>Tomcat_9.0.1-w3</code> exists).
+                        </p>
+                        <div *ngIf="(validation?.noUnderscoresAllowed)
+                                    && (newVersion.dirty || newVersion.touched)"
+                             class="alert alert-danger">
+                            <div [hidden]="!validation?.noUnderscoresAllowed">
+                                Underscores are not allowed in the version!<br>Please replace them with dashes.
+                            </div>
+                        </div>
+                        <br>
+                        <label for="finalName">Final name</label>
+                        <code class="form-control" id="finalName">{{ newComponentFinalName }}</code>
                     </div>
+                    <div class="form-group" *ngIf="types">
+                        <label for="typeSelect" class="control-label">Type</label>
+                        <ng-select id="typeSelect" [items]="types" (selected)="typeSelected($event)"
+                                   [active]="[newComponentSelectedType]"></ng-select>
+                    </div>
+                    <br>
+                    <!-- pattern parameter is required to enable form validation -->
+                    <winery-namespace-selector #namespaceInput
+                                               name="namespace"
+                                               required
+                                               pattern="^\S*$"
+                                               [(ngModel)]="newComponentNamespace"
+                                               [isRequired]="true"
+                                               [useStartNamespace]="useStartNamespace"
+                                               [toscaType]="toscaType">
+                    </winery-namespace-selector>
                 </div>
-                <!-- pattern parameter is required to enable form validation -->
-                <winery-namespace-selector #namespaceInput
-                                           name="namespace"
-                                           required
-                                           pattern="^\S*$"
-                                           [(ngModel)]="newComponentNamespace"
-                                           [isRequired]="true"
-                                           [useStartNamespace]="useStartNamespace"
-                                           [toscaType]="toscaType">
-                </winery-namespace-selector>
-                <div class="form-group" *ngIf="types">
-                    <label for="typeSelect" class="control-label">Type</label>
-                    <ng-select id="typeSelect" [items]="types" (selected)="typeSelected($event)"
-                               [active]="[newComponentSelectedType]"></ng-select>
-                </div>
+                <ng-template #showNoTypeAvailable>
+                    <alert [type]="'danger'">
+                        There are no types available. Please add a type first!
+                    </alert>
+                </ng-template>
             </div>
             <ng-template #showLoader>
                 <winery-loader></winery-loader>
@@ -63,6 +123,6 @@
         (onOk)="addComponent()"
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Add'"
-        [disableOkButton]="!addComponentForm?.valid">
+        [disableOkButton]="!addComponentForm?.valid || validation?.noTypeAvailable">
     </winery-modal-footer>
 </winery-modal>

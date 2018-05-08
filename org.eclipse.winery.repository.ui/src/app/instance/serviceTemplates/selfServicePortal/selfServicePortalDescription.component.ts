@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,10 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit} from '@angular/core';
-import {SelfServiceApiData, SelfServicePortalService} from './selfServicePortal.service';
-import {isNullOrUndefined} from 'util';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
+import { Component, OnInit } from '@angular/core';
+import { SelfServiceApiData, SelfServicePortalService } from './selfServicePortal.service';
+import { isNullOrUndefined } from 'util';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-self-service-portal-description',
@@ -26,7 +28,8 @@ export class SelfServiceDescriptionComponent implements OnInit {
     loading = true;
 
     constructor(private service: SelfServicePortalService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                public sharedData: InstanceService) {
 
     }
 
@@ -52,10 +55,10 @@ export class SelfServiceDescriptionComponent implements OnInit {
                 this.handleSuccess('Saved name');
                 this.service.saveDescription(this.data.description).subscribe(
                     () => this.handleSuccess('Saved description'),
-                    error => this.handleError(error.toString())
+                    error => this.handleError(error)
                 );
             },
-            error => this.handleError(error.toString())
+            error => this.handleError(error)
         );
     }
 
@@ -70,8 +73,8 @@ export class SelfServiceDescriptionComponent implements OnInit {
         this.notify.success(message);
     }
 
-    handleError(error: Error) {
-        this.notify.error(error.toString());
+    handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message);
     }
 
 }

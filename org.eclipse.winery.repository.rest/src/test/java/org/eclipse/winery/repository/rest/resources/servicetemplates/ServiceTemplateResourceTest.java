@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -74,7 +74,7 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
 
     @Test
     public void getInjectorOptionsWithoutOpenRequirementsBadRequest() throws Exception {
-        this.setRevisionTo("black");
+        this.setRevisionTo("origin/black");
         //this.assertGetExpectBadRequestResponse("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options", "servicetemplates/pony.json");
         this.assertGetExpectBadRequestResponse("servicetemplates/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Fservicetemplates%252Ffruits/baobab_serviceTemplate/injector/options", "servicetemplates/ServiceTemplateResource-getInjectorOptionsWithoutOpenRequirements-badrequest.txt");
     }
@@ -107,5 +107,22 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
     public void checkJsonOfServiceTemplateMinimalExampleWithAllPropertyVariants() throws Exception {
         this.setRevisionTo("origin/plain");
         this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateMinimalExampleWithAllPropertyVariants", "servicetemplates/plain-ServiceTemplateMinimalExampleWithAllPropertyVariants.json");
+    }
+
+    @Test
+    public void createNewVersion() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertPost("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithAllReqCapVariants/",
+            "servicetemplates/addNewVersion.json");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithAllReqCapVariants_-w1-wip1/",
+            "servicetemplates/newVersion.json");
+    }
+
+    @Test
+    public void getVersionDifferences() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithTwoNodeTemplates_-w1-wip2/" +
+                "?compareTo=ServiceTemplateWithTwoNodeTemplates_-w1-wip1",
+            "servicetemplates/difference.json");
     }
 }

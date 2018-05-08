@@ -11,11 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FilesApiData, FilesService} from './files.service.';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {backendBaseURL, hostURL} from '../../../configuration';
-import {InstanceService} from '../../instance.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FilesApiData, FilesService } from './files.service.';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { backendBaseURL, hostURL } from '../../../configuration';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'files.component.html',
@@ -37,7 +38,7 @@ export class FilesComponent implements OnInit {
     @ViewChild('removeElementModal') removeElementModal: any;
     fileToRemove: FilesApiData;
 
-    constructor(private service: FilesService, private sharedData: InstanceService, private notify: WineryNotificationService) {
+    constructor(private service: FilesService, public sharedData: InstanceService, private notify: WineryNotificationService) {
         this.filesPath = backendBaseURL + this.sharedData.path + '/files/zip';
     }
 
@@ -82,8 +83,8 @@ export class FilesComponent implements OnInit {
         this.loadFiles();
     }
 
-    private handleError(error: any) {
+    private handleError(error: HttpErrorResponse) {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 }

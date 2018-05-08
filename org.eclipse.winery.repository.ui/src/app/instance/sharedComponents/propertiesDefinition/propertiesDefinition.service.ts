@@ -11,18 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../../configuration';
-import {PropertiesDefinitionsResourceApiData} from './propertiesDefinitionsResourceApiData';
-import {SelectData} from '../../../wineryInterfaces/selectData';
+import { Injectable } from '@angular/core';
+import { Response } from '@angular/http';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../configuration';
+import { PropertiesDefinitionsResourceApiData } from './propertiesDefinitionsResourceApiData';
+import { SelectData } from '../../../wineryInterfaces/selectData';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class PropertiesDefinitionService {
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
     }
 
@@ -31,11 +32,12 @@ export class PropertiesDefinitionService {
      *
      * @returns {Observable<Response>}
      */
-    deletePropertiesDefinitions(): Observable<Response> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.delete(backendBaseURL + this.route.url + '/', options);
+    deletePropertiesDefinitions(): Observable<HttpResponse<string>> {
+        return this.http
+            .delete(
+                backendBaseURL + this.route.url + '/',
+                { observe: 'response', responseType: 'text' }
+            );
     }
 
     /**
@@ -44,28 +46,32 @@ export class PropertiesDefinitionService {
      * @returns {Observable<PropertiesDefinitionsResourceApiData>}
      */
     getPropertiesDefinitionsData(): Observable<PropertiesDefinitionsResourceApiData> {
-        return this.sendJsonRequest('/');
+        return this.sendJsonRequest<PropertiesDefinitionsResourceApiData>('/');
     }
 
     /**
      * Gets the items for the select box for the XML Element.
      */
     getXsdElementDefinitions(): Observable<SelectData[]> {
-        return this.sendJsonRequest('/element');
+        return this.sendJsonRequest<SelectData[]>('/element');
     }
 
     /**
      * Gets the items for the select box for the XML Type.
      */
     getXsdTypeDefinitions(): Observable<SelectData[]> {
-        return this.sendJsonRequest('/type');
+        return this.sendJsonRequest<SelectData[]>('/type');
     }
 
-    postPropertiesDefinitions(resourceApiData: PropertiesDefinitionsResourceApiData): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+    postPropertiesDefinitions(resourceApiData: PropertiesDefinitionsResourceApiData): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-        return this.http.post(backendBaseURL + this.route.url + '/', JSON.stringify(resourceApiData), options);
+        return this.http
+            .post(
+                backendBaseURL + this.route.url + '/',
+                resourceApiData,
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 
     /**
@@ -75,11 +81,7 @@ export class PropertiesDefinitionService {
      * @param requestPath string The path which is specific for each request.
      * @returns {Observable<any>}
      */
-    private sendJsonRequest(requestPath: string): Observable<any> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.get(backendBaseURL + this.route.url + requestPath, options)
-            .map(res => res.json());
+    private sendJsonRequest<T>(requestPath: string): Observable<T> {
+        return this.http.get<T>(backendBaseURL + this.route.url + requestPath);
     }
 }

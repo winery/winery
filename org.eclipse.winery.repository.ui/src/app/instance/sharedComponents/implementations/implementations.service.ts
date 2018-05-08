@@ -11,46 +11,51 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../../configuration';
-import {ImplementationAPIData} from './implementationAPIData';
-import {ImplementationWithTypeAPIData} from './implementationWithTypeAPIData';
-import {InstanceService} from '../../instance.service';
-import {Utils} from '../../../wineryUtils/utils';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../configuration';
+import { ImplementationAPIData } from './implementationAPIData';
+import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
+import { InstanceService } from '../../instance.service';
+import { Utils } from '../../../wineryUtils/utils';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class ImplementationService {
 
-    private implementationOrTemplateType: string;
+    private readonly implementationOrTemplateType: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router, private sharedData: InstanceService) {
         this.implementationOrTemplateType = '/' + Utils.getImplementationOrTemplateOfType(this.sharedData.toscaComponent.toscaType) + '/';
     }
 
     getImplementationData(): Observable<ImplementationAPIData[]> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.route.url + '/', options)
-            .map(res => res.json());
+        return this.http
+            .get<ImplementationAPIData[]>(
+                backendBaseURL + this.route.url + '/'
+            );
     }
 
-    postImplementation(implApiData: ImplementationWithTypeAPIData): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.post(backendBaseURL + this.implementationOrTemplateType, JSON.stringify(implApiData), options);
+    postImplementation(implApiData: ImplementationWithTypeAPIData): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http
+            .post(
+                backendBaseURL + this.implementationOrTemplateType,
+                JSON.stringify(implApiData),
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 
-    deleteImplementations(implToDelete: ImplementationAPIData) {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+    deleteImplementations(implToDelete: ImplementationAPIData): Observable<HttpResponse<string>> {
         const pathAddition = this.implementationOrTemplateType
             + encodeURIComponent(encodeURIComponent(implToDelete.namespace)) + '/'
             + implToDelete.localname + '/';
-        return this.http.delete(backendBaseURL + pathAddition, options);
+        return this.http
+            .delete(
+                backendBaseURL + pathAddition,
+                { observe: 'response', responseType: 'text' }
+            );
     }
 }

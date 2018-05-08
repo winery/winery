@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,7 +22,7 @@ import javax.ws.rs.PathParam;
 @Api(tags = "Relationship Type Implementations")
 public class RelationshipTypeImplementationsResource extends AbstractComponentsWithTypeReferenceResource<RelationshipTypeImplementationResource> {
     @Path("{namespace}/{id}/")
-    public RelationshipTypeImplementationResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-        return this.getComponentInstaceResource(namespace, id, true);
+    public RelationshipTypeImplementationResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstanceResource(namespace, id, true);
     }
 }

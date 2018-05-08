@@ -12,20 +12,20 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {BrowserModule} from '@angular/platform-browser';
-import {RouterModule} from '@angular/router';
-import {ModalModule, TabsModule, TypeaheadModule} from 'ngx-bootstrap';
-import {SelectModule} from 'ng2-select';
-import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
-import {WineryNamespaceSelectorModule} from '../../../wineryNamespaceSelector/wineryNamespaceSelector.module';
-import {WineryDuplicateValidatorModule} from '../../../wineryValidators/wineryDuplicateValidator.module';
-import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
-import {WineryTableModule} from '../../../wineryTableModule/wineryTable.module';
-import {ImplementationsComponent} from './implementations.component';
-import {WineryPipesModule} from '../../../wineryPipes/wineryPipes.module';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { ModalModule, TabsModule, TypeaheadModule } from 'ngx-bootstrap';
+import { SelectModule } from 'ng2-select';
+import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
+import { WineryNamespaceSelectorModule } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.module';
+import { WineryDuplicateValidatorModule } from '../../../wineryValidators/wineryDuplicateValidator.module';
+import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
+import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
+import { ImplementationsComponent } from './implementations.component';
+import { WineryPipesModule } from '../../../wineryPipes/wineryPipes.module';
 
 @NgModule({
     imports: [

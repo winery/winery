@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2013-2016 Contributors to the Eclipse Foundation
+/********************************************************************************
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,28 +10,57 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
+ ********************************************************************************/
+
 package org.eclipse.winery.common.interfaces;
 
-import org.eclipse.winery.common.ids.GenericId;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.*;
-import org.eclipse.winery.model.tosca.*;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.common.ids.GenericId;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
+import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
+import org.eclipse.winery.common.ids.definitions.ComplianceRuleId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
+import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
+import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
+import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.TArtifactTemplate;
+import org.eclipse.winery.model.tosca.TArtifactType;
+import org.eclipse.winery.model.tosca.TCapabilityType;
+import org.eclipse.winery.model.tosca.TComplianceRule;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
+import org.eclipse.winery.model.tosca.TPolicyTemplate;
+import org.eclipse.winery.model.tosca.TPolicyType;
+import org.eclipse.winery.model.tosca.TRelationshipType;
+import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
+import org.eclipse.winery.model.tosca.TRequirementType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+
+import org.slf4j.LoggerFactory;
+
 /**
  * Enables access to the winery repository via Ids defined in package {@link org.eclipse.winery.common.ids}
  * <p>
- * Methods are moved from {@link org.eclipse.winery.repository.backend.IGenericRepository} to here as soon there is an
+ * Methods are moved from @see org.eclipse.winery.repository.backend.IGenericRepository to here as soon there is an
  * implementation for them. The ultimate goal is to eliminate IGenericRepository
  * <p>
- * These methods are shared between {@link IWineryRepository} and {@link org.eclipse.winery.repository.backend.IRepository}
+ * These methods are shared between {@link IWineryRepository} and @see org.eclipse.winery.repository.backend.IRepository
  */
 public interface IWineryRepositoryCommon {
 
@@ -91,6 +120,10 @@ public interface IWineryRepositoryCommon {
         return (TPolicyType) this.getDefinitions(id).getElement();
     }
 
+	default TComplianceRule getElement(ComplianceRuleId id) {
+		return (TComplianceRule) this.getDefinitions(id).getElement();
+	}
+
     /**
      * Deletes the TOSCA element <b>and all sub elements</b> referenced by the given id from the repository
      * <p>
@@ -104,7 +137,18 @@ public interface IWineryRepositoryCommon {
      * @param oldId the old id
      * @param newId the new id
      */
-    void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException;
+    default void rename(DefinitionsChildId oldId, DefinitionsChildId newId) throws IOException {
+        this.duplicate(oldId, newId);
+        this.forceDelete(oldId);
+    }
+
+    /**
+     * Copies a definition and renames it to the newId.
+     *
+     * @param from  the source id
+     * @param newId the destination id
+     */
+    void duplicate(DefinitionsChildId from, DefinitionsChildId newId) throws IOException;
 
     /**
      * Deletes all definition children nested in the given namespace

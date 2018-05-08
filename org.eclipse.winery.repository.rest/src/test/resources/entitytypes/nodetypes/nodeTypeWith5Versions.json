@@ -1,0 +1,47 @@
+[
+    {
+        "componentVersion": "0.3.4",
+        "wineryVersion": 3,
+        "workInProgressVersion": 0,
+        "currentVersion": true,
+        "latestVersion": true,
+        "releasable": false,
+        "editable": false
+    },
+    {
+        "componentVersion": "0.3.4",
+        "wineryVersion": 3,
+        "workInProgressVersion": 3,
+        "currentVersion": false,
+        "latestVersion": false,
+        "releasable": false,
+        "editable": false
+    },
+    {
+        "componentVersion": "0.3.4",
+        "wineryVersion": 3,
+        "workInProgressVersion": 1,
+        "currentVersion": false,
+        "latestVersion": false,
+        "releasable": false,
+        "editable": false
+    },
+    {
+        "componentVersion": "0.3.4",
+        "wineryVersion": 1,
+        "workInProgressVersion": 0,
+        "currentVersion": false,
+        "latestVersion": false,
+        "releasable": false,
+        "editable": false
+    },
+    {
+        "componentVersion": "0.3.0",
+        "wineryVersion": 2,
+        "workInProgressVersion": 0,
+        "currentVersion": false,
+        "latestVersion": false,
+        "releasable": false,
+        "editable": false
+    }
+]

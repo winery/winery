@@ -1,0 +1,69 @@
+<!doctype html>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Winery: Topologymodeler</title>
+    <base href="./">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+
+<!-- Enable bootstrap 4 theme -->
+<script>window.__theme = 'bs4';</script>
+<winery-topologymodeler></winery-topologymodeler>
+
+<div id="pre-bootstrap-container">
+    <script type="text/javascript">
+        // Listen for the "appready" event, which will be emitted by the application
+        // and bubble up (as far as we know) to the document root.
+        document.addEventListener('appready', handleAppReady);
+
+        // I handle the "appready" event and teardown the loading screen.
+        function handleAppReady(event) {
+            var preBootstrapContainer = document.getElementById("pre-bootstrap-container");
+            var preBootstrap = document.getElementById("pre-bootstrap");
+            // Add the class-name to initiate the transitions.
+            preBootstrap.className = "loaded";
+            // Remove the bootstrap container after the transition has
+            // completed (based on the known transition time).
+            setTimeout(
+                function removeLoadingScreen() {
+                    preBootstrapContainer
+                        .parentNode
+                        .removeChild(preBootstrapContainer)
+                    ;
+                },
+                0
+            );
+        }
+    </script>
+
+
+    <div id="pre-bootstrap" class="sk-folding-cube">
+        <h2>winery</h2>
+        <div class="sk-cube1 sk-cube"></div>
+        <div class="sk-cube2 sk-cube"></div>
+        <div class="sk-cube4 sk-cube"></div>
+        <div class="sk-cube3 sk-cube"></div>
+    </div>
+
+
+</div>
+</body>
+</html>

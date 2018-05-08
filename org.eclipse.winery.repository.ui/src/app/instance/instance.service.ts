@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+/********************************************************************************
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,23 +10,27 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../configuration';
-import {WineryInstance, WineryTopologyTemplate} from '../wineryInterfaces/wineryComponent';
-import {ToscaComponent} from '../wineryInterfaces/toscaComponent';
-import {ToscaTypes} from '../wineryInterfaces/enums';
+ ********************************************************************************/
+import { Injectable } from '@angular/core';
+import { Headers, RequestOptions } from '@angular/http';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../configuration';
+import { WineryInstance, WineryTopologyTemplate } from '../wineryInterfaces/wineryComponent';
+import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
+import { ToscaTypes } from '../wineryInterfaces/enums';
+import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class InstanceService {
 
     toscaComponent: ToscaComponent;
     topologyTemplate: WineryTopologyTemplate = null;
+    versions: WineryVersion[];
+    currentVersion: WineryVersion;
     path: string;
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
     /**
@@ -46,7 +50,7 @@ export class InstanceService {
                 break;
             case ToscaTypes.ServiceTemplate:
                 subMenu = ['README', 'LICENSE', 'Topology Template', 'Plans', 'Selfservice Portal',
-                    'Boundary Definitions', 'Tags', 'Documentation', 'XML'];
+                    'Boundary Definitions', 'Tags', 'Constraint Checking', 'Documentation', 'XML'];
                 break;
             case ToscaTypes.RelationshipType:
                 subMenu = ['README', 'LICENSE', 'Visual Appearance', 'Instance States', 'Source Interfaces', 'Target Interfaces',
@@ -80,6 +84,9 @@ export class InstanceService {
             case ToscaTypes.Imports:
                 subMenu = ['All Declared Elements Local Names', 'All Defined Types Local Names'];
                 break;
+            case ToscaTypes.ComplianceRule:
+                subMenu = ['README', 'LICENSE', 'Identifier', 'Required Structure', 'Tags', 'Documentation', 'XML'];
+                break;
             default: // assume Admin
                 subMenu = ['Namespaces', 'Repository', 'Plan Languages', 'Plan Types', 'Constraint Types', 'Consistency Check', 'Log'];
         }
@@ -102,26 +109,27 @@ export class InstanceService {
             this.getTopologyTemplate()
                 .subscribe(
                     data => this.topologyTemplate = data,
-                    error => this.topologyTemplate = null
+                    () => this.topologyTemplate = null
                 );
         }
     }
 
-    public deleteComponent(): Observable<any> {
-        return this.http.delete(backendBaseURL + this.path + '/');
+    public deleteComponent(): Observable<HttpResponse<string>> {
+        return this.http.delete(
+            backendBaseURL + this.path + '/',
+            { observe: 'response', responseType: 'text' }
+        );
     }
 
     public getComponentData(): Observable<WineryInstance> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.path + '/', options)
-            .map(res => res.json());
+        return this.http.get<WineryInstance>(backendBaseURL + this.path + '/');
     }
 
     public getTopologyTemplate(): Observable<WineryTopologyTemplate> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.path + '/topologytemplate/', options)
-            .map(res => res.json());
+        return this.http.get<WineryTopologyTemplate>(backendBaseURL + this.path + '/topologytemplate/');
+    }
+
+    public getVersions(): Observable<WineryVersion[]> {
+        return this.http.get<WineryVersion[]>(backendBaseURL + this.path + '/?versions');
     }
 }

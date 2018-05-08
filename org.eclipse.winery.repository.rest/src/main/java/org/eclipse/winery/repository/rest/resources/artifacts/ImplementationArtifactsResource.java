@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -71,10 +71,10 @@ public class ImplementationArtifactsResource extends GenericArtifactsResource<Im
         List<Object> interfaces = new ArrayList<>();
 
         if (isNodeTypeImplementation) {
-            NodeTypeResource typeResource = (NodeTypeResource) new NodeTypesResource().getComponentInstaceResource(type);
+            NodeTypeResource typeResource = (NodeTypeResource) new NodeTypesResource().getComponentInstanceResource(type);
             interfaces.addAll(typeResource.getInterfaces().onGet("true"));
         } else {
-            RelationshipTypeResource typeResource = (RelationshipTypeResource) new RelationshipTypesResource().getComponentInstaceResource(type);
+            RelationshipTypeResource typeResource = (RelationshipTypeResource) new RelationshipTypesResource().getComponentInstanceResource(type);
             interfaces.addAll(typeResource.getSourceInterfaces().onGet("true"));
             interfaces.addAll(typeResource.getTargetInterfaces().onGet("true"));
         }

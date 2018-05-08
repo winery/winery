@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,11 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {Response} from '@angular/http';
-import {EditXMLService} from './editXML.service';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {WineryEditorComponent} from '../../../wineryEditorModule/wineryEditor.component';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { EditXMLService } from './editXML.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 declare var requirejs: any;
 
@@ -39,7 +40,8 @@ export class EditXMLComponent implements OnInit {
     // Set height to 500 px
     height = 500;
 
-    constructor(private service: EditXMLService,
+    constructor(public sharedData: InstanceService,
+                private service: EditXMLService,
                 private notify: WineryNotificationService) {
     }
 
@@ -59,7 +61,7 @@ export class EditXMLComponent implements OnInit {
         this.service.saveXmlData(this.editor.getData())
             .subscribe(
                 data => this.handlePutResponse(data),
-                (error: Response) => this.handleError(error.text())
+                error => this.handleError(error)
             );
         this.loading = true;
     }
@@ -78,17 +80,17 @@ export class EditXMLComponent implements OnInit {
         this.xmlData = xml;
     }
 
-    private handleError(error: string): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 
-    private handlePutResponse(response: Response) {
+    private handlePutResponse(response: HttpResponse<string>) {
         this.loading = false;
         this.notify.success('Successfully saved data!');
 
-        if (response.text()) {
-            this.notify.warning(response.text());
+        if (response.body) {
+            this.notify.warning(response.body);
         }
     }
 

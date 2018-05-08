@@ -93,11 +93,11 @@ public class ConsistencyChecker {
     }
 
     public static void checkDocumentation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
-        checkFileExistance(errorLogger, configuration, id, "README.md");
-        checkFileExistance(errorLogger, configuration, id, "LICENSE");
+        checkFileExistence(errorLogger, configuration, id, "README.md");
+        checkFileExistence(errorLogger, configuration, id, "LICENSE");
     }
 
-    public static void checkFileExistance(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id, String filename) {
+    public static void checkFileExistence(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id, String filename) {
         RepositoryFileReference repositoryFileReference = new RepositoryFileReference(id, filename);
         if (!configuration.getRepository().exists(repositoryFileReference)) {
             printAndAddWarning(errorLogger, configuration.getVerbosity(), id, filename + " does not exist.");
@@ -314,32 +314,41 @@ public class ConsistencyChecker {
 
     private static void checkCsar(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
         CsarExporter exporter = new CsarExporter();
-        final OutputStream outputStream;
-        try {
-            outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        try (OutputStream outputStream = Files.newOutputStream(tempCsar, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+            try {
+                exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream);
+            } catch (ArchiveException e) {
+                LOGGER.debug("Error during checking ZIP", e);
+                printAndAddError(errorLogger, verbosity, id, "Invalid zip file: " + e.getMessage());
+            } catch (JAXBException e) {
+                LOGGER.debug("Error during checking ZIP", e);
+                printAndAddError(errorLogger, verbosity, id, "Some XML could not be parsed: " + e.getMessage() + " " + e.toString());
+            } catch (IOException e) {
+                LOGGER.debug("Error during checking ZIP", e);
+                printAndAddError(errorLogger, verbosity, id, "I/O error: " + e.getMessage());
+            } catch (RepositoryCorruptException e) {
+                LOGGER.debug("Repository is corrupt", e);
+                printAndAddError(errorLogger, verbosity, id, "Corrupt: " + e.getMessage());
+            }
         } catch (IOException e) {
             final String error = "Could not write to temp CSAR file";
             LOGGER.debug(error, e);
             printAndAddError(errorLogger, verbosity, id, error);
             return;
         }
-        try {
-            exporter.writeCsar(RepositoryFactory.getRepository(), id, outputStream);
-            try (InputStream inputStream = Files.newInputStream(tempCsar);
-                 ZipInputStream zis = new ZipInputStream(inputStream)) {
-                ZipEntry entry;
-                while ((entry = zis.getNextEntry()) != null) {
-                    if (entry.getName() == null) {
-                        printAndAddError(errorLogger, verbosity, id, "Empty filename in zip file");
-                    }
+        try (InputStream inputStream = Files.newInputStream(tempCsar);
+             ZipInputStream zis = new ZipInputStream(inputStream)) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                if (entry.getName() == null) {
+                    printAndAddError(errorLogger, verbosity, id, "Empty filename in zip file");
                 }
             }
-        } catch (ArchiveException | JAXBException | IOException e) {
-            LOGGER.debug("Error during checking ZIP", e);
-            printAndAddError(errorLogger, verbosity, id, "Invalid zip file: " + e.getMessage());
-        } catch (RepositoryCorruptException e) {
-            LOGGER.debug("Repository is corrupt", e);
-            printAndAddError(errorLogger, verbosity, id, "Corrupt: " + e.getMessage());
+        } catch (IOException e) {
+            final String error = "Could not read from temp CSAR file";
+            LOGGER.debug(error, e);
+            printAndAddError(errorLogger, verbosity, id, error);
+            return;
         }
     }
 

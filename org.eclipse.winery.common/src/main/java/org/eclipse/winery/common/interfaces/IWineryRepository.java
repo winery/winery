@@ -13,17 +13,18 @@
  *******************************************************************************/
 package org.eclipse.winery.common.interfaces;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
 import org.eclipse.winery.model.tosca.TDefinitions;
 import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TTopologyTemplate;
-
-import javax.xml.namespace.QName;
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
 
 /**
  * This interface is used by the repository client to get access to the
@@ -114,7 +115,22 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
      * @param serviceTemplate a QName of the sericeTemplate with full namespace
      * @return null if nothing is found
      */
-    TTopologyTemplate getTopologyTemplate(QName serviceTemplate);
+    default TTopologyTemplate getTopologyTemplate(QName serviceTemplate) {
+        return this.getTopologyTemplate(serviceTemplate, "/servicetemplates/", "/topologytemplate/");
+    }
+
+    /**
+     * Returns the topology template associated to the given service template nested in the "parentPath" with the element "elementPath".
+     * The URL is constructed as follows:
+     *
+     * <code>topologyTemplateURL = repositoryURL + parentPath + Util.DoubleURLencode(serviceTemplateQName) + elementPath;</code>
+     *
+     * @param serviceTemplate a QName of the sericeTemplate with full namespace
+     * @param parentPath      the parent path to use - with leading and trailing /
+     * @return null if nothing is found
+     * @parem elementPath the element path to use - with leading and traling /
+     */
+    TTopologyTemplate getTopologyTemplate(QName serviceTemplate, String parentPath, String elementPath);
 
     /**
      * Replaces (or creates) the provided topology template

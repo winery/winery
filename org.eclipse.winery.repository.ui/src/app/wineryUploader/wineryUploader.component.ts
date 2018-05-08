@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,10 +16,11 @@ import {isNullOrUndefined} from 'util';
 import {WineryUploaderService} from './wineryUploader.service';
 import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
 import {FileUploader} from 'ng2-file-upload';
+import {InstanceService} from '../instance/instance.service';
 
 /**
- * This component provides a modal popup with a <code>title</code> and optional progress bar <code>showProgress</code> for file uploads.
- * The file will be uploaded to the given <code>uploadUrl</code>.
+ * This component provides a modal popup with a <code>title</code> and optional progress bar <code>showProgress</code>
+ * for file uploads. The file will be uploaded to the given <code>uploadUrl</code>.
  *
  *
  * <label>Inputs</label>
@@ -31,8 +32,8 @@ import {FileUploader} from 'ng2-file-upload';
  *     </li>
  *     <li><code>modalRef</code> The reference to the modal.
  *     </li>
- *     <li><code>uploadImmediately</code> This flag is set to true by default. If no immediate upload is desired, you can
- *     set this to false. However, if set to false, you need to call the upload method yourself.
+ *     <li><code>uploadImmediately</code> This flag is set to true by default. If no immediate upload is desired, you
+ *     can set this to false. However, if set to false, you need to call the upload method yourself.
  *     </li>
  *     <li><code>uploadMethod</code> Specifies the http method used to upload the file. By default POST is used.
  *     </li>
@@ -71,6 +72,7 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
     @Input() uploadImmediately = true;
     @Input() uploadMethod = 'POST';
     @Input() allowMultipleFiles = false;
+    @Input() isEditable: boolean;
 
     @Output() onFileDropped = new EventEmitter();
     @Output() onSuccess = new EventEmitter();
@@ -94,13 +96,15 @@ export class WineryUploaderComponent implements OnInit, OnChanges {
     }
 
     dropFile(event?: any) {
-        if (!isNullOrUndefined(event) && isNullOrUndefined(this.service.uploader.queue[0])) {
-            this.fileOver = event;
-        } else {
-            this.fileOver = false;
-            this.onFileDropped.emit(this.service.uploader.queue[0]);
-            if (this.uploadImmediately) {
-                this.upload();
+        if (!isNullOrUndefined(this.isEditable)) {
+            if (!isNullOrUndefined(event) && isNullOrUndefined(this.service.uploader.queue[0])) {
+                this.fileOver = event;
+            } else {
+                this.fileOver = false;
+                this.onFileDropped.emit(this.service.uploader.queue[0]);
+                if (this.uploadImmediately) {
+                    this.upload();
+                }
             }
         }
     }

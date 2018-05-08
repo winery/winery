@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -396,6 +396,19 @@ public class TPlan extends TExtensibleElements {
             }
             return this.inputParameter;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            InputParameters that = (InputParameters) o;
+            return Objects.equals(inputParameter, that.inputParameter);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(inputParameter);
+        }
     }
 
 
@@ -453,6 +466,19 @@ public class TPlan extends TExtensibleElements {
             }
             return this.outputParameter;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            OutputParameters that = (OutputParameters) o;
+            return Objects.equals(outputParameter, that.outputParameter);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(outputParameter);
+        }
     }
 
 
@@ -500,6 +526,20 @@ public class TPlan extends TExtensibleElements {
         public void setAny(Object value) {
             this.any = value;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PlanModel planModel = (PlanModel) o;
+            return Objects.equals(any, planModel.any);
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(any);
+        }
     }
 
 
@@ -543,6 +583,19 @@ public class TPlan extends TExtensibleElements {
          */
         public void setReference(String value) {
             this.reference = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PlanModelReference that = (PlanModelReference) o;
+            return Objects.equals(reference, that.reference);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(reference);
         }
     }
 

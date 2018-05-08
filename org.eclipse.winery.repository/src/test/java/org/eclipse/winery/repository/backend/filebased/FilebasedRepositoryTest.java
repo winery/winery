@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,8 +14,7 @@
 package org.eclipse.winery.repository.backend.filebased;
 
 import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.*;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TEntityType;
@@ -31,6 +30,7 @@ import javax.xml.namespace.QName;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.SortedSet;
 
 public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
@@ -119,5 +119,72 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
         for (RepositoryFileReference ref : files) {
             Assert.assertFalse("File " + ref.toString() + " contains empty sub directory", ref.getSubDirectory().isPresent() && ref.getSubDirectory().get().toString().equals(""));
         }
+    }
+
+    @Test
+    public void getStableDefinitionsOnly() throws Exception {
+        this.setRevisionTo("e9e8443dfce1ccb0eee3a0b937b1c2e6ab7798df");
+        SortedSet<NodeTypeId> stableNodeTypes = this.repository.getStableDefinitionsChildIdsOnly(NodeTypeId.class);
+        Assert.assertEquals(10, stableNodeTypes.size());
+    }
+
+    @Test
+    public void getAllDefinitions() throws Exception {
+        this.setRevisionTo("e9e8443dfce1ccb0eee3a0b937b1c2e6ab7798df");
+        SortedSet<NodeTypeId> allNodeTypes = this.repository.getAllDefinitionsChildIds(NodeTypeId.class);
+        Assert.assertEquals(13, allNodeTypes.size());
+    }
+
+    @Test
+    public void duplicateDefinition() throws Exception {
+        this.setRevisionTo("origin/plain");
+        DefinitionsChildId old = new NodeTypeId("http://plain.winery.opentosca.org/nodetypes", "NodeTypeWithTwoKVProperties", false);
+        DefinitionsChildId newId = new NodeTypeId("http://plain.winery.opentosca.org/nodetypes", "NodeTypeWithTwoKVPropertiesDuplicate", false);
+
+        this.repository.duplicate(old, newId);
+
+        Assert.assertTrue(this.repository.exists(old));
+        Assert.assertTrue(this.repository.exists(newId));
+    }
+
+    @Test
+    public void getAllElementsReferencingANodeType() throws Exception {
+        // explicitly checkout commit-id to ensure that no other future elements are referencing the specified component
+        this.setRevisionTo("9799e0677c41e9eeceaab01a3baff33e5a20cdaa");
+        DefinitionsChildId element = new NodeTypeId("http://plain.winery.opentosca.org/nodetypes", "NodeTypeWithXmlElementProperty", false);
+
+        Collection<DefinitionsChildId> childIds = this.repository.getReferencingDefinitionsChildIds(element);
+
+        Assert.assertEquals(1, childIds.size());
+    }
+
+    @Test
+    public void getAllElementsReferencingAnArtifactType() throws Exception {
+        this.setRevisionTo("468a7f4c58424295d07f9aa4ebecbbaa2beb37c2");
+        DefinitionsChildId id = new ArtifactTypeId("http://plain.winery.opentosca.org/artifacttypes", "ArtifactTypeWithoutProperties", false);
+
+        Collection<DefinitionsChildId> childIds = this.repository.getReferencingDefinitionsChildIds(id);
+
+        Assert.assertEquals(4, childIds.size());
+    }
+
+    @Test
+    public void getAllElementsReferencingAnRequirementType() throws Exception {
+        this.setRevisionTo("468a7f4c58424295d07f9aa4ebecbbaa2beb37c2");
+        DefinitionsChildId id = new RequirementTypeId("http://plain.winery.opentosca.org/requirementtypes", "RequirementTypeWithoutProperties", false);
+
+        Collection<DefinitionsChildId> childIds = this.repository.getReferencingDefinitionsChildIds(id);
+
+        Assert.assertEquals(2, childIds.size());
+    }
+
+    @Test
+    public void getAllElementsReferencingAnCapabilityType() throws Exception {
+        this.setRevisionTo("468a7f4c58424295d07f9aa4ebecbbaa2beb37c2");
+        DefinitionsChildId id = new CapabilityTypeId("http://plain.winery.opentosca.org/capabilitytypes", "CapabilityTypeWithoutProperties", false);
+
+        Collection<DefinitionsChildId> childIds = this.repository.getReferencingDefinitionsChildIds(id);
+
+        Assert.assertEquals(2, childIds.size());
     }
 }

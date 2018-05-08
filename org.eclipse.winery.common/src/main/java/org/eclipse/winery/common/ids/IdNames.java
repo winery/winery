@@ -38,9 +38,9 @@ public class IdNames {
     public static final String SELF_SERVICE_PORTAL = "selfserviceportal";
 
     /**
-     * In this case we explicitly use '/' as a separator to get valid urls during retrieval of all files. See {@link
-     * org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.FilesResource#getAllFileMetas()}
-     * and {@link org.eclipse.winery.repository.rest.datatypes.FileMeta#FileMeta(org.eclipse.winery.common.RepositoryFileReference)}
+     * In this case we explicitly use '/' as a separator to get valid urls during retrieval of all files. @see
+     * org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.FilesResource#getAllFileMetas()
+     * and @see org.eclipse.winery.repository.rest.datatypes.FileMeta#FileMeta(org.eclipse.winery.common.RepositoryFileReference)
      */
     public static final String SELF_SERVICE_PORTAL_FILES = IdNames.SELF_SERVICE_PORTAL + "/" + IdNames.FILES_DIRECTORY;
 

@@ -11,11 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {RepositoryService} from './repository.service';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {backendBaseURL} from '../../../configuration';
-import {ModalDirective} from 'ngx-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { RepositoryService } from './repository.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { backendBaseURL } from '../../../configuration';
+import { ModalDirective } from 'ngx-bootstrap';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-repository',
@@ -36,7 +37,7 @@ export class RepositoryComponent implements OnInit {
 
     clearRepository() {
         this.service.clearRepository().subscribe(
-            data => this.handleSuccess('Repository cleared'),
+            () => this.handleSuccess('Repository cleared'),
             error => this.handleError(error)
         );
     }
@@ -45,8 +46,8 @@ export class RepositoryComponent implements OnInit {
         this.notify.success(message);
     }
 
-    handleError(error: Error) {
-        this.notify.error(error.toString());
+    handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message);
     }
 
 }

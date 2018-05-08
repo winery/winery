@@ -1,0 +1,101 @@
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<table *ngIf="toscaType==='deploymentArtifacts'" class="toscatype-table" border="1" style="">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>DA-Ref</th>
+        <th>Type</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let da of currentToscaTypeData">
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(daname)">
+            <div #daname (click)="openDeploymentArtifactModal(da)">{{ da.name }}</div>
+            <span class="cell-comment">{{ da.name }}</span>
+        </td>
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(daref)">
+            <div #daref (click)="clickArtifactRef(da.artifactRef)">{{ da.artifactRef | localname }}</div>
+            <span class="cell-comment">{{ da.artifactRef | localname }}</span>
+        </td>
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(datype)">
+            <div #datype (click)="clickArtifactType(da.artifactType)">{{ da.artifactType | localname }}</div>
+            <span class="cell-comment">{{ da.artifactType | localname }}</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<table *ngIf="toscaType==='policies'" class="toscatype-table" border="1">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Policy</th>
+        <th>Type</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let pol of currentToscaTypeData">
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(pname)">
+            <div #pname (click)="openPolicyModal(pol)">{{ pol.name }}</div>
+            <span class="cell-comment">{{ pol.name }}</span>
+        </td>
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(pref)">
+            <div #pref (click)="clickPolicyRef(pol.policyRef)">{{ pol.policyRef | localname }}</div>
+            <span class="cell-comment">{{ pol.policyRef | localname }}</span>
+
+        </td>
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(ptype)">
+            <div #ptype (click)="clickPolicyType(pol.policyType)">{{ pol.policyType | localname }}</div>
+            <span class="cell-comment">{{ pol.policyType | localname }}</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<table *ngIf="toscaType==='Capabilities' || toscaType==='Requirements'" class="toscatype-table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Type</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let reqOrCap of currentToscaTypeData">
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(reqOrCapName)">
+            <div #reqOrCapName (click)="showExistingReqOrCapModal($event)">{{ reqOrCap.id }}</div>
+            <span class="cell-comment">{{ reqOrCap.name }}</span>
+        </td>
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(reqOrCapRef)">
+            <div #reqOrCapRef (click)="clickReqOrCapRef(reqOrCap.name)">{{ reqOrCap.name }}</div>
+            <span class="cell-comment">{{ reqOrCap.name }}</span>
+        </td>
+        <td class="toscatype-table-td"
+            [class.cell-with-comment]="isEllipsisActive(reqOrCapType)">
+            <div #reqOrCapType (click)="clickReqOrCapType(reqOrCap.type)">{{ reqOrCap.type | localname }}</div>
+            <span class="cell-comment">{{ reqOrCap.type | localname }}</span>
+        </td>
+    </tr>
+    </tbody>
+</table>

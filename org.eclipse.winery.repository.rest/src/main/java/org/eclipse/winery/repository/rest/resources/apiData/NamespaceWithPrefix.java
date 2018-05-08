@@ -14,14 +14,20 @@
 
 package org.eclipse.winery.repository.rest.resources.apiData;
 
-import org.eclipse.winery.common.ids.Namespace;
-
 import java.util.Objects;
+
+import org.eclipse.winery.common.ids.Namespace;
 
 public class NamespaceWithPrefix implements Comparable<NamespaceWithPrefix> {
 
     public String prefix = "";
     public String namespace = "";
+
+    /**
+     * Default constructor is required by jaxb to instantiate posted list.
+     */
+    public NamespaceWithPrefix() {
+    }
 
     public NamespaceWithPrefix(Namespace ns, String prefix) {
         Objects.requireNonNull(ns);

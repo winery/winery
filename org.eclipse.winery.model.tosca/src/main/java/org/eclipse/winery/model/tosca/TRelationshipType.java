@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -284,6 +284,19 @@ public class TRelationshipType extends TEntityType {
             }
             return this._interface;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            SourceInterfaces that = (SourceInterfaces) o;
+            return Objects.equals(_interface, that._interface);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(_interface);
+        }
     }
 
 
@@ -341,6 +354,19 @@ public class TRelationshipType extends TEntityType {
             }
             return this._interface;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TargetInterfaces that = (TargetInterfaces) o;
+            return Objects.equals(_interface, that._interface);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(_interface);
+        }
     }
 
 
@@ -384,6 +410,19 @@ public class TRelationshipType extends TEntityType {
         public void setTypeRef(QName value) {
             this.typeRef = value;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ValidSource that = (ValidSource) o;
+            return Objects.equals(typeRef, that.typeRef);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(typeRef);
+        }
     }
 
 
@@ -426,6 +465,19 @@ public class TRelationshipType extends TEntityType {
          */
         public void setTypeRef(QName value) {
             this.typeRef = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ValidTarget that = (ValidTarget) o;
+            return Objects.equals(typeRef, that.typeRef);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(typeRef);
         }
     }
 

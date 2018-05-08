@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+/********************************************************************************
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,7 +10,8 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- *******************************************************************************/
+ ********************************************************************************/
+
 package org.eclipse.winery.repository.rest.resources.servicetemplates;
 
 import java.io.IOException;
@@ -34,6 +35,8 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.compliance.checking.ServiceTemplateCheckingResult;
+import org.eclipse.winery.compliance.checking.ServiceTemplateComplianceRuleRuleChecker;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TPlans;
@@ -70,6 +73,10 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
 
     public ServiceTemplateResource(ServiceTemplateId id) {
         super(id);
+    }
+
+    public TServiceTemplate getServiceTemplate() {
+        return (TServiceTemplate) this.getElement();
     }
 
     /**
@@ -282,8 +289,13 @@ public class ServiceTemplateResource extends AbstractComponentInstanceWithRefere
         return Response.created(url).build();
     }
 
-    public TServiceTemplate getServiceTemplate() {
-        return (TServiceTemplate) this.getElement();
+    @Path("constraintchecking/")
+    @Produces(MediaType.APPLICATION_XML)
+    @POST
+    public Response complianceChecking(@Context UriInfo uriInfo) {
+        ServiceTemplateComplianceRuleRuleChecker checker = new ServiceTemplateComplianceRuleRuleChecker(this.getServiceTemplate());
+        ServiceTemplateCheckingResult serviceTemplateCheckingResult = checker.checkComplianceRules();
+        return Response.ok().entity(serviceTemplateCheckingResult).build();
     }
 
     @Override

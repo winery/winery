@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -12,26 +12,38 @@
   ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div class="form-group-grouping typeimplementation">
-    <div class="form-group">
-        <label for="implName" class="control-label">
-            {{ generateData.toscaType | toscaTypeToReadableName }} Name
-        </label>
-        <input type="text" name="implementationName" [(ngModel)]="generateData.name"
-               class="form-control" (input)="checkImplementationExists();"
-               id="implName" required>
-        <div *ngIf="generateData.createComponent; else reuseArtifact" class="alert alert-success">
-            Will be created.
+    <form>
+        <div class="form-group">
+            <label for="implName" class="control-label">
+                {{ generateData.toscaType | toscaTypeToReadableName }} Name
+            </label>
+            <input type="text" name="implementationName" [(ngModel)]="generateData.name" #textInput="ngModel"
+                   class="form-control" (input)="checkImplementationExists();"
+                   id="implName" required pattern="^((?!_).)*$">
+            <div *ngIf="textInput.errors; else createArtifact" class="alert alert-danger">
+                <div [hidden]="!textInput.errors.pattern">
+                    No underscores allowed!
+                </div>
+            </div>
+            <ng-template #createArtifact>
+                <div *ngIf="generateData.createComponent; else reuseArtifact" class="alert alert-success">
+                    Will be created.
+                </div>
+                <ng-template #reuseArtifact>
+                    <div class="alert alert-info">Will be reused.</div>
+                </ng-template>
+            </ng-template>
+            <div class="form-group">
+                <label for="finalName" class="control-label">Final name</label>
+                <input id="finalName" class="form-control" type="text" disabled [value]="generateData.name + '_-w1-wip1'">
+            </div>
+            <!-- pattern parameter is required to enable form validation -->
+            <winery-namespace-selector name="artifactNamespace"
+                                       [(ngModel)]="generateData.namespace"
+                                       (onChange)="checkImplementationExists();"
+                                       [useStartNamespace]="false"
+                                       pattern="^\S*$">
+            </winery-namespace-selector>
         </div>
-        <ng-template #reuseArtifact>
-            <div class="alert alert-info">Will be reused.</div>
-        </ng-template>
-        <!-- pattern parameter is required to enable form validation -->
-        <winery-namespace-selector
-            name="artifactNamespace"
-            [(ngModel)]="generateData.namespace"
-            (onChange)="checkImplementationExists();"
-            [useStartNamespace]="false"
-            pattern="^\S*$">
-        </winery-namespace-selector>
-    </div>
+    </form>
 </div>

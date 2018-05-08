@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -20,9 +20,11 @@
 </div>
 <ng-template #elseBlock>
     <input *ngIf="allowMultipleFiles; else singleFile" type="file" ng2FileSelect [uploader]="service.uploader"
+           [disabled]="!isEditable"
            (change)="dropFile()" multiple/>
     <ng-template #singleFile>
-        <input type="file" ng2FileSelect [uploader]="service.uploader" (change)="dropFile()"/>
+        <input type="file" ng2FileSelect [disabled]="!isEditable"
+               [uploader]="service.uploader" (change)="dropFile()"/>
     </ng-template>
     <br>
     <div ng2FileDrop

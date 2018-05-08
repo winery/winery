@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,19 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {Response} from '@angular/http';
-import {isNullOrUndefined} from 'util';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import {InstanceService} from '../../instance.service';
-import {ImplementationAPIData} from './implementationAPIData';
-import {ImplementationService} from './implementations.service';
-import {ImplementationWithTypeAPIData} from './implementationWithTypeAPIData';
-import {ModalDirective} from 'ngx-bootstrap';
-import {Utils} from '../../../wineryUtils/utils';
-import {WineryRowData, WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
-import {ToscaTypes} from '../../../wineryInterfaces/enums';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { isNullOrUndefined } from 'util';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import { InstanceService } from '../../instance.service';
+import { ImplementationAPIData } from './implementationAPIData';
+import { ImplementationService } from './implementations.service';
+import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
+import { ModalDirective } from 'ngx-bootstrap';
+import { Utils } from '../../../wineryUtils/utils';
+import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -42,13 +42,13 @@ export class ImplementationsComponent implements OnInit {
     selectedNamespace: string;
     validatorObject: WineryValidatorObject;
     columns: Array<WineryTableColumn> = [
-        {title: 'Namespace', name: 'namespace', sort: true},
-        {title: 'Name', name: 'displayName', sort: true},
+        { title: 'Namespace', name: 'namespace', sort: true },
+        { title: 'Name', name: 'displayName', sort: true },
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
 
-    constructor(private sharedData: InstanceService,
+    constructor(public sharedData: InstanceService,
                 private service: ImplementationService,
                 private notificationService: WineryNotificationService) {
     }
@@ -124,12 +124,12 @@ export class ImplementationsComponent implements OnInit {
         this.loading = false;
     }
 
-    private handleError(error: any): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.notificationService.error('Action caused an error:\n', error);
+        this.notificationService.error('Action caused an error:\n', error.message);
     }
 
-    private handlePostResponse(data: Response) {
+    private handlePostResponse(data: HttpResponse<string>) {
         this.loading = false;
         if (data.ok) {
             this.getImplementationData();
@@ -139,7 +139,7 @@ export class ImplementationsComponent implements OnInit {
         }
     }
 
-    private handleDeleteResponse(data: Response) {
+    private handleDeleteResponse(data: HttpResponse<string>) {
         this.loading = false;
         if (data.ok) {
             this.getImplementationData();

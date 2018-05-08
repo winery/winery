@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -45,7 +45,7 @@ import java.util.Objects;
 @XmlType(name = "tInterface", propOrder = {
     "operation"
 })
-public class TInterface {
+public class TInterface implements HasName {
     @XmlElement(name = "Operation", required = true)
     protected List<TOperation> operation;
     @XmlAttribute(name = "name", required = true)
@@ -62,7 +62,6 @@ public class TInterface {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (!(o instanceof TInterface)) return false;
         TInterface that = (TInterface) o;
@@ -109,6 +108,7 @@ public class TInterface {
      * @return possible object is {@link String }
      */
     @NonNull
+    @Override
     public String getName() {
         return name;
     }
@@ -118,6 +118,7 @@ public class TInterface {
      *
      * @param value allowed object is {@link String }
      */
+    @Override
     public void setName(String value) {
         this.name = value;
     }

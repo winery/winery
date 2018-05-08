@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,6 +17,7 @@ import {UrlDecodePipe} from './urlDecode.pipe';
 import {RemoveWhiteSpacesPipe} from './removeWhiteSpaces.pipe';
 import {ToscaTypeToCamelCase} from './toscaTypeToCamelCase.pipe';
 import {ToscaTypeToReadableNamePipe} from './toscaTypeToReadableName.pipe';
+import {SliceVersionPipe} from './sliceVersion.pipe';
 
 @NgModule({
     imports: [],
@@ -25,7 +26,8 @@ import {ToscaTypeToReadableNamePipe} from './toscaTypeToReadableName.pipe';
         ToscaTypeToReadableNamePipe,
         RemoveWhiteSpacesPipe,
         UrlDecodePipe,
-        UrlEncodePipe
+        UrlEncodePipe,
+        SliceVersionPipe,
     ],
     declarations: [
         ToscaTypeToCamelCase,
@@ -33,6 +35,7 @@ import {ToscaTypeToReadableNamePipe} from './toscaTypeToReadableName.pipe';
         RemoveWhiteSpacesPipe,
         UrlDecodePipe,
         UrlEncodePipe,
+        SliceVersionPipe,
     ],
     providers: [],
 })

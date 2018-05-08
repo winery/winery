@@ -11,18 +11,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {NgModule} from '@angular/core';
+import { NgModule } from '@angular/core';
 
-import {InheritanceComponent} from './inheritance.component';
-import {CommonModule} from '@angular/common';
-import {WineryModalModule} from '../../../wineryModalModule/winery.modal.module';
-import {WineryLoaderModule} from '../../../wineryLoader/wineryLoader.module';
-import {FormsModule} from '@angular/forms';
-import {WineryQNameSelectorModule} from '../../../wineryQNameSelector/wineryQNameSelector.module';
-import {SelectModule} from 'ng2-select';
-import {BrowserModule} from '@angular/platform-browser';
-import {RouterModule} from '@angular/router';
-import {WineryAddModule} from '../../../wineryAddComponentModule/addComponent.moudle';
+import { InheritanceComponent } from './inheritance.component';
+import { CommonModule } from '@angular/common';
+import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
+import { WineryLoaderModule } from '../../../wineryLoader/wineryLoader.module';
+import { FormsModule } from '@angular/forms';
+import { WineryQNameSelectorModule } from '../../../wineryQNameSelector/wineryQNameSelector.module';
+import { SelectModule } from 'ng2-select';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.moudle';
 
 @NgModule({
     imports: [

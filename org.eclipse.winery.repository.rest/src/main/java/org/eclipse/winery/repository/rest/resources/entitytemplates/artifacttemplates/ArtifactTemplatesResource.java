@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -26,7 +26,7 @@ import javax.ws.rs.PathParam;
 @Api(tags = "Artifact Templates")
 public class ArtifactTemplatesResource extends AbstractComponentsWithTypeReferenceResource<ArtifactTemplateResource> {
     @Path("{namespace}/{id}/")
-    public ArtifactTemplateResource getComponentInstaceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
-        return this.getComponentInstaceResource(namespace, id, true);
+    public ArtifactTemplateResource getComponentInstanceResource(@PathParam("namespace") String namespace, @PathParam("id") String id) {
+        return this.getComponentInstanceResource(namespace, id, true);
     }
 }

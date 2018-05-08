@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -21,6 +21,7 @@
         </div>
         <winery-table [columns]="columns"
                       [data]="artifactsData"
+                      [disableButtons]="!sharedData?.currentVersion?.editable"
                       (addBtnClicked)="onAddClick()"
                       (removeBtnClicked)="onRemoveClick($event)">
         </winery-table>
@@ -43,7 +44,6 @@
 
 <winery-modal bsModal #addArtifactModal="bs-modal" [modalRef]="addArtifactModal">
     <winery-modal-header [title]="'Add ' + name + ' Artifact'">
-
     </winery-modal-header>
     <winery-modal-body>
         <form #addArtifactForm="ngForm" id="addArtifactForm">
@@ -150,7 +150,8 @@
 
     <winery-modal-body>
         <div>
-            <winery-uploader (onSuccess)="loadFiles(uploadUrl)" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true">
+            <winery-uploader (onSuccess)="loadFiles(uploadUrl)" [uploadUrl]="uploadUrl"
+                             [allowMultipleFiles]="true" [isEditable]="sharedData?.currentVersion?.editable">
             </winery-uploader>
         </div>
         <br>
