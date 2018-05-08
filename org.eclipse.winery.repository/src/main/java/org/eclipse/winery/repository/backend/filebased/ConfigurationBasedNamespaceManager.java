@@ -167,7 +167,7 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
                 }
                 return String.format("%s%s%d", prefix, mid, round);
             } else {
-                if (namespace.contains("propertiesdefinition") && result.equals("winery")) {
+                if (namespace.contains("propertiesdefinition") && "winery".equals(result)) {
                     // in case, it is a winery propertiesdefinition, end with "pd" (and not with winery or pdwinery)
                     result = "pd";
                 }

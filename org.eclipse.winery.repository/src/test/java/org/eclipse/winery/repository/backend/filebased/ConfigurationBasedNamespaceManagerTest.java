@@ -75,5 +75,4 @@ public class ConfigurationBasedNamespaceManagerTest {
         Assert.assertEquals("null", this.configurationBasedNamespaceManager.getPrefix((String) null));
     }
 
-
 }
