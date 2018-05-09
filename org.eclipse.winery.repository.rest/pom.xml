@@ -24,11 +24,8 @@
     <!-- jar cannot be used even though offering WineryUsingHttpServer needs it. war has to be used to get IntelliJ recognizing that this is a WAR project -->
     <packaging>war</packaging>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <dependencies>
         <dependency>
@@ -57,12 +54,6 @@
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-            <version>1.19.3</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
             <version>1.19.3</version>
             <scope>compile</scope>
@@ -76,12 +67,6 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-servlet</artifactId>
-            <version>1.19.3</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
             <version>1.19.3</version>
             <scope>compile</scope>
         </dependency>
@@ -120,12 +105,6 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.9.1</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.websocket/javax.websocket-api -->
         <dependency>

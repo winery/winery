@@ -25,11 +25,8 @@
     <artifactId>org.eclipse.winery.topologymodeler</artifactId>
     <packaging>war</packaging>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <dependencies>
         <dependency>
