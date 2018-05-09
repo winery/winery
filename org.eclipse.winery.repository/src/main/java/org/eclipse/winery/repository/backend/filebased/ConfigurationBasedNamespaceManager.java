@@ -101,7 +101,9 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
      *
      * @return empty string if nothing could be matched
      */
-    private String generateKindString(String namespace) {
+    private String generateDefinitionsChildTypeAbbreviation(String namespace) {
+        Objects.requireNonNull(namespace);
+
         String mid;
         if (namespace.contains("servicetemplates/")) {
             mid = "ste";
@@ -156,7 +158,7 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
                 prefix = "";
             }
 
-            String mid = this.generateKindString(namespace);
+            String mid = this.generateDefinitionsChildTypeAbbreviation(namespace);
 
             if (result.isEmpty()) {
                 if (prefix.isEmpty()) {
