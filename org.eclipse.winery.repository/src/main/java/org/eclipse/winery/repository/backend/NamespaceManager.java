@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,44 +13,50 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.eclipse.winery.common.ids.Namespace;
-
 import java.util.Collection;
+import java.util.Objects;
+
+import org.eclipse.winery.common.ids.Namespace;
 
 public interface NamespaceManager {
 
-    /**
-     * SIDEFFECT: URI is added to list of known namespaces if it did not exist
-     * before
-     */
     default String getPrefix(Namespace namespace) {
+        Objects.requireNonNull(namespace);
+
         String ns = namespace.getDecoded();
         return this.getPrefix(ns);
     }
 
     /**
-     * SIDEFFECT: URI is added to list of known namespaces if it did not exist
-     * before
+     * Returns a prefix for the given namespace. With two different namespaces, to different prefixes are returned.
+     * The returned prefixes are not persistest. Thus, two instances of a NamespaceManager might return different
+     * prefixes when called in another order.
      */
     String getPrefix(String namespace);
 
-    boolean hasPrefix(String namespace);
+    /**
+     * Determines whether the storage has a namespace prefix stored permanently. This differs from just issuuing a
+     * {@link #getPrefix(String)} request, which just determines something, but does not persist it between calls.
+     */
+    boolean hasPermanentPrefix(String namespace);
 
-    void remove(String namespace);
+    void removePermanentPrefix(String namespace);
 
-    void setPrefix(String namespace, String prefix);
+    /**
+     * Permanently stores a prefix. No action, if namespace or prefix are null or empty.
+     */
+    void setPermanentPrefix(String namespace, String prefix);
 
-    Collection<String> getAllPrefixes();
+    Collection<String> getAllPermanentPrefixes();
 
-    Collection<String> getAllNamespaces();
+    Collection<String> getAllPermanentNamespaces();
 
-    default void addNamespace(String namespace) {
-        this.getPrefix(namespace);
+    default void addPermanentNamespace(String namespace) {
+        this.setPermanentPrefix(namespace, this.getPrefix(namespace));
     }
 
     /**
      * Removes all namespace mappings
      */
     void clear();
-
 }

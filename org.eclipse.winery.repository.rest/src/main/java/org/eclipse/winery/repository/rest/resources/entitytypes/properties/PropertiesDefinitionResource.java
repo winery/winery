@@ -138,8 +138,8 @@ public class PropertiesDefinitionResource {
             ModelUtilities.replaceWinerysPropertiesDefinition(et, data.winerysPropertiesDefinition);
             String namespace = data.winerysPropertiesDefinition.getNamespace();
             NamespaceManager namespaceManager = RepositoryFactory.getRepository().getNamespaceManager();
-            if (!namespaceManager.hasPrefix(namespace)) {
-                namespaceManager.addNamespace(namespace);
+            if (!namespaceManager.hasPermanentPrefix(namespace)) {
+                namespaceManager.addPermanentNamespace(namespace);
             }
             return RestUtils.persist(this.parentRes);
         }

@@ -29,7 +29,7 @@
                 <winery:type>xsd:anyURI</winery:type>
             </winery:properties>
         </winery:PropertiesDefinition>
-        <PropertiesDefinition xmlns:fruits="http://winery.opentosca.org/test/nodetypes/fruits"
-                              type="fruits:BaobabProperties"/>
+        <PropertiesDefinition xmlns:ntyfruits="http://winery.opentosca.org/test/nodetypes/fruits"
+                              type="ntyfruits:BaobabProperties"/>
     </NodeType>
 </Definitions>

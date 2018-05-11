@@ -5,7 +5,7 @@
     ],
     "otherAttributes": {
     },
-    "id": "winery-defs-for_artifacttemplates-artifactTemplateContainsUpdatedFileReferenceInJson",
+    "id": "winery-defs-for_otartifacttemplates-artifactTemplateContainsUpdatedFileReferenceInJson",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
         {
             "documentation": [
