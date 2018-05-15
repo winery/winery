@@ -12,6 +12,14 @@ Email your supervisor your GitHub username.
   Example: `flastname@gmail.com`.
 - Please enable the git-hooks by executing `git config core.hooksPath .git-hooks` in the root of the repository.
 
+## Development enviroment installation steps
+
+1. Get [Apache Maven](https://maven.apache.org/) to run
+    1. Get [choclatey](https://chocolatey.org/)
+    1. Execute in an **Administor cmd.exe**: `@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"`
+    1. Execute `choco install maven`. This also installs the latest Java8 JDK.
+1. Setup IntelliJ as described at [config/IntelliJ IDEA](config/IntelliJ%20IDEA).
+
 ## Steps to get write access to the code repositories
 
 1. Email your supervisor your GitHub username and your development email address.

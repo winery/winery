@@ -1,6 +1,18 @@
 # IntelliJ Configuration
 
-Preparation: Generate a war to have all dependencies fetched by maven: `mvn package`
+## Preparation: Install IntelliJ
+
+1. Get a JetBrains Ultimate License. For students: Visit <https://www.jetbrains.com/student/>.
+1. Install [JetBrains Toolbox](https://www.jetbrains.com/toolbox/): `choco install jetbrainstoolbox` and `choco pin add -n jetbrainstoolbox`, because JetBrains does an auto update
+1. Install "IntelliJ IDEA Ultimate" using the JetBrains Toolbox.
+
+## Preparation of the code
+
+Generate a war to have all dependencies fetched by maven: `mvn package -DskipTests`.
+This ensures that `Version.java` is generated and all node dependencies are fetched.
+If this goes wrong at the first run, execute `mvn package -DskipTests` a second time.
+
+## Setup of IntelliJ
 
 1. Install JRebel plugin
     - JRebel enables a better debugging - changes can be immediately loaded without building the whole project again
@@ -11,7 +23,7 @@ Preparation: Generate a war to have all dependencies fetched by maven: `mvn pack
     - If JRebel is not available press "Browse repositories" --> Search -->Install
 2. Open `pom.xml` in the main directory
 3. Enable checkstyle: Follow the shown steps and apply them in IntelliJ
-  ![Enable CheckStyle in IntelliJ](activate-checkstyle.gif)
+  ![Enable CheckStyle in IntelliJ](graphics/activate-checkstyle.gif)
   - Install the [IntelliJ Checkstyle Plugin](https://plugins.jetbrains.com/plugin/1065-checkstyle-idea).
     It can be found via plug-in repository (Settings -> Plugins -> Browse repositories)
   - Open the Settings (by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>)
