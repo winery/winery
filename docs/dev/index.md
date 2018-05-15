@@ -6,7 +6,9 @@ This document provides an index to all development guidelines and background inf
 - [Angular UI](angular-ui.md) - documentation how to develop the angular applications
 - [Branches](branches.md) - information on branches
 - [CodeHeaders](CodeHeaders.md) - documentation about required code headers
-- [config/IntelliJ IDEA/README.md](config/IntelliJ IDEA/README.md) - IntelliJ Ultimate setup - [config/Eclipse/README.md](config/Eclipse/README.md) - Eclipse setup
+- IDE Setup
+    - IntelliJ Ultimate setup: [config/IntelliJ IDEA/README.md](config/IntelliJ%20IDEA/)
+    - Eclipse setup: [config/Eclipse/README.md](config/Eclipse/)
 - [Encoding](Encoding.md) - information about how percent-encoding is used at Winery
 - [ID system](id-system.md)
 - [Projects](projects.md) - information on the projects
