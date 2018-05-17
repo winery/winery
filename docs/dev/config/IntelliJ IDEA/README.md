@@ -17,7 +17,7 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
 1. Install JRebel plugin
     - JRebel enables a better debugging - changes can be immediately loaded without building the whole project again
     - Download https://zeroturnaround.com/software/jrebel/
-    - Get a JRebel license from <https://my.rebel.com>.
+    - Get a JRebel license from <https://my.jrebel.com>.
       It is for free if JRebel may post to your Twitter account.
     - File --> Settings --> Plugins --> Search for JRebel
     - If JRebel is not available press "Browse repositories" --> Search -->Install
