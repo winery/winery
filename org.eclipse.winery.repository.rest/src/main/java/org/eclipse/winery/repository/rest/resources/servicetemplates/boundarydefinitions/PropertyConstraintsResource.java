@@ -113,7 +113,6 @@ public class PropertyConstraintsResource {
 
         TPropertyConstraint propertyConstraint = new TPropertyConstraint();
         propertyConstraint.setProperty(constraintsApiData.getProperty());
-//        propertyConstraint.setAny(constraintsApiData.getFragments());
         propertyConstraint.setAny(doc.getDocumentElement());
         propertyConstraint.setConstraintType(constraintsApiData.getConstraintType());
         if (isEntitytemplate) {
@@ -128,7 +127,6 @@ public class PropertyConstraintsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<PropertyConstraintsApiData> onGet() {
         List<PropertyConstraintsApiData> apiDatas = new ArrayList<>();
-//        Iterator<TPropertyConstraint> iterator = this.propertyConstraints.getPropertyConstraint().iterator();
         if (isEntitytemplate) {
             for (TPropertyConstraint propertyConstraint : this.entityPropertyConstraints.getPropertyConstraint()) {
                 apiDatas.add(new PropertyConstraintsApiData(propertyConstraint));
