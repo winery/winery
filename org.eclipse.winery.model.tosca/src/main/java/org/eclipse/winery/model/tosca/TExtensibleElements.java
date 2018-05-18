@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,37 +14,27 @@
 
 package org.eclipse.winery.model.tosca;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.w3c.dom.Element;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.namespace.QName;
-import java.util.*;
 
 
-/**
- * <p>Java class for tExtensibleElements complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tExtensibleElements">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element ref="{http://docs.oasis-open.org/tosca/ns/2011/12}documentation" maxOccurs="unbounded"
- * minOccurs="0"/>
- *         &lt;any processContents='lax' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>
- *       &lt;/sequence>
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExtensibleElements", propOrder = {
     "documentation",
@@ -115,11 +105,6 @@ public class TExtensibleElements {
      * <pre>
      *    getDocumentation().add(newItem);
      * </pre>
-     * <p>
-     * <p>
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TDocumentation }
      */
     @NonNull
     public List<TDocumentation> getDocumentation() {
@@ -137,18 +122,6 @@ public class TExtensibleElements {
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the any property.
-     * <p>
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAny().add(newItem);
-     * </pre>
-     * <p>
-     * <p>
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Element }
-     * {@link Object }
      */
     @NonNull
     public List<Object> getAny() {
