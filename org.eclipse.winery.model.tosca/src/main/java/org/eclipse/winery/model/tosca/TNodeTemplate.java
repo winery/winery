@@ -14,18 +14,25 @@
 
 package org.eclipse.winery.model.tosca;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.winery.model.tosca.constants.Namespaces;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
+import org.eclipse.winery.model.tosca.constants.Namespaces;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tNodeTemplate", propOrder = {
@@ -118,8 +125,7 @@ public class TNodeTemplate extends RelationshipSourceOrTarget {
         this.capabilities = value;
     }
 
-    /*@Nullable*/
-    public TNodeTemplate.Policies getPolicies() {
+    public TNodeTemplate.@Nullable Policies getPolicies() {
         return policies;
     }
 

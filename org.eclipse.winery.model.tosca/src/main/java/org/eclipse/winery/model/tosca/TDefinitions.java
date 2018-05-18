@@ -14,18 +14,28 @@
 
 package org.eclipse.winery.model.tosca;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.adr.embedded.ADR;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.w3c.dom.Element;
-
-import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.github.adr.embedded.ADR;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.w3c.dom.Element;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDefinitions", propOrder = {
@@ -115,8 +125,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         this.getServiceTemplateOrNodeTypeOrNodeTypeImplementation().add(element);
     }
 
-    /*@Nullable*/
-    public TDefinitions.Extensions getExtensions() {
+    public TDefinitions.@Nullable Extensions getExtensions() {
         return extensions;
     }
 
@@ -152,8 +161,7 @@ public class TDefinitions extends HasId implements HasName, HasTargetNamespace {
         return this._import;
     }
 
-    /*@Nullable*/
-    public TDefinitions.Types getTypes() {
+    public TDefinitions.@Nullable Types getTypes() {
         return types;
     }
 
