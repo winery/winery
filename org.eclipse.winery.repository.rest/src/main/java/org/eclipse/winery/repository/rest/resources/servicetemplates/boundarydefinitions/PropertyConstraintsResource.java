@@ -49,23 +49,20 @@ public class PropertyConstraintsResource {
 
     private final TBoundaryDefinitions.PropertyConstraints propertyConstraints;
     private final TEntityTemplate.PropertyConstraints entityPropertyConstraints;
-    private final ServiceTemplateResource res;
-    private final AbstractComponentInstanceResource abstractRes;
+    private final AbstractComponentInstanceResource res;
     private final boolean isEntitytemplate;
 
     public PropertyConstraintsResource(TBoundaryDefinitions.PropertyConstraints propertyConstraints, ServiceTemplateResource res) {
         this.propertyConstraints = propertyConstraints;
         this.res = res;
         this.entityPropertyConstraints = null;
-        this.abstractRes = null;
         this.isEntitytemplate = false;
     }
 
     public PropertyConstraintsResource(TEntityTemplate.PropertyConstraints propertyConstraints, AbstractComponentInstanceResource res) {
-        this.res = null;
+        this.res = res;
         this.propertyConstraints = null;
         this.entityPropertyConstraints = propertyConstraints;
-        this.abstractRes = res;
         this.isEntitytemplate = true;
     }
 
@@ -74,20 +71,16 @@ public class PropertyConstraintsResource {
     public Response onDelete(@PathParam("id") String id) {
         id = Util.URLdecode(id);
         Iterator<TPropertyConstraint> iterator;
-        if (!isEntitytemplate) {
-            iterator = this.propertyConstraints.getPropertyConstraint().iterator();
-        } else {
+        if (isEntitytemplate) {
             iterator = this.entityPropertyConstraints.getPropertyConstraint().iterator();
+        } else {
+            iterator = this.propertyConstraints.getPropertyConstraint().iterator();
         }
         while (iterator.hasNext()) {
             TPropertyConstraint propertyConstraint = iterator.next();
             if (propertyConstraint.getProperty().equals(id)) {
                 iterator.remove();
-                if (!isEntitytemplate) {
-                    return RestUtils.persist(this.res);
-                } else {
-                    return RestUtils.persist(this.abstractRes);
-                }
+                return RestUtils.persist(this.res);
             }
         }
         // if the property mapping was not found, we reach this point
@@ -123,14 +116,12 @@ public class PropertyConstraintsResource {
 //        propertyConstraint.setAny(constraintsApiData.getFragments());
         propertyConstraint.setAny(doc.getDocumentElement());
         propertyConstraint.setConstraintType(constraintsApiData.getConstraintType());
-        if (!isEntitytemplate) {
-            this.propertyConstraints.getPropertyConstraint().add(propertyConstraint);
-            return RestUtils.persist(this.res);
-        } else {
+        if (isEntitytemplate) {
             this.entityPropertyConstraints.getPropertyConstraint().add(propertyConstraint);
-            return RestUtils.persist(this.abstractRes);
+        } else {
+            this.propertyConstraints.getPropertyConstraint().add(propertyConstraint);
         }
-//        return RestUtils.persist(this.res);
+        return RestUtils.persist(this.res);
     }
 
     @GET
@@ -138,12 +129,12 @@ public class PropertyConstraintsResource {
     public List<PropertyConstraintsApiData> onGet() {
         List<PropertyConstraintsApiData> apiDatas = new ArrayList<>();
 //        Iterator<TPropertyConstraint> iterator = this.propertyConstraints.getPropertyConstraint().iterator();
-        if (!isEntitytemplate) {
-            for (TPropertyConstraint propertyConstraint : this.propertyConstraints.getPropertyConstraint()) {
+        if (isEntitytemplate) {
+            for (TPropertyConstraint propertyConstraint : this.entityPropertyConstraints.getPropertyConstraint()) {
                 apiDatas.add(new PropertyConstraintsApiData(propertyConstraint));
             }
         } else {
-            for (TPropertyConstraint propertyConstraint : this.entityPropertyConstraints.getPropertyConstraint()) {
+            for (TPropertyConstraint propertyConstraint : this.propertyConstraints.getPropertyConstraint()) {
                 apiDatas.add(new PropertyConstraintsApiData(propertyConstraint));
             }
         }
