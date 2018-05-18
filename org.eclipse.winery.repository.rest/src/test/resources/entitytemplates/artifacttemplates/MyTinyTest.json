@@ -38,7 +38,7 @@
             "otherAttributes": {
             },
             "namespace": "http://opentosca.org/artifacttypes",
-            "location": "otartifacttypes__MiniArtifactType.tosca",
+            "location": "otatyIgeneral__MiniArtifactType.tosca",
             "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
         }
     ]
