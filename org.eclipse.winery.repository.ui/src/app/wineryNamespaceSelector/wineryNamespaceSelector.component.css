@@ -1,0 +1,12 @@
+.collapsespan:after {
+    /* symbol for "opening" panel */
+    font-family: 'Glyphicons Halflings'; /* enable glyphicon */
+    content: "\e260"; /* menu-up glyphicon */
+
+}
+
+.collapsespan.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\e259"; /* menu-down glyphicon */
+}
+

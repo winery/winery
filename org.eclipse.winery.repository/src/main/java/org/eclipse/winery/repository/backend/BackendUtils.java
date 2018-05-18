@@ -13,108 +13,34 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.tika.detect.Detector;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.xerces.impl.dv.XSSimpleType;
+import org.apache.xerces.impl.xs.XSImplementationImpl;
+import org.apache.xerces.xs.*;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.GenericId;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.admin.AdminId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
-import org.eclipse.winery.common.ids.definitions.CapabilityTypeId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.common.ids.definitions.EntityTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeId;
-import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
-import org.eclipse.winery.common.ids.definitions.PolicyTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeId;
-import org.eclipse.winery.common.ids.definitions.RelationshipTypeImplementationId;
-import org.eclipse.winery.common.ids.definitions.RequirementTypeId;
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.common.ids.definitions.*;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.common.ids.elements.PlanId;
 import org.eclipse.winery.common.ids.elements.PlansId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
-import org.eclipse.winery.model.tosca.Definitions;
-import org.eclipse.winery.model.tosca.HasIdInIdOrNameField;
-import org.eclipse.winery.model.tosca.HasTargetNamespace;
-import org.eclipse.winery.model.tosca.TArtifactReference;
-import org.eclipse.winery.model.tosca.TArtifactTemplate;
-import org.eclipse.winery.model.tosca.TArtifactType;
-import org.eclipse.winery.model.tosca.TCapability;
-import org.eclipse.winery.model.tosca.TCapabilityType;
-import org.eclipse.winery.model.tosca.TDefinitions;
-import org.eclipse.winery.model.tosca.TDeploymentArtifact;
-import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
-import org.eclipse.winery.model.tosca.TEntityTemplate;
-import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.common.version.ToscaDiff;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
+import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.model.tosca.TEntityType.PropertiesDefinition;
-import org.eclipse.winery.model.tosca.TExtensibleElements;
-import org.eclipse.winery.model.tosca.TImplementationArtifacts;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts.ImplementationArtifact;
-import org.eclipse.winery.model.tosca.TImport;
-import org.eclipse.winery.model.tosca.TNodeTemplate;
-import org.eclipse.winery.model.tosca.TNodeType;
-import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
-import org.eclipse.winery.model.tosca.TPlan;
-import org.eclipse.winery.model.tosca.TPlans;
-import org.eclipse.winery.model.tosca.TPolicyTemplate;
-import org.eclipse.winery.model.tosca.TPolicyType;
-import org.eclipse.winery.model.tosca.TRelationshipTemplate;
-import org.eclipse.winery.model.tosca.TRelationshipType;
-import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
-import org.eclipse.winery.model.tosca.TRequirement;
-import org.eclipse.winery.model.tosca.TRequirementType;
-import org.eclipse.winery.model.tosca.TServiceTemplate;
-import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
 import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
@@ -125,32 +51,13 @@ import org.eclipse.winery.repository.GitInfo;
 import org.eclipse.winery.repository.JAXBSupport;
 import org.eclipse.winery.repository.backend.constants.Filename;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.xsd.XsdImportManager;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.VisualAppearanceId;
 import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.xerces.impl.dv.XSSimpleType;
-import org.apache.xerces.impl.xs.XSImplementationImpl;
-import org.apache.xerces.xs.XSComplexTypeDefinition;
-import org.apache.xerces.xs.XSElementDeclaration;
-import org.apache.xerces.xs.XSImplementation;
-import org.apache.xerces.xs.XSLoader;
-import org.apache.xerces.xs.XSModel;
-import org.apache.xerces.xs.XSModelGroup;
-import org.apache.xerces.xs.XSObjectList;
-import org.apache.xerces.xs.XSParticle;
-import org.apache.xerces.xs.XSTerm;
-import org.apache.xerces.xs.XSTypeDefinition;
-import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.w3c.dom.Document;
@@ -159,6 +66,25 @@ import org.w3c.dom.ls.LSInput;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.ParseException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 
@@ -294,7 +220,7 @@ public class BackendUtils {
      * <b>not</b> double encoded. With trailing slash if sub-resources can exist
      * @throws IllegalStateException if id is of an unknown subclass of id
      */
-    private static String getPathInsideRepo(GenericId id) {
+    public static String getPathInsideRepo(GenericId id) {
         return Util.getPathInsideRepo(id);
     }
 
@@ -987,6 +913,10 @@ public class BackendUtils {
         if (element instanceof HasTargetNamespace) {
             ((HasTargetNamespace) element).setTargetNamespace(id.getNamespace().getDecoded());
         }
+        // Required for creating a new version in order to also update the name
+        if (element instanceof HasName) {
+            ((HasName) element).setName(id.getXmlId().getDecoded());
+        }
     }
 
     /**
@@ -1327,6 +1257,9 @@ public class BackendUtils {
     }
 
     public static void mergeServiceTemplateAinServiceTemplateB(ServiceTemplateId serviceTemplateIdA, ServiceTemplateId serviceTemplateIdB) throws IOException {
+        Objects.requireNonNull(serviceTemplateIdA);
+        Objects.requireNonNull(serviceTemplateIdB);
+
         IRepository repository = RepositoryFactory.getRepository();
         TTopologyTemplate topologyTemplateA = repository.getElement(serviceTemplateIdA).getTopologyTemplate();
         TServiceTemplate serviceTemplateB = repository.getElement(serviceTemplateIdB);
@@ -1440,10 +1373,132 @@ public class BackendUtils {
                     rt.setId(newId);
                     topologyTemplateB.getNodeTemplateOrRelationshipTemplate().add(rt);
                 });
-        }
-        else {
+        } else {
             topologyTemplateB.getNodeTemplateOrRelationshipTemplate().addAll(topologyTemplateA.getNodeTemplateOrRelationshipTemplate());
         }
         repository.setElement(serviceTemplateIdB, serviceTemplateB);
+    }
+
+    /**
+     * Collects all the definitions which describe the same component in different versions.
+     *
+     * @param id The {@link DefinitionsChildId} for which all versions should be collected.
+     * @return A set of definitions describing the same component in different versions.
+     */
+    public static SortedSet<? extends DefinitionsChildId> getOtherVersionDefinitionsFromDefinition(DefinitionsChildId id) {
+        IRepository repository = RepositoryFactory.getRepository();
+        SortedSet<? extends DefinitionsChildId> allDefinitionsChildIds = repository.getAllDefinitionsChildIds(id.getClass());
+
+        final String componentName = VersionUtils.getNameWithoutVersion(id.getXmlId().getDecoded());
+
+        allDefinitionsChildIds.removeIf(definition -> {
+            if (definition.getNamespace().compareTo(id.getNamespace()) == 0) {
+                String name = VersionUtils.getNameWithoutVersion(definition);
+                return !name.equals(componentName);
+            }
+            return true;
+        });
+
+        return allDefinitionsChildIds;
+    }
+
+    /**
+     * Collects the versions of the given definition and sets editable flags
+     *
+     * @param id the {@link DefinitionsChildId} describing the "base" component.
+     * @return A list of available versions of the specified component.
+     */
+    public static List<WineryVersion> getAllVersionsOfOneDefinition(DefinitionsChildId id) {
+        return getVersionsList(id, new WineryVersion[1]);
+    }
+
+    public static WineryVersion getCurrentVersionWithAllFlags(DefinitionsChildId id) {
+        WineryVersion[] currentVersionWithFlags = new WineryVersion[1];
+        getVersionsList(id, currentVersionWithFlags);
+        return currentVersionWithFlags[0];
+    }
+
+    /**
+     * @param current returns the current version in element [0] of this variable. Has to be non-null.
+     * @return a list of available versions
+     */
+    private static List<WineryVersion> getVersionsList(DefinitionsChildId id, final WineryVersion[] current) {
+        List<WineryVersion> versionList = getOtherVersionDefinitionsFromDefinition(id)
+            .stream()
+            .map(element -> {
+                WineryVersion version = VersionUtils.getVersionWithCurrentFlag(element, id);
+                if (version.isCurrentVersion()) {
+                    current[0] = version;
+                }
+                return version;
+            })
+            // sort descending, so that the latest version comes first
+            .sorted(Comparator.reverseOrder())
+            .collect(Collectors.toList());
+
+        // explicitly set the latest version and releasable flag
+        versionList.get(0).setLatestVersion(true);
+        versionList.get(0).setReleasable(true);
+
+        if (current[0].isVersionedInWinery() && RepositoryFactory.getRepository() instanceof GitBasedRepository) {
+            GitBasedRepository gitRepo = (GitBasedRepository) RepositoryFactory.getRepository();
+            boolean changesInFile = gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(id));
+
+            if (!current[0].isLatestVersion()) {
+                // The current version may still be releasable, if it's the latest WIP version of a component version.
+                List<WineryVersion> collect = versionList.stream()
+                    .filter(version -> version.getComponentVersion().equals(current[0].getComponentVersion()))
+                    .sorted(Comparator.reverseOrder())
+                    .collect(Collectors.toList());
+                current[0].setReleasable(collect.get(0).isCurrentVersion());
+                // And if there are changes, it's also editable.
+                current[0].setEditable(changesInFile && current[0].isReleasable());
+            } else {
+                current[0].setEditable(changesInFile);
+            }
+        }
+
+        return versionList;
+    }
+
+    public static WineryVersion getPredecessor(DefinitionsChildId id) {
+        WineryVersion[] current = new WineryVersion[1];
+        List<WineryVersion> versionList = getVersionsList(id, current);
+        int index = versionList.indexOf(current[0]);
+
+        if (index < versionList.size()) {
+            return versionList.get(index);
+        } else {
+            return null;
+        }
+    }
+
+    public static ToscaDiff compare(DefinitionsChildId id, WineryVersion versionToCompareTo) {
+        IRepository repository = RepositoryFactory.getRepository();
+        DefinitionsChildId versionToCompare = VersionUtils.getDefinitionInTheGivenVersion(id, versionToCompareTo);
+
+        TExtensibleElements workingVersion = repository.getDefinitions(id).getElement();
+        TExtensibleElements baseVersion = repository.getDefinitions(versionToCompare).getElement();
+        return VersionUtils.calculateDifferences(baseVersion, workingVersion);
+    }
+
+    public static void commit(DefinitionsChildId componentToCommit, String commitMessagePrefix) throws GitAPIException {
+        if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
+            GitBasedRepository gitRepo = (GitBasedRepository) RepositoryFactory.getRepository();
+            List<String> filePatternsToCommit = new ArrayList<>();
+
+            if (gitRepo.hasChangesInFile(BackendUtils.getRefOfDefinitions(componentToCommit))) {
+                /*WineryVersion predecessor = BackendUtils.getPredecessor(componentToCommit);
+                ToscaDiff diff = BackendUtils.compare(componentToCommit, predecessor);
+                String changeLog = diff.getChangeLog();
+                // get changelog.md and append changeLog*/
+
+                filePatternsToCommit.add(Util.getPathInsideRepo(componentToCommit));
+
+                gitRepo.addCommit(filePatternsToCommit.toArray(new String[filePatternsToCommit.size()]), commitMessagePrefix + " " + componentToCommit.getQName());
+            }
+        } else {
+            throw new RuntimeException("Repository does not support git!");
+        }
     }
 }

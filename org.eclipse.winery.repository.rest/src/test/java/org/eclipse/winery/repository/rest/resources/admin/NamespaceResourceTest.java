@@ -23,7 +23,6 @@ public class NamespaceResourceTest extends AbstractResourceTest {
     public void getNamespaceList() throws Exception {
         this.setRevisionTo("8b57ea031ea0786a46ef8338ed322db886a77cd6");
         this.assertGet("admin/namespaces/?all", "entitytypes/admin/namspacesList.json");
-        this.assertGetSize("admin/namespaces/?all", 13);
     }
 
 }

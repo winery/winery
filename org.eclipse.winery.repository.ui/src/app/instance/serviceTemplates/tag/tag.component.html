@@ -18,6 +18,7 @@
     <winery-table
         [data]="tagsData"
         [columns]="columns"
+        [disableButtons]="!sharedData?.currentVersion?.editable"
         (cellSelected)="onCellSelected($event.row)"
         [itemsPerPage]="10"
         (removeBtnClicked)="onRemoveClick($event)"

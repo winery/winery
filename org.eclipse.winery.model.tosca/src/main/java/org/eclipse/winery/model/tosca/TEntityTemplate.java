@@ -301,6 +301,19 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                 }
             }
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Properties that = (Properties) o;
+            return Objects.equals(any, that.any);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(any);
+        }
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
@@ -333,6 +346,19 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
                 propertyConstraint = new ArrayList<TPropertyConstraint>();
             }
             return this.propertyConstraint;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PropertyConstraints that = (PropertyConstraints) o;
+            return Objects.equals(propertyConstraint, that.propertyConstraint);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(propertyConstraint);
         }
     }
 

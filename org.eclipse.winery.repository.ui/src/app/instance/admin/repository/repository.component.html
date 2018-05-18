@@ -23,7 +23,7 @@
 <winery-modal bsModal #uploaderModal="bs-modal" [modalRef]="uploaderModal">
     <winery-modal-header [title]="'Upload Repository Content'"></winery-modal-header>
     <winery-modal-body>
-        <winery-uploader #uploader [uploadUrl]="path"></winery-uploader>
+        <winery-uploader #uploader [uploadUrl]="path" [isEditable]="true"></winery-uploader>
     </winery-modal-body>
     <winery-modal-footer [showDefaultButtons]="false">
         <button type="button" class="btn btn-default" (click)="uploaderModal.hide()">Cancel</button>

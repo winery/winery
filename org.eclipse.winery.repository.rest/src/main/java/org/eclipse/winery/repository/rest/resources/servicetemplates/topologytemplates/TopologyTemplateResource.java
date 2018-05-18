@@ -60,7 +60,6 @@ public class TopologyTemplateResource {
 
     private final ServiceTemplateResource serviceTemplateRes;
 
-
     /**
      * A topology template is always nested in a service template
      */

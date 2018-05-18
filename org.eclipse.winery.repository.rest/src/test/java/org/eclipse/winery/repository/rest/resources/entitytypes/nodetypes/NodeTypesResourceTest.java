@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,4 +25,10 @@ public class NodeTypesResourceTest extends AbstractResourceTest {
         this.assertGet("nodetypes/?grouped&full", "entitytypes/nodetypes/all-nodetypes-of-commit-67bb1650522ced3872220ad2d17c1afd82e7e1f3.json");
     }
 
+    @Test
+    public void createNodeType() throws Exception {
+        this.setRevisionTo("origin/plain");
+        this.assertPost("nodetypes/", "entitytypes/nodetypes/addNodeType.json");
+        this.assertGet("nodetypes/http%253A%252F%252Fexample.org%252Ftosca%252F/myLittleExample_1.0.0-w1-1", "entitytypes/nodetypes/addedNodeType.json");
+    }
 }

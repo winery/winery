@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,6 +17,7 @@ import {WineryNotificationService} from '../wineryNotificationModule/wineryNotif
 import {InstanceService} from '../instance/instance.service';
 import {ToscaTypes} from '../wineryInterfaces/enums';
 import {LicenseEnum, WineryLicense} from './wineryLicense.enum';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'wineryLicense.component.html',
@@ -37,7 +38,7 @@ export class WineryLicenseComponent implements OnInit {
 
     toscaType: ToscaTypes;
 
-    constructor(private service: WineryLicenseService, private notify: WineryNotificationService, private sharedData: InstanceService) {
+    constructor(private service: WineryLicenseService, private notify: WineryNotificationService, public sharedData: InstanceService) {
         this.toscaType = this.sharedData.toscaComponent.toscaType;
         this.options = Object.keys(LicenseEnum).map(key => LicenseEnum[key]);
     }
@@ -69,9 +70,9 @@ export class WineryLicenseComponent implements OnInit {
         this.isEditable = false;
     }
 
-    private handleError(error: any) {
+    private handleError(error: HttpErrorResponse) {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 
     private handleMissingLicense() {

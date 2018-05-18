@@ -5,6 +5,6 @@
             namespace="http://winery.opentosca.org/test/policytypes/fruits"/>
     <PolicyType abstract="no" final="yes" name="european"
                 targetNamespace="http://winery.opentosca.org/test/policytypes/fruits">
-        <DerivedFrom xmlns:fruits="http://winery.opentosca.org/test/policytypes/fruits" typeRef="fruits:organic"/>
+        <DerivedFrom xmlns:wfp="http://winery.opentosca.org/test/policytypes/fruits" typeRef="wfp:organic"/>
     </PolicyType>
 </Definitions>

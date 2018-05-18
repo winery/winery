@@ -22,7 +22,6 @@
     </parent>
     <artifactId>org.eclipse.winery.generators.ia</artifactId>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
@@ -113,11 +112,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
+                <version>3.7.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

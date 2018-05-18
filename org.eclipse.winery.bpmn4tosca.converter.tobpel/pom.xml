@@ -21,6 +21,9 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>org.eclipse.winery.bpmn4tosca.converter.tobpel</artifactId>
+	<properties>
+		<maven.deploy.skip>true</maven.deploy.skip>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -70,10 +73,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.deploy.skip>true</maven.deploy.skip>
-	</properties>
 	<url>http://www.eclipse.org/winery</url>
 	<organization>
 		<name>Eclipse.org - Winery Project</name>
@@ -109,11 +108,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
+				<version>3.7.0</version>
 			</plugin>
 		</plugins>
 	</build>

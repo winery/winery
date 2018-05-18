@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -227,7 +227,7 @@ public class TTopologyTemplate extends TExtensibleElements {
             return addNodeTemplates(tmp);
         }
 
-        public Builder addRelationshipTemplate(List<TRelationshipTemplate> relationshipTemplates) {
+        public Builder addRelationshipTemplates(List<TRelationshipTemplate> relationshipTemplates) {
             if (relationshipTemplates == null || relationshipTemplates.isEmpty()) {
                 return this;
             }
@@ -247,7 +247,7 @@ public class TTopologyTemplate extends TExtensibleElements {
 
             List<TRelationshipTemplate> tmp = new ArrayList<>();
             tmp.add(relationshipTemplates);
-            return addRelationshipTemplate(tmp);
+            return addRelationshipTemplates(tmp);
         }
 
         public List<TEntityTemplate> getNodeTemplateOrRelationshipTemplate() {

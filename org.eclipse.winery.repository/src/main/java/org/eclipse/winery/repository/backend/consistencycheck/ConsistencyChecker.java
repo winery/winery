@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,28 +13,23 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.backend.consistencycheck;
 
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jgit.annotations.NonNull;
-import org.eclipse.jgit.annotations.Nullable;
-import org.eclipse.winery.common.RepositoryFileReference;
-import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
-import org.eclipse.winery.common.Util;
-import org.eclipse.winery.common.ids.Namespace;
-import org.eclipse.winery.common.ids.definitions.*;
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
-import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.backend.BackendUtils;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
-import org.eclipse.winery.repository.export.CsarExporter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBException;
@@ -46,19 +41,38 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+
+import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.common.ids.Namespace;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.EntityTemplateId;
+import org.eclipse.winery.common.ids.definitions.EntityTypeId;
+import org.eclipse.winery.common.ids.definitions.NodeTypeId;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TNodeType;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKV;
+import org.eclipse.winery.model.tosca.kvproperties.PropertyDefinitionKVList;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.exceptions.RepositoryCorruptException;
+import org.eclipse.winery.repository.export.CsarExporter;
+
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.annotations.NonNull;
+import org.eclipse.jgit.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 public class ConsistencyChecker {
 
@@ -92,19 +106,25 @@ public class ConsistencyChecker {
         return errorLogger;
     }
 
-    public static void checkDocumentation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
-        checkFileExistance(errorLogger, configuration, id, "README.md");
-        checkFileExistance(errorLogger, configuration, id, "LICENSE");
+    /**
+     * Checks whether a README.md and a LICENSE file exists for the given definitions child id.
+     */
+    private static void checkDocumentation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
+        checkFileExistence(errorLogger, configuration, id, "README.md");
+        checkFileExistence(errorLogger, configuration, id, "LICENSE");
     }
 
-    public static void checkFileExistance(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id, String filename) {
+    /**
+     * Checks whether the given filename exists within the given defintions child id
+     */
+    private static void checkFileExistence(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id, String filename) {
         RepositoryFileReference repositoryFileReference = new RepositoryFileReference(id, filename);
         if (!configuration.getRepository().exists(repositoryFileReference)) {
             printAndAddWarning(errorLogger, configuration.getVerbosity(), id, filename + " does not exist.");
         }
     }
 
-    public static void checkPlainConformance(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
+    private static void checkPlainConformance(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, Path tempCsar) {
         // TODO implement according to https://winery.github.io/test-repository/plain
         /*if (id.getNamespace().getDecoded().startsWith("http://plain.winery.opentosca.org/")) {
             if (id instanceof EntityTypeId) {
@@ -115,7 +135,7 @@ public class ConsistencyChecker {
         }*/
     }
 
-    public static void checkServiceTemplate(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, ServiceTemplateId id) {
+    private static void checkServiceTemplate(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, ServiceTemplateId id) {
         final TServiceTemplate serviceTemplate = configuration.getRepository().getElement(id);
         if (serviceTemplate.getTopologyTemplate() == null) {
             return;
@@ -145,7 +165,7 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void checkReferencedQNames(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
+    private static void checkReferencedQNames(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
         if (id instanceof EntityTypeId) {
             final TEntityType entityType = (TEntityType) configuration.getRepository().getDefinitions(id).getElement();
             final TEntityType.PropertiesDefinition propertiesDefinition = entityType.getPropertiesDefinition();
@@ -158,7 +178,7 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void checkXmlSchemaValidation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
+    private static void checkXmlSchemaValidation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
         RepositoryFileReference refOfDefinitions = BackendUtils.getRefOfDefinitions(id);
         if (!configuration.getRepository().exists(refOfDefinitions)) {
             printAndAddError(errorLogger, configuration.getVerbosity(), id, "Id exists, but corresponding XML file does not.");
@@ -182,7 +202,7 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void validate(ConsistencyErrorLogger errorLogger, RepositoryFileReference xmlSchemaFileReference, @Nullable Object any, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
+    private static void validate(ConsistencyErrorLogger errorLogger, RepositoryFileReference xmlSchemaFileReference, @Nullable Object any, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
         if (!(any instanceof Element)) {
             printAndAddError(errorLogger, configuration.getVerbosity(), id, "any is not instance of Document, but " + any.getClass());
             return;
@@ -199,7 +219,7 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void checkPropertiesValidation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
+    private static void checkPropertiesValidation(ConsistencyErrorLogger errorLogger, ConsistencyCheckerConfiguration configuration, DefinitionsChildId id) {
         if (id instanceof EntityTemplateId) {
             TEntityTemplate entityTemplate = (TEntityTemplate) configuration.getRepository().getDefinitions(id).getElement();
             if (Objects.isNull(entityTemplate.getType())) {
@@ -226,7 +246,7 @@ public class ConsistencyChecker {
                         if (kvProperties.get(key) == null) {
                             printAndAddError(errorLogger, configuration.getVerbosity(), id, "Property " + key + " required, but not set.");
                         } else {
-                            // remove the key from the map to enable checking below whether a property is defined which not requried by the property definition 
+                            // removePermanentPrefix the key from the map to enable checking below whether a property is defined which not requried by the property definition 
                             kvProperties.remove(key);
                         }
                     }
@@ -257,12 +277,12 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void checkId(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id) {
+    private static void checkId(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id) {
         checkNamespaceUri(errorLogger, verbosity, id);
         checkNcname(errorLogger, verbosity, id, id.getXmlId().getDecoded());
     }
 
-    public static void checkNcname(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, String ncname) {
+    private static void checkNcname(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id, String ncname) {
         if (!ncname.trim().equals(ncname)) {
             printAndAddError(errorLogger, verbosity, id, "local name starts or ends with white spaces");
         }
@@ -272,8 +292,10 @@ public class ConsistencyChecker {
     }
 
     public static void checkNamespaceUri(ConsistencyErrorLogger errorLogger, EnumSet<ConsistencyCheckerVerbosity> verbosity, DefinitionsChildId id) {
+        Objects.requireNonNull(errorLogger);
         Objects.requireNonNull(verbosity);
         Objects.requireNonNull(id);
+
         String uriStr = id.getNamespace().getDecoded();
         if (!uriStr.trim().equals(uriStr)) {
             printAndAddError(errorLogger, verbosity, id, "Namespace starts or ends with white spaces");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -45,7 +45,8 @@ import java.util.Objects;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDeploymentArtifact")
-public class TDeploymentArtifact extends TExtensibleElements {
+public class TDeploymentArtifact extends TExtensibleElements implements HasName {
+
     @XmlAttribute(name = "name", required = true)
     protected String name;
     @XmlAttribute(name = "artifactType", required = true)
@@ -84,6 +85,7 @@ public class TDeploymentArtifact extends TExtensibleElements {
      * @return possible object is {@link String }
      */
     @NonNull
+    @Override
     public String getName() {
         return name;
     }
@@ -93,6 +95,7 @@ public class TDeploymentArtifact extends TExtensibleElements {
      *
      * @param value allowed object is {@link String }
      */
+    @Override
     public void setName(String value) {
         this.name = value;
     }

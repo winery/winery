@@ -12,6 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
+import { InstanceService } from '../../instance.service';
 
 @Component({
     selector: 'winery-image-upload',
@@ -24,7 +25,7 @@ export class ImageUploadComponent implements OnInit {
     @Input() id: string;
     @Input() accept = 'image/*';
 
-    constructor() {
+    constructor(public sharedData: InstanceService) {
     }
 
     ngOnInit() {

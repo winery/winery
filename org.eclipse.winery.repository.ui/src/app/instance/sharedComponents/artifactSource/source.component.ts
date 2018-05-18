@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,16 +11,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FilesApiData, SourceService} from './source.service';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {WineryEditorComponent} from '../../../wineryEditorModule/wineryEditor.component';
-import {SourceApiData} from './sourceApiData';
-import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import {hostURL} from '../../../configuration';
-import {InstanceService} from '../../instance.service';
-import {ToscaTypes} from '../../../wineryInterfaces/enums';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FilesApiData, SourceService } from './source.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { WineryEditorComponent } from '../../../wineryEditorModule/wineryEditor.component';
+import { SourceApiData } from './sourceApiData';
+import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import { hostURL } from '../../../configuration';
+import { InstanceService } from '../../instance.service';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'source.component.html',
@@ -60,7 +60,7 @@ export class SourceComponent implements OnInit {
 
     constructor(private service: SourceService,
                 private notify: WineryNotificationService,
-                private sharedData: InstanceService) {
+                public sharedData: InstanceService) {
         this.srcPath = this.service.getSourcePath + 'zip';
         this.enableCopyToFiles = this.sharedData.toscaComponent.toscaType !== ToscaTypes.ServiceTemplate;
     }
@@ -110,7 +110,7 @@ export class SourceComponent implements OnInit {
             fileAPI.setSubDirectory(this.selectedFile.subDirectory);
             this.service.postToSources(fileAPI)
                 .subscribe(
-                    data => this.handleSave(),
+                    () => this.handleSave(),
                     error => this.handleError(error)
                 );
         }
@@ -119,7 +119,7 @@ export class SourceComponent implements OnInit {
     copyAllSrc() {
         this.service.copySourcesToFiles()
             .subscribe(
-                data => this.handleCopySuccess(),
+                () => this.handleCopySuccess(),
                 error => this.handleError(error)
             );
     }
@@ -136,7 +136,7 @@ export class SourceComponent implements OnInit {
         apiData.setSubDirectory(this.selectedFile.subDirectory);
         this.service.postToSources(apiData)
             .subscribe(
-                data => this.onRename(),
+                () => this.onRename(),
                 error => this.handleError(error)
             );
     }
@@ -162,7 +162,7 @@ export class SourceComponent implements OnInit {
         newFile.setSubDirectory(this.newFileDir);
         this.service.postToSources(newFile)
             .subscribe(
-                data => this.handleCreate(),
+                () => this.handleCreate(),
                 error => this.handleError(error)
             );
     }
@@ -171,14 +171,14 @@ export class SourceComponent implements OnInit {
         this.loading = true;
         this.service.deleteFile(this.selectedFile)
             .subscribe(
-                data => this.handleDelete(),
+                () => this.handleDelete(),
                 error => this.handleError(error)
             );
     }
 
     private onRename() {
         this.service.deleteFile(this.selectedFile).subscribe(
-            data => this.handleRename(),
+            () => this.handleRename(),
             error => this.handleError(error)
         );
     }
@@ -197,7 +197,7 @@ export class SourceComponent implements OnInit {
         apiData.setFileName(fileName);
         this.service.postToFiles(apiData)
             .subscribe(
-                data => this.handleSave(),
+                () => this.handleSave(),
                 error => this.handleError(error)
             );
     }
@@ -260,9 +260,9 @@ export class SourceComponent implements OnInit {
         this.loading = false;
     }
 
-    private handleError(error: any) {
+    private handleError(error: HttpErrorResponse) {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 
     private invalidateEditor() {

@@ -21,6 +21,7 @@ import {WineryValidatorObject} from '../../../../wineryValidators/wineryDuplicat
 import {SelectItem} from 'ng2-select';
 import {EditXMLComponent} from '../../../sharedComponents/editXML/editXML.component';
 import {Response} from '@angular/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'policies.component.html',
@@ -174,12 +175,12 @@ export class PoliciesComponent implements OnInit {
         this.ngOnInit();
     }
 
-    private handleError(error: any) {
+    private handleError(error: HttpErrorResponse) {
         this.loading = false;
-        this.notify.error(error);
+        this.notify.error(error.message);
     }
 
-    private handlePolicyTypesError(error: Response) {
+    private handlePolicyTypesError(error: HttpErrorResponse) {
         if (error.status === 404) {
             // warns the user if there are nor policy types available -> send warning now
             this.add();

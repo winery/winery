@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -20,6 +20,7 @@
     <winery-table id="cap-or-reqdef-table"
                   [data]="tableData"
                   [columns]="columns"
+                  [disableButtons]="!sharedData?.currentVersion?.editable"
                   (cellSelected)="onCellSelected($event)"
                   [itemsPerPage]="10"
                   (removeBtnClicked)="onRemoveClick($event)"
@@ -144,11 +145,14 @@
         </button>
 
         <button type="button" class="btn btn-primary" *ngIf="createNewConstraintFlag;  else elseEditConstraint"
+                [disabled]="!sharedData?.currentVersion?.editable"
                 (click)="createSelectedConstraint()">
             Create
         </button>
         <ng-template #elseEditConstraint>
-            <button type="button" class="btn btn-primary" (click)="updateSelectedConstraint()">Update</button>
+            <button type="button" class="btn btn-primary" (click)="updateSelectedConstraint()"
+                    [disabled]="!sharedData?.currentVersion?.editable">Update
+            </button>
         </ng-template>
     </winery-modal-footer>
 </winery-modal>

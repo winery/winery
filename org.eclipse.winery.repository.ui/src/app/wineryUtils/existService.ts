@@ -11,17 +11,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class ExistService {
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
-    check(url: string): Observable<any> {
-        return this.http.head(url);
+    check(url: string): Observable<HttpResponse<any>> {
+        return this.http.head(url, { observe: 'response', responseType: 'text' });
     }
 }

@@ -11,24 +11,28 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Http} from '@angular/http';
-import {backendBaseURL} from '../../../configuration';
-import {Observable} from 'rxjs';
-import {Router} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { backendBaseURL } from '../../../configuration';
+import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class RepositoryService {
 
     path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
         this.path = decodeURIComponent(this.route.url);
     }
 
-    clearRepository(): Observable<any> {
-        return this.http.delete(backendBaseURL + this.path + '/');
+    clearRepository(): Observable<HttpResponse<string>> {
+        return this.http
+            .delete(
+                backendBaseURL + this.path + '/',
+                { observe: 'response', responseType: 'text' }
+            );
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -175,6 +175,24 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
         }
     }
 
+    protected void assertPostExpectBadRequestResponse(String restURL, String fileName) {
+        try {
+            start()
+                .contentType(getAccept(fileName))
+                .post(callURL(restURL))
+                .then()
+                .log()
+                .ifValidationFails()
+                .statusCode(400)
+                .extract()
+                .response()
+                .getBody()
+                .asString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected void assertGetSize(String restURL, int size) {
         start()
             .accept(ContentType.JSON)
@@ -262,5 +280,4 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
     public static String replacePathStringEncoding(String toConvert) {
         return toConvert.replace("%3A", "%253A").replace("%2F", "%252F");
     }
-
 }

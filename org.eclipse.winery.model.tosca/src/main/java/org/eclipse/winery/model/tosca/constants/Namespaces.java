@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.constants;
 
-import javax.xml.XMLConstants;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.xml.XMLConstants;
 
 /**
  * Defines namespace constants not available in Java7's XMLConstants
@@ -34,7 +35,7 @@ public class Namespaces {
     public static final String URI_BPMN4TOSCA_20 = "http://www.opentosca.org/bpmn4tosca";
     public static final String URI_BPEL20_ABSTRACT = "http://docs.oasis-open.org/wsbpel/2.0/process/abstract";
     public static final String URI_BPEL20_EXECUTABLE = "http://docs.oasis-open.org/wsbpel/2.0/process/executable";
-    public static final String URI_OPENTOSCA_NODETYPE = "http://www.opentosca.org/nodetypes";
+    public static final String URI_START_OPENTOSCA = "http://opentosca.org/";
 
     // XML Schema namespace is defined at Java7's XMLConstants.W3C_XML_SCHEMA_NS_URI
     public static final String W3C_XML_SCHEMA_NS_URI = XMLConstants.W3C_XML_SCHEMA_NS_URI;

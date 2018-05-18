@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,6 +24,7 @@ import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.winery.common.RepositoryFileReference;
+import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.configuration.GitBasedRepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Allows to reset repository to a certain commit id
@@ -105,7 +107,7 @@ public class GitBasedRepository extends FilebasedRepository {
      * @throws GitAPIException thrown when anything with adding or committing goes wrong.
      */
     public void addCommit(String message) throws GitAPIException {
-        addCommit(new String[] {"."}, message);
+        addCommit(new String[]{"."}, message);
     }
 
     public void addCommit(String[] patterns, String message) throws GitAPIException {
@@ -215,6 +217,34 @@ public class GitBasedRepository extends FilebasedRepository {
             }
         } catch (GitAPIException e) {
             LOGGER.trace(e.getMessage(), e);
+        }
+    }
+
+    public boolean hasChangesInFile(RepositoryFileReference ref) {
+        try {
+            if (!this.git.status().call().isClean()) {
+                List<DiffEntry> diffEntries = this.git.diff().call();
+                List<DiffEntry> entries = diffEntries.stream()
+                    // we use String::startsWith() and RepositoryFileReference::getParent()
+                    // because the component is considered changed, if any file of this component is changed.
+                    // -> check if any file in the folder is changed
+                    .filter(item -> item.getNewPath().startsWith(BackendUtils.getPathInsideRepo(ref.getParent())))
+                    .collect(Collectors.toList());
+                return entries.size() > 0;
+            }
+        } catch (GitAPIException e) {
+            LOGGER.trace(e.getMessage(), e);
+        }
+
+        return false;
+    }
+
+    public Status getStatus() {
+        try {
+            return this.git.status().call();
+        } catch (GitAPIException e) {
+            LOGGER.trace(e.getMessage(), e);
+            return null;
         }
     }
 }

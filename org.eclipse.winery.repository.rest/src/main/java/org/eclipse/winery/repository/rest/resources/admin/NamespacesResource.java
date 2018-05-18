@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,8 +13,26 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest.resources.admin;
 
-import io.swagger.annotations.ApiParam;
-import org.apache.commons.lang3.StringUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.admin.NamespacesId;
@@ -23,15 +41,11 @@ import org.eclipse.winery.repository.backend.NamespaceManager;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.ConfigurationBasedNamespaceManager;
 import org.eclipse.winery.repository.rest.resources.apiData.NamespaceWithPrefix;
+
+import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Manages prefixes for the namespaces
@@ -48,10 +62,10 @@ public class NamespacesResource extends AbstractAdminResource {
     }
 
     /**
-     * Returns the list of all namespaces registered with his manager and used at component instances.
+     * Returns the list of all namespaces registered with this manager and used at component instances.
      */
     public Collection<Namespace> getNamespaces() {
-        Set<Namespace> res = this.namespaceManager.getAllNamespaces().stream().map(ns -> new Namespace(ns, false)).collect(Collectors.toSet());
+        Set<Namespace> res = this.namespaceManager.getAllPermanentNamespaces().stream().map(ns -> new Namespace(ns, false)).collect(Collectors.toSet());
         res.addAll(RepositoryFactory.getRepository().getUsedNamespaces());
         ArrayList<Namespace> list = new ArrayList<>(res);
         Collections.sort(list);
@@ -73,7 +87,7 @@ public class NamespacesResource extends AbstractAdminResource {
         }
         namespace = Util.URLdecode(namespace);
         prefix = Util.URLdecode(prefix);
-        Collection<String> allPrefixes = this.namespaceManager.getAllPrefixes();
+        Collection<String> allPrefixes = this.namespaceManager.getAllPermanentPrefixes();
         if (allPrefixes.contains(prefix)) {
             if (this.namespaceManager.getPrefix(namespace).equals(prefix)) {
                 return Response.notModified().build();
@@ -82,7 +96,7 @@ public class NamespacesResource extends AbstractAdminResource {
                 return Response.status(Status.BAD_REQUEST).entity("prefix already bound to a different namespace.").build();
             }
         }
-        this.namespaceManager.setPrefix(namespace, prefix);
+        this.namespaceManager.setPermanentPrefix(namespace, prefix);
         return Response.noContent().build();
     }
 
@@ -99,7 +113,7 @@ public class NamespacesResource extends AbstractAdminResource {
         }
         this.namespaceManager.clear();
         for (NamespaceWithPrefix nsp : namespacesList) {
-            this.namespaceManager.setPrefix(nsp.namespace, nsp.prefix);
+            this.namespaceManager.setPermanentPrefix(nsp.namespace, nsp.prefix);
         }
         return Response.noContent().build();
     }
@@ -114,8 +128,8 @@ public class NamespacesResource extends AbstractAdminResource {
     public Response onDelete(@PathParam("namespace") String uri) {
         Response res;
         uri = Util.URLdecode(uri);
-        if (this.namespaceManager.hasPrefix(uri)) {
-            this.namespaceManager.remove(uri);
+        if (this.namespaceManager.hasPermanentPrefix(uri)) {
+            this.namespaceManager.removePermanentPrefix(uri);
             res = Response.noContent().build();
         } else {
             res = Response.status(Status.NOT_FOUND).build();

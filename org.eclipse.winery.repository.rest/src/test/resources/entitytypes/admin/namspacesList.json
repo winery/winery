@@ -36,10 +36,6 @@
         "namespace": "http://www.example.org"
     },
     {
-        "prefix": "otnt",
-        "namespace": "http://www.opentosca.org/nodetypes"
-    },
-    {
         "prefix": "winery",
         "namespace": "http://www.opentosca.org/winery/extensions/tosca/2013/02/12"
     },

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,13 +16,10 @@ import {AbstractControl, NG_VALIDATORS, Validator, ValidatorFn, Validators} from
 import {isNullOrUndefined} from 'util';
 
 export class WineryValidatorObject {
-    list: Array<any>;
-    property?: string;
+
     regEx?: RegExp;
 
-    constructor(list: Array<any>, property?: string) {
-        this.list = list;
-        this.property = property;
+    constructor(private list: Array<any>, private property?: string) {
     }
 
     public setRegExp(regExp: RegExp) {
@@ -44,7 +41,7 @@ export class WineryValidatorObject {
             if (!isNullOrUndefined(compareObject.regEx)) {
                 no = !compareObject.regEx.test(name);
             }
-            return no ? {'wineryDuplicateValidator': {name}} : null;
+            return no ? {wineryDuplicateValidator: {name}} : null;
         };
     }
 }

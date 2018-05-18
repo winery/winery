@@ -11,18 +11,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../../configuration';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../configuration';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class EditXMLService {
 
-    private path: string;
+    private readonly path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
         this.path = this.route.url;
         if (this.path.endsWith('xml')) {
@@ -31,22 +31,26 @@ export class EditXMLService {
     }
 
     getXmlData(): Observable<string> {
-        const headers = new Headers({'Accept': 'application/xml'});
-        const options = new RequestOptions({headers: headers});
+        const headers = new HttpHeaders({ 'Accept': 'application/xml' });
 
         let getPath = this.path;
         if (!getPath.endsWith('properties') && !getPath.endsWith(('selfserviceportal/'))) {
             getPath += 'xml/';
         }
 
-        return this.http.get(backendBaseURL + getPath, options)
-            .map(res => res.text());
+        return this.http.get(
+            backendBaseURL + getPath,
+            { headers: headers, responseType: 'text' }
+        );
     }
 
-    saveXmlData(xmlData: String): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/xml'});
-        const options = new RequestOptions({headers: headers});
+    saveXmlData(xmlData: String): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/xml' });
 
-        return this.http.put(backendBaseURL + this.path, xmlData, options);
+        return this.http.put(
+            backendBaseURL + this.path,
+            xmlData,
+            { headers: headers, observe: 'response', responseType: 'text' }
+        );
     }
 }

@@ -38,7 +38,7 @@ public class RelationshipTypeResourceTest extends AbstractResourceTest {
 
     @Test
     public void createRelationshipType() throws Exception {
-        this.setRevisionTo("9c486269f6280e0eb14730d01554e7e4553a3d60");
+        this.setRevisionTo("15cd64e30770ca7986660a34e1a4a7e0cf332f19"); // empty repository
         this.assertPost("relationshiptypes/", "entitytypes/relationshiptypes/kiwi_create.json");
         this.assertGet("relationshiptypes/http%253A%252F%252Fwinery.opentosca.org%252Ftest%252Frelationshiptypes%252Ffruits/kiwi/", "entitytypes/relationshiptypes/kiwi_initial.json");
     }

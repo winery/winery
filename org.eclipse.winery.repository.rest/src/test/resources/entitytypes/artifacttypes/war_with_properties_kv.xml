@@ -15,7 +15,7 @@
             </winery:properties>
         </winery:PropertiesDefinition>
         <PropertiesDefinition
-            xmlns:winery2="http://winery.opentosca.org/test/artifacttypes/fruits/propertiesdefinition/winery"
-            type="winery2:properties"/>
+            xmlns:atypd="http://winery.opentosca.org/test/artifacttypes/fruits/propertiesdefinition/winery"
+            type="atypd:properties"/>
     </ArtifactType>
 </Definitions>

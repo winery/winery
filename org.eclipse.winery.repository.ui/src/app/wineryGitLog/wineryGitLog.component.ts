@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,12 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {GitLogApiData} from './GitLogApiData';
-import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
-import {ModalDirective} from 'ngx-bootstrap';
-import {Router} from '@angular/router';
-import {webSocketURL} from '../configuration';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { ModalDirective } from 'ngx-bootstrap';
+import { Router } from '@angular/router';
+import { webSocketURL } from '../configuration';
+import { GitChange, GitData, GitResponseData } from './GitLogApiData';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     selector: 'winery-gitlog',
@@ -30,8 +31,8 @@ export class WineryGitLogComponent implements OnInit {
     webSocket: WebSocket;
     isExpanded = false;
     lfsAvailable = false;
-    files: GitLogApiData[] = [];
-    selectedFile: GitLogApiData;
+    files: GitChange[] = [];
+    selectedFile: GitChange;
     commitMsg = '';
     show = false;
 
@@ -49,38 +50,30 @@ export class WineryGitLogComponent implements OnInit {
         };
 
         this.webSocket.onmessage = event => {
-            switch (event.data) {
-                case 'commit success': {
-                    this.notify.success('Commited: ' + this.commitMsg);
-                    this.commitMsg = '';
-                    this.selectedFile = null;
-                    break;
-                }
-                case 'commit failed': {
-                    this.notify.error('commit failed');
-                    break;
-                }
-                case 'reset failed': {
-                    this.notify.error('winery-repository reset to last commit failed!');
-                    break;
-                }
-                case 'reset success': {
-                    this.notify.success('winery-repository resetted to last commit');
-                    this.router.navigate(['/']);
-                    break;
-                }
-                case 'git-lfs': {
-                    this.lfsAvailable = true;
-                    break;
-                }
-                default: {
-                    this.files = JSON.parse(event.data);
-                    for (let i = 0; i < this.files.length; i++) {
-                        this.files[i].name = decodeURIComponent(decodeURIComponent(this.files[i].name));
-                    }
-                }
+            const data: GitResponseData = JSON.parse(event.data);
+
+            if (!isNullOrUndefined(data.changes)) {
+                this.files = data.changes;
             }
 
+            if (!isNullOrUndefined(data.success)) {
+                this.notify.success(data.success);
+            }
+
+            if (!isNullOrUndefined(data.error)) {
+                this.notify.error(data.error);
+            }
+
+            if (!isNullOrUndefined(data.resetSuccess)) {
+                this.router.navigate(['/']);
+            }
+
+            if (!isNullOrUndefined(data.lfsAvailable)) {
+                this.lfsAvailable = data.lfsAvailable;
+            }
+
+            this.commitMsg = '';
+            this.selectedFile = null;
         };
 
         this.webSocket.onclose = event => {
@@ -94,19 +87,21 @@ export class WineryGitLogComponent implements OnInit {
         } else if (this.commitMsg === '') {
             this.notify.error('Please enter a valid commit message!');
         } else {
-            this.webSocket.send(this.commitMsg);
+            this.webSocket.send(JSON.stringify({ commitMessage: this.commitMsg }));
         }
     }
 
     refreshLog() {
-        this.webSocket.send('');
+        const data = new GitData();
+        data.refresh = true;
+        this.webSocket.send(JSON.stringify(data));
     }
 
     doCommitMsgValueChange(data: any) {
         this.commitMsg = data.target.value;
     }
 
-    select(file: GitLogApiData) {
+    select(file: GitChange) {
         if (this.selectedFile === file) {
             this.selectedFile = null;
         } else {
@@ -120,7 +115,9 @@ export class WineryGitLogComponent implements OnInit {
     }
 
     discardChanges() {
-        this.webSocket.send('reset');
+        const data = new GitData();
+        data.reset = true;
+        this.webSocket.send(JSON.stringify(data));
         this.hide();
     }
 

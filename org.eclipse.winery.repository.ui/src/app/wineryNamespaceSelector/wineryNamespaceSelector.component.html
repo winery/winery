@@ -38,18 +38,32 @@
         </div>
     </div>
     <div *ngIf="useStartNamespace" style="margin-top: 20px">
-        <label for="initNamespace" class="control-label">Template: Start of namespace URI - used for automatic
-            namespace URI generation</label>
-        <div style="display: flex;">
-            <input #initNamespace
-                   type="text"
-                   class="form-control"
-                   id="initNamespace"
-                   name="initNamespace"
-                   #namespaceStart="ngModel"
-                   [(ngModel)]="initNamespaceString">
-            <button style="margin-left: 10px; width: 15%;" class="bnt btn-primary" (click)="applyNamespace()">Apply
+        <div>
+            <label for="initNamespace" class="control-label">Template:</label>
+            <button type="button" class="btn btn-default btn-xs collapsebtn"
+                    (click)="isCollapsed = !isCollapsed" style="float: right;">
+                <span class="collapsespan" aria-hidden="true" [class.collapsed]="isCollapsed"></span>
             </button>
+
+        </div>
+        <div (collapsed)="collapsed($event)"
+             (expanded)="expanded($event)"
+             [collapse]="isCollapsed">
+            <div>
+                <label for="initNamespace" class="control-label">Start of namespace URI - used for automatic
+                    namespace URI generation</label>
+            </div>
+            <div style="display: flex;">
+                <input #initNamespace
+                       type="text"
+                       class="form-control"
+                       id="initNamespace"
+                       name="initNamespace"
+                       #namespaceStart="ngModel"
+                       [(ngModel)]="initNamespaceString">
+                <button style="margin-left: 10px; width: 15%;" class="bnt btn-primary" (click)="applyNamespace()">Apply
+                </button>
+            </div>
         </div>
         <div *ngIf="namespaceStart.errors && (namespaceStart.dirty || namespaceStart.touched)"
              class="alert alert-danger">

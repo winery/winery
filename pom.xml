@@ -63,6 +63,9 @@
     <properties>
         <github.global.server>github</github.global.server>
         <main.basedir>${project.basedir}</main.basedir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <modules>
         <module>org.eclipse.winery.model.bpmn4tosca</module>
@@ -80,6 +83,7 @@
         <module>org.eclipse.winery.repository.configuration</module>
         <module>org.eclipse.winery.repository.rest</module>
         <module>org.eclipse.winery.repository.ui</module>
+        <module>org.eclipse.winery.topologymodeler.ui</module>
         <module>org.eclipse.winery.topologymodeler</module>
         <module>org.eclipse.winery.compliance</module>
         <module>org.eclipse.winery.workflowmodeler</module>
@@ -130,11 +134,13 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <!-- Also include all other Angular executions here.
-                     However, this is not yet possible because of the "old" topology modeler. -->
+                    <!--
+                        TODO: Also include all other Angular executions here.
+                        However, this is not yet possible because of the "old" topology modeler.
+                    -->
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
-                    <version>1.4</version>
+                    <version>1.6</version>
                     <executions>
                         <execution>
                             <phase>generate-resources</phase>
@@ -143,8 +149,8 @@
                                 <goal>install-node-and-npm</goal>
                             </goals>
                             <configuration>
-                                <nodeVersion>v8.6.0</nodeVersion>
-                                <npmVersion>5.4.2</npmVersion>
+                                <nodeVersion>v8.11.1</nodeVersion> <!-- LTS as of 2018-03-30 - see https://nodejs.org/en/blog/release/v8.11.1/ -->
+                                <npmVersion>5.6.0</npmVersion> <!-- defined as latest LTS version -->
                             </configuration>
                         </execution>
                     </executions>

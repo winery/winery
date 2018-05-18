@@ -1,0 +1,38 @@
+{
+    "element": "TServiceTemplate",
+    "state": "CHANGED",
+    "children": [
+        {
+            "element": "id",
+            "oldValue": "ServiceTemplateWithTwoNodeTemplates_-w1-wip1",
+            "newValue": "ServiceTemplateWithTwoNodeTemplates_-w1-wip2",
+            "state": "CHANGED"
+        },
+        {
+            "element": "name",
+            "oldValue": "ServiceTemplateWithTwoNodeTemplates_-w1-wip1",
+            "newValue": "ServiceTemplateWithTwoNodeTemplates_-w1-wip2",
+            "state": "CHANGED"
+        },
+        {
+            "element": "topologyTemplate",
+            "state": "CHANGED",
+            "children": [
+                {
+                    "element": "nodeTemplates",
+                    "state": "CHANGED",
+                    "children": [
+                        {
+                            "element": "NodeTypeWithXmlElementProperty",
+                            "state": "ADDED"
+                        },
+                        {
+                            "element": "NodeTypeWithOneReqCapPairWithoutProperties",
+                            "state": "REMOVED"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

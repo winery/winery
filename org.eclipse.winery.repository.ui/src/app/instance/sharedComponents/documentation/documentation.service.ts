@@ -11,30 +11,31 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../../configuration';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../configuration';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class DocumentationService {
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
     }
 
     getDocumentationData(): Observable<string> {
-        const headers = new Headers({'Accept': 'text/plain'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.get(backendBaseURL + this.route.url, options)
-            .map(res => res.text());
+        return this.http.get(
+            backendBaseURL + this.route.url,
+            { responseType: 'text' }
+        );
     }
 
-    saveDocumentationData(documentationData: string): Observable<any> {
-        const headers = new Headers({'Content-Type': 'text/plain', 'Accept': 'text/plain'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.put(backendBaseURL + this.route.url + '/', documentationData, options);
+    saveDocumentationData(documentationData: string): Observable<HttpResponse<string>> {
+        return this.http.put(
+            backendBaseURL + this.route.url + '/',
+            documentationData,
+            { observe: 'response', responseType: 'text' }
+        );
     }
 }

@@ -11,14 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {WineryNamespaceSelectorService} from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {WineryValidatorObject} from '../../../wineryValidators/wineryDuplicateValidator.directive';
-import {Response} from '@angular/http';
-import {TypeWithShortName, TypeWithShortNameService} from './typeWithShortName.service';
-import {ModalDirective} from 'ngx-bootstrap';
-import {Router} from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
+import { TypeWithShortName, TypeWithShortNameService } from './typeWithShortName.service';
+import { ModalDirective } from 'ngx-bootstrap';
+import { Router } from '@angular/router';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-type-with-short-name',
@@ -33,8 +33,8 @@ export class TypeWithShortNameComponent implements OnInit {
     validatorObjectShortName: WineryValidatorObject;
     validatorObjectType: WineryValidatorObject;
     columns = [
-        {title: 'Short Name', name: 'shortName'},
-        {title: 'Long Name', name: 'type'}
+        { title: 'Short Name', name: 'shortName' },
+        { title: 'Long Name', name: 'type' }
     ];
     elementToRemove: TypeWithShortName = null;
     title: string;
@@ -72,7 +72,7 @@ export class TypeWithShortNameComponent implements OnInit {
     }
 
     addType(type: string, shortName: string) {
-        this.types.push({type: type, shortName: shortName});
+        this.types.push({ type: type, shortName: shortName });
         this.saveType();
     }
 
@@ -133,7 +133,7 @@ export class TypeWithShortNameComponent implements OnInit {
         }
     }
 
-    private handleSave(data: Response) {
+    private handleSave(data: HttpResponse<string>) {
         this.handleSuccess();
         this.getTypes();
     }
@@ -143,8 +143,8 @@ export class TypeWithShortNameComponent implements OnInit {
      *
      * @param error
      */
-    private handleError(error: any): void {
-        this.notify.error(error.toString(), 'Error');
+    private handleError(error: HttpErrorResponse): void {
+        this.notify.error(error.message);
     }
 
     /**

@@ -20,9 +20,8 @@ public class RestUtilsTest {
 
     @Test
     public void testCreateID() {
-        Assert.assertEquals("Frank_s_test", RestUtils.createXMLid("Frank's test").getDecoded());
+        Assert.assertEquals("Frank-s-test", RestUtils.createXMLid("Frank's test").getDecoded());
         Assert.assertEquals("MyNodeType", RestUtils.createXMLid("MyNodeType").getDecoded());
-        Assert.assertEquals("A_Node_Type", RestUtils.createXMLid("A Node Type").getDecoded());
+        Assert.assertEquals("A-Node-Type", RestUtils.createXMLid("A Node Type").getDecoded());
     }
-
 }

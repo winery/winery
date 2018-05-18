@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -14,8 +14,10 @@
 <div class="top" [class.twolines]="needTwoLines">
     <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIcon">
     <div class="informationContainer">
-        <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"></winery-property-rename>
-        <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'namespace'"></winery-property-rename>
+        <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'localName'"
+                                [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
+        <winery-property-rename [toscaComponent]="toscaComponent" [propertyName]="'namespace'"
+                                [multipleVersionsAvailable]="versions?.length > 0"></winery-property-rename>
     </div>
     <div class="managementButtons" *ngIf="showManagementButtons">
         <div style="float:right;">
@@ -40,6 +42,7 @@
                     </li>
                 </ul>
             </div>
+            <winery-version [versions]="versions"></winery-version>
         </div>
         <div *ngIf="typeUrl">
             <span style="white-space: pre">{{ typeOf }} <a [routerLink]="typeUrl">{{ typeId }}</a></span>
@@ -59,7 +62,7 @@
 </div>
 
 <winery-modal bsModal #confirmDeleteModal="bs-modal" [modalRef]="confirmDeleteModal">
-    <winery-modal-header [title]="'Delete Property'">
+    <winery-modal-header [title]="'Delete ' + (toscaComponent.toscaType | toscaTypeToReadableName)">
     </winery-modal-header>
     <winery-modal-body>
         <p>

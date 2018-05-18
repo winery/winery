@@ -11,20 +11,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {WineryNamespaceSelectorService} from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../../configuration';
-import {Router} from '@angular/router';
-import {NamespaceWithPrefix} from '../../../wineryInterfaces/namespaceWithPrefix';
+import { Injectable } from '@angular/core';
+import { WineryNamespaceSelectorService } from '../../../wineryNamespaceSelector/wineryNamespaceSelector.service';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../configuration';
+import { Router } from '@angular/router';
+import { NamespaceWithPrefix } from '../../../wineryInterfaces/namespaceWithPrefix';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class NamespacesService {
 
-    private path: string;
+    private readonly path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private namespaceService: WineryNamespaceSelectorService,
                 private route: Router) {
         this.path = decodeURIComponent(this.route.url);
@@ -34,11 +34,13 @@ export class NamespacesService {
         return this.namespaceService.getNamespaces(true);
     }
 
-    postNamespaces(namespaces: NamespaceWithPrefix[]): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(namespaces), options);
+    postNamespaces(namespaces: NamespaceWithPrefix[]): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http.post<string>(
+            backendBaseURL + this.path + '/',
+            JSON.stringify(namespaces),
+            { headers: headers, observe: 'response' }
+        );
     }
 
 }

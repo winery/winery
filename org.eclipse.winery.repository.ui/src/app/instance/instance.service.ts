@@ -11,23 +11,26 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions } from '@angular/http';
+import { Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { backendBaseURL } from '../configuration';
 import { WineryInstance, WineryTopologyTemplate } from '../wineryInterfaces/wineryComponent';
 import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
 import { ToscaTypes } from '../wineryInterfaces/enums';
+import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class InstanceService {
 
     toscaComponent: ToscaComponent;
     topologyTemplate: WineryTopologyTemplate = null;
+    versions: WineryVersion[];
+    currentVersion: WineryVersion;
     path: string;
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
     /**
@@ -106,26 +109,27 @@ export class InstanceService {
             this.getTopologyTemplate()
                 .subscribe(
                     data => this.topologyTemplate = data,
-                    error => this.topologyTemplate = null
+                    () => this.topologyTemplate = null
                 );
         }
     }
 
-    public deleteComponent(): Observable<any> {
-        return this.http.delete(backendBaseURL + this.path + '/');
+    public deleteComponent(): Observable<HttpResponse<string>> {
+        return this.http.delete(
+            backendBaseURL + this.path + '/',
+            { observe: 'response', responseType: 'text' }
+        );
     }
 
     public getComponentData(): Observable<WineryInstance> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.path + '/', options)
-            .map(res => res.json());
+        return this.http.get<WineryInstance>(backendBaseURL + this.path + '/');
     }
 
     public getTopologyTemplate(): Observable<WineryTopologyTemplate> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.path + '/topologytemplate/', options)
-            .map(res => res.json());
+        return this.http.get<WineryTopologyTemplate>(backendBaseURL + this.path + '/topologytemplate/');
+    }
+
+    public getVersions(): Observable<WineryVersion[]> {
+        return this.http.get<WineryVersion[]>(backendBaseURL + this.path + '/?versions');
     }
 }

@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -15,7 +15,7 @@
     <winery-loader></winery-loader>
 </div>
 <div class="content" *ngIf="!loading">
-    <button (click)="saveToServer()" class="btn btn-primary btn-sm save">Save</button>
+    <button (click)="saveToServer()" [disabled]="!sharedData?.currentVersion?.editable" class="btn btn-primary btn-sm save">Save</button>
     <br/>
     <div class="colorPickerArea" *ngIf="!loading && nodeTypeData != null">
         <div class="floatContent">
@@ -42,6 +42,7 @@
         <winery-uploader #uploader16 id="uploader16"
                          [uploadUrl]="img16Path"
                          [uploadMethod]="'PUT'"
+                         [isEditable]="sharedData?.currentVersion?.editable"
                          (onSuccess)="onUploadSuccess()">
         </winery-uploader>
         <br/>
@@ -51,6 +52,7 @@
             <winery-uploader #uploader50 id="uploader50"
                              [uploadUrl]="img50Path"
                              [uploadMethod]="'PUT'"
+                             [isEditable]="sharedData?.currentVersion?.editable"
                              (onSuccess)="onUploadSuccess()">
             </winery-uploader>
             <br/>

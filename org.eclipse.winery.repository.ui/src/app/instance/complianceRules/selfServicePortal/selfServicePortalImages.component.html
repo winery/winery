@@ -22,6 +22,7 @@
     <winery-uploader #uploaderIcon id="selfServiceIconUploader"
                      [uploadUrl]="iconPath"
                      [uploadMethod]="'PUT'"
+                     [isEditable]="sharedData?.currentVersion?.editable"
                      (onSuccess)="onUploadSuccess('Icon')">
     </winery-uploader>
     <br/>
@@ -30,6 +31,7 @@
     <winery-uploader #uploaderImage id="selfServiceImageUploader"
                      [uploadUrl]="imagePath"
                      [uploadMethod]="'PUT'"
+                     [isEditable]="sharedData?.currentVersion?.editable"
                      (onSuccess)="onUploadSuccess('Preview image')">
     </winery-uploader>
     <br/>

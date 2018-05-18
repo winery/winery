@@ -11,11 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Observable} from 'rxjs';
-import {backendBaseURL} from '../../../configuration';
-import {Router} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { backendBaseURL } from '../../../configuration';
+import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 export class TypeWithShortName {
     type: string;
@@ -32,31 +32,33 @@ export class TypeWithShortNameService {
 
     private path: string;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
         this.path = decodeURIComponent(this.route.url);
     }
 
     getAllTypes(): Observable<TypeWithShortName[]> {
-        const headers = new Headers({'Accept': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.get(backendBaseURL + this.path + '/', options)
-            .map(res => res.json());
+        return this.http.get<TypeWithShortName[]>(backendBaseURL + this.path + '/');
     }
 
-    postTypes(types: TypeWithShortName[]): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(types), options);
+    postTypes(types: TypeWithShortName[]): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http
+            .post(
+                backendBaseURL + this.path + '/',
+                types,
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 
-    postType(type: TypeWithShortName) {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.post(backendBaseURL + this.path + '/', JSON.stringify(type), options);
+    postType(type: TypeWithShortName): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+        return this.http
+            .post(
+                backendBaseURL + this.path + '/',
+                type,
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 
 }

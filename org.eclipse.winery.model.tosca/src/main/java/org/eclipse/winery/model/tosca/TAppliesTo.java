@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -142,6 +142,20 @@ public class TAppliesTo {
          */
         public void setTypeRef(QName value) {
             this.typeRef = value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            NodeTypeReference that = (NodeTypeReference) o;
+            return Objects.equals(typeRef, that.typeRef);
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(typeRef);
         }
     }
 }

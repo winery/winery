@@ -11,32 +11,32 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions} from '@angular/http';
-import {Observable} from 'rxjs/Observable';
-import {InstanceService} from '../instance/instance.service';
-import {backendBaseURL} from '../configuration';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { InstanceService } from '../instance/instance.service';
+import { backendBaseURL } from '../configuration';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class ReadmeService {
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private sharedData: InstanceService) {
     }
 
     getData(): Observable<string> {
-        const headers = new Headers({'Accept': 'text/plain'});
-        const options = new RequestOptions({headers: headers});
-        return this.http.get(backendBaseURL + this.sharedData.path + '/README.md', options)
-            .map(res => res.text());
+        const headers = new HttpHeaders({ 'Accept': 'text/plain' });
+        return this.http.get(
+            backendBaseURL + this.sharedData.path + '/README.md',
+            { headers: headers, responseType: 'text' }
+        );
     }
 
-    save(readmeFile: String) {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
-
-        return this.http.put(backendBaseURL + this.sharedData.path + '/README.md', readmeFile, options)
-            .map(res => res.json());
+    save(readmeFile: String): Observable<HttpResponse<string>> {
+        return this.http.put<string>(
+            backendBaseURL + this.sharedData.path + '/README.md',
+            readmeFile,
+            { observe: 'response' });
     }
 
 }

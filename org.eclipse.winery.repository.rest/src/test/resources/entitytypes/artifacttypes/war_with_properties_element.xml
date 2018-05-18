@@ -18,7 +18,7 @@
                 <winery:type>xsd:string</winery:type>
             </winery:properties>
         </winery:PropertiesDefinition>
-        <PropertiesDefinition xmlns:nodetypes="http://opentosca.org/nodetypes"
-                              element="nodetypes:CloudProviderProperties"/>
+        <PropertiesDefinition xmlns:otnodetypes="http://opentosca.org/nodetypes"
+                              element="otnodetypes:CloudProviderProperties"/>
     </ArtifactType>
 </Definitions>

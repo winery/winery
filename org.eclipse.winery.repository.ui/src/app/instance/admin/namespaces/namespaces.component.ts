@@ -20,6 +20,7 @@ import {isNullOrUndefined} from 'util';
 import {NamespaceWithPrefix} from '../../../wineryInterfaces/namespaceWithPrefix';
 import {Response} from '@angular/http';
 import {ModalDirective} from 'ngx-bootstrap';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-namespaces',
@@ -97,7 +98,7 @@ export class NamespacesComponent implements OnInit {
 
     save() {
         this.service.postNamespaces(this.adminNamespaces).subscribe(
-            data => this.handleSave(data),
+            () => this.handleSave(),
             error => this.handleError(error)
         );
     }
@@ -115,7 +116,7 @@ export class NamespacesComponent implements OnInit {
         }
     }
 
-    private handleSave(data: Response) {
+    private handleSave() {
         this.handleSuccess();
         this.getNamespaces();
     }
@@ -125,8 +126,8 @@ export class NamespacesComponent implements OnInit {
      *
      * @param error
      */
-    private handleError(error: any): void {
-        this.notify.error(error.toString(), 'Error');
+    private handleError(error: HttpErrorResponse): void {
+        this.notify.error(error.message, 'Error');
     }
 
     /**

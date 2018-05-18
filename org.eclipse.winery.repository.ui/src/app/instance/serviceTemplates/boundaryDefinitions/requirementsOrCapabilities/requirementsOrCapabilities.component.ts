@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,12 +11,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {RequirementOrCapability} from './requirementsOrCapabilitiesApiData';
-import {RequirementsOrCapabilitiesService} from './requirementsOrCapabilities.service';
-import {WineryNotificationService} from '../../../../wineryNotificationModule/wineryNotification.service';
-import {isNullOrUndefined} from 'util';
-import {ModalDirective} from 'ngx-bootstrap';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { RequirementOrCapability } from './requirementsOrCapabilitiesApiData';
+import { RequirementsOrCapabilitiesService } from './requirementsOrCapabilities.service';
+import { WineryNotificationService } from '../../../../wineryNotificationModule/wineryNotification.service';
+import { isNullOrUndefined } from 'util';
+import { ModalDirective } from 'ngx-bootstrap';
+import { InstanceService } from '../../../instance.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'winery-instance-requirements-or-capabilities',
@@ -34,8 +36,8 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
 
     columns: Array<any> = [
-        {title: 'Name', name: 'name', sort: true},
-        {title: 'Reference', name: 'ref', sort: true},
+        { title: 'Name', name: 'name', sort: true },
+        { title: 'Reference', name: 'ref', sort: true },
     ];
 
     reqOrCapToBeAdded: RequirementOrCapability;
@@ -46,7 +48,8 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
     addOrChange: string;
 
     constructor(private service: RequirementsOrCapabilitiesService,
-                private notify: WineryNotificationService) {
+                private notify: WineryNotificationService,
+                public sharedData: InstanceService) {
         this.reqOrCapToBeAdded = new RequirementOrCapability();
     }
 
@@ -144,15 +147,15 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
         this.loading = false;
     }
 
-    private handleError(error: any) {
-        this.notify.error(error);
+    private handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message);
         this.loading = false;
     }
 
     private addNewRequirementOrCapability() {
         this.loading = false;
         this.service.sendPostRequest(this.reqOrCapToBeAdded).subscribe(
-            data => this.handlePostResponse(),
+            () => this.handlePostResponse(),
             error => this.handleError(error)
         );
     }
@@ -162,7 +165,7 @@ export class RequirementsOrCapabilitiesComponent implements OnInit {
         if (this.edit) {
             this.deleteReqOrCap(this.currentSelected.id);
         } else {
-            this.notify.success('new ' + this.singleItem + this.reqOrCapToBeAdded.name + ' added');
+            this.notify.success('Added ' + this.singleItem + this.reqOrCapToBeAdded.name);
             this.getRequirementsOrCapabilities();
         }
     }

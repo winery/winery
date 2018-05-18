@@ -56,6 +56,7 @@ import org.eclipse.winery.common.interfaces.IWineryRepositoryCommon;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.HasInheritance;
 import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TAppliesTo;
 import org.eclipse.winery.model.tosca.TArtifactTemplate;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
 import org.eclipse.winery.model.tosca.TCapability;
@@ -64,6 +65,8 @@ import org.eclipse.winery.model.tosca.TComplianceRule;
 import org.eclipse.winery.model.tosca.TDeploymentArtifact;
 import org.eclipse.winery.model.tosca.TDeploymentArtifacts;
 import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TEntityType;
+import org.eclipse.winery.model.tosca.TEntityTypeImplementation;
 import org.eclipse.winery.model.tosca.TExtensibleElements;
 import org.eclipse.winery.model.tosca.TImplementationArtifact;
 import org.eclipse.winery.model.tosca.TImplementationArtifacts;
@@ -72,6 +75,7 @@ import org.eclipse.winery.model.tosca.TNodeType;
 import org.eclipse.winery.model.tosca.TNodeTypeImplementation;
 import org.eclipse.winery.model.tosca.TPolicy;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
+import org.eclipse.winery.model.tosca.TPolicyType;
 import org.eclipse.winery.model.tosca.TRelationshipTemplate;
 import org.eclipse.winery.model.tosca.TRelationshipType;
 import org.eclipse.winery.model.tosca.TRelationshipTypeImplementation;
@@ -169,7 +173,6 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
      */
     void getZippedContents(final GenericId id, OutputStream out) throws WineryRepositoryException;
 
-
     /**
      * Returns the size of the file referenced by ref
      *
@@ -213,6 +216,15 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
     <T extends DefinitionsChildId> SortedSet<T> getAllDefinitionsChildIds(Class<T> idClass);
 
     /**
+     * Returns all stable components available of the given id type.
+     * Components without a version are also included.
+     *
+     * @param idClass class of the Ids to search for
+     * @return empty set if no ids are available
+     */
+    public <T extends DefinitionsChildId> SortedSet<T> getStableDefinitionsChildIdsOnly(Class<T> idClass);
+
+    /**
      * Returns all component instances existing in the repository
      *
      * @return empty set if no ids are available
@@ -223,7 +235,6 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
             .flatMap(idClass -> this.getAllDefinitionsChildIds(idClass).stream())
             .collect(Collectors.toCollection(() -> new TreeSet<>()));
     }
-
 
     /**
      * Returns the set of <em>all</em> ids nested in the given reference
@@ -274,7 +285,89 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
             // The resource may have been freshly initialized due to existence of a directory
             // then it has no node type assigned leading to ntiRes.getType() being null
             // we ignore this error here
-            .filter(id -> ((HasType) this.getDefinitions(id).getElement()).getTypeAsQName().equals(qNameOfTheType))
+            .filter((X id) -> {
+                TExtensibleElements element = this.getDefinitions(id).getElement();
+                boolean referencesGivenQName = false;
+
+                if (element instanceof HasType) {
+                    referencesGivenQName = ((HasType) element).getTypeAsQName().equals(qNameOfTheType);
+                }
+
+                if (!referencesGivenQName && element instanceof HasInheritance) {
+                    HasType derivedFrom = ((HasInheritance) element).getDerivedFrom();
+                    referencesGivenQName = Objects.nonNull(derivedFrom) && derivedFrom.equals(qNameOfTheType);
+                }
+
+                if (!referencesGivenQName && element instanceof TRelationshipType) {
+                    TRelationshipType.ValidTarget validTarget = ((TRelationshipType) element).getValidTarget();
+                    TRelationshipType.ValidSource validSource = ((TRelationshipType) element).getValidSource();
+
+                    referencesGivenQName = Objects.nonNull(validTarget) && validTarget.getTypeRef().equals(qNameOfTheType);
+                    referencesGivenQName = !referencesGivenQName && Objects.nonNull(validSource) && validSource.getTypeRef().equals(qNameOfTheType);
+                }
+
+                if (!referencesGivenQName && element instanceof TEntityTypeImplementation) {
+                    TImplementationArtifacts implementationArtifacts = ((TEntityTypeImplementation) element).getImplementationArtifacts();
+                    referencesGivenQName = Objects.nonNull(implementationArtifacts) &&
+                        implementationArtifacts.getImplementationArtifact()
+                            .stream()
+                            .anyMatch(implementationArtifact ->
+                                implementationArtifact.getArtifactRef().equals(qNameOfTheType) ||
+                                    implementationArtifact.getArtifactType().equals(qNameOfTheType));
+
+                    if (!referencesGivenQName && element instanceof TNodeTypeImplementation) {
+                        TDeploymentArtifacts deploymentArtifacts = ((TNodeTypeImplementation) element).getDeploymentArtifacts();
+                        referencesGivenQName = Objects.nonNull(deploymentArtifacts) &&
+                            deploymentArtifacts.getDeploymentArtifact()
+                                .stream()
+                                .anyMatch(tDeploymentArtifact ->
+                                    tDeploymentArtifact.getArtifactRef().equals(qNameOfTheType) ||
+                                        tDeploymentArtifact.getArtifactType().equals(qNameOfTheType));
+                    }
+                }
+
+                if (!referencesGivenQName && element instanceof TPolicyType) {
+                    TAppliesTo appliesTo = ((TPolicyType) element).getAppliesTo();
+                    referencesGivenQName = Objects.nonNull(appliesTo) && appliesTo.getNodeTypeReference()
+                        .stream()
+                        .anyMatch(nodeTypeReference -> nodeTypeReference.getTypeRef().equals(qNameOfTheType));
+                }
+
+                if (!referencesGivenQName && element instanceof TNodeType) {
+                    TNodeType.RequirementDefinitions requirementDefinitions = ((TNodeType) element).getRequirementDefinitions();
+                    referencesGivenQName = Objects.nonNull(requirementDefinitions) &&
+                        requirementDefinitions.getRequirementDefinition()
+                            .stream()
+                            .anyMatch(tRequirementDefinition -> tRequirementDefinition.getRequirementType().equals(qNameOfTheType));
+
+                    if (!referencesGivenQName) {
+                        TNodeType.CapabilityDefinitions capabilityDefinitions = ((TNodeType) element).getCapabilityDefinitions();
+                        referencesGivenQName = Objects.nonNull(capabilityDefinitions) &&
+                            capabilityDefinitions
+                                .getCapabilityDefinition()
+                                .stream()
+                                .anyMatch(tCapabilityDefinition -> tCapabilityDefinition.getCapabilityType().equals(qNameOfTheType));
+                    }
+                }
+
+                if (!referencesGivenQName && element instanceof TEntityType) {
+                    TEntityType.PropertiesDefinition propertiesDefinition = ((TEntityType) element).getPropertiesDefinition();
+                    if (Objects.nonNull(propertiesDefinition)) {
+                        referencesGivenQName = Objects.nonNull(propertiesDefinition.getElement()) && propertiesDefinition.getElement().equals(qNameOfTheType)
+                            || Objects.nonNull(propertiesDefinition.getType()) && propertiesDefinition.getType().equals(qNameOfTheType);
+                    }
+                }
+
+                if (!referencesGivenQName && element instanceof TServiceTemplate) {
+                 /*   TTopologyTemplate topologyTemplate = ((TServiceTemplate) element).getTopologyTemplate();
+
+                    topologyTemplate.getRelationshipTemplates()
+                        .stream()
+                        .anyMatch(tRelationshipTemplate -> tRelationshipTemplate.)*/
+                }
+
+                return referencesGivenQName;
+            })
             .collect(Collectors.toList());
     }
 
@@ -315,11 +408,8 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
     }
 
     default Collection<DefinitionsChildId> getReferencedDefinitionsChildIds(NodeTypeId id) {
-        Collection<DefinitionsChildId> ids = new ArrayList<>();
         Collection<NodeTypeImplementationId> allNodeTypeImplementations = this.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, id.getQName());
-        for (NodeTypeImplementationId ntiId : allNodeTypeImplementations) {
-            ids.add(ntiId);
-        }
+        Collection<DefinitionsChildId> ids = new HashSet<>(allNodeTypeImplementations);
 
         final TNodeType nodeType = this.getElement(id);
 
@@ -434,10 +524,7 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         Collection<DefinitionsChildId> ids = new ArrayList<>();
 
         // add all implementations
-        Collection<RelationshipTypeImplementationId> allTypeImplementations = this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName());
-        for (RelationshipTypeImplementationId ntiId : allTypeImplementations) {
-            ids.add(ntiId);
-        }
+        ids.addAll(this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName()));
 
         final TRelationshipType relationshipType = this.getElement(id);
 
@@ -473,7 +560,6 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 
         return ids;
     }
-
 
     /**
      * Determines the referenced definition children Ids. Does NOT return the included files.
@@ -700,6 +786,181 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
         return referencedDefinitionsChildIds;
     }
 
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(NodeTypeId id) {
+        Collection<DefinitionsChildId> ids = new HashSet<>();
+
+        // NodeTypeImplementations
+        ids.addAll(this.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, id.getQName()));
+        // RelationshipTypes > validSource + validTarget
+        ids.addAll(this.getAllElementsReferencingGivenType(RelationshipTypeId.class, id.getQName()));
+        // PolicyTypes
+        ids.addAll(this.getAllElementsReferencingGivenType(PolicyTypeId.class, id.getQName()));
+        // NodeTypes > derivedFrom
+        ids.addAll(this.getAllElementsReferencingGivenType(NodeTypeId.class, id.getQName()));
+
+        // ServiceTemplates > NodeTemplates + substitutable?
+        // ids.addAll(this.getAllElementsReferencingGivenType(ServiceTemplateId.class), id.getQName());
+
+        return ids;
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(NodeTypeImplementationId id) {
+        // NodeTypeImplementations
+        return new HashSet<>(this.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, id.getQName()));
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(RelationshipTypeImplementationId id) {
+        // RelationshipTypeImplementations
+        return new HashSet<>(this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName()));
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(RelationshipTypeId id) {
+        Collection<DefinitionsChildId> ids = new HashSet<>();
+
+        // RelationshipTypeImplementations
+        ids.addAll(this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName()));
+        // RelationshipTypes
+        ids.addAll(this.getAllElementsReferencingGivenType(RequirementTypeId.class, id.getQName()));
+        // ServiceTemplates > RelationshipTemplates
+        // ids.addAll(this.getAllElementsReferencingGivenType(ServiceTemplateId.class, id.getQName()));
+
+        return ids;
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(RequirementTypeId id) {
+        Collection<DefinitionsChildId> ids = new HashSet<>();
+
+        // RelationshipType > validSource
+        ids.addAll(this.getAllElementsReferencingGivenType(RelationshipTypeId.class, id.getQName()));
+        // RequirementType
+        ids.addAll(this.getAllElementsReferencingGivenType(RequirementTypeId.class, id.getQName()));
+        // NodeType > RequirementDefinition
+        ids.addAll(this.getAllElementsReferencingGivenType(NodeTypeId.class, id.getQName()));
+        // ServiceTemplates > NodeTemplates > Requirements
+        // ids.addAll(this.getAllElementsReferencingGivenType(ServiceTemplateId.class, id.getQName()));
+
+        return ids;
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(ArtifactTypeId id) {
+        Collection<DefinitionsChildId> ids = new HashSet<>();
+
+        // ArtifactTemplates > type
+        ids.addAll(this.getAllElementsReferencingGivenType(ArtifactTemplateId.class, id.getQName()));
+        // NodeTypeImplementations > DeploymentArtifact + ImplementationArtifact
+        ids.addAll(this.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, id.getQName()));
+        // RelationshipTypeImplementations > ImplementationArtifact
+        ids.addAll(this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName()));
+        // ArtifactTypes > derivedFrom
+        ids.addAll(this.getAllElementsReferencingGivenType(ArtifactTypeId.class, id.getQName()));
+        // ServiceTemplates > NodeTemplates > DeploymentArtifacts
+        // ids.addAll(this.getAllElementsReferencingGivenType(ServiceTemplateId.class, id.getQName()));
+
+        return ids;
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(ArtifactTemplateId id) {
+        Collection<DefinitionsChildId> ids = new HashSet<>();
+
+        // NodeTypeImplementations > 
+        ids.addAll(this.getAllElementsReferencingGivenType(NodeTypeImplementationId.class, id.getQName()));
+        // RelationshipTypeImplementations
+        ids.addAll(this.getAllElementsReferencingGivenType(RelationshipTypeImplementationId.class, id.getQName()));
+        // ServiceTemplates > NodeTemplates > DeploymentArtifacts
+        // ids.addAll(this.getAllElementsReferencingGivenType(ServiceTemplateId.class, id.getQName()));
+
+        return ids;
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(PolicyTemplateId id) {
+        // ServiceTemplates > BoundaryDefinitions > Policies
+        return new HashSet<>(this.getAllElementsReferencingGivenType(ServiceTemplateId.class, id.getQName()));
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(PolicyTypeId id) {
+        Collection<DefinitionsChildId> ids = new HashSet<>();
+
+        // PolicyTemplates
+        ids.addAll(this.getAllElementsReferencingGivenType(PolicyTemplateId.class, id.getQName()));
+        // PolicyTypes
+        ids.addAll(this.getAllElementsReferencingGivenType(PolicyTypeId.class, id.getQName()));
+        // ServiceTemplates > BoundaryDefinitions > Policies
+        // ids.addAll(this.getAllElementsReferencingGivenType(ServiceTemplateId.class, id.getQName()));
+
+        return ids;
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(CapabilityTypeId id) {
+        Collection<DefinitionsChildId> ids = new HashSet<>();
+
+        // NodeTypes > CapabilityDefinition
+        ids.addAll(this.getAllElementsReferencingGivenType(NodeTypeId.class, id.getQName()));
+        // RelationshipTypes > validTarget
+        ids.addAll(this.getAllElementsReferencingGivenType(RelationshipTypeId.class, id.getQName()));
+        // CapabilityTypes
+        ids.addAll(this.getAllElementsReferencingGivenType(CapabilityTypeId.class, id.getQName()));
+        // ServiceTemplates > NodeTemplates > Capabilities
+        // ids.addAll(this.getAllElementsReferencingGivenType(ServiceTemplateId.class, id.getQName()));
+
+        return ids;
+    }
+
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(GenericImportId id) {
+        Collection<DefinitionsChildId> ids = new HashSet<>();
+
+        // ArtifactTypes > PropertiesDefinition
+        ids.addAll(this.getAllElementsReferencingGivenType(ArtifactTypeId.class, id.getQName()));
+        // CapabilityTypes > PropertiesDefinition
+        ids.addAll(this.getAllElementsReferencingGivenType(CapabilityTypeId.class, id.getQName()));
+        // NodeTypes > PropertiesDefinition
+        ids.addAll(this.getAllElementsReferencingGivenType(NodeTypeId.class, id.getQName()));
+        // PolicyTypes > PropertiesDefinition
+        ids.addAll(this.getAllElementsReferencingGivenType(PolicyTypeId.class, id.getQName()));
+        // RelationshipTypes > PropertiesDefinition
+        ids.addAll(this.getAllElementsReferencingGivenType(RelationshipTypeId.class, id.getQName()));
+        // RequirementTypes > PropertiesDefinition
+        ids.addAll(this.getAllElementsReferencingGivenType(RequirementTypeId.class, id.getQName()));
+
+        return ids;
+    }
+
+    /**
+     * Collects all DefinitionsChildIds of the specified element which have references to it.
+     *
+     * @param id The DefinitionsChildId to which references should be collected
+     */
+    default Collection<DefinitionsChildId> getReferencingDefinitionsChildIds(DefinitionsChildId id) throws RepositoryCorruptException {
+        Collection<DefinitionsChildId> referencedDefinitionsChildIds;
+        if (id instanceof ServiceTemplateId) {
+            referencedDefinitionsChildIds = Collections.emptyList();
+        } else if (id instanceof NodeTypeId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((NodeTypeId) id);
+        } else if (id instanceof NodeTypeImplementationId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((NodeTypeImplementationId) id);
+        } else if (id instanceof RelationshipTypeId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((RelationshipTypeId) id);
+        } else if (id instanceof RelationshipTypeImplementationId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((RelationshipTypeImplementationId) id);
+        } else if (id instanceof RequirementTypeId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((RequirementTypeId) id);
+        } else if (id instanceof ArtifactTypeId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((ArtifactTypeId) id);
+        } else if (id instanceof ArtifactTemplateId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((ArtifactTemplateId) id);
+        } else if (id instanceof PolicyTemplateId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((PolicyTemplateId) id);
+        } else if (id instanceof PolicyTypeId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((PolicyTypeId) id);
+        } else if (id instanceof CapabilityTypeId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((CapabilityTypeId) id);
+        } else if (id instanceof GenericImportId) {
+            referencedDefinitionsChildIds = this.getReferencingDefinitionsChildIds((GenericImportId) id);
+        } else {
+            throw new IllegalStateException("Unhandled id class " + id.getClass());
+        }
+        return referencedDefinitionsChildIds;
+    }
+
     NamespaceManager getNamespaceManager();
 
     XsdImportManager getXsdImportManager();
@@ -794,5 +1055,4 @@ public interface IGenericRepository extends IWineryRepositoryCommon {
 
         return count;
     }
-
 }

@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -20,6 +20,7 @@
                   [title]="'Embedded Plans'"
                   [columns]="embeddedPlansColumns"
                   [data]="plansApiData"
+                  [disableButtons]="!sharedData?.currentVersion?.editable"
                   [enableEditButton]="enableEditButton"
                   [enableIOButton]="true"
                   (cellSelected)="onCellSelected($event)"
@@ -82,6 +83,7 @@
                                  (onFileDropped)="onFileDropped($event);"
                                  [uploadImmediately]="false"
                                  [uploadMethod]="'PUT'"
+                                 [isEditable]="sharedData?.currentVersion?.editable"
                                  (onSuccess)="getPlanTypesData()"
                                  (onError)="handleError($event)">
                 </winery-uploader>

@@ -73,8 +73,8 @@ export class PlansComponent implements OnInit {
     @ViewChild('confirmDeleteModal') confirmDeleteModal: any;
 
     constructor(private notify: WineryNotificationService,
-                private sharedData: InstanceService,
-                private service: PlansService) {
+                public sharedData: InstanceService,
+                public service: PlansService) {
     }
 
     ngOnInit() {

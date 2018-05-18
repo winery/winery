@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -16,11 +16,16 @@
 </div>
 <div *ngIf="!loading">
     <div class="right">
-        <button class="btn btn-primary" name="save" (click)="save()">Save</button>
+        <button class="btn btn-primary" name="save"
+                [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="save()">
+            Save
+        </button>
     </div>
     <winery-qname-selector
         [displayList]="requiredCapTypeData.capabilityTypeList"
         [selectedValue]="requiredCapTypeData.currentRequiredCapabilityType"
+        [toscaType]="toscaType"
         (selectedValueChanged)="changedCapType($event)">
     </winery-qname-selector>
 </div>

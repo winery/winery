@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,18 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {WineryRowData, WineryTableColumn} from '../../../wineryTableModule/wineryTable.component';
-import {PlansApiData} from './plansApiData';
-import {PlansService} from './plans.service';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {isNullOrUndefined} from 'util';
-import {SelectData} from '../../../wineryInterfaces/selectData';
-import {WineryUploaderComponent} from '../../../wineryUploader/wineryUploader.component';
-import {SelectItem} from 'ng2-select';
-import {InputParameters, OutputParameters} from '../../../wineryInterfaces/parameters';
-import {backendBaseURL, workflowModelerURL} from '../../../configuration';
-import {InstanceService} from '../../instance.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
+import { PlansApiData } from './plansApiData';
+import { PlansService } from './plans.service';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { isNullOrUndefined } from 'util';
+import { SelectData } from '../../../wineryInterfaces/selectData';
+import { WineryUploaderComponent } from '../../../wineryUploader/wineryUploader.component';
+import { SelectItem } from 'ng2-select';
+import { InputParameters, OutputParameters } from '../../../wineryInterfaces/parameters';
+import { backendBaseURL, workflowModelerURL } from '../../../configuration';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const bpmn4tosca = 'http://www.opentosca.org/bpmn4tosca';
 
@@ -38,17 +39,17 @@ export class PlansComponent implements OnInit {
     loading = true;
 
     embeddedPlansColumns: Array<WineryTableColumn> = [
-        {title: 'Precondition', name: 'precondition', sort: true},
-        {title: 'Name', name: 'name', sort: true},
-        {title: 'Type', name: 'planType', sort: true},
-        {title: 'Language', name: 'planLanguage', sort: true}
+        { title: 'Precondition', name: 'precondition', sort: true },
+        { title: 'Name', name: 'name', sort: true },
+        { title: 'Type', name: 'planType', sort: true },
+        { title: 'Language', name: 'planLanguage', sort: true }
     ];
     linkedPlansColumns: Array<WineryTableColumn> = [
-        {title: 'Precondition', name: 'precondition', sort: true},
-        {title: 'Name', name: 'name', sort: true},
-        {title: 'Type', name: 'planType', sort: true},
-        {title: 'Language', name: 'planLanguage', sort: true},
-        {title: 'Reference', name: 'planModelReference.reference', sort: true}
+        { title: 'Precondition', name: 'precondition', sort: true },
+        { title: 'Name', name: 'name', sort: true },
+        { title: 'Type', name: 'planType', sort: true },
+        { title: 'Language', name: 'planLanguage', sort: true },
+        { title: 'Reference', name: 'planModelReference.reference', sort: true }
     ];
 
     plansApiData: PlansApiData[] = null;
@@ -73,7 +74,7 @@ export class PlansComponent implements OnInit {
     @ViewChild('confirmDeleteModal') confirmDeleteModal: any;
 
     constructor(private notify: WineryNotificationService,
-                private sharedData: InstanceService,
+                public sharedData: InstanceService,
                 private service: PlansService) {
     }
 
@@ -256,8 +257,8 @@ export class PlansComponent implements OnInit {
         this.getPlanTypesData();
     }
 
-    handleError(error: any) {
-        this.notify.error(error);
+    handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message);
         this.loading = false;
     }
 

@@ -14,3 +14,7 @@ target/
 node_modules/
 winery-debug.log
 **/gen/**
+
+## Eclipse
+**/.classpath
+**/.settings

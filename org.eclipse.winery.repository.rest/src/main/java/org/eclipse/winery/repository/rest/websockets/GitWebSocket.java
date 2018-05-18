@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,18 +13,6 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest.websockets;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.google.common.eventbus.Subscribe;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.websocket.*;
-import javax.websocket.server.ServerEndpoint;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -33,9 +21,33 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Stream;
+
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+import org.eclipse.winery.common.Util;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
+import org.eclipse.winery.repository.rest.datatypes.GitData;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Iterables;
+import com.google.common.eventbus.Subscribe;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ServerEndpoint(value = "/git")
 public class GitWebSocket {
@@ -51,7 +63,7 @@ public class GitWebSocket {
         if (Stream.of(System.getenv("PATH").split(File.pathSeparator))
             .map(Paths::get)
             .anyMatch(path -> Files.exists(path.resolve("git-lfs.exe")) || Files.exists(path.resolve("git-lfs")))) {
-            writeInSession(session, "git-lfs");
+            writeInSession(session, "{ \"lfsAvailable\": true }");
         }
     }
 
@@ -67,34 +79,73 @@ public class GitWebSocket {
 
     @OnMessage
     public void onMessage(String message, Session session) {
-        if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
-            if ("reset".equals(message)) {
-                try {
-                    ((GitBasedRepository) RepositoryFactory.getRepository()).cleanAndResetHard();
-                    writeInSession(session, "reset success");
-                    ((GitBasedRepository) RepositoryFactory.getRepository()).postEventMap();
-                } catch (GitAPIException e) {
-                    LOGGER.warn("Git reset failed", e);
-                    writeInSession(session, "reset failed");
-                }
-            } else {
-                boolean doCommit = !message.isEmpty();
-                synchronized (session) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            GitData data = mapper.readValue(message, GitData.class);
+            if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
+                if (data.reset) {
                     try {
-                        if (doCommit) {
-                            ((GitBasedRepository) RepositoryFactory.getRepository()).addCommit(message);
-                            writeInSession(session, "commit success");
-                        } else {
-                            ((GitBasedRepository) RepositoryFactory.getRepository()).postEventMap();
-                        }
-                    } catch (GitAPIException exc) {
-                        if (doCommit) {
-                            LOGGER.warn("Git commit failed", exc);
-                            writeInSession(session, "commit failed");
+                        ((GitBasedRepository) RepositoryFactory.getRepository()).cleanAndResetHard();
+                        writeInSession(session, "{ \"success\": \"Successfully reset the workingtree!\" }");
+                        ((GitBasedRepository) RepositoryFactory.getRepository()).postEventMap();
+                    } catch (GitAPIException e) {
+                        LOGGER.warn("Git reset failed", e);
+                        writeInSession(session, "{ \"error\": \"Couldn't parse message!\" }");
+                    }
+                } else {
+                    boolean doCommit = false;
+
+                    if (Objects.nonNull(data.commitMessage)) {
+                        doCommit = !data.commitMessage.isEmpty();
+                    }
+
+                    synchronized (session) {
+                        try {
+                            if (doCommit) {
+                                GitBasedRepository repository = (GitBasedRepository) RepositoryFactory.getRepository();
+
+                                if (Objects.nonNull(data.itemsToCommit) && data.itemsToCommit.size() > 0) {
+                                    List<String> list = new ArrayList<>();
+
+                                    Iterable<String> iterable = Iterables.concat(
+                                        repository.getStatus().getAdded(),
+                                        repository.getStatus().getUntracked(),
+                                        repository.getStatus().getModified());
+
+                                    for (QNameWithTypeApiData name : data.itemsToCommit) {
+                                        String pattern = name.type + "/" + Util.URLencode(name.namespace) + "/" + name.localname;
+                                        for (String item : iterable) {
+                                            if (item.startsWith(pattern)) {
+                                                list.add(item);
+                                            }
+                                        }
+                                    }
+
+                                    String[] patterns = new String[list.size()];
+                                    list.toArray(patterns);
+
+                                    repository.addCommit(patterns, data.commitMessage);
+                                } else {
+                                    repository.addCommit(data.commitMessage);
+                                }
+
+                                writeInSession(session, "{ \"success\": \"Successfully committed changes!\" }");
+                            }
+
+                            if (data.refresh) {
+                                ((GitBasedRepository) RepositoryFactory.getRepository()).postEventMap();
+                            }
+                        } catch (GitAPIException exc) {
+                            if (doCommit) {
+                                LOGGER.warn("Git commit failed", exc);
+                                writeInSession(session, "{ \"error\": \"Commit failed!\" }");
+                            }
                         }
                     }
                 }
             }
+        } catch (IOException e) {
+            writeInSession(session, "{ \"error\": \"Couldn't parse message!\" }");
         }
     }
 
@@ -118,6 +169,8 @@ public class GitWebSocket {
             StringWriter sw = new StringWriter();
             try {
                 JsonGenerator jg = jsonFactory.createGenerator(sw);
+                jg.writeStartObject();
+                jg.writeFieldName("changes");
                 jg.writeStartArray();
                 for (DiffEntry entry : this.entryList.keySet()) {
                     jg.writeStartObject();
@@ -132,6 +185,7 @@ public class GitWebSocket {
                     jg.writeEndObject();
                 }
                 jg.writeEndArray();
+                jg.writeEndObject();
                 jg.close();
                 this.jsonString = sw.toString();
             } catch (Exception e) {

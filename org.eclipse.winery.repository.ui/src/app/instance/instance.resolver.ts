@@ -11,15 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
-import {Utils} from '../wineryUtils/utils';
-import {ToscaComponent} from '../wineryInterfaces/toscaComponent';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { Utils } from '../wineryUtils/utils';
+import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
 
 @Injectable()
 export class InstanceResolver implements Resolve<ToscaComponent> {
-    constructor(private router: Router) {
-    }
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): ToscaComponent {
         const section = Utils.getToscaTypeFromString(route.url[0].path);

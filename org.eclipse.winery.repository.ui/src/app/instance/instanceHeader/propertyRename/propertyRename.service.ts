@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
-import {Router} from '@angular/router';
-import {backendBaseURL} from '../../../configuration';
-import {ToscaComponent} from '../../../wineryInterfaces/toscaComponent';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { backendBaseURL } from '../../../configuration';
+import { ToscaComponent } from '../../../wineryInterfaces/toscaComponent';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class PropertyRenameService {
@@ -24,7 +24,7 @@ export class PropertyRenameService {
     private propertyName: string;
     private toscaComponent: ToscaComponent;
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private route: Router) {
     }
 
@@ -36,20 +36,28 @@ export class PropertyRenameService {
         this.toscaComponent = toscaComponent;
     }
 
-    setPropertyValue(value: string): Observable<Response> {
-        const headers = new Headers({'Content-Type': 'application/json'});
-        const options = new RequestOptions({headers: headers});
+    setPropertyValue(value: string, renameAllComponents: boolean): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
         let payload;
         if (this.propertyName === 'localName') {
             payload = {
-                localname: value
+                localname: value,
+                renameAllComponents: renameAllComponents
             };
         } else {
             payload = {
-                namespace: value
+                namespace: value,
+                renameAllComponents: renameAllComponents
             };
         }
-        return this.http.post(backendBaseURL + this.toscaComponent.path + '/' + this.propertyName, payload, options);
+
+        return this.http
+            .post(
+                backendBaseURL + this.toscaComponent.path + '/' + this.propertyName,
+                payload,
+                { headers: headers, observe: 'response', responseType: 'text' }
+            );
     }
 
     reload(property: string) {

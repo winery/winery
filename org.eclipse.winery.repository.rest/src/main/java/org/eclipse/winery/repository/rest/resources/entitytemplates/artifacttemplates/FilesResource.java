@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2015 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,6 +16,7 @@ package org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttem
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
@@ -26,6 +27,7 @@ import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
 import org.eclipse.winery.repository.rest.RestUtils;
 import org.eclipse.winery.repository.rest.datatypes.FileMeta;
 import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourceApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.ArtifactResourcesApiData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,15 +43,22 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FilesResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FilesResource.class);
     private final DirectoryId fileDir;
+    private final FilesResource destinationDir;
+
+    public FilesResource(DirectoryId fileDir, FilesResource destinationDir) {
+        this.fileDir = fileDir;
+        this.destinationDir = destinationDir;
+    }
 
     public FilesResource(DirectoryId fileDir) {
-        this.fileDir = fileDir;
+        this(fileDir, null);
     }
 
     /**
@@ -137,6 +146,7 @@ public class FilesResource {
     @GET
     @Path("/{fileName}")
     public Response getFile(@PathParam("fileName") String fileName, @HeaderParam("If-Modified-Since") String modified, @QueryParam("path") String path) {
+        path = Objects.isNull(path) ? "" : path;
         RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
         return RestUtils.returnRepoPath(ref, modified);
     }
@@ -144,6 +154,7 @@ public class FilesResource {
     @DELETE
     @Path("/{fileName}")
     public Response deleteFile(@PathParam("fileName") String fileName, @QueryParam("path") String path) {
+        path = Objects.isNull(path) ? "" : path;
         RepositoryFileReference ref = this.fileName2fileRef(fileName, path, true);
         return RestUtils.delete(ref);
     }
@@ -170,7 +181,30 @@ public class FilesResource {
         return RestUtils.putContentToFile(ref, data.content, MediaType.TEXT_PLAIN_TYPE);
     }
 
-    public Response putFile(String fileName, String subDirectory, InputStream content) {
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response copySourceToFiles(@ApiParam(value = "if data contains a non-empty array than only the files" +
+        " whose names are included are copied ", required = true) ArtifactResourcesApiData data) {
+        if (Objects.isNull(this.destinationDir)) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+        List<String> artifactList = data.getArtifactNames();
+        for (RepositoryFileReference ref : RepositoryFactory.getRepository().getContainedFiles(this.fileDir)) {
+            if (artifactList == null || artifactList.contains(ref.getFileName())) {
+                try (InputStream inputStream = RepositoryFactory.getRepository().newInputStream(ref)) {
+                    String fileName = ref.getFileName();
+                    String subDirectory = ref.getSubDirectory().map(s -> s.toString()).orElse("");
+                    this.destinationDir.putFile(fileName, subDirectory, inputStream);
+                } catch (IOException e) {
+                    LOGGER.debug("The artifact source " + ref.getFileName() + " could not be copied to the files directory.", e);
+                    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+                }
+            }
+        }
+        return Response.status(Status.CREATED).build();
+    }
+
+    private Response putFile(String fileName, String subDirectory, InputStream content) {
         if (StringUtils.isEmpty(fileName)) {
             return Response.status(Status.BAD_REQUEST).build();
         }

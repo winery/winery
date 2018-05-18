@@ -13,12 +13,38 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.header.ContentDisposition;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataBodyPart;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URI;
+import java.nio.file.attribute.FileTime;
+import java.security.AccessControlException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
+import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.constants.MimeTypes;
@@ -27,50 +53,57 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.common.ids.definitions.PolicyTemplateId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.common.ids.elements.ToscaElementId;
+import org.eclipse.winery.common.version.VersionUtils;
+import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.selfservice.Application;
-import org.eclipse.winery.model.tosca.*;
+import org.eclipse.winery.model.tosca.Definitions;
+import org.eclipse.winery.model.tosca.HasType;
+import org.eclipse.winery.model.tosca.TConstraint;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TExtensibleElements;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTag;
 import org.eclipse.winery.model.tosca.utils.ModelUtilities;
 import org.eclipse.winery.repository.Constants;
 import org.eclipse.winery.repository.backend.BackendUtils;
+import org.eclipse.winery.repository.backend.IRepository;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.constants.MediaTypes;
+import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.backend.xsd.NamespaceAndDefinedLocalNames;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.export.CsarExporter;
 import org.eclipse.winery.repository.export.ToscaExportUtil;
+import org.eclipse.winery.repository.rest.datatypes.LocalNameForAngular;
 import org.eclipse.winery.repository.rest.datatypes.NamespaceAndDefinedLocalNamesForAngular;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentInstanceResource;
 import org.eclipse.winery.repository.rest.resources._support.AbstractComponentsResource;
+import org.eclipse.winery.repository.rest.resources._support.IHasName;
 import org.eclipse.winery.repository.rest.resources._support.IPersistable;
-import org.eclipse.winery.repository.rest.resources._support.ResourceCreationResult;
+import org.eclipse.winery.repository.rest.resources._support.ResourceResult;
+import org.eclipse.winery.repository.rest.resources.apiData.QNameApiData;
 import org.eclipse.winery.repository.rest.resources.apiData.QNameWithTypeApiData;
+import org.eclipse.winery.repository.rest.resources.apiData.converter.QNameConverter;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplateResource;
 import org.eclipse.winery.repository.rest.resources.entitytemplates.artifacttemplates.ArtifactTemplatesResource;
 import org.eclipse.winery.repository.rest.resources.entitytypes.TopologyGraphElementEntityTypeResource;
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 import org.eclipse.winery.yaml.common.exception.MultiException;
 import org.eclipse.winery.yaml.converter.Converter;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.core.header.ContentDisposition;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.Response.Status.Family;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URI;
-import java.nio.file.attribute.FileTime;
-import java.security.AccessControlException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Contains utility functionality concerning with everything that is <em>not</em> related only to the repository, but
@@ -129,19 +162,19 @@ public class RestUtils {
     public static String createXMLidAsString(String name) {
         String id = name;
         if (!id.substring(0, 1).matches(RestUtils.REGEX_NCNAMESTARTCHAR)) {
-            id = "_".concat(id);
+            id = "-".concat(id);
         }
         // id starts with a valid character
 
         // before we wipe out all invalid characters, we do a readable
         // replacement for appropriate characters
-        id = id.replace(' ', '_');
+        id = id.replace(' ', '-');
 
         // keep length of ID, only wipe out invalid characters
         // alternative: replace invalid characters by URLencoded version. As the
         // ID is visible only in the URL, this quick hack should be OK
         // ID is visible only in the URL, this quick hack should be OK
-        id = id.replaceAll(RestUtils.REGEX_INVALIDNCNAMESCHAR, "_");
+        id = id.replaceAll(RestUtils.REGEX_INVALIDNCNAMESCHAR, "-");
 
         return id;
     }
@@ -562,16 +595,57 @@ public class RestUtils {
         return Response.noContent();
     }
 
-    public static Response rename(DefinitionsChildId oldId, DefinitionsChildId newId) {
-        try {
-            RepositoryFactory.getRepository().rename(oldId, newId);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-            return Response.serverError().entity(e.getMessage()).build();
-        }
-        URI uri = RestUtils.getAbsoluteURI(newId);
+    public static ResourceResult rename(DefinitionsChildId oldId, DefinitionsChildId newId) {
+        ResourceResult result = new ResourceResult();
+        IRepository repo = RepositoryFactory.getRepository();
+        WineryVersion version = VersionUtils.getVersion(oldId);
+        DefinitionsChildId id = newId;
 
-        return Response.created(uri).entity(uri.toString()).build();
+        if (version.toString().length() > 0) {
+            // ensure that the version isn't changed by the user
+            String componentName = VersionUtils.getNameWithoutVersion(newId) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+            id = BackendUtils.getDefinitionsChildId(oldId.getClass(), newId.getNamespace().getDecoded(), componentName, false);
+        }
+
+        // If a definition was not committed yet, it is renamed, otherwise duplicate the definition.
+        if (repo instanceof GitBasedRepository && ((GitBasedRepository) repo).hasChangesInFile(BackendUtils.getRefOfDefinitions(oldId))) {
+            try {
+                repo.rename(oldId, id);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+                result.setStatus(Status.INTERNAL_SERVER_ERROR);
+                result.setMessage(e.getMessage());
+                return result;
+            }
+        } else {
+            result = duplicate(oldId, id);
+            if (result.isSuccess()) {
+                result = freezeVersion(id);
+            }
+        }
+
+        URI uri = RestUtils.getAbsoluteURI(id);
+        result.setUri(uri);
+        result.setStatus(Status.CREATED);
+
+        return result;
+    }
+
+    public static Response renameAllVersionsOfOneDefinition(DefinitionsChildId oldId, DefinitionsChildId newId) {
+        SortedSet<? extends DefinitionsChildId> definitions = BackendUtils.getOtherVersionDefinitionsFromDefinition(oldId);
+        Response finalResponse = null;
+
+        for (DefinitionsChildId definition : definitions) {
+            ResourceResult response = rename(definition, newId);
+            if (response.getStatus() == Status.INTERNAL_SERVER_ERROR) {
+                return response.getResponse();
+            }
+            if (Objects.isNull(finalResponse) || definition.equals(oldId)) {
+                finalResponse = response.getResponse();
+            }
+        }
+
+        return finalResponse;
     }
 
     /**
@@ -630,8 +704,8 @@ public class RestUtils {
      * resource already exists,</li> <li>Status.INTERNAL_SERVER_ERROR (500) if something went wrong</li> </ul> </li>
      * <li>URI: the absolute URI of the newly created resource</li> </ul>
      */
-    public static ResourceCreationResult create(GenericId id) {
-        ResourceCreationResult res = new ResourceCreationResult();
+    public static ResourceResult create(GenericId id, String name) {
+        ResourceResult res = new ResourceResult();
         if (RepositoryFactory.getRepository().exists(id)) {
             // res.setStatus(302);
             res.setStatus(Status.CONFLICT);
@@ -655,6 +729,13 @@ public class RestUtils {
                     // instance of a definition child
                     DefinitionsChildId tcId = (DefinitionsChildId) id;
                     path = tcId.getNamespace().getEncoded() + "/" + tcId.getXmlId().getEncoded() + "/";
+                    // in case the resource additionally supports a name attribute, we set the original name
+                    if ((tcId instanceof ServiceTemplateId) || (tcId instanceof ArtifactTemplateId) || (tcId instanceof PolicyTemplateId)) {
+                        // these three types have an additional name (instead of a pure id)
+                        // we store the name
+                        IHasName resource = (IHasName) AbstractComponentsResource.getComponentInstanceResource(tcId);
+                        resource.setName(name);
+                    }
                 } else {
                     assert (id instanceof ToscaElementId);
                     // We just return the id as we assume that only the parent
@@ -780,12 +861,10 @@ public class RestUtils {
      * @param qname           the QName of the color attribute
      * @param otherAttributes the plain "XML" attributes. They are used to check
      */
-    public static String getColorAndSetDefaultIfNotExisting(String name, QName qname, Map<QName, String> otherAttributes, TopologyGraphElementEntityTypeResource res) {
+    public static String getColor(String name, QName qname, Map<QName, String> otherAttributes, TopologyGraphElementEntityTypeResource res) {
         String colorStr = otherAttributes.get(qname);
         if (colorStr == null) {
             colorStr = ModelUtilities.getColor(name);
-            otherAttributes.put(qname, colorStr);
-            RestUtils.persist(res);
         }
         return colorStr;
     }
@@ -805,8 +884,86 @@ public class RestUtils {
     }
 
     public static List<NamespaceAndDefinedLocalNamesForAngular> convert(List<NamespaceAndDefinedLocalNames> list) {
-        return list.stream().map(namespaceAndDefinedLocalNames -> new NamespaceAndDefinedLocalNamesForAngular(
-            namespaceAndDefinedLocalNames.getNamespace(),
-            namespaceAndDefinedLocalNames.getDefinedLocalNames())).collect(Collectors.toList());
+        return list.stream().map(namespaceAndDefinedLocalNames -> {
+            List<LocalNameForAngular> names = namespaceAndDefinedLocalNames.getDefinedLocalNames()
+                .stream().map(localName -> {
+                    final String id = "{" + namespaceAndDefinedLocalNames.getNamespace().getDecoded() + "}" + localName;
+                    return new LocalNameForAngular(id, localName);
+                }).collect(Collectors.toList());
+            return new NamespaceAndDefinedLocalNamesForAngular(
+                namespaceAndDefinedLocalNames.getNamespace(), names);
+        }).collect(Collectors.toList());
+    }
+
+    public static ResourceResult duplicate(DefinitionsChildId oldComponent, DefinitionsChildId newComponent) {
+        ResourceResult result = create(newComponent, newComponent.getXmlId().getDecoded());
+
+        if (result.isSuccess()) {
+            // After successful creation of the new component, copy all files from old version to new version
+            IRepository repository = RepositoryFactory.getRepository();
+            try {
+                repository.duplicate(oldComponent, newComponent);
+            } catch (IOException e) {
+                result.setStatus(Status.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        return result;
+    }
+
+    public static Response addNewVersion(DefinitionsChildId oldId, DefinitionsChildId newComponent, List<QNameWithTypeApiData> componentsToUpdate) {
+        ResourceResult creationResult = RestUtils.duplicate(oldId, newComponent);
+        return creationResult.getResponse();
+    }
+
+    public static Response releaseVersion(DefinitionsChildId releasableComponent) {
+        ResourceResult result = new ResourceResult();
+        WineryVersion version = BackendUtils.getCurrentVersionWithAllFlags(releasableComponent);
+
+        if (version.isReleasable()) {
+            if (RepositoryFactory.getRepository() instanceof GitBasedRepository) {
+                try {
+                    freezeVersion(releasableComponent);
+
+                    version.setWorkInProgressVersion(0);
+                    String newId = VersionUtils.getNameWithoutVersion(releasableComponent) + WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + version.toString();
+                    DefinitionsChildId newComponent = BackendUtils.getDefinitionsChildId(releasableComponent.getClass(), releasableComponent.getNamespace().getDecoded(), newId, false);
+                    result = duplicate(releasableComponent, newComponent);
+
+                    BackendUtils.commit(newComponent, "Release");
+                } catch (GitAPIException e) {
+                    result.setStatus(Status.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                result.setStatus(Status.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            result.setStatus(Status.BAD_REQUEST);
+        }
+
+        return result.getResponse();
+    }
+
+    public static ResourceResult freezeVersion(DefinitionsChildId componentToCommit) {
+        ResourceResult result = new ResourceResult();
+
+        try {
+            BackendUtils.commit(componentToCommit, "Freeze");
+            result.setStatus(Status.OK);
+        } catch (Exception e) {
+            LOGGER.error("Error freezing component", e);
+            result.setStatus(Status.INTERNAL_SERVER_ERROR);
+        }
+
+        return result;
+    }
+
+    public static <X extends DefinitionsChildId> List<QNameApiData> getAllElementsReferencingGivenType(Class<X> clazz, QName qNameOfTheType) {
+        final QNameConverter adapter = new QNameConverter();
+        return RepositoryFactory.getRepository()
+            .getAllElementsReferencingGivenType(clazz, qNameOfTheType)
+            .stream()
+            .map(id -> adapter.marshal(id.getQName()))
+            .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,19 +11,22 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnDestroy} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {InstanceService} from './instance.service';
-import {WineryNotificationService} from '../wineryNotificationModule/wineryNotification.service';
-import {backendBaseURL} from '../configuration';
-import {RemoveWhiteSpacesPipe} from '../wineryPipes/removeWhiteSpaces.pipe';
-import {ExistService} from '../wineryUtils/existService';
-import {isNullOrUndefined} from 'util';
-import {WineryInstance} from '../wineryInterfaces/wineryComponent';
-import {ToscaTypes} from '../wineryInterfaces/enums';
-import {ToscaComponent} from '../wineryInterfaces/toscaComponent';
-import {Utils} from '../wineryUtils/utils';
+import { Component, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Response } from '@angular/http';
+import { Subscription } from 'rxjs';
+import { InstanceService } from './instance.service';
+import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
+import { backendBaseURL } from '../configuration';
+import { RemoveWhiteSpacesPipe } from '../wineryPipes/removeWhiteSpaces.pipe';
+import { ExistService } from '../wineryUtils/existService';
+import { isNullOrUndefined } from 'util';
+import { WineryInstance } from '../wineryInterfaces/wineryComponent';
+import { ToscaTypes } from '../wineryInterfaces/enums';
+import { ToscaComponent } from '../wineryInterfaces/toscaComponent';
+import { Utils } from '../wineryUtils/utils';
+import { WineryVersion } from '../wineryInterfaces/wineryVersion';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'instance.component.html',
@@ -36,10 +39,15 @@ export class InstanceComponent implements OnDestroy {
 
     availableTabs: string[];
     toscaComponent: ToscaComponent;
+    versions: WineryVersion[];
     typeUrl: string;
     typeId: string;
     typeOf: string;
     imageUrl: string;
+    newVersionAvailable: boolean;
+    editable = true;
+    loadingVersions = true;
+    loadingData = true;
 
     routeSub: Subscription;
 
@@ -50,6 +58,9 @@ export class InstanceComponent implements OnDestroy {
         this.routeSub = this.route
             .data
             .subscribe(data => {
+                    this.newVersionAvailable = false;
+                    // For convenience, we accept editing already existing components  without versions
+                    this.editable = true;
                     this.toscaComponent = data['resolveData'] ? data['resolveData'] : new ToscaComponent(ToscaTypes.Admin, '', '');
 
                     this.service.setSharedData(this.toscaComponent);
@@ -69,11 +80,30 @@ export class InstanceComponent implements OnDestroy {
                             .subscribe(
                                 compData => this.handleComponentData(compData)
                             );
+                        this.getVersionInfo();
+                    } else {
+                        this.loadingVersions = false;
+                        this.loadingData = false;
+                        this.editable = this.toscaComponent.toscaType === ToscaTypes.Admin;
                     }
 
                     this.availableTabs = this.service.getSubMenuByResource();
                 },
                 error => this.handleError(error)
+            );
+    }
+
+    private getVersionInfo() {
+        this.service.getVersions()
+            .subscribe(
+                versions => this.handleVersions(versions),
+                (error: Response) => {
+                    if (error.status === 500) {
+                        // needed because the git client sometimes throws an exception reading the repository:
+                        // java.io.EOFException: Short read of block
+                        this.getVersionInfo();
+                    }
+                }
             );
     }
 
@@ -107,6 +137,34 @@ export class InstanceComponent implements OnDestroy {
                 this.typeUrl = null;
             }
         }
+
+        this.loadingData = false;
+    }
+
+    private handleVersions(list: WineryVersion[]) {
+        // create instances of class {@link WineryVersion}
+        const versions: WineryVersion[] = [];
+        for (const obj of list) {
+            versions.push(
+                new WineryVersion(
+                    obj.componentVersion,
+                    obj.wineryVersion,
+                    obj.workInProgressVersion,
+                    obj.currentVersion,
+                    obj.latestVersion,
+                    obj.releasable,
+                    obj.editable)
+            );
+        }
+        this.versions = this.service.versions = versions;
+        this.loadingVersions = false;
+
+        const version = this.versions.find(v => v.currentVersion);
+        if (!isNullOrUndefined(version)) {
+            this.service.currentVersion = version;
+            this.newVersionAvailable = !version.latestVersion;
+            this.editable = version.editable;
+        }
     }
 
     private handleDelete() {
@@ -114,8 +172,8 @@ export class InstanceComponent implements OnDestroy {
         this.router.navigate(['/' + this.toscaComponent.toscaType]);
     }
 
-    private handleError(error: any) {
-        this.notify.error(error.toString(), 'Error');
+    private handleError(error: HttpErrorResponse) {
+        this.notify.error(error.message, 'Error');
     }
 
     ngOnDestroy(): void {

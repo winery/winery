@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) ${YEAR} Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -52,5 +52,14 @@ public class DefinitionsChildIdTest {
         DefinitionsChildId secondPolicyTemplate = new PolicyTemplateId("http://example.org/tosca/policyTemplates", "myPolicyTemplate", false);
 
         Assert.assertEquals(0, policyTemplate.compareTo(secondPolicyTemplate));
+    }
+
+    @Test
+    public void compareTwoDefinitionsWithDifferentVersions() {
+        DefinitionsChildId newerVersion = new NodeTypeId("http://example.org/tosca/nodeTypes", "myNodeType_3.2.4-w7", false);
+        DefinitionsChildId olderVersion = new NodeTypeId("http://example.org/tosca/nodeTypes", "myNodeType_3.2.4-w7-wip40", false);
+
+        Assert.assertEquals(-1, olderVersion.compareTo(newerVersion));
+        Assert.assertEquals(1, newerVersion.compareTo(olderVersion));
     }
 }

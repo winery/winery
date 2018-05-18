@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -19,15 +19,21 @@
 </div>
 <div *ngIf="!loading">
     <div>
-        <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true">
+        <winery-uploader (onSuccess)="loadFiles()" [uploadUrl]="uploadUrl" [allowMultipleFiles]="true" [isEditable]="sharedData?.currentVersion?.editable">
         </winery-uploader>
     </div>
     <br>
     <div id="fileGridHeader">
-        <button id="gridHeaderNewBtn" class="btn btn-sm btn-toolbar" (click)="onCreateNewFile()">Add New</button>
+        <h5 id="gridHeaderText">Already includ Files:</h5>
+        <button id="gridHeaderNewBtn" class="btn btn-sm btn-toolbar"
+                [disabled]="!sharedData?.currentVersion?.editable"
+                (click)="onCreateNewFile()">
+            Add New
+        </button>
         <button class="btn btn-sm btn-toolbar"
                 [disabled]="selectedFile == null"
-                (click)="undoFileChanges()">Reload from Server
+                (click)="undoFileChanges()">
+            Reload from Server
         </button>
         <button class="btn btn-sm btn-danger" [disabled]="selectedFile == null" (click)="removeElementModal.show();">
             Delete
@@ -41,7 +47,7 @@
             Copy all to Files
         </button>
         <button class="btn btn-sm btn-primary"
-                [disabled]="selectedFile == null"
+                [disabled]="sharedData?.currentVersion?.editable || selectedFile == null"
                 (click)="saveEditorContent()">
             Save
         </button>

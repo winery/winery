@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,13 +11,15 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {InstanceStateService} from './instanceStates.service';
-import {InstanceStateApiData} from './InstanceStateApiData';
-import {Response} from '@angular/http';
-import {isNullOrUndefined} from 'util';
-import {WineryNotificationService} from '../../../wineryNotificationModule/wineryNotification.service';
-import {ModalDirective} from 'ngx-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { InstanceStateService } from './instanceStates.service';
+import { InstanceStateApiData } from './InstanceStateApiData';
+import { Response } from '@angular/http';
+import { isNullOrUndefined } from 'util';
+import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
+import { ModalDirective } from 'ngx-bootstrap';
+import { InstanceService } from '../../instance.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
     templateUrl: 'instanceStates.component.html',
@@ -31,13 +33,14 @@ export class InstanceStatesComponent implements OnInit {
     selectedCell: InstanceStateApiData = null;
     newStateData: InstanceStateApiData = new InstanceStateApiData('');
     columns: Array<any> = [
-        {title: 'Name', name: 'state', sort: false},
+        { title: 'Name', name: 'state', sort: false },
     ];
 
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
     @ViewChild('addModal') addModal: ModalDirective;
 
-    constructor(private service: InstanceStateService, private notify: WineryNotificationService) {
+    constructor(public sharedData: InstanceService,
+                private service: InstanceStateService, private notify: WineryNotificationService) {
     }
 
     ngOnInit() {
@@ -67,7 +70,6 @@ export class InstanceStatesComponent implements OnInit {
                 data => this.handleDeleteResponse(data),
                 error => this.handleError(error)
             );
-        this.elementToRemove = null;
     }
 
     // endregion
@@ -103,28 +105,28 @@ export class InstanceStatesComponent implements OnInit {
         this.loading = false;
     }
 
-    private handleAddResponse(data: Response) {
+    private handleAddResponse(data: HttpResponse<string>) {
         this.loading = true;
         if (data.status === 204) {
             this.getInstanceStatesApiData();
             this.notify.success('Successfully saved Instance State');
-        } else if (data.status === 406) {
-            this.handleError('Post request not acceptable due to empty state');
         }
     }
 
-    private handleDeleteResponse(data: Response) {
+    private handleDeleteResponse(data: HttpResponse<string>) {
         this.loading = true;
-        if (data.status === 204) {
-            this.getInstanceStatesApiData();
-        } else {
-            this.handleError(data);
-        }
+        this.notify.success('Successfully deleted state \'' + this.elementToRemove.state + '\'');
+        this.elementToRemove = null;
+        this.getInstanceStatesApiData();
     }
 
-    private handleError(error: any): void {
+    private handleError(error: HttpErrorResponse): void {
         this.loading = false;
-        this.notify.error(error);
+        if (error.status === 406) {
+            this.notify.error('Post request not acceptable due to empty state');
+        } else {
+            this.notify.error(error.message, error.statusText);
+        }
     }
 
     // endregion

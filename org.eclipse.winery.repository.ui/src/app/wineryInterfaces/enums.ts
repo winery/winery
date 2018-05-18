@@ -64,3 +64,9 @@ export enum BackendAvailabilityStates {
     Unavailable = 0,
     Undefined = -1
 }
+
+export enum WineryVersionTypesEnum {
+    ComponentVersion = 'componentVersion',
+    WineryVersion = 'wineryVersion',
+    WipVersion = 'wipVersion'
+}
