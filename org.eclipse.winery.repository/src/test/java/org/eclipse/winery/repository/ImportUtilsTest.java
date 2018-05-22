@@ -17,10 +17,12 @@ import org.eclipse.winery.common.ids.Namespace;
 import org.eclipse.winery.common.ids.XmlId;
 import org.eclipse.winery.common.ids.definitions.imports.XSDImportId;
 import org.eclipse.winery.repository.backend.ImportUtils;
-import org.junit.Assert;
-import org.junit.Test;
 
 import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ImportUtilsTest extends TestWithGitBackedRepository {
 
@@ -33,6 +35,6 @@ public class ImportUtilsTest extends TestWithGitBackedRepository {
             new XmlId("CloudProviderProperties", false));
         Optional<String> importLocation = ImportUtils.getLocation(id);
 
-        Assert.assertEquals(true, importLocation.isPresent());
+        assertEquals(true, importLocation.isPresent());
     }
 }

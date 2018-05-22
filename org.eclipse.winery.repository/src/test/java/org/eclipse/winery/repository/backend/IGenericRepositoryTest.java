@@ -16,13 +16,15 @@ package org.eclipse.winery.repository.backend;
 
 import org.eclipse.winery.common.ids.definitions.*;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.junit.Assert;
-import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IGenericRepositoryTest extends TestWithGitBackedRepository {
 
@@ -37,6 +39,6 @@ public class IGenericRepositoryTest extends TestWithGitBackedRepository {
         PolicyTypeId policyTypeId = new PolicyTypeId("http://plain.winery.opentosca.org/policytypes", "PolicyTypeWithoutProperties", false);
 
         final Set<DefinitionsChildId> expected = new HashSet<>(Arrays.asList(nodeTypeWithoutPropertiesId, policyTemplateId, policyTypeId));
-        Assert.assertEquals(expected, referencedDefinitionsChildIds);
+        assertEquals(expected, referencedDefinitionsChildIds);
     }
 }

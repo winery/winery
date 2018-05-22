@@ -13,18 +13,21 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.export;
 
-import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
-import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
-import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
+import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CsarExporterTest extends TestWithGitBackedRepository {
 
@@ -42,8 +45,8 @@ public class CsarExporterTest extends TestWithGitBackedRepository {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
                 String name = entry.getName();
-                Assert.assertNotNull(name);
-                Assert.assertFalse("name contains backslashes", name.contains("\\"));
+                assertNotNull(name);
+                assertFalse(name.contains("\\"), "name contains backslashes");
             }
         }
     }

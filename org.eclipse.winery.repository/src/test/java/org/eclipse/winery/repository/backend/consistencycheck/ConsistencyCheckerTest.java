@@ -14,11 +14,13 @@
 package org.eclipse.winery.repository.backend.consistencycheck;
 
 import org.eclipse.winery.common.ids.definitions.NodeTypeImplementationId;
-import org.junit.Assert;
-import org.junit.Test;
 
 import java.util.Collections;
 import java.util.EnumSet;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConsistencyCheckerTest {
 
@@ -27,6 +29,6 @@ public class ConsistencyCheckerTest {
         NodeTypeImplementationId id = new NodeTypeImplementationId("http://winery.opentosca.org/test/nodetypeimplementations/fruits", "baobab_impl", false);
         ConsistencyErrorLogger errorLogger = new ConsistencyErrorLogger();
         ConsistencyChecker.checkNamespaceUri(errorLogger, EnumSet.of(ConsistencyCheckerVerbosity.NONE), id);
-        Assert.assertEquals(Collections.emptyMap(), errorLogger.getErrorList());
+        assertEquals(Collections.emptyMap(), errorLogger.getErrorList());
     }
 }
