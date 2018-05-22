@@ -44,7 +44,7 @@ export class WineryComponent implements OnInit {
     capabilityTypes: Array<any> = [];
     requirementTypes: Array<any> = [];
     groupedNodeTypes: Array<any> = [];
-    relationshipTypes: Array<any> = [];
+    relationshipTypes: Array<EntityType> = [];
     entityTypes: any = {};
     hideNavBarState: boolean;
     subscriptions: Array<Subscription> = [];
