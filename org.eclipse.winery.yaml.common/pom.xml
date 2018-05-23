@@ -74,10 +74,6 @@
             <version>1.11</version>
         </dependency>
     </dependencies>
-    <properties>
-        <junit.jupiter.version>5.0.2</junit.jupiter.version>
-        <junit.platform.version>1.0.2</junit.platform.version>
-    </properties>
     <url>http://www.eclipse.org/winery</url>
     <organization>
         <name>Eclipse.org - Winery Project</name>
@@ -106,7 +102,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>2.21.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.junit.platform</groupId>

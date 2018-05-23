@@ -21,8 +21,9 @@ import org.eclipse.winery.common.version.ToscaDiff;
 import org.eclipse.winery.common.version.VersionState;
 import org.eclipse.winery.common.version.VersionUtils;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * This test class resides in the repository in order to make use of the git backed test suite.
@@ -41,18 +42,18 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff id = diffNode.getChildrenMap().get("id");
         ToscaDiff topology = diffNode.getChildrenMap().get("topologyTemplate");
 
-        Assert.assertEquals(VersionState.CHANGED, diffNode.getState());
+        assertEquals(VersionState.CHANGED, diffNode.getState());
 
-        Assert.assertEquals(VersionState.CHANGED, name.getState());
-        Assert.assertEquals("ServiceTemplateWithFourPolicies_-w1-wip1", name.getNewValue());
-        Assert.assertEquals("ServiceTemplateWithFourPolicies", name.getOldValue());
+        assertEquals(VersionState.CHANGED, name.getState());
+        assertEquals("ServiceTemplateWithFourPolicies_-w1-wip1", name.getNewValue());
+        assertEquals("ServiceTemplateWithFourPolicies", name.getOldValue());
 
-        Assert.assertEquals(VersionState.CHANGED, name.getState());
-        Assert.assertEquals("ServiceTemplateWithFourPolicies_-w1-wip1", id.getNewValue());
-        Assert.assertEquals("ServiceTemplateWithFourPolicies", id.getOldValue());
+        assertEquals(VersionState.CHANGED, name.getState());
+        assertEquals("ServiceTemplateWithFourPolicies_-w1-wip1", id.getNewValue());
+        assertEquals("ServiceTemplateWithFourPolicies", id.getOldValue());
 
-        Assert.assertEquals(VersionState.CHANGED, topology.getState());
-        Assert.assertEquals(2, topology.getChildren().size());
+        assertEquals(VersionState.CHANGED, topology.getState());
+        assertEquals(2, topology.getChildren().size());
     }
 
     @Test
@@ -64,7 +65,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals(VersionState.UNCHANGED, diffNode.getState());
+        assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
 
     @Test
@@ -79,7 +80,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion).getTopologyTemplate().getRelationshipTemplate("con_129"),
             repository.getElement(newVersion).getTopologyTemplate().getRelationshipTemplate("con_129"));
 
-        Assert.assertEquals(VersionState.UNCHANGED, diffNode.getState());
+        assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
 
     @Test
@@ -93,7 +94,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals(VersionState.UNCHANGED, diffNode.getState());
+        assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
 
     @Test
@@ -107,7 +108,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals(VersionState.UNCHANGED, diffNode.getState());
+        assertEquals(VersionState.UNCHANGED, diffNode.getState());
     }
 
     @Test
@@ -125,13 +126,13 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff element1 = nodeTemplateDiff.get("0");
         ToscaDiff element2 = nodeTemplateDiff.get("1");
 
-        Assert.assertEquals(VersionState.CHANGED, diffNode.getState());
+        assertEquals(VersionState.CHANGED, diffNode.getState());
 
-        Assert.assertEquals("NodeTypeWithXmlElementProperty", element1.getElement());
-        Assert.assertEquals(VersionState.ADDED, element1.getState());
+        assertEquals("NodeTypeWithXmlElementProperty", element1.getElement());
+        assertEquals(VersionState.ADDED, element1.getState());
 
-        Assert.assertEquals("NodeTypeWithOneReqCapPairWithoutProperties", element2.getElement());
-        Assert.assertEquals(VersionState.REMOVED, element2.getState());
+        assertEquals("NodeTypeWithOneReqCapPairWithoutProperties", element2.getElement());
+        assertEquals(VersionState.REMOVED, element2.getState());
     }
 
     @Test
@@ -149,13 +150,13 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff element1 = nodeTemplateDiff.get("0");
         ToscaDiff element2 = nodeTemplateDiff.get("1");
 
-        Assert.assertEquals("NodeTypeWithOneReqCapPairWithoutProperties", element1.getElement());
-        Assert.assertEquals(VersionState.ADDED, element1.getState());
+        assertEquals("NodeTypeWithOneReqCapPairWithoutProperties", element1.getElement());
+        assertEquals(VersionState.ADDED, element1.getState());
 
-        Assert.assertEquals("NodeTypeWithXmlElementProperty", element2.getElement());
-        Assert.assertEquals(VersionState.REMOVED, element2.getState());
+        assertEquals("NodeTypeWithXmlElementProperty", element2.getElement());
+        assertEquals(VersionState.REMOVED, element2.getState());
 
-        Assert.assertEquals(VersionState.CHANGED, diffNode.getState());
+        assertEquals(VersionState.CHANGED, diffNode.getState());
     }
 
     @Test
@@ -172,8 +173,8 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         Map<String, ToscaDiff> nodeTemplateDiff = diffNode.getChildrenMap().get("topologyTemplate").getChildrenMap().get("nodeTemplates").getChildrenMap();
         ToscaDiff element1 = nodeTemplateDiff.get("2");
 
-        Assert.assertEquals("NodeTypeWithTwoKVProperties", element1.getElement());
-        Assert.assertEquals(VersionState.CHANGED, element1.getState());
+        assertEquals("NodeTypeWithTwoKVProperties", element1.getElement());
+        assertEquals(VersionState.CHANGED, element1.getState());
     }
 
     @Test
@@ -187,7 +188,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff diffNode = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals("## Changes from version -w1-wip3 to -w1-wip4\n" +
+        assertEquals("## Changes from version -w1-wip3 to -w1-wip4\n" +
                 "\n" +
                 "### Added\n" +
                 "- topologyTemplate/nodeTemplates/NodeTypeWithTwoKVProperties_2\n" +
@@ -221,7 +222,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff toscaDiff = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals("## Changes from version 0.3.0-w2 to 0.3.4-w1\n" +
+        assertEquals("## Changes from version 0.3.0-w2 to 0.3.4-w1\n" +
                 "\n" +
                 "### Changed\n" +
                 "- name\n" +
@@ -240,7 +241,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff toscaDiff = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals("## Changes from version  to -w1-wip1\n" +
+        assertEquals("## Changes from version  to -w1-wip1\n" +
                 "\n" +
                 "### Added\n" +
                 "- topologyTemplate/relationshipTemplates/NodeTypeWithoutProperties_RelationshipTypeWithoutProperties_NodeTypeWithTwoKVProperties\n" +
@@ -279,7 +280,7 @@ public class VersionUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         ToscaDiff toscaDiff = VersionUtils.calculateDifferences(repository.getElement(oldVersion), repository.getElement(newVersion));
 
-        Assert.assertEquals("## Changes from version -w2-wip1 to -w2-wip2\n" +
+        assertEquals("## Changes from version -w2-wip1 to -w2-wip2\n" +
                 "\n" +
                 "### Changed\n" +
                 "- id\n" +

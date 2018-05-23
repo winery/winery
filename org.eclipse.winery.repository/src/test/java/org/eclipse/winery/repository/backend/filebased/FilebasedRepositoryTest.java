@@ -23,8 +23,6 @@ import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateFilesDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.ArtifactTemplateSourceDirectoryId;
 import org.eclipse.winery.repository.datatypes.ids.elements.DirectoryId;
-import org.junit.Assert;
-import org.junit.Test;
 
 import javax.xml.namespace.QName;
 import java.nio.file.Files;
@@ -33,30 +31,37 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.SortedSet;
 
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 
     @Test
     public void getAllDefinitionsChildIds() throws Exception {
         this.setRevisionTo("5fdcffa9ccd17743d5498cab0914081fc33606e9");
         SortedSet<XSDImportId> allImports = this.repository.getAllDefinitionsChildIds(XSDImportId.class);
-        Assert.assertEquals(1, allImports.size());
+        assertEquals(1, allImports.size());
     }
 
     @Test
     public void namespaceWithSpaceAtEndWorks() throws Exception {
         this.setRevisionTo("5fdcffa9ccd17743d5498cab0914081fc33606e9");
         NodeTypeId id = new NodeTypeId("http://www.example.org ", "id", false);
-        Assert.assertFalse(this.repository.exists(id));
+        assertFalse(this.repository.exists(id));
         this.repository.flagAsExisting(id);
-        Assert.assertTrue(this.repository.exists(id));
-        Assert.assertNotNull(this.repository.getElement(id));
+        assertTrue(this.repository.exists(id));
+        assertNotNull(this.repository.getElement(id));
     }
 
     @Test
     public void referenceCountIsOneForBaobab() throws Exception {
         this.setRevisionTo("5b7f106ab79a9ba137ece9167a79753dfc64ac84");
         final ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://winery.opentosca.org/test/artifacttemplates/fruits", "baobab_bananaInterface_IA", false);
-        Assert.assertEquals(1, this.repository.getReferenceCount(artifactTemplateId));
+        assertEquals(1, this.repository.getReferenceCount(artifactTemplateId));
     }
 
     @Test
@@ -68,7 +73,7 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
         final FilebasedRepository repository = (FilebasedRepository) this.repository;
 
         final Path expected = Paths.get("artifacttemplates", "http%3A%2F%2Fwww.example.org", "at", "source", "dir1", "dir2", "dir3", "test.txt");
-        Assert.assertEquals(expected, repository.getRepositoryRoot().relativize(repository.ref2AbsolutePath(ref)));
+        assertEquals(expected, repository.getRepositoryRoot().relativize(repository.ref2AbsolutePath(ref)));
     }
 
     @Test
@@ -87,7 +92,7 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
         BackendUtils.importDirectory(workingDir, this.repository, artifactTemplateSourceDirectoryId);
 
         RepositoryFileReference ref = new RepositoryFileReference(artifactTemplateSourceDirectoryId, subDirectories, "test.txt");
-        Assert.assertTrue(repository.exists(ref));
+        assertTrue(repository.exists(ref));
     }
 
     @Test
@@ -99,7 +104,7 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
         final SortedSet<RepositoryFileReference> containedFiles = repository.getContainedFiles(directoryId);
 
         // TODO: real content (relative paths, ...) not checked
-        Assert.assertEquals(3, containedFiles.size());
+        assertEquals(3, containedFiles.size());
     }
 
     @Test
@@ -108,7 +113,7 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
         ArtifactTemplateId artifactTemplateId = new ArtifactTemplateId("http://opentosca.org/artifacttemplates", "MyTinyTest", false);
         final TArtifactTemplate artifactTemplate = this.repository.getElement(artifactTemplateId);
         final TEntityType typeForTemplate = this.repository.getTypeForTemplate(artifactTemplate);
-        Assert.assertEquals(new QName("http://winery.opentosca.org/test/artifacttypes", "MiniArtifactType"), new QName(typeForTemplate.getTargetNamespace(), typeForTemplate.getName()));
+        assertEquals(new QName("http://winery.opentosca.org/test/artifacttypes", "MiniArtifactType"), new QName(typeForTemplate.getTargetNamespace(), typeForTemplate.getName()));
     }
 
     @Test
@@ -117,7 +122,7 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
         DirectoryId fileDir = new ArtifactTemplateFilesDirectoryId(artifactTemplateWithFilesAndSourcesId);
         SortedSet<RepositoryFileReference> files = repository.getContainedFiles(fileDir);
         for (RepositoryFileReference ref : files) {
-            Assert.assertFalse("File " + ref.toString() + " contains empty sub directory", ref.getSubDirectory().isPresent() && ref.getSubDirectory().get().toString().equals(""));
+            assertFalse(ref.getSubDirectory().isPresent() && ref.getSubDirectory().get().toString().equals(""), "File " + ref.toString() + " contains empty sub directory");
         }
     }
 
@@ -125,14 +130,14 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
     public void getStableDefinitionsOnly() throws Exception {
         this.setRevisionTo("e9e8443dfce1ccb0eee3a0b937b1c2e6ab7798df");
         SortedSet<NodeTypeId> stableNodeTypes = this.repository.getStableDefinitionsChildIdsOnly(NodeTypeId.class);
-        Assert.assertEquals(10, stableNodeTypes.size());
+        assertEquals(10, stableNodeTypes.size());
     }
 
     @Test
     public void getAllDefinitions() throws Exception {
         this.setRevisionTo("e9e8443dfce1ccb0eee3a0b937b1c2e6ab7798df");
         SortedSet<NodeTypeId> allNodeTypes = this.repository.getAllDefinitionsChildIds(NodeTypeId.class);
-        Assert.assertEquals(13, allNodeTypes.size());
+        assertEquals(13, allNodeTypes.size());
     }
 
     @Test
@@ -143,8 +148,8 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 
         this.repository.duplicate(old, newId);
 
-        Assert.assertTrue(this.repository.exists(old));
-        Assert.assertTrue(this.repository.exists(newId));
+        assertTrue(this.repository.exists(old));
+        assertTrue(this.repository.exists(newId));
     }
 
     @Test
@@ -155,7 +160,7 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 
         Collection<DefinitionsChildId> childIds = this.repository.getReferencingDefinitionsChildIds(element);
 
-        Assert.assertEquals(1, childIds.size());
+        assertEquals(1, childIds.size());
     }
 
     @Test
@@ -165,7 +170,7 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 
         Collection<DefinitionsChildId> childIds = this.repository.getReferencingDefinitionsChildIds(id);
 
-        Assert.assertEquals(4, childIds.size());
+        assertEquals(4, childIds.size());
     }
 
     @Test
@@ -175,7 +180,7 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 
         Collection<DefinitionsChildId> childIds = this.repository.getReferencingDefinitionsChildIds(id);
 
-        Assert.assertEquals(2, childIds.size());
+        assertEquals(2, childIds.size());
     }
 
     @Test
@@ -185,6 +190,6 @@ public class FilebasedRepositoryTest extends TestWithGitBackedRepository {
 
         Collection<DefinitionsChildId> childIds = this.repository.getReferencingDefinitionsChildIds(id);
 
-        Assert.assertEquals(2, childIds.size());
+        assertEquals(2, childIds.size());
     }
 }

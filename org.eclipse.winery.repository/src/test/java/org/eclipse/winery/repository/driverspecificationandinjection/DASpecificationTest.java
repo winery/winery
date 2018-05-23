@@ -18,7 +18,6 @@ import org.eclipse.winery.common.ids.definitions.ArtifactTypeId;
 import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
 import org.eclipse.winery.model.tosca.*;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.junit.Test;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -26,8 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DASpecificationTest extends TestWithGitBackedRepository {
 

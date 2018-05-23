@@ -13,24 +13,24 @@
  *******************************************************************************/
 package org.eclipse.winery.repository;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JAXBSupportTest {
 
     @Test
     public void createMarshaller() throws Exception {
-        Assert.assertNotNull(JAXBSupport.createMarshaller(true));
+        assertNotNull(JAXBSupport.createMarshaller(true));
     }
 
     @Test
     public void createUnmarshaller() throws Exception {
-        Assert.assertNotNull(JAXBSupport.createUnmarshaller());
+        assertNotNull(JAXBSupport.createUnmarshaller());
     }
 
     @Test
     public void JAXBContextIsNotNull() {
-        Assert.assertNotNull(JAXBSupport.context);
+        assertNotNull(JAXBSupport.context);
     }
-
 }

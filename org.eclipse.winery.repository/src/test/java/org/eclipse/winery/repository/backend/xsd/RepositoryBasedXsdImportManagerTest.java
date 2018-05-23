@@ -14,10 +14,12 @@
 package org.eclipse.winery.repository.backend.xsd;
 
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.junit.Assert;
-import org.junit.Test;
 
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RepositoryBasedXsdImportManagerTest extends TestWithGitBackedRepository {
 
@@ -28,7 +30,7 @@ public class RepositoryBasedXsdImportManagerTest extends TestWithGitBackedReposi
         RepositoryBasedXsdImportManager manager = (RepositoryBasedXsdImportManager) this.repository.getXsdImportManager();
         List<NamespaceAndDefinedLocalNames> list = manager.getAllDeclaredElementsLocalNames();
 
-        Assert.assertEquals(1, list.size());
+        assertEquals(1, list.size());
     }
 
     @Test
@@ -38,6 +40,6 @@ public class RepositoryBasedXsdImportManagerTest extends TestWithGitBackedReposi
         RepositoryBasedXsdImportManager manager = (RepositoryBasedXsdImportManager) this.repository.getXsdImportManager();
         List<NamespaceAndDefinedLocalNames> list = manager.getAllDefinedTypesLocalNames();
 
-        Assert.assertEquals(1, list.size());
+        assertEquals(1, list.size());
     }
 }
