@@ -14,33 +14,37 @@
 
 package org.eclipse.winery.repository.splitting;
 
-import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
-import org.eclipse.winery.model.tosca.*;
-import org.eclipse.winery.model.tosca.utils.ModelUtilities;
-import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.eclipse.winery.common.ids.definitions.ServiceTemplateId;
+import org.eclipse.winery.model.tosca.TEntityTemplate;
+import org.eclipse.winery.model.tosca.TNodeTemplate;
+import org.eclipse.winery.model.tosca.TRelationshipTemplate;
+import org.eclipse.winery.model.tosca.TServiceTemplate;
+import org.eclipse.winery.model.tosca.TTopologyTemplate;
+import org.eclipse.winery.model.tosca.utils.ModelUtilities;
+import org.eclipse.winery.repository.TestWithGitBackedRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
 
-@Ignore("Needs to be updated to public test cases")
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Disabled("Needs to be updated to public test cases")
 public class SplittingTest extends TestWithGitBackedRepository {
 
     private Splitting splitting = new Splitting();
     private TTopologyTemplate topologyTemplate;
     private TTopologyTemplate topologyTemplate2;
 
-    @Before
+    @BeforeEach
     public void initialize() throws Exception {
         ServiceTemplateId id = new ServiceTemplateId("http://www.example.org", "ST", false);
         ServiceTemplateId id2 = new ServiceTemplateId("http://opentosca.org/servicetemplates", "FlinkApp_Demo_Small_On_OpenStack", false);
