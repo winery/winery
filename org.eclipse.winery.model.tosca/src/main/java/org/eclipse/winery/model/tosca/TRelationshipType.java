@@ -14,76 +14,21 @@
 
 package org.eclipse.winery.model.tosca;
 
-import org.eclipse.jdt.annotation.NonNull;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
-/**
- * <p>Java class for tRelationshipType complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tRelationshipType">
- *   &lt;complexContent>
- *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tEntityType">
- *       &lt;sequence>
- *         &lt;element name="InstanceStates" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tTopologyElementInstanceStates"
- * minOccurs="0"/>
- *         &lt;element name="SourceInterfaces" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;sequence>
- *                   &lt;element name="Interface" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tInterface"
- * maxOccurs="unbounded"/>
- *                 &lt;/sequence>
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *         &lt;element name="TargetInterfaces" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;sequence>
- *                   &lt;element name="Interface" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tInterface"
- * maxOccurs="unbounded"/>
- *                 &lt;/sequence>
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *         &lt;element name="ValidSource" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;attribute name="typeRef" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *         &lt;element name="ValidTarget" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;attribute name="typeRef" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *       &lt;/sequence>
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRelationshipType", propOrder = {
     "instanceStates",
@@ -139,7 +84,7 @@ public class TRelationshipType extends TEntityType {
      *
      * @return possible object is {@link TTopologyElementInstanceStates }
      */
-    /*@Nullable*/
+    @Nullable
     public TTopologyElementInstanceStates getInstanceStates() {
         return instanceStates;
     }
@@ -158,8 +103,7 @@ public class TRelationshipType extends TEntityType {
      *
      * @return possible object is {@link TRelationshipType.SourceInterfaces }
      */
-    /*@Nullable*/
-    public TRelationshipType.SourceInterfaces getSourceInterfaces() {
+    public TRelationshipType.@Nullable SourceInterfaces getSourceInterfaces() {
         return sourceInterfaces;
     }
 
@@ -177,8 +121,7 @@ public class TRelationshipType extends TEntityType {
      *
      * @return possible object is {@link TRelationshipType.TargetInterfaces }
      */
-    /*@Nullable*/
-    public TRelationshipType.TargetInterfaces getTargetInterfaces() {
+    public TRelationshipType.@Nullable TargetInterfaces getTargetInterfaces() {
         return targetInterfaces;
     }
 
@@ -196,8 +139,7 @@ public class TRelationshipType extends TEntityType {
      *
      * @return possible object is {@link TRelationshipType.ValidSource }
      */
-    /*@Nullable*/
-    public TRelationshipType.ValidSource getValidSource() {
+    public TRelationshipType.@Nullable ValidSource getValidSource() {
         return validSource;
     }
 
@@ -215,8 +157,7 @@ public class TRelationshipType extends TEntityType {
      *
      * @return possible object is {@link TRelationshipType.ValidTarget }
      */
-    /*@Nullable*/
-    public TRelationshipType.ValidTarget getValidTarget() {
+    public TRelationshipType.@Nullable ValidTarget getValidTarget() {
         return validTarget;
     }
 
