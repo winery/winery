@@ -40,7 +40,7 @@ Windows:
 2. Change into the newly created directory `winery`: `cd winery`.
 3. Add `upstream` as second remote: `git remote add upstream https://github.com/eclipse/winery.git`
 4. Fetch everything from `upstream`: `git fetch upstream`
-5. Run `mvn package` to have `Version.java` generated
+5. Run `mvn package -DskipTests` to have `Version.java` generated
 
 ## Steps to initialize the TOSCA repository
 
