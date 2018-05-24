@@ -87,7 +87,7 @@ public class TEntityType implements VisitorNode {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(@Nullable String description) {
         this.description = description;
     }
 
@@ -96,7 +96,7 @@ public class TEntityType implements VisitorNode {
         return version;
     }
 
-    public void setVersion(TVersion version) {
+    public void setVersion(@Nullable TVersion version) {
         this.version = version;
     }
 
@@ -110,7 +110,7 @@ public class TEntityType implements VisitorNode {
         return derivedFrom;
     }
 
-    public void setDerivedFrom(QName derivedFrom) {
+    public void setDerivedFrom(@Nullable QName derivedFrom) {
         this.derivedFrom = derivedFrom;
     }
 
@@ -123,7 +123,7 @@ public class TEntityType implements VisitorNode {
         return properties;
     }
 
-    public void setProperties(Map<String, TPropertyDefinition> properties) {
+    public void setProperties(@Nullable Map<String, TPropertyDefinition> properties) {
         this.properties = properties;
     }
 
@@ -136,7 +136,7 @@ public class TEntityType implements VisitorNode {
         return attributes;
     }
 
-    public void setAttributes(Map<String, TAttributeDefinition> attributes) {
+    public void setAttributes(@Nullable Map<String, TAttributeDefinition> attributes) {
         this.attributes = attributes;
     }
 
@@ -149,7 +149,7 @@ public class TEntityType implements VisitorNode {
         return metadata;
     }
 
-    public void setMetadata(Metadata metadata) {
+    public void setMetadata(@Nullable Metadata metadata) {
         this.metadata = metadata;
     }
 
