@@ -12,13 +12,15 @@ Email your supervisor your GitHub username.
   Example: `flastname@gmail.com`.
 - Please enable the git-hooks by executing `git config core.hooksPath .git-hooks` in the root of the repository.
 
-## Development enviroment installation steps
+## Steps to get Apache Maven ready
 
-1. Get [Apache Maven](https://maven.apache.org/) to run
-    1. Get [choclatey](https://chocolatey.org/)
-    1. Execute in an **Administor cmd.exe**: `@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"`
-    1. Execute `choco install maven`. This also installs the latest Java8 JDK.
-1. Setup IntelliJ as described at [config/IntelliJ IDEA](config/IntelliJ%20IDEA).
+Get [Apache Maven](https://maven.apache.org/) to run.
+
+Windows:
+
+1. Get [choclatey](https://chocolatey.org/)
+1. Execute in an **Administor cmd.exe**: `@"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"`
+1. Execute `choco install maven`. This also installs the latest Java8 JDK.
 
 ## Steps to get write access to the code repositories
 
@@ -30,18 +32,25 @@ Email your supervisor your GitHub username.
 
 ## Steps to initialize the code repository
 
-  1. Clone <https://github.com/opentosca/winery> (it automatically becomes the `origin`).
-     - We recommend that git repositories reside in `c:\git-repositories`.
-     - Use [ConEmu](https://conemu.github.io/) as program for all your shells: `choco install conemu`.
-       Install [chocolatey](https://chocolatey.org/) to use the `choco` command.
-     - Execute `git clone https://github.com/OpenTOSCA/winery.git` in `c:\git-repositories`.
-  2. Change into the newly created directory `winery`: `cd winery`.
-  3. Add `upstream` as second remote: `git remote add upstream https://github.com/eclipse/winery.git`
-  4. Fetch everything from `upstream`: `git fetch upstream`
+1. Clone <https://github.com/opentosca/winery> (it automatically becomes the `origin`).
+   - We recommend that git repositories reside in `c:\git-repositories`.
+   - Use [ConEmu](https://conemu.github.io/) as program for all your shells: `choco install conemu`.
+     Install [chocolatey](https://chocolatey.org/) to use the `choco` command.
+   - Execute `git clone https://github.com/OpenTOSCA/winery.git` in `c:\git-repositories`.
+2. Change into the newly created directory `winery`: `cd winery`.
+3. Add `upstream` as second remote: `git remote add upstream https://github.com/eclipse/winery.git`
+4. Fetch everything from `upstream`: `git fetch upstream`
+5. Run `mvn package` to have `Version.java` generated
 
 ## Steps to initialize the TOSCA repository
 
 Please go to the [quick start guide](../user/quickstart.md).
+
+## Steps to initialize the IDE
+
+Setup IntelliJ as described at [config/IntelliJ IDEA](config/IntelliJ%20IDEA).
+Alternatively, you can you Eclipse as described at [config/Eclipse](config/Eclipse).
+However, the latter is currently work-in-progress.
 
 ## License
 
