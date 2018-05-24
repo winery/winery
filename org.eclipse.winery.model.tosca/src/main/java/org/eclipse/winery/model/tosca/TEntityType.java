@@ -35,48 +35,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
 
-/**
- * <p>Java class for tEntityType complex type.
- * <p>
- * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
- * <pre>
- * &lt;complexType name="tEntityType">
- *   &lt;complexContent>
- *     &lt;extension base="{http://docs.oasis-open.org/tosca/ns/2011/12}tExtensibleElements">
- *       &lt;sequence>
- *         &lt;element name="Tags" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tTags" minOccurs="0"/>
- *         &lt;element name="DerivedFrom" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;attribute name="typeRef" use="required" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *         &lt;element name="PropertiesDefinition" minOccurs="0">
- *           &lt;complexType>
- *             &lt;complexContent>
- *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *                 &lt;attribute name="element" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *                 &lt;attribute name="type" type="{http://www.w3.org/2001/XMLSchema}QName" />
- *               &lt;/restriction>
- *             &lt;/complexContent>
- *           &lt;/complexType>
- *         &lt;/element>
- *       &lt;/sequence>
- *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
- *       &lt;attribute name="abstract" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tBoolean" default="no" />
- *       &lt;attribute name="final" type="{http://docs.oasis-open.org/tosca/ns/2011/12}tBoolean" default="no" />
- *       &lt;attribute name="targetNamespace" type="{http://www.w3.org/2001/XMLSchema}anyURI" />
- *       &lt;anyAttribute processContents='lax' namespace='##other'/>
- *     &lt;/extension>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- */
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.namespace.QName;
+import java.util.List;
+import java.util.Objects;
+
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityType", propOrder = {
     "tags",
@@ -169,8 +137,7 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
      *
      * @return possible object is {@link TEntityType.DerivedFrom }
      */
-    /*@Nullable*/
-    public TEntityType.DerivedFrom getDerivedFrom() {
+    public TEntityType.@Nullable DerivedFrom getDerivedFrom() {
         return derivedFrom;
     }
 
@@ -188,8 +155,7 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
      *
      * @return possible object is {@link TEntityType.PropertiesDefinition }
      */
-    /*@Nullable*/
-    public TEntityType.PropertiesDefinition getPropertiesDefinition() {
+    public TEntityType.@Nullable PropertiesDefinition getPropertiesDefinition() {
         return propertiesDefinition;
     }
 

@@ -115,8 +115,7 @@ public class TRelationshipTemplate extends TEntityTemplate {
      *
      * @return possible object is {@link TRelationshipTemplate.RelationshipConstraints }
      */
-    /*@Nullable*/
-    public TRelationshipTemplate.RelationshipConstraints getRelationshipConstraints() {
+    public TRelationshipTemplate.@Nullable RelationshipConstraints getRelationshipConstraints() {
         return relationshipConstraints;
     }
 
@@ -149,35 +148,6 @@ public class TRelationshipTemplate extends TEntityTemplate {
     }
 
 
-    /**
-     * <p>Java class for anonymous complex type.
-     * <p>
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     * <p>
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;sequence>
-     *         &lt;element name="RelationshipConstraint" maxOccurs="unbounded">
-     *           &lt;complexType>
-     *             &lt;complexContent>
-     *               &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *                 &lt;sequence>
-     *                   &lt;any processContents='lax' namespace='##other' minOccurs="0"/>
-     *                 &lt;/sequence>
-     *                 &lt;attribute name="constraintType" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI"
-     * />
-     *               &lt;/restriction>
-     *             &lt;/complexContent>
-     *           &lt;/complexType>
-     *         &lt;/element>
-     *       &lt;/sequence>
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
         "relationshipConstraint"
