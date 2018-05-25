@@ -35,9 +35,10 @@ import { WineryActions } from '../redux/actions/winery.actions';
 import { hostURL } from '../models/configuration';
 import { EntityType, TNodeTemplate } from '../models/ttopology-template';
 import { QName } from '../models/qname';
-import { urlElement } from '../models/enums';
+import { PropertyDefinitionType, urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
 import { isNullOrUndefined } from 'util';
+import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -65,7 +66,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     connectorEndpointVisible = false;
     startTime;
     endTime;
-    groupedNodeTypes: any;
     longpress = false;
     makeSelectionVisible = false;
     setFlash = false;
@@ -143,25 +143,33 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      * We have 3 possibilities: none, XML element, or Key value pairs.
      * @param {string} type
      */
-    findOutPropertyDefinitionTypeForProperties(type: string, groupedNodeTypes: any): string {
-        for (const nameSpace of groupedNodeTypes) {
-            for (const nodeTypeVar of nameSpace.children) {
+    findOutPropertyDefinitionTypeForProperties(type: string, groupedNodeTypes: Array<GroupedNodeTypeModel>): void {
+        let propertyDefinitionTypeAssigned: boolean;
+        groupedNodeTypes.some(nameSpace => {
+            nameSpace.children.some(nodeTypeVar => {
                 if (nodeTypeVar.id === type) {
                     // if PropertiesDefinition doesn't exist then it must be of type NONE
                     if (isNullOrUndefined(nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition)) {
-                        return 'NONE';
+                        this.propertyDefinitionType = PropertyDefinitionType.NONE;
+                        propertyDefinitionTypeAssigned = true;
                     } else {
                         // if no XML element inside PropertiesDefinition then it must be of type Key Value
                         if (!nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
-                            return 'KV';
+                            this.propertyDefinitionType = PropertyDefinitionType.KV;
+                            propertyDefinitionTypeAssigned = true;
                         } else {
                             // else we have XML
-                            return 'XML';
+                            this.propertyDefinitionType = PropertyDefinitionType.XML;
+                            propertyDefinitionTypeAssigned = true;
                         }
                     }
+                    return true;
                 }
+            });
+            if (propertyDefinitionTypeAssigned) {
+                return true;
             }
-        }
+        });
     }
 
     /**
@@ -169,18 +177,17 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      */
     ngOnInit() {
         this.differ = this.differs.find([]).create(null);
-        this.backendService.requestGroupedNodeTypes().subscribe((groupedNodeTypes) => {
-            this.groupedNodeTypes = groupedNodeTypes;
-            this.propertyDefinitionType = this.findOutPropertyDefinitionTypeForProperties(this.nodeTemplate.type, groupedNodeTypes);
-        });
     }
 
     /**
      * Angular lifecycle event.
      */
     ngDoCheck() {
-        const nodeTemplateChanges = this.differ.diff(this.nodeTemplate);
+        const nodeTemplateChanges = this.differ.diff(this.entityTypes);
         if (nodeTemplateChanges) {
+            if (this.entityTypes.groupedNodeTypes) {
+                this.findOutPropertyDefinitionTypeForProperties(this.nodeTemplate.type, this.entityTypes.groupedNodeTypes);
+            }
         }
     }
 
