@@ -1,5 +1,5 @@
-<!--
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+/*******************************************************************************
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -10,17 +10,12 @@
  * which is available at https://www.apache.org/licenses/LICENSE-2.0.
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
--->
+ *******************************************************************************/
 
-<winery-toscatype-table
-    [toscaType]="'deploymentArtifacts'"
-    [currentNodeData]="currentNodeData"
-    [toscaTypeData]="deploymentArtifacts">
-</winery-toscatype-table>
+export interface GroupedNodeTypeModel {
+    children: Array<NodeTypeModel>; id: string; text: string;
+}
 
-<div class="button-wrapper">
-    <div (click)="toggleModal($event);" class="btn btn-sm btn-modal" style="display: block;">
-        Add new Deployment Artifact
-    </div>
-</div>
-
+export interface NodeTypeModel {
+    full: any; id: string; text: string;
+}
