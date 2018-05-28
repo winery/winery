@@ -36,7 +36,6 @@ import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityType", propOrder = {
     "tags",
@@ -52,6 +51,8 @@ import org.eclipse.jdt.annotation.Nullable;
     TPolicyType.class
 })
 public class TEntityType extends TExtensibleElements implements HasName, HasInheritance, HasTargetNamespace {
+    public static final String NS_SUFFIX_PROPERTIESDEFINITION_WINERY = "propertiesdefinition/winery";
+
     @XmlElement(name = "Tags")
     protected TTags tags;
     @XmlElement(name = "DerivedFrom")
@@ -262,7 +263,7 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
                 if (!ns.endsWith("/")) {
                     ns += "/";
                 }
-                ns += "propertiesdefinition/winery";
+                ns += NS_SUFFIX_PROPERTIESDEFINITION_WINERY;
                 res.setNamespace(ns);
             }
         }
@@ -338,7 +339,6 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
             return Objects.hash(typeRef);
         }
     }
-
 
     /**
      * <p>Java class for anonymous complex type.
