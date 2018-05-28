@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -78,6 +78,18 @@ public class TArtifactDefinition implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getType(), getRepository(), getDescription(), getDeployPath(), getFiles(), getProperties());
+    }
+
+    @Override
+    public String toString() {
+        return "TArtifactDefinition{" +
+            "type=" + getType() +
+            ", repository='" + getRepository() + '\'' +
+            ", description='" + getDescription() + '\'' +
+            ", deployPath='" + getDeployPath() + '\'' +
+            ", files=" + getFiles() +
+            ", properties=" + getProperties() +
+            '}';
     }
 
     @NonNull

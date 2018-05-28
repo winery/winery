@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -61,6 +61,14 @@ public class TArtifactType extends TEntityType {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getMimeType(), getFileExt());
+    }
+
+    @Override
+    public String toString() {
+        return "TArtifactType{" +
+            "mimeType='" + getMimeType() + '\'' +
+            ", fileExt=" + getFileExt() +
+            "} " + super.toString();
     }
 
     @Nullable

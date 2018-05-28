@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -81,6 +81,19 @@ public class TRelationshipTemplate implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getType(), getDescription(), getMetadata(), getProperties(), getAttributes(), getInterfaces(), getCopy());
+    }
+
+    @Override
+    public String toString() {
+        return "TRelationshipTemplate{" +
+            "type=" + getType() +
+            ", description='" + getDescription() + '\'' +
+            ", metadata=" + getMetadata() +
+            ", properties=" + getProperties() +
+            ", attributes=" + getAttributes() +
+            ", interfaces=" + getInterfaces() +
+            ", copy=" + getCopy() +
+            '}';
     }
 
     @NonNull

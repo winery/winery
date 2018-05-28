@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -51,6 +51,11 @@ public class TMapRequirementAssignment implements Map<String, TRequirementAssign
     @Override
     public int hashCode() {
         return Objects.hash(map);
+    }
+
+    @Override
+    public String toString() {
+        return map.toString();
     }
 
     @Override

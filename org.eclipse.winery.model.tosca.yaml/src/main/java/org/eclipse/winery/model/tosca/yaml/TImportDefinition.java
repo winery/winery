@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -73,6 +73,16 @@ public class TImportDefinition implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getFile(), getRepository(), getNamespaceUri(), getNamespacePrefix());
+    }
+
+    @Override
+    public String toString() {
+        return "TImportDefinition{" +
+            "file='" + getFile() + '\'' +
+            ", repository=" + getRepository() +
+            ", namespaceUri='" + getNamespaceUri() + '\'' +
+            ", namespacePrefix='" + getNamespacePrefix() + '\'' +
+            '}';
     }
 
     @NonNull

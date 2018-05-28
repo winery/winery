@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import javax.xml.bind.annotation.XmlEnum;
 
 @XmlEnum(String.class)
@@ -20,5 +22,21 @@ public enum TStatusValue {
     supported,
     unsupported,
     experimental,
-    deprecated
+    deprecated;
+
+    @Nullable
+    public static TStatusValue getStatus(String status) {
+        switch (status) {
+            case "supported":
+                return TStatusValue.supported;
+            case "unsupported":
+                return TStatusValue.unsupported;
+            case "experimental":
+                return TStatusValue.experimental;
+            case "deprecated":
+                return TStatusValue.deprecated;
+            default:
+                return null;
+        }
+    }
 }

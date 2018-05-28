@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -49,6 +49,11 @@ public class TListString implements List<String> {
     @Override
     public int hashCode() {
         return Objects.hash(getList());
+    }
+
+    @Override
+    public String toString() {
+        return list.toString();
     }
 
     public List<String> getList() {

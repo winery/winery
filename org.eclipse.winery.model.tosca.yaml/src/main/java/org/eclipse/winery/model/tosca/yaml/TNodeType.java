@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -67,6 +67,17 @@ public class TNodeType extends TNodeOrGroupType {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getAttributes(), getRequirements(), getCapabilities(), getInterfaces(), getArtifacts());
+    }
+
+    @Override
+    public String toString() {
+        return "TNodeType{" +
+            "attributes=" + getAttributes() +
+            ", requirements=" + getRequirements() +
+            ", capabilities=" + getCapabilities() +
+            ", interfaces=" + getInterfaces() +
+            ", artifacts=" + getArtifacts() +
+            "} " + super.toString();
     }
 
     @NonNull

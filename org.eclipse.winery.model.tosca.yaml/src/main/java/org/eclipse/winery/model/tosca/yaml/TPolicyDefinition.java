@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -70,6 +70,17 @@ public class TPolicyDefinition implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getType(), getDescription(), getMetadata(), getProperties(), getTargets());
+    }
+
+    @Override
+    public String toString() {
+        return "TPolicyDefinition{" +
+            "type=" + getType() +
+            ", description='" + getDescription() + '\'' +
+            ", metadata=" + getMetadata() +
+            ", properties=" + getProperties() +
+            ", targets=" + getTargets() +
+            '}';
     }
 
     @NonNull

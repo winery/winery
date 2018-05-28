@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -100,6 +100,24 @@ public class TNodeTemplate implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getType(), getDescription(), getMetadata(), getDirectives(), getProperties(), getAttributes(), getRequirements(), getCapabilities(), getInterfaces(), getArtifacts(), getNodeFilter(), getCopy());
+    }
+
+    @Override
+    public String toString() {
+        return "TNodeTemplate{" +
+            "type=" + getType() +
+            ", description='" + getDescription() + '\'' +
+            ", metadata=" + getMetadata() +
+            ", directives=" + getDirectives() +
+            ", properties=" + getProperties() +
+            ", attributes=" + getAttributes() +
+            ", requirements=" + getRequirements() +
+            ", capabilities=" + getCapabilities() +
+            ", interfaces=" + getInterfaces() +
+            ", artifacts=" + getArtifacts() +
+            ", nodeFilter=" + getNodeFilter() +
+            ", copy=" + getCopy() +
+            '}';
     }
 
     @NonNull

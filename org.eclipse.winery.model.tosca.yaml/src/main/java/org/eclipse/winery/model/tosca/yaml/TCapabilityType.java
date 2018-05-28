@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -56,6 +56,13 @@ public class TCapabilityType extends TEntityType {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getValidSourceTypes());
+    }
+
+    @Override
+    public String toString() {
+        return "TCapabilityType{" +
+            "validSourceTypes=" + getValidSourceTypes() +
+            "} " + super.toString();
     }
 
     @NonNull
