@@ -161,8 +161,11 @@ public class Builder {
             .filter(entry -> Objects.nonNull(entry.getValue()))
             .forEach(entry -> {
                 metadata.put(entry.getKey(), stringValue(entry.getValue()));
-                if (entry.getValue() instanceof Date)
-                    metadata.put(entry.getKey(), new SimpleDateFormat("yyyy-MM-dd").format(entry.getValue()));
+                if (entry.getValue() instanceof Date) {
+                    SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSSZ");
+                    date.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    metadata.put(entry.getKey(), date.format(entry.getValue()));
+                }
             });
         return metadata;
     }
