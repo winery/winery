@@ -35,15 +35,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.winery.model.tosca.kvproperties.WinerysPropertiesDefinition;
-
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Objects;
-
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityType", propOrder = {
