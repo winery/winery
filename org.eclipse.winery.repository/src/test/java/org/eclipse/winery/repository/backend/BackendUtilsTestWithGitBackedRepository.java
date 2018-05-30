@@ -13,7 +13,12 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.backend;
 
-import org.apache.tika.mime.MediaType;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.DefinitionsChildId;
@@ -26,13 +31,15 @@ import org.eclipse.winery.common.version.WineryVersion;
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.TPolicyTemplate;
 import org.eclipse.winery.repository.TestWithGitBackedRepository;
-import org.junit.Assert;
-import org.junit.Test;
 
-import javax.xml.namespace.QName;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.tika.mime.MediaType;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRepository {
 
@@ -50,15 +57,14 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         BackendUtils.initializeProperties(repository, policyTemplate);
 
-        Assert.assertNotNull(policyTemplate.getProperties());
+        assertNotNull(policyTemplate.getProperties());
 
         LinkedHashMap<String, String> kvProperties = policyTemplate.getProperties().getKVProperties();
         LinkedHashMap<String, String> expectedPropertyKVS = new LinkedHashMap<>();
         expectedPropertyKVS.put("key1", "");
         expectedPropertyKVS.put("key2", "");
-        Assert.assertEquals(expectedPropertyKVS, kvProperties);
+        assertEquals(expectedPropertyKVS, kvProperties);
     }
-
 
     @Test
     public void initializePropertiesDoesNothingInTheCaseOfXmlElementProperties() throws Exception {
@@ -74,7 +80,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         BackendUtils.initializeProperties(repository, policyTemplate);
 
-        Assert.assertNull(policyTemplate.getProperties());
+        assertNull(policyTemplate.getProperties());
     }
 
     @Test
@@ -84,7 +90,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         DefinitionsChildId id = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWith5Versions_0.3.4-w3", false);
         List<WineryVersion> versions = BackendUtils.getAllVersionsOfOneDefinition(id);
 
-        Assert.assertEquals(5, versions.size());
+        assertEquals(5, versions.size());
     }
 
     @Test
@@ -94,8 +100,8 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         DefinitionsChildId id = new RelationshipTypeId("http://plain.winery.opentosca.org/relationshiptypes", "RelationshipTypeWithoutProperties", false);
         List<WineryVersion> versions = BackendUtils.getAllVersionsOfOneDefinition(id);
 
-        Assert.assertEquals(1, versions.size());
-        Assert.assertEquals("", versions.get(0).toString());
+        assertEquals(1, versions.size());
+        assertEquals("", versions.get(0).toString());
     }
 
     @Test
@@ -105,7 +111,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         DefinitionsChildId id = new NodeTypeId("http://opentosca.org/nodetypes", "NodeTypeWith5Versions_0.3.4-w3", false);
         List<WineryVersion> versions = BackendUtils.getAllVersionsOfOneDefinition(id);
 
-        versions.forEach(wineryVersion -> Assert.assertFalse(wineryVersion.isEditable()));
+        versions.forEach(wineryVersion -> assertFalse(wineryVersion.isEditable()));
     }
 
     @Test
@@ -119,12 +125,12 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         List<WineryVersion> versions = BackendUtils.getAllVersionsOfOneDefinition(id);
 
-        Assert.assertTrue(versions.get(0).isEditable());
+        assertTrue(versions.get(0).isEditable());
 
         List<WineryVersion> collect = versions.stream()
             .filter(item -> !item.isEditable())
             .collect(Collectors.toList());
-        Assert.assertEquals(4, collect.size());
+        assertEquals(4, collect.size());
     }
 
     @Test
@@ -139,12 +145,12 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
 
         List<WineryVersion> versions = BackendUtils.getAllVersionsOfOneDefinition(id);
 
-        Assert.assertTrue(versions.get(0).isEditable());
+        assertTrue(versions.get(0).isEditable());
 
         List<WineryVersion> collect = versions.stream()
             .filter(item -> !item.isEditable())
             .collect(Collectors.toList());
-        Assert.assertEquals(4, collect.size());
+        assertEquals(4, collect.size());
     }
 
     @Test
@@ -156,7 +162,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         List<WineryVersion> versions = BackendUtils.getAllVersionsOfOneDefinition(policyTemplateId);
 
         // For convenience, we accept editing already existing components without versions
-        Assert.assertTrue(versions.get(0).isEditable());
+        assertTrue(versions.get(0).isEditable());
     }
 
     @Test
@@ -168,8 +174,8 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(id);
         WineryVersion version = versionList.get(versionList.size() - 2);
 
-        Assert.assertFalse(version.isEditable());
-        Assert.assertTrue(version.isReleasable());
+        assertFalse(version.isEditable());
+        assertTrue(version.isReleasable());
     }
 
     @Test
@@ -184,8 +190,8 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         List<WineryVersion> versionList = BackendUtils.getAllVersionsOfOneDefinition(id);
         WineryVersion version = versionList.get(versionList.size() - 2);
 
-        Assert.assertTrue(version.isEditable());
-        Assert.assertTrue(version.isReleasable());
+        assertTrue(version.isEditable());
+        assertTrue(version.isReleasable());
     }
 
     @Test
@@ -198,8 +204,8 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff toscaDiff = BackendUtils.compare(newVersion, oldVersion);
         ToscaDiff properties = toscaDiff.getChildrenMap().get("winerysPropertiesDefinition");
 
-        Assert.assertEquals(VersionState.CHANGED, toscaDiff.getState());
-        Assert.assertEquals(VersionState.ADDED, properties.getState());
+        assertEquals(VersionState.CHANGED, toscaDiff.getState());
+        assertEquals(VersionState.ADDED, properties.getState());
     }
 
     @Test
@@ -212,9 +218,9 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
         ToscaDiff toscaDiff = BackendUtils.compare(newVersion, oldVersion);
         ToscaDiff properties = toscaDiff.getChildrenMap().get("winerysPropertiesDefinition").getChildrenMap().get("propertyDefinitionKVList");
 
-        Assert.assertEquals(VersionState.CHANGED, toscaDiff.getState());
-        Assert.assertEquals(VersionState.CHANGED, properties.getState());
-        Assert.assertEquals(3, properties.getChildren().size());
+        assertEquals(VersionState.CHANGED, toscaDiff.getState());
+        assertEquals(VersionState.CHANGED, properties.getState());
+        assertEquals(3, properties.getChildren().size());
     }
 }
 

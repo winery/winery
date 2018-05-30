@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.eclipse.winery.model.tosca.TEntityType;
 import org.eclipse.winery.model.tosca.constants.Namespaces;
 import org.eclipse.winery.repository.backend.NamespaceManager;
 
@@ -146,12 +147,29 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
         Objects.requireNonNull(namespace);
         String[] split = namespace.split("/");
         if (split.length == 0) {
+            // Fallback if no slashes are in the namespace - just count from ns0 onwards
             return String.format("ns%d", round);
         } else {
-            String result;
-            result = split[split.length - 1].replaceAll("[^A-Za-z]+", "");
+            boolean isWineryPropertiesDefinitionNamespace = namespace.endsWith(TEntityType.NS_SUFFIX_PROPERTIESDEFINITION_WINERY);
+            String suffix;
+            if (isWineryPropertiesDefinitionNamespace) {
+                suffix = "pd";
+            } else {
+                suffix = "";
+            }
+
+            String lastSignificantNamespacePart;
+            int shift;
+            if (isWineryPropertiesDefinitionNamespace) {
+                // the namespace ends with "/propertiesdefinition/winery", so the part before "propertiesdefinition" is interesting
+                shift = 3;
+            } else {
+                shift = 1;
+            }
+            lastSignificantNamespacePart = split[split.length - shift].replaceAll("[^A-Za-z]+", "");
 
             String prefix;
+            // generate special prefixes for known namespace "groups"
             if (namespace.startsWith(Namespaces.URI_START_OPENTOSCA)) {
                 prefix = "ot";
             } else {
@@ -160,23 +178,40 @@ public class ConfigurationBasedNamespaceManager implements NamespaceManager {
 
             String mid = this.generateDefinitionsChildTypeAbbreviation(namespace);
 
-            if (result.isEmpty()) {
+            if (mid.isEmpty() && !namespace.endsWith("/")) {
+                // special handling for cases such as "http://opentosca.org/artifacttemplates" required?
+                mid = this.generateDefinitionsChildTypeAbbreviation(namespace + "/");
+                if (!mid.isEmpty()) {
+                    // The last part of the namespace was the type, so we do not have a "real" last significant namespace part
+                    // and thus replace it by "general"
+                    lastSignificantNamespacePart = "general";
+                }
+            }
+
+            final String SEPERATOR;
+            if (prefix.isEmpty() && mid.isEmpty() && suffix.isEmpty()) {
+                SEPERATOR = "";
+            } else {
+                // W3C allows for characters such as "-", "·", and "😜"
+                // (see https://www.w3.org/TR/REC-xml/#NT-NameChar),
+                // but the current java implementation cannot handle it
+                SEPERATOR = "I";
+            }
+
+            if (lastSignificantNamespacePart.isEmpty()) {
                 if (prefix.isEmpty()) {
                     if ((round == 0) && namespace.isEmpty()) {
+                        // special treatment for empty namespaces
                         return "null";
                     }
                     prefix = "ns";
                 }
-                return String.format("%s%s%d", prefix, mid, round);
+                return String.format("%s%s%s%s%d", prefix, mid, suffix, SEPERATOR, round);
             } else {
-                if (namespace.contains("propertiesdefinition") && "winery".equals(result)) {
-                    // in case, it is a winery propertiesdefinition, end with "pd" (and not with winery or pdwinery)
-                    result = "pd";
-                }
                 if (round == 0) {
-                    return prefix + mid + result;
+                    return String.format("%s%s%s%s%s", prefix, mid, suffix, SEPERATOR, lastSignificantNamespacePart);
                 } else {
-                    return String.format("%s%s%s%d", prefix, mid, result, round);
+                    return String.format("%s%s%s%s%s%d", prefix, mid, suffix, SEPERATOR, lastSignificantNamespacePart, round);
                 }
             }
         }

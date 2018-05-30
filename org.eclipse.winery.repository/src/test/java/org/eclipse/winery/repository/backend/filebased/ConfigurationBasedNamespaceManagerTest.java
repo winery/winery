@@ -14,65 +14,80 @@
 package org.eclipse.winery.repository.backend.filebased;
 
 import org.apache.commons.configuration.BaseConfiguration;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConfigurationBasedNamespaceManagerTest {
 
     private ConfigurationBasedNamespaceManager configurationBasedNamespaceManager;
-    
-    @Before
+
+    @BeforeEach
     public void initializeNamespaceManager() {
         this.configurationBasedNamespaceManager = new ConfigurationBasedNamespaceManager(new BaseConfiguration());
     }
-    
+
     @Test
     public void openToscaNodeTypesCorrectlyProposed() {
-        Assert.assertEquals("otntyexample", this.configurationBasedNamespaceManager.generatePrefixProposal("http://opentosca.org/nodetypes/example", 0));
+        assertEquals("otntyIexample", this.configurationBasedNamespaceManager.generatePrefixProposal("http://opentosca.org/nodetypes/example", 0));
     }
 
     @Test
     public void nonOpenToscaNodeTypesCorrectlyProposed() {
-        Assert.assertEquals("ntyexample", this.configurationBasedNamespaceManager.generatePrefixProposal("http://example.org/nodetypes/example", 0));
+        assertEquals("ntyIexample", this.configurationBasedNamespaceManager.generatePrefixProposal("http://example.org/nodetypes/example", 0));
+    }
+
+    @Test
+    public void propertiesDefinitionNamespaceProducesNiceString() {
+        assertEquals("otntypdIexample", this.configurationBasedNamespaceManager.generatePrefixProposal("http://opentosca.org/nodetypes/example/propertiesdefinition/winery", 0));
+    }
+
+    @Test
+    public void correctPrefixForOpenToscaAndTypeButNoSubType() {
+        assertEquals("otateIgeneral", this.configurationBasedNamespaceManager.generatePrefixProposal("http://opentosca.org/artifacttemplates", 0));
+    }
+
+    @Test
+    public void correctPrefixForNamespacewithoutType() {
+        assertEquals("tosca", this.configurationBasedNamespaceManager.generatePrefixProposal("http://example.org/tosca/", 0));
     }
 
     @Test
     public void openToscaNodeTypesCorrect() {
-        Assert.assertEquals("otntyexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
+        assertEquals("otntyIexample", this.configurationBasedNamespaceManager.generatePrefixProposal("http://opentosca.org/nodetypes/example", 0));
     }
 
     @Test
     public void openToscaNodeTypesCorrectAtSecondCall() {
-        Assert.assertEquals("otntyexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
-        Assert.assertEquals("otntyexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
+        assertEquals("otntyIexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
+        assertEquals("otntyIexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
     }
 
     @Test
     public void openToscaNodeTypesCorrectAtSimilarNamespaces() {
-        Assert.assertEquals("otntyexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
-        Assert.assertEquals("otntyexample1", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example/example"));
+        assertEquals("otntyIexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
+        assertEquals("otntyIexample1", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example/example"));
     }
 
     @Test
     public void openToscaNodeTypesCorrectAtSimilarNamespacesWithUniqueness() {
-        Assert.assertEquals("otntyexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
-        Assert.assertEquals("otntyexample1", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example/example"));
-        
+        assertEquals("otntyIexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
+        assertEquals("otntyIexample1", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example/example"));
+
         // try again -> same prefixes have to be returned
-        Assert.assertEquals("otntyexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
-        Assert.assertEquals("otntyexample1", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example/example"));
+        assertEquals("otntyIexample", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example"));
+        assertEquals("otntyIexample1", this.configurationBasedNamespaceManager.getPrefix("http://opentosca.org/nodetypes/example/example"));
     }
 
     @Test
     public void xmlNullNamespaceHasPrefix() {
         // the XML null namespace is the empty string
-        Assert.assertEquals("null", this.configurationBasedNamespaceManager.getPrefix(""));
+        assertEquals("null", this.configurationBasedNamespaceManager.getPrefix(""));
     }
 
     @Test
     public void nullNamespaceHasPrefix() {
-        Assert.assertEquals("null", this.configurationBasedNamespaceManager.getPrefix((String) null));
+        assertEquals("null", this.configurationBasedNamespaceManager.getPrefix((String) null));
     }
-
 }

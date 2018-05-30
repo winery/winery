@@ -83,11 +83,11 @@
          (mouseover)="makeSource($event)">
         <div class="btn-group-vertical btn-group-sm center-block" role="group" id={{dragSource}}
              (mousedown)="passCurrentType($event)">
-            <button *ngFor="let rel of allRelationshipTypesColors"
+            <button *ngFor="let rel of relationshipTypes"
                     type="button" class="btn btn-sm btn-outline-secondary btn-block"
                     [style.border-color]="this.nodeTemplate.color" [style.color]="rel.color"
                     style="font-size: x-small;">
-                <i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="padding-left: 1em;"></i> {{rel.type}}
+                <i class="fa fa-arrow-circle-o-right" aria-hidden="true" style="padding-left: 1em;"></i> {{rel.id}}
             </button>
         </div>
     </div>
@@ -109,7 +109,6 @@
                 (toggleModalHandler)="sendToggleAction($event)"
                 [currentNodeData]="{entityTypes: entityTypes,
                                     nodeTemplate: nodeTemplate,
-                                    currentNodePart: 'PROPERTIES',
                                     propertyDefinitionType: propertyDefinitionType}">
             </winery-properties>
         </accordion-group>

@@ -44,3 +44,9 @@ export enum toggleModalType {
     DeploymentArtifacts = 'DEPLOYMENT_ARTIFACTS',
     Policies = 'POLICIES',
 }
+
+export enum PropertyDefinitionType {
+    NONE = 'NONE',
+    KV = 'KV',
+    XML = 'XML'
+}

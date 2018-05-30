@@ -1,7 +1,7 @@
 <Definitions xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
              id="winery-defs-for_wfri-kiwi_implementation"
              targetNamespace="http://winery.opentosca.org/test/relationshiptypeimplementations/fruits">
-    <RelationshipTypeImplementation xmlns:ntyfruits="http://winery.opentosca.org/test/relationshiptypes/fruits"
-                                    name="kiwi_implementation" relationshipType="ntyfruits:kiwi"
+    <RelationshipTypeImplementation xmlns:ntyIfruits="http://winery.opentosca.org/test/relationshiptypes/fruits"
+                                    name="kiwi_implementation" relationshipType="ntyIfruits:kiwi"
                                     targetNamespace="http://winery.opentosca.org/test/relationshiptypeimplementations/fruits"/>
 </Definitions>

@@ -14,14 +14,7 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
 
 ## Setup of IntelliJ
 
-1. Install JRebel plugin
-    - JRebel enables a better debugging - changes can be immediately loaded without building the whole project again
-    - Download https://zeroturnaround.com/software/jrebel/
-    - Get a JRebel license from <https://my.jrebel.com>.
-      It is for free if JRebel may post to your Twitter account.
-    - File --> Settings --> Plugins --> Search for JRebel
-    - If JRebel is not available press "Browse repositories" --> Search -->Install
-2. Open `pom.xml` in the main directory
+1. At start of IntelliJ, browse to the root `pom.xml` and open it as project.
 3. Enable checkstyle: Follow the shown steps and apply them in IntelliJ
   ![Enable CheckStyle in IntelliJ](graphics/activate-checkstyle.gif)
   - Install the [IntelliJ Checkstyle Plugin](https://plugins.jetbrains.com/plugin/1065-checkstyle-idea).

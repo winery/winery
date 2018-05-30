@@ -5,7 +5,7 @@
     ],
     "otherAttributes": {
     },
-    "id": "winery-defs-for_otartifacttemplates-artifactTemplateContainsUpdatedFileReferenceInJson",
+    "id": "winery-defs-for_otateIgeneral-artifactTemplateContainsUpdatedFileReferenceInJson",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
         {
             "documentation": [
@@ -38,7 +38,7 @@
             "otherAttributes": {
             },
             "namespace": "http://winery.opentosca.org/test/artifacttypes",
-            "location": "artifacttypes__MiniArtifactType.tosca",
+            "location": "atyIgeneral__MiniArtifactType.tosca",
             "importType": "http://docs.oasis-open.org/tosca/ns/2011/12"
         }
     ]

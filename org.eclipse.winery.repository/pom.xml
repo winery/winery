@@ -162,6 +162,18 @@
             <artifactId>org.eclipse.jgit</artifactId>
             <version>4.10.0.201712302008-r</version>
             <scope>compile</scope>
+            <exclusions>
+                <!-- provided by jcl-over-slf4j to enable logging via logback -->
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <!--provided in version 1.11-->
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <!-- Required for com.sun.xml.bind.namespacePrefixMapper -->
@@ -169,13 +181,6 @@
             <artifactId>jaxb-impl</artifactId>
             <version>2.2.5</version>
             <!--if updated to 2.2.11, java.lang.NoClassDefFoundError: com/sun/xml/bind/v2/model/annotation/AnnotationReader-->
-        </dependency>
-        <!-- no review, but approval is required for test-only dependencies: http://wiki.eclipse.org/Development_Resources/IP/Test_and_Build_Dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -222,6 +227,7 @@
             <groupId>org.eclipse.winery</groupId>
             <artifactId>org.eclipse.winery.repository.configuration</artifactId>
             <version>2.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.collections</groupId>
@@ -232,6 +238,12 @@
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
             <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
@@ -295,9 +307,25 @@
                 <version>3.7.0</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.16</version>
+                <version>2.21.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>${junit.platform.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${junit.jupiter.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-params</artifactId>
+                        <version>${junit.jupiter.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

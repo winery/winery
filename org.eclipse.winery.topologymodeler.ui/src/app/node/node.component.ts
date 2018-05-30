@@ -33,11 +33,12 @@ import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { WineryActions } from '../redux/actions/winery.actions';
 import { hostURL } from '../models/configuration';
-import { TNodeTemplate } from '../models/ttopology-template';
+import { EntityType, TNodeTemplate } from '../models/ttopology-template';
 import { QName } from '../models/qname';
-import { urlElement } from '../models/enums';
+import { PropertyDefinitionType, urlElement } from '../models/enums';
 import { BackendService } from '../services/backend.service';
 import { isNullOrUndefined } from 'util';
+import { GroupedNodeTypeModel } from '../models/groupedNodeTypeModel';
 
 /**
  * Every node has its own component and gets created dynamically.
@@ -65,7 +66,6 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     connectorEndpointVisible = false;
     startTime;
     endTime;
-    groupedNodeTypes: any;
     longpress = false;
     makeSelectionVisible = false;
     setFlash = false;
@@ -85,13 +85,13 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
     @Output() closedEndpoint: EventEmitter<string>;
     @Output() handleNodeClickedActions: EventEmitter<any>;
     @Output() updateSelectedNodes: EventEmitter<string>;
-    @Output() sendCurrentType: EventEmitter<string>;
+    @Output() sendSelectedRelationshipType: EventEmitter<EntityType>;
     @Output() askForRemoval: EventEmitter<string>;
     @Output() unmarkConnections: EventEmitter<string>;
     @Output() saveNodeRequirements: EventEmitter<any>;
     @Output() sendPaletteStatus: EventEmitter<any>;
     @Output() sendNodeData: EventEmitter<any>;
-    @Input() allRelationshipTypesColors: Array<string>;
+    @Input() relationshipTypes: Array<EntityType>;
     @Input() nodeTemplate: TNodeTemplate;
 
     previousPosition: any;
@@ -118,7 +118,7 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         this.closedEndpoint = new EventEmitter();
         this.handleNodeClickedActions = new EventEmitter();
         this.updateSelectedNodes = new EventEmitter();
-        this.sendCurrentType = new EventEmitter();
+        this.sendSelectedRelationshipType = new EventEmitter();
         this.askForRemoval = new EventEmitter();
         this.unmarkConnections = new EventEmitter();
         this.saveNodeRequirements = new EventEmitter();
@@ -143,25 +143,33 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      * We have 3 possibilities: none, XML element, or Key value pairs.
      * @param {string} type
      */
-    findOutPropertyDefinitionTypeForProperties(type: string, groupedNodeTypes: any): string {
-        for (const nameSpace of groupedNodeTypes) {
-            for (const nodeTypeVar of nameSpace.children) {
+    findOutPropertyDefinitionTypeForProperties(type: string, groupedNodeTypes: Array<GroupedNodeTypeModel>): void {
+        let propertyDefinitionTypeAssigned: boolean;
+        groupedNodeTypes.some(nameSpace => {
+            nameSpace.children.some(nodeTypeVar => {
                 if (nodeTypeVar.id === type) {
                     // if PropertiesDefinition doesn't exist then it must be of type NONE
                     if (isNullOrUndefined(nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition)) {
-                        return 'NONE';
+                        this.propertyDefinitionType = PropertyDefinitionType.NONE;
+                        propertyDefinitionTypeAssigned = true;
                     } else {
                         // if no XML element inside PropertiesDefinition then it must be of type Key Value
                         if (!nodeTypeVar.full.serviceTemplateOrNodeTypeOrNodeTypeImplementation[0].propertiesDefinition.element) {
-                            return 'KV';
+                            this.propertyDefinitionType = PropertyDefinitionType.KV;
+                            propertyDefinitionTypeAssigned = true;
                         } else {
                             // else we have XML
-                            return 'XML';
+                            this.propertyDefinitionType = PropertyDefinitionType.XML;
+                            propertyDefinitionTypeAssigned = true;
                         }
                     }
+                    return true;
                 }
+            });
+            if (propertyDefinitionTypeAssigned) {
+                return true;
             }
-        }
+        });
     }
 
     /**
@@ -169,18 +177,17 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
      */
     ngOnInit() {
         this.differ = this.differs.find([]).create(null);
-        this.backendService.requestGroupedNodeTypes().subscribe((groupedNodeTypes) => {
-            this.groupedNodeTypes = groupedNodeTypes;
-            this.propertyDefinitionType = this.findOutPropertyDefinitionTypeForProperties(this.nodeTemplate.type, groupedNodeTypes);
-        });
     }
 
     /**
      * Angular lifecycle event.
      */
     ngDoCheck() {
-        const nodeTemplateChanges = this.differ.diff(this.nodeTemplate);
+        const nodeTemplateChanges = this.differ.diff(this.entityTypes);
         if (nodeTemplateChanges) {
+            if (this.entityTypes.groupedNodeTypes) {
+                this.findOutPropertyDefinitionTypeForProperties(this.nodeTemplate.type, this.entityTypes.groupedNodeTypes);
+            }
         }
     }
 
@@ -223,7 +230,12 @@ export class NodeComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck 
         } catch (e) {
             currentType = $event.target.innerText.replace(/\n/g, '').replace(/\s+/g, '');
         }
-        this.sendCurrentType.emit(currentType);
+        this.relationshipTypes.some(relType => {
+            if (relType.qName.includes(currentType)) {
+                this.sendSelectedRelationshipType.emit(relType);
+                return true;
+            }
+        });
     }
 
     /**

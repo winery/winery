@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,24 +13,26 @@
  *******************************************************************************/
 package org.eclipse.winery.model.tosca.yaml;
 
-import io.github.adr.embedded.ADR;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.winery.model.tosca.yaml.support.Metadata;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
-import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
-import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
-import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+
+import org.eclipse.winery.model.tosca.yaml.support.Metadata;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractParameter;
+import org.eclipse.winery.model.tosca.yaml.visitor.AbstractResult;
+import org.eclipse.winery.model.tosca.yaml.visitor.IVisitor;
+import org.eclipse.winery.model.tosca.yaml.visitor.VisitorNode;
+
+import io.github.adr.embedded.ADR;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tEntityType", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {
@@ -85,7 +87,7 @@ public class TEntityType implements VisitorNode {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(@Nullable String description) {
         this.description = description;
     }
 
@@ -94,7 +96,7 @@ public class TEntityType implements VisitorNode {
         return version;
     }
 
-    public void setVersion(TVersion version) {
+    public void setVersion(@Nullable TVersion version) {
         this.version = version;
     }
 
@@ -108,7 +110,7 @@ public class TEntityType implements VisitorNode {
         return derivedFrom;
     }
 
-    public void setDerivedFrom(QName derivedFrom) {
+    public void setDerivedFrom(@Nullable QName derivedFrom) {
         this.derivedFrom = derivedFrom;
     }
 
@@ -121,7 +123,7 @@ public class TEntityType implements VisitorNode {
         return properties;
     }
 
-    public void setProperties(Map<String, TPropertyDefinition> properties) {
+    public void setProperties(@Nullable Map<String, TPropertyDefinition> properties) {
         this.properties = properties;
     }
 
@@ -134,7 +136,7 @@ public class TEntityType implements VisitorNode {
         return attributes;
     }
 
-    public void setAttributes(Map<String, TAttributeDefinition> attributes) {
+    public void setAttributes(@Nullable Map<String, TAttributeDefinition> attributes) {
         this.attributes = attributes;
     }
 
@@ -147,7 +149,7 @@ public class TEntityType implements VisitorNode {
         return metadata;
     }
 
-    public void setMetadata(Metadata metadata) {
+    public void setMetadata(@Nullable Metadata metadata) {
         this.metadata = metadata;
     }
 

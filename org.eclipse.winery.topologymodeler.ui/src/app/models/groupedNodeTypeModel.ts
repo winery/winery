@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,26 +11,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-package org.eclipse.winery.repository;
 
-import org.junit.jupiter.api.Test;
+export interface GroupedNodeTypeModel {
+    children: Array<NodeTypeModel>; id: string; text: string;
+}
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-public class JAXBSupportTest {
-
-    @Test
-    public void createMarshaller() throws Exception {
-        assertNotNull(JAXBSupport.createMarshaller(true));
-    }
-
-    @Test
-    public void createUnmarshaller() throws Exception {
-        assertNotNull(JAXBSupport.createUnmarshaller());
-    }
-
-    @Test
-    public void JAXBContextIsNotNull() {
-        assertNotNull(JAXBSupport.context);
-    }
+export interface NodeTypeModel {
+    full: any; id: string; text: string;
 }
