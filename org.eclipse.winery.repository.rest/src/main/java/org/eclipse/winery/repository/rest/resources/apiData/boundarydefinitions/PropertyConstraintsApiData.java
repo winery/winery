@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -20,10 +20,6 @@ public class PropertyConstraintsApiData {
     String property;
     Object fragments;
     String constraintType;
-
-
-    public PropertyConstraintsApiData() {
-    }
 
     public PropertyConstraintsApiData(TPropertyConstraint propertyConstraint) {
         this.setProperty(propertyConstraint.getProperty());
@@ -54,5 +50,4 @@ public class PropertyConstraintsApiData {
     public void setFragments(Object fragments) {
         this.fragments = fragments;
     }
-
 }

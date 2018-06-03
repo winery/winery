@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013-2014 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -14,7 +14,6 @@
 
 package org.eclipse.winery.repository.rest.resources.servicetemplates.boundarydefinitions;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,8 +28,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.model.tosca.TBoundaryDefinitions;
@@ -42,10 +39,12 @@ import org.eclipse.winery.repository.rest.resources.apiData.boundarydefinitions.
 import org.eclipse.winery.repository.rest.resources.servicetemplates.ServiceTemplateResource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PropertyConstraintsResource {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyConstraintsResource.class);
 
     private final TBoundaryDefinitions.PropertyConstraints propertyConstraints;
     private final TEntityTemplate.PropertyConstraints entityPropertyConstraints;
@@ -91,10 +90,6 @@ public class PropertyConstraintsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response onPost(PropertyConstraintsApiData constraintsApiData) {
-
-        Document doc = null;
-        DocumentBuilder xmlBuilder;
-
         if (StringUtils.isEmpty(constraintsApiData.getProperty())) {
             return Response.status(Status.BAD_REQUEST).entity("Property must not be empty").build();
         }
@@ -102,18 +97,9 @@ public class PropertyConstraintsResource {
             return Response.status(Status.BAD_REQUEST).entity("Constraint Type must not be empty").build();
         }
 
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-        try {
-            xmlBuilder = factory.newDocumentBuilder();
-            doc = xmlBuilder.parse(new InputSource(new StringReader(constraintsApiData.getFragments().toString())));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         TPropertyConstraint propertyConstraint = new TPropertyConstraint();
         propertyConstraint.setProperty(constraintsApiData.getProperty());
-        propertyConstraint.setAny(doc.getDocumentElement());
+        propertyConstraint.setAny(constraintsApiData.getFragments());
         propertyConstraint.setConstraintType(constraintsApiData.getConstraintType());
         if (isEntitytemplate) {
             this.entityPropertyConstraints.getPropertyConstraint().add(propertyConstraint);

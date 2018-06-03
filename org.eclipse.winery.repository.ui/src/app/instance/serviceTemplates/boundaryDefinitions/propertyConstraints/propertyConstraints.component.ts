@@ -133,10 +133,6 @@ export class PropertyConstraintsComponent implements OnInit {
 
     private handleData(data: PropertyConstraintApiData[]) {
         this.propertyConstraints = data;
-        // for (let i = 0; i < data.length; i++) {
-        //     this.propertyConstraints[i].fragments = '[Not implemented yet]';
-        // }
-
         this.decreaseLoad();
     }
 
