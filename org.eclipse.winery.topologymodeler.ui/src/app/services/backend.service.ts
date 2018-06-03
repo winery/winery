@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright(c) 2017 Contributors to the Eclipse Foundation
+ * Copyright(c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/catch';
 import { ActivatedRoute } from '@angular/router';
-import { backendBaseURL } from '../models/configuration';
+import { backendBaseURL, hostURL } from '../models/configuration';
 import { Subject } from 'rxjs/Subject';
 import { isNullOrUndefined } from 'util';
 import { EntityType, TTopologyTemplate, Visuals } from '../models/ttopology-template';
@@ -414,7 +414,7 @@ export class BackendService {
      * Saves the topologyTemplate back to the repository
      * @returns {Observable<Response>}
      */
-    saveTopologyTemplate(topologyTemplate: any): Observable<any> {
+    saveTopologyTemplate(topologyTemplate: any): Observable<HttpResponse<string>> {
         if (this.configuration) {
             const headers = new HttpHeaders().set('Content-Type', 'application/json');
             const url = this.configuration.repositoryURL + '/servicetemplates/'
@@ -425,6 +425,16 @@ export class BackendService {
                 headers: headers, responseType: 'text', observe: 'response'
             });
         }
+    }
+
+    /**
+     * Imports the template.
+     * @returns {Observable<any>}
+     */
+    importTopology(importedTemplateQName: string): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders().set('Content-Type', 'text/plain');
+        const url = this.topologyTemplateURL + urlElement.TopologyTemplate + 'merge';
+        return this.http.post(url + '/', importedTemplateQName, { headers: headers,  observe: 'response', responseType: 'text' });
     }
 
     /**
@@ -452,7 +462,7 @@ export class BackendService {
      * @param {QNameWithTypeApiData} artifact
      * @returns {Observable<any>}
      */
-    createNewArtifact(artifact: QNameWithTypeApiData): Observable<any> {
+    createNewArtifact(artifact: QNameWithTypeApiData): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
         const url = this.configuration.repositoryURL + '/artifacttemplates/';
         return this.http.post(url + '/', artifact, { headers: headers, responseType: 'text', observe: 'response' });
@@ -467,6 +477,15 @@ export class BackendService {
         const url = this.configuration.repositoryURL + '/artifacttemplates/'
             + encodeURIComponent(encodeURIComponent(artifact.namespace)) + '/' + artifact.localname;
         return this.http.get(url + '/', { headers: this.headers });
+    }
+
+    /**
+     * Requests all topology template ids
+     * @returns {Observable<string>}
+     */
+    requestAllTopologyTemplates(): Observable<EntityType[]> {
+        const url = hostURL + urlElement.Winery + urlElement.ServiceTemplates;
+        return this.http.get<EntityType[]>(url + '/', { headers: this.headers });
     }
 
     /*  saveVisuals(data: any): Observable<Response> {
