@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -119,6 +119,27 @@ public class TServiceTemplate implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getToscaDefinitionsVersion(), getMetadata(), getDescription(), getDslDefinitions(), getRepositories(), getImports(), getArtifactTypes(), getDataTypes(), getCapabilityTypes(), getInterfaceTypes(), getRelationshipTypes(), getNodeTypes(), getGroupTypes(), getPolicyTypes(), getTopologyTemplate());
+    }
+
+    @Override
+    public String toString() {
+        return "TServiceTemplate{" +
+            "toscaDefinitionsVersion='" + getToscaDefinitionsVersion() + '\'' +
+            ", metadata=" + getMetadata() +
+            ", description='" + getDescription() + '\'' +
+            ", dslDefinitions=" + getDslDefinitions() +
+            ", repositories=" + getRepositories() +
+            ", imports=" + getImports() +
+            ", artifactTypes=" + getArtifactTypes() +
+            ", dataTypes=" + getDataTypes() +
+            ", capabilityTypes=" + getCapabilityTypes() +
+            ", interfaceTypes=" + getInterfaceTypes() +
+            ", relationshipTypes=" + getRelationshipTypes() +
+            ", nodeTypes=" + getNodeTypes() +
+            ", groupTypes=" + getGroupTypes() +
+            ", policyTypes=" + getPolicyTypes() +
+            ", topologyTemplate=" + getTopologyTemplate() +
+            '}';
     }
 
     @NonNull

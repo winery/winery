@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tNodeOrGroupType", namespace = " http://docs.oasis-open.org/tosca/ns/simple/yaml/1.0", propOrder = {
 })
-@XmlSeeAlso( {TNodeType.class, TGroupType.class})
+@XmlSeeAlso({TNodeType.class, TGroupType.class})
 public class TNodeOrGroupType extends TEntityType {
     public TNodeOrGroupType() {
     }
@@ -36,5 +36,10 @@ public class TNodeOrGroupType extends TEntityType {
 
     public <R extends AbstractResult<R>, P extends AbstractParameter<P>> R accept(IVisitor<R, P> visitor, P parameter) {
         return super.accept(visitor, parameter);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

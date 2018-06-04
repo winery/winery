@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -66,6 +66,12 @@ public class TParameterDefinition implements VisitorNode {
     }
 
     @Override
+    public int hashCode() {
+
+        return Objects.hash(getType(), getDescription(), getRequired(), getDefault(), getStatus(), getConstraints(), getEntrySchema(), getValue());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TParameterDefinition)) return false;
@@ -73,7 +79,7 @@ public class TParameterDefinition implements VisitorNode {
         return Objects.equals(getType(), that.getType()) &&
             Objects.equals(getDescription(), that.getDescription()) &&
             Objects.equals(getRequired(), that.getRequired()) &&
-            Objects.equals(defaultValue, that.defaultValue) &&
+            Objects.equals(getDefault(), that.getDefault()) &&
             getStatus() == that.getStatus() &&
             Objects.equals(getConstraints(), that.getConstraints()) &&
             Objects.equals(getEntrySchema(), that.getEntrySchema()) &&
@@ -81,9 +87,17 @@ public class TParameterDefinition implements VisitorNode {
     }
 
     @Override
-    public int hashCode() {
-
-        return Objects.hash(getType(), getDescription(), getRequired(), defaultValue, getStatus(), getConstraints(), getEntrySchema(), getValue());
+    public String toString() {
+        return "TParameterDefinition{" +
+            "type=" + getType() +
+            ", description='" + getDescription() + '\'' +
+            ", required=" + getRequired() +
+            ", defaultValue=" + getDefault() +
+            ", status=" + getStatus() +
+            ", constraints=" + getConstraints() +
+            ", entrySchema=" + getEntrySchema() +
+            ", value=" + getValue() +
+            '}';
     }
 
     public QName getType() {
@@ -197,22 +211,8 @@ public class TParameterDefinition implements VisitorNode {
             return this;
         }
 
-        public void setStatus(String status) {
-            switch (status) {
-                case "supported":
-                    setStatus(TStatusValue.supported);
-                    break;
-                case "unsupported":
-                    setStatus(TStatusValue.unsupported);
-                    break;
-                case "experimental":
-                    setStatus(TStatusValue.experimental);
-                    break;
-                case "deprecated":
-                    setStatus(TStatusValue.deprecated);
-                    break;
-                default:
-            }
+        public Builder setStatus(String status) {
+            return setStatus(TStatusValue.getStatus(status));
         }
 
         public Builder setConstraints(List<TConstraintClause> constraints) {

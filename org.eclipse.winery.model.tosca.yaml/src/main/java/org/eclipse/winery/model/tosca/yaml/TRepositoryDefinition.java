@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -60,6 +60,15 @@ public class TRepositoryDefinition implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getDescription(), getUrl(), getCredential());
+    }
+
+    @Override
+    public String toString() {
+        return "TRepositoryDefinition{" +
+            "description='" + getDescription() + '\'' +
+            ", url='" + getUrl() + '\'' +
+            ", credential=" + getCredential() +
+            '}';
     }
 
     @Nullable

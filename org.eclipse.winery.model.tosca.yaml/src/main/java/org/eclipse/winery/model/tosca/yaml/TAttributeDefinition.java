@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -54,20 +54,31 @@ public class TAttributeDefinition implements VisitorNode {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(getDescription(), getType(), getDefault(), getStatus(), getEntrySchema());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TAttributeDefinition)) return false;
         TAttributeDefinition that = (TAttributeDefinition) o;
         return Objects.equals(getDescription(), that.getDescription()) &&
             Objects.equals(getType(), that.getType()) &&
-            Objects.equals(defaultValue, that.defaultValue) &&
+            Objects.equals(getDefault(), that.getDefault()) &&
             getStatus() == that.getStatus() &&
             Objects.equals(getEntrySchema(), that.getEntrySchema());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(getDescription(), getType(), defaultValue, getStatus(), getEntrySchema());
+    public String toString() {
+        return "TAttributeDefinition{" +
+            "description='" + getDescription() + '\'' +
+            ", type=" + getType() +
+            ", defaultValue=" + getDefault() +
+            ", status=" + getStatus() +
+            ", entrySchema=" + getEntrySchema() +
+            '}';
     }
 
     @Nullable
