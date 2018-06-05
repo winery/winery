@@ -31,10 +31,11 @@ export class WineryVersion {
     }
 
     toString(): string {
-        let versionString = this.componentVersion ? this.componentVersion : '';
+        let versionString = isNullOrUndefined(this.componentVersion) ? '' : this.componentVersion;
 
         if (!isNullOrUndefined(this.wineryVersion) && this.wineryVersion > 0) {
-            versionString += WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + this.wineryVersion;
+            versionString += (versionString.length > 0 ? WineryVersion.WINERY_VERSION_SEPARATOR : '')
+                + WineryVersion.WINERY_VERSION_PREFIX + this.wineryVersion;
 
             if (!isNullOrUndefined(this.workInProgressVersion) && this.workInProgressVersion > 0) {
                 versionString += WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_WORK_IN_PROGRESS_PREFIX + this.workInProgressVersion;
