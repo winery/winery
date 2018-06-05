@@ -187,11 +187,11 @@ export class NavbarComponent implements OnDestroy {
     saveTopologyTemplateToRepository() {
         // Initialization
         let topologySkeleton = {
-            'documentation': [],
-            'any': [],
-            'otherAttributes': {},
-            'relationshipTemplates': [],
-            'nodeTemplates': []
+            documentation: [],
+            any: [],
+            otherAttributes: {},
+            relationshipTemplates: [],
+            nodeTemplates: []
         };
         // subsciption first
         this.backendService.serviceTemplate$.subscribe(data => {

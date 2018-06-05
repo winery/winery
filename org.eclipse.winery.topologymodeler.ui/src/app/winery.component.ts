@@ -253,7 +253,9 @@ export class WineryComponent implements OnInit {
         if (nodeTemplateArray.length > 0) {
             nodeTemplateArray.forEach(node => {
                 const state = isNullOrUndefined(this.topologyDifferences) ? null : DifferenceStates.UNCHANGED;
-                this.nodeTemplates.push(Utils.createTNodeTemplateFromObject(node, this.entityTypes.nodeVisuals, state));
+                if (!this.nodeTemplates.find(nodeTemplate => nodeTemplate.id === node.id)) {
+                    this.nodeTemplates.push(Utils.createTNodeTemplateFromObject(node, this.entityTypes.nodeVisuals, state));
+                }
             });
         }
         // init relationship templates

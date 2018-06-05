@@ -4,11 +4,10 @@ import { WineryAlertService } from '../winery-alert/winery-alert.service';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TopologyRendererActions } from '../redux/actions/topologyRenderer.actions';
-import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorHandlerService } from './error-handler.service';
 
 @Injectable()
 export class SplitMatchTopologyService {
-    private url: string;
 
     constructor(private alert: WineryAlertService) {
     }
@@ -19,7 +18,8 @@ export class SplitMatchTopologyService {
      * @param ngRedux    the redux instance
      * @param topologyRendererActions    the redux actions for toggling the split button
      */
-    splitTopology(backendService: BackendService, ngRedux: NgRedux<IWineryState>, topologyRendererActions: TopologyRendererActions): void {
+    splitTopology(backendService: BackendService, ngRedux: NgRedux<IWineryState>, topologyRendererActions: TopologyRendererActions,
+                  errorHandler: ErrorHandlerService): void {
 
         backendService.splitTopology().subscribe(res => {
                 ngRedux.dispatch(topologyRendererActions.splitTopology());
@@ -30,7 +30,7 @@ export class SplitMatchTopologyService {
                 }
             },
             error => {
-                this.handleError(error);
+                errorHandler.handleError(error);
                 ngRedux.dispatch(topologyRendererActions.splitTopology());
             });
     }
@@ -41,7 +41,8 @@ export class SplitMatchTopologyService {
      * @param ngRedux    the redux instance
      * @param topologyRendererActions    the redux actions for toggling the match button
      */
-    matchTopology(backendService: BackendService, ngRedux: NgRedux<IWineryState>, topologyRendererActions: TopologyRendererActions): void {
+    matchTopology(backendService: BackendService, ngRedux: NgRedux<IWineryState>, topologyRendererActions: TopologyRendererActions,
+                  errorHandler: ErrorHandlerService): void {
         backendService.matchTopology().subscribe(res => {
                 ngRedux.dispatch(topologyRendererActions.matchTopology());
                 if (res.ok) {
@@ -51,23 +52,8 @@ export class SplitMatchTopologyService {
                 }
             },
             error => {
-                this.handleError(error);
+                errorHandler.handleError(error);
                 ngRedux.dispatch(topologyRendererActions.matchTopology());
             });
     }
-
-    /**
-     * Error handler.
-     * @param error    the error
-     */
-    private handleError(error: HttpErrorResponse) {
-        if (error.error instanceof ErrorEvent) {
-            this.alert.info('<p>Something went wrong! <br>' + 'Response Status: '
-                + error.statusText + ' ' + error.status + '</p><br>' + error.error.message);
-        } else {
-            this.alert.info('<p>Something went wrong! <br>' + 'Response Status: '
-                + error.statusText + ' ' + error.status + '</p><br>' + error.error);
-        }
-    }
-
 }

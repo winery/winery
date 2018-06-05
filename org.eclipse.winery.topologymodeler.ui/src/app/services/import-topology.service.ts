@@ -13,125 +13,33 @@
  *******************************************************************************/
 
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
-import { backendBaseURL, hostURL } from '../models/configuration';
-import { urlElement } from '../models/enums';
-import { Headers, Http, RequestOptions } from '@angular/http';
-import { NodeRelationshipTemplatesGeneratorService } from './node-relationship-templates-generator.service';
-import { TNodeTemplate, TRelationshipTemplate, Visuals } from '../models/ttopology-template';
-import { NgRedux } from '@angular-redux/store';
-import { WineryActions } from '../redux/actions/winery.actions';
-import { IWineryState } from '../redux/store/winery.store';
-import { QName } from '../models/qname';
+import { BackendService } from './backend.service';
+import { WineryAlertService } from '../winery-alert/winery-alert.service';
+import { ErrorHandlerService } from './error-handler.service';
 
 @Injectable()
 export class ImportTopologyService {
-
-    nodeTemplates: Array<TNodeTemplate> = [];
-    relationshipTemplates: Array<TRelationshipTemplate> = [];
-
-    readonly headers = new Headers({ 'Accept': 'application/json' });
-    readonly options = new RequestOptions({ headers: this.headers });
-
-    constructor(private http: Http,
-                private nodeRelationshipTemplatesGeneratorService: NodeRelationshipTemplatesGeneratorService,
-                private ngRedux: NgRedux<IWineryState>,
-                private actions: WineryActions) {
+    constructor(private alert: WineryAlertService) {
     }
 
     /**
-     * Requests data from the server
+     * Does a POST request to the server with the imported topology template URL + 'merge'.
+     * Saves and reloads the window.
      * @param serviceTemplate   the selected service template to fetch data from
-     * @returns data  The JSON from the server
+     * @param backendService    the backend service for calling methods to interact with the server
+     * @param errorHandler      the error handler which handles failed server requests
      */
-    requestServiceTemplate(serviceTemplate: any): Observable<Object> {
-        const qName = new QName(serviceTemplate.qName);
-        const url = backendBaseURL + urlElement.ServiceTemplates + encodeURIComponent(encodeURIComponent(qName.nameSpace))
-            + '/' + qName.localName + urlElement.TopologyTemplate;
-        // This is required because the information has to be returned together
-        return this.http.get(url, this.options).map(res => res.json());
-    }
-
-    /**
-     * Subscribes to the response of the server and pushes the node and relationship templates
-     * into the redux store and reloads the page
-     * @param serviceTemplate   the selected service template to fetch data from
-     * @param nodeVisuals   the node visuals
-     * @param allNodeTemplates   the node templates already present in the service template
-     */
-    importTopologyTemplate(serviceTemplate: any, nodeVisuals: Visuals[], allNodeTemplates: Array<TNodeTemplate>,
-    allRelationshipTemplates: Array<TRelationshipTemplate>): void {
-        // ServiceTemplate / TopologyTemplate
-        this.requestServiceTemplate(serviceTemplate).subscribe(data => {
-            // add JSON to Promise, WineryComponent will subscribe to its Observable
-            const nodeAndRelationshipTemplates = this.nodeRelationshipTemplatesGeneratorService.generateNodeAndRelationshipTemplates(
-                data['nodeTemplates'], data['relationshipTemplates'], nodeVisuals, allRelationshipTemplates);
-            this.assignUniqueIds(allNodeTemplates, nodeAndRelationshipTemplates[0], nodeAndRelationshipTemplates[1]);
-            nodeAndRelationshipTemplates[0].forEach(nodeTemplate => {
-                this.ngRedux.dispatch(this.actions.saveNodeTemplate(nodeTemplate));
-            });
-            nodeAndRelationshipTemplates[1].forEach(relationshipTemplate => {
-                this.ngRedux.dispatch(this.actions.saveRelationship(relationshipTemplate));
-            });
-        });
-    }
-
-    /**
-     * Assigns unique node and relationship template ids, required
-     * @param allNodeTemplates   the node templates already present in the service template
-     * @param importedNodeTemplates   the imported node templates
-     * @param importedRelationshipTemplates   the imported relationship templates
-     */
-    private assignUniqueIds(allNodeTemplates: Array<TNodeTemplate>, importedNodeTemplates: Array<TNodeTemplate>,
-                            importedRelationshipTemplates: Array<TRelationshipTemplate>): void {
-        if (allNodeTemplates.length > 0) {
-            const allCheckedNodeTypes = [];
-            // iterate from back to front because only the last added instance of a node type is important
-            // e.g. Node_8 so to increase to Node_9 only the 8 is important which is in the end of the array
-            for (let i = allNodeTemplates.length - 1; i >= 0; i--) {
-                // get type of node Template
-                // eliminate whitespaces from both strings, important for string comparison
-                const nodeTemplateType = allNodeTemplates[i].type.split('}').pop().replace(/\s+/g, '');
-                if (!allCheckedNodeTypes.find(nodeType => nodeType === nodeTemplateType)) {
-                    let newNumberOfNodeIdOffset = 1;
-                    importedNodeTemplates.forEach(importedNodeTemplate => {
-                        const importedNodeTemplateType = importedNodeTemplate.type.split('}').pop().replace(/\s+/g, '');
-                        if (nodeTemplateType === importedNodeTemplateType) {
-                            const idOfCurrentNode = allNodeTemplates[i].id;
-                            const numberOfNodeId = parseInt(idOfCurrentNode.substring(nodeTemplateType.length + 1),
-                                10) + newNumberOfNodeIdOffset;
-                            let newNodeId;
-                            if (numberOfNodeId) {
-                                newNodeId = nodeTemplateType.concat('_', numberOfNodeId.toString());
-                            } else {
-                                newNodeId = nodeTemplateType.concat('_', '2');
-                            }
-                            // Adjusting the node template id in the relationship templates
-                            importedRelationshipTemplates.forEach(relTemplate => {
-                                if (importedNodeTemplate.id === relTemplate.sourceElement.ref) {
-                                    relTemplate.sourceElement.ref = newNodeId;
-                                } else if (importedNodeTemplate.id === relTemplate.targetElement.ref) {
-                                    relTemplate.targetElement.ref = newNodeId;
-                                }
-                            });
-                            importedNodeTemplate.id = newNodeId;
-                            newNumberOfNodeIdOffset += 1;
-                        }
-                    });
-                    allCheckedNodeTypes.push(nodeTemplateType);
+    importTopologyTemplate(serviceTemplate: string, backendService: BackendService, errorHandler: ErrorHandlerService): void {
+        this.alert.info('', 'Import topology in progress...');
+        backendService.importTopology(serviceTemplate).subscribe(res => {
+                if (res.ok) {
+                    const url = res.headers.get('location');
+                    this.alert.success('', 'Successfully imported topology.');
+                    window.location.reload();
                 }
-            }
-        }
+            },
+            error => {
+                errorHandler.handleError(error);
+            });
     }
-
-    /**
-     * Requests all topology template ids
-     * @returns {Observable<string>}
-     */
-    requestAllTopologyTemplates(): Observable<any> {
-        const url = hostURL + urlElement.Winery + urlElement.ServiceTemplates;
-        return this.http.get(url, this.options)
-            .map(res => res.json());
-    }
-
 }

@@ -48,6 +48,7 @@ import { ImportTopologyService } from '../services/import-topology.service';
 import { ReqCapService } from '../services/req-cap.service';
 import { SplitMatchTopologyService } from '../services/split-match-topology.service';
 import { DifferenceStates, VersionUtils } from '../models/ToscaDiff';
+import { ErrorHandlerService } from '../services/error-handler.service';
 import { DragSource } from '../models/DragSource';
 
 @Component({
@@ -149,7 +150,8 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 private importTopologyService: ImportTopologyService,
                 private existsService: ExistsService,
                 private splitMatchService: SplitMatchTopologyService,
-                private reqCapService: ReqCapService) {
+                private reqCapService: ReqCapService,
+                private errorHandler: ErrorHandlerService) {
         this.newJsPlumbInstance = this.jsPlumbService.getJsPlumbInstance();
         this.newJsPlumbInstance.setContainer('container');
         console.log(this.newJsPlumbInstance);
@@ -687,9 +689,6 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 this.capabilities.capQName = cap.qName;
                 this.capabilities.capQNameLocalName = new QName(cap.qName).localName;
                 // check which propertyType is defined by checking with the defined capability types from the
-                // repository if any is defined with at least one element it's a KV property, sets default values if
-                // there aren't any in the node template
-                // check which propertyType is defined by checking with the defined capability types from the
                 // repository
                 // if any is defined with at least one element it's a KV property, sets default values if there aren't
                 // any in the node template
@@ -1008,7 +1007,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
             } else if (importTopologyButton) {
                 if (!this.importTopologyData.allTopologyTemplates) {
                     this.importTopologyData.allTopologyTemplates = [];
-                    this.importTopologyService.requestAllTopologyTemplates().subscribe(allServiceTemplates => {
+                    this.backendService.requestAllTopologyTemplates().subscribe(allServiceTemplates => {
                         for (const serviceTemplate of allServiceTemplates) {
                             this.importTopologyData.allTopologyTemplates.push(serviceTemplate);
                         }
@@ -1017,9 +1016,9 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 this.ngRedux.dispatch(this.topologyRendererActions.importTopology());
                 this.importTopologyModal.show();
             } else if (splitTopologyButton) {
-                this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions);
+                this.splitMatchService.splitTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
             } else if (matchTopologyButton) {
-                this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions);
+                this.splitMatchService.matchTopology(this.backendService, this.ngRedux, this.topologyRendererActions, this.errorHandler);
             }
             setTimeout(() => {
                 if (selectedNodes === true) {
@@ -1044,6 +1043,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
      */
     closeImportTopology(): void {
         this.importTopologyData.selectedTopologyTemplateId = null;
+        this.importTopologyData.topologySelected = false;
         this.importTopologyModal.hide();
     }
 
@@ -1053,16 +1053,15 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
      */
     importTopology(): void {
         let selectedTopologyTemplate;
+        this.importTopologyData.topologySelected = true;
         this.importTopologyData.allTopologyTemplates.some(topologyTemplate => {
             if (topologyTemplate.id === this.importTopologyData.selectedTopologyTemplateId) {
                 selectedTopologyTemplate = topologyTemplate;
                 return true;
             }
         });
-        this.importTopologyService.importTopologyTemplate(selectedTopologyTemplate,
-            this.entityTypes.nodeVisuals, this.allNodeTemplates, this.allRelationshipTemplates);
+        this.importTopologyService.importTopologyTemplate(selectedTopologyTemplate.qName, this.backendService, this.errorHandler);
         this.importTopologyData.selectedTopologyTemplateId = null;
-        this.importTopologyModal.hide();
     }
 
     /**
@@ -1161,7 +1160,6 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
 
             if (!isNullOrUndefined(newRelationship.state)) {
                 setTimeout(() => {
-                    console.log(newRelationship.state.toString().toLowerCase());
                     conn.addType(newRelationship.state.toString().toLowerCase());
                     this.revalidateContainer();
                 }, 1);
