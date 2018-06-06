@@ -936,6 +936,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit, DoChec
                 this.handleNewRelationship(currentRelationships);
             } else if (difference > 0 || difference < 0) {
                 this.allRelationshipTemplates = currentRelationships;
+                this.allRelationshipTemplates.forEach(relTemplate => this.manageRelationships(relTemplate));
             }
         } else if (storeRelationshipsLength !== 0 && localRelationshipsCopyLength !== 0) {
             this.updateRelName(currentRelationships);
