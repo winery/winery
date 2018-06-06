@@ -1,4 +1,4 @@
-# [short title of solved problem and solution]
+# Use Markdown Architectural Decision Records
 
 * Status: [accepted | superseeded by [ADR-0005](0005-example.md) | deprecated | …] <!-- optional -->
 * Deciders: [list everyone involved in the decision] <!-- optional -->
