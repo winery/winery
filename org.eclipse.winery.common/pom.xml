@@ -30,7 +30,6 @@
     </distributionManagement>
     <properties>
         <checkstyle.config.location>../checkstyle.xml</checkstyle.config.location>
-        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
     <dependencies>
         <dependency>
