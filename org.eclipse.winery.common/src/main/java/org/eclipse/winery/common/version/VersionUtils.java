@@ -47,7 +47,7 @@ import io.github.adr.embedded.ADR;
  */
 public class VersionUtils {
 
-    private static final Pattern VERSION_PATTERN = Pattern.compile("_([^_]*)-w([0-9]+)(-wip([0-9]+))?$");
+    private static final Pattern VERSION_PATTERN = Pattern.compile("_(([^_]*)-)?w([0-9]+)(-wip([0-9]+))?$");
 
     private static String REFERENCING_OBJECT = "referencingObject";
 
@@ -81,9 +81,9 @@ public class VersionUtils {
         Matcher m = VERSION_PATTERN.matcher(id);
 
         if (m.find()) {
-            String componentVersion = Objects.nonNull(m.group(1)) ? m.group(1) : "";
-            int wineryVersion = Objects.nonNull(m.group(2)) ? Integer.parseInt(m.group(2)) : 0;
-            int workInProgressVersion = Objects.nonNull(m.group(3)) ? Integer.parseInt(m.group(4)) : 0;
+            String componentVersion = Objects.nonNull(m.group(2)) ? m.group(2) : "";
+            int wineryVersion = Objects.nonNull(m.group(3)) ? Integer.parseInt(m.group(3)) : 0;
+            int workInProgressVersion = Objects.nonNull(m.group(4)) ? Integer.parseInt(m.group(5)) : 0;
 
             return new WineryVersion(componentVersion, wineryVersion, workInProgressVersion);
         }

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -55,6 +55,14 @@ public class TNodeFilterDefinition implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getProperties(), getCapabilities());
+    }
+
+    @Override
+    public String toString() {
+        return "TNodeFilterDefinition{" +
+            "properties=" + getProperties() +
+            ", capabilities=" + getCapabilities() +
+            '}';
     }
 
     @NonNull

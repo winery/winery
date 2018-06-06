@@ -5,7 +5,7 @@
     ],
     "otherAttributes": {
     },
-    "id": "winery-defs-for_servicetemplates-ServiceTemplateWithAllReqCapVariants_-w1-wip1",
+    "id": "winery-defs-for_servicetemplates-ServiceTemplateWithAllReqCapVariants_w1-wip1",
     "serviceTemplateOrNodeTypeOrNodeTypeImplementation": [
         {
             "documentation": [
@@ -14,7 +14,7 @@
             ],
             "otherAttributes": {
             },
-            "id": "ServiceTemplateWithAllReqCapVariants_-w1-wip1",
+            "id": "ServiceTemplateWithAllReqCapVariants_w1-wip1",
             "topologyTemplate": {
                 "documentation": [
                 ],
@@ -186,7 +186,7 @@
                     }
                 ]
             },
-            "name": "ServiceTemplateWithAllReqCapVariants_-w1-wip1",
+            "name": "ServiceTemplateWithAllReqCapVariants_w1-wip1",
             "targetNamespace": "http://plain.winery.opentosca.org/servicetemplates"
         }
     ],

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -64,6 +64,11 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(getType(), getDescription(), getRequired(), getDefault(), getStatus(), getConstraints(), getEntrySchema());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TPropertyDefinition)) return false;
@@ -71,15 +76,23 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
         return Objects.equals(getType(), that.getType()) &&
             Objects.equals(getDescription(), that.getDescription()) &&
             Objects.equals(getRequired(), that.getRequired()) &&
-            Objects.equals(defaultValue, that.defaultValue) &&
+            Objects.equals(getDefault(), that.getDefault()) &&
             getStatus() == that.getStatus() &&
             Objects.equals(getConstraints(), that.getConstraints()) &&
             Objects.equals(getEntrySchema(), that.getEntrySchema());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(getType(), getDescription(), getRequired(), defaultValue, getStatus(), getConstraints(), getEntrySchema());
+    public String toString() {
+        return "TPropertyDefinition{" +
+            "type=" + getType() +
+            ", description='" + getDescription() + '\'' +
+            ", required=" + getRequired() +
+            ", defaultValue=" + getDefault() +
+            ", status=" + getStatus() +
+            ", constraints=" + getConstraints() +
+            ", entrySchema=" + getEntrySchema() +
+            "}";
     }
 
     @NonNull
@@ -137,24 +150,6 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
         this.status = status;
     }
 
-    public void setStatus(String status) {
-        switch (status) {
-            case "supported":
-                setStatus(TStatusValue.supported);
-                break;
-            case "unsupported":
-                setStatus(TStatusValue.unsupported);
-                break;
-            case "experimental":
-                setStatus(TStatusValue.experimental);
-                break;
-            case "deprecated":
-                setStatus(TStatusValue.deprecated);
-                break;
-            default:
-        }
-    }
-
     @NonNull
     public List<TConstraintClause> getConstraints() {
         if (constraints == null) {
@@ -194,13 +189,13 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
         }
 
         public Builder(TPropertyDefinition propertyDefinition) {
-            this.type = propertyDefinition.type;
-            this.description = propertyDefinition.description;
-            this.required = propertyDefinition.required;
-            this.defaultValue = propertyDefinition.defaultValue;
-            this.status = propertyDefinition.status;
-            this.constraints = propertyDefinition.constraints;
-            this.entrySchema = propertyDefinition.entrySchema;
+            this.type = propertyDefinition.getType();
+            this.description = propertyDefinition.getDescription();
+            this.required = propertyDefinition.getRequired();
+            this.defaultValue = propertyDefinition.getDefault();
+            this.status = propertyDefinition.getStatus();
+            this.constraints = propertyDefinition.getConstraints();
+            this.entrySchema = propertyDefinition.getEntrySchema();
         }
 
         public T setDescription(String description) {
@@ -221,6 +216,10 @@ public class TPropertyDefinition extends TPropertyAssignmentOrDefinition {
         public T setStatus(TStatusValue status) {
             this.status = status;
             return self();
+        }
+
+        public T setStatus(String status) {
+            return setStatus(TStatusValue.getStatus(status));
         }
 
         public T setConstraints(List<TConstraintClause> constraints) {

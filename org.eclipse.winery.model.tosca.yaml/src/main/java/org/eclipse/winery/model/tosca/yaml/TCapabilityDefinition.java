@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -79,6 +79,18 @@ public class TCapabilityDefinition implements VisitorNode {
         return Objects.hash(getDescription(), getOccurrences(), getValidSourceTypes(), getType(), getProperties(), getAttributes());
     }
 
+    @Override
+    public String toString() {
+        return "TCapabilityDefinition{" +
+            "description='" + getDescription() + '\'' +
+            ", occurrences=" + getOccurrences() +
+            ", validSourceTypes=" + getValidSourceTypes() +
+            ", type=" + getType() +
+            ", properties=" + getProperties() +
+            ", attributes=" + getAttributes() +
+            '}';
+    }
+
     @Nullable
     public String getDescription() {
         return description;
@@ -152,19 +164,19 @@ public class TCapabilityDefinition implements VisitorNode {
 
     @NonNull
     public String getUpperBound() {
-        if (occurrences == null || occurrences.size() <= 1) {
+        if (getOccurrences() == null || getOccurrences().size() <= 1) {
             return "1";
         } else {
-            return occurrences.get(1);
+            return getOccurrences().get(1);
         }
     }
 
     @NonNull
     public Integer getLowerBound() {
-        if (occurrences == null || occurrences.isEmpty()) {
+        if (getOccurrences() == null || getOccurrences().isEmpty()) {
             return 1;
         } else {
-            return Integer.valueOf(occurrences.get(0));
+            return Integer.valueOf(getOccurrences().get(0));
         }
     }
 

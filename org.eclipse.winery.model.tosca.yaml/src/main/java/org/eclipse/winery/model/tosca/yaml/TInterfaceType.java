@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -57,6 +57,14 @@ public class TInterfaceType extends TEntityType {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getOperations(), getInputs());
+    }
+
+    @Override
+    public String toString() {
+        return "TInterfaceType{" +
+            "operations=" + getOperations() +
+            ", inputs=" + getInputs() +
+            "} " + super.toString();
     }
 
     @NonNull

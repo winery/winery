@@ -45,6 +45,7 @@ import { ImportTopologyService } from './services/import-topology.service';
 import { NodeRelationshipTemplatesGeneratorService } from './services/node-relationship-templates-generator.service';
 import { ReqCapService } from './services/req-cap.service';
 import { SplitMatchTopologyService } from './services/split-match-topology.service';
+import { ErrorHandlerService } from './services/error-handler.service';
 
 @NgModule({
     declarations: [
@@ -83,7 +84,8 @@ import { SplitMatchTopologyService } from './services/split-match-topology.servi
         ImportTopologyService,
         ReqCapService,
         NodeRelationshipTemplatesGeneratorService,
-        SplitMatchTopologyService
+        SplitMatchTopologyService,
+        ErrorHandlerService
     ],
     bootstrap: [WineryComponent]
 })

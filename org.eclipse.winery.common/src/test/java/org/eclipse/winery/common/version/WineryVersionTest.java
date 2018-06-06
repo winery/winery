@@ -121,8 +121,7 @@ public class WineryVersionTest {
         int wipVersion = 0;
         WineryVersion v = new WineryVersion(componentVersion, wineryVersion, wipVersion);
 
-        String expected = componentVersion
-            + WineryVersion.WINERY_VERSION_SEPARATOR + WineryVersion.WINERY_VERSION_PREFIX + wineryVersion;
+        String expected = componentVersion + WineryVersion.WINERY_VERSION_PREFIX + wineryVersion;
 
         Assert.assertEquals(expected, v.toString());
     }
