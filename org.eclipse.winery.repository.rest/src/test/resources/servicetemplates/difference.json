@@ -4,14 +4,14 @@
     "children": [
         {
             "element": "id",
-            "oldValue": "ServiceTemplateWithTwoNodeTemplates_-w1-wip1",
-            "newValue": "ServiceTemplateWithTwoNodeTemplates_-w1-wip2",
+            "oldValue": "ServiceTemplateWithTwoNodeTemplates_w1-wip1",
+            "newValue": "ServiceTemplateWithTwoNodeTemplates_w1-wip2",
             "state": "CHANGED"
         },
         {
             "element": "name",
-            "oldValue": "ServiceTemplateWithTwoNodeTemplates_-w1-wip1",
-            "newValue": "ServiceTemplateWithTwoNodeTemplates_-w1-wip2",
+            "oldValue": "ServiceTemplateWithTwoNodeTemplates_w1-wip1",
+            "newValue": "ServiceTemplateWithTwoNodeTemplates_w1-wip2",
             "state": "CHANGED"
         },
         {

@@ -220,7 +220,7 @@ export class Utils {
     }
 
     public static getNameWithoutVersion(name: string): string {
-        const res = name.match(/_([^_]*)-w([0-9]+)(-wip([0-9]+))?$/);
+        const res = name.match(/_(([^_]*)-)?w([0-9]+)(-wip([0-9]+))?$/);
         if (isNullOrUndefined(res)) {
             return name;
         } else {
