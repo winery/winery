@@ -14,8 +14,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ComplianceRuleRouterModule } from './complianceRuleRouter.module';
-import { TopologyTemplateComponent } from '../../instance/complianceRules/topologyTemplate/topologyTemplate.component';
-import { PlansComponent } from '../../instance/complianceRules/plans/plans.component';
 import { WineryLoaderModule } from '../../wineryLoader/wineryLoader.module';
 import { WineryModalModule } from '../../wineryModalModule/winery.modal.module';
 import { WineryIoParameterModule } from '../../wineryIoParameter/wineryIoParameters.module';
@@ -24,12 +22,11 @@ import { SelectModule } from 'ng2-select';
 import { FormsModule } from '@angular/forms';
 import { WineryTableModule } from '../../wineryTableModule/wineryTable.module';
 import { InstanceModule } from '../../instance/instance.module';
-import { SelfServicePortalModule } from '../../instance/complianceRules/selfServicePortal/selfServicePortal.module';
-import { BoundaryDefinitionsModule } from '../../instance/complianceRules/boundaryDefinitions/boundaryDefinitions.module';
-import { TagModule } from '../../instance/complianceRules/tag/tag.module';
 import { DocumentationModule } from '../../instance/sharedComponents/documentation/documentation.module';
 import { WineryReadmeModule } from '../../wineryReadmeModule/wineryReadme.module';
 import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.module';
+import { TagModule } from '../../instance/serviceTemplates/tag/tag.module';
+import { TopologyTemplateModule } from '../../instance/serviceTemplates/topologyTemplate/topologyTemplate.module';
 
 @NgModule({
     imports: [
@@ -37,9 +34,8 @@ import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.mod
         FormsModule,
         SelectModule,
         InstanceModule,
-        SelfServicePortalModule,
-        BoundaryDefinitionsModule,
         TagModule,
+        TopologyTemplateModule,
         DocumentationModule,
         WineryLoaderModule,
         WineryModalModule,
@@ -49,10 +45,6 @@ import { WineryLicenseModule } from '../../wineryLicenseModule/wineryLicense.mod
         ComplianceRuleRouterModule,
         WineryReadmeModule,
         WineryLicenseModule
-    ],
-    declarations: [
-        TopologyTemplateComponent,
-        PlansComponent,
     ]
 })
 export class ComplianceRuleModule {
