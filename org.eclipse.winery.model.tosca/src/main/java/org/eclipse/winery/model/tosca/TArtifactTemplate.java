@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArtifactTemplate", propOrder = {
     "artifactReferences"
@@ -102,7 +101,6 @@ public class TArtifactTemplate
     public void setName(String value) {
         this.name = value;
     }
-
 
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = {
