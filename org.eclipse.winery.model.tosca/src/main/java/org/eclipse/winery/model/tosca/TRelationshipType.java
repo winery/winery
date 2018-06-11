@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRelationshipType", propOrder = {
     "instanceStates",
@@ -170,7 +169,6 @@ public class TRelationshipType extends TEntityType {
         this.validTarget = value;
     }
 
-
     /**
      * <p>Java class for anonymous complex type.
      * <p>
@@ -239,7 +237,6 @@ public class TRelationshipType extends TEntityType {
             return Objects.hash(_interface);
         }
     }
-
 
     /**
      * <p>Java class for anonymous complex type.
@@ -310,7 +307,6 @@ public class TRelationshipType extends TEntityType {
         }
     }
 
-
     /**
      * <p>Java class for anonymous complex type.
      * <p>
@@ -365,7 +361,6 @@ public class TRelationshipType extends TEntityType {
             return Objects.hash(typeRef);
         }
     }
-
 
     /**
      * <p>Java class for anonymous complex type.
