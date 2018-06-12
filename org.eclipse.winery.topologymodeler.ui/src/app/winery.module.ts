@@ -42,7 +42,6 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { ExistsService } from './services/exists.service';
 import { EntitiesModalService } from './canvas/entities-modal/entities-modal.service';
 import { ImportTopologyService } from './services/import-topology.service';
-import { NodeRelationshipTemplatesGeneratorService } from './services/node-relationship-templates-generator.service';
 import { ReqCapService } from './services/req-cap.service';
 import { SplitMatchTopologyService } from './services/split-match-topology.service';
 import { ErrorHandlerService } from './services/error-handler.service';
@@ -83,7 +82,6 @@ import { ErrorHandlerService } from './services/error-handler.service';
         EntitiesModalService,
         ImportTopologyService,
         ReqCapService,
-        NodeRelationshipTemplatesGeneratorService,
         SplitMatchTopologyService,
         ErrorHandlerService
     ],

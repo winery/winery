@@ -18,10 +18,12 @@ import { WineryActions } from '../redux/actions/winery.actions';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from '../redux/store/winery.store';
 import { TNodeTemplate } from '../models/ttopology-template';
-import { BackendService } from '../services/backend.service';
 import { NewNodeIdTypeColorPropertiesModel } from '../models/newNodeIdTypeColorModel';
 import { isNullOrUndefined } from 'util';
 import { Subscription } from 'rxjs/Subscription';
+import { Utils } from '../models/utils';
+import { EntityTypesModel } from '../models/entityTypesModel';
+import { NodeVisualsModel } from '../models/nodeVisualsModel';
 
 /**
  * This is the left sidebar, where nodes can be created from.
@@ -69,7 +71,7 @@ import { Subscription } from 'rxjs/Subscription';
     ]
 })
 export class PaletteComponent implements OnInit, OnDestroy {
-    @Input() entityTypes;
+    @Input() entityTypes: EntityTypesModel;
     paletteRootState = 'extended';
     paletteButtonRootState = 'left';
     subscriptions: Array<Subscription> = [];
@@ -77,11 +79,10 @@ export class PaletteComponent implements OnInit, OnDestroy {
     // All Node Types grouped by their namespaces
     allNodeTemplates: TNodeTemplate[] = [];
     readonly newNodePositionOffsetX = 108;
-    readonly newNodePositionOffsetY = 60;
+    readonly newNodePositionOffsetY = 30;
 
     constructor(private ngRedux: NgRedux<IWineryState>,
-                private actions: WineryActions,
-                private backendService: BackendService) {
+                private actions: WineryActions) {
         this.subscriptions.push(ngRedux.select(wineryState => wineryState.wineryState.currentJsonTopology.nodeTemplates)
             .subscribe(currentNodes => this.updateNodes(currentNodes)));
         this.subscriptions.push(ngRedux.select(wineryState => wineryState.wineryState.currentPaletteOpenedState)
@@ -89,14 +90,13 @@ export class PaletteComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Applies the correct css, depending on if the palette is open or not.
+     * Applies the correct animations, depending on if the palette is open or not.
      * @param newPaletteOpenedState
      */
     updateState(newPaletteOpenedState: any) {
         if (!newPaletteOpenedState) {
             this.paletteRootState = 'shrunk';
             this.paletteButtonRootState = 'left';
-
         } else {
             this.paletteRootState = 'extended';
             this.paletteButtonRootState = 'top';
@@ -136,12 +136,12 @@ export class PaletteComponent implements OnInit, OnDestroy {
      * @param $event
      */
     generateNewNode($event): void {
-        const left = ($event.pageX - this.newNodePositionOffsetX).toString();
-        const top = ($event.pageY - this.newNodePositionOffsetY).toString();
+        const x = $event.pageX - this.newNodePositionOffsetX;
+        const y = $event.pageY - this.newNodePositionOffsetY;
         const name = $event.target.innerText;
-        const y = top;
-        const x = left;
         const newIdTypeColorProperties = this.generateIdTypeColorProperties(name);
+        const nodeVisuals: NodeVisualsModel = Utils.getNodeVisualsForNodeTemplate(newIdTypeColorProperties.type,
+            this.entityTypes.nodeVisuals);
         const newNode: TNodeTemplate = new TNodeTemplate(
             newIdTypeColorProperties.properties,
             newIdTypeColorProperties.id,
@@ -150,16 +150,16 @@ export class PaletteComponent implements OnInit, OnDestroy {
             1,
             1,
             newIdTypeColorProperties.color,
-            '',
+            nodeVisuals.imageUrl,
             [],
             [],
             {},
             x,
             y,
-            {},
-            {},
-            {},
-            {}
+            null,
+            null,
+            null,
+            null
         );
         this.ngRedux.dispatch(this.actions.saveNodeTemplate(newNode));
     }

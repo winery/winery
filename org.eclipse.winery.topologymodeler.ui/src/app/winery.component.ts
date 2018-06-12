@@ -21,7 +21,6 @@ import { BackendService } from './services/backend.service';
 import { Subscription } from 'rxjs/Subscription';
 import { NgRedux } from '@angular-redux/store';
 import { IWineryState } from './redux/store/winery.store';
-import { NodeRelationshipTemplatesGeneratorService } from './services/node-relationship-templates-generator.service';
 import { DifferenceStates, ToscaDiff } from './models/ToscaDiff';
 import { isNullOrUndefined } from 'util';
 import { Utils } from './models/utils';
@@ -56,7 +55,6 @@ export class WineryComponent implements OnInit {
     constructor(private loadedService: LoadedService,
                 private appReadyEvent: AppReadyEventService,
                 private backendService: BackendService,
-                private nodeRelationshipGeneratorService: NodeRelationshipTemplatesGeneratorService,
                 private ngRedux: NgRedux<IWineryState>) {
         this.subscriptions.push(this.ngRedux.select(state => state.wineryState.hideNavBarAndPaletteState)
             .subscribe(hideNavBar => this.hideNavBarState = hideNavBar));
