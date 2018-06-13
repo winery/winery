@@ -17,6 +17,9 @@ import { backendBaseURL, oldTopologyModelerURL, topologyModelerURL } from '../..
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { WineryVersion } from '../../../wineryInterfaces/wineryVersion';
 import { ModalDirective } from 'ngx-bootstrap';
+import { ToscaComponent } from '../../../wineryInterfaces/toscaComponent';
+import { ToscaTypes } from '../../../wineryInterfaces/enums';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     templateUrl: 'topologyTemplate.component.html'
@@ -32,7 +35,9 @@ export class TopologyTemplateComponent implements OnInit {
 
     @ViewChild('compareToModal') compareToModal: ModalDirective;
 
-    constructor(private sanitizer: DomSanitizer, public sharedData: InstanceService) {
+    constructor(private sanitizer: DomSanitizer,
+                public sharedData: InstanceService,
+                private activatedRoute: ActivatedRoute) {
     }
 
     ngOnInit() {
@@ -42,10 +47,16 @@ export class TopologyTemplateComponent implements OnInit {
             backendBaseURL + this.sharedData.path + '/topologytemplate/?view&uiURL=' + uiURL
         );
 
-        const editorConfig = '?repositoryURL=' + encodeURIComponent(backendBaseURL)
+        let editorConfig = '?repositoryURL=' + encodeURIComponent(backendBaseURL)
             + '&uiURL=' + uiURL
             + '&ns=' + encodeURIComponent(this.sharedData.toscaComponent.namespace)
             + '&id=' + this.sharedData.toscaComponent.localName;
+
+        if (this.sharedData.toscaComponent.toscaType === ToscaTypes.ComplianceRule) {
+            const elementPath = this.activatedRoute.snapshot.url[0].path;
+            editorConfig += '&parentPath=' + ToscaTypes.ComplianceRule.toLocaleString()
+                + '&elementPath=' + elementPath;
+        }
 
         this.editorUrl = topologyModelerURL + editorConfig;
         this.oldEditorUrl = oldTopologyModelerURL + editorConfig;

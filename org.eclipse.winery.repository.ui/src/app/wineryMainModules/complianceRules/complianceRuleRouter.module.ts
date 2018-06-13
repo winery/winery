@@ -17,18 +17,13 @@ import { SectionComponent } from '../../section/section.component';
 import { SectionResolver } from '../../section/section.resolver';
 import { InstanceComponent } from '../../instance/instance.component';
 import { InstanceResolver } from '../../instance/instance.resolver';
-import { BoundaryDefinitionsComponent } from '../../instance/complianceRules/boundaryDefinitions/boundaryDefinitions.component';
-import { boundaryDefinitionsRoutes } from '../../instance/complianceRules/boundaryDefinitions/boundaryDefinitions.module';
 import { EditXMLComponent } from '../../instance/sharedComponents/editXML/editXML.component';
-import { TopologyTemplateComponent } from '../../instance/complianceRules/topologyTemplate/topologyTemplate.component';
-import { PlansComponent } from '../../instance/complianceRules/plans/plans.component';
-import { SelfServicePortalComponent } from '../../instance/complianceRules/selfServicePortal/selfServicePortal.component';
-import { selfServiceRoutes } from '../../instance/complianceRules/selfServicePortal/selfServicePortalRouter.module';
-import { TagComponent } from '../../instance/complianceRules/tag/tag.component';
 import { DocumentationComponent } from '../../instance/sharedComponents/documentation/documentation.component';
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { WineryReadmeComponent } from '../../wineryReadmeModule/wineryReadme.component';
 import { WineryLicenseComponent } from '../../wineryLicenseModule/wineryLicense.component';
+import { TopologyTemplateComponent } from '../../instance/serviceTemplates/topologyTemplate/topologyTemplate.component';
+import { TagComponent } from '../../instance/serviceTemplates/tag/tag.component';
 
 const toscaType = ToscaTypes.ComplianceRule;
 
@@ -41,7 +36,7 @@ const complianceRuleRoutes: Routes = [
         resolve: { resolveData: InstanceResolver },
         children: [
             { path: 'readme', component: WineryReadmeComponent },
-            { path: 'license', component: WineryLicenseComponent},
+            { path: 'license', component: WineryLicenseComponent },
             { path: 'identifier', component: TopologyTemplateComponent },
             { path: 'requiredstructure', component: TopologyTemplateComponent },
             { path: 'tags', component: TagComponent },

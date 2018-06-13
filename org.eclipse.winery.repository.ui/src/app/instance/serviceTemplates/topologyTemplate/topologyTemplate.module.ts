@@ -11,8 +11,26 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  ********************************************************************************/
-export class RequirementOrCapability {
-    name: string = null;
-    ref: any;
-    id: string = null;
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { TopologyTemplateComponent } from './topologyTemplate.component';
+import { WineryModalModule } from '../../../wineryModalModule/winery.modal.module';
+
+@NgModule({
+    imports: [
+        BrowserModule,
+        CommonModule,
+        RouterModule,
+        WineryModalModule,
+    ],
+    exports: [
+        TopologyTemplateComponent
+    ],
+    declarations: [
+        TopologyTemplateComponent
+    ]
+})
+export class TopologyTemplateModule {
 }
