@@ -15,24 +15,12 @@ import { TNodeTemplate, TRelationshipTemplate, Visuals } from './ttopology-templ
 import { QName } from './qname';
 import { isNullOrUndefined } from 'util';
 import { DifferenceStates, VersionUtils } from './ToscaDiff';
+import { NodeVisualsModel } from './nodeVisualsModel';
 
 export class Utils {
 
     static createTNodeTemplateFromObject(node: TNodeTemplate, nodeVisuals: Visuals[], state?: DifferenceStates): TNodeTemplate {
-        let color;
-        let imageUrl;
-        for (const visual of nodeVisuals) {
-            const qName = new QName(visual.nodeTypeId);
-            const localName = qName.localName;
-            if (localName === new QName(node.type).localName) {
-                color = isNullOrUndefined(state) ? visual.color : VersionUtils.getElementColorByDiffState(state);
-                imageUrl = visual.imageUrl;
-                if (imageUrl) {
-                    imageUrl = imageUrl.replace('appearance', 'visualappearance');
-                }
-                break;
-            }
-        }
+        const nodeVisualsObject = this.getNodeVisualsForNodeTemplate(node.type, nodeVisuals, state);
         let properties;
         if (node.properties) {
             properties = node.properties;
@@ -67,8 +55,8 @@ export class Utils {
             node.name,
             node.minInstances,
             node.maxInstances,
-            color,
-            imageUrl,
+            nodeVisualsObject.color,
+            nodeVisualsObject.imageUrl,
             node.documentation ? node.documentation : [],
             node.any ? node.any : [],
             otherAttributes,
@@ -94,5 +82,25 @@ export class Utils {
             relationship.otherAttributes,
             state
         );
+    }
+
+    static getNodeVisualsForNodeTemplate(nodeType: string, nodeVisuals: Visuals[], state?: DifferenceStates): NodeVisualsModel {
+        let color, imageUrl: string;
+        for (const visual of nodeVisuals) {
+            const qName = new QName(visual.nodeTypeId);
+            const localName = qName.localName;
+            if (localName === new QName(nodeType).localName) {
+                color = isNullOrUndefined(state) ? visual.color : VersionUtils.getElementColorByDiffState(state);
+                imageUrl = visual.imageUrl;
+                if (imageUrl) {
+                    imageUrl = imageUrl.replace('appearance', 'visualappearance');
+                }
+                const nodeVisualsObject = {
+                  color: color,
+                  imageUrl: imageUrl,
+                };
+                return nodeVisualsObject;
+            }
+        }
     }
 }
