@@ -57,12 +57,12 @@ export class LayoutDirective {
 
         // get width and height of nodes
         nodeChildrenArray.forEach(node => {
-            const width = node.elRef.nativeElement.firstChild.nextElementSibling.offsetWidth;
-            const height = node.elRef.nativeElement.firstChild.nextElementSibling.offsetHeight;
+            const width = node.elRef.nativeElement.firstChild.offsetWidth;
+            const height = node.elRef.nativeElement.firstChild.offsetHeight;
             children.push(new LayoutChildNodeModel(node.nodeTemplate.id, width, height));
             // also get their current positions and apply them to the internal list
-            const left = node.elRef.nativeElement.firstChild.nextElementSibling.offsetLeft;
-            const top = node.elRef.nativeElement.firstChild.nextElementSibling.offsetTop;
+            const left = node.elRef.nativeElement.firstChild.offsetLeft;
+            const top = node.elRef.nativeElement.firstChild.offsetTop;
             node.nodeTemplate.x = left;
             node.nodeTemplate.y = top;
         });
@@ -131,7 +131,7 @@ export class LayoutDirective {
         // if there is only 1 node selected, do nothing
         if (!(selectedNodeComponents.length === 1)) {
             const topPositions = selectedNodeComponents.map((node) => {
-                return node.elRef.nativeElement.firstChild.nextElementSibling.offsetTop;
+                return node.elRef.nativeElement.firstChild.offsetTop;
             });
             // add biggest value to smallest and divide by 2, to get the exact middle of both
             result = ((Math.max.apply(null, topPositions) + Math.min.apply(null, topPositions)) / 2);
