@@ -22,8 +22,12 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0015](0015-copy-source-to-files.md) - Offer copying files from the source to the files folder
 - [ADR-0016](0016-reflection-test-for-tosca-yaml-builder.md) - Reflection test for TOSCA YAML builder
 - [ADR-0017](0017-modify-jax-b-generated-classes.md) - Modify JAX-B generated classes
-- [ADR-0018](0018-version-identifier.md) - Version Identifiers in TOSCA
-- [ADR-0019](0019-version-in-the-name.md) - Version Identifier in the Name
+- [ADR-0018](0018-version-identifier.md) - Version Identifier in a Debian-like Form
+- [ADR-0019](0019-version-in-the-name.md) - Versions of TOSCA elements in the name
+- [ADR-0020](0020-TOSCA-definitions-contain-extactly-one-element.md) - TOSCA Definitions contain excaly one element
+- [ADR-0021](0021-use-logback-for-logging.md) - Use logback for logging
+- [ADR-0022](0022-tosca-model-is-more-relaxed-than-the-xsd.md) - tosca.model is more relaxed than the XSD
+- [ADR-0023](0023-use-maven-as-build-tool.md) - Use Maven as build tool
 
 <!-- adrlogstop -->
 
