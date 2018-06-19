@@ -54,7 +54,7 @@ export class PropertyRenameService {
 
         return this.http
             .post(
-                backendBaseURL + this.toscaComponent.path + '/' + this.propertyName,
+                this.toscaComponent.backendPath + '/' + this.propertyName,
                 payload,
                 { headers: headers, observe: 'response', responseType: 'text' }
             );

@@ -19,6 +19,7 @@ import {Utils} from '../wineryUtils/utils';
 export class ToscaComponent {
 
     readonly localNameWithoutVersion: string;
+    readonly backendPath: string;
     readonly path: string;
     readonly xmlPath: string;
     readonly yamlPath: string;
@@ -34,10 +35,11 @@ export class ToscaComponent {
             this.path += '/' + encodeURIComponent(encodeURIComponent(this.namespace));
             if (!isNullOrUndefined(this.localName)) {
                 this.path += '/' + this.localName;
-                this.xmlPath = backendBaseURL + this.path;
-                this.yamlPath = this.xmlPath + '/?yaml';
-                this.xmlCsarPath = this.xmlPath + '/?csar';
-                this.yamlCsarPath = this.xmlPath + '/?yaml&csar';
+                this.backendPath =  backendBaseURL + this.path;
+                this.xmlPath = this.backendPath + '/?xml';
+                this.yamlPath = this.backendPath + '/?yaml';
+                this.xmlCsarPath = this.backendPath + '/?csar';
+                this.yamlCsarPath = this.backendPath + '/?yaml&csar';
             }
         }
         if (!isNullOrUndefined(this.localName)) {

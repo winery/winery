@@ -99,7 +99,7 @@ export class EntityComponent implements OnInit {
     exportComponent(event: MouseEvent) {
         event.stopPropagation();
         if (event.ctrlKey) {
-            window.open(this.backendLink + '?definitions', '_blank');
+            window.open(this.backendLink + '?xml', '_blank');
         } else {
             window.open(this.backendLink + '?csar', '_blank');
         }
