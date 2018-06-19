@@ -123,6 +123,7 @@
         (onOk)="addComponent()"
         [closeButtonLabel]="'Cancel'"
         [okButtonLabel]="'Add'"
+        [hideOnOk]="false"
         [disableOkButton]="!addComponentForm?.valid || validation?.noTypeAvailable">
     </winery-modal-footer>
 </winery-modal>

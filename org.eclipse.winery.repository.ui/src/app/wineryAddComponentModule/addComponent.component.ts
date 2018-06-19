@@ -88,14 +88,19 @@ export class WineryAddComponent {
         this.hideHelp = this.storage.getItem(this.storageKey) === 'true';
     }
 
-    onAdd() {
+    onAdd(componentType?: SelectData) {
         const typesUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaType);
         this.addModalType = Utils.getToscaTypeNameFromToscaType(this.toscaType);
         this.useStartNamespace = !(!isNullOrUndefined(this.namespace) && this.namespace.length > 0);
 
         this.sectionService.setPath(this.toscaType);
 
-        if (!isNullOrUndefined(typesUrl)) {
+        if (componentType) {
+            this.typeRequired = true;
+            this.types = [componentType];
+        }
+
+        if (!isNullOrUndefined(typesUrl) && !componentType) {
             this.loading = true;
             this.typeRequired = true;
             this.sectionService.getSectionData('/' + typesUrl + '?grouped=angularSelect')
@@ -105,6 +110,18 @@ export class WineryAddComponent {
                 );
         } else {
             this.typeRequired = false;
+        }
+
+        if (!this.componentData) {
+            this.loading = true;
+            this.sectionService.getSectionData('/' + this.toscaType)
+                .subscribe(
+                    data => this.handleComponentData(data),
+                    error => this.handleError(error)
+                );
+        }
+
+        if (!this.loading) {
             this.showModal();
         }
     }
@@ -181,12 +198,16 @@ export class WineryAddComponent {
     }
 
     private handleTypes(types: SelectData[]): void {
-        this.loading = false;
         this.types = types.length > 0 ? types : null;
-        this.showModal();
+
+        if (this.componentData) {
+            this.showModal();
+        }
     }
 
     private showModal() {
+        this.loading = false;
+
         this.newComponentVersion = new WineryVersion('', 1, 1);
         this.newComponentName = '';
         this.newComponentFinalName = '';
@@ -206,7 +227,9 @@ export class WineryAddComponent {
         }
         this.change.detectChanges();
 
-        this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
+        this.newComponentSelectedType = this.types ?
+            this.types[0].children ? this.types[0].children[0] : this.types[0]
+            : null;
         this.namespaceInput.writeValue(this.newComponentNamespace);
 
         this.addModal.show();
@@ -229,10 +252,20 @@ export class WineryAddComponent {
                 );
             this.inheritFrom = null;
         }
+
+        this.addModal.hide();
     }
 
     private handleError(error: HttpErrorResponse): void {
         this.loading = false;
         this.notify.error(error.message, error.statusText);
+    }
+
+    private handleComponentData(data: SectionData[]) {
+        this.componentData = data;
+
+        if (!this.typeRequired || this.types) {
+            this.showModal();
+        }
     }
 }
