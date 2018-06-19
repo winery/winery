@@ -13,7 +13,7 @@
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <div id="{{ data.namespace | urlEncode | urlEncode }}/{{ data.id }}"
      class="entityContainer {{ toscaType | toscaTypeToCamelCase }}"
-     (click)="onClick()">
+     (click)="onClick($event)">
     <div class="left">
         <img *ngIf="imageUrl" src="{{ imageUrl }}" class="nodeTypeImageIconInList">
     </div>
