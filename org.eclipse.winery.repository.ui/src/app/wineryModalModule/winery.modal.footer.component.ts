@@ -11,7 +11,8 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ModalDirective } from 'ngx-bootstrap';
 
 @Component({
     selector: 'winery-modal-footer',
@@ -22,14 +23,17 @@ export class WineryModalFooterComponent {
     @Input() showDefaultButtons = true;
     @Input() closeButtonLabel = 'Cancel';
     @Input() okButtonLabel = 'Add';
-    @Input() modalRef: any;
+    @Input() modalRef: ModalDirective;
     @Input() disableOkButton = false;
+    @Input() hideOnOk = true;
     @Output() onOk = new EventEmitter<any>();
     @Output() onCancel = new EventEmitter<any>();
 
     ok() {
         this.onOk.emit();
-        this.modalRef.hide();
+        if (this.hideOnOk) {
+            this.modalRef.hide();
+        }
     }
 
     cancel() {

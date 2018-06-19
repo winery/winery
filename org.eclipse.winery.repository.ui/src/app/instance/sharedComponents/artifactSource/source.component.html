@@ -24,7 +24,7 @@
     </div>
     <br>
     <div id="fileGridHeader">
-        <h5 id="gridHeaderText">Already includ Files:</h5>
+        <h5 id="gridHeaderText">Already included Files:</h5>
         <button id="gridHeaderNewBtn" class="btn btn-sm btn-toolbar"
                 [disabled]="!sharedData?.currentVersion?.editable"
                 (click)="onCreateNewFile()">
@@ -47,12 +47,13 @@
             Copy all to Files
         </button>
         <button class="btn btn-sm btn-primary"
-                [disabled]="sharedData?.currentVersion?.editable || selectedFile == null"
+                [disabled]="!sharedData?.currentVersion?.editable || selectedFile == null"
                 (click)="saveEditorContent()">
             Save
         </button>
     </div>
     <div id="fileGridBody">
+        <winery-loader *ngIf="loadingFileContent"></winery-loader>
         <div>
             <div id="leftEditContent">
                 <div *ngFor="let path of paths" class="fileList">

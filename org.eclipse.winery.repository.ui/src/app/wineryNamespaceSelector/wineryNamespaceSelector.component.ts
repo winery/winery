@@ -62,7 +62,6 @@ const noop = () => {
 @Component({
     selector: 'winery-namespace-selector',
     templateUrl: './wineryNamespaceSelector.component.html',
-    styleUrls: ['./wineryNamespaceSelector.component.css'],
     providers: [
         WineryNamespaceSelectorService,
         {

@@ -82,7 +82,7 @@ export class EntityComponent implements OnInit {
         }
     }
 
-    onClick() {
+    onClick(event: MouseEvent) {
         let url = '/' + this.toscaType + '/';
         if (this.toscaType === ToscaTypes.Imports) {
             url += encodeURIComponent(encodeURIComponent(this.xsdSchemaType))
@@ -93,13 +93,19 @@ export class EntityComponent implements OnInit {
         if (this.data.id) {
             url += '/' + this.data.id;
         }
-        this.router.navigateByUrl(url);
+
+        if (event.ctrlKey) {
+            url = window.location.origin + window.location.pathname + '#' + url;
+            window.open(url, '_blank');
+        } else {
+            this.router.navigateByUrl(url);
+        }
     }
 
     exportComponent(event: MouseEvent) {
         event.stopPropagation();
         if (event.ctrlKey) {
-            window.open(this.backendLink + '?definitions', '_blank');
+            window.open(this.backendLink + '?xml', '_blank');
         } else {
             window.open(this.backendLink + '?csar', '_blank');
         }

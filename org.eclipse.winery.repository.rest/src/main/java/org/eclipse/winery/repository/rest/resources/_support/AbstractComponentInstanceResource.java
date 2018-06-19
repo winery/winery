@@ -280,15 +280,15 @@ public abstract class AbstractComponentInstanceResource implements Comparable<Ab
     public Response redirectToAngularUi(
         @QueryParam(value = "csar") String csar,
         @QueryParam(value = "yaml") String yaml,
+        @QueryParam(value = "xml") String xml,
         @Context UriInfo uriInfo) {
         // in case there is an URL requested directly via the browser UI, the accept cannot be put at the link.
         // thus, there is the hack with ?csar and ?yaml
         // the hack is implemented at getDefinitionsAsResponse
-        if ((csar != null) || (yaml != null)) {
+        if ((csar != null) || (yaml != null) || (xml != null)) {
             return this.getDefinitionsAsResponse(csar, yaml, uriInfo);
         }
         String repositoryUiUrl = Environment.getUrlConfiguration().getRepositoryUiUrl();
-        String uri = uriInfo.getAbsolutePath().toString();
         String uiUrl = uriInfo.getAbsolutePath().toString().replaceAll(Environment.getUrlConfiguration().getRepositoryApiUrl(), repositoryUiUrl);
         return Response.temporaryRedirect(URI.create(uiUrl)).build();
     }
