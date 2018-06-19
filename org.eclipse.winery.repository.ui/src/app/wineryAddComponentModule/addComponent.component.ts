@@ -78,6 +78,7 @@ export class WineryAddComponent {
     useStartNamespace = true;
 
     private readonly storageKey = 'hideVersionHelp';
+    collapseVersioning: boolean;
 
     constructor(private sectionService: SectionService,
                 private existService: ExistService,
@@ -207,6 +208,7 @@ export class WineryAddComponent {
 
     private showModal() {
         this.loading = false;
+        this.collapseVersioning = this.toscaType !== ToscaTypes.NodeType;
 
         this.newComponentVersion = new WineryVersion('', 1, 1);
         this.newComponentName = '';
