@@ -118,7 +118,7 @@ public abstract class TEntityTemplate extends HasId implements HasType, HasName 
         return propertyConstraints;
     }
 
-    public void setPropertyConstraints(TEntityTemplate.PropertyConstraints value) {
+    public void setPropertyConstraints(TEntityTemplate.@Nullable PropertyConstraints value) {
         this.propertyConstraints = value;
     }
 
