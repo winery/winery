@@ -14,9 +14,12 @@
 <div [class.hidden]="!loading">
     <winery-loader></winery-loader>
 </div>
-<div class="documentationField" *ngIf="!loading">
-    <textarea class="texDoc" [(ngModel)]="documentationData">{{documentationData}}</textarea>
-    <div class="floatButton">
-        <button (click)="saveToServer()" class="btn btn-primary" [disabled]="!sharedData?.currentVersion?.editable">Save</button>
+<div *ngIf="!loading">
+    <div class="documentationField">
+        <label for="textarea">Documentation</label>
+        <textarea id="textarea" class="texDoc" [(ngModel)]="documentationData"></textarea>
+        <div class="floatButton">
+            <button (click)="saveToServer()" class="btn btn-primary" [disabled]="!sharedData?.currentVersion?.editable">Save</button>
+        </div>
     </div>
 </div>
