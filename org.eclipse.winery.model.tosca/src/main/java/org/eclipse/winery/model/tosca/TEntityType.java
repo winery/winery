@@ -159,14 +159,16 @@ public class TEntityType extends TExtensibleElements implements HasName, HasInhe
         this.propertiesDefinition = value;
     }
 
-    @NonNull
+    @ADR(22)
+    @Nullable
     @Override
     public String getName() {
         return name;
     }
 
+    @ADR(22)
     @Override
-    public void setName(String value) {
+    public void setName(@Nullable String value) {
         this.name = value;
     }
 
