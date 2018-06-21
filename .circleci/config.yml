@@ -23,3 +23,5 @@ jobs:
     - run: mkdir -p collected-artifacts && find . -mindepth 3 -maxdepth 4 -type f -name "*.war" -exec cp -r {} collected-artifacts/ \;
     - store_artifacts:
         path: collected-artifacts/
+    - store_artifacts:
+        path: winery-debug.log

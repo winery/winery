@@ -25,7 +25,7 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>winery-debug.log</file>
+        <file>${user.home}/winery-debug.log</file>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36}:%line %method - %msg%n</pattern>
         </encoder>
