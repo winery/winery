@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -63,6 +63,8 @@
                 org.eclipse.winery.repository.rest.resources
             </param-value>
         </init-param>
+
+        <!-- this ensures that / are always at the end of URLs -- deprecated - we should change our URL scheme not to end with / -->
         <init-param>
             <param-name>com.sun.jersey.config.feature.CanonicalizeURIPath</param-name>
             <param-value>true</param-value>
@@ -75,9 +77,17 @@
             <param-name>com.sun.jersey.config.feature.Redirect</param-name>
             <param-value>true</param-value>
         </init-param>
+
+        <!-- performance boost at startup -->
         <init-param>
             <param-name>jersey.config.server.wadl.disableWadl</param-name>
             <param-value>true</param-value>
+        </init-param>
+
+        <!-- tweak logging - see https://stackoverflow.com/a/32436909/873282 -->
+        <init-param>
+            <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+            <param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
         </init-param>
 
         <!-- enables @Consumes(MediaType.APPLICATION_JSON) and @Produces(MediaType.APPLICATION_JSON), see https://jersey.java.net/nonav/documentation/1.7/json.html -->
