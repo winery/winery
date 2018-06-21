@@ -70,12 +70,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <version>${org.slf4j}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>org.eclipse.jdt.annotation</artifactId>
-            <version>2.1.0</version>
+            <version>${org.eclipse.jdt.annotation}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -109,13 +109,13 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <version>${ch.qos.logback.logback-classic.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.25</version>
+            <version>${org.slf4j}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

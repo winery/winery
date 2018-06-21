@@ -2,7 +2,7 @@
 
 Steps to update copyright headers:
 1. Define scopes to apply the copy right header to:
-    - Open properties `ctrl alt s` and search for `Scopes`
+    - Open properties <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>S</kbd> and search for `Scopes`
     - Select packages for the scope and click `Include Recursively`
     ![GitAutoCheck](graphics/SetScopes.png)
 2. Apply copyright settings to Scope:
