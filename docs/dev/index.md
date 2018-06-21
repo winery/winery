@@ -29,7 +29,7 @@ As a user, continue at our [quick Start](../user/quickstart.md), which shows how
 
 ## License
 
-Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.

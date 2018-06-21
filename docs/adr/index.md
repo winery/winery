@@ -28,6 +28,8 @@ This lists the architectural decisions for Eclipse Winery.
 - [ADR-0021](0021-use-logback-for-logging.md) - Use logback for logging
 - [ADR-0022](0022-tosca-model-is-more-relaxed-than-the-xsd.md) - tosca.model is more relaxed than the XSD
 - [ADR-0023](0023-use-maven-as-build-tool.md) - Use Maven as build tool
+- [ADR-0024](0024-use-circleci-for-continuous-integration.md) - Use CircleCI for Continuous Integration
+- [ADR-0025](0025-use-same-logback-test-xml-for-each-sub-project.md) - Use same `logback-test.xml` for each sub project
 
 <!-- adrlogstop -->
 
