@@ -71,7 +71,7 @@ Otherwise, Winery does not compile.
 
 When executing tests, winery logs its output in `winery-debug.log`, too.
 
-Q: `Version.java` is missing, what can I do? <br/>
+Q: `Version.java` is missing, what can I do?  
 A: Execute `mvn resources:resources` in the project `org.eclipse.winery.repository.configuration`
 
 In case some JavaScript libraries cannot be found by the browser, execute `bower prune`, `bower install`, `bower update` in both `org.eclipse.winery.repository` and `org.eclipse.winery.topologymodeler`.
@@ -99,15 +99,17 @@ Project -> right click -> Properties -> Project Facets -> Dynamic Web Module -> 
 When doing a copy-libs-to-tomcat hack, possibly "W3C_XML_SCHEMA_NS_URI cannot be resolved or is not a field" appears.
 Remove `stax-api-1.0.1.jar` out of `tomcat8/lib`: Java's `rt.jar` should be used instead for `javax.xml.XMLConstants`.
 
-Q: At `org.eclipse.winery.backend.ui`: Some strange errors<br/>
+Q: At `org.eclipse.winery.backend.ui`: Some strange errors  
 A: Execute in THAT directory
 - `git clean -xdf` to remove all ignored and additional elements
 - Rebuild whole Winery using `mvn package -DskipTests` in the root of the checkout
 
-Q: I get `Cannot find module '../../repositoryUiDependencies/wineryModalModule/winery.modal.module'` in the topology modeler<br/>
+Q: I get `Cannot find module '../../repositoryUiDependencies/wineryModalModule/winery.modal.module'` in the topology modeler  
 A: Execute `mvn -am -pl org.eclipse.winery.topologymodeler.ui package`.
    This leads to a generation of the required source files in the topology modeler (by copying them from the repository.ui).
 
+Q: I get `Error: EPERM: operation not permitted, lstat 'd:\git-repositories\winery\winery\org.eclipse.winery.topologymodeler.ui\node_modules\fsevents\node_modules'`  
+A: Execute ` rd /s node_modules\` and `rd /s %APPDATA%\npm-cache` to delete all caching directories and try `npm install` again.
 
 ## License
 
