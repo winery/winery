@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,8 +13,31 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.writer;
 
-import org.apache.tika.mime.MediaType;
-import org.eclipse.jdt.annotation.NonNull;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.eclipse.winery.common.RepositoryFileReference;
 import org.eclipse.winery.common.Util;
 import org.eclipse.winery.common.ids.definitions.ArtifactTemplateId;
@@ -34,27 +57,12 @@ import org.eclipse.winery.repository.importing.CsarImporter;
 import org.eclipse.winery.yaml.common.Namespaces;
 import org.eclipse.winery.yaml.common.reader.xml.Reader;
 import org.eclipse.winery.yaml.common.writer.xml.Writer;
+
+import org.apache.tika.mime.MediaType;
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class WriterUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(WriterUtils.class);
@@ -222,11 +230,17 @@ public class WriterUtils {
         }
     }
 
-    private static Path getTypeFile(Path path, String namespace, @NonNull String name) {
-        return path.resolve(name)
+    /**
+     * @param path The root path to search from
+     * @param namespace the namespace
+     * @param name the local name of the file
+     */
+    private static Path getTypeFile(@NonNull Path path, @NonNull String namespace, @NonNull String name) {
+        String urlEncodedName = Util.URLencode(name);
+        return path.resolve(urlEncodedName)
             .resolve(Util.URLencode(namespace))
             .resolve("types")
-            .resolve(Util.URLencode(name.concat(".xsd")));
+            .resolve(urlEncodedName.concat(".xsd"));
     }
 
     private static Path getDefinitionsPath(Path path, String namespace, @NonNull String name) {

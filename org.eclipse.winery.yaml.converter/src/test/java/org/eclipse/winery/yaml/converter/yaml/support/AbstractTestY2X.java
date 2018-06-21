@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml.support;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
@@ -20,11 +23,8 @@ import org.eclipse.winery.yaml.common.Utils;
 import org.eclipse.winery.yaml.common.reader.yaml.Reader;
 import org.eclipse.winery.yaml.common.writer.WriterUtils;
 import org.eclipse.winery.yaml.converter.Converter;
-import org.junit.BeforeClass;
 
-import javax.xml.bind.JAXBException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.junit.BeforeClass;
 
 public abstract class AbstractTestY2X {
 
@@ -32,6 +32,9 @@ public abstract class AbstractTestY2X {
     protected final Path path;
     protected final Path outPath;
 
+    /**
+     * @param path Base path where all tests are located within
+     */
     public AbstractTestY2X(Path path) {
         this.path = path;
         this.outPath = path.resolve("tmp");
@@ -48,12 +51,12 @@ public abstract class AbstractTestY2X {
 
     public TServiceTemplate readServiceTemplate(String name) throws Exception {
         Reader reader = Reader.getReader();
-        return reader.parse(path, Paths.get(getName(name)));
+        return reader.parse(this.path, Paths.get(getName(name)));
     }
 
     public TServiceTemplate readServiceTemplate(String name, String namespace) throws Exception {
         Reader reader = Reader.getReader();
-        return reader.parse(path, Paths.get(getName(name), namespace));
+        return reader.parse(this.path, Paths.get(getName(name)), namespace);
     }
 
     public TServiceTemplate readServiceTemplate(Path path, String name, String namespace) throws Exception {
@@ -63,10 +66,10 @@ public abstract class AbstractTestY2X {
 
     public Definitions convert(TServiceTemplate serviceTemplate, String name, String namespace) {
         Converter converter = new Converter();
-        return converter.convertY2X(serviceTemplate, name, namespace, path, path.resolve("tmp"));
+        return converter.convertY2X(serviceTemplate, name, namespace, this.path, this.outPath);
     }
 
-    public void writeXml(Definitions definitions, String name, String namespace) throws JAXBException {
-        WriterUtils.saveDefinitions(definitions, outPath, namespace, name);
+    public void writeXml(Definitions definitions, String name, String namespace) {
+        WriterUtils.saveDefinitions(definitions, this.outPath, namespace, name);
     }
 }
