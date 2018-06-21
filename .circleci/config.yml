@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: circleci/openjdk:8-jdk-browsers
+    working_directory: ~/repo
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    steps:
+    - checkout
+    - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+        key: winery-{{ checksum "pom.xml" }}
+    - run: mvn -q package
+    - save_cache: # saves the project dependencies
+        paths:
+        - ~/.m2
+        key: winery-{{ checksum "pom.xml" }}
+    - run: mkdir -p collected-surefire-reports && find . -mindepth 2 -maxdepth 3 -type d -name "surefire-reports" -exec bash -c 'cp -r {}/* collected-surefire-reports/' Cp {} \;
+    - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard.
+        path: collected-surefire-reports/
+    - run: mkdir -p collected-artifacts && find . -mindepth 3 -maxdepth 4 -type f -name "*.jar" -exec cp -r {} collected-artifacts/ \;
+    - run: mkdir -p collected-artifacts && find . -mindepth 3 -maxdepth 4 -type f -name "*.war" -exec cp -r {} collected-artifacts/ \;
+    - store_artifacts:
+        path: collected-artifacts/

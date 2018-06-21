@@ -11,6 +11,7 @@ release.properties
 **/pom.xml.*
 **/rebel.xml
 target/
+collected-*/
 node_modules/
 winery-debug.log
 **/gen/**
