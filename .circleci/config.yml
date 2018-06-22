@@ -24,4 +24,4 @@ jobs:
     - store_artifacts:
         path: collected-artifacts/
     - store_artifacts:
-        path: winery-debug.log
+        path: ~/winery-debug.log
