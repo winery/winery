@@ -55,40 +55,12 @@
                             (2) downloads.eclipse.org suffers from DDoS attacks from time to time - see https://bugs.eclipse.org/bugs/show_bug.cgi?id=515596#c73
                             -->
                             <url>
-                                http://ftp-stud.fht-esslingen.de/pub/Mirrors/eclipse/orion/drops/R-16.0-201710030941/built-editor.zip
+                                http://ftp-stud.fht-esslingen.de/pub/Mirrors/eclipse/orion/drops/R-15.1-201706291452/built-codeEdit.zip
                             </url>
-                            <outputFileName>built-editor.zip</outputFileName>
+                            <outputFileName>built-codeEdit.zip</outputFileName>
+                            <outputDirectory>src/assets/built-codeEdit15_1</outputDirectory>
                             <unpack>true</unpack>
-                            <outputDirectory>orion/editor</outputDirectory>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-all</artifactId>
-                        <version>2.1.7</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <!-- this is required because the built-editor.js expects the source map files to be in the orion/editor directory-->
-                        <phase>process-sources</phase>
-                        <id>default-cli</id>
-                        <configuration>
-                            <target>
-                                <copy todir="${project.basedir}/orion/editor" overwrite="true">
-                                    <fileset dir="${project.basedir}/orion/editor/sourcemaps"/>
-                                </copy>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
