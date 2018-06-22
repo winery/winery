@@ -14,11 +14,10 @@
 import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
 import { SectionService } from '../section/section.service';
 import { SelectData } from '../wineryInterfaces/selectData';
-import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { ToscaTypes } from '../wineryInterfaces/enums';
 import { Router } from '@angular/router';
-import { AbstractControl, NgForm, ValidatorFn } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { Utils } from '../wineryUtils/utils';
 import { isNullOrUndefined } from 'util';
 import { SectionData } from '../section/sectionData';
@@ -67,7 +66,6 @@ export class WineryAddComponent {
     newComponentSelectedType: SelectData = new SelectData();
     newComponentVersion: WineryVersion = new WineryVersion('', 1, 1);
 
-    validatorObject: WineryValidatorObject;
     validation: AddComponentValidation;
 
     types: SelectData[];
@@ -145,50 +143,6 @@ export class WineryAddComponent {
         this.newComponentSelectedType = event;
     }
 
-    validateComponentName(compareObject: WineryValidatorObject): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } => {
-            this.validation = new AddComponentValidation();
-            this.newComponentFinalName = this.newComponentName;
-
-            if (this.typeRequired && isNullOrUndefined(this.newComponentSelectedType)) {
-                this.validation.noTypeAvailable = true;
-                return { noTypeAvailable: true };
-            }
-
-            if (!isNullOrUndefined(this.newComponentFinalName) && this.newComponentFinalName.length > 0) {
-                this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
-                const duplicate = this.componentData.find((component) => component.name.toLowerCase() === this.newComponentFinalName.toLowerCase());
-
-                if (!isNullOrUndefined(duplicate)) {
-                    const namespace = this.newComponentNamespace.endsWith('/') ? this.newComponentNamespace.slice(0, -1) : this.newComponentNamespace;
-
-                    if (duplicate.namespace === namespace) {
-                        if (duplicate.name === this.newComponentFinalName) {
-                            this.validation.noDuplicatesAllowed = true;
-                            return { noDuplicatesAllowed: true };
-                        } else {
-                            this.validation.differentCaseDuplicateWarning = true;
-                        }
-                    } else {
-                        this.validation.differentNamespaceDuplicateWarning = true;
-                    }
-                }
-            }
-
-            if (this.newComponentVersion.componentVersion) {
-                this.validation.noUnderscoresAllowed = this.newComponentVersion.componentVersion.includes('_');
-                if (this.validation.noUnderscoresAllowed) {
-                    return { noUnderscoresAllowed: true };
-                }
-            }
-
-            this.validation.noVersionProvidedWarning = isNullOrUndefined(this.newComponentVersion.componentVersion)
-                || this.newComponentVersion.componentVersion.length === 0;
-
-            return null;
-        };
-    }
-
     showHelp() {
         if (this.hideHelp) {
             this.storage.removeItem(this.storageKey);
@@ -213,9 +167,6 @@ export class WineryAddComponent {
         this.newComponentVersion = new WineryVersion('', 1, 1);
         this.newComponentName = '';
         this.newComponentFinalName = '';
-
-        this.validatorObject = new WineryValidatorObject(this.componentData, 'id');
-        this.validatorObject.validate = (compareObject: WineryValidatorObject) => this.validateComponentName(compareObject);
 
         // This is needed for the modal to correctly display the selected namespace
         if (!this.useStartNamespace) {
@@ -261,6 +212,46 @@ export class WineryAddComponent {
     private handleError(error: HttpErrorResponse): void {
         this.loading = false;
         this.notify.error(error.message, error.statusText);
+    }
+
+    onInputChange() {
+        this.validation = new AddComponentValidation();
+        this.newComponentFinalName = this.newComponentName;
+
+        if (this.typeRequired && isNullOrUndefined(this.newComponentSelectedType)) {
+            this.validation.noTypeAvailable = true;
+            return { noTypeAvailable: true };
+        }
+
+        if (!isNullOrUndefined(this.newComponentFinalName) && this.newComponentFinalName.length > 0) {
+            this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
+            const duplicate = this.componentData.find((component) => component.name.toLowerCase() === this.newComponentFinalName.toLowerCase());
+
+            if (!isNullOrUndefined(duplicate)) {
+                const namespace = this.newComponentNamespace.endsWith('/') ? this.newComponentNamespace.slice(0, -1) : this.newComponentNamespace;
+
+                if (duplicate.namespace === namespace) {
+                    if (duplicate.name === this.newComponentFinalName) {
+                        this.validation.noDuplicatesAllowed = true;
+                        return { noDuplicatesAllowed: true };
+                    } else {
+                        this.validation.differentCaseDuplicateWarning = true;
+                    }
+                } else {
+                    this.validation.differentNamespaceDuplicateWarning = true;
+                }
+            }
+        }
+
+        if (this.newComponentVersion.componentVersion) {
+            this.validation.noUnderscoresAllowed = this.newComponentVersion.componentVersion.includes('_');
+            if (this.validation.noUnderscoresAllowed) {
+                return { noUnderscoresAllowed: true };
+            }
+        }
+
+        this.validation.noVersionProvidedWarning = isNullOrUndefined(this.newComponentVersion.componentVersion)
+            || this.newComponentVersion.componentVersion.length === 0;
     }
 
     private handleComponentData(data: SectionData[]) {

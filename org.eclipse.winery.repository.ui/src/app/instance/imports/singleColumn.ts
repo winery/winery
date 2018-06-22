@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-class SingleColumn {
+export class SingleColumn {
     constructor(public readonly key: string) {
     }
 }

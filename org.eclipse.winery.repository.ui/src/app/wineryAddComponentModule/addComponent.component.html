@@ -25,8 +25,8 @@
                                name="componentName"
                                #newName="ngModel"
                                [(ngModel)]="newComponentName"
-                               required
-                               [wineryDuplicateValidator]="validatorObject">
+                               (input)="onInputChange()"
+                               required>
                         <div *ngIf="(newName.errors || validation?.noDuplicatesAllowed)
                                 && (newName.dirty || newName.touched)"
                              class="alert alert-danger">
@@ -66,7 +66,7 @@
                                        name="newComponentVersion"
                                        class="form-control"
                                        #newVersion="ngModel"
-                                       [wineryDuplicateValidator]="validatorObject"
+                                       (input)="onInputChange()"
                                        [(ngModel)]="newComponentVersion.componentVersion">
                                 <div *ngIf="(newName.dirty || newName.touched) && validation?.noVersionProvidedWarning"
                                      class="alert alert-warning">
