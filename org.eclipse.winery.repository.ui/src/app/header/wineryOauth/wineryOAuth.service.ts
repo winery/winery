@@ -17,8 +17,8 @@ import { isNullOrUndefined } from 'util';
 import { Utils } from '../../wineryUtils/utils';
 import { ActivatedRoute, Params } from '@angular/router';
 import { backendBaseURL } from '../../configuration';
-import { Observable } from 'rxjs/Observable';
-import { Subscriber } from 'rxjs/Subscriber';
+import { Observable } from 'rxjs';
+import { Subscriber } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginData, StorageElements, Token } from './oAuthInterfaces';
 

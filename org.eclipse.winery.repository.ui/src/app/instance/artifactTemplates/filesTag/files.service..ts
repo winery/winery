@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Injectable } from '@angular/core';
 import { InstanceService } from '../../instance.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { backendBaseURL, hostURL } from '../../../configuration';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 

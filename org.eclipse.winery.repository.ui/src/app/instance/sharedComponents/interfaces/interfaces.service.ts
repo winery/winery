@@ -13,7 +13,7 @@
  *******************************************************************************/
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { GenerateArtifactApiData } from './generateArtifactApiData';
 import { InterfacesApiData } from './interfacesApiData';
 import { InstanceService } from '../../instance.service';
@@ -21,6 +21,7 @@ import { backendBaseURL } from '../../../configuration';
 import { isNullOrUndefined } from 'util';
 import { Utils } from '../../../wineryUtils/utils';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class InterfacesService {
@@ -82,16 +83,15 @@ export class InterfacesService {
     }
 
     getRelationshipInterfaces(url: string): Observable<InterfacesApiData[]> {
-        return Observable
-            .forkJoin(
+        return forkJoin(
                 this.get<InterfacesApiData[]>(backendBaseURL + url + '/targetinterfaces/'),
                 this.get<InterfacesApiData[]>(backendBaseURL + url + '/sourceinterfaces/')
-            ).map(res => {
+            ).pipe(map(res => {
                 for (const i of res[1]) {
                     res[0].push(i);
                 }
                 return res[0];
-            });
+            }));
     }
 
     private get<T>(url: string): Observable<T> {

@@ -11,11 +11,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {ModuleWithProviders, NgModule} from '@angular/core';
-import {WineryNotificationService} from './wineryNotification.service';
-import {DatePipe} from '@angular/common';
+import { ModuleWithProviders, NgModule } from '@angular/core';
+import { WineryNotificationService } from './wineryNotification.service';
+import { CommonModule, DatePipe } from '@angular/common';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
+    imports: [
+        CommonModule,
+        BrowserAnimationsModule,
+        ToastrModule.forRoot()
+    ],
     providers: [DatePipe],
 })
 export class WineryNotificationModule {

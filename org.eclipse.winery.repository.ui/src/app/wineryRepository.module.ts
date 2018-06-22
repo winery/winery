@@ -15,12 +15,10 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { NotFoundComponent } from './404/notFound.component';
 import { HeaderComponent } from './header/header.component';
 import { WineryLoaderModule } from './wineryLoader/wineryLoader.module';
 import { WineryNotificationModule } from './wineryNotificationModule/wineryNotification.module';
-import { WineryCustomOption } from './wineryNotificationModule/wineryNotificationOptions';
 import { OtherComponent } from './other/other.component';
 import { SectionModule } from './section/section.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -55,7 +53,6 @@ import { HttpClientModule } from '@angular/common/http';
         BrowserAnimationsModule,
         WineryLoaderModule,
         HttpClientModule,
-        ToastModule.forRoot(),
         WineryNotificationModule.forRoot(),
         SectionModule,
         WineryModalModule,
@@ -86,7 +83,6 @@ import { HttpClientModule } from '@angular/common/http';
         WineryGitLogComponent
     ],
     providers: [
-        { provide: ToastOptions, useClass: WineryCustomOption },
         ExistService
     ],
     bootstrap: [WineryRepositoryComponent]
