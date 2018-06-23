@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, DoCheck, ViewChild} from '@angular/core';
-import {ArtifactTypesAndInfrastructureNodetypes, PackagerService} from './xaasPackagerService';
-import {WineryNotificationService} from '../../wineryNotificationModule/wineryNotification.service';
-import {ModalDirective} from 'ngx-bootstrap';
-import {isNull, isNullOrUndefined} from 'util';
-import {SelectItem} from 'ng2-select';
+import { Component, DoCheck, ViewChild } from '@angular/core';
+import { ArtifactTypesAndInfrastructureNodetypes, PackagerService } from './xaasPackagerService';
+import { WineryNotificationService } from '../../wineryNotificationModule/wineryNotification.service';
+import { ModalDirective } from 'ngx-bootstrap';
+import { isNull, isNullOrUndefined } from 'util';
+import { SelectItem } from 'ng2-select';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

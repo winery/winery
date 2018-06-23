@@ -16,7 +16,7 @@
 </div>
 <div *ngIf="!loading">
     <h4>{{title}}</h4>
-    <winery-table *ngIf="elements.length > 0"
+    <winery-table *ngIf="elements?.length > 0"
                   [data]="elements" [columns]="columns" [disableButtons]="true">
     </winery-table>
 </div>

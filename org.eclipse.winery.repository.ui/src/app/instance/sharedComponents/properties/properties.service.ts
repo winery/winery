@@ -12,11 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Injectable } from '@angular/core';
-import { RequestOptions, Response } from '@angular/http';
 import { InstanceService } from '../../instance.service';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { backendBaseURL } from '../../../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class PropertiesService {
@@ -34,7 +34,7 @@ export class PropertiesService {
      */
     public getProperties(): Observable<any> {
         return this.http.get(this.path, { observe: 'response', responseType: 'text' })
-            .map(res => {
+            .pipe(map(res => {
                 if (res.headers.get('Content-Type') === 'application/json') {
                     return {
                         isXML: false, properties: JSON.parse(res.body)
@@ -42,7 +42,7 @@ export class PropertiesService {
                 } else {
                     return { isXML: true, properties: res.body };
                 }
-            });
+            }));
     }
 
     public saveProperties(properties: any, isXML: boolean): Observable<HttpResponse<string>> {

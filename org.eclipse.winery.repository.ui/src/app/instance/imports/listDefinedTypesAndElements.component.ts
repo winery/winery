@@ -17,6 +17,7 @@ import { WineryNotificationService } from '../../wineryNotificationModule/winery
 import { Router } from '@angular/router';
 import { WineryTableColumn } from '../../wineryTableModule/wineryTable.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SingleColumn } from './singleColumn';
 
 @Component({
     templateUrl: 'listDefinedTypesAndElements.component.html',
@@ -24,7 +25,6 @@ import { HttpErrorResponse } from '@angular/common/http';
         ListDefinedTypesAndElementsService
     ]
 })
-
 export class ListDefinedTypesAndElementsComponent implements OnInit {
 
     loading = true;

@@ -44,8 +44,8 @@ export class WineryRepositoryComponent implements OnInit {
         lastOnBottom: true
     };
 
-    constructor(vcr: ViewContainerRef, private notify: WineryNotificationService, private existService: ExistService) {
-        this.notify.init(vcr);
+    constructor(private notify: WineryNotificationService, private existService: ExistService) {
+
     }
 
     ngOnInit() {
