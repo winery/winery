@@ -11,28 +11,27 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
 
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {RouterModule} from '@angular/router';
+import { AppComponent } from './app.component';
 
-import {AppComponent} from './app.component';
+import { WmContainerComponent } from './components/container/container.component';
+import { WmNodeComponent } from './components/node/node.component';
+import { WmNodeTemplateComponent } from './components/nodetemplate/node-template.component';
+import { WmParameterComponent } from './components/parameter/parameter.component';
+import { WmPropertiesComponent } from './components/property/properties.component';
+import { WmToolbarComponent } from './components/toolbar/toolbar.component';
 
-import {WmContainerComponent} from './components/container/container.component';
-import {WmNodeComponent} from './components/node/node.component';
-import {WmNodeTemplateComponent} from './components/nodetemplate/node-template.component';
-import {WmParameterComponent} from './components/parameter/parameter.component';
-import {WmPropertiesComponent} from './components/property/properties.component';
-import {WmToolbarComponent} from './components/toolbar/toolbar.component';
+import { BroadcastService } from './services/broadcast.service';
+import { JsPlumbService } from './services/jsplumb.service';
+import { ModelService } from './services/model.service';
+import { NodeService } from './services/node.service';
+import { WineryService } from './services/winery.service';
 
-import {BroadcastService} from './services/broadcast.service';
-import {JsPlumbService} from './services/jsplumb.service';
-import {ModelService} from './services/model.service';
-import {NodeService} from './services/node.service';
-import {WineryService} from './services/winery.service';
-
-import {SharedModule} from './shared/shared.module';
-import {HttpService} from './util/http.service';
+import { SharedModule } from './shared/shared.module';
+import { HttpService } from './util/http.service';
 
 @NgModule({
     declarations: [
@@ -42,7 +41,7 @@ import {HttpService} from './util/http.service';
         WmNodeTemplateComponent,
         WmParameterComponent,
         WmPropertiesComponent,
-        WmToolbarComponent,
+        WmToolbarComponent
     ],
     providers: [
         BroadcastService,

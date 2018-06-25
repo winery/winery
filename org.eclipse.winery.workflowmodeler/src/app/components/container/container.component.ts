@@ -12,11 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 
-import {BroadcastService} from '../../services/broadcast.service';
-import {JsPlumbService} from '../../services/jsplumb.service';
-import {ModelService} from '../../services/model.service';
+import { BroadcastService } from '../../services/broadcast.service';
+import { JsPlumbService } from '../../services/jsplumb.service';
+import { ModelService } from '../../services/model.service';
 
 /**
  * main canvas, it contains two parts: canvas and node property component

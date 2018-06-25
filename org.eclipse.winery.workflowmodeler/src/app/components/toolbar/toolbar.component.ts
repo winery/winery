@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
-import {NodeType} from '../../model/workflow/node-type';
-import {BroadcastService} from '../../services/broadcast.service';
-import {JsPlumbService} from '../../services/jsplumb.service';
-import {ModelService} from '../../services/model.service';
+import { NodeType } from '../../model/workflow/node-type';
+import { BroadcastService } from '../../services/broadcast.service';
+import { JsPlumbService } from '../../services/jsplumb.service';
+import { ModelService } from '../../services/model.service';
 
 /**
  * toolbar component contains some basic operations(save) and all of the supported workflow nodes.

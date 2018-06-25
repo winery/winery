@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Parameter} from './parameter';
-import {Position} from './position';
-import {Template} from './Template';
+import { Parameter } from './parameter';
+import { Position } from './position';
+import { Template } from './Template';
 
 export class Node {
-    public connection = [];
+    public connection: any = [];
     public id: string;
     public input = new Array<Parameter>();
     public name: string;

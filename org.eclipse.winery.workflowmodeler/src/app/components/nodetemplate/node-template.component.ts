@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {AfterViewInit, Component, Input} from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 
-import {Operation} from '../../model/operation';
-import {Parameter} from '../../model/parameter';
-import {Node} from '../../model/workflow/node';
-import {WineryService} from '../../services/winery.service';
+import { Operation } from '../../model/operation';
+import { Parameter } from '../../model/parameter';
+import { Node } from '../../model/workflow/node';
+import { WineryService } from '../../services/winery.service';
 
 /**
  * node template component provides operations about tosca modules which saved in winery.

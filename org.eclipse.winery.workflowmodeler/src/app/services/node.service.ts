@@ -12,9 +12,9 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import {Node} from '../model/workflow/node';
+import { Node } from '../model/workflow/node';
 
 /**
  * NodeService
