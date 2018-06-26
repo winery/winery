@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +32,8 @@ import { WineryService } from './services/winery.service';
 
 import { SharedModule } from './shared/shared.module';
 import { HttpService } from './util/http.service';
+import { HttpClientModule } from '@angular/common/http';
+import { SelectModule } from 'ng2-select';
 
 @NgModule({
     declarations: [
@@ -55,6 +57,8 @@ import { HttpService } from './util/http.service';
         BrowserModule,
         RouterModule.forRoot([]),
         SharedModule,
+        HttpClientModule,
+        SelectModule,
     ],
     bootstrap: [
         AppComponent,
