@@ -20,6 +20,9 @@ import { NodeTemplate } from '../../model/nodetemplate';
 import { Template } from '../../model/workflow/Template';
 import { SelectItem } from 'ng2-select';
 
+/**
+ * Enum to identify which fields have to be reset
+ */
 enum ResetType {
     Template = 2,
     Interface = 1,

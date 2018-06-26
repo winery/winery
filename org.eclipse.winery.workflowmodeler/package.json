@@ -35,10 +35,9 @@
     },
     "devDependencies": {
         "@angular/cli": "6.0.8",
-        "webpack": "4.8.3",
         "@angular/compiler-cli": "6.0.6",
-        "@angular-devkit/build-angular": "0.6.8",
         "@angular/language-service": "6.0.6",
+        "@angular-devkit/build-angular": "0.6.8",
         "@types/core-js": "2.5.0",
         "@types/jasmine": "2.5.53",
         "@types/jasminewd2": "2.0.2",
@@ -48,6 +47,7 @@
         "ts-node": "5.0.1",
         "tslint": "5.10.0",
         "typedoc": "0.11.1",
-        "typescript": "2.7.2"
+        "typescript": "2.7.2",
+        "webpack": "4.8.3"
     }
 }
