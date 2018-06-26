@@ -11,12 +11,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {AfterViewInit, Component, Input, OnDestroy} from '@angular/core';
-import {Subscription} from 'rxjs/Subscription';
+import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 
-import {Node} from '../../model/workflow/node';
-import {BroadcastService} from '../../services/broadcast.service';
-import {JsPlumbService} from '../../services/jsplumb.service';
+import { Node } from '../../model/workflow/node';
+import { BroadcastService } from '../../services/broadcast.service';
+import { JsPlumbService } from '../../services/jsplumb.service';
 
 /**
  * node component represent a single workflow node.

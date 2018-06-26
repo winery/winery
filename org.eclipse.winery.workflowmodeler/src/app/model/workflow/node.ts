@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,21 +11,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Parameter} from './parameter';
-import {Position} from './position';
-import {Template} from './Template';
+import { Position } from './position';
+import { Template } from './Template';
+import { Parameter } from '../parameter';
 
 export class Node {
-    public connection = [];
+    public connection: any = [];
     public id: string;
-    public input = new Array<Parameter>();
+    public input: Parameter[];
     public name: string;
     public nodeInterface: string;
     public nodeOperation: string;
     public nodeTemplate: string;
-    public output = new Array<Parameter>();
+    public output: Parameter[];
     public position = new Position();
-    public template = new Template();
+    public template: Template;
     public type: string;
 
 }

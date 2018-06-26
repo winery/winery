@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -40,7 +40,7 @@
     </div>
 
     <hr>
-    <winery-b4t-node-template *ngIf="node.type == 'ToscaNodeManagementTask'" [node]="node"></winery-b4t-node-template>
+    <b4t-node-template *ngIf="node.type == 'ToscaNodeManagementTask'" [node]="node"></b4t-node-template>
     <b4t-parameter *ngFor="let param of node.input" [param]="param"></b4t-parameter>
     <hr>
     <b4t-parameter *ngFor="let param of node.output" [param]="param"></b4t-parameter>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,47 +11,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Http, RequestOptionsArgs} from '@angular/http';
-import {Observable} from 'rxjs/Rx';
-import './rxjs-operators';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class HttpService {
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
     public get(uri: string): Observable<any> {
-        return this.getHttp('get', uri);
+        return this.http.get(uri);
     }
 
-    public post(uri: string, data: any): Observable<any> {
-        return this.getHttp('post', uri, data);
-    }
-
-    public put(uri: string, data: any, options?: RequestOptionsArgs): Observable<any> {
-        return this.getHttp('put', uri, data, options);
-    }
-
-    public delete(uri: string): Observable<any> {
-        return this.getHttp('delete', uri);
-    }
-
-    public getHttp(type: string, uri: string, data?: any, options?: RequestOptionsArgs): Observable<any> {
-        if (data) {
-            return this.http[type](uri, data, options)
-                .map(response => response.json())
-                .catch(this.handleError);
-        } else {
-            return this.http[type](uri, options)
-                .map(response => response.json())
-                .catch(this.handleError);
-        }
-    }
-
-    private handleError(error: any) {
-        const errMsg = (error.message) ? error.message :
-            error.status ? `${error.status}-${error.statusText}` : 'Server error';
-        return Observable.throw(errMsg);
+    public put(uri: string, data: any, options?: any): Observable<any> {
+        return this.http.put(uri, data, options);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,17 +11,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {ModelerPage} from './app.po';
+import { Parameter } from './parameter';
 
-describe('workflow-model App', () => {
-    let page: ModelerPage;
+export class Operation {
+    name: string;
+    inputParameters: {
+        inputParameter: Parameter[]
+    };
+    outputParameters: {
+        outputParameter: Parameter[]
+    };
+}
 
-    beforeEach(() => {
-        page = new ModelerPage();
-    });
-
-    it('should display message saying app works', () => {
-        page.navigateTo();
-        expect(true).toEqual(true);
-    });
-});
+export class ToscaInterface {
+    name: string;
+    operation: Operation[];
+}
