@@ -1,7 +1,7 @@
-# Use CircleCI for Continuous Integration
+# Use TravisCI for Continuous Integration
 
 * Status: Accepted
-* Date: 2018-06-21
+* Date: 2018-06-27
 
 ## Context and Problem Statement
 
@@ -24,12 +24,10 @@ Winery needs to be build using continuous integration.
 Chosen option: "CircleCI", because
 
 - The build worklfow on Jenkins is hard to configure
-- TravisCI  does not pass Maven's `-q` parameter everywhere and thus we have
-  ![travis screenshot](graphics/travis-not-passing-maven-q.png)
-- TravisCI sometimes throttles down builds (due to heavy load in the Eclipse organization)
-- CircleCI offers to use a Docker image as basis and then executing arbitrary commands
-- CircleCI offers to collect test results and presents them in aggregated form
-- CircleCI offers to collect build artifacts and offers them to logged in users
+- Even though CircleCI offers to use a Docker image as basis and then executing arbitrary commands
+- Even though CircleCI offers to collect test results and presents them in aggregated form
+- Even though CircleCI offers to collect build artifacts and offers them to logged in users
+- Even though TravisCI sometimes throttles down builds (due to heavy load in the Eclipse organization)
 
 ## License
 
