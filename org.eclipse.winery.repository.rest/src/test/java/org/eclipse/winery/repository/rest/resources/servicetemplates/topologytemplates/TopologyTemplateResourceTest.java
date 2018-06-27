@@ -18,6 +18,8 @@ import org.eclipse.winery.model.tosca.TTopologyTemplate;
 import org.eclipse.winery.repository.backend.BackendUtils;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.rest.resources.AbstractResourceTest;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TopologyTemplateResourceTest extends AbstractResourceTest {
@@ -85,6 +87,7 @@ public class TopologyTemplateResourceTest extends AbstractResourceTest {
     public void farmTopologyTemplateJsonCanBeParsed() throws Exception {
         final String jsonStr = AbstractResourceTest.readFromClasspath("servicetemplates/farm_topologytemplate.json");
         final TTopologyTemplate topologyTemplate = BackendUtils.mapper.readValue(jsonStr, TTopologyTemplate.class);
+        Assert.assertNotNull(topologyTemplate);
     }
 
     @Test
