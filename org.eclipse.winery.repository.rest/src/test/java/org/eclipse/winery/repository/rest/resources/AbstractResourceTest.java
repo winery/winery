@@ -30,6 +30,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.xmlunit.matchers.CompareMatcher;
 
 import static io.restassured.RestAssured.given;
@@ -41,6 +42,12 @@ public abstract class AbstractResourceTest extends TestWithGitBackedRepository {
     private static final String PREFIX = "http://localhost:9080/winery/";
 
     private static Server server;
+
+    // Required for jersey 1.x, which uses java.util.logging. See https://stackoverflow.com/a/43242620/873282
+    static {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+    }
 
     @BeforeClass
     public static void init() throws Exception {

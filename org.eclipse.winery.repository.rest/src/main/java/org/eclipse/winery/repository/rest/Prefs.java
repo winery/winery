@@ -13,25 +13,34 @@
  *******************************************************************************/
 package org.eclipse.winery.repository.rest;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Objects;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
 import org.eclipse.winery.common.ToscaDocumentBuilderFactory;
 import org.eclipse.winery.repository.backend.RepositoryFactory;
 import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
 import org.eclipse.winery.repository.backend.filebased.GitBasedRepository;
 import org.eclipse.winery.repository.configuration.Environment;
 import org.eclipse.winery.repository.rest.websockets.GitWebSocket;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import java.io.File;
-import java.net.URL;
-import java.util.Objects;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class Prefs implements ServletContextListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Prefs.class);
+
+    // Required for jersey 1.x, which uses java.util.logging. See https://stackoverflow.com/a/43242620/873282
+    static {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+    }
 
     /**
      * This constructor is called at handling at servlets, too. Therefore, the visibility stays public If testing is
