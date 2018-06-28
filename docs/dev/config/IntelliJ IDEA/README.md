@@ -74,6 +74,11 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
 6. Setup npm run for Topology modeler
     1. ![](graphics/run-topologymodeler-step1-add-npm-config.png)
     1. ![](graphics/run-topologymodeler-step2-configure.png)
+6. Setup npm run for BPMN4TOSCA modeler
+    1. ![](graphics/run-topologymodeler-step1-add-npm-config.png)
+    1. Choose `package.json` of "org.eclipse.winery.workflowmodeler"
+    1. Use `ng` as script
+    1. Use `serve` as arguments
 6. Optional: In case you do not want to have the live-update of Angular, you build the wars of the UI and then deploy as follows:
     - External artifact `.../org.eclipse.winery.repository.ui/target/winery-ui.war` to `/`
     - External artifact `.../org.eclipse.winery.workflowmodeler/target/winery-workflowmodeler.war` to `/winery-workflowmodeler`
