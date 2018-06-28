@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,17 +13,19 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.converter.yaml;
 
+import java.nio.file.Paths;
+
 import org.eclipse.winery.model.tosca.Definitions;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.yaml.converter.yaml.support.AbstractTestY2X;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.nio.file.Paths;
-
 public class Datatypes extends AbstractTestY2X {
+
     public Datatypes() {
-        super(Paths.get("src/test/resources/yaml/Datatypes/"));
+        super(Paths.get("src/test/resources/yaml/Datatypes"));
     }
 
     @Test
