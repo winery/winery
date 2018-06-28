@@ -21,13 +21,14 @@ Winery needs to be build using continuous integration.
 
 ## Decision Outcome
 
-Chosen option: "CircleCI", because
+Chosen option: "TravisCI", because
 
 - The build worklfow on Jenkins is hard to configure
 - Even though CircleCI offers to use a Docker image as basis and then executing arbitrary commands
 - Even though CircleCI offers to collect test results and presents them in aggregated form
 - Even though CircleCI offers to collect build artifacts and offers them to logged in users
 - Even though TravisCI sometimes throttles down builds (due to heavy load in the Eclipse organization)
+- [CircleCI cannot be used at Eclipse projects](https://bugs.eclipse.org/bugs/show_bug.cgi?id=536180)
 
 ## License
 
