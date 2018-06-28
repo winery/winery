@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Contributors to the Eclipse Foundation
+ * Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -39,6 +39,8 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
      * Returns all namespaces used by all known definition children and namespaces
      * where a prefix is defined for
      * <p>
+     * Currently used by <code>index.jsp</code> only. Can be removed if jsp-based topology modeler is gone.
+     * <p>
      * String is used as return type as Java's QName also uses String as
      * parameter to denote a namespace
      */
@@ -52,6 +54,8 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
      * just has to call getQNameListOfAllTypes(TArtifactType.class)
      * <p>
      * TExtensibleElements has to be used because of TServiceTemplate
+     *
+     * Currently used by <code>index.jsp</code> only. Can be removed if jsp-based topology modeler is gone.
      *
      * @return List of QNames of all types
      */
@@ -112,11 +116,13 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
     /**
      * Returns the topology template associated to the given service template
      *
+     * Currently used by <code>index.jsp</code> only. Can be removed if jsp-based topology modeler is gone.
+     *
      * @param serviceTemplate a QName of the sericeTemplate with full namespace
      * @return null if nothing is found
      */
     default TTopologyTemplate getTopologyTemplate(QName serviceTemplate) {
-        return this.getTopologyTemplate(serviceTemplate, "/servicetemplates/", "/topologytemplate/");
+        return this.getTopologyTemplate(serviceTemplate, "/servicetemplates/", "/topologytemplate");
     }
 
     /**
@@ -124,6 +130,8 @@ public interface IWineryRepository extends IWineryRepositoryCommon {
      * The URL is constructed as follows:
      *
      * <code>topologyTemplateURL = repositoryURL + parentPath + Util.DoubleURLencode(serviceTemplateQName) + elementPath;</code>
+     *
+     * Currently used by <code>index.jsp</code> only. Can be removed if jsp-based topology modeler is gone.
      *
      * @param serviceTemplate a QName of the sericeTemplate with full namespace
      * @param parentPath      the parent path to use - with leading and trailing /

@@ -13,6 +13,17 @@
  ********************************************************************************/
 package org.eclipse.winery.repository.rest.server;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.EnumSet;
+
+import javax.servlet.DispatcherType;
+
+import org.eclipse.winery.repository.backend.IRepository;
+import org.eclipse.winery.repository.backend.RepositoryFactory;
+import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
+import org.eclipse.winery.repository.rest.Prefs;
+
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -27,18 +38,8 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.winery.repository.backend.IRepository;
-import org.eclipse.winery.repository.backend.RepositoryFactory;
-import org.eclipse.winery.repository.backend.filebased.FilebasedRepository;
-import org.eclipse.winery.repository.rest.Prefs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.DispatcherType;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.EnumSet;
 
 public class WineryUsingHttpServer {
 
@@ -46,7 +47,7 @@ public class WineryUsingHttpServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WineryUsingHttpServer.class);
 
-    public static Server createHttpServer(int port) throws IOException {
+    public static Server createHttpServer(int port) {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/winery");
         addServlet(context, "");
@@ -58,14 +59,14 @@ public class WineryUsingHttpServer {
     /**
      * Creates a server for the REST backend on URL localhost:8080/winery
      */
-    public static Server createHttpServer() throws IOException {
+    public static Server createHttpServer() {
         return createHttpServer(8080);
     }
 
     /**
      * Starts the repository UI on port {@value #REPOSITORY_UI_PORT}
      */
-    public static Server createHttpServerForRepositoryUi() throws Exception {
+    public static Server createHttpServerForRepositoryUi() {
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
         connector.setPort(REPOSITORY_UI_PORT);
@@ -139,6 +140,9 @@ public class WineryUsingHttpServer {
             LOGGER.debug("Repository is not filebased");
         }
 
+        // Waits until server is finished.
+        // Will never happen, thus user has to press Ctrl+C.
+        // See also https://stackoverflow.com/a/14981621/873282.
         server.join();
         uiServer.join();
     }
