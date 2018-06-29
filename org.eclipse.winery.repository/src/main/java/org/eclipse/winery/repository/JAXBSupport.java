@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2012-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,6 +16,7 @@ package org.eclipse.winery.repository;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.winery.model.selfservice.Application;
@@ -113,7 +114,11 @@ public class JAXBSupport {
             m = JAXBSupport.context.createMarshaller();
             // pretty printed output is required as the XML is sent 1:1 to the browser for editing
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
+            try {
+                m.setProperty("com.sun.xml.bind.namespacePrefixMapper", JAXBSupport.prefixMapper);
+            } catch (PropertyException e) {
+                // Namespace-Prefixing is not supported by the used Provider. Nothing we can do about that
+            }
             if (!includeProcessingInstruction) {
                 // side effect of JAXB_FRAGMENT property (when true): processing instruction is not included
                 m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
