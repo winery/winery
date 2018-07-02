@@ -15,30 +15,8 @@ before_install:
   #- curl -sL https://cdn.rawgit.com/jpm4j/jpm4j.installers/6b3c5176/dist/biz.aQute.jpm.run.jar >jpm4j.jar
   #- java -jar jpm4j.jar -u init
   # - ~/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
-  - mvn resources:resources -pl org.eclipse.winery.repository.configuration
+  - mvn -q resources:resources -pl org.eclipse.winery.repository.configuration
 
 script:
-  - mvn package
+  - mvn -q package
 #  - mvn jacoco:report-aggregate
-  - mkdir build
-  - mv org.eclipse.winery.cli/target/*.jar build/
-  - mv org.eclipse.winery.repository.client/target/*.jar build/
-  - mv org.eclipse.winery.repository.rest/target/*.war build/
-  - mv org.eclipse.winery.repository.ui/target/*.war build/
-  - mv org.eclipse.winery.topologymodeler/target/*.war build/
-  - mv org.eclipse.winery.topologymodeler.ui/target/*.war build/
-  - mv org.eclipse.winery.workflowmodeler/target/*.war build/
-
-deploy:
-  provider: s3
-  skip_cleanup: true
-  access_key_id: $AWSAccessKeyId
-  secret_access_key: $AWSSecretKey
-  bucket: builds.opentosca.org
-  acl: public_read
-  local_dir: "build/"
-  upload-dir: "winery-eclipse/$TRAVIS_BRANCH"
-  region: eu-central-1
-  on:
-    all_branches: true
-    condition: $AWSAccessKeyId

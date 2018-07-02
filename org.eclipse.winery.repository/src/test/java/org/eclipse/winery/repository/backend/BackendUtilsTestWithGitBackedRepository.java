@@ -198,7 +198,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
     public void detectChangesInANodeTemplate() throws Exception {
         this.setRevisionTo("origin/plain");
 
-        NodeTypeId newVersion = new NodeTypeId("http://plain.winery.opentosca.org/nodetypes", "NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_-w1-wip1", false);
+        NodeTypeId newVersion = new NodeTypeId("http://plain.winery.opentosca.org/nodetypes", "NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_w1-wip1", false);
         WineryVersion oldVersion = new WineryVersion("", 0, 0);
 
         ToscaDiff toscaDiff = BackendUtils.compare(newVersion, oldVersion);
@@ -212,7 +212,7 @@ public class BackendUtilsTestWithGitBackedRepository extends TestWithGitBackedRe
     public void detectPropertyChangesInANodeTemplate() throws Exception {
         this.setRevisionTo("origin/plain");
 
-        NodeTypeId newVersion = new NodeTypeId("http://plain.winery.opentosca.org/nodetypes", "NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_-w1-wip2", false);
+        NodeTypeId newVersion = new NodeTypeId("http://plain.winery.opentosca.org/nodetypes", "NodeTypeWithThreeReqCapPairsCoveringAllReqCapVariants_w1-wip2", false);
         WineryVersion oldVersion = new WineryVersion("", 1, 1);
 
         ToscaDiff toscaDiff = BackendUtils.compare(newVersion, oldVersion);

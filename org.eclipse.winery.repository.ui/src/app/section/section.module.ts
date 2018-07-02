@@ -29,9 +29,9 @@ import { WineryUploaderModule } from '../wineryUploader/wineryUploader.module';
 import { TooltipModule } from 'ngx-bootstrap';
 import { WineryPipesModule } from '../wineryPipes/wineryPipes.module';
 import { XaasPackagerComponent } from './xaasPackager/xaasPackager.component';
-import { TagInputModule } from 'ngx-chips';
 import { WineryAddModule } from '../wineryAddComponentModule/addComponent.moudle';
 import { EntityComponent } from './entityContainer/entity.component';
+import { TagInputModule } from 'ngx-chips';
 
 @NgModule({
     imports: [

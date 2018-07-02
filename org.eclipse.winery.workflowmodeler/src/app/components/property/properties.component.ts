@@ -12,13 +12,13 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 
-import {Node} from '../../model/workflow/node';
-import {NodeType} from '../../model/workflow/node-type';
-import {BroadcastService} from '../../services/broadcast.service';
-import {JsPlumbService} from '../../services/jsplumb.service';
-import {ModelService} from '../../services/model.service';
+import { Node } from '../../model/workflow/node';
+import { NodeType } from '../../model/workflow/node-type';
+import { BroadcastService } from '../../services/broadcast.service';
+import { JsPlumbService } from '../../services/jsplumb.service';
+import { ModelService } from '../../services/model.service';
 
 /**
  * property component presents information of a workflow node.

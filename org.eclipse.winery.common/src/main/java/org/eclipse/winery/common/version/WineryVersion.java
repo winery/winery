@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.adr.embedded.ADR;
+import org.apache.commons.lang3.StringUtils;
 
 public class WineryVersion implements Comparable<WineryVersion> {
 
@@ -151,7 +152,8 @@ public class WineryVersion implements Comparable<WineryVersion> {
         String versionString = componentVersion;
 
         if (this.wineryVersion > 0) {
-            versionString += WINERY_VERSION_SEPARATOR + WINERY_VERSION_PREFIX + wineryVersion;
+            versionString += (StringUtils.isEmpty(versionString) ? "" : WINERY_VERSION_SEPARATOR)
+                + WINERY_VERSION_PREFIX + wineryVersion;
 
             if (this.workInProgressVersion > 0) {
                 versionString += WINERY_VERSION_SEPARATOR + WINERY_WIP_VERSION_PREFIX + this.workInProgressVersion;

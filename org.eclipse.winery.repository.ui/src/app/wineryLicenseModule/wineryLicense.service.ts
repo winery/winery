@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { InstanceService } from '../instance/instance.service';
 import { backendBaseURL } from '../configuration';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';

@@ -36,7 +36,7 @@ export class WineryOAuthComponent implements OnInit {
 
     ngOnInit() {
         this.service.tryGetAccessToken()
-            .subscribe(data => this.handleLogin(data));
+            .subscribe((data: LoginData) => this.handleLogin(data));
     }
 
     onButtonClicked() {

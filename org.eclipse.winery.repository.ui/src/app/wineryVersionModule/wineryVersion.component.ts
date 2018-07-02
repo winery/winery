@@ -205,7 +205,7 @@ export class WineryVersionComponent {
         this.service.addNewVersion(this.newVersion, this.referencedDefsComponent.updateReferencedDefinitions)
             .subscribe(
                 () => this.onSuccess(),
-                error => this.handleError(error),
+                (error: HttpErrorResponse) => this.handleError(error),
             );
     }
 
@@ -218,7 +218,7 @@ export class WineryVersionComponent {
         this.service.freezeOrRelease('freeze')
             .subscribe(
                 () => this.onSuccess('froze'),
-                error => this.handleError(error)
+                (error: HttpErrorResponse) => this.handleError(error)
             );
     }
 
@@ -229,7 +229,7 @@ export class WineryVersionComponent {
         this.service.freezeOrRelease('release')
             .subscribe(
                 () => this.onSuccess(),
-                error => this.handleError(error)
+                (error: HttpErrorResponse) => this.handleError(error)
             );
     }
 

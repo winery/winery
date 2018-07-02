@@ -26,6 +26,7 @@ import { WineryModalModule } from '../../../wineryModalModule/winery.modal.modul
 import { WineryTableModule } from '../../../wineryTableModule/wineryTable.module';
 import { ImplementationsComponent } from './implementations.component';
 import { WineryPipesModule } from '../../../wineryPipes/wineryPipes.module';
+import { WineryAddModule } from '../../../wineryAddComponentModule/addComponent.moudle';
 
 @NgModule({
     imports: [
@@ -43,6 +44,7 @@ import { WineryPipesModule } from '../../../wineryPipes/wineryPipes.module';
         WineryNamespaceSelectorModule,
         WineryDuplicateValidatorModule,
         WineryPipesModule,
+        WineryAddModule,
     ],
     exports: [],
     declarations: [

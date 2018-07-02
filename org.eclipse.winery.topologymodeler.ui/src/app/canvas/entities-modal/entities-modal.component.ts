@@ -12,9 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {
-    AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild
-} from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 import { TPolicy } from '../../models/policiesModalData';
 import { TDeploymentArtifact } from '../../models/artifactsModalData';

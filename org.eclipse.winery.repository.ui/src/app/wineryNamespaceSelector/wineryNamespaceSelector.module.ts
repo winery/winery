@@ -16,7 +16,6 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {CollapseModule, TypeaheadModule} from 'ngx-bootstrap';
-import {ToastModule} from 'ng2-toastr';
 import {WineryLoaderModule} from '../wineryLoader/wineryLoader.module';
 import {WineryNamespaceSelectorComponent} from './wineryNamespaceSelector.component';
 
@@ -26,7 +25,6 @@ import {WineryNamespaceSelectorComponent} from './wineryNamespaceSelector.compon
         BrowserModule,
         TypeaheadModule,
         WineryLoaderModule,
-        ToastModule.forRoot(),
         CollapseModule.forRoot()
     ],
     exports: [WineryNamespaceSelectorComponent],

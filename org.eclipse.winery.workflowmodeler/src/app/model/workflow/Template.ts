@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,9 +13,10 @@
  *******************************************************************************/
 
 export class Template {
-    public id: string;
+
     public nodeInterface: string;
-    public namespace: string;
     public operation: string;
-    public type: string;
+
+    constructor(public id: string, public namespace: string, public type: string) {
+    }
 }

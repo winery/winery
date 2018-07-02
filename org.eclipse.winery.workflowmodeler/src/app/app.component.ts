@@ -12,11 +12,11 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
-import {PageParameter} from './model/page-parameter';
-import {WineryService} from './services/winery.service';
+import { PageParameter } from './model/page-parameter';
+import { WineryService } from './services/winery.service';
 
 /**
  * main component

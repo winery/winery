@@ -12,8 +12,8 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {Component, Input} from '@angular/core';
-import {Parameter} from '../../model/parameter';
+import { Component, Input } from '@angular/core';
+import { Parameter } from '../../model/parameter';
 
 /**
  * this component contains in property component if the corresponding node has parameter properties

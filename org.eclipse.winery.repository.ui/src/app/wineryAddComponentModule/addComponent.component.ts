@@ -14,11 +14,10 @@
 import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core';
 import { SectionService } from '../section/section.service';
 import { SelectData } from '../wineryInterfaces/selectData';
-import { WineryValidatorObject } from '../wineryValidators/wineryDuplicateValidator.directive';
 import { WineryNotificationService } from '../wineryNotificationModule/wineryNotification.service';
 import { ToscaTypes } from '../wineryInterfaces/enums';
 import { Router } from '@angular/router';
-import { AbstractControl, NgForm, ValidatorFn } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { Utils } from '../wineryUtils/utils';
 import { isNullOrUndefined } from 'util';
 import { SectionData } from '../section/sectionData';
@@ -67,7 +66,6 @@ export class WineryAddComponent {
     newComponentSelectedType: SelectData = new SelectData();
     newComponentVersion: WineryVersion = new WineryVersion('', 1, 1);
 
-    validatorObject: WineryValidatorObject;
     validation: AddComponentValidation;
 
     types: SelectData[];
@@ -78,6 +76,7 @@ export class WineryAddComponent {
     useStartNamespace = true;
 
     private readonly storageKey = 'hideVersionHelp';
+    collapseVersioning: boolean;
 
     constructor(private sectionService: SectionService,
                 private existService: ExistService,
@@ -88,14 +87,19 @@ export class WineryAddComponent {
         this.hideHelp = this.storage.getItem(this.storageKey) === 'true';
     }
 
-    onAdd() {
+    onAdd(componentType?: SelectData) {
         const typesUrl = Utils.getTypeOfTemplateOrImplementation(this.toscaType);
         this.addModalType = Utils.getToscaTypeNameFromToscaType(this.toscaType);
         this.useStartNamespace = !(!isNullOrUndefined(this.namespace) && this.namespace.length > 0);
 
         this.sectionService.setPath(this.toscaType);
 
-        if (!isNullOrUndefined(typesUrl)) {
+        if (componentType) {
+            this.typeRequired = true;
+            this.types = [componentType];
+        }
+
+        if (!isNullOrUndefined(typesUrl) && !componentType) {
             this.loading = true;
             this.typeRequired = true;
             this.sectionService.getSectionData('/' + typesUrl + '?grouped=angularSelect')
@@ -105,6 +109,18 @@ export class WineryAddComponent {
                 );
         } else {
             this.typeRequired = false;
+        }
+
+        if (!this.componentData) {
+            this.loading = true;
+            this.sectionService.getSectionData('/' + this.toscaType)
+                .subscribe(
+                    data => this.handleComponentData(data),
+                    error => this.handleError(error)
+                );
+        }
+
+        if (!this.loading) {
             this.showModal();
         }
     }
@@ -127,50 +143,6 @@ export class WineryAddComponent {
         this.newComponentSelectedType = event;
     }
 
-    validateComponentName(compareObject: WineryValidatorObject): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } => {
-            this.validation = new AddComponentValidation();
-            this.newComponentFinalName = this.newComponentName;
-
-            if (this.typeRequired && isNullOrUndefined(this.newComponentSelectedType)) {
-                this.validation.noTypeAvailable = true;
-                return { noTypeAvailable: true };
-            }
-
-            if (!isNullOrUndefined(this.newComponentFinalName) && this.newComponentFinalName.length > 0) {
-                this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
-                const duplicate = this.componentData.find((component) => component.name.toLowerCase() === this.newComponentFinalName.toLowerCase());
-
-                if (!isNullOrUndefined(duplicate)) {
-                    const namespace = this.newComponentNamespace.endsWith('/') ? this.newComponentNamespace.slice(0, -1) : this.newComponentNamespace;
-
-                    if (duplicate.namespace === namespace) {
-                        if (duplicate.name === this.newComponentFinalName) {
-                            this.validation.noDuplicatesAllowed = true;
-                            return { noDuplicatesAllowed: true };
-                        } else {
-                            this.validation.differentCaseDuplicateWarning = true;
-                        }
-                    } else {
-                        this.validation.differentNamespaceDuplicateWarning = true;
-                    }
-                }
-            }
-
-            if (this.newComponentVersion.componentVersion) {
-                this.validation.noUnderscoresAllowed = this.newComponentVersion.componentVersion.includes('_');
-                if (this.validation.noUnderscoresAllowed) {
-                    return { noUnderscoresAllowed: true };
-                }
-            }
-
-            this.validation.noVersionProvidedWarning = isNullOrUndefined(this.newComponentVersion.componentVersion)
-                || this.newComponentVersion.componentVersion.length === 0;
-
-            return null;
-        };
-    }
-
     showHelp() {
         if (this.hideHelp) {
             this.storage.removeItem(this.storageKey);
@@ -181,18 +153,20 @@ export class WineryAddComponent {
     }
 
     private handleTypes(types: SelectData[]): void {
-        this.loading = false;
         this.types = types.length > 0 ? types : null;
-        this.showModal();
+
+        if (this.componentData) {
+            this.showModal();
+        }
     }
 
     private showModal() {
+        this.loading = false;
+        this.collapseVersioning = this.toscaType !== ToscaTypes.NodeType;
+
         this.newComponentVersion = new WineryVersion('', 1, 1);
         this.newComponentName = '';
         this.newComponentFinalName = '';
-
-        this.validatorObject = new WineryValidatorObject(this.componentData, 'id');
-        this.validatorObject.validate = (compareObject: WineryValidatorObject) => this.validateComponentName(compareObject);
 
         // This is needed for the modal to correctly display the selected namespace
         if (!this.useStartNamespace) {
@@ -206,7 +180,9 @@ export class WineryAddComponent {
         }
         this.change.detectChanges();
 
-        this.newComponentSelectedType = this.types ? this.types[0].children[0] : null;
+        this.newComponentSelectedType = this.types ?
+            this.types[0].children ? this.types[0].children[0] : this.types[0]
+            : null;
         this.namespaceInput.writeValue(this.newComponentNamespace);
 
         this.addModal.show();
@@ -229,10 +205,60 @@ export class WineryAddComponent {
                 );
             this.inheritFrom = null;
         }
+
+        this.addModal.hide();
     }
 
     private handleError(error: HttpErrorResponse): void {
         this.loading = false;
         this.notify.error(error.message, error.statusText);
+    }
+
+    onInputChange() {
+        this.validation = new AddComponentValidation();
+        this.newComponentFinalName = this.newComponentName;
+
+        if (this.typeRequired && isNullOrUndefined(this.newComponentSelectedType)) {
+            this.validation.noTypeAvailable = true;
+            return { noTypeAvailable: true };
+        }
+
+        if (!isNullOrUndefined(this.newComponentFinalName) && this.newComponentFinalName.length > 0) {
+            this.newComponentFinalName += WineryVersion.WINERY_NAME_FROM_VERSION_SEPARATOR + this.newComponentVersion.toString();
+            const duplicate = this.componentData.find((component) => component.name.toLowerCase() === this.newComponentFinalName.toLowerCase());
+
+            if (!isNullOrUndefined(duplicate)) {
+                const namespace = this.newComponentNamespace.endsWith('/') ? this.newComponentNamespace.slice(0, -1) : this.newComponentNamespace;
+
+                if (duplicate.namespace === namespace) {
+                    if (duplicate.name === this.newComponentFinalName) {
+                        this.validation.noDuplicatesAllowed = true;
+                        return { noDuplicatesAllowed: true };
+                    } else {
+                        this.validation.differentCaseDuplicateWarning = true;
+                    }
+                } else {
+                    this.validation.differentNamespaceDuplicateWarning = true;
+                }
+            }
+        }
+
+        if (this.newComponentVersion.componentVersion) {
+            this.validation.noUnderscoresAllowed = this.newComponentVersion.componentVersion.includes('_');
+            if (this.validation.noUnderscoresAllowed) {
+                return { noUnderscoresAllowed: true };
+            }
+        }
+
+        this.validation.noVersionProvidedWarning = isNullOrUndefined(this.newComponentVersion.componentVersion)
+            || this.newComponentVersion.componentVersion.length === 0;
+    }
+
+    private handleComponentData(data: SectionData[]) {
+        this.componentData = data;
+
+        if (!this.typeRequired || this.types) {
+            this.showModal();
+        }
     }
 }

@@ -11,14 +11,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Component, forwardRef, Input, OnInit} from '@angular/core';
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {isNullOrUndefined} from 'util';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { isNullOrUndefined } from 'util';
+import { EditorBuilderService } from './editor-builder.service';
 
 const noop = () => {
 };
-
-declare var System: any;
 
 /**
  * This component provides an editor for editing and showing code with syntax highlight for different
@@ -61,7 +60,7 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
     @Input() height = 500;
 
     loading = true;
-    orionEditor: any = undefined;
+    editorViewer: any;
 
     // The internal data model
     private innerValue: any = '';
@@ -71,19 +70,21 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
     private onTouchedCallback: () => void = noop;
     private onChangeCallback: (_: any) => void = noop;
 
-    constructor() {
+    constructor(private editorBuilder: EditorBuilderService) {
     }
 
     ngOnInit() {
-        System.import('../../../orion/editor/stylers/lib/syntax.js');
-        System.import('../../../orion/editor/stylers/application_xml/syntax.js');
-        System.import('../../../orion/editor/built-editor.js')
-            .then((o: any) => {
-                this.orionEditor = o({
-                    document: document, className: 'editor', parent: 'xml'
-                })[0];
-                this.orionEditor.setText(this.innerValue);
-            });
+
+        const codeEdit = this.editorBuilder.createEditor('embeddedEditor');
+
+        codeEdit.then((editorViewer: any) => {
+            this.editorViewer = editorViewer;
+            if (this.editorViewer.settings) {
+                this.editorViewer.settings.contentAssistAutoTrigger = true;
+                this.editorViewer.settings.showOccurrences = true;
+            }
+            this.editorViewer.setContents(this.innerValue, this.dataEditorLang);
+        });
     }
 
     // get accessor
@@ -108,8 +109,8 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
     writeValue(value: any) {
         if (value !== this.innerValue && !isNullOrUndefined(value)) {
             this.innerValue = value;
-            if (!isNullOrUndefined(this.orionEditor)) {
-                this.orionEditor.setText(this.innerValue);
+            if (!isNullOrUndefined(this.editorViewer)) {
+                this.editorViewer.setContents(this.innerValue, this.dataEditorLang);
             }
         }
     }
@@ -125,14 +126,15 @@ export class WineryEditorComponent implements ControlValueAccessor, OnInit {
     }
 
     getData() {
-        if (!isNullOrUndefined(this.orionEditor)) {
-            return this.orionEditor.getText();
+        if (!isNullOrUndefined(this.editorViewer)) {
+            const textModel = this.editorViewer.editor.getModel();
+            return textModel.getText();
         }
     }
 
     setData(value: string) {
-        if (!isNullOrUndefined(this.orionEditor)) {
-            return this.orionEditor.setText(value);
+        if (!isNullOrUndefined(this.editorViewer)) {
+            this.editorViewer.setContents(this.innerValue, this.dataEditorLang);
         }
     }
 

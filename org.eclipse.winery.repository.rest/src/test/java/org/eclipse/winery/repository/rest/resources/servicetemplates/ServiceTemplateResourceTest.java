@@ -114,15 +114,15 @@ public class ServiceTemplateResourceTest extends AbstractResourceTest {
         this.setRevisionTo("origin/plain");
         this.assertPost("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithAllReqCapVariants/",
             "servicetemplates/addNewVersion.json");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithAllReqCapVariants_-w1-wip1/",
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithAllReqCapVariants_w1-wip1/",
             "servicetemplates/newVersion.json");
     }
 
     @Test
     public void getVersionDifferences() throws Exception {
         this.setRevisionTo("origin/plain");
-        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithTwoNodeTemplates_-w1-wip2/" +
-                "?compareTo=ServiceTemplateWithTwoNodeTemplates_-w1-wip1",
+        this.assertGet("servicetemplates/http%253A%252F%252Fplain.winery.opentosca.org%252Fservicetemplates/ServiceTemplateWithTwoNodeTemplates_w1-wip2/" +
+                "?compareTo=ServiceTemplateWithTwoNodeTemplates_w1-wip1",
             "servicetemplates/difference.json");
     }
 }

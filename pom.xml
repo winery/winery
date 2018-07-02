@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -66,10 +66,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <junit.jupiter.version>5.2.0</junit.jupiter.version>
-        <junit.platform.version>1.2.0</junit.platform.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- versions of all used libraries -->
+        <ch.qos.logback.logback-classic.version>1.2.3</ch.qos.logback.logback-classic.version>
+        <com.fasterxml.jackson.core.jackson-annotations>2.8.0</com.fasterxml.jackson.core.jackson-annotations>
+        <io.github.adr.e-adr.version>1.0.0</io.github.adr.e-adr.version>
+        <org.eclipse.jdt.annotation>2.1.0</org.eclipse.jdt.annotation>
+        <org.mockito.moickito-core.version>2.19.0</org.mockito.moickito-core.version>
+
+        <!-- grouped libraries -->
+        <org.slf4j>1.7.25</org.slf4j>
+        <junit.jupiter.version>5.2.0</junit.jupiter.version>
+        <junit.platform.version>1.2.0</junit.platform.version>
     </properties>
     <modules>
         <module>org.eclipse.winery.model.bpmn4tosca</module>

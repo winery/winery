@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/********************************************************************************
- * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
- * which is available at https://www.apache.org/licenses/LICENSE-2.0.
- *
- * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
- ********************************************************************************/
--->
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
+  ~
+  ~ See the NOTICE file(s) distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This program and the accompanying materials are made available under the
+  ~ terms of the Eclipse Public License 2.0 which is available at
+  ~ http://www.eclipse.org/legal/epl-2.0, or the Apache Software License 2.0
+  ~ which is available at https://www.apache.org/licenses/LICENSE-2.0.
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -22,10 +20,13 @@
         <artifactId>winery</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>org.eclipse.winery.repository.configuration</artifactId>
     <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
+        <!-- property is required for deployment to mvn-repo -->
+        <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
+    <artifactId>org.eclipse.winery.repository.configuration</artifactId>
+    <packaging>jar</packaging>
+    <inceptionYear>2017</inceptionYear>
     <build>
         <resources>
             <resource>
@@ -69,12 +70,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <version>${org.slf4j}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>org.eclipse.jdt.annotation</artifactId>
-            <version>2.1.0</version>
+            <version>${org.eclipse.jdt.annotation}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -104,6 +105,18 @@
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${ch.qos.logback.logback-classic.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${org.slf4j}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

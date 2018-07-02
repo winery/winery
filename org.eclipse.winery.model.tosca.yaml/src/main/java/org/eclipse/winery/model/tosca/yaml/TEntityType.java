@@ -82,6 +82,18 @@ public class TEntityType implements VisitorNode {
         return Objects.hash(getDescription(), getVersion(), getDerivedFrom(), getProperties(), getAttributes(), getMetadata());
     }
 
+    @Override
+    public String toString() {
+        return "TEntityType{" +
+            "description='" + getDescription() + '\'' +
+            ", version=" + getVersion() +
+            ", derivedFrom=" + getDerivedFrom() +
+            ", properties=" + getProperties() +
+            ", attributes=" + getAttributes() +
+            ", metadata=" + getMetadata() +
+            '}';
+    }
+
     @Nullable
     public String getDescription() {
         return description;

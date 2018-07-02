@@ -11,9 +11,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs/Subject';
-import {Node} from '../model/workflow/node';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import { Node } from '../model/workflow/node';
 
 /**
  * BroadcastService

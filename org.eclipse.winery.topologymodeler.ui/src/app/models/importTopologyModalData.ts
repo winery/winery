@@ -18,6 +18,7 @@
 export class ImportTopologyModalData {
 
     constructor(public selectedTopologyTemplateId?: string,
-                public allTopologyTemplates?: Array<any>) {
+                public allTopologyTemplates?: Array<any>,
+                public topologySelected?: boolean) {
     }
 }

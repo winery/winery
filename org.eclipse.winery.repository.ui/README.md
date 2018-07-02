@@ -1,10 +1,10 @@
 # Eclipse Winery UI
 
-This is the repository UI. You find documentation regarding the code at <https://eclipse.github.io/winery/dev/angular-ui>.
+This is the repository UI. You find documentation regarding the code at <https://eclipse.github.io/winery/dev/howto/howto-angular>.
 
 ## License
 
-Copyright (c) 2017 Contributors to the Eclipse Foundation
+Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -87,10 +87,10 @@ export class WineryModalComponent implements AfterViewInit, AfterContentInit {
     }
 
     ngAfterViewInit(): void {
-        if (!this.backdrop) {
-            this.modalRef.config.backdrop = 'static';
+        if (this.backdrop) {
+            this.modalRef.config.backdrop = true;
         } else {
-            this.modalRef.config.backdrop = this.backdrop;
+            this.modalRef.config.backdrop = 'static';
         }
 
         this.modalRef.config.keyboard = this.keyboard;

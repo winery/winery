@@ -34,7 +34,6 @@ import io.github.adr.embedded.ADR;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExtensibleElements", propOrder = {
     "documentation",

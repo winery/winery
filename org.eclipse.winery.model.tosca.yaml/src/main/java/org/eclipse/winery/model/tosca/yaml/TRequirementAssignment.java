@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -75,6 +75,17 @@ public class TRequirementAssignment implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getNode(), getRelationship(), getCapability(), getNodeFilter(), getOccurrences());
+    }
+
+    @Override
+    public String toString() {
+        return "TRequirementAssignment{" +
+            "node=" + getNode() +
+            ", relationship=" + getRelationship() +
+            ", capability=" + getCapability() +
+            ", nodeFilter=" + getNodeFilter() +
+            ", occurrences=" + getOccurrences() +
+            '}';
     }
 
     @Nullable

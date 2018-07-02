@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,7 +13,23 @@
  *******************************************************************************/
 package org.eclipse.winery.yaml.common.reader.yaml;
 
-import org.eclipse.jdt.annotation.NonNull;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.eclipse.winery.model.tosca.yaml.TImportDefinition;
 import org.eclipse.winery.model.tosca.yaml.TServiceTemplate;
 import org.eclipse.winery.model.tosca.yaml.support.Metadata;
@@ -25,20 +41,14 @@ import org.eclipse.winery.yaml.common.exception.YAMLParserException;
 import org.eclipse.winery.yaml.common.validator.ObjectValidator;
 import org.eclipse.winery.yaml.common.validator.Validator;
 import org.eclipse.winery.yaml.common.validator.support.ExceptionInterpreter;
+
+import org.eclipse.jdt.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.ConstructorException;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.scanner.ScannerException;
-
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class Reader {
     public static final Logger logger = LoggerFactory.getLogger(Builder.class);
@@ -178,7 +188,7 @@ public class Reader {
                 return true;
             }
         } catch (IOException e) {
-            // File is not readable
+            logger.debug("File is not readable", e);
             return true;
         }
     }
@@ -197,7 +207,6 @@ public class Reader {
             filePath = path.resolve(file);
         }
 
-        // 
         if (!fileChanged(filePath)) {
             if (exceptionBuffer.containsKey(filePath)) {
                 throw exceptionBuffer.get(filePath);

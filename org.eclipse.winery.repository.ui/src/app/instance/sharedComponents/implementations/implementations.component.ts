@@ -14,16 +14,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { isNullOrUndefined } from 'util';
 import { WineryNotificationService } from '../../../wineryNotificationModule/wineryNotification.service';
-import { WineryValidatorObject } from '../../../wineryValidators/wineryDuplicateValidator.directive';
 import { InstanceService } from '../../instance.service';
 import { ImplementationAPIData } from './implementationAPIData';
 import { ImplementationService } from './implementations.service';
-import { ImplementationWithTypeAPIData } from './implementationWithTypeAPIData';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Utils } from '../../../wineryUtils/utils';
 import { WineryRowData, WineryTableColumn } from '../../../wineryTableModule/wineryTable.component';
 import { ToscaTypes } from '../../../wineryInterfaces/enums';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { WineryAddComponent } from '../../../wineryAddComponentModule/addComponent.component';
 
 @Component({
     selector: 'winery-instance-implementations',
@@ -36,17 +35,14 @@ export class ImplementationsComponent implements OnInit {
     implementationData: ImplementationAPIData[] = [];
     loading = true;
     selectedCell: any;
-    newImplementation: ImplementationAPIData = new ImplementationAPIData('', '');
     elementToRemove: ImplementationAPIData;
     implementationOrTemplate: ToscaTypes;
-    selectedNamespace: string;
-    validatorObject: WineryValidatorObject;
     columns: Array<WineryTableColumn> = [
         { title: 'Namespace', name: 'namespace', sort: true },
         { title: 'Name', name: 'displayName', sort: true },
     ];
     @ViewChild('confirmDeleteModal') confirmDeleteModal: ModalDirective;
-    @ViewChild('addModal') addModal: ModalDirective;
+    @ViewChild('addComponent') addComponent: WineryAddComponent;
 
     constructor(public sharedData: InstanceService,
                 private service: ImplementationService,
@@ -66,19 +62,11 @@ export class ImplementationsComponent implements OnInit {
     }
 
     onAddClick() {
-        this.validatorObject = new WineryValidatorObject(this.implementationData, 'localname');
-        this.newImplementation = new ImplementationAPIData('', '');
-        this.addModal.show();
-    }
-
-    addNewImplementation(localname: string) {
-        this.loading = true;
-        const type = '{' + this.sharedData.toscaComponent.namespace + '}' + this.sharedData.toscaComponent.localName;
-        const resource = new ImplementationWithTypeAPIData(this.selectedNamespace, localname, type);
-        this.service.postImplementation(resource).subscribe(
-            data => this.handlePostResponse(data),
-            error => this.handleError(error)
-        );
+        const type = {
+            id: this.sharedData.toscaComponent.getQName(),
+            text: this.sharedData.toscaComponent.localName
+        };
+        this.addComponent.onAdd(type);
     }
 
     onRemoveClick(data: ImplementationAPIData) {
@@ -127,16 +115,6 @@ export class ImplementationsComponent implements OnInit {
     private handleError(error: HttpErrorResponse): void {
         this.loading = false;
         this.notificationService.error('Action caused an error:\n', error.message);
-    }
-
-    private handlePostResponse(data: HttpResponse<string>) {
-        this.loading = false;
-        if (data.ok) {
-            this.getImplementationData();
-            this.notificationService.success('Created new ' + Utils.getToscaTypeNameFromToscaType(this.implementationOrTemplate));
-        } else {
-            this.notificationService.error('Failed to create ' + Utils.getToscaTypeNameFromToscaType(this.implementationOrTemplate));
-        }
     }
 
     private handleDeleteResponse(data: HttpResponse<string>) {

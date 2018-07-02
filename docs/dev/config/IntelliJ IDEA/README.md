@@ -47,6 +47,23 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
        - Increase `Separator before/after Length` to `81`
        - ![GitAutoCheck](graphics/CopyrightFormat.png)
     8. Press "OK"
+5. Configure Non-Null annotations properly 
+   This is required for the [IntelliJ code inspections](https://www.jetbrains.com/help/idea/running-inspections.html) to run properly.
+    1. Open the Settings (by pressing <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>S</kbd>)
+    1. Search for "null"
+    1. Go to "Build, Execution, Deployment"
+    1. Go to "Compiler"
+    1. Click on "Configure annotations..."
+    1. At "Nullable annotations", click on the plus
+    1. Search for `org.eclipse.jdt.annotation.NonNull`  
+       ![](graphics/config-nonnull-annotation.png)
+    1. Double click it
+    1. At "NotNull annotations", click on the plus.
+    1. Search for `org.eclipse.jdt.annotation.Null`  
+       ![](graphics/config-nullable-annotation.png)
+    1. Double click it
+    1. Click OK
+    1. Click OK
 6. Setup Apache Tomcat
     1. Download Tomcat 9.0 from <https://tomcat.apache.org/download-90.cgi>.
        Choose "zip" (E.g., <http://mirror.synyx.de/apache/tomcat/tomcat-9/v9.0.7/bin/apache-tomcat-9.0.7.zip>).
@@ -74,6 +91,11 @@ If this goes wrong at the first run, execute `mvn package -DskipTests` a second 
 6. Setup npm run for Topology modeler
     1. ![](graphics/run-topologymodeler-step1-add-npm-config.png)
     1. ![](graphics/run-topologymodeler-step2-configure.png)
+6. Setup npm run for BPMN4TOSCA modeler
+    1. ![](graphics/run-topologymodeler-step1-add-npm-config.png)
+    1. Choose `package.json` of "org.eclipse.winery.workflowmodeler"
+    1. Use `ng` as script
+    1. Use `serve` as arguments
 6. Optional: In case you do not want to have the live-update of Angular, you build the wars of the UI and then deploy as follows:
     - External artifact `.../org.eclipse.winery.repository.ui/target/winery-ui.war` to `/`
     - External artifact `.../org.eclipse.winery.workflowmodeler/target/winery-workflowmodeler.war` to `/winery-workflowmodeler`

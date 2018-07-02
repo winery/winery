@@ -3,18 +3,18 @@
 This document provides an index to all development guidelines and background information of winery.
 
 - [ADR](../adr) - list of [architectural decision records](https://adr.github.io) showing which design decisions were taken during development of Winery
-- [Angular UI](angular-ui.md) - documentation how to develop the angular applications
 - [Branches](branches.md) - information on branches
 - [CodeHeaders](CodeHeaders.md) - documentation about required code headers
 - IDE Setup
     - IntelliJ Ultimate setup: [config/IntelliJ IDEA/README.md](config/IntelliJ%20IDEA/)
     - Eclipse setup: [config/Eclipse/README.md](config/Eclipse/)
 - [Encoding](Encoding.md) - information about how percent-encoding is used at Winery
+- [Handling of Properties](property-handling.md)
+- [How tos](howtos) - multiple howtos
 - [ID system](id-system.md)
 - [Projects](projects.md) - information on the projects
 - [Property Handling](property-handling.md)
 - [Recommended Reading](recommended-reading.md)
-- [Repository](repository.md) - how to work with the repository
 - [RepositoryLayout](RepositoryLayout.md) - documents the layout of the repository (stored as plain text files)
 - [RepositoryUI](RepositoryUI.md)
 - [REST](REST.md) - how Winery's REST API works
@@ -25,15 +25,11 @@ This document provides an index to all development guidelines and background inf
 
 To get started, go on at [ToolChain](ToolChain.md).
 
-## More readings
-
-- [How to test the repository](howtoTestRepository.md)
-- [Handling of Properties](property-handling.md)
-- [Quick Start](../user/quickstart.md) - A quick start how to work with Winery.
+As a user, continue at our [quick Start](../user/quickstart.md), which shows how to start how to work with Winery.
 
 ## License
 
-Copyright (c) 2013-2017 Contributors to the Eclipse Foundation
+Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.

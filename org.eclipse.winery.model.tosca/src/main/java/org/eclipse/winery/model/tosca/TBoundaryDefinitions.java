@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tBoundaryDefinitions", propOrder = {
     "properties",
@@ -190,7 +189,6 @@ public class TBoundaryDefinitions {
         this.interfaces = value;
     }
 
-
     /**
      * <p>Java class for anonymous complex type.
      * <p>
@@ -246,7 +244,6 @@ public class TBoundaryDefinitions {
             return this.capability;
         }
     }
-
 
     /**
      * <p>Java class for anonymous complex type.
@@ -304,7 +301,6 @@ public class TBoundaryDefinitions {
         }
     }
 
-
     /**
      * <p>Java class for anonymous complex type.
      * <p>
@@ -360,7 +356,6 @@ public class TBoundaryDefinitions {
             return this.policy;
         }
     }
-
 
     /**
      * <p>Java class for anonymous complex type.
@@ -440,7 +435,6 @@ public class TBoundaryDefinitions {
             this.propertyMappings = value;
         }
 
-
         /**
          * <p>Java class for anonymous complex type.
          * <p>
@@ -498,7 +492,6 @@ public class TBoundaryDefinitions {
         }
     }
 
-
     /**
      * <p>Java class for anonymous complex type.
      * <p>
@@ -554,7 +547,6 @@ public class TBoundaryDefinitions {
             return this.propertyConstraint;
         }
     }
-
 
     /**
      * <p>Java class for anonymous complex type.

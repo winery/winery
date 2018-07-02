@@ -27,11 +27,13 @@ Technical Story: [description | ticket/issue URL] <!-- optional -->
 
 Chosen option: "[option 1]", because [justification. e.g., only option, which meets k.o. criterion decision driver | which resolves force force | … | comes out best (see below)].
 
-Positive Consequences: <!-- optional -->
+### Positive Consequences <!-- optional -->
+
 * [e.g., improvement of quality attribute satisfaction, follow-up decisions required, …]
 * …
 
-Negative consequences: <!-- optional -->
+### Negative consequences <!-- optional -->
+
 * [e.g., compromising quality attribute, follow-up decisions required, …]
 * …
 
@@ -71,7 +73,7 @@ Negative consequences: <!-- optional -->
 
 ## License
 
-Copyright (c) 2017 Contributors to the Eclipse Foundation
+Copyright (c) 2018 Contributors to the Eclipse Foundation
 
 See the NOTICE file(s) distributed with this work for additional
 information regarding copyright ownership.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -11,116 +11,115 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
-import {AfterViewInit, Component, Input} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
-import {Operation} from '../../model/operation';
-import {Parameter} from '../../model/parameter';
-import {Node} from '../../model/workflow/node';
-import {WineryService} from '../../services/winery.service';
+import { Operation, ToscaInterface } from '../../model/toscaInterface';
+import { Node } from '../../model/workflow/node';
+import { WineryService } from '../../services/winery.service';
+import { NodeTemplate } from '../../model/nodetemplate';
+import { Template } from '../../model/workflow/Template';
+import { SelectItem } from 'ng2-select';
+
+/**
+ * Enum to identify which fields have to be reset
+ */
+enum ResetType {
+    Template = 2,
+    Interface = 1,
+    Operation = 0,
+}
 
 /**
  * node template component provides operations about tosca modules which saved in winery.
  * This component will be used in the property component while the corresponding workflow node is calling the node template's operation
  */
 @Component({
-    selector: 'winery-b4t-node-template',
+    selector: 'b4t-node-template',
     templateUrl: 'node-template.component.html',
 })
-export class WmNodeTemplateComponent implements AfterViewInit {
+export class WmNodeTemplateComponent implements OnInit {
 
     @Input() public node: Node;
-    nodeTemplates = [];
-    nodeInterfaces: string[] = [];
-    nodeOperations: Operation[] = [];
+    nodeTemplates: NodeTemplate[];
+    nodeInterfaces: ToscaInterface[];
+    nodeOperations: Operation[];
+
+    selectedNodeTemplate: NodeTemplate;
+    selectedInterface: ToscaInterface;
+    selectedOperation: Operation;
 
     constructor(private wineryService: WineryService) {
     }
 
-    public ngAfterViewInit() {
+    public ngOnInit(): void {
+        if (this.node && this.node.template) {
+            this.selectedNodeTemplate = new NodeTemplate(this.node.template.id, this.node.template.id, this.node.template.type, this.node.template.namespace);
+            this.selectedInterface = new ToscaInterface();
+            this.selectedInterface.name = this.node.nodeInterface;
+            this.selectedOperation = new Operation();
+            this.selectedOperation.name = this.node.nodeOperation;
+            this.loadInterfaces();
+        }
         this.wineryService.loadNodeTemplates()
             .subscribe(nodeTemplates => this.nodeTemplates = nodeTemplates);
-
-        this.loadInterfaces();
-        this.loadOperations();
     }
 
-    public nodeTemplateChanged() {
-        this.node.nodeTemplate = this.node.template.id;
-        this.setTemplateNamespace();
+    public nodeTemplateChanged(event: SelectItem) {
+        this.selectedNodeTemplate = this.nodeTemplates.find(value => value.id === event.id);
 
-        this.node.template.nodeInterface = '';
-        this.nodeInterfaceChanged();
+        this.node.nodeTemplate = this.selectedNodeTemplate.name;
+        this.node.template = new Template(this.selectedNodeTemplate.id, this.selectedNodeTemplate.namespace, this.selectedNodeTemplate.type);
 
+        this.resetNode(ResetType.Template);
         this.loadInterfaces();
     }
 
-    public nodeInterfaceChanged() {
-        this.node.nodeInterface = this.node.template.nodeInterface;
-        this.node.template.operation = '';
-        this.nodeOperationChanged();
+    public nodeInterfaceChanged(event: SelectItem) {
+        this.selectedInterface = this.nodeInterfaces.find(value => value.name === event.id);
 
-        this.loadOperations();
+        this.node.nodeInterface = this.node.template.nodeInterface = this.selectedInterface.name;
+        this.nodeOperations = this.selectedInterface.operation;
+
+        this.resetNode(ResetType.Interface);
     }
 
-    public nodeOperationChanged() {
-        this.node.nodeOperation = this.node.template.operation;
-        this.node.input = [];
-        this.node.output = [];
-
-        this.loadParameters();
-    }
-
-    private setTemplateNamespace() {
-        const nodeTemplate = this.nodeTemplates.find(
-            tmpNodeTemplate => tmpNodeTemplate.id === this.node.template.id);
-
-        if (nodeTemplate) {
-            this.node.template.namespace = nodeTemplate.namespace;
-            this.node.template.type = nodeTemplate.type;
-        }
+    public nodeOperationChanged(event: SelectItem) {
+        this.selectedOperation = this.nodeOperations.find(value => value.name === event.id);
+        this.node.nodeOperation = this.node.template.operation = this.selectedOperation.name;
+        this.node.input = this.selectedOperation.inputParameters ? this.selectedOperation.inputParameters.inputParameter : [];
+        this.node.output = this.selectedOperation.outputParameters ? this.selectedOperation.outputParameters.outputParameter : [];
     }
 
     private loadInterfaces() {
-        if (this.node.template.id) {
+        if (this.selectedNodeTemplate && this.selectedNodeTemplate.namespace && this.selectedNodeTemplate.type) {
             this.wineryService
-                .loadNodeTemplateInterfaces(this.node.template.namespace, this.node.template.type)
-                .subscribe(interfaces => this.nodeInterfaces = interfaces);
+                .loadNodeTemplateInterfaces(
+                    this.selectedNodeTemplate.namespace,
+                    this.selectedNodeTemplate.type.replace(/^\{(.+)\}(.+)/, '$2')
+                )
+                .subscribe(interfaces => {
+                    this.nodeInterfaces = interfaces;
+                    if (this.selectedInterface && this.selectedInterface.name) {
+                        // this is required since the node.template only saves the name of the interface
+                        this.selectedInterface = this.nodeInterfaces.find(value => value.name === this.selectedInterface.name);
+                        this.nodeOperations = this.selectedInterface.operation;
+                    } else {
+                        this.nodeOperations = [];
+                    }
+                });
         }
     }
 
-    private loadOperations() {
-        if (this.node.template.nodeInterface) {
-            this.nodeOperations = [];
-            this.wineryService.loadNodeTemplateOperations(
-                this.node.template.namespace,
-                this.node.template.type,
-                this.node.template.nodeInterface)
-                .subscribe(operations =>
-                    operations.forEach(operation => this.nodeOperations.push(new Operation(operation))));
+    private resetNode(type: ResetType) {
+        if (type >= ResetType.Interface) {
+            if (type >= ResetType.Template) {
+                this.selectedInterface = null;
+                this.node.nodeInterface = null;
+            }
+            this.selectedOperation = null;
+            this.node.nodeOperation = null;
+            this.node.input = null;
+            this.node.output = null;
         }
     }
-
-    private loadParameters() {
-        if (this.node.template.operation) {
-            const template = this.node.template;
-            this.wineryService
-                .loadNodeTemplateOperationParameter(
-                    template.namespace,
-                    template.type,
-                    template.nodeInterface,
-                    template.operation)
-                .then(params => this.updateNodeParams(params));
-        }
-    }
-
-    private updateNodeParams(params: { input: string[], output: string[] }) {
-        this.node.input = [];
-        params.input.forEach(param =>
-            this.node.input.push(new Parameter(param, 'string', '')));
-
-        this.node.output = [];
-        params.output.forEach(param =>
-            this.node.output.push(new Parameter(param, 'string', '')));
-    };
-
 }

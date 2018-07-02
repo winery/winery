@@ -31,7 +31,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExportedOperation", propOrder = {
     "nodeOperation",
@@ -143,7 +142,6 @@ public class TExportedOperation implements HasName {
         this.name = value;
     }
 
-
     /**
      * <p>Java class for anonymous complex type.
      * <p>
@@ -239,7 +237,6 @@ public class TExportedOperation implements HasName {
         }
     }
 
-
     /**
      * <p>Java class for anonymous complex type.
      * <p>
@@ -285,7 +282,6 @@ public class TExportedOperation implements HasName {
             this.planRef = value;
         }
     }
-
 
     /**
      * <p>Java class for anonymous complex type.

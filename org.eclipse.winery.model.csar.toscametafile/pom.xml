@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2013 Contributors to the Eclipse Foundation
+  ~ Copyright (c) 2013-2018 Contributors to the Eclipse Foundation
   ~
   ~ See the NOTICE file(s) distributed with this work for additional
   ~ information regarding copyright ownership.
@@ -114,14 +114,27 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${org.slf4j}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.virgo.util</groupId>
             <artifactId>org.eclipse.virgo.util.parser.manifest</artifactId>
             <version>3.5.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${ch.qos.logback.logback-classic.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${org.slf4j}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -12,16 +12,17 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 
-import {Injectable} from '@angular/core';
-import {Headers, RequestOptions} from '@angular/http';
-import {Observable} from 'rxjs/Rx';
-import {isNullOrUndefined} from 'util';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
 
-import {NodeTemplate} from '../model/nodetemplate';
-import {PageParameter} from '../model/page-parameter';
-import {Node} from '../model/workflow/node';
-import {HttpService} from '../util/http.service';
-import {BroadcastService} from './broadcast.service';
+import { NodeTemplate } from '../model/nodetemplate';
+import { PageParameter } from '../model/page-parameter';
+import { Node } from '../model/workflow/node';
+import { HttpService } from '../util/http.service';
+import { BroadcastService } from './broadcast.service';
+import { HttpHeaders } from '@angular/common/http';
+import { ToscaInterface } from '../model/toscaInterface';
+import { map } from 'rxjs/internal/operators';
 
 /**
  * WineryService
@@ -45,7 +46,7 @@ export class WineryService {
         this.serviceTemplateId = queryParams.id;
         this.plan = queryParams.plan;
 
-        if (!isNullOrUndefined(this.repositoryURL)) {
+        if (this.repositoryURL) {
             this.loadPlan();
         }
     }
@@ -55,23 +56,23 @@ export class WineryService {
             + '/' + this.encode(this.serviceTemplateId) + '/topologytemplate/';
 
         return this.httpService.get(this.getFullUrl(url))
-            .map(this.transferResponse2NodeTemplate);
+            .pipe(map(this.transferResponse2NodeTemplate));
     }
 
     private transferResponse2NodeTemplate(response) {
-        const nodeTemplates = [];
+        const nodeTemplates: NodeTemplate[] = [];
         for (const key in response.nodeTemplates) {
             if (response.nodeTemplates.hasOwnProperty(key)) {
                 const nodeTemplate = response.nodeTemplates[key];
                 nodeTemplates.push(new NodeTemplate(
                     nodeTemplate.id,
                     nodeTemplate.name,
-                    nodeTemplate.type.replace(/^\{(.+)\}(.+)/, '$2'),
+                    nodeTemplate.type,
                     nodeTemplate.type.replace(/^\{(.+)\}(.+)/, '$1')));
             }
         }
         return nodeTemplates;
-    };
+    }
 
     public loadTopologyProperties(nodeTemplate: NodeTemplate) {
         const url = 'nodetypes/' + this.encode(nodeTemplate.namespace)
@@ -82,41 +83,11 @@ export class WineryService {
         });
     }
 
-    public loadNodeTemplateInterfaces(namespace: string, nodeType: string): Observable<string[]> {
+    public loadNodeTemplateInterfaces(namespace: string, nodeType: string): Observable<ToscaInterface[]> {
         const url = 'nodetypes/' + this.encode(namespace)
             + '/' + this.encode(nodeType) + '/interfaces/';
 
         return this.httpService.get(this.getFullUrl(url));
-    }
-
-    public loadNodeTemplateOperations(namespace: string,
-                                      nodeType: string,
-                                      interfaceName: string): Observable<string[]> {
-        const url = 'nodetypes/' + this.encode(namespace)
-            + '/' + this.encode(nodeType) + '/interfaces/' + this.encode(interfaceName) + '/operations/';
-
-        return this.httpService.get(this.getFullUrl(url));
-    }
-
-    public loadNodeTemplateOperationParameter(namespace: string,
-                                              nodeType: string,
-                                              interfaceName: string,
-                                              operation: string): Promise<{ input: string[], output: string[] }> {
-        const relativePath = 'nodetypes/' + this.encode(namespace) + '/' + this.encode(nodeType)
-            + '/interfaces/' + this.encode(interfaceName) + '/operations/' + this.encode(operation) + '/';
-
-        // input parameters
-        const inputPromise: Promise<string[]> = this.httpService
-            .get(this.getFullUrl(relativePath + 'inputparameters')).toPromise();
-
-        // output parameters
-        const outputPromise: Promise<string[]> = this.httpService
-            .get(this.getFullUrl(relativePath + 'outputparameters')).toPromise();
-
-        return Promise.all([inputPromise, outputPromise]).then(params => {
-
-            return {input: params[0], output: params[1]};
-        });
     }
 
     public save(data: string) {
@@ -128,10 +99,9 @@ export class WineryService {
             + 'Content-type: plain/text\r\n\r\n'
             + data + '\r\n-----------------------------7da24f2e50046--\r\n';
 
-        const headers = new Headers({'Content-Type': 'multipart/form-data; boundary=---------------------------7da24f2e50046'});
-        const options = new RequestOptions({headers});
+        const headers = new HttpHeaders({ 'Content-Type': 'multipart/form-data; boundary=---------------------------7da24f2e50046' });
 
-        this.httpService.put(this.getFullUrl(url), requestData, options)
+        this.httpService.put(this.getFullUrl(url), requestData, { headers: headers })
             .subscribe(response => console.log('save date success'));
     }
 

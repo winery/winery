@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tCapabilityDefinition", propOrder = {
     "constraints"
@@ -175,7 +174,6 @@ public class TCapabilityDefinition extends TExtensibleElements {
     public void setUpperBound(String value) {
         this.upperBound = value;
     }
-
 
     /**
      * <p>Java class for anonymous complex type.

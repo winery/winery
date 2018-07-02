@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017-2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -80,6 +80,23 @@ public class TConstraintClause implements VisitorNode {
     @Override
     public int hashCode() {
         return Objects.hash(getEqual(), getGreaterThan(), getGreaterOrEqual(), getLessThan(), getLessOrEqual(), getInRange(), getValidValues(), getLength(), getMinLength(), getMaxLength(), getPattern());
+    }
+
+    @Override
+    public String toString() {
+        return "TConstraintClause{" +
+            "equal=" + getEqual() +
+            ", greaterThan=" + getGreaterThan() +
+            ", greaterOrEqual=" + getGreaterOrEqual() +
+            ", lessThan=" + getLessThan() +
+            ", lessOrEqual=" + getLessOrEqual() +
+            ", inRange=" + getInRange() +
+            ", validValues=" + getValidValues() +
+            ", length=" + getLength() +
+            ", minLength=" + getMinLength() +
+            ", maxLength=" + getMaxLength() +
+            ", pattern=" + getPattern() +
+            '}';
     }
 
     public Object getEqual() {

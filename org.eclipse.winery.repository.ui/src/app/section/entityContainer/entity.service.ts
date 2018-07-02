@@ -12,7 +12,7 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
  *******************************************************************************/
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { SectionData } from '../sectionData';
 import { ToscaTypes } from '../../wineryInterfaces/enums';
 import { backendBaseURL } from '../../configuration';

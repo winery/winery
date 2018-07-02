@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright(c) 2017 Contributors to the Eclipse Foundation
+ * Copyright(c) 2018 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -16,7 +16,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/catch';
 import { ActivatedRoute } from '@angular/router';
-import { backendBaseURL } from '../models/configuration';
+import { backendBaseURL, hostURL } from '../models/configuration';
 import { Subject } from 'rxjs/Subject';
 import { isNullOrUndefined } from 'util';
 import { EntityType, TTopologyTemplate, Visuals } from '../models/ttopology-template';
@@ -87,6 +87,9 @@ export class BackendService {
     private topologyTemplatesDiffAndVisuals = new Subject<[TTopologyTemplate, Visuals, ToscaDiff, TTopologyTemplate]>();
     topologyTemplatesDiffAndVisuals$ = this.topologyTemplatesDiffAndVisuals.asObservable();
 
+    private allEntities = new Subject<any>();
+    allEntities$ = this.allEntities.asObservable();
+
     constructor(private http: HttpClient,
                 private activatedRoute: ActivatedRoute,
                 private alert: WineryAlertService) {
@@ -101,6 +104,13 @@ export class BackendService {
                     + encodeURIComponent(encodeURIComponent(this.configuration.ns)) + '/'
                     + this.configuration.id;
                 console.log(this.topologyTemplateURL);
+
+                // All Entity types
+                this.requestAllEntitiesAtOnce().subscribe(data => {
+                    // add JSON to Promise, WineryComponent will subscribe to its Observable
+                    this.allEntities.next(data);
+                });
+
                 // ServiceTemplate / TopologyTemplate
                 this.requestServiceTemplate().subscribe(data => {
                     // add JSON to Promise, WineryComponent will subscribe to its Observable
@@ -201,6 +211,27 @@ export class BackendService {
                 resolve(false);
             }
         });
+    }
+
+    /**
+     * Requests all entities together.
+     * We use Observable.forkJoin to await all responses from the backend.
+     * This is required
+     * @returns data  The JSON from the server
+     */
+    requestAllEntitiesAtOnce(): Observable<Object> {
+        if (this.configuration) {
+            return Observable.forkJoin(this.requestGroupedNodeTypes(),
+                                        this.requestArtifactTemplates(),
+                                        this.requestTopologyTemplateAndVisuals(),
+                                        this.requestArtifactTypes(),
+                                        this.requestPolicyTypes(),
+                                        this.requestCapabilityTypes(),
+                                        this.requestRequirementTypes(),
+                                        this.requestPolicyTemplates(),
+                                        this.requestRelationshipTypes(),
+                                        this.requestNodeTypes());
+        }
     }
 
     /**
@@ -414,7 +445,7 @@ export class BackendService {
      * Saves the topologyTemplate back to the repository
      * @returns {Observable<Response>}
      */
-    saveTopologyTemplate(topologyTemplate: any): Observable<any> {
+    saveTopologyTemplate(topologyTemplate: any): Observable<HttpResponse<string>> {
         if (this.configuration) {
             const headers = new HttpHeaders().set('Content-Type', 'application/json');
             const url = this.configuration.repositoryURL + '/servicetemplates/'
@@ -425,6 +456,16 @@ export class BackendService {
                 headers: headers, responseType: 'text', observe: 'response'
             });
         }
+    }
+
+    /**
+     * Imports the template.
+     * @returns {Observable<any>}
+     */
+    importTopology(importedTemplateQName: string): Observable<HttpResponse<string>> {
+        const headers = new HttpHeaders().set('Content-Type', 'text/plain');
+        const url = this.topologyTemplateURL + urlElement.TopologyTemplate + 'merge';
+        return this.http.post(url + '/', importedTemplateQName, { headers: headers,  observe: 'response', responseType: 'text' });
     }
 
     /**
@@ -452,7 +493,7 @@ export class BackendService {
      * @param {QNameWithTypeApiData} artifact
      * @returns {Observable<any>}
      */
-    createNewArtifact(artifact: QNameWithTypeApiData): Observable<any> {
+    createNewArtifact(artifact: QNameWithTypeApiData): Observable<HttpResponse<string>> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
         const url = this.configuration.repositoryURL + '/artifacttemplates/';
         return this.http.post(url + '/', artifact, { headers: headers, responseType: 'text', observe: 'response' });
@@ -467,6 +508,15 @@ export class BackendService {
         const url = this.configuration.repositoryURL + '/artifacttemplates/'
             + encodeURIComponent(encodeURIComponent(artifact.namespace)) + '/' + artifact.localname;
         return this.http.get(url + '/', { headers: this.headers });
+    }
+
+    /**
+     * Requests all topology template ids
+     * @returns {Observable<string>}
+     */
+    requestAllTopologyTemplates(): Observable<EntityType[]> {
+        const url = hostURL + urlElement.Winery + urlElement.ServiceTemplates;
+        return this.http.get<EntityType[]>(url + '/', { headers: this.headers });
     }
 
     /*  saveVisuals(data: any): Observable<Response> {
